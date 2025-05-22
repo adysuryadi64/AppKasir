@@ -1,0 +1,1259 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="..\packages\Microsoft.SqlServer.Types.160.1000.6\build\net462\Microsoft.SqlServer.Types.props" Condition="Exists('..\packages\Microsoft.SqlServer.Types.160.1000.6\build\net462\Microsoft.SqlServer.Types.props')" />
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{55ED1B74-170A-4FE2-ABD6-307CFDD133F4}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <StartupObject>KasirLancar.FormUtama</StartupObject>
+    <RootNamespace>KasirLancar</RootNamespace>
+    <AssemblyName>Kasir Lancar</AssemblyName>
+    <FileAlignment>512</FileAlignment>
+    <MyType>WindowsForms</MyType>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <Deterministic>true</Deterministic>
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <PublishUrl>publish\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>18</ApplicationRevision>
+    <ApplicationVersion>25.2025.5.%2a</ApplicationVersion>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <PublishWizardCompleted>true</PublishWizardCompleted>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <DefineDebug>true</DefineDebug>
+    <DefineTrace>true</DefineTrace>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DocumentationFile>Kasir Lancar.xml</DocumentationFile>
+    <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022</NoWarn>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisIgnoreGeneratedCode>true</CodeAnalysisIgnoreGeneratedCode>
+    <RunCodeAnalysis>false</RunCodeAnalysis>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <DefineDebug>false</DefineDebug>
+    <DefineTrace>true</DefineTrace>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DocumentationFile>Kasir Lancar.xml</DocumentationFile>
+    <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022</NoWarn>
+  </PropertyGroup>
+  <PropertyGroup>
+    <OptionExplicit>On</OptionExplicit>
+  </PropertyGroup>
+  <PropertyGroup>
+    <OptionCompare>Binary</OptionCompare>
+  </PropertyGroup>
+  <PropertyGroup>
+    <OptionStrict>Off</OptionStrict>
+  </PropertyGroup>
+  <PropertyGroup>
+    <OptionInfer>On</OptionInfer>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>Kasir lancar.ico</ApplicationIcon>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationManifest>My Project\app.manifest</ApplicationManifest>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ManifestCertificateThumbprint>DC6D9E640AA318705F4544448BCBC98285D21D23</ManifestCertificateThumbprint>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ManifestKeyFile>AppKasir_TemporaryKey.pfx</ManifestKeyFile>
+  </PropertyGroup>
+  <PropertyGroup>
+    <GenerateManifests>false</GenerateManifests>
+  </PropertyGroup>
+  <PropertyGroup>
+    <SignManifests>true</SignManifests>
+  </PropertyGroup>
+  <PropertyGroup>
+    <TargetZone>LocalIntranet</TargetZone>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Azure.Core, Version=1.46.1.0, Culture=neutral, PublicKeyToken=92742159e12e44c8, processorArchitecture=MSIL">
+      <HintPath>..\packages\Azure.Core.1.46.1\lib\net472\Azure.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="Azure.Identity, Version=1.14.0.0, Culture=neutral, PublicKeyToken=92742159e12e44c8, processorArchitecture=MSIL">
+      <HintPath>..\packages\Azure.Identity.1.14.0\lib\netstandard2.0\Azure.Identity.dll</HintPath>
+    </Reference>
+    <Reference Include="BouncyCastle.Cryptography, Version=2.0.0.0, Culture=neutral, PublicKeyToken=072edcf4a5328938, processorArchitecture=MSIL">
+      <HintPath>..\packages\BouncyCastle.Cryptography.2.6.0\lib\net461\BouncyCastle.Cryptography.dll</HintPath>
+    </Reference>
+    <Reference Include="DevExpress.Data.Desktop.v24.2, Version=24.2.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.Data.v24.2, Version=24.2.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.Drawing.v24.2, Version=24.2.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a" />
+    <Reference Include="DevExpress.Images.v24.2, Version=24.2.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.Printing.v24.2.Core, Version=24.2.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.Utils.v24.2, Version=24.2.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.XtraBars.v24.2, Version=24.2.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.XtraEditors.v24.2, Version=24.2.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.XtraGrid.v24.2, Version=24.2.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.XtraLayout.v24.2, Version=24.2.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.XtraPrinting.v24.2, Version=24.2.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a" />
+    <Reference Include="DevExpress.XtraScheduler.v24.2, Version=24.2.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.XtraScheduler.v24.2.Core, Version=24.2.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a" />
+    <Reference Include="DevExpress.XtraScheduler.v24.2.Core.Desktop, Version=24.2.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a" />
+    <Reference Include="Google.Protobuf, Version=3.31.0.0, Culture=neutral, PublicKeyToken=a7d26565bac4d604, processorArchitecture=MSIL">
+      <HintPath>..\packages\Google.Protobuf.3.31.0\lib\net45\Google.Protobuf.dll</HintPath>
+    </Reference>
+    <Reference Include="K4os.Compression.LZ4, Version=1.3.8.0, Culture=neutral, PublicKeyToken=2186fa9121ef231d, processorArchitecture=MSIL">
+      <HintPath>..\packages\K4os.Compression.LZ4.1.3.8\lib\net462\K4os.Compression.LZ4.dll</HintPath>
+    </Reference>
+    <Reference Include="K4os.Compression.LZ4.Streams, Version=1.3.8.0, Culture=neutral, PublicKeyToken=2186fa9121ef231d, processorArchitecture=MSIL">
+      <HintPath>..\packages\K4os.Compression.LZ4.Streams.1.3.8\lib\net462\K4os.Compression.LZ4.Streams.dll</HintPath>
+    </Reference>
+    <Reference Include="K4os.Hash.xxHash, Version=1.0.8.0, Culture=neutral, PublicKeyToken=32cd54395057cec3, processorArchitecture=MSIL">
+      <HintPath>..\packages\K4os.Hash.xxHash.1.0.8\lib\net462\K4os.Hash.xxHash.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Bcl.AsyncInterfaces, Version=9.0.0.5, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Bcl.AsyncInterfaces.9.0.5\lib\net462\Microsoft.Bcl.AsyncInterfaces.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Bcl.Cryptography, Version=9.0.0.5, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Bcl.Cryptography.9.0.5\lib\net462\Microsoft.Bcl.Cryptography.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Bcl.Memory, Version=9.0.0.5, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Bcl.Memory.9.0.5\lib\net462\Microsoft.Bcl.Memory.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Bcl.TimeProvider, Version=9.0.0.5, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Bcl.TimeProvider.9.0.5\lib\net462\Microsoft.Bcl.TimeProvider.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Microsoft.Data.SqlClient, Version=6.0.0.0, Culture=neutral, PublicKeyToken=23ec7fc2d6eaa4a5, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Data.SqlClient.6.0.2\lib\net462\Microsoft.Data.SqlClient.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Extensions.Caching.Abstractions, Version=9.0.0.5, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Extensions.Caching.Abstractions.9.0.5\lib\net462\Microsoft.Extensions.Caching.Abstractions.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Extensions.Caching.Memory, Version=9.0.0.5, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Extensions.Caching.Memory.9.0.5\lib\net462\Microsoft.Extensions.Caching.Memory.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Extensions.DependencyInjection.Abstractions, Version=9.0.0.5, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Extensions.DependencyInjection.Abstractions.9.0.5\lib\net462\Microsoft.Extensions.DependencyInjection.Abstractions.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Extensions.Logging.Abstractions, Version=9.0.0.5, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Extensions.Logging.Abstractions.9.0.5\lib\net462\Microsoft.Extensions.Logging.Abstractions.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Extensions.Options, Version=9.0.0.5, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Extensions.Options.9.0.5\lib\net462\Microsoft.Extensions.Options.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Extensions.Primitives, Version=9.0.0.5, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Extensions.Primitives.9.0.5\lib\net462\Microsoft.Extensions.Primitives.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Identity.Client, Version=4.72.0.0, Culture=neutral, PublicKeyToken=0a613f4dd989e8ae, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Identity.Client.4.72.0\lib\net472\Microsoft.Identity.Client.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Identity.Client.Extensions.Msal, Version=4.72.0.0, Culture=neutral, PublicKeyToken=0a613f4dd989e8ae, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Identity.Client.Extensions.Msal.4.72.0\lib\netstandard2.0\Microsoft.Identity.Client.Extensions.Msal.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.IdentityModel.Abstractions, Version=8.10.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.IdentityModel.Abstractions.8.10.0\lib\net472\Microsoft.IdentityModel.Abstractions.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.IdentityModel.JsonWebTokens, Version=8.10.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.IdentityModel.JsonWebTokens.8.10.0\lib\net472\Microsoft.IdentityModel.JsonWebTokens.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.IdentityModel.Logging, Version=8.10.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.IdentityModel.Logging.8.10.0\lib\net472\Microsoft.IdentityModel.Logging.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.IdentityModel.Protocols, Version=8.10.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.IdentityModel.Protocols.8.10.0\lib\net472\Microsoft.IdentityModel.Protocols.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.IdentityModel.Protocols.OpenIdConnect, Version=8.10.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.IdentityModel.Protocols.OpenIdConnect.8.10.0\lib\net472\Microsoft.IdentityModel.Protocols.OpenIdConnect.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.IdentityModel.Tokens, Version=8.10.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.IdentityModel.Tokens.8.10.0\lib\net472\Microsoft.IdentityModel.Tokens.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Office.Interop.Excel, Version=15.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Office.Interop.Excel.15.0.4795.1001\lib\net20\Microsoft.Office.Interop.Excel.dll</HintPath>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </Reference>
+    <Reference Include="Microsoft.ReportViewer.Common, Version=15.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.ReportingServices.ReportViewerControl.Winforms.150.1652.0\lib\net40\Microsoft.ReportViewer.Common.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.ReportViewer.DataVisualization, Version=15.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.ReportingServices.ReportViewerControl.Winforms.150.1652.0\lib\net40\Microsoft.ReportViewer.DataVisualization.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.ReportViewer.Design, Version=15.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.ReportingServices.ReportViewerControl.Winforms.150.1652.0\lib\net40\Microsoft.ReportViewer.Design.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.ReportViewer.ProcessingObjectModel, Version=15.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.ReportingServices.ReportViewerControl.Winforms.150.1652.0\lib\net40\Microsoft.ReportViewer.ProcessingObjectModel.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.ReportViewer.WinForms, Version=15.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.ReportingServices.ReportViewerControl.Winforms.150.1652.0\lib\net40\Microsoft.ReportViewer.WinForms.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.SqlServer.Types, Version=16.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.SqlServer.Types.160.1000.6\lib\net462\Microsoft.SqlServer.Types.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.VisualBasic.PowerPacks.Vs, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\VisualBasic.PowerPacks.Vs.1.0.0\lib\Microsoft.VisualBasic.PowerPacks.Vs.dll</HintPath>
+    </Reference>
+    <Reference Include="MySql.Data, Version=9.3.0.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL">
+      <HintPath>..\packages\MySql.Data.9.3.0\lib\net48\MySql.Data.dll</HintPath>
+    </Reference>
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
+    <Reference Include="System" />
+    <Reference Include="System.Buffers, Version=4.0.5.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Buffers.4.6.1\lib\net462\System.Buffers.dll</HintPath>
+    </Reference>
+    <Reference Include="System.ClientModel, Version=1.4.1.0, Culture=neutral, PublicKeyToken=92742159e12e44c8, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.ClientModel.1.4.1\lib\netstandard2.0\System.ClientModel.dll</HintPath>
+    </Reference>
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Configuration.ConfigurationManager, Version=9.0.0.5, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Configuration.ConfigurationManager.9.0.5\lib\net462\System.Configuration.ConfigurationManager.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Data" />
+    <Reference Include="System.Deployment" />
+    <Reference Include="System.Diagnostics.DiagnosticSource, Version=9.0.0.5, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Diagnostics.DiagnosticSource.9.0.5\lib\net462\System.Diagnostics.DiagnosticSource.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Formats.Asn1, Version=9.0.0.5, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Formats.Asn1.9.0.5\lib\net462\System.Formats.Asn1.dll</HintPath>
+    </Reference>
+    <Reference Include="System.IdentityModel" />
+    <Reference Include="System.IdentityModel.Tokens.Jwt, Version=8.10.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.IdentityModel.Tokens.Jwt.8.10.0\lib\net472\System.IdentityModel.Tokens.Jwt.dll</HintPath>
+    </Reference>
+    <Reference Include="System.IO.Compression" />
+    <Reference Include="System.IO.Compression.FileSystem" />
+    <Reference Include="System.IO.FileSystem.AccessControl, Version=5.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.IO.FileSystem.AccessControl.5.0.0\lib\net461\System.IO.FileSystem.AccessControl.dll</HintPath>
+    </Reference>
+    <Reference Include="System.IO.Pipelines, Version=9.0.0.5, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.IO.Pipelines.9.0.5\lib\net462\System.IO.Pipelines.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Management" />
+    <Reference Include="System.Memory, Version=4.0.5.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Memory.4.6.3\lib\net462\System.Memory.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Memory.Data, Version=9.0.0.5, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Memory.Data.9.0.5\lib\net462\System.Memory.Data.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Numerics" />
+    <Reference Include="System.Numerics.Vectors, Version=4.1.6.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Numerics.Vectors.4.6.1\lib\net462\System.Numerics.Vectors.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Runtime.CompilerServices.Unsafe, Version=6.0.3.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Runtime.CompilerServices.Unsafe.6.1.2\lib\net462\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Security" />
+    <Reference Include="System.Security.AccessControl, Version=6.0.0.1, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Security.AccessControl.6.0.1\lib\net461\System.Security.AccessControl.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Security.Cryptography.Pkcs, Version=9.0.0.5, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Security.Cryptography.Pkcs.9.0.5\lib\net462\System.Security.Cryptography.Pkcs.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Security.Cryptography.ProtectedData, Version=9.0.0.5, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Security.Cryptography.ProtectedData.9.0.5\lib\net462\System.Security.Cryptography.ProtectedData.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Security.Principal.Windows, Version=5.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Security.Principal.Windows.5.0.0\lib\net461\System.Security.Principal.Windows.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Text.Encodings.Web, Version=9.0.0.5, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Text.Encodings.Web.9.0.5\lib\net462\System.Text.Encodings.Web.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Text.Json, Version=9.0.0.5, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Text.Json.9.0.5\lib\net462\System.Text.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Threading.Tasks.Extensions, Version=4.2.4.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Threading.Tasks.Extensions.4.6.3\lib\net462\System.Threading.Tasks.Extensions.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Transactions" />
+    <Reference Include="System.Web.DataVisualization.Design" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Windows.Forms.DataVisualization" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="WindowsBase" />
+    <Reference Include="ZstdSharp, Version=0.8.5.0, Culture=neutral, PublicKeyToken=8d151af33a4ad5cf, processorArchitecture=MSIL">
+      <HintPath>..\packages\ZstdSharp.Port.0.8.5\lib\net462\ZstdSharp.dll</HintPath>
+    </Reference>
+    <Reference Include="zxing, Version=0.16.10.0, Culture=neutral, PublicKeyToken=4e88037ac681fe60, processorArchitecture=MSIL">
+      <HintPath>..\packages\ZXing.Net.0.16.10\lib\net48\zxing.dll</HintPath>
+    </Reference>
+    <Reference Include="zxing.presentation, Version=0.16.10.0, Culture=neutral, PublicKeyToken=4e88037ac681fe60, processorArchitecture=MSIL">
+      <HintPath>..\packages\ZXing.Net.0.16.10\lib\net48\zxing.presentation.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Import Include="Microsoft.VisualBasic" />
+    <Import Include="MySql.Data.MySqlClient" />
+    <Import Include="System" />
+    <Import Include="System.Collections" />
+    <Import Include="System.Collections.Generic" />
+    <Import Include="System.Data" />
+    <Import Include="System.Data.SqlClient" />
+    <Import Include="System.Drawing" />
+    <Import Include="System.Diagnostics" />
+    <Import Include="System.Windows.Forms" />
+    <Import Include="System.Linq" />
+    <Import Include="System.Windows.Forms.DataVisualization.Charting" />
+    <Import Include="System.Xml.Linq" />
+    <Import Include="System.Threading.Tasks" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="0Form\FormCekUpdate.Designer.vb">
+      <DependentUpon>FormCekUpdate.vb</DependentUpon>
+    </Compile>
+    <Compile Include="0Form\FormCekUpdate.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="0Form\FormKonfirmasi.designer.vb">
+      <DependentUpon>FormKonfirmasi.vb</DependentUpon>
+    </Compile>
+    <Compile Include="0Form\FormKonfirmasi.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="0Form\FormLoading.Designer.vb">
+      <DependentUpon>FormLoading.vb</DependentUpon>
+    </Compile>
+    <Compile Include="0Form\FormLoading.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="0Form\FormMasuk.Designer.vb">
+      <DependentUpon>FormMasuk.vb</DependentUpon>
+    </Compile>
+    <Compile Include="0Form\FormMasuk.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="0Form\FormPilihanMasuk.Designer.vb">
+      <DependentUpon>FormPilihanMasuk.vb</DependentUpon>
+    </Compile>
+    <Compile Include="0Form\FormPilihanMasuk.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="0Form\FormUtama.designer.vb">
+      <DependentUpon>FormUtama.vb</DependentUpon>
+    </Compile>
+    <Compile Include="0Form\FormUtama.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="0Form\Notifikasi.designer.vb">
+      <DependentUpon>Notifikasi.vb</DependentUpon>
+    </Compile>
+    <Compile Include="0Form\Notifikasi.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="0Form\NotifikasiJatuhTempo.designer.vb">
+      <DependentUpon>NotifikasiJatuhTempo.vb</DependentUpon>
+    </Compile>
+    <Compile Include="0Form\NotifikasiJatuhTempo.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="1Master\FormArmada.Designer.vb">
+      <DependentUpon>FormArmada.vb</DependentUpon>
+    </Compile>
+    <Compile Include="1Master\FormArmada.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="1Master\FormBarang.Designer.vb">
+      <DependentUpon>FormBarang.vb</DependentUpon>
+    </Compile>
+    <Compile Include="1Master\FormBarang.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="1Master\FormCetakBarcode.Designer.vb">
+      <DependentUpon>FormCetakBarcode.vb</DependentUpon>
+    </Compile>
+    <Compile Include="1Master\FormCetakBarcode.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="1Master\FormCetakLabel.Designer.vb">
+      <DependentUpon>FormCetakLabel.vb</DependentUpon>
+    </Compile>
+    <Compile Include="1Master\FormCetakLabel.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="1Master\FormCompany.designer.vb">
+      <DependentUpon>FormCompany.vb</DependentUpon>
+    </Compile>
+    <Compile Include="1Master\FormCompany.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="1Master\FormFlash.Designer.vb">
+      <DependentUpon>FormFlash.vb</DependentUpon>
+    </Compile>
+    <Compile Include="1Master\FormFlash.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="1Master\FormHakUser.Designer.vb">
+      <DependentUpon>FormHakUser.vb</DependentUpon>
+    </Compile>
+    <Compile Include="1Master\FormHakUser.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="1Master\FormKaryawan.Designer.vb">
+      <DependentUpon>FormKaryawan.vb</DependentUpon>
+    </Compile>
+    <Compile Include="1Master\FormKaryawan.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="1Master\FormLogin.designer.vb">
+      <DependentUpon>FormLogin.vb</DependentUpon>
+    </Compile>
+    <Compile Include="1Master\FormLogin.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="1Master\FormTabelReferensi.designer.vb">
+      <DependentUpon>FormTabelReferensi.vb</DependentUpon>
+    </Compile>
+    <Compile Include="1Master\FormTabelReferensi.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="1Master\FormUser.Designer.vb">
+      <DependentUpon>FormUser.vb</DependentUpon>
+    </Compile>
+    <Compile Include="1Master\FormUser.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="1Master\ModulHakAkses.vb" />
+    <Compile Include="1Master\TambahBarang.designer.vb">
+      <DependentUpon>TambahBarang.vb</DependentUpon>
+    </Compile>
+    <Compile Include="1Master\TambahBarang.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="1Master\TambahKategori.Designer.vb">
+      <DependentUpon>TambahKategori.vb</DependentUpon>
+    </Compile>
+    <Compile Include="1Master\TambahKategori.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="1Master\TambahPelanggan.designer.vb">
+      <DependentUpon>TambahPelanggan.vb</DependentUpon>
+    </Compile>
+    <Compile Include="1Master\TambahPelanggan.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="1Master\TambahSatuan.Designer.vb">
+      <DependentUpon>TambahSatuan.vb</DependentUpon>
+    </Compile>
+    <Compile Include="1Master\TambahSatuan.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="1Master\TambahSupliyer.Designer.vb">
+      <DependentUpon>TambahSupliyer.vb</DependentUpon>
+    </Compile>
+    <Compile Include="1Master\TambahSupliyer.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="2TransDev\FluentDesignFormUtama.Designer.vb">
+      <DependentUpon>FluentDesignFormUtama.vb</DependentUpon>
+    </Compile>
+    <Compile Include="2TransDev\FluentDesignFormUtama.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="2TransDev\RibbonFormMenu.Designer.vb">
+      <DependentUpon>RibbonFormMenu.vb</DependentUpon>
+    </Compile>
+    <Compile Include="2TransDev\RibbonFormMenu.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="2TransDev\WaitFormLoad.Designer.vb">
+      <DependentUpon>WaitFormLoad.vb</DependentUpon>
+    </Compile>
+    <Compile Include="2TransDev\WaitFormLoad.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="2TransDev\XtraFormJual.Designer.vb">
+      <DependentUpon>XtraFormJual.vb</DependentUpon>
+    </Compile>
+    <Compile Include="2TransDev\XtraFormJual.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="2TransDev\XtraUserControl1.Designer.vb">
+      <DependentUpon>XtraUserControl1.vb</DependentUpon>
+    </Compile>
+    <Compile Include="2TransDev\XtraUserControl1.vb">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="2Trans\CariBarang.designer.vb">
+      <DependentUpon>CariBarang.vb</DependentUpon>
+    </Compile>
+    <Compile Include="2Trans\CariBarang.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="2Trans\FormBayarHutang.Designer.vb">
+      <DependentUpon>FormBayarHutang.vb</DependentUpon>
+    </Compile>
+    <Compile Include="2Trans\FormBayarHutang.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="2Trans\FormBayarPiutang.Designer.vb">
+      <DependentUpon>FormBayarPiutang.vb</DependentUpon>
+    </Compile>
+    <Compile Include="2Trans\FormBayarPiutang.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="2Trans\FormPembelian.Designer.vb">
+      <DependentUpon>FormPembelian.vb</DependentUpon>
+    </Compile>
+    <Compile Include="2Trans\FormPembelian.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="2Trans\FormPenjualan.Designer.vb">
+      <DependentUpon>FormPenjualan.vb</DependentUpon>
+    </Compile>
+    <Compile Include="2Trans\FormPenjualan.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="2Trans\FormPenjualanDitahan.Designer.vb">
+      <DependentUpon>FormPenjualanDitahan.vb</DependentUpon>
+    </Compile>
+    <Compile Include="2Trans\FormPenjualanDitahan.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="2Trans\FormReturBeli.Designer.vb">
+      <DependentUpon>FormReturBeli.vb</DependentUpon>
+    </Compile>
+    <Compile Include="2Trans\FormReturBeli.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="2Trans\FormReturPembelian.designer.vb">
+      <DependentUpon>FormReturPembelian.vb</DependentUpon>
+    </Compile>
+    <Compile Include="2Trans\FormReturPembelian.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="2Trans\FormReturPenjualan.designer.vb">
+      <DependentUpon>FormReturPenjualan.vb</DependentUpon>
+    </Compile>
+    <Compile Include="2Trans\FormReturPenjualan.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="2Trans\FormStokOpname.Designer.vb">
+      <DependentUpon>FormStokOpname.vb</DependentUpon>
+    </Compile>
+    <Compile Include="2Trans\FormStokOpname.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="2Trans\FormStokOpnameBahan.Designer.vb">
+      <DependentUpon>FormStokOpnameBahan.vb</DependentUpon>
+    </Compile>
+    <Compile Include="2Trans\FormStokOpnameBahan.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="2Trans\FormSuratJalan.Designer.vb">
+      <DependentUpon>FormSuratJalan.vb</DependentUpon>
+    </Compile>
+    <Compile Include="2Trans\FormSuratJalan.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="2Trans\FormTransferBarang.Designer.vb">
+      <DependentUpon>FormTransferBarang.vb</DependentUpon>
+    </Compile>
+    <Compile Include="2Trans\FormTransferBarang.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="2Trans\FormTransferStok.Designer.vb">
+      <DependentUpon>FormTransferStok.vb</DependentUpon>
+    </Compile>
+    <Compile Include="2Trans\FormTransferStok.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="2Trans\FormTukarBarang.Designer.vb">
+      <DependentUpon>FormTukarBarang.vb</DependentUpon>
+    </Compile>
+    <Compile Include="2Trans\FormTukarBarang.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="2Trans\NotaPembelian.Designer.vb">
+      <DependentUpon>NotaPembelian.vb</DependentUpon>
+    </Compile>
+    <Compile Include="2Trans\NotaPembelian.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="2Trans\NotaStokOpname.Designer.vb">
+      <DependentUpon>NotaStokOpname.vb</DependentUpon>
+    </Compile>
+    <Compile Include="2Trans\NotaStokOpname.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="2Trans\NotaSuratJalan.Designer.vb">
+      <DependentUpon>NotaSuratJalan.vb</DependentUpon>
+    </Compile>
+    <Compile Include="2Trans\NotaSuratJalan.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="2Trans\NotaTransferBarang.Designer.vb">
+      <DependentUpon>NotaTransferBarang.vb</DependentUpon>
+    </Compile>
+    <Compile Include="2Trans\NotaTransferBarang.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="3Jurnal\FormKeuangan.Designer.vb">
+      <DependentUpon>FormKeuangan.vb</DependentUpon>
+    </Compile>
+    <Compile Include="3Jurnal\FormKeuangan.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="4Gaji\FormBon.Designer.vb">
+      <DependentUpon>FormBon.vb</DependentUpon>
+    </Compile>
+    <Compile Include="4Gaji\FormBon.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="4Gaji\FormGaji.Designer.vb">
+      <DependentUpon>FormGaji.vb</DependentUpon>
+    </Compile>
+    <Compile Include="4Gaji\FormGaji.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="4Gaji\FormLapBon.Designer.vb">
+      <DependentUpon>FormLapBon.vb</DependentUpon>
+    </Compile>
+    <Compile Include="4Gaji\FormLapBon.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="4Gaji\FormLapBonPerorang.Designer.vb">
+      <DependentUpon>FormLapBonPerorang.vb</DependentUpon>
+    </Compile>
+    <Compile Include="4Gaji\FormLapBonPerorang.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="4Gaji\FormLaporanGaji.Designer.vb">
+      <DependentUpon>FormLaporanGaji.vb</DependentUpon>
+    </Compile>
+    <Compile Include="4Gaji\FormLaporanGaji.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="4Gaji\FormMasterGaji.Designer.vb">
+      <DependentUpon>FormMasterGaji.vb</DependentUpon>
+    </Compile>
+    <Compile Include="4Gaji\FormMasterGaji.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="5Lap\FormGrafikLaba.Designer.vb">
+      <DependentUpon>FormGrafikLaba.vb</DependentUpon>
+    </Compile>
+    <Compile Include="5Lap\FormGrafikLaba.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="5Lap\FormLapBarang.Designer.vb">
+      <DependentUpon>FormLapBarang.vb</DependentUpon>
+    </Compile>
+    <Compile Include="5Lap\FormLapBarang.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="5Lap\FormLapBB.Designer.vb">
+      <DependentUpon>FormLapBB.vb</DependentUpon>
+    </Compile>
+    <Compile Include="5Lap\FormLapBB.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="5Lap\FormLapHutang.designer.vb">
+      <DependentUpon>FormLapHutang.vb</DependentUpon>
+    </Compile>
+    <Compile Include="5Lap\FormLapHutang.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="5Lap\FormLapJurnal.Designer.vb">
+      <DependentUpon>FormLapJurnal.vb</DependentUpon>
+    </Compile>
+    <Compile Include="5Lap\FormLapJurnal.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="5Lap\FormLapkAS.designer.vb">
+      <DependentUpon>FormLapkAS.vb</DependentUpon>
+    </Compile>
+    <Compile Include="5Lap\FormLapkAS.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="5Lap\FormLapMutasiBarang.Designer.vb">
+      <DependentUpon>FormLapMutasiBarang.vb</DependentUpon>
+    </Compile>
+    <Compile Include="5Lap\FormLapMutasiBarang.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="5Lap\FormLapNeracaLR.Designer.vb">
+      <DependentUpon>FormLapNeracaLR.vb</DependentUpon>
+    </Compile>
+    <Compile Include="5Lap\FormLapNeracaLR.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="5Lap\FormLapPembelian.Designer.vb">
+      <DependentUpon>FormLapPembelian.vb</DependentUpon>
+    </Compile>
+    <Compile Include="5Lap\FormLapPembelian.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="5Lap\FormLapPenjualanBaru.Designer.vb">
+      <DependentUpon>FormLapPenjualanBaru.vb</DependentUpon>
+    </Compile>
+    <Compile Include="5Lap\FormLapPenjualanBaru.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="5Lap\FormLapPenjualanSales.Designer.vb">
+      <DependentUpon>FormLapPenjualanSales.vb</DependentUpon>
+    </Compile>
+    <Compile Include="5Lap\FormLapPenjualanSales.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="5Lap\FormLapPiutang.designer.vb">
+      <DependentUpon>FormLapPiutang.vb</DependentUpon>
+    </Compile>
+    <Compile Include="5Lap\FormLapPiutang.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="5Lap\FormLapReturBeli.Designer.vb">
+      <DependentUpon>FormLapReturBeli.vb</DependentUpon>
+    </Compile>
+    <Compile Include="5Lap\FormLapReturBeli.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="5Lap\FormLapReturJual.Designer.vb">
+      <DependentUpon>FormLapReturJual.vb</DependentUpon>
+    </Compile>
+    <Compile Include="5Lap\FormLapReturJual.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="5Lap\FormLapSaldo.Designer.vb">
+      <DependentUpon>FormLapSaldo.vb</DependentUpon>
+    </Compile>
+    <Compile Include="5Lap\FormLapSaldo.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="5Lap\FormLapTransferBarang.Designer.vb">
+      <DependentUpon>FormLapTransferBarang.vb</DependentUpon>
+    </Compile>
+    <Compile Include="5Lap\FormLapTransferBarang.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="5Lap\FormLapTransferStok.Designer.vb">
+      <DependentUpon>FormLapTransferStok.vb</DependentUpon>
+    </Compile>
+    <Compile Include="5Lap\FormLapTransferStok.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="5Lap\FormNotifHutang.Designer.vb">
+      <DependentUpon>FormNotifHutang.vb</DependentUpon>
+    </Compile>
+    <Compile Include="5Lap\FormNotifHutang.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="5Lap\FormNotifPiutang.Designer.vb">
+      <DependentUpon>FormNotifPiutang.vb</DependentUpon>
+    </Compile>
+    <Compile Include="5Lap\FormNotifPiutang.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="5Lap\FormPenjualanPPn.Designer.vb">
+      <DependentUpon>FormPenjualanPPn.vb</DependentUpon>
+    </Compile>
+    <Compile Include="5Lap\FormPenjualanPPn.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="5Lap\FormStokBarang.designer.vb">
+      <DependentUpon>FormStokBarang.vb</DependentUpon>
+    </Compile>
+    <Compile Include="5Lap\FormStokBarang.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="6Print\ModuleCetakJual.vb" />
+    <Compile Include="6Print\ModuleKonfigurasi.vb" />
+    <Compile Include="6Print\PrinterSuratJalan.Designer.vb">
+      <DependentUpon>PrinterSuratJalan.vb</DependentUpon>
+    </Compile>
+    <Compile Include="6Print\PrinterSuratJalan.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="6Print\PrintJual.Designer.vb">
+      <DependentUpon>PrintJual.vb</DependentUpon>
+    </Compile>
+    <Compile Include="6Print\PrintJual.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="6Print\PrintReturJual.Designer.vb">
+      <DependentUpon>PrintReturJual.vb</DependentUpon>
+    </Compile>
+    <Compile Include="6Print\PrintReturJual.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="6Print\PrintTransferBarang.Designer.vb">
+      <DependentUpon>PrintTransferBarang.vb</DependentUpon>
+    </Compile>
+    <Compile Include="6Print\PrintTransferBarang.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="7Reg\ACTIVATION_FORM.designer.vb">
+      <DependentUpon>ACTIVATION_FORM.vb</DependentUpon>
+    </Compile>
+    <Compile Include="7Reg\ACTIVATION_FORM.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="7Reg\KeyGenerator.vb" />
+    <Compile Include="7Reg\ModuleReg.vb" />
+    <Compile Include="7Reg\SecurityManager.vb" />
+    <Compile Include="8Uty\FormDefauldPrinter.designer.vb">
+      <DependentUpon>FormDefauldPrinter.vb</DependentUpon>
+    </Compile>
+    <Compile Include="8Uty\FormDefauldPrinter.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="8Uty\FormHistory.Designer.vb">
+      <DependentUpon>FormHistory.vb</DependentUpon>
+    </Compile>
+    <Compile Include="8Uty\FormHistory.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="8Uty\Formipkomputer.designer.vb">
+      <DependentUpon>Formipkomputer.vb</DependentUpon>
+    </Compile>
+    <Compile Include="8Uty\Formipkomputer.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="8Uty\FormMacAddres.Designer.vb">
+      <DependentUpon>FormMacAddres.vb</DependentUpon>
+    </Compile>
+    <Compile Include="8Uty\FormMacAddres.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="8Uty\FormPerbaikanDatabase.Designer.vb">
+      <DependentUpon>FormPerbaikanDatabase.vb</DependentUpon>
+    </Compile>
+    <Compile Include="8Uty\FormPerbaikanDatabase.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="8Uty\FormQuery.Designer.vb">
+      <DependentUpon>FormQuery.vb</DependentUpon>
+    </Compile>
+    <Compile Include="8Uty\FormQuery.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="8Uty\SettingDatabase.Designer.vb">
+      <DependentUpon>SettingDatabase.vb</DependentUpon>
+    </Compile>
+    <Compile Include="8Uty\SettingDatabase.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="BilanganTerbilang.vb" />
+    <Compile Include="DatabaseModule.vb" />
+    <Compile Include="DatabaseRestore.vb" />
+    <Compile Include="DataSetKL1.Designer.vb">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>DataSetKL.xsd</DependentUpon>
+    </Compile>
+    <Compile Include="ModuleEncrypt.vb" />
+    <Compile Include="My Project\AssemblyInfo.vb" />
+    <Compile Include="My Project\Resources.Designer.vb">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="My Project\Settings.Designer.vb">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+    <Compile Include="MySqlBackup.vb" />
+    <Compile Include="Settings.vb" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="0Form\FormCekUpdate.resx">
+      <DependentUpon>FormCekUpdate.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="0Form\FormKonfirmasi.resx">
+      <DependentUpon>FormKonfirmasi.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="0Form\FormLoading.resx">
+      <DependentUpon>FormLoading.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="0Form\FormMasuk.resx">
+      <DependentUpon>FormMasuk.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="0Form\FormPilihanMasuk.resx">
+      <DependentUpon>FormPilihanMasuk.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="0Form\FormUtama.resx">
+      <DependentUpon>FormUtama.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="0Form\Notifikasi.resx">
+      <DependentUpon>Notifikasi.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="0Form\NotifikasiJatuhTempo.resx">
+      <DependentUpon>NotifikasiJatuhTempo.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="1Master\FormArmada.resx">
+      <DependentUpon>FormArmada.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="1Master\FormBarang.resx">
+      <DependentUpon>FormBarang.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="1Master\FormCetakBarcode.resx">
+      <DependentUpon>FormCetakBarcode.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="1Master\FormCetakLabel.resx">
+      <DependentUpon>FormCetakLabel.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="1Master\FormCompany.resx">
+      <DependentUpon>FormCompany.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="1Master\FormFlash.resx">
+      <DependentUpon>FormFlash.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="1Master\FormHakUser.resx">
+      <DependentUpon>FormHakUser.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="1Master\FormKaryawan.resx">
+      <DependentUpon>FormKaryawan.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="1Master\FormLogin.resx">
+      <DependentUpon>FormLogin.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="1Master\FormTabelReferensi.resx">
+      <DependentUpon>FormTabelReferensi.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="1Master\FormUser.resx">
+      <DependentUpon>FormUser.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="1Master\TambahBarang.resx">
+      <DependentUpon>TambahBarang.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="1Master\TambahKategori.resx">
+      <DependentUpon>TambahKategori.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="1Master\TambahPelanggan.resx">
+      <DependentUpon>TambahPelanggan.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="1Master\TambahSatuan.resx">
+      <DependentUpon>TambahSatuan.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="1Master\TambahSupliyer.resx">
+      <DependentUpon>TambahSupliyer.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="2TransDev\FluentDesignFormUtama.resx">
+      <DependentUpon>FluentDesignFormUtama.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="2TransDev\RibbonFormMenu.resx">
+      <DependentUpon>RibbonFormMenu.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="2TransDev\WaitFormLoad.resx">
+      <DependentUpon>WaitFormLoad.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="2TransDev\XtraFormJual.resx">
+      <DependentUpon>XtraFormJual.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="2TransDev\XtraUserControl1.resx">
+      <DependentUpon>XtraUserControl1.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="2Trans\CariBarang.resx">
+      <DependentUpon>CariBarang.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="2Trans\FormBayarHutang.resx">
+      <DependentUpon>FormBayarHutang.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="2Trans\FormBayarPiutang.resx">
+      <DependentUpon>FormBayarPiutang.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="2Trans\FormPembelian.resx">
+      <DependentUpon>FormPembelian.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="2Trans\FormPenjualan.resx">
+      <DependentUpon>FormPenjualan.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="2Trans\FormPenjualanDitahan.resx">
+      <DependentUpon>FormPenjualanDitahan.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="2Trans\FormReturBeli.resx">
+      <DependentUpon>FormReturBeli.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="2Trans\FormReturPembelian.resx">
+      <DependentUpon>FormReturPembelian.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="2Trans\FormReturPenjualan.resx">
+      <DependentUpon>FormReturPenjualan.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="2Trans\FormStokOpname.resx">
+      <DependentUpon>FormStokOpname.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="2Trans\FormStokOpnameBahan.resx">
+      <DependentUpon>FormStokOpnameBahan.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="2Trans\FormSuratJalan.resx">
+      <DependentUpon>FormSuratJalan.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="2Trans\FormTransferBarang.resx">
+      <DependentUpon>FormTransferBarang.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="2Trans\FormTransferStok.resx">
+      <DependentUpon>FormTransferStok.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="2Trans\FormTukarBarang.resx">
+      <DependentUpon>FormTukarBarang.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="2Trans\NotaPembelian.rdlc" />
+    <EmbeddedResource Include="2Trans\NotaPembelian.resx">
+      <DependentUpon>NotaPembelian.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="2Trans\NotaStokOpname.rdlc" />
+    <EmbeddedResource Include="2Trans\NotaStokOpname.resx">
+      <DependentUpon>NotaStokOpname.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="2Trans\NotaSuratJalan.resx">
+      <DependentUpon>NotaSuratJalan.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="2Trans\NotaTransferBarang.resx">
+      <DependentUpon>NotaTransferBarang.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="2Trans\ReportSuratJalan.rdlc" />
+    <EmbeddedResource Include="2Trans\ReportTransferBarang.rdlc" />
+    <EmbeddedResource Include="2Trans\StokOpnamBahan.rdlc" />
+    <EmbeddedResource Include="3Jurnal\FormKeuangan.resx">
+      <DependentUpon>FormKeuangan.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="4Gaji\FormBon.resx">
+      <DependentUpon>FormBon.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="4Gaji\FormGaji.resx">
+      <DependentUpon>FormGaji.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="4Gaji\FormLapBon.resx">
+      <DependentUpon>FormLapBon.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="4Gaji\FormLapBonPerorang.resx">
+      <DependentUpon>FormLapBonPerorang.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="4Gaji\FormLaporanGaji.resx">
+      <DependentUpon>FormLaporanGaji.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="4Gaji\FormMasterGaji.resx">
+      <DependentUpon>FormMasterGaji.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="4Gaji\ReportBon.rdlc" />
+    <EmbeddedResource Include="4Gaji\ReportBonPerorang.rdlc" />
+    <EmbeddedResource Include="4Gaji\ReportGaji.rdlc" />
+    <EmbeddedResource Include="4Gaji\ReportLapGaji.rdlc" />
+    <EmbeddedResource Include="5Lap\FormGrafikLaba.resx">
+      <DependentUpon>FormGrafikLaba.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="5Lap\FormLapBarang.resx">
+      <DependentUpon>FormLapBarang.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="5Lap\FormLapBB.resx">
+      <DependentUpon>FormLapBB.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="5Lap\FormLapHutang.resx">
+      <DependentUpon>FormLapHutang.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="5Lap\FormLapJurnal.resx">
+      <DependentUpon>FormLapJurnal.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="5Lap\FormLapkAS.resx">
+      <DependentUpon>FormLapkAS.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="5Lap\FormLapMutasiBarang.resx">
+      <DependentUpon>FormLapMutasiBarang.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="5Lap\FormLapNeracaLR.resx">
+      <DependentUpon>FormLapNeracaLR.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="5Lap\FormLapPembelian.resx">
+      <DependentUpon>FormLapPembelian.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="5Lap\FormLapPenjualanBaru.resx">
+      <DependentUpon>FormLapPenjualanBaru.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="5Lap\FormLapPenjualanSales.resx">
+      <DependentUpon>FormLapPenjualanSales.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="5Lap\FormLapPiutang.resx">
+      <DependentUpon>FormLapPiutang.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="5Lap\FormLapReturBeli.resx">
+      <DependentUpon>FormLapReturBeli.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="5Lap\FormLapReturJual.resx">
+      <DependentUpon>FormLapReturJual.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="5Lap\FormLapSaldo.resx">
+      <DependentUpon>FormLapSaldo.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="5Lap\FormLapTransferBarang.resx">
+      <DependentUpon>FormLapTransferBarang.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="5Lap\FormLapTransferStok.resx">
+      <DependentUpon>FormLapTransferStok.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="5Lap\FormNotifHutang.resx">
+      <DependentUpon>FormNotifHutang.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="5Lap\FormNotifPiutang.resx">
+      <DependentUpon>FormNotifPiutang.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="5Lap\FormPenjualanPPn.resx">
+      <DependentUpon>FormPenjualanPPn.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="5Lap\FormStokBarang.resx">
+      <DependentUpon>FormStokBarang.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="5Lap\NotifReportHutang.rdlc" />
+    <EmbeddedResource Include="5Lap\NotifReportPiutang.rdlc" />
+    <EmbeddedResource Include="5Lap\ReportBelanja.rdlc" />
+    <EmbeddedResource Include="5Lap\ReportBeliBarang.rdlc" />
+    <EmbeddedResource Include="5Lap\ReportBeliDetail.rdlc" />
+    <EmbeddedResource Include="5Lap\ReportBukuBesar.rdlc" />
+    <EmbeddedResource Include="5Lap\ReportHutang.rdlc" />
+    <EmbeddedResource Include="5Lap\ReportJualBarang.rdlc" />
+    <EmbeddedResource Include="5Lap\ReportJualLengkap.rdlc" />
+    <EmbeddedResource Include="5Lap\ReportJurnal.rdlc" />
+    <EmbeddedResource Include="5Lap\ReportKas.rdlc" />
+    <EmbeddedResource Include="5Lap\ReportLR.rdlc" />
+    <EmbeddedResource Include="5Lap\ReportMutasiBarang.rdlc" />
+    <EmbeddedResource Include="5Lap\ReportNeracaLajur.rdlc" />
+    <EmbeddedResource Include="5Lap\ReportNRC.rdlc" />
+    <EmbeddedResource Include="5Lap\ReportPembelian.rdlc" />
+    <EmbeddedResource Include="5Lap\ReportPembelianHutang.rdlc" />
+    <EmbeddedResource Include="5Lap\ReportPenjualan.rdlc" />
+    <EmbeddedResource Include="5Lap\ReportPenjualanDetail.rdlc" />
+    <EmbeddedResource Include="5Lap\ReportPenjualanHutang.rdlc" />
+    <EmbeddedResource Include="5Lap\ReportPenjualanSales.rdlc" />
+    <EmbeddedResource Include="5Lap\ReportPiutang.rdlc" />
+    <EmbeddedResource Include="5Lap\ReportReturBeliBarang.rdlc" />
+    <EmbeddedResource Include="5Lap\ReportReturBeliDetail.rdlc" />
+    <EmbeddedResource Include="5Lap\ReportReturJualBarang.rdlc" />
+    <EmbeddedResource Include="5Lap\ReportReturJualDetail.rdlc" />
+    <EmbeddedResource Include="5Lap\ReportReturPembelian.rdlc" />
+    <EmbeddedResource Include="5Lap\ReportReturPenjualan.rdlc" />
+    <EmbeddedResource Include="5Lap\ReportStokBarang.rdlc" />
+    <EmbeddedResource Include="5Lap\ReportTFBarang.rdlc" />
+    <EmbeddedResource Include="5Lap\ReportTFBarangDetail.rdlc" />
+    <EmbeddedResource Include="5Lap\ReportTransferStok.rdlc" />
+    <EmbeddedResource Include="6Print\PrinterSuratJalan.resx">
+      <DependentUpon>PrinterSuratJalan.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="6Print\PrintJual.resx">
+      <DependentUpon>PrintJual.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="6Print\PrintReturJual.resx">
+      <DependentUpon>PrintReturJual.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="6Print\PrintTransferBarang.resx">
+      <DependentUpon>PrintTransferBarang.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="6Print\ReportCetakJual.rdlc" />
+    <EmbeddedResource Include="7Reg\ACTIVATION_FORM.resx">
+      <DependentUpon>ACTIVATION_FORM.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="8Uty\FormDefauldPrinter.resx">
+      <DependentUpon>FormDefauldPrinter.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="8Uty\FormHistory.resx">
+      <DependentUpon>FormHistory.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="8Uty\Formipkomputer.resx">
+      <DependentUpon>Formipkomputer.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="8Uty\FormMacAddres.resx">
+      <DependentUpon>FormMacAddres.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="8Uty\FormPerbaikanDatabase.resx">
+      <DependentUpon>FormPerbaikanDatabase.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="8Uty\FormQuery.resx">
+      <DependentUpon>FormQuery.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="8Uty\ReportHistory.rdlc" />
+    <EmbeddedResource Include="8Uty\SettingDatabase.resx">
+      <DependentUpon>SettingDatabase.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="My Project\licenses.licx" />
+    <EmbeddedResource Include="My Project\Resources.resx">
+      <Generator>VbMyResourcesResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.vb</LastGenOutput>
+      <CustomToolNamespace>My.Resources</CustomToolNamespace>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="AppKasir_TemporaryKey.pfx" />
+    <None Include="DataSetKL.xsc">
+      <DependentUpon>DataSetKL.xsd</DependentUpon>
+    </None>
+    <None Include="DataSetKL.xsd">
+      <Generator>MSDataSetGenerator</Generator>
+      <LastGenOutput>DataSetKL1.Designer.vb</LastGenOutput>
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="DataSetKL.xss">
+      <DependentUpon>DataSetKL.xsd</DependentUpon>
+    </None>
+    <None Include="My Project\app.manifest" />
+    <None Include="My Project\Application.myapp">
+      <Generator>MyApplicationCodeGenerator</Generator>
+    </None>
+    <None Include="My Project\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <CustomToolNamespace>My</CustomToolNamespace>
+      <LastGenOutput>Settings.Designer.vb</LastGenOutput>
+    </None>
+    <None Include="App.config" />
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Kasir lancar.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include=".NETFramework,Version=v4.8">
+      <Visible>False</Visible>
+      <ProductName>Microsoft .NET Framework 4.8 %28x86 and x64%29</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <COMReference Include="stdole">
+      <Guid>{00020430-0000-0000-C000-000000000046}</Guid>
+      <VersionMajor>2</VersionMajor>
+      <VersionMinor>0</VersionMinor>
+      <Lcid>0</Lcid>
+      <WrapperTool>primary</WrapperTool>
+      <Isolated>False</Isolated>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </COMReference>
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.VisualBasic.targets" />
+  <Import Project="..\packages\Microsoft.Data.SqlClient.SNI.6.0.2\build\net462\Microsoft.Data.SqlClient.SNI.targets" Condition="Exists('..\packages\Microsoft.Data.SqlClient.SNI.6.0.2\build\net462\Microsoft.Data.SqlClient.SNI.targets')" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\packages\Microsoft.Data.SqlClient.SNI.6.0.2\build\net462\Microsoft.Data.SqlClient.SNI.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.Data.SqlClient.SNI.6.0.2\build\net462\Microsoft.Data.SqlClient.SNI.targets'))" />
+    <Error Condition="!Exists('..\packages\Microsoft.SqlServer.Types.160.1000.6\build\net462\Microsoft.SqlServer.Types.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.SqlServer.Types.160.1000.6\build\net462\Microsoft.SqlServer.Types.props'))" />
+    <Error Condition="!Exists('..\packages\System.ValueTuple.4.6.1\build\net471\System.ValueTuple.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\System.ValueTuple.4.6.1\build\net471\System.ValueTuple.targets'))" />
+  </Target>
+  <Import Project="..\packages\System.ValueTuple.4.6.1\build\net471\System.ValueTuple.targets" Condition="Exists('..\packages\System.ValueTuple.4.6.1\build\net471\System.ValueTuple.targets')" />
+</Project>
