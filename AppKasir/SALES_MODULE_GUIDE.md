@@ -630,6 +630,349 @@ Structure:
 
 ## <a name="functional-flows"></a>?? FUNCTIONAL FLOWS
 
+### FLOW 0: Display Transaction List (FormUtama - Datapenjualan Method)
+
+```
+[FormUtama - BtnPenjualan Click]
+    ?
+[BtnPenjualan_Click]
+    ?? Set TxtTransaksi = "Penjualan"
+    ?? Set DTPTransaksi.Value = Now
+    ?? Make GBTransaksi visible
+    ?? Call Datapenjualan()
+    ?? Ready to display list
+    ?
+[Datapenjualan] - MAIN LIST DISPLAY LOGIC
+    ?
+    ?? Step 1: Get Filter Parameters
+    ?  ?? searchTextfilter = "%" & TxtFilter.Text & "%"
+    ?  ?? tanggalAwal = DTPTransaksi.Value.Date
+    ?  ?? tanggalAkhir = DTPTransaksi.Value.Date.AddDays(1).AddTicks(-1)
+    ?  ?  ?? (00:00:00 to 23:59:59 same day)
+    ?  ?? Ready to query
+    ?
+    ?? Step 2: Get Summary Count & Total
+    ?  ?
+    ?  ?? SQL: "SELECT COUNT(*) AS RECORD, SUM(GRAND_TOTAL_STL_PAJAK) AS TOTAL 
+    ?           FROM penjualan 
+    ?           WHERE TGL_TRANSAKSI >= @tanggalAwal 
+    ?           AND TGL_TRANSAKSI <= @tanggalAkhir 
+    ?           AND ID_PENJUALAN LIKE @SearchText"
+    ?     ?
+    ?     ?? Execute query
+    ?     ?? Read result:
+    ?     ?  ?? jumlahRecord = count of transactions
+    ?     ?  ?? totalBelanja = sum of all totals
+    ?     ?
+    ?     ?? Display: LblRangkuman.Text = 
+    ?         "Jumlah Record: 5" & vbCrLf & "Total Penjualan: Rp. 2.150.000"
+    ?
+    ?? Step 3: Clear Previous Data
+    ?  ?? DGVTransaksi.Columns.Clear()
+    ?  ?? DGVDetail.Columns.Clear()
+    ?  ?? Ready for new data
+    ?
+    ?? Step 4: Get Main Transaction Data (FULL TABLE)
+    ?  ?
+    ?  ?? SQL: "SELECT 
+    ?           ID_PENJUALAN,           -- Column 0
+    ?           NAMA_PELANGGAN,         -- Column 1
+    ?           LOKASIBARANG,           -- Column 2
+    ?           JENIS_PEMBAYARAN,       -- Column 3
+    ?           GRAND_TOTAL_STL_PAJAK,  -- Column 4
+    ?           BAYAR,                  -- Column 5
+    ?           KEMBALI,                -- Column 6
+    ?           NILAI_RETUR,            -- Column 7
+    ?           SISA_TAGIHAN,           -- Column 8
+    ?           STATUS_TRANSAKSI,       -- Column 9
+    ?           ID_USER                 -- Column 10
+    ?       FROM penjualan 
+    ?       WHERE TGL_TRANSAKSI >= @tanggalAwal 
+    ?       AND TGL_TRANSAKSI <= @tanggalAkhir 
+    ?       AND ID_PENJUALAN LIKE @SearchText 
+    ?       ORDER BY ID_PENJUALAN ASC"
+    ?     ?
+    ?     ?? Use MySqlDataAdapter to fill DataSet
+    ?     ?? DGVTransaksi.DataSource = ds.Tables("penjualan")
+    ?     ?? Grid now populated
+    ?
+    ?? Step 5: Format Grid Columns
+    ?  ?? Set column headers:
+    ?  ?  ?? [0] "NOTA"          (Transaction ID)
+    ?  ?  ?? [1] "PELANGGAN"     (Customer name)
+    ?  ?  ?? [2] "LOKASI"        (TOKO/GUDANG)
+    ?  ?  ?? [3] "R DEBET"       (Payment method)
+    ?  ?  ?? [4] "TOTAL"         (Amount)
+    ?  ?  ?? [5] "BAYAR"         (Paid)
+    ?  ?  ?? [6] "KEMBALI"       (Change)
+    ?  ?  ?? [7] "RETUR"         (Return)
+    ?  ?  ?? [8] "PIUTANG"       (Debt)
+    ?  ?  ?? [9] "STATUS"        (Status)
+    ?  ?  ?? [10] "USER"         (User ID)
+    ?  ?
+    ?  ?? Set currency format for columns:
+    ?  ?  ?? Column 4: GRAND_TOTAL_STL_PAJAK ? "#,0.##"
+    ?  ?  ?? Column 5: BAYAR ? "#,0.##"
+    ?  ?  ?? Column 6: KEMBALI ? "#,0.##"
+    ?  ?  ?? Column 7: NILAI_RETUR ? "#,0.##"
+    ?  ?  ?? Column 8: SISA_TAGIHAN ? "#,0.##"
+    ?  ?
+    ?  ?? Set alignment to MiddleRight for numbers
+    ?  ?? Apply grid styling:
+    ?  ?  ?? AllowUserToAddRows = False
+    ?  ?  ?? AllowUserToDeleteRows = False
+    ?  ?  ?? AllowUserToOrderColumns = False
+    ?  ?  ?? AllowUserToResizeColumns = False
+    ?  ?  ?? AllowUserToResizeRows = False
+    ?  ?  ?? EnableHeadersVisualStyles = False
+    ?  ?  ?? ColumnHeadersDefaultCellStyle.BackColor = Gray
+    ?  ?  ?? AlternatingRowsDefaultCellStyle.BackColor = LightGray
+    ?  ?  ?? BorderStyle = FixedSingle
+    ?  ?  ?? GridColor = Silver
+    ?  ?
+    ?  ?? Grid formatting complete
+    ?
+    ?? Step 6: Clear Detail Grid
+    ?  ?? TxtFakturTransaksi.Clear()
+    ?  ?? TxtLokasiUntukEdit.Clear()
+    ?  ?? DGVDetail.Columns.Clear()
+    ?  ?? Detail grid empty until user selects row
+    ?
+    ?? [End - List Ready for User Interaction]
+        ?
+        ?? User can:
+           ?? Click row ? DGVTransaksi_CellClick
+           ?? Change filter ? DtpTransaksi_ValueChanged
+           ?? Search ? TxtFilter_TextChanged
+           ?? Right-click ? DGVTransaksi_CellMouseUp
+
+[DGVTransaksi_CellClick] - WHEN USER SELECTS ROW
+    ?
+    ?? Get transaction ID from row
+    ?? Load detail lines:
+    ?  ?? SELECT * FROM penjualan_detail 
+    ?     WHERE FAKTUR_JUAL = selected_faktur
+    ?
+    ?? Populate DGVDetail with lines
+    ?? Update labels:
+    ?  ?? TxtFakturTransaksi.Text = selected_id
+    ?  ?? TxtLokasiUntukEdit.Text = selected_location
+    ?  ?? LblDetailTransaksi.Text = "Detail Penjualan : " & id
+    ?
+    ?? Ready for edit/delete/print
+
+[DGVTransaksi_CellMouseUp] - RIGHT-CLICK CONTEXT MENU
+    ?
+    ?? Check if row valid and not empty
+    ?? Show context menu with options:
+    ?  ?? Tambah (F2) - Add new
+    ?  ?? Edit (F3) - Edit selected
+    ?  ?? Hapus (F4) - Delete selected
+    ?  ?? Cetak (F5) - Print selected
+    ?
+    ?? Execute action based on selection
+```
+
+**Key SQL Queries in Datapenjualan:**
+
+```sql
+-- Query 1: Get Summary
+SELECT COUNT(*) AS RECORD, SUM(GRAND_TOTAL_STL_PAJAK) AS TOTAL 
+FROM penjualan 
+WHERE TGL_TRANSAKSI >= '2026-03-04 00:00:00' 
+AND TGL_TRANSAKSI <= '2026-03-04 23:59:59' 
+AND ID_PENJUALAN LIKE '%'
+LIMIT 1
+
+-- Result: RECORD=5, TOTAL=2150000
+
+-- Query 2: Get All Transactions for Date Range
+SELECT 
+  ID_PENJUALAN,           -- PJ-260304-0001
+  NAMA_PELANGGAN,         -- Budi Santoso
+  LOKASIBARANG,           -- TOKO
+  JENIS_PEMBAYARAN,       -- Transfer Bank
+  GRAND_TOTAL_STL_PAJAK,  -- 434575
+  BAYAR,                  -- 434575
+  KEMBALI,                -- 0
+  NILAI_RETUR,            -- 0
+  SISA_TAGIHAN,           -- 0
+  STATUS_TRANSAKSI,       -- TERBAYAR
+  ID_USER                 -- USER001
+FROM penjualan 
+WHERE TGL_TRANSAKSI >= '2026-03-04 00:00:00' 
+AND TGL_TRANSAKSI <= '2026-03-04 23:59:59' 
+AND ID_PENJUALAN LIKE '%'
+ORDER BY ID_PENJUALAN ASC
+-- Returns 5 rows as DataGridView rows
+```
+
+---
+
+### INTEGRATION: FormUtama ? FormPenjualan (Complete Flow)
+
+```
+???????????????????????????????????????????????????????????
+?      FORM INTEGRATION ARCHITECTURE & DATA FLOW           ?
+???????????????????????????????????????????????????????????
+
+[FormUtama - Main Application]
+    ?
+    ?? DGVTransaksi (DataGridView - Sales List)
+    ?  ?? Displays all penjualan for selected date
+    ?     Method: Datapenjualan()
+    ?     SELECT from penjualan WHERE date = selected_date
+    ?
+    ?? DGVDetail (DataGridView - Detail Items)
+    ?  ?? Displays penjualan_detail for selected transaction
+    ?     Method: DGVTransaksi_CellClick()
+    ?     SELECT from penjualan_detail WHERE faktur = selected_id
+    ?
+    ?? [Button: Penjualan]
+    ?  ?
+    ?  ?? Click ? BtnPenjualan_Click():
+    ?     ?? Set TxtTransaksi = "Penjualan"
+    ?     ?? Set DTPTransaksi.Value = Today
+    ?     ?? Make GBTransaksi.Visible = True
+    ?     ?? Call Datapenjualan()
+    ?        ?? Populate DGVTransaksi with today's transactions
+    ?
+    ?? [DGVTransaksi - Click Row]
+    ?  ?
+    ?  ?? Click ? DGVTransaksi_CellClick():
+    ?     ?? Get selected transaction ID from row[0]
+    ?     ?? Load detail lines:
+    ?     ?  ?? SELECT * FROM penjualan_detail 
+    ?     ?     WHERE FAKTUR_JUAL = selected_id
+    ?     ?? Populate DGVDetail grid
+    ?     ?? Set TxtFakturTransaksi.Text = selected_id
+    ?     ?? Set TxtLokasiUntukEdit.Text = location
+    ?     ?? Ready for action buttons
+    ?
+    ?? [DGVTransaksi - Right-Click (RMB)]
+    ?  ?
+    ?  ?? RMB ? DGVTransaksi_CellMouseUp():
+    ?     ?? Show context menu:
+    ?     ?  ?? [Tambah] F2 ? Tambahtransaksi()
+    ?     ?  ?               ?? Open FormPenjualan(NEW)
+    ?     ?  ?
+    ?     ?  ?? [Edit] F3 ? Edittransaksi()
+    ?     ?  ?              ?? Set TxtJenistransaksi = "EditPenjualan"
+    ?     ?  ?              ?? Pass selected_faktur to FormPenjualan
+    ?     ?  ?              ?? Open FormPenjualan(EDIT)
+    ?     ?  ?
+    ?     ?  ?? [Hapus] F4 ? Hapustransaksi()
+    ?     ?  ?               ?? Confirm delete
+    ?     ?  ?               ?? Restore stock (UPDATE tbl_barang)
+    ?     ?  ?               ?? Delete all related records
+    ?     ?  ?               ?? Refresh DGVTransaksi
+    ?     ?  ?
+    ?     ?  ?? [Cetak] F5 ? Cetaktransaksi()
+    ?     ?                  ?? Print selected transaction
+    ?     ?
+    ?     ?? Execute selected action
+    ?
+    ?? [After FormPenjualan Closes]
+       ?? Back to FormUtama:
+          ?? Call Datapenjualan()
+          ?  ?? Refresh DGVTransaksi from DB
+          ?? Show latest data
+          ?? Ready for next action
+
+[FormPenjualan - Data Entry Form]
+    ?
+    ?? ON OPEN - Check Mode:
+    ?  ?
+    ?  ?? IF TxtJenistransaksi = "TambahPenjualan":
+    ?  ?  ?
+    ?  ?  ?? Form_Shown()
+    ?  ?  ?  ?? Call Kondisiawal()
+    ?  ?  ?     ?? Clear all inputs
+    ?  ?  ?     ?? DgvData.Rows.Clear()
+    ?  ?  ?     ?? Load CmbPelanggan
+    ?  ?  ?     ?? Load CmbSales
+    ?  ?  ?     ?? Generate invoice (Nomorjual)
+    ?  ?  ?     ?? Ready for item input
+    ?  ?  ?
+    ?  ?  ?? Fresh transaction mode
+    ?  ?
+    ?  ?? ELSE IF TxtJenistransaksi = "EditPenjualan":
+    ?     ?
+    ?     ?? Form_Shown()
+    ?     ?  ?? Call Editpenjualanheader()
+    ?     ?     ?? Load penjualan header from DB
+    ?     ?     ?  ?? SELECT * FROM penjualan 
+    ?     ?     ?     WHERE ID = passed_faktur
+    ?     ?     ?? Load penjualan_detail from DB
+    ?     ?     ?  ?? SELECT * FROM penjualan_detail
+    ?     ?     ?     WHERE FAKTUR_JUAL = passed_faktur
+    ?     ?     ?? Populate DgvData with existing lines
+    ?     ?     ?? Populate header fields
+    ?     ?     ?? Ready for editing
+    ?     ?
+    ?     ?? Edit mode (stock NOT re-reduced)
+    ?
+    ?? USER EDITS DATA
+    ?  ?
+    ?  ?? Add items:
+    ?  ?  ?? TxtNama ? TambahDataLangsung()
+    ?  ?     ?? Insert row to DgvData
+    ?  ?
+    ?  ?? Edit quantities/prices:
+    ?  ?  ?? DgvData_CellEndEdit()
+    ?  ?     ?? HitungNilaiSetiapBaris()
+    ?  ?     ?? UpdateSemuaTotal()
+    ?  ?
+    ?  ?? Add discount/tax:
+    ?     ?? TxtDiskonRp, TxtPajakRp
+    ?        ?? HitungDiskon(), HitungPajak()
+    ?           ?? HitungTotalPenjualanAkhir()
+    ?
+    ?? PAYMENT ENTRY
+    ?  ?
+    ?  ?? Click BtnBayar (F8):
+    ?  ?  ?? TekanBayar()
+    ?  ?  ?  ?? Validate (items, stock, profit)
+    ?  ?  ?  ?? Show GBBayar payment modal
+    ?  ?  ?
+    ?  ?  ?? Select payment method:
+    ?  ?     ?? CmbJenisBayar_SelectedIndexChanged()
+    ?  ?        ?? AmbiuldataRekening()
+    ?  ?           ?? Load bank details (if bank)
+    ?  ?
+    ?  ?? Enter amount:
+    ?     ?? TxtNominalBayar_TextChanged()
+    ?        ?? Calculate change/debt
+    ?
+    ?? SAVE TRANSACTION
+    ?  ?
+    ?  ?? Click BtnSimpan (F10):
+    ?     ?? TekanSimpan()
+    ?        ?? Validate payment
+    ?        ?? Simpanatauedit()
+    ?           ?? Prosessimpan()
+    ?              ?? BEGIN TRANSACTION
+    ?              ?? 1. Simpanpenjualan()
+    ?              ?    ?? INSERT penjualan (header)
+    ?              ?? 2. Simpanpenjualandetail()
+    ?              ?    ?? INSERT penjualan_detail (each line)
+    ?              ?? 3. UPDATE tbl_barang
+    ?              ?    ?? STOK_TOKO -= qty (only on first insert!)
+    ?              ?? 4. HistoryBarang()
+    ?              ?    ?? INSERT tbl_history_barang
+    ?              ?? 5. Simpanjurnal()
+    ?              ?    ?? INSERT JurnalUmum (7 entries)
+    ?              ?? COMMIT or ROLLBACK
+    ?              ?? Print (optional)
+    ?              ?? Close form
+    ?
+    ?? RETURN TO FORMUTAMA
+       ?? FormUtama.Datapenjualan()
+          ?? Refresh DGVTransaksi with latest data
+```
+
+---
+
 ### FLOW 1: Fresh Transaction (TambahPenjualan)
 
 ```
@@ -722,7 +1065,305 @@ KEY ENTRY POINTS:
 ?? CetakFaktur() - Print after successful commit
 ```
 
-### FLOW 2: Edit Transaction (EditPenjualan)
+### JURNAL SAVING - ACCOUNTING ENTRIES (Simpanjurnal Method)
+
+```
+[Prosessimpan - After Detail Saved]
+    ?
+[Simpanjurnal(transaction)] - ACCOUNTING JOURNALIZATION
+    ?
+    ? Purpose: Record accounting entries per transaksi
+    ? Called AFTER: Simpanpenjualan & Simpanpenjualandetail
+    ? References: All transaction amounts, taxes, discounts
+    ?
+    ?? Step 1: Calculate Components for Journal
+    ?  ?
+    ?  ?? 1a. nominalKas (Amount to Debit/Credit)
+    ?  ?  ?? If bayar > 0:
+    ?  ?  ?  ?? If bantuanBayar <= 0 (customer paid fully)
+    ?  ?  ?  ?  ?? nominalKas = kas (paid amount)
+    ?  ?  ?  ?? Else (customer hasn't paid in full)
+    ?  ?  ?     ?? nominalKas = bayar (partial)
+    ?  ?  ?? Example: If customer paid 434,575 ? nominalKas = 434,575
+    ?  ?
+    ?  ?? 1b. persediaanBarang (Total COGS)
+    ?  ?  ?? SUM(all items.HARGA_BELI × ISI × QTY)
+    ?  ?     Example: Item1(10k) + Item2(40k) + Item3(30k) = 80,000
+    ?  ?
+    ?  ?? 1c. labaKotor (Gross Profit)
+    ?  ?  ?? GRAND_TOTAL_STL_PAJAK - persediaanBarang
+    ?  ?     Example: 434,575 - 80,000 = 354,575
+    ?  ?
+    ?  ?? 1d. diskonTotal (Sum of all discounts)
+    ?  ?  ?? Item-level discounts: SUM(all TOTAL_DISKON)
+    ?  ?  ?? Transaction-level: DISKON_TOTAL_RP
+    ?  ?  ?? Example: Item discounts(5k+3k) + Trans(20k) = 28,000
+    ?  ?
+    ?  ?? Components ready
+    ?
+    ?? Step 2: Journal Entry #1 - KAS/PIUTANG (Receivables)
+    ?  ?
+    ?  ?? IF bayar > 0:
+    ?  ?  ?
+    ?  ?  ?? INSERT JurnalUmum:
+    ?  ?     ?
+    ?  ?     ?? IF bantuanBayar <= 0 (PAID FULL):
+    ?  ?     ?  ?
+    ?  ?     ?  ?? Debit:  CmbJenisBayar (Payment Account)
+    ?  ?     ?  ?          e.g., "BANK BCA" (Kode: 01.01.002)
+    ?  ?     ?  ?
+    ?  ?     ?  ?? Credit: (empty - auto balanced)
+    ?  ?     ?  ?
+    ?  ?     ?  ?? NOMINAL: nominalKas (434,575)
+    ?  ?     ?     URAIAN: "Dibayar lunas penjualan dari Budi Santoso"
+    ?  ?     ?
+    ?  ?     ?? ELSE (PARTIAL PAYMENT):
+    ?  ?        ?
+    ?  ?        ?? Debit:  CmbJenisBayar (Payment Account)
+    ?  ?        ?
+    ?  ?        ?? Credit: (empty)
+    ?  ?           NOMINAL: bayar (partial amount)
+    ?  ?           URAIAN: "Uang muka pembayaran penjualan dari Budi"
+    ?  ?
+    ?  ?? Example Journal Entry:
+    ?     ???????????????????????????????????????????
+    ?     ? NO_TRANSAKSI: PJ-260304-0001           ?
+    ?     ? TGL_TRANSAKSI: 2026-03-04 10:30:00     ?
+    ?     ? URAIAN: Dibayar lunas penjualan...      ?
+    ?     ? NAMA_AKUN_D: BANK BCA                   ?
+    ?     ? NOMOR_AKUN_D: 01.01.002                 ?
+    ?     ? NAMA_AKUN_K: (empty)                    ?
+    ?     ? NOMOR_AKUN_K: (empty)                   ?
+    ?     ? NOMINAL: 434575                         ?
+    ?     ? JENIS_TRANSAKSI: Penjualan              ?
+    ?     ? LOKASI: TOKO                            ?
+    ?     ? ID_USER: USER001                        ?
+    ?     ? ID_KOMPUTER: CASHIER-01                 ?
+    ?     ???????????????????????????????????????????
+    ?
+    ?? Step 3: Journal Entry #2 - SISA PIUTANG (If Partial Payment)
+    ?  ?
+    ?  ?? IF bayar > 0 AND bantuanBayar > 0 (CUSTOMER IN DEBT):
+    ?  ?  ?
+    ?  ?  ?? INSERT JurnalUmum:
+    ?  ?     ?
+    ?  ?     ?? Debit:  "PIUTANG PENJUALAN" (Receivables)
+    ?  ?     ?          Kode: 01.03.001
+    ?  ?     ?
+    ?  ?     ?? Credit: (empty)
+    ?  ?     ?
+    ?  ?     ?? NOMINAL: kembali (remaining debt)
+    ?  ?     ?           kembali = bantuanBayar (amount owed)
+    ?  ?     ?           Example: If total=434k, bayar=200k ? debt=234k
+    ?  ?     ?
+    ?  ?     ?? NAMA_BANTU_D: NAMA_PELANGGAN (customer name)
+    ?  ?     ?
+    ?  ?     ?? KODE_BANTU_D: LbLKodePel (customer code)
+    ?  ?     ?
+    ?  ?     ?? URAIAN: "Piutang penjualan dari Budi Santoso"
+    ?  ?
+    ?  ?? Purpose: Track which customers owe money
+    ?
+    ?? Step 4: Journal Entry #3 - ITEM DISCOUNTS (Per Item)
+    ?  ?
+    ?  ?? IF diskonTotal > 0 (from line items):
+    ?  ?  ?
+    ?  ?  ?? INSERT JurnalUmum:
+    ?  ?     ?
+    ?  ?     ?? Debit:  "BEBAN DISKON PENJUALAN" (Expense)
+    ?  ?     ?          Kode: 07.01.010
+    ?  ?     ?
+    ?  ?     ?? Credit: "LABA KOTOR PENJUALAN" (Contra Revenue)
+    ?  ?     ?          Kode: 06.01.001
+    ?  ?     ?
+    ?  ?     ?? NOMINAL: diskonTotal (sum of all item discounts)
+    ?  ?     ?           Example: Item1 diskon 5k + Item2 diskon 3k = 8k
+    ?  ?     ?
+    ?  ?     ?? URAIAN: "Diskon item penjualan dari Budi Santoso"
+    ?  ?
+    ?  ?? Purpose: Track discount given per item
+    ?
+    ?? Step 5: Journal Entry #4 - TRANSACTION DISCOUNT
+    ?  ?
+    ?  ?? IF DISKON_TOTAL_RP > 0 (transaction-level discount):
+    ?  ?  ?
+    ?  ?  ?? INSERT JurnalUmum:
+    ?  ?     ?
+    ?  ?     ?? Debit:  "BEBAN DISKON PENJUALAN"
+    ?  ?     ?          Kode: 07.01.010
+    ?  ?     ?
+    ?  ?     ?? Credit: (empty)
+    ?  ?     ?
+    ?  ?     ?? NOMINAL: DISKON_TOTAL_RP
+    ?  ?     ?           Example: 20,000
+    ?  ?     ?
+    ?  ?     ?? URAIAN: "Diskon total penjualan dari Budi Santoso"
+    ?  ?
+    ?  ?? Purpose: Separate transaction-level discount
+    ?
+    ?? Step 6: Journal Entry #5 - COGS (Cost of Goods Sold)
+    ?  ?
+    ?  ?? INSERT JurnalUmum:
+    ?  ?  ?
+    ?  ?  ?? Debit:   (empty - auto from COGS)
+    ?  ?  ?
+    ?  ?  ?? Credit:  "PERSEDIAAN BARANG" (Inventory)
+    ?  ?  ?           Kode: 01.02.001
+    ?  ?  ?
+    ?  ?  ?? NOMINAL: persediaanBarang (total COGS)
+    ?  ?  ?           Example: 80,000
+    ?  ?  ?
+    ?  ?  ?? URAIAN: "HPP penjualan kepada Budi Santoso"
+    ?  ?
+    ?  ?? Purpose: Reduce inventory, record expense
+    ?
+    ?? Step 7: Journal Entry #6 - TAX LIABILITY (If Tax > 0)
+    ?  ?
+    ?  ?? IF PAJAK_RP > 0:
+    ?  ?  ?
+    ?  ?  ?? INSERT JurnalUmum:
+    ?  ?     ?
+    ?  ?     ?? Debit:   (empty)
+    ?  ?     ?
+    ?  ?     ?? Credit:  "HUTANG PAJAK" (Tax Payable)
+    ?  ?     ?           Kode: 03.02.001
+    ?  ?     ?
+    ?  ?     ?? NOMINAL: PAJAK_RP (tax amount)
+    ?  ?     ?           Example: PPN 11% = 42,075
+    ?  ?     ?
+    ?  ?     ?? URAIAN: "Hutang pajak penjualan dari Budi Santoso"
+    ?  ?
+    ?  ?? Purpose: Record sales tax liability
+    ?
+    ?? Step 8: Journal Entry #7 - GROSS PROFIT (Revenue)
+    ?  ?
+    ?  ?? INSERT JurnalUmum:
+    ?  ?  ?
+    ?  ?  ?? Debit:   (empty)
+    ?  ?  ?
+    ?  ?  ?? Credit:  "LABA KOTOR PENJUALAN" (Gross Profit)
+    ?  ?  ?           Kode: 06.01.001
+    ?  ?  ?
+    ?  ?  ?? NOMINAL: labaKotor (revenue minus COGS)
+    ?  ?  ?           Example: 434,575 - 80,000 = 354,575
+    ?  ?  ?
+    ?  ?  ?? URAIAN: "Laba kotor penjualan dari Budi Santoso"
+    ?  ?
+    ?  ?? Purpose: Record revenue/profit
+    ?
+    ?? Step 9: Journal Entry #8 - SHIPPING FEE (If > 0)
+    ?  ?
+    ?  ?? IF BIAYA_KIRIM > 0:
+    ?  ?  ?
+    ?  ?  ?? INSERT JurnalUmum:
+    ?  ?     ?
+    ?  ?     ?? Debit:   (empty)
+    ?  ?     ?
+    ?  ?     ?? Credit:  "PENDAPATAN LAIN LAIN" (Other Income)
+    ?  ?     ?           Kode: 08.01.002
+    ?  ?     ?
+    ?  ?     ?? NOMINAL: BIAYA_KIRIM
+    ?  ?     ?           Example: 5,000
+    ?  ?     ?
+    ?  ?     ?? URAIAN: "Jasa kirim/Lain Budi Santoso"
+    ?  ?
+    ?  ?? Purpose: Record shipping revenue
+    ?
+    ?? [End - All Journals Recorded]
+        ?
+        ?? TOTAL JOURNALS for 1 transaction: 3-8 entries
+           (depending on discounts, tax, shipping)
+```
+
+**SQL Inserts for Jurnal (Simpanjurnal Process):**
+
+```sql
+-- Example: Transaction PJ-260304-0001
+-- Grand Total: 434,575
+-- COGS: 80,000
+-- Discount (item): 8,000
+-- Discount (trans): 20,000
+-- Tax: 42,075
+-- Shipping: 5,000
+
+-- JOURNAL ENTRY #1: KAS/PIUTANG
+INSERT INTO JurnalUmum (
+  NO_TRANSAKSI, TGL_TRANSAKSI, URAIAN,
+  NAMA_AKUN_D, NOMOR_AKUN_D,
+  NAMA_AKUN_K, NOMOR_AKUN_K,
+  NOMINAL, JENIS_TRANSAKSI, LOKASI, ID_USER, ID_KOMPUTER
+) VALUES (
+  'PJ-260304-0001', '2026-03-04 10:30:00', 'Dibayar lunas penjualan dari Budi Santoso',
+  'BANK BCA', '01.01.002',
+  '', '',
+  434575, 'Penjualan', 'TOKO', 'USER001', 'CASHIER-01'
+)
+
+-- JOURNAL ENTRY #2: ITEM DISCOUNTS
+INSERT INTO JurnalUmum (...) VALUES (
+  'PJ-260304-0001', '2026-03-04 10:30:00', 'Diskon item penjualan dari Budi Santoso',
+  'BEBAN DISKON PENJUALAN', '07.01.010',
+  'LABA KOTOR PENJUALAN', '06.01.001',
+  8000, 'Penjualan', 'TOKO', 'USER001', 'CASHIER-01'
+)
+
+-- JOURNAL ENTRY #3: TRANSACTION DISCOUNT
+INSERT INTO JurnalUmum (...) VALUES (
+  'PJ-260304-0001', '2026-03-04 10:30:00', 'Diskon total penjualan dari Budi Santoso',
+  'BEBAN DISKON PENJUALAN', '07.01.010',
+  '', '',
+  20000, 'Penjualan', 'TOKO', 'USER001', 'CASHIER-01'
+)
+
+-- JOURNAL ENTRY #4: COGS
+INSERT INTO JurnalUmum (...) VALUES (
+  'PJ-260304-0001', '2026-03-04 10:30:00', 'HPP penjualan kepada Budi Santoso',
+  '', '',
+  'PERSEDIAAN BARANG', '01.02.001',
+  80000, 'Penjualan', 'TOKO', 'USER001', 'CASHIER-01'
+)
+
+-- JOURNAL ENTRY #5: TAX
+INSERT INTO JurnalUmum (...) VALUES (
+  'PJ-260304-0001', '2026-03-04 10:30:00', 'Hutang pajak penjualan dari Budi Santoso',
+  '', '',
+  'HUTANG PAJAK', '03.02.001',
+  42075, 'Penjualan', 'TOKO', 'USER001', 'CASHIER-01'
+)
+
+-- JOURNAL ENTRY #6: GROSS PROFIT
+INSERT INTO JurnalUmum (...) VALUES (
+  'PJ-260304-0001', '2026-03-04 10:30:00', 'Laba kotor penjualan dari Budi Santoso',
+  '', '',
+  'LABA KOTOR PENJUALAN', '06.01.001',
+  354575, 'Penjualan', 'TOKO', 'USER001', 'CASHIER-01'
+)
+
+-- JOURNAL ENTRY #7: SHIPPING
+INSERT INTO JurnalUmum (...) VALUES (
+  'PJ-260304-0001', '2026-03-04 10:30:00', 'Jasa kirim/Lain Budi Santoso',
+  '', '',
+  'PENDAPATAN LAIN LAIN', '08.01.002',
+  5000, 'Penjualan', 'TOKO', 'USER001', 'CASHIER-01'
+)
+
+-- Total: 7 journal entries recorded
+-- All in single transaction - all or nothing
+```
+
+**Jurnal Processing Summary:**
+
+| # | Type | Debit Account | Credit Account | Amount | Purpose |
+|---|------|---|---|---|---|
+| 1 | Payment | BANK BCA (01.01.002) | - | 434,575 | Record cash/bank received |
+| 2 | Item Discount | BEBAN DISKON JUAL (07.01.010) | LABA KOTOR JUAL (06.01.001) | 8,000 | Track per-item discounts |
+| 3 | Trans Discount | BEBAN DISKON JUAL (07.01.010) | - | 20,000 | Track transaction discount |
+| 4 | COGS | - | PERSEDIAAN BARANG (01.02.001) | 80,000 | Reduce inventory |
+| 5 | Tax | - | HUTANG PAJAK (03.02.001) | 42,075 | Record tax liability |
+| 6 | Revenue | - | LABA KOTOR JUAL (06.01.001) | 354,575 | Record profit |
+| 7 | Shipping | - | PENDAPATAN LAIN-LAIN (08.01.002) | 5,000 | Record shipping revenue |
+
+---
 
 ```
 [User selects transaction in FormUtama]
