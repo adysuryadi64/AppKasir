@@ -12,8 +12,8 @@ Public Class FormLapNeracaLR
     Private Sub RbtRentang_CheckedChanged(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles RbtTanggal.CheckedChanged
         ' Pastikan RadioButton dalam keadaan Checked sebelum memanggil Ambildataperusahaan
         If RbtTanggal.Checked Then
-            DtpAwal.Value = tanggalAwalPeriodeKerja
-            DtpAkhir.Value = tanggalAkhirPeriodeKerja
+            'DtpAwal.Value = tanggalAwalPeriodeKerja
+            'DtpAkhir.Value = tanggalAkhirPeriodeKerja
         End If
     End Sub
 
@@ -236,6 +236,12 @@ Public Class FormLapNeracaLR
             cmdPerbaruiDebetKredit.ExecuteNonQuery()
         End Using
     End Sub
+
+
+
+
+
+
 
     Public Sub HITUNGSALDOAWAL(ByVal tanggalAwal As Date)
 
@@ -530,6 +536,9 @@ Public Class FormLapNeracaLR
     End Sub
 
 
+
+
+
     '---------------------------------------- TabLapNeraca --------------------------------------------------------------------------------------
     Private bulanTerpilih As Integer
     Private Sub KonversiBulanKeAngka()
@@ -673,16 +682,6 @@ Public Class FormLapNeracaLR
         ReportViewer1.LocalReport.SetParameters(parameters)
         ReportViewer1.RefreshReport()
     End Sub
-
-    'Private Function ExecuteScalarQuery(ByVal query As String) As Decimal
-    '    Using command As New MySqlCommand(query, conn)
-    '        Dim result As Object = command.ExecuteScalar()
-    '        If result IsNot Nothing AndAlso Not DBNull.Value.Equals(result) Then
-    '            Return Convert.ToDecimal(result)
-    '        End If
-    '    End Using
-    '    Return 0
-    'End Function
 
     '---------------------------------------- TabLapLabaRugi ------------------------------------------------------------------------------------
 

@@ -20,7 +20,7 @@
                     hakAkses(3) = DirectCast(rd("CanDelete"), Boolean)
                 Else
                     rd.Close()
-                    FormHakUser.DataHakaksesuser()
+                    FormHakUser.IsiDataGridViewTemplate()
                 End If
             End Using
         End Using
@@ -39,6 +39,8 @@
             Using reader As MySqlDataReader = cmd.ExecuteReader()
                 If reader.Read() Then
                     ModulName = reader("ModuleName").ToString()
+                Else
+                    FormGeneralSetting.SinkronkanHakAksesTanpaDuplikat()
                 End If
             End Using
         End Using

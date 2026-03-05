@@ -23,8 +23,8 @@ Partial Class TambahSupliyer
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
         Me.components = New System.ComponentModel.Container()
-        Dim DataGridViewCellStyle1 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
-        Dim DataGridViewCellStyle2 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
+        Dim DataGridViewCellStyle3 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
+        Dim DataGridViewCellStyle4 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(TambahSupliyer))
         Me.Panel2 = New System.Windows.Forms.Panel()
         Me.Label9 = New System.Windows.Forms.Label()
@@ -91,6 +91,7 @@ Partial Class TambahSupliyer
         'TxtJAngkaHutang
         '
         Me.TxtJAngkaHutang.BackColor = System.Drawing.SystemColors.Window
+        Me.TxtJAngkaHutang.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
         Me.TxtJAngkaHutang.Font = New System.Drawing.Font("Century Gothic", 9.75!)
         Me.TxtJAngkaHutang.Location = New System.Drawing.Point(400, 78)
         Me.TxtJAngkaHutang.Name = "TxtJAngkaHutang"
@@ -123,6 +124,7 @@ Partial Class TambahSupliyer
         'TxtTelp
         '
         Me.TxtTelp.BackColor = System.Drawing.SystemColors.Window
+        Me.TxtTelp.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
         Me.TxtTelp.Font = New System.Drawing.Font("Century Gothic", 9.75!)
         Me.TxtTelp.Location = New System.Drawing.Point(119, 78)
         Me.TxtTelp.Name = "TxtTelp"
@@ -132,6 +134,7 @@ Partial Class TambahSupliyer
         'TxtAwal
         '
         Me.TxtAwal.BackColor = System.Drawing.SystemColors.Window
+        Me.TxtAwal.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
         Me.TxtAwal.Font = New System.Drawing.Font("Century Gothic", 9.75!)
         Me.TxtAwal.Location = New System.Drawing.Point(119, 103)
         Me.TxtAwal.Name = "TxtAwal"
@@ -142,6 +145,7 @@ Partial Class TambahSupliyer
         'TxtAlamat
         '
         Me.TxtAlamat.BackColor = System.Drawing.SystemColors.Window
+        Me.TxtAlamat.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
         Me.TxtAlamat.Font = New System.Drawing.Font("Century Gothic", 9.75!)
         Me.TxtAlamat.Location = New System.Drawing.Point(119, 53)
         Me.TxtAlamat.Name = "TxtAlamat"
@@ -151,6 +155,7 @@ Partial Class TambahSupliyer
         'TxtKode
         '
         Me.TxtKode.BackColor = System.Drawing.SystemColors.Window
+        Me.TxtKode.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
         Me.TxtKode.Enabled = False
         Me.TxtKode.Font = New System.Drawing.Font("Century Gothic", 9.75!)
         Me.TxtKode.Location = New System.Drawing.Point(119, 5)
@@ -161,6 +166,7 @@ Partial Class TambahSupliyer
         'TxtNama
         '
         Me.TxtNama.BackColor = System.Drawing.SystemColors.Window
+        Me.TxtNama.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
         Me.TxtNama.Font = New System.Drawing.Font("Century Gothic", 9.75!)
         Me.TxtNama.Location = New System.Drawing.Point(119, 29)
         Me.TxtNama.Name = "TxtNama"
@@ -238,23 +244,23 @@ Partial Class TambahSupliyer
         Me.Dgvdata.BackgroundColor = System.Drawing.Color.White
         Me.Dgvdata.CellBorderStyle = System.Windows.Forms.DataGridViewCellBorderStyle.Raised
         Me.Dgvdata.ColumnHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.Sunken
-        DataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter
-        DataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Control
-        DataGridViewCellStyle1.Font = New System.Drawing.Font("Century Gothic", 9.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        DataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.WindowText
-        DataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight
-        DataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText
-        DataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.[True]
-        Me.Dgvdata.ColumnHeadersDefaultCellStyle = DataGridViewCellStyle1
+        DataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter
+        DataGridViewCellStyle3.BackColor = System.Drawing.SystemColors.Control
+        DataGridViewCellStyle3.Font = New System.Drawing.Font("Century Gothic", 9.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        DataGridViewCellStyle3.ForeColor = System.Drawing.SystemColors.WindowText
+        DataGridViewCellStyle3.SelectionBackColor = System.Drawing.SystemColors.Highlight
+        DataGridViewCellStyle3.SelectionForeColor = System.Drawing.SystemColors.HighlightText
+        DataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.[True]
+        Me.Dgvdata.ColumnHeadersDefaultCellStyle = DataGridViewCellStyle3
         Me.Dgvdata.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
-        DataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft
-        DataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Window
-        DataGridViewCellStyle2.Font = New System.Drawing.Font("Century Gothic", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        DataGridViewCellStyle2.ForeColor = System.Drawing.SystemColors.ControlText
-        DataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Highlight
-        DataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HighlightText
-        DataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.[False]
-        Me.Dgvdata.DefaultCellStyle = DataGridViewCellStyle2
+        DataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft
+        DataGridViewCellStyle4.BackColor = System.Drawing.SystemColors.Window
+        DataGridViewCellStyle4.Font = New System.Drawing.Font("Century Gothic", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        DataGridViewCellStyle4.ForeColor = System.Drawing.SystemColors.ControlText
+        DataGridViewCellStyle4.SelectionBackColor = System.Drawing.SystemColors.Highlight
+        DataGridViewCellStyle4.SelectionForeColor = System.Drawing.SystemColors.HighlightText
+        DataGridViewCellStyle4.WrapMode = System.Windows.Forms.DataGridViewTriState.[False]
+        Me.Dgvdata.DefaultCellStyle = DataGridViewCellStyle4
         Me.Dgvdata.Location = New System.Drawing.Point(4, 176)
         Me.Dgvdata.Name = "Dgvdata"
         Me.Dgvdata.ReadOnly = True
@@ -366,7 +372,7 @@ Partial Class TambahSupliyer
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.BackColor = System.Drawing.SystemColors.ActiveCaption
+        Me.BackColor = System.Drawing.SystemColors.Control
         Me.ClientSize = New System.Drawing.Size(966, 588)
         Me.Controls.Add(Me.BTNSimpan)
         Me.Controls.Add(Me.BTNHapus)

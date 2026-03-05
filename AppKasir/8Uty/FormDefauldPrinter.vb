@@ -56,47 +56,50 @@ Public Class FormDefauldPrinter
     End Sub
 
     Public Function SetDefaultPrinter(ByVal strPrinterName As String) As Boolean
-        Dim strCurrPrinter As String
+        Dim originalPrinter As String
 
         Using prntDoc As New PrintDocument()
-            strCurrPrinter = prntDoc.PrinterSettings.PrinterName
-
-            Try
-                Dim searcher As New ManagementObjectSearcher("SELECT * FROM Win32_Printer WHERE Name = '" & strPrinterName.Replace("\", "\\") & "'")
-                Dim collection As ManagementObjectCollection = searcher.Get()
-
-                If collection.Count > 0 Then
-                    For Each printer As ManagementObject In collection
-                        printer.InvokeMethod("SetDefaultPrinter", Nothing, Nothing)
-                    Next
-
-                    prntDoc.PrinterSettings.PrinterName = strPrinterName
-
-                    ' Set default jika nama printer valid (terinstall)
-                    If prntDoc.PrinterSettings.IsValid Then
-                        Return True
-                    Else
-                        SetDefaultPrinter(strCurrPrinter)
-                        Return False
-                    End If
-                Else
-                    SetDefaultPrinter(strCurrPrinter)
-                    Return False
-                End If
-            Catch ex As Exception
-                SetDefaultPrinter(strCurrPrinter)
-                Return False
-            End Try
+            originalPrinter = prntDoc.PrinterSettings.PrinterName
         End Using
+
+        Try
+            Dim query As String = "SELECT * FROM Win32_Printer WHERE Name = '" & strPrinterName.Replace("\", "\\") & "'"
+            Using searcher As New ManagementObjectSearcher(query)
+                Using collection As ManagementObjectCollection = searcher.Get()
+                    If collection.Count = 0 Then Return False
+
+                    For Each printer As ManagementObject In collection
+                        printer.InvokeMethod("SetDefaultPrinter", Nothing)
+                    Next
+                End Using
+            End Using
+
+            Using prntDoc As New PrintDocument()
+                If prntDoc.PrinterSettings.PrinterName = strPrinterName AndAlso prntDoc.PrinterSettings.IsValid Then
+                    Return True
+                End If
+            End Using
+        Catch ex As Exception
+            ' Optional: log error
+        End Try
+
+        Return False
     End Function
 
+
     Private Sub BtnSet_Click(ByVal sender As Object, ByVal e As EventArgs) Handles BtnSet.Click
+        If String.IsNullOrWhiteSpace(CmbPrinter.Text) Then
+            MessageBox.Show("Pilih nama printer terlebih dahulu!", "Perhatian", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+            Return
+        End If
+
         If SetDefaultPrinter(CmbPrinter.Text) Then
-            MsgBox("Printer default menjadi " & CmbPrinter.Text, vbOKOnly, "Sukses")
+            MessageBox.Show("Printer default diubah menjadi: " & CmbPrinter.Text, "Sukses", MessageBoxButtons.OK, MessageBoxIcon.Information)
         Else
-            MsgBox("Nama Printer " & CmbPrinter.Text & " tidak valid!", vbCritical, "Gagal")
+            MessageBox.Show("Gagal mengatur printer default. Pastikan nama printer '" & CmbPrinter.Text & "' benar dan terpasang.", "Gagal", MessageBoxButtons.OK, MessageBoxIcon.Error)
         End If
     End Sub
+
 
     Private Sub BtnKeluar_Click_1(ByVal sender As Object, ByVal e As EventArgs) Handles BtnKeluar.Click
         Close()
@@ -235,12 +238,8 @@ Public Class FormDefauldPrinter
 
             ' Update application settings with values from dictionary
             LblPrinterStruk.Text = GetSettingOrDefault(settings, "PrinterPos", "Default Printer")
-            Dim thermalPrinter As String = FindThermalPrinter()
-            If Not String.IsNullOrEmpty(thermalPrinter) Then
-                CmbJenisPrinterThermal.Text = thermalPrinter
-            Else
-                CmbJenisPrinterThermal.Text = LblPrinter.Text
-            End If
+            CmbJenisPrinterThermal.Text = GetSettingOrDefault(settings, "PrinterPos", "Default Printer")
+
 
             'CmbJenisPrinterThermal.Text = GetSettingOrDefault(settings, "PrinterPos", "Default Printer")
             CmbPort.Text = GetSettingOrDefault(settings, "PortPrinter", "COM1")
@@ -272,17 +271,11 @@ Public Class FormDefauldPrinter
             CmbJenisLap.SelectedIndex = GetSettingOrDefaultIndex(settings, "JenisPrinterLap", "Printer Ink Tank")
 
             LblPrinterTersimpanDot.Text = GetSettingOrDefault(settings, "PrinterDot", "Default Printer")
-            Dim DotMatrikPrinter As String = FindDotMatrixPrinter()
-            If Not String.IsNullOrEmpty(DotMatrikPrinter) Then
-                CmbJenisPrinterDot.Text = DotMatrikPrinter
-            Else
-                CmbJenisPrinterDot.Text = LblPrinter.Text
-            End If
-
+            CmbJenisPrinterDot.Text = GetSettingOrDefault(settings, "PrinterDot", "Default Printer")
 
             'CmbJenisPrinterDot.Text = GetSettingOrDefault(settings, "PrinterDot", "Default Printer")
             TxtLebarKertasDot.Text = GetSettingOrDefault(settings, "LebarDot", "27")
-            TxtTinggiDot.Text = GetSettingOrDefault(settings, "TingiDot", "7")
+            TxtTinggiDot.Text = GetSettingOrDefault(settings, "TinggiDot", "7")
             TxtBatasKiriDot.Text = GetSettingOrDefault(settings, "BatasKiriDot", "0")
             TxtJarakBarisDot.Text = GetSettingOrDefault(settings, "JarakBarisDot", "2")
             CmbFontJuduDot.Text = GetSettingOrDefault(settings, "FontJudulDot", "Consolas")

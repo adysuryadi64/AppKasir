@@ -72,10 +72,10 @@ Public Class NotaPembelian
         Using cmdNotaBeli As New MySqlCommand(queryNotaBeli, conn)
             cmdNotaBeli.Parameters.AddWithValue("@FAKTUR_BELI", TxtIdPembelian.Text.Trim())
             Using rd As MySqlDataReader = cmdNotaBeli.ExecuteReader()
-                'Using datasetNotaBeli As New PossDataSetLancar()
-                '    datasetNotaBeli.Load(rd, LoadOption.OverwriteChanges, "NotaPembelian")
-                '    ReportViewer1.LocalReport.DataSources.Add(New ReportDataSource("DataSet1", datasetNotaBeli.Tables("NotaPembelian")))
-                'End Using
+                Using datasetNotaBeli As New DataSetKL()
+                    datasetNotaBeli.Load(rd, LoadOption.OverwriteChanges, "NotaPembelian")
+                    ReportViewer1.LocalReport.DataSources.Add(New ReportDataSource("DataSet1", datasetNotaBeli.Tables("NotaPembelian")))
+                End Using
             End Using
         End Using
         ReportViewer1.RefreshReport()

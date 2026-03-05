@@ -1,4 +1,5 @@
 ﻿Imports System.IO
+Imports System.Runtime.InteropServices
 Imports Excel = Microsoft.Office.Interop.Excel
 
 Public Class FormPenjualanPPn
@@ -128,179 +129,6 @@ Public Class FormPenjualanPPn
         ExportToExcel("PPn")
     End Sub
 
-    'Private Sub ExportToExcel(ByVal JENIS As String)
-    '    Dim TanggalAwal As Date
-    '    Dim TanggalAkhir As Date
-
-    '    ' Tentukan rentang tanggal berdasarkan filter yang dipilih
-    '    If CbTanggal.Checked Then
-    '        TanggalAwal = DTPAwal.Value.Date
-    '        TanggalAkhir = DTPAkhir.Value.Date.AddDays(1).AddTicks(-1)
-    '    ElseIf CbBulan.Checked Then
-    '        KonversiBulanKeAngka()
-    '        Dim Bulan As Integer = BulanTerpilih
-    '        Dim Tahun As Integer = CmbThn.Text
-    '        TanggalAwal = New DateTime(Tahun, Bulan, 1)
-    '        TanggalAkhir = TanggalAwal.AddMonths(1).AddSeconds(-1)
-    '    Else
-    '        MsgBox("Pilih filter tanggal atau bulan!", MsgBoxStyle.Exclamation)
-    '        Exit Sub
-    '    End If
-
-    '    ' Pastikan DGVFilter memiliki data
-    '    If DGVFilter.Rows.Count = 0 Then
-    '        MsgBox("Data belum tersedia di DGVFilter!", MsgBoxStyle.Exclamation)
-    '        Exit Sub
-    '    End If
-
-    '    ' Ambil semua ID_BARANG dari kolom pertama DGVFilter
-    '    Dim idBarangList As New List(Of String)
-    '    For Each row As DataGridViewRow In DGVFilter.Rows
-    '        If Not row.IsNewRow Then
-    '            idBarangList.Add(row.Cells(0).Value.ToString())
-    '        End If
-    '    Next
-
-    '    ' Buat parameter untuk setiap ID_BARANG
-    '    Dim idParams As New List(Of String)
-    '    Dim parameters As New List(Of MySqlParameter)
-    '    For i As Integer = 0 To idBarangList.Count - 1
-    '        Dim paramName As String = "@id" & i
-    '        idParams.Add(paramName)
-    '        parameters.Add(New MySqlParameter(paramName, idBarangList(i)))
-    '    Next
-
-    '    Dim query As String
-
-    '    If JENIS = "NonPPn" Then
-    '        ' Bangun query dengan multiple parameter
-    '        query = "SELECT TANGGAL_JUAL, FAKTUR_JUAL, NAMA_PELANGGAN, SUM(TOTAL_HARGA) AS TOTAL_HARGA " &
-    '                      "FROM penjualan_detail " &
-    '                      "WHERE ID_BARANG IN (" & String.Join(",", idParams) & ") " &
-    '                      "AND TANGGAL_JUAL BETWEEN @AwalBulan AND @AkhirBulan " &
-    '                      "GROUP BY TANGGAL_JUAL, FAKTUR_JUAL, NAMA_PELANGGAN"
-    '    Else
-    '        query = "SELECT TANGGAL_JUAL, FAKTUR_JUAL, NAMA_PELANGGAN, SUM(TOTAL_HARGA) AS TOTAL_HARGA " &
-    '                 "FROM penjualan_detail " &
-    '                 "WHERE ID_BARANG NOT IN (" & String.Join(",", idParams) & ") " &
-    '                 "AND TANGGAL_JUAL BETWEEN @AwalBulan AND @AkhirBulan " &
-    '                 "GROUP BY TANGGAL_JUAL, FAKTUR_JUAL, NAMA_PELANGGAN"
-    '    End If
-
-    '    ' Koneksi ke MySQL
-    '    Using cmd As New MySqlCommand(query, conn)
-
-    '        ' Tambahkan parameter ID_BARANG
-    '        cmd.Parameters.AddRange(parameters.ToArray())
-
-    '        ' Tambahkan parameter tanggal
-    '        cmd.Parameters.AddWithValue("@AwalBulan", TanggalAwal)
-    '        cmd.Parameters.AddWithValue("@AkhirBulan", TanggalAkhir)
-
-    '        ' Eksekusi query dan simpan dalam DataTable
-    '        Dim adapter As New MySqlDataAdapter(cmd)
-    '        Dim dt As New DataTable()
-    '        adapter.Fill(dt)
-
-    '        ' Cek apakah ada data
-    '        If dt.Rows.Count = 0 Then
-    '            MsgBox("Tidak ada data untuk diekspor!", MsgBoxStyle.Information)
-    '            Exit Sub
-    '        End If
-
-    '        Dim Namalaporan As String
-    '        If JENIS = "NonPPn" Then
-    '            Namalaporan = "Laporan_Barang_Non_PPN.xlsx"
-    '        Else
-    '            Namalaporan = "Laporan_Barang_PPN.xlsx"
-    '        End If
-
-    '        ' Ekspor ke Excel menggunakan Interop
-    '        Dim saveDialog As New SaveFileDialog()
-    '        saveDialog.Filter = "Excel Files|*.xlsx"
-    '        saveDialog.Title = "Simpan Laporan Excel"
-    '        saveDialog.FileName = Namalaporan
-
-    '        If saveDialog.ShowDialog() = DialogResult.OK Then
-    '            ' Membuka aplikasi Excel
-    '            Dim excelApp As New Excel.Application()
-    '            Dim workBook As Excel.Workbook = excelApp.Workbooks.Add()
-    '            Dim worksheet As Excel.Worksheet = workBook.Sheets(1)
-    '            excelApp.Visible = False ' Bisa diset True jika ingin Excel tampil
-
-    '            ' Menambahkan 4 Baris Judul
-    '            worksheet.Cells(1, 1).Value = "LAPORAN PENJUALAN " & NAMA_PERUSAHAAN
-    '            worksheet.Cells(2, 1).Value = "JENIS BARANG : " & TxtKunci.Text.ToUpper()
-    '            worksheet.Cells(3, 1).Value = "Periode: " & TanggalAwal.ToString("dd/MM/yy HH:mm:ss") & " - " & TanggalAkhir.ToString("dd/MM/yy HH:mm:ss")
-    '            worksheet.Cells(4, 1).Value = "Dicetak pada: " & DateTime.Now.ToString("dd/MM/yy HH:mm:ss")
-
-    '            ' Merge kolom untuk judul
-    '            worksheet.Range("A1", "E1").Merge()
-    '            worksheet.Range("A2", "E2").Merge()
-    '            worksheet.Range("A3", "E3").Merge()
-    '            worksheet.Range("A4", "E4").Merge()
-
-    '            worksheet.Cells(1, 1).HorizontalAlignment = Excel.XlHAlign.xlHAlignCenter
-    '            worksheet.Cells(2, 1).HorizontalAlignment = Excel.XlHAlign.xlHAlignCenter
-    '            worksheet.Cells(3, 1).HorizontalAlignment = Excel.XlHAlign.xlHAlignCenter
-    '            worksheet.Cells(4, 1).HorizontalAlignment = Excel.XlHAlign.xlHAlignCenter
-
-    '            ' Menambahkan Header dengan Nama Kolom yang Diperbaiki
-    '            Dim headers As String() = {"NO", "TANGGAL", "FAKTUR", "PELANGGAN", "TOTAL"}
-    '            For i As Integer = 0 To headers.Length - 1
-    '                worksheet.Cells(5, i + 1).Value = headers(i)
-    '                worksheet.Cells(5, i + 1).Font.Bold = True
-    '                worksheet.Cells(5, i + 1).Interior.Color = System.Drawing.ColorTranslator.ToOle(System.Drawing.Color.LightGray)
-    '                worksheet.Cells(5, i + 1).HorizontalAlignment = Excel.XlHAlign.xlHAlignCenter
-    '            Next
-
-    '            ' Menambahkan Data
-    '            Dim rowIndex As Integer = 6
-    '            Dim nomor As Integer = 1
-    '            Dim subTotal As Double = 0
-    '            For Each row As DataRow In dt.Rows
-    '                worksheet.Cells(rowIndex, 1).Value = nomor ' NOMOR
-    '                worksheet.Cells(rowIndex, 2).Value = Convert.ToDateTime(row("TANGGAL_JUAL")).ToString("dd/MM/yy HH:mm:ss") ' TANGGAL
-    '                worksheet.Cells(rowIndex, 3).Value = row("FAKTUR_JUAL").ToString() ' FAKTUR
-    '                worksheet.Cells(rowIndex, 4).Value = row("NAMA_PELANGGAN").ToString() ' PELANGGAN
-    '                worksheet.Cells(rowIndex, 5).Value = Convert.ToDouble(row("TOTAL_HARGA")) ' TOTAL HARGA
-
-    '                ' Set format sel untuk kolom tanggal (Kolom B)
-    '                With worksheet
-    '                    .Cells(rowIndex, 2).Value = Convert.ToDateTime(row("TANGGAL_JUAL")).ToString("dd/MM/yy HH:mm:ss")
-    '                    .Cells(rowIndex, 2).NumberFormat = "dd/MM/yy HH:mm:ss"
-    '                End With
-
-
-    '                subTotal += Convert.ToDouble(row("TOTAL_HARGA"))
-    '                nomor += 1
-    '                rowIndex += 1
-    '            Next
-
-    '            ' Menambahkan baris Subtotal
-    '            worksheet.Cells(rowIndex, 4).Value = "SUBTOTAL"
-    '            worksheet.Cells(rowIndex, 5).Value = subTotal
-    '            worksheet.Cells(rowIndex, 4).Font.Bold = True
-    '            worksheet.Cells(rowIndex, 5).Font.Bold = True
-    '            worksheet.Cells(rowIndex, 4).HorizontalAlignment = Excel.XlHAlign.xlHAlignCenter
-    '            worksheet.Cells(rowIndex, 5).HorizontalAlignment = Excel.XlHAlign.xlHAlignRight
-
-    '            ' Mengatur AutoFit kolom
-    '            worksheet.Columns.AutoFit()
-
-    '            ' Simpan File
-    '            workBook.SaveAs(saveDialog.FileName)
-    '            workBook.Close()
-    '            excelApp.Quit()
-
-    '            MsgBox("Laporan berhasil diekspor ke Excel!", MsgBoxStyle.Information)
-    '        End If
-
-    '    End Using
-    'End Sub
-
-
-
 
     ' Fungsi untuk mengecek apakah file sedang terbuka
     Private Function IsFileOpen(ByVal filePath As String) As Boolean
@@ -316,23 +144,30 @@ Public Class FormPenjualanPPn
         End Try
     End Function
 
-    ' Fungsi utama untuk ekspor data ke Excel
     Private Sub ExportToExcel(ByVal JENIS As String)
+        Dim excelApp As Excel.Application = Nothing
+        Dim workBook As Excel.Workbook = Nothing
+        Dim worksheet As Excel.Worksheet = Nothing
+
         Try
+            Me.Cursor = Cursors.WaitCursor
+            ProgressBar1.Visible = True
+            ProgressBar1.Value = 0
+            If LabelProgress IsNot Nothing Then LabelProgress.Text = "Menyiapkan data..."
 
-            Me.Cursor = Cursors.WaitCursor ' Set cursor ke wait
+            Application.DoEvents()
 
+            ' ================= FILTER =================
             Dim TanggalAwal As Date
             Dim TanggalAkhir As Date
 
-            ' Tentukan rentang tanggal berdasarkan filter yang dipilih
             If CbTanggal.Checked Then
                 TanggalAwal = DTPAwal.Value.Date
                 TanggalAkhir = DTPAkhir.Value.Date.AddDays(1).AddTicks(-1)
             ElseIf CbBulan.Checked Then
                 KonversiBulanKeAngka()
                 Dim Bulan As Integer = BulanTerpilih
-                Dim Tahun As Integer = CmbThn.Text
+                Dim Tahun As Integer = CInt(CmbThn.Text)
                 TanggalAwal = New DateTime(Tahun, Bulan, 1)
                 TanggalAkhir = TanggalAwal.AddMonths(1).AddSeconds(-1)
             Else
@@ -340,164 +175,279 @@ Public Class FormPenjualanPPn
                 Exit Sub
             End If
 
-            ' Pastikan DGVFilter memiliki data
+            ' ================= VALIDASI =================
             If DGVFilter.Rows.Count = 0 Then
-                MsgBox("Data belum tersedia di DGVFilter!", MsgBoxStyle.Exclamation)
+                MsgBox("Data belum tersedia!", MsgBoxStyle.Exclamation)
                 Exit Sub
             End If
 
-            ' Ambil semua ID_BARANG dari DataGridView
-            Dim idBarangList As New List(Of String)
-            For Each row As DataGridViewRow In DGVFilter.Rows
-                If Not row.IsNewRow Then
-                    idBarangList.Add(row.Cells(0).Value.ToString())
-                End If
+            ' ================= ID BARANG =================
+            Dim idBarang As New List(Of String)
+            For Each r As DataGridViewRow In DGVFilter.Rows
+                If Not r.IsNewRow Then idBarang.Add(r.Cells(0).Value.ToString())
             Next
 
-            ' Buat parameter untuk setiap ID_BARANG
-            Dim idParams As New List(Of String)
-            Dim parameters As New List(Of MySqlParameter)
-            For i As Integer = 0 To idBarangList.Count - 1
-                Dim paramName As String = "@id" & i
-                idParams.Add(paramName)
-                parameters.Add(New MySqlParameter(paramName, idBarangList(i)))
+            ' ================= QUERY =================
+            Dim paramNames As New List(Of String)
+            Dim paramList As New List(Of MySqlParameter)
+
+            For i As Integer = 0 To idBarang.Count - 1
+                Dim p As String = "@id" & i
+                paramNames.Add(p)
+                paramList.Add(New MySqlParameter(p, idBarang(i)))
             Next
 
-            ' Tentukan query SQL berdasarkan jenis barang
-            Dim query As String
-            If JENIS = "NonPPn" Then
-                query = "SELECT TANGGAL_JUAL, FAKTUR_JUAL, NAMA_PELANGGAN, SUM(TOTAL_HARGA) AS TOTAL_HARGA " &
-                    "FROM penjualan_detail " &
-                    "WHERE ID_BARANG IN (" & String.Join(",", idParams) & ") " &
-                    "AND TANGGAL_JUAL BETWEEN @AwalBulan AND @AkhirBulan " &
-                    "GROUP BY TANGGAL_JUAL, FAKTUR_JUAL, NAMA_PELANGGAN"
-            Else
-                query = "SELECT TANGGAL_JUAL, FAKTUR_JUAL, NAMA_PELANGGAN, SUM(TOTAL_HARGA) AS TOTAL_HARGA " &
-                    "FROM penjualan_detail " &
-                    "WHERE ID_BARANG NOT IN (" & String.Join(",", idParams) & ") " &
-                    "AND TANGGAL_JUAL BETWEEN @AwalBulan AND @AkhirBulan " &
-                    "GROUP BY TANGGAL_JUAL, FAKTUR_JUAL, NAMA_PELANGGAN"
+            Dim query As String =
+            "SELECT TANGGAL_JUAL, FAKTUR_JUAL, NAMA_PELANGGAN, SUM(TOTAL_HARGA) TOTAL_HARGA " &
+            "FROM penjualan_detail " &
+            If(JENIS = "NonPPn", "WHERE ID_BARANG IN ", "WHERE ID_BARANG NOT IN ") &
+            "(" & String.Join(",", paramNames) & ") " &
+            "AND TANGGAL_JUAL BETWEEN @Awal AND @Akhir " &
+            "GROUP BY TANGGAL_JUAL, FAKTUR_JUAL, NAMA_PELANGGAN"
+
+            Dim dt As New DataTable
+            Using cmd As New MySqlCommand(query, conn)
+                cmd.Parameters.AddRange(paramList.ToArray())
+                cmd.Parameters.AddWithValue("@Awal", TanggalAwal)
+                cmd.Parameters.AddWithValue("@Akhir", TanggalAkhir)
+                Using adp As New MySqlDataAdapter(cmd)
+                    adp.Fill(dt)
+                End Using
+            End Using
+
+            If dt.Rows.Count = 0 Then
+                MsgBox("Tidak ada data!", MsgBoxStyle.Information)
+                Exit Sub
             End If
 
-            ' Koneksi ke MySQL
-            Using cmd As New MySqlCommand(query, conn)
-                cmd.Parameters.AddRange(parameters.ToArray())
-                cmd.Parameters.AddWithValue("@AwalBulan", TanggalAwal)
-                cmd.Parameters.AddWithValue("@AkhirBulan", TanggalAkhir)
-
-                Dim adapter As New MySqlDataAdapter(cmd)
-                Dim dt As New DataTable()
-                adapter.Fill(dt)
-
-                ' Jika tidak ada data, beri peringatan
-                If dt.Rows.Count = 0 Then
-                    MsgBox("Tidak ada data untuk diekspor!", MsgBoxStyle.Information)
+            ' ================= SAVE DIALOG =================
+            Using sfd As New SaveFileDialog
+                sfd.Filter = "Excel Files|*.xlsx"
+                sfd.FileName = If(JENIS = "NonPPn", "Laporan_Non_PPN.xlsx", "Laporan_PPN.xlsx")
+                If sfd.ShowDialog <> DialogResult.OK Then Exit Sub
+                If IsFileOpen(sfd.FileName) Then
+                    MsgBox("File Excel sedang terbuka!", MsgBoxStyle.Exclamation)
                     Exit Sub
                 End If
 
-                ' Nama file berdasarkan jenis barang
-                Dim Namalaporan As String = If(JENIS = "NonPPn", "Laporan_Barang_Non_PPN.xlsx", "Laporan_Barang_PPN.xlsx")
+                ' ================= EXCEL INIT =================
+                excelApp = New Excel.Application With {
+                .Visible = False,
+                .DisplayAlerts = False,
+                .ScreenUpdating = False,
+                .EnableEvents = False
+            }
 
-                ' Dialog penyimpanan file
-                Dim saveDialog As New SaveFileDialog()
-                saveDialog.Filter = "Excel Files|*.xlsx"
-                saveDialog.Title = "Simpan Laporan Excel"
-                saveDialog.FileName = Namalaporan
+                workBook = excelApp.Workbooks.Add()
+                worksheet = CType(workBook.Sheets(1), Excel.Worksheet)
 
-                If saveDialog.ShowDialog() = DialogResult.OK Then
-                    Dim filePath As String = saveDialog.FileName
+                ' ================= JUDUL =================
+                ' ===== HEADER LAPORAN (FIX FINAL) =====
+                worksheet.Cells(1, 1).Value = "LAPORAN PENJUALAN " & NAMA_PERUSAHAAN
+                worksheet.Cells(2, 1).Value =
+    If(JENIS = "NonPPn",
+       "JENIS BARANG : " & TxtKunci.Text.ToUpper(),
+       "JENIS BARANG SELAIN : " & TxtKunci.Text.ToUpper())
+                worksheet.Cells(3, 1).Value =
+    "Periode: " & TanggalAwal.ToString("dd/MM/yy HH:mm:ss") &
+    " - " & TanggalAkhir.ToString("dd/MM/yy HH:mm:ss")
+                worksheet.Cells(4, 1).Value =
+    "Dicetak pada: " & DateTime.Now.ToString("dd/MM/yy HH:mm:ss")
 
-                    ' Cek apakah file Excel sudah terbuka
-                    If IsFileOpen(filePath) Then
-                        MsgBox("File excell sudah terbuka, silakan tutup terlebih dahulu sebelum menyimpan!", MsgBoxStyle.Exclamation)
-                        Exit Sub
+                worksheet.Range("A1:E1").Merge()
+                worksheet.Range("A2:E2").Merge()
+                worksheet.Range("A3:E3").Merge()
+                worksheet.Range("A4:E4").Merge()
+
+                worksheet.Range("A1:E4").HorizontalAlignment =
+    Excel.XlHAlign.xlHAlignCenter
+
+
+                ' ================= HEADER =================
+                worksheet.Range("A5:E5").Value =
+                New Object() {"NO", "TANGGAL", "FAKTUR", "PELANGGAN", "TOTAL"}
+                worksheet.Range("A5:E5").Font.Bold = True
+                worksheet.Range("A5:E5").Interior.Color =
+                ColorTranslator.ToOle(Color.LightGray)
+
+                ' ================= PROGRESS SETUP =================
+                Dim rowCount As Integer = dt.Rows.Count
+                ProgressBar1.Maximum = rowCount
+                ProgressBar1.Value = 0
+
+                If LabelProgress IsNot Nothing Then
+                    LabelProgress.Text = "Menyiapkan data Excel..."
+                End If
+                Application.DoEvents()
+
+                ' ================= ARRAY BUILD =================
+                Dim data(rowCount - 1, 4) As Object
+                Dim subtotal As Double = 0
+
+                For i As Integer = 0 To rowCount - 1
+                    data(i, 0) = i + 1
+                    data(i, 1) = CDate(dt.Rows(i)("TANGGAL_JUAL"))
+                    data(i, 2) = dt.Rows(i)("FAKTUR_JUAL").ToString()
+                    data(i, 3) = dt.Rows(i)("NAMA_PELANGGAN").ToString()
+                    data(i, 4) = CDbl(dt.Rows(i)("TOTAL_HARGA"))
+
+                    subtotal += CDbl(data(i, 4))
+
+                    ProgressBar1.Value = i + 1
+                    If LabelProgress IsNot Nothing Then
+                        LabelProgress.Text = $"Menulis data {i + 1:N0} / {rowCount:N0}"
                     End If
 
-                    ' Membuka aplikasi Excel
-                    Dim excelApp As New Excel.Application()
-                    Dim workBook As Excel.Workbook = excelApp.Workbooks.Add()
-                    Dim worksheet As Excel.Worksheet = workBook.Sheets(1)
-                    excelApp.Visible = False ' Bisa diset True jika ingin Excel tampil
+                    If i Mod 50 = 0 Then Application.DoEvents()
+                Next
 
-                    ' Menambahkan 4 Baris Judul
-                    Dim Jenisbarang As String = If(JENIS = "NonPPn", "JENIS BARANG : " & TxtKunci.Text.ToUpper(), "JENIS BARANG SELAIN : " & TxtKunci.Text.ToUpper())
+                ' ================= WRITE TO EXCEL =================
+                worksheet.Range("A6").Resize(rowCount, 5).Value2 = data
+                worksheet.Range("B6:B" & (5 + rowCount)).NumberFormat = "dd/MM/yy HH:mm:ss"
 
-                    worksheet.Cells(1, 1).Value = "LAPORAN PENJUALAN " & NAMA_PERUSAHAAN
-                    worksheet.Cells(2, 1).Value = Jenisbarang
-                    worksheet.Cells(3, 1).Value = "Periode: " & TanggalAwal.ToString("dd/MM/yy HH:mm:ss") & " - " & TanggalAkhir.ToString("dd/MM/yy HH:mm:ss")
-                    worksheet.Cells(4, 1).Value = "Dicetak pada: " & DateTime.Now.ToString("dd/MM/yy HH:mm:ss")
+                ' ================= SUBTOTAL =================
+                worksheet.Cells(6 + rowCount, 4).Value = "SUBTOTAL"
+                worksheet.Cells(6 + rowCount, 5).Value = subtotal
+                worksheet.Range("D" & (6 + rowCount) & ":E" & (6 + rowCount)).Font.Bold = True
 
-                    ' Merge kolom untuk judul
-                    worksheet.Range("A1", "E1").Merge()
-                    worksheet.Range("A2", "E2").Merge()
-                    worksheet.Range("A3", "E3").Merge()
-                    worksheet.Range("A4", "E4").Merge()
+                worksheet.UsedRange.Columns.AutoFit()
 
-                    worksheet.Cells(1, 1).HorizontalAlignment = Excel.XlHAlign.xlHAlignCenter
-                    worksheet.Cells(2, 1).HorizontalAlignment = Excel.XlHAlign.xlHAlignCenter
-                    worksheet.Cells(3, 1).HorizontalAlignment = Excel.XlHAlign.xlHAlignCenter
-                    worksheet.Cells(4, 1).HorizontalAlignment = Excel.XlHAlign.xlHAlignCenter
+                workBook.SaveAs(sfd.FileName)
+                workBook.Close(False)
+                excelApp.Quit()
 
-
-                    ' Menambahkan Header dengan Nama Kolom yang Diperbaiki
-                    Dim headers As String() = {"NO", "TANGGAL", "FAKTUR", "PELANGGAN", "TOTAL"}
-                    For i As Integer = 0 To headers.Length - 1
-                        worksheet.Cells(5, i + 1).Value = headers(i)
-                        worksheet.Cells(5, i + 1).Font.Bold = True
-                        worksheet.Cells(5, i + 1).Interior.Color = System.Drawing.ColorTranslator.ToOle(System.Drawing.Color.LightGray)
-                        worksheet.Cells(5, i + 1).HorizontalAlignment = Excel.XlHAlign.xlHAlignCenter
-                    Next
-
-                    ' Menambahkan Data
-                    Dim rowIndex As Integer = 6
-                    Dim nomor As Integer = 1
-                    Dim subTotal As Double = 0
-                    For Each row As DataRow In dt.Rows
-                        worksheet.Cells(rowIndex, 1).Value = nomor ' NOMOR
-                        worksheet.Cells(rowIndex, 2).Value = Convert.ToDateTime(row("TANGGAL_JUAL")).ToString("dd/MM/yy HH:mm:ss") ' TANGGAL
-                        worksheet.Cells(rowIndex, 3).Value = row("FAKTUR_JUAL").ToString() ' FAKTUR
-                        worksheet.Cells(rowIndex, 4).Value = row("NAMA_PELANGGAN").ToString() ' PELANGGAN
-                        worksheet.Cells(rowIndex, 5).Value = Convert.ToDouble(row("TOTAL_HARGA")) ' TOTAL HARGA
-
-                        ' Set format sel untuk kolom tanggal (Kolom B)
-                        With worksheet
-                            .Cells(rowIndex, 2).Value = Convert.ToDateTime(row("TANGGAL_JUAL")).ToString("dd/MM/yy HH:mm:ss")
-                            .Cells(rowIndex, 2).NumberFormat = "dd/MM/yy HH:mm:ss"
-                        End With
-
-
-                        subTotal += Convert.ToDouble(row("TOTAL_HARGA"))
-                        nomor += 1
-                        rowIndex += 1
-                    Next
-
-                    ' Menambahkan baris Subtotal
-                    worksheet.Cells(rowIndex, 4).Value = "SUBTOTAL"
-                    worksheet.Cells(rowIndex, 5).Value = subTotal
-                    worksheet.Cells(rowIndex, 4).Font.Bold = True
-                    worksheet.Cells(rowIndex, 5).Font.Bold = True
-                    worksheet.Cells(rowIndex, 4).HorizontalAlignment = Excel.XlHAlign.xlHAlignCenter
-                    worksheet.Cells(rowIndex, 5).HorizontalAlignment = Excel.XlHAlign.xlHAlignRight
-
-                    ' Mengatur AutoFit kolom
-                    worksheet.Columns.AutoFit()
-
-                    ' Simpan file
-                    workBook.SaveAs(filePath)
-                    workBook.Close()
-                    excelApp.Quit()
-
-                    MsgBox("Laporan berhasil diekspor ke Excel!", MsgBoxStyle.Information)
+                If LabelProgress IsNot Nothing Then
+                    LabelProgress.Text = "Export selesai"
                 End If
+
+                MsgBox("Export Excel selesai dengan progress realtime!", MsgBoxStyle.Information)
             End Using
 
         Catch ex As Exception
-            MsgBox("Terjadi kesalahan: " & ex.Message, MsgBoxStyle.Critical)
+            MsgBox("Error: " & ex.Message, MsgBoxStyle.Critical)
+
         Finally
-            Me.Cursor = Cursors.Default ' Kembalikan cursor ke default
+            If worksheet IsNot Nothing Then Marshal.ReleaseComObject(worksheet)
+            If workBook IsNot Nothing Then Marshal.ReleaseComObject(workBook)
+            If excelApp IsNot Nothing Then Marshal.ReleaseComObject(excelApp)
+
+            worksheet = Nothing
+            workBook = Nothing
+            excelApp = Nothing
+
+            ProgressBar1.Value = 0
+            ProgressBar1.Visible = False
+            Me.Cursor = Cursors.Default
+
+            GC.Collect()
+            GC.WaitForPendingFinalizers()
         End Try
     End Sub
 
+    Private Sub BtnCekDataNonPPn_Click(sender As Object, e As EventArgs) Handles BtnCekDataNonPPn.Click
+        TampilkanDataKeGrid("NonPPn")
+    End Sub
 
+    Private Sub BtnCekDataPpn_Click(sender As Object, e As EventArgs) Handles BtnCekDataPpn.Click
+        TampilkanDataKeGrid("PPn")
+    End Sub
 
+    Private Sub TampilkanDataKeGrid(ByVal JENIS As String)
+        Try
+            Me.Cursor = Cursors.WaitCursor
+
+            ' ================= FILTER TANGGAL =================
+            Dim TanggalAwal As Date
+            Dim TanggalAkhir As Date
+
+            If CbTanggal.Checked Then
+                TanggalAwal = DTPAwal.Value.Date
+                TanggalAkhir = DTPAkhir.Value.Date.AddDays(1).AddTicks(-1)
+            ElseIf CbBulan.Checked Then
+                KonversiBulanKeAngka()
+                Dim Bulan As Integer = BulanTerpilih
+                Dim Tahun As Integer = CInt(CmbThn.Text)
+                TanggalAwal = New DateTime(Tahun, Bulan, 1)
+                TanggalAkhir = TanggalAwal.AddMonths(1).AddSeconds(-1)
+            Else
+                MsgBox("Pilih filter tanggal atau bulan!", MsgBoxStyle.Exclamation)
+                Exit Sub
+            End If
+
+            ' ================= VALIDASI =================
+            If DGVFilter.Rows.Count = 0 Then
+                MsgBox("Daftar barang masih kosong!", MsgBoxStyle.Exclamation)
+                Exit Sub
+            End If
+
+            ' ================= ID BARANG =================
+            Dim idBarang As New List(Of String)
+            For Each r As DataGridViewRow In DGVFilter.Rows
+                If Not r.IsNewRow Then
+                    idBarang.Add(r.Cells(0).Value.ToString())
+                End If
+            Next
+
+            ' ================= PARAMETER =================
+            Dim paramNames As New List(Of String)
+            Dim paramList As New List(Of MySqlParameter)
+
+            For i As Integer = 0 To idBarang.Count - 1
+                Dim p As String = "@id" & i
+                paramNames.Add(p)
+                paramList.Add(New MySqlParameter(p, idBarang(i)))
+            Next
+
+            ' ================= QUERY (SAMA DENGAN EXPORT) =================
+            Dim query As String =
+            "SELECT " &
+            "TANGGAL_JUAL, FAKTUR_JUAL, NAMA_PELANGGAN, ID_BARANG, TOTAL_HARGA " &
+            "FROM penjualan_detail " &
+            If(JENIS = "NonPPn", "WHERE ID_BARANG IN ", "WHERE ID_BARANG NOT IN ") &
+            "(" & String.Join(",", paramNames) & ") " &
+            "AND TANGGAL_JUAL BETWEEN @Awal AND @Akhir " &
+            "ORDER BY TANGGAL_JUAL, FAKTUR_JUAL"
+
+            ' ================= AMBIL DATA =================
+            Dim dt As New DataTable
+            Using cmd As New MySqlCommand(query, conn)
+                cmd.Parameters.AddRange(paramList.ToArray())
+                cmd.Parameters.AddWithValue("@Awal", TanggalAwal)
+                cmd.Parameters.AddWithValue("@Akhir", TanggalAkhir)
+
+                Using adp As New MySqlDataAdapter(cmd)
+                    adp.Fill(dt)
+                End Using
+            End Using
+
+            ' ================= TAMPILKAN KE GRID =================
+            DgvData.AutoGenerateColumns = True
+            DgvData.DataSource = dt
+
+            ' ================= FORMAT GRID =================
+            With DgvData
+                .Columns("TANGGAL_JUAL").DefaultCellStyle.Format = "dd/MM/yyyy HH:mm:ss"
+                .Columns("TOTAL_HARGA").DefaultCellStyle.Format = "N0"
+                .Columns("TOTAL_HARGA").DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight
+                .AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill
+            End With
+
+            If dt.Rows.Count = 0 Then
+                MsgBox("Tidak ada data untuk ditampilkan.", MsgBoxStyle.Information)
+            End If
+
+        Catch ex As Exception
+            MsgBox("Gagal menampilkan data: " & ex.Message, MsgBoxStyle.Critical)
+
+        Finally
+            Me.Cursor = Cursors.Default
+        End Try
+    End Sub
+
+    Private Sub DgvData_RowPostPaint(sender As Object, e As DataGridViewRowPostPaintEventArgs) Handles DgvData.RowPostPaint
+        ' Menggambar nomor urut pada row header
+        Using b As New SolidBrush(DgvData.RowHeadersDefaultCellStyle.ForeColor)
+            e.Graphics.DrawString((e.RowIndex + 1).ToString(), e.InheritedRowStyle.Font, b, e.RowBounds.Location.X + 10, e.RowBounds.Location.Y + 4)
+        End Using
+    End Sub
 End Class

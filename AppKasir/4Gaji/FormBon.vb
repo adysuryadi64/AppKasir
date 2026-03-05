@@ -57,7 +57,7 @@
     End Sub
 
     Private Sub GenerateNomorBon()
-        Dim cekTanggal As String = Microsoft.VisualBasic.Format(DtpTanggal.Value, "yyMMdd")
+        Dim cekTanggal As String = DtpTanggal.Value.ToString("yyMMdd")
         Dim UrutKOde As String = ""
         Dim cekNomor As String = "BK-" & cekTanggal
 
@@ -186,7 +186,7 @@
         ConfigureDgvColumns(DgvKeuangan)
 
         ' Menampilkan keterangan dan total nominal
-        LblTotalNominal.Text = $"Daftar rincian tanggal : {CDate(DtpTanggal.Text):dd/MM/yyyy} Total Nominal Rp. {totalNominal:N0}"
+        LblTotalNominal.Text = $"Daftar rincian tanggal : {DtpTanggal.Value:dd/MM/yyyy} Total Nominal Rp. {totalNominal:N0}"
 
     End Sub
 

@@ -3,8 +3,8 @@
 
 Public Class FormReturPenjualan
     Private jenisprintercetak As String = ""
+    Private TransaksiLampau As String
     Private Sub FormReturPenjualan_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
-        OpenConnection()
         AmbilJenisPrinter()
         Kondisiawalretur()
         Datagrid()
@@ -23,7 +23,7 @@ Public Class FormReturPenjualan
             DGVPilihBarang.ColumnHeadersDefaultCellStyle = headerCellStyle
         End Using
 
-
+        TransaksiLampau = ModulHakAkses.BacaHakAksesSemua(FormGeneralSetting.LblTransaksiTanggalLampau.Text)
         DTPtglJual.Value = DateTime.Now
         DTPtglJual.Format = DateTimePickerFormat.Custom
         DTPtglJual.CustomFormat = "dd/MM/yyyy"
@@ -82,9 +82,12 @@ Public Class FormReturPenjualan
         End Using
     End Sub
 
+    Private Sub DTPRetur_ValueChanged(sender As Object, e As EventArgs) Handles DTPRetur.ValueChanged
+        GenerateNomorReturPenjualan()
+    End Sub
 
     Private Sub GenerateNomorReturPenjualan()
-        Dim cekTanggal As String = Microsoft.VisualBasic.Format(DTPRetur.Value, "yyMMdd")
+        Dim cekTanggal As String = DTPRetur.Value.ToString("yyMMdd")
         Dim UrutKOde As String = ""
         Dim cekNomor As String = "RP-" & cekTanggal
 
@@ -883,8 +886,11 @@ Public Class FormReturPenjualan
             Dim transaction As MySqlTransaction = Nothing
 
             Try
+                If TransaksiLampau = "Tidak" Then
+                    DTPRetur.Value = Now
+                    GenerateNomorReturPenjualan()
+                End If
 
-                GenerateNomorReturPenjualan()
 
                 transaction = conn.BeginTransaction()
                 SimpanUpdatePiutangPembelian(transaction)
@@ -896,12 +902,6 @@ Public Class FormReturPenjualan
                 ' Commit transaksi jika berhasil
                 transaction.Commit()
 
-                'If jenisprintercetak = "Printer Thermal" Then
-                With PrintReturJual
-                    .TxtFaktur.Text = LblNoNotaRetur.Text
-                End With
-                'End If
-
                 For Each row As DataGridViewRow In DGVReturjual.Rows
                     If Not row.IsNewRow AndAlso row.Cells(0).Value IsNot Nothing AndAlso row.Cells(0).Value.ToString() <> "" Then
                         HitungByKode(row.Cells(0).Value)
@@ -910,14 +910,30 @@ Public Class FormReturPenjualan
 
                 DatabaseModule.CatatanAksiHistory("Retur penjualan " & LblNoNotaRetur.Text)
 
-                ' Jika semuanya berhasil, kembalikan kondisi awal
-                Kondisiawalretur()
 
             Catch ex As Exception
                 transaction.Rollback()
 
                 ' Tampilkan pesan kesalahan kepada pengguna
                 MessageBox.Show("Terjadi kesalahan: " & ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            End Try
+
+
+            Try
+                ' Jika jenis printer adalah "Printer Thermal", isi data ke form PrintReturJual
+                If jenisprintercetak = "Printer Thermal" Then
+                    With PrintReturJual
+                        .TxtFaktur.Text = LblNoNotaRetur.Text
+                    End With
+                End If
+
+            Catch ex As Exception
+                ' Tangani error jika diperlukan, misalnya tampilkan pesan kesalahan
+                MessageBox.Show("Terjadi kesalahan saat mencetak retur: " & ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
+
+            Finally
+                ' Kembalikan kondisi awal meskipun ada error
+                Kondisiawalretur()
             End Try
 
 
@@ -1250,7 +1266,6 @@ Public Class FormReturPenjualan
         FormUtama.Refresdatagridview()
         Close()
     End Sub
-
 
 
 End Class

@@ -26,14 +26,6 @@ Partial Class PrintJual
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(PrintJual))
         Me.Btnsimpan = New System.Windows.Forms.Button()
         Me.DgvData = New System.Windows.Forms.DataGridView()
-        Me.kode = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.NamaBarang = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.QTY = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.Satuan = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.Harga = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.TotalDiskon = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.TotalHarga = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.No = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.TxtFaktur = New System.Windows.Forms.TextBox()
         Me.DTPJatuhTempo = New System.Windows.Forms.DateTimePicker()
         Me.TxtBayar = New System.Windows.Forms.TextBox()
@@ -83,6 +75,15 @@ Partial Class PrintJual
         Me.TxtSblPajak = New System.Windows.Forms.TextBox()
         Me.Label18 = New System.Windows.Forms.Label()
         Me.TxtBiayaKirim = New System.Windows.Forms.TextBox()
+        Me.kode = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.NamaBarang = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.QTY = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.Satuan = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.Harga = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.TotalDiskon = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.TotalHarga = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.SN = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.No = New System.Windows.Forms.DataGridViewTextBoxColumn()
         CType(Me.DgvData, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
@@ -100,52 +101,12 @@ Partial Class PrintJual
         '
         Me.DgvData.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill
         Me.DgvData.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
-        Me.DgvData.Columns.AddRange(New System.Windows.Forms.DataGridViewColumn() {Me.kode, Me.NamaBarang, Me.QTY, Me.Satuan, Me.Harga, Me.TotalDiskon, Me.TotalHarga, Me.No})
+        Me.DgvData.Columns.AddRange(New System.Windows.Forms.DataGridViewColumn() {Me.kode, Me.NamaBarang, Me.QTY, Me.Satuan, Me.Harga, Me.TotalDiskon, Me.TotalHarga, Me.SN, Me.No})
         Me.DgvData.Location = New System.Drawing.Point(405, 12)
         Me.DgvData.Name = "DgvData"
         Me.DgvData.RowHeadersVisible = False
         Me.DgvData.Size = New System.Drawing.Size(613, 198)
         Me.DgvData.TabIndex = 3
-        '
-        'kode
-        '
-        Me.kode.HeaderText = "kode"
-        Me.kode.Name = "kode"
-        '
-        'NamaBarang
-        '
-        Me.NamaBarang.HeaderText = "NamaBarang"
-        Me.NamaBarang.Name = "NamaBarang"
-        '
-        'QTY
-        '
-        Me.QTY.HeaderText = "QTY"
-        Me.QTY.Name = "QTY"
-        '
-        'Satuan
-        '
-        Me.Satuan.HeaderText = "Satuan"
-        Me.Satuan.Name = "Satuan"
-        '
-        'Harga
-        '
-        Me.Harga.HeaderText = "Harga"
-        Me.Harga.Name = "Harga"
-        '
-        'TotalDiskon
-        '
-        Me.TotalDiskon.HeaderText = "TotalDiskon"
-        Me.TotalDiskon.Name = "TotalDiskon"
-        '
-        'TotalHarga
-        '
-        Me.TotalHarga.HeaderText = "TotalHarga"
-        Me.TotalHarga.Name = "TotalHarga"
-        '
-        'No
-        '
-        Me.No.HeaderText = "Nomor"
-        Me.No.Name = "No"
         '
         'TxtFaktur
         '
@@ -692,6 +653,51 @@ Partial Class PrintJual
         Me.TxtBiayaKirim.Size = New System.Drawing.Size(200, 23)
         Me.TxtBiayaKirim.TabIndex = 182
         '
+        'kode
+        '
+        Me.kode.HeaderText = "kode"
+        Me.kode.Name = "kode"
+        '
+        'NamaBarang
+        '
+        Me.NamaBarang.HeaderText = "NamaBarang"
+        Me.NamaBarang.Name = "NamaBarang"
+        '
+        'QTY
+        '
+        Me.QTY.HeaderText = "QTY"
+        Me.QTY.Name = "QTY"
+        '
+        'Satuan
+        '
+        Me.Satuan.HeaderText = "Satuan"
+        Me.Satuan.Name = "Satuan"
+        '
+        'Harga
+        '
+        Me.Harga.HeaderText = "Harga"
+        Me.Harga.Name = "Harga"
+        '
+        'TotalDiskon
+        '
+        Me.TotalDiskon.HeaderText = "TotalDiskon"
+        Me.TotalDiskon.Name = "TotalDiskon"
+        '
+        'TotalHarga
+        '
+        Me.TotalHarga.HeaderText = "TotalHarga"
+        Me.TotalHarga.Name = "TotalHarga"
+        '
+        'SN
+        '
+        Me.SN.HeaderText = "SN"
+        Me.SN.Name = "SN"
+        '
+        'No
+        '
+        Me.No.HeaderText = "Nomor"
+        Me.No.Name = "No"
+        '
         'PrintJual
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
@@ -806,14 +812,15 @@ Partial Class PrintJual
     Friend WithEvents TxtMetode As System.Windows.Forms.TextBox
     Friend WithEvents Label17 As System.Windows.Forms.Label
     Friend WithEvents TxtSblPajak As System.Windows.Forms.TextBox
-    Friend WithEvents kode As System.Windows.Forms.DataGridViewTextBoxColumn
-    Friend WithEvents NamaBarang As System.Windows.Forms.DataGridViewTextBoxColumn
-    Friend WithEvents QTY As System.Windows.Forms.DataGridViewTextBoxColumn
-    Friend WithEvents Satuan As System.Windows.Forms.DataGridViewTextBoxColumn
-    Friend WithEvents Harga As System.Windows.Forms.DataGridViewTextBoxColumn
-    Friend WithEvents TotalDiskon As System.Windows.Forms.DataGridViewTextBoxColumn
-    Friend WithEvents TotalHarga As System.Windows.Forms.DataGridViewTextBoxColumn
-    Friend WithEvents No As System.Windows.Forms.DataGridViewTextBoxColumn
     Friend WithEvents Label18 As System.Windows.Forms.Label
     Friend WithEvents TxtBiayaKirim As System.Windows.Forms.TextBox
+    Friend WithEvents kode As DataGridViewTextBoxColumn
+    Friend WithEvents NamaBarang As DataGridViewTextBoxColumn
+    Friend WithEvents QTY As DataGridViewTextBoxColumn
+    Friend WithEvents Satuan As DataGridViewTextBoxColumn
+    Friend WithEvents Harga As DataGridViewTextBoxColumn
+    Friend WithEvents TotalDiskon As DataGridViewTextBoxColumn
+    Friend WithEvents TotalHarga As DataGridViewTextBoxColumn
+    Friend WithEvents SN As DataGridViewTextBoxColumn
+    Friend WithEvents No As DataGridViewTextBoxColumn
 End Class

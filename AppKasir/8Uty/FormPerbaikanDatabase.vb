@@ -1,9 +1,19 @@
-﻿Public Class FormPerbaikanDatabase
+﻿Imports System.IO
+Imports iTextSharp.text
+
+
+Public Class FormPerbaikanDatabase
     Private Sub FormPerbaikanDatabase_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+        BtnCetak.Visible = False
+        BtnSimpanPDF.Visible = False
+
         ListBoxResults.Items.Clear()
     End Sub
 
     Private Sub BtnCleanup_Click(sender As Object, e As EventArgs) Handles BtnCleanup.Click
+        BtnCetak.Visible = False
+        BtnSimpanPDF.Visible = False
+
         Cursor = Cursors.WaitCursor
         ListBoxResults.Items.Clear()
 
@@ -47,6 +57,9 @@
 
 
     Private Sub BtnDuplikat_Click(sender As Object, e As EventArgs) Handles BtnDuplikat.Click
+        BtnCetak.Visible = True
+        BtnSimpanPDF.Visible = True
+
         Cursor = Cursors.WaitCursor
         ListBoxResults.Items.Clear()
 
@@ -71,6 +84,12 @@
 
     Private Function CekDuplikatBarang() As List(Of String)
         Dim duplikatList As New List(Of String)
+        Dim nomor As Integer = 1
+        Dim adaDuplikatKode As Boolean = False
+        Dim adaDuplikatNama As Boolean = False
+
+        ' Tambahkan header untuk duplikat KODE
+        duplikatList.Add("== Duplikat KODE ==")
 
         ' Cek duplikat ID_BARANG
         Dim queryDuplikatID As String = "SELECT ID_BARANG, COUNT(*) AS JumlahDuplikat FROM tbl_barang GROUP BY ID_BARANG HAVING COUNT(*) > 1"
@@ -79,10 +98,20 @@
                 While reader.Read()
                     Dim idBarang As String = reader("ID_BARANG").ToString()
                     Dim jumlah As Integer = Convert.ToInt32(reader("JumlahDuplikat"))
-                    duplikatList.Add($"Duplikat ID_BARANG: {idBarang}, Jumlah: {jumlah}")
+                    duplikatList.Add($"{nomor}. {idBarang}, Jumlah: {jumlah}")
+                    nomor += 1
+                    adaDuplikatKode = True
                 End While
             End Using
         End Using
+
+        ' Jika tidak ada duplikat kode, tambahkan keterangan
+        If Not adaDuplikatKode Then
+            duplikatList.Add("Tidak ada duplikat KODE barang.")
+        End If
+
+        ' Tambahkan header untuk duplikat NAMA
+        duplikatList.Add(Environment.NewLine & "== Duplikat NAMA ==")
 
         ' Cek duplikat NAMA_BARANG
         Dim queryDuplikatNama As String = "SELECT NAMA_BARANG, COUNT(*) AS JumlahDuplikat FROM tbl_barang GROUP BY NAMA_BARANG HAVING COUNT(*) > 1"
@@ -91,17 +120,28 @@
                 While reader.Read()
                     Dim namaBarang As String = reader("NAMA_BARANG").ToString()
                     Dim jumlah As Integer = Convert.ToInt32(reader("JumlahDuplikat"))
-                    duplikatList.Add($"Duplikat NAMA_BARANG: {namaBarang}, Jumlah: {jumlah}")
+                    duplikatList.Add($"{nomor}. {namaBarang}, Jumlah: {jumlah}")
+                    nomor += 1
+                    adaDuplikatNama = True
                 End While
             End Using
         End Using
+
+        ' Jika tidak ada duplikat nama, tambahkan keterangan
+        If Not adaDuplikatNama Then
+            duplikatList.Add("Tidak ada duplikat NAMA barang.")
+        End If
 
         Return duplikatList
     End Function
 
 
 
+
     Private Sub BtnAnalyze_Click(sender As Object, e As EventArgs) Handles BtnAnalyze.Click
+        BtnCetak.Visible = False
+        BtnSimpanPDF.Visible = False
+
         Cursor = Cursors.WaitCursor
         ' Daftar tabel yang akan dianalisis
         Dim tables As String() = {
@@ -144,6 +184,10 @@
     End Sub
 
     Private Sub BtnCheckTables_Click(sender As Object, e As EventArgs) Handles BtnCheckTables.Click
+        BtnCetak.Visible = False
+        BtnSimpanPDF.Visible = False
+
+
         Cursor = Cursors.WaitCursor
         ListBoxResults.Items.Clear()
 
@@ -188,6 +232,10 @@
     End Sub
 
     Private Sub BtnChecksumTables_Click(sender As Object, e As EventArgs) Handles BtnChecksumTables.Click
+        BtnCetak.Visible = False
+        BtnSimpanPDF.Visible = False
+
+
         Cursor = Cursors.WaitCursor
         ListBoxResults.Items.Clear()
 
@@ -228,6 +276,101 @@
             Cursor = Cursors.Default
         End Try
     End Sub
+
+    Private currentPrintIndex As Integer = 0
+    Private printItems As New List(Of String)
+
+    Private Sub BtnCetak_Click(sender As Object, e As EventArgs) Handles BtnCetak.Click
+        ' Cek apakah ListBoxResults memiliki item
+        If ListBoxResults.Items.Count = 0 Then
+            MessageBox.Show("Tidak ada data untuk dicetak.", "Peringatan", MessageBoxButtons.OK, MessageBoxIcon.Warning)
+            Return
+        End If
+
+        ' Simpan item ke dalam list untuk dicetak
+        printItems = ListBoxResults.Items.Cast(Of String)().ToList()
+        currentPrintIndex = 0
+
+        ' Siapkan dokumen cetak
+        Dim printDoc As New Printing.PrintDocument()
+        AddHandler printDoc.PrintPage, AddressOf PrintPageHandler
+
+        ' Tampilkan preview
+        Dim preview As New PrintPreviewDialog()
+        preview.Document = printDoc
+        preview.ShowDialog()
+    End Sub
+
+    Private Sub PrintPageHandler(sender As Object, ev As Printing.PrintPageEventArgs)
+        Dim font As New System.Drawing.Font("Arial", 10)
+        Dim lineHeight As Single = font.GetHeight(ev.Graphics)
+        Dim leftMargin As Single = ev.MarginBounds.Left
+        Dim topMargin As Single = ev.MarginBounds.Top
+        Dim yPosition As Single = topMargin
+        Dim itemsPerPage As Integer = CInt(Math.Floor(ev.MarginBounds.Height / lineHeight))
+
+        Dim i As Integer
+        For i = 0 To itemsPerPage - 1
+            If currentPrintIndex >= printItems.Count Then Exit For
+
+            Dim line As String = printItems(currentPrintIndex)
+            ev.Graphics.DrawString(line, font, System.Drawing.Brushes.Black, leftMargin, yPosition)
+            yPosition += lineHeight
+            currentPrintIndex += 1
+        Next
+
+        ev.HasMorePages = (currentPrintIndex < printItems.Count)
+    End Sub
+
+
+
+    Private Sub SimpanListBoxKePDF(filePath As String)
+        If ListBoxResults.Items.Count = 0 Then
+            MessageBox.Show("Tidak ada data untuk disimpan.", "Peringatan", MessageBoxButtons.OK, MessageBoxIcon.Warning)
+            Return
+        End If
+
+        Try
+            ' Buat dokumen PDF baru
+            Dim doc As New iTextSharp.text.Document(PageSize.A4, 40, 40, 40, 40)
+            iTextSharp.text.pdf.PdfWriter.GetInstance(doc, New FileStream(filePath, FileMode.Create))
+            doc.Open()
+
+            ' Buat font PDF
+            Dim bf As iTextSharp.text.pdf.BaseFont = iTextSharp.text.pdf.BaseFont.CreateFont(iTextSharp.text.pdf.BaseFont.HELVETICA, iTextSharp.text.pdf.BaseFont.CP1252, iTextSharp.text.pdf.BaseFont.NOT_EMBEDDED)
+            Dim titleFont As New iTextSharp.text.Font(bf, 14, iTextSharp.text.Font.BOLD)
+            Dim normalFont As New iTextSharp.text.Font(bf, 10)
+
+            ' Tambahkan judul
+            doc.Add(New iTextSharp.text.Paragraph("Daftar Hasil Duplikat Kode dan Nama Barang", titleFont))
+            doc.Add(New iTextSharp.text.Paragraph("Tanggal: " & DateTime.Now.ToString("dd MMMM yyyy"), normalFont))
+            doc.Add(New iTextSharp.text.Paragraph(Environment.NewLine))
+
+            ' Tambahkan item dari ListBox
+            For Each item As String In ListBoxResults.Items
+                doc.Add(New iTextSharp.text.Paragraph(item, normalFont))
+            Next
+
+            doc.Close()
+            MessageBox.Show("Data berhasil disimpan ke PDF.", "Berhasil", MessageBoxButtons.OK, MessageBoxIcon.Information)
+
+        Catch ex As Exception
+            MessageBox.Show("Gagal menyimpan PDF: " & ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
+        End Try
+    End Sub
+
+
+    Private Sub BtnSimpanPDF_Click(sender As Object, e As EventArgs) Handles BtnSimpanPDF.Click
+        Dim sfd As New SaveFileDialog()
+        sfd.Filter = "PDF File|*.pdf"
+        sfd.Title = "Simpan hasil ke PDF"
+        sfd.FileName = "LaporandataDuplikat.pdf"
+
+        If sfd.ShowDialog() = DialogResult.OK Then
+            SimpanListBoxKePDF(sfd.FileName)
+        End If
+    End Sub
+
 
 
 End Class

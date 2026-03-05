@@ -99,7 +99,7 @@ Public Class FormLapkAS
             Tampildatablnthn()
             CmbBln.Enabled = True
             CmbThn.Enabled = True
-            CmbThn.Text = Microsoft.VisualBasic.Format(Now, "yyyy")
+            CmbThn.Text = Now.ToString("yyyy")
             CbTanggal.Checked = False
             'CmbKasir.SelectedIndex = 0
             DtpTanggal.Enabled = False
@@ -208,9 +208,9 @@ Public Class FormLapkAS
                             Dim kembali As Decimal = If(Not rd.IsDBNull(rd.GetOrdinal("kembali")), rd("kembali"), 0)
                             Dim hutang As Decimal = If(Not rd.IsDBNull(rd.GetOrdinal("hutang")), rd("hutang"), 0)
 
-                            TxtGrantotal.Text = Microsoft.VisualBasic.Format(totalHarga, "N0")
-                            TxtDiterima.Text = Microsoft.VisualBasic.Format(bayar - kembali, "N0")
-                            TxtPiutang.Text = Microsoft.VisualBasic.Format(hutang, "N0")
+                            TxtGrantotal.Text = totalHarga.ToString("N0")
+                            TxtDiterima.Text = bayar - kembali.ToString("N0")
+                            TxtPiutang.Text = hutang.ToString("N0")
                         End If
 
                     End Using
@@ -267,9 +267,9 @@ Public Class FormLapkAS
                             Dim kembali As Decimal = If(Not rd.IsDBNull(rd.GetOrdinal("kembali")), rd("kembali"), 0)
                             Dim hutang As Decimal = If(Not rd.IsDBNull(rd.GetOrdinal("hutang")), rd("hutang"), 0)
 
-                            TxtGrantotal.Text = Microsoft.VisualBasic.Format(totalHarga, "N0")
-                            TxtDiterima.Text = Microsoft.VisualBasic.Format(bayar - kembali, "N0")
-                            TxtPiutang.Text = Microsoft.VisualBasic.Format(hutang, "N0")
+                            TxtGrantotal.Text = totalHarga.ToString("N0")
+                            TxtDiterima.Text = bayar - kembali.ToString("N0")
+                            TxtPiutang.Text = hutang.ToString("N0")
                         End If
 
                     End Using
@@ -325,9 +325,9 @@ Public Class FormLapkAS
                             Dim kembali As Decimal = If(Not rd.IsDBNull(rd.GetOrdinal("kembali")), rd("kembali"), 0)
                             Dim hutang As Decimal = If(Not rd.IsDBNull(rd.GetOrdinal("hutang")), rd("hutang"), 0)
 
-                            TxtGrantotal.Text = Microsoft.VisualBasic.Format(totalHarga, "N0")
-                            TxtDiterima.Text = Microsoft.VisualBasic.Format(bayar - kembali, "N0")
-                            TxtPiutang.Text = Microsoft.VisualBasic.Format(hutang, "N0")
+                            TxtGrantotal.Text = totalHarga.ToString("N0")
+                            TxtDiterima.Text = bayar - kembali.ToString("N0")
+                            TxtPiutang.Text = hutang.ToString("N0")
                         End If
                     End Using
                 End Using
@@ -384,9 +384,9 @@ Public Class FormLapkAS
                             Dim kembali As Decimal = If(Not rd.IsDBNull(rd.GetOrdinal("kembali")), rd("kembali"), 0)
                             Dim hutang As Decimal = If(Not rd.IsDBNull(rd.GetOrdinal("hutang")), rd("hutang"), 0)
 
-                            TxtGrantotal.Text = Microsoft.VisualBasic.Format(totalHarga, "N0")
-                            TxtDiterima.Text = Microsoft.VisualBasic.Format(bayar - kembali, "N0")
-                            TxtPiutang.Text = Microsoft.VisualBasic.Format(hutang, "N0")
+                            TxtGrantotal.Text = totalHarga.ToString("N0")
+                            TxtDiterima.Text = bayar - kembali.ToString("N0")
+                            TxtPiutang.Text = hutang.ToString("N0")
                         End If
 
                     End Using

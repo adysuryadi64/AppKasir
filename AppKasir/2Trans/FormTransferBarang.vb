@@ -2,6 +2,7 @@
     Private AwalTransfer As String
     Private SatuanTransfer As String
     Private TransferStokMinus As String
+    Private TransaksiLampau As String
 
     Private Sub Formtransferbarang(ByVal sender As Object, ByVal e As EventArgs) Handles MyBase.Load
         ' Set ukuran maksimum dan minimum untuk memastikan form tidak menutupi taskbar
@@ -10,9 +11,10 @@
 
         KosongTxtboxcari()
 
-        AwalTransfer = ModulHakAkses.BacaHakAksesSemua(FormHakUser.LblTransferFocus.Text)
-        SatuanTransfer = ModulHakAkses.BacaHakAksesSemua(FormHakUser.LblTransferSatuan.Text)
-        TransferStokMinus = ModulHakAkses.BacaHakAksesSemua(FormHakUser.LblTransferMinus.Text)
+        AwalTransfer = ModulHakAkses.BacaHakAksesSemua(FormGeneralSetting.LblTransferFocus.Text)
+        SatuanTransfer = ModulHakAkses.BacaHakAksesSemua(FormGeneralSetting.LblTransferSatuan.Text)
+        TransferStokMinus = ModulHakAkses.BacaHakAksesSemua(FormGeneralSetting.LblTransferMinus.Text)
+        TransaksiLampau = ModulHakAkses.BacaHakAksesSemua(FormGeneralSetting.LblTransaksiTanggalLampau.Text)
 
         If LblJenisTrans.Text = "TambahTransfer" Then
             Kondisiawal()
@@ -102,7 +104,7 @@
 
 
     Private Sub NomorTransfer()
-        Dim cekTanggal As String = Microsoft.VisualBasic.Format(DTPTgl.Value, "yyMMdd")
+        Dim cekTanggal As String = DTPTgl.Value.ToString("yyMMdd")
         Dim UrutKOde As String = ""
         Dim cekNomor As String = "TB-" & cekTanggal
 
@@ -187,13 +189,23 @@
     End Function
 
 
-    Private Sub TxtNama_TextChanged(ByVal sender As Object, ByVal e As EventArgs) Handles TxtNama.TextChanged
-        ProsesInput()
-    End Sub
+    Dim lastKeyTime As DateTime = DateTime.Now
+    Dim isBarcodeScan As Boolean = False
+    Dim suppressTextChanged As Boolean = False
 
     Private Sub TxtNama_KeyDown(ByVal sender As Object, ByVal e As KeyEventArgs) Handles TxtNama.KeyDown
+        'Deteksi kecepatan input
+        Dim currentTime = DateTime.Now
+        Dim elapsedMs = (currentTime - lastKeyTime).TotalMilliseconds
+        lastKeyTime = currentTime
+
+        'Deteksi barcode (input cepat + Enter)
         If e.KeyCode = Keys.Enter Then
-            ' jika listbox hanya satu hasil pencarian langsung panggil
+            isBarcodeScan = (elapsedMs < 50) AndAlso (TxtNama.Text.Length >= 5 OrElse TxtNama.Text.All(AddressOf Char.IsDigit))
+            suppressTextChanged = True
+            ProsesInput(isBarcodeScan)
+
+            'Logika existing untuk listbox
             If LstBarang.Items.Count = 1 Then
                 AmbilDataDariListBox()
             ElseIf LstBarang.Items.Count > 0 Then
@@ -211,7 +223,15 @@
         End If
     End Sub
 
-    Private Sub ProsesInput()
+    Private Sub TxtNama_TextChanged(ByVal sender As Object, ByVal e As EventArgs) Handles TxtNama.TextChanged
+        If suppressTextChanged Then
+            suppressTextChanged = False
+            Return
+        End If
+        ProsesInput(False) 'Manual input
+    End Sub
+
+    Private Sub ProsesInput(ByVal isBarcode As Boolean)
         If Not String.IsNullOrEmpty(TxtNama.Text) Then
             ' Menghitung jumlah huruf alfabet yang valid (hanya huruf, tidak termasuk angka atau tanda baca)
             Dim validLetters As String = ""
@@ -592,8 +612,6 @@
                 If dataTidakDitemukan Then
                     row.Cells("nama").Value = ""
                     SendKeys.Send("{down}")
-                    CariBarang.TxtJenisTransaksi.Text = "Pembelian"
-                    CariBarang.ShowDialog()
                 End If
 
                 ' Gabungkan Qty jika SatuanTransfer = Tidak
@@ -615,8 +633,6 @@
                 ' Kosong atau null
                 row.Cells("nama").Value = ""
                 SendKeys.Send("{down}")
-                CariBarang.TxtJenisTransaksi.Text = "Pembelian"
-                CariBarang.ShowDialog()
             End If
         End If
 
@@ -962,6 +978,11 @@
 
             If LblJenisTrans.Text <> "TambahTransfer" Then
                 HapusUntukEdit(transaction)
+            Else
+                If TransaksiLampau = "TIDAK" Then
+                    DTPTgl.Value = Now
+                    NomorTransfer()
+                End If
             End If
 
             SimpanSurat_Jalan(transaction)

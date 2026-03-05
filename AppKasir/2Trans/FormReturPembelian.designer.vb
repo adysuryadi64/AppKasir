@@ -24,7 +24,7 @@ Partial Class FormReturPembelian
     Private Sub InitializeComponent()
         Me.components = New System.ComponentModel.Container()
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(FormReturPembelian))
-        Dim DataGridViewCellStyle4 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
+        Dim DataGridViewCellStyle1 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
         Me.BtnClose = New System.Windows.Forms.Button()
         Me.Label8 = New System.Windows.Forms.Label()
         Me.PanelHeader = New System.Windows.Forms.Panel()
@@ -167,14 +167,14 @@ Partial Class FormReturPembelian
         Me.DGVReturPembelian.BackgroundColor = System.Drawing.Color.White
         Me.DGVReturPembelian.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
         Me.DGVReturPembelian.Columns.AddRange(New System.Windows.Forms.DataGridViewColumn() {Me.ID_BARANG, Me.NAMA_BARANG, Me.HARGA_BELI, Me.QTY, Me.SATUAN, Me.ISI_SATUAN, Me.HARGA_BELI_SATUAN, Me.QTY_SAT, Me.TOTAL})
-        DataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft
-        DataGridViewCellStyle4.BackColor = System.Drawing.SystemColors.Window
-        DataGridViewCellStyle4.Font = New System.Drawing.Font("Century Gothic", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        DataGridViewCellStyle4.ForeColor = System.Drawing.SystemColors.ControlText
-        DataGridViewCellStyle4.SelectionBackColor = System.Drawing.Color.Teal
-        DataGridViewCellStyle4.SelectionForeColor = System.Drawing.SystemColors.HighlightText
-        DataGridViewCellStyle4.WrapMode = System.Windows.Forms.DataGridViewTriState.[False]
-        Me.DGVReturPembelian.DefaultCellStyle = DataGridViewCellStyle4
+        DataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft
+        DataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Window
+        DataGridViewCellStyle1.Font = New System.Drawing.Font("Century Gothic", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        DataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.ControlText
+        DataGridViewCellStyle1.SelectionBackColor = System.Drawing.Color.Teal
+        DataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText
+        DataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.[False]
+        Me.DGVReturPembelian.DefaultCellStyle = DataGridViewCellStyle1
         Me.DGVReturPembelian.Location = New System.Drawing.Point(4, 208)
         Me.DGVReturPembelian.Margin = New System.Windows.Forms.Padding(4, 3, 4, 3)
         Me.DGVReturPembelian.Name = "DGVReturPembelian"
@@ -487,6 +487,7 @@ Partial Class FormReturPembelian
         '
         'TxtNotaBeli
         '
+        Me.TxtNotaBeli.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
         Me.TxtNotaBeli.Font = New System.Drawing.Font("Century Gothic", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.TxtNotaBeli.ForeColor = System.Drawing.Color.Green
         Me.TxtNotaBeli.Location = New System.Drawing.Point(139, 6)
@@ -703,9 +704,10 @@ Partial Class FormReturPembelian
         '
         'TxtTotalBarang
         '
+        Me.TxtTotalBarang.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
         Me.TxtTotalBarang.Font = New System.Drawing.Font("Century Gothic", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.TxtTotalBarang.ForeColor = System.Drawing.Color.Green
-        Me.TxtTotalBarang.Location = New System.Drawing.Point(154, 12)
+        Me.TxtTotalBarang.Location = New System.Drawing.Point(163, 12)
         Me.TxtTotalBarang.Margin = New System.Windows.Forms.Padding(4, 3, 4, 3)
         Me.TxtTotalBarang.Name = "TxtTotalBarang"
         Me.TxtTotalBarang.Size = New System.Drawing.Size(113, 23)
@@ -714,9 +716,10 @@ Partial Class FormReturPembelian
         '
         'TxtTotalQTY
         '
+        Me.TxtTotalQTY.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
         Me.TxtTotalQTY.Font = New System.Drawing.Font("Century Gothic", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.TxtTotalQTY.ForeColor = System.Drawing.Color.Green
-        Me.TxtTotalQTY.Location = New System.Drawing.Point(154, 41)
+        Me.TxtTotalQTY.Location = New System.Drawing.Point(163, 41)
         Me.TxtTotalQTY.Margin = New System.Windows.Forms.Padding(4, 3, 4, 3)
         Me.TxtTotalQTY.Name = "TxtTotalQTY"
         Me.TxtTotalQTY.Size = New System.Drawing.Size(113, 23)
@@ -758,9 +761,10 @@ Partial Class FormReturPembelian
         '
         'TxtTotalRupiah
         '
+        Me.TxtTotalRupiah.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
         Me.TxtTotalRupiah.Font = New System.Drawing.Font("Century Gothic", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.TxtTotalRupiah.ForeColor = System.Drawing.Color.Green
-        Me.TxtTotalRupiah.Location = New System.Drawing.Point(154, 72)
+        Me.TxtTotalRupiah.Location = New System.Drawing.Point(163, 72)
         Me.TxtTotalRupiah.Margin = New System.Windows.Forms.Padding(4, 3, 4, 3)
         Me.TxtTotalRupiah.Name = "TxtTotalRupiah"
         Me.TxtTotalRupiah.Size = New System.Drawing.Size(113, 23)

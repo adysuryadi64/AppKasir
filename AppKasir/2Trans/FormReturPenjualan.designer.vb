@@ -253,7 +253,7 @@ Partial Class FormReturPenjualan
         Me.Label17.Location = New System.Drawing.Point(39, 86)
         Me.Label17.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Me.Label17.Name = "Label17"
-        Me.Label17.Size = New System.Drawing.Size(55, 16)
+        Me.Label17.Size = New System.Drawing.Size(54, 16)
         Me.Label17.TabIndex = 243
         Me.Label17.Text = "Kontak :"
         '
@@ -264,7 +264,7 @@ Partial Class FormReturPenjualan
         Me.LblKontakPel.Location = New System.Drawing.Point(96, 86)
         Me.LblKontakPel.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Me.LblKontakPel.Name = "LblKontakPel"
-        Me.LblKontakPel.Size = New System.Drawing.Size(49, 16)
+        Me.LblKontakPel.Size = New System.Drawing.Size(48, 16)
         Me.LblKontakPel.TabIndex = 242
         Me.LblKontakPel.Text = "Kontak"
         '
@@ -302,7 +302,7 @@ Partial Class FormReturPenjualan
         Me.Label18.Location = New System.Drawing.Point(46, 111)
         Me.Label18.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Me.Label18.Name = "Label18"
-        Me.Label18.Size = New System.Drawing.Size(94, 16)
+        Me.Label18.Size = New System.Drawing.Size(93, 16)
         Me.Label18.TabIndex = 239
         Me.Label18.Text = "Total Belanja :"
         '
@@ -313,12 +313,13 @@ Partial Class FormReturPenjualan
         Me.LblTotalJual.Location = New System.Drawing.Point(145, 111)
         Me.LblTotalJual.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Me.LblTotalJual.Name = "LblTotalJual"
-        Me.LblTotalJual.Size = New System.Drawing.Size(44, 16)
+        Me.LblTotalJual.Size = New System.Drawing.Size(43, 16)
         Me.LblTotalJual.TabIndex = 238
         Me.LblTotalJual.Text = "Bayar"
         '
         'TxtTotalJual
         '
+        Me.TxtTotalJual.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
         Me.TxtTotalJual.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.TxtTotalJual.ForeColor = System.Drawing.Color.Green
         Me.TxtTotalJual.Location = New System.Drawing.Point(255, 108)
@@ -336,7 +337,7 @@ Partial Class FormReturPenjualan
         Me.Label14.Location = New System.Drawing.Point(48, 138)
         Me.Label14.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Me.Label14.Name = "Label14"
-        Me.Label14.Size = New System.Drawing.Size(92, 16)
+        Me.Label14.Size = New System.Drawing.Size(91, 16)
         Me.Label14.TabIndex = 236
         Me.Label14.Text = "Pembayaran :"
         '
@@ -347,7 +348,7 @@ Partial Class FormReturPenjualan
         Me.LblBayarJual.Location = New System.Drawing.Point(145, 138)
         Me.LblBayarJual.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Me.LblBayarJual.Name = "LblBayarJual"
-        Me.LblBayarJual.Size = New System.Drawing.Size(44, 16)
+        Me.LblBayarJual.Size = New System.Drawing.Size(43, 16)
         Me.LblBayarJual.TabIndex = 235
         Me.LblBayarJual.Text = "Bayar"
         '
@@ -358,7 +359,7 @@ Partial Class FormReturPenjualan
         Me.Label24.Location = New System.Drawing.Point(39, 6)
         Me.Label24.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Me.Label24.Name = "Label24"
-        Me.Label24.Size = New System.Drawing.Size(101, 16)
+        Me.Label24.Size = New System.Drawing.Size(100, 16)
         Me.Label24.TabIndex = 234
         Me.Label24.Text = "Lokasi Barang :"
         '
@@ -369,7 +370,7 @@ Partial Class FormReturPenjualan
         Me.LblLokasi.Location = New System.Drawing.Point(145, 6)
         Me.LblLokasi.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Me.LblLokasi.Name = "LblLokasi"
-        Me.LblLokasi.Size = New System.Drawing.Size(40, 16)
+        Me.LblLokasi.Size = New System.Drawing.Size(39, 16)
         Me.LblLokasi.TabIndex = 233
         Me.LblLokasi.Text = "Toko"
         '
@@ -387,6 +388,7 @@ Partial Class FormReturPenjualan
         '
         'TxtBayarJual
         '
+        Me.TxtBayarJual.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
         Me.TxtBayarJual.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.TxtBayarJual.ForeColor = System.Drawing.Color.Green
         Me.TxtBayarJual.Location = New System.Drawing.Point(255, 135)
@@ -399,6 +401,7 @@ Partial Class FormReturPenjualan
         '
         'TxtSisaJual
         '
+        Me.TxtSisaJual.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
         Me.TxtSisaJual.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.TxtSisaJual.ForeColor = System.Drawing.Color.Green
         Me.TxtSisaJual.Location = New System.Drawing.Point(255, 161)
@@ -416,12 +419,13 @@ Partial Class FormReturPenjualan
         Me.Label15.Location = New System.Drawing.Point(81, 164)
         Me.Label15.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Me.Label15.Name = "Label15"
-        Me.Label15.Size = New System.Drawing.Size(59, 16)
+        Me.Label15.Size = New System.Drawing.Size(58, 16)
         Me.Label15.TabIndex = 223
         Me.Label15.Text = "Piutang :"
         '
         'TxtNotaJual
         '
+        Me.TxtNotaJual.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
         Me.TxtNotaJual.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.TxtNotaJual.ForeColor = System.Drawing.Color.Green
         Me.TxtNotaJual.Location = New System.Drawing.Point(145, 30)
@@ -437,7 +441,7 @@ Partial Class FormReturPenjualan
         Me.LblSisaJual.Location = New System.Drawing.Point(145, 164)
         Me.LblSisaJual.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Me.LblSisaJual.Name = "LblSisaJual"
-        Me.LblSisaJual.Size = New System.Drawing.Size(35, 16)
+        Me.LblSisaJual.Size = New System.Drawing.Size(34, 16)
         Me.LblSisaJual.TabIndex = 222
         Me.LblSisaJual.Text = "Sisa"
         '
@@ -458,7 +462,7 @@ Partial Class FormReturPenjualan
         Me.Label13.Location = New System.Drawing.Point(26, 86)
         Me.Label13.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Me.Label13.Name = "Label13"
-        Me.Label13.Size = New System.Drawing.Size(114, 16)
+        Me.Label13.Size = New System.Drawing.Size(113, 16)
         Me.Label13.TabIndex = 221
         Me.Label13.Text = "Status Penjualan :"
         '
@@ -469,7 +473,7 @@ Partial Class FormReturPenjualan
         Me.LblStatusJual.Location = New System.Drawing.Point(145, 86)
         Me.LblStatusJual.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Me.LblStatusJual.Name = "LblStatusJual"
-        Me.LblStatusJual.Size = New System.Drawing.Size(48, 16)
+        Me.LblStatusJual.Size = New System.Drawing.Size(47, 16)
         Me.LblStatusJual.TabIndex = 220
         Me.LblStatusJual.Text = "Status "
         '
@@ -480,7 +484,7 @@ Partial Class FormReturPenjualan
         Me.Label3.Location = New System.Drawing.Point(40, 60)
         Me.Label3.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Me.Label3.Name = "Label3"
-        Me.Label3.Size = New System.Drawing.Size(100, 16)
+        Me.Label3.Size = New System.Drawing.Size(99, 16)
         Me.Label3.TabIndex = 227
         Me.Label3.Text = "Tgl. Penjualan :"
         '
@@ -491,7 +495,7 @@ Partial Class FormReturPenjualan
         Me.Label2.Location = New System.Drawing.Point(11, 33)
         Me.Label2.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Me.Label2.Name = "Label2"
-        Me.Label2.Size = New System.Drawing.Size(129, 16)
+        Me.Label2.Size = New System.Drawing.Size(128, 16)
         Me.Label2.TabIndex = 226
         Me.Label2.Text = "Nota Penjualan (F1):"
         '
@@ -502,7 +506,7 @@ Partial Class FormReturPenjualan
         Me.Label25.Location = New System.Drawing.Point(48, 7)
         Me.Label25.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Me.Label25.Name = "Label25"
-        Me.Label25.Size = New System.Drawing.Size(46, 16)
+        Me.Label25.Size = New System.Drawing.Size(45, 16)
         Me.Label25.TabIndex = 238
         Me.Label25.Text = "Kode :"
         '
@@ -513,7 +517,7 @@ Partial Class FormReturPenjualan
         Me.Label10.Location = New System.Drawing.Point(38, 60)
         Me.Label10.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Me.Label10.Name = "Label10"
-        Me.Label10.Size = New System.Drawing.Size(56, 16)
+        Me.Label10.Size = New System.Drawing.Size(55, 16)
         Me.Label10.TabIndex = 239
         Me.Label10.Text = "Alamat :"
         '
@@ -524,7 +528,7 @@ Partial Class FormReturPenjualan
         Me.LblAlamatPel.Location = New System.Drawing.Point(96, 60)
         Me.LblAlamatPel.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Me.LblAlamatPel.Name = "LblAlamatPel"
-        Me.LblAlamatPel.Size = New System.Drawing.Size(50, 16)
+        Me.LblAlamatPel.Size = New System.Drawing.Size(49, 16)
         Me.LblAlamatPel.TabIndex = 237
         Me.LblAlamatPel.Text = "Alamat"
         '
@@ -535,7 +539,7 @@ Partial Class FormReturPenjualan
         Me.LblKodePel.Location = New System.Drawing.Point(96, 7)
         Me.LblKodePel.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Me.LblKodePel.Name = "LblKodePel"
-        Me.LblKodePel.Size = New System.Drawing.Size(40, 16)
+        Me.LblKodePel.Size = New System.Drawing.Size(39, 16)
         Me.LblKodePel.TabIndex = 236
         Me.LblKodePel.Text = "Kode"
         '
@@ -546,7 +550,7 @@ Partial Class FormReturPenjualan
         Me.Label6.Location = New System.Drawing.Point(14, 32)
         Me.Label6.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Me.Label6.Name = "Label6"
-        Me.Label6.Size = New System.Drawing.Size(80, 16)
+        Me.Label6.Size = New System.Drawing.Size(79, 16)
         Me.Label6.TabIndex = 235
         Me.Label6.Text = "Pelanggan :"
         '
@@ -557,7 +561,7 @@ Partial Class FormReturPenjualan
         Me.Label5.Location = New System.Drawing.Point(21, 50)
         Me.Label5.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Me.Label5.Name = "Label5"
-        Me.Label5.Size = New System.Drawing.Size(84, 16)
+        Me.Label5.Size = New System.Drawing.Size(83, 16)
         Me.Label5.TabIndex = 234
         Me.Label5.Text = "Nota Retur :"
         '
@@ -568,7 +572,7 @@ Partial Class FormReturPenjualan
         Me.LblNoNotaRetur.Location = New System.Drawing.Point(107, 50)
         Me.LblNoNotaRetur.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Me.LblNoNotaRetur.Name = "LblNoNotaRetur"
-        Me.LblNoNotaRetur.Size = New System.Drawing.Size(65, 16)
+        Me.LblNoNotaRetur.Size = New System.Drawing.Size(64, 16)
         Me.LblNoNotaRetur.TabIndex = 233
         Me.LblNoNotaRetur.Text = "No. Nota"
         '
@@ -612,7 +616,7 @@ Partial Class FormReturPenjualan
         Me.LblStatusPiutang.Location = New System.Drawing.Point(267, 150)
         Me.LblStatusPiutang.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Me.LblStatusPiutang.Name = "LblStatusPiutang"
-        Me.LblStatusPiutang.Size = New System.Drawing.Size(45, 16)
+        Me.LblStatusPiutang.Size = New System.Drawing.Size(44, 16)
         Me.LblStatusPiutang.TabIndex = 254
         Me.LblStatusPiutang.Text = "Status"
         Me.LblStatusPiutang.Visible = False
@@ -624,13 +628,14 @@ Partial Class FormReturPenjualan
         Me.Label21.Location = New System.Drawing.Point(24, 90)
         Me.Label21.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Me.Label21.Name = "Label21"
-        Me.Label21.Size = New System.Drawing.Size(42, 16)
+        Me.Label21.Size = New System.Drawing.Size(41, 16)
         Me.Label21.TabIndex = 253
         Me.Label21.Text = "HPP :"
         Me.Label21.Visible = False
         '
         'TxtHPP
         '
+        Me.TxtHPP.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
         Me.TxtHPP.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.TxtHPP.ForeColor = System.Drawing.Color.Green
         Me.TxtHPP.Location = New System.Drawing.Point(81, 87)
@@ -647,7 +652,7 @@ Partial Class FormReturPenjualan
         Me.LblKodeAkun.Location = New System.Drawing.Point(92, 209)
         Me.LblKodeAkun.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Me.LblKodeAkun.Name = "LblKodeAkun"
-        Me.LblKodeAkun.Size = New System.Drawing.Size(40, 16)
+        Me.LblKodeAkun.Size = New System.Drawing.Size(39, 16)
         Me.LblKodeAkun.TabIndex = 251
         Me.LblKodeAkun.Text = "Kode"
         '
@@ -669,7 +674,7 @@ Partial Class FormReturPenjualan
         Me.Label4.Location = New System.Drawing.Point(21, 180)
         Me.Label4.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Me.Label4.Name = "Label4"
-        Me.Label4.Size = New System.Drawing.Size(44, 16)
+        Me.Label4.Size = New System.Drawing.Size(43, 16)
         Me.Label4.TabIndex = 249
         Me.Label4.Text = "Akun :"
         '
@@ -680,7 +685,7 @@ Partial Class FormReturPenjualan
         Me.CbPotongHutang.Location = New System.Drawing.Point(137, 149)
         Me.CbPotongHutang.Margin = New System.Windows.Forms.Padding(4)
         Me.CbPotongHutang.Name = "CbPotongHutang"
-        Me.CbPotongHutang.Size = New System.Drawing.Size(116, 20)
+        Me.CbPotongHutang.Size = New System.Drawing.Size(115, 20)
         Me.CbPotongHutang.TabIndex = 248
         Me.CbPotongHutang.Text = "Potong Hutang"
         Me.CbPotongHutang.UseVisualStyleBackColor = True
@@ -692,7 +697,7 @@ Partial Class FormReturPenjualan
         Me.CbTunai.Location = New System.Drawing.Point(24, 149)
         Me.CbTunai.Margin = New System.Windows.Forms.Padding(4)
         Me.CbTunai.Name = "CbTunai"
-        Me.CbTunai.Size = New System.Drawing.Size(61, 20)
+        Me.CbTunai.Size = New System.Drawing.Size(60, 20)
         Me.CbTunai.TabIndex = 247
         Me.CbTunai.Text = "Tunai"
         Me.CbTunai.UseVisualStyleBackColor = True
@@ -724,7 +729,7 @@ Partial Class FormReturPenjualan
         Me.LblTotalQTY.Location = New System.Drawing.Point(124, 39)
         Me.LblTotalQTY.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Me.LblTotalQTY.Name = "LblTotalQTY"
-        Me.LblTotalQTY.Size = New System.Drawing.Size(39, 16)
+        Me.LblTotalQTY.Size = New System.Drawing.Size(38, 16)
         Me.LblTotalQTY.TabIndex = 238
         Me.LblTotalQTY.Text = "Rp. 0"
         '
@@ -735,7 +740,7 @@ Partial Class FormReturPenjualan
         Me.LblTotalBarang.Location = New System.Drawing.Point(124, 15)
         Me.LblTotalBarang.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Me.LblTotalBarang.Name = "LblTotalBarang"
-        Me.LblTotalBarang.Size = New System.Drawing.Size(39, 16)
+        Me.LblTotalBarang.Size = New System.Drawing.Size(38, 16)
         Me.LblTotalBarang.TabIndex = 239
         Me.LblTotalBarang.Text = "Rp. 0"
         '
@@ -746,12 +751,13 @@ Partial Class FormReturPenjualan
         Me.LblTotalRupiah.Location = New System.Drawing.Point(124, 64)
         Me.LblTotalRupiah.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Me.LblTotalRupiah.Name = "LblTotalRupiah"
-        Me.LblTotalRupiah.Size = New System.Drawing.Size(39, 16)
+        Me.LblTotalRupiah.Size = New System.Drawing.Size(38, 16)
         Me.LblTotalRupiah.TabIndex = 237
         Me.LblTotalRupiah.Text = "Rp. 0"
         '
         'TxtTotalBarang
         '
+        Me.TxtTotalBarang.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
         Me.TxtTotalBarang.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.TxtTotalBarang.ForeColor = System.Drawing.Color.Green
         Me.TxtTotalBarang.Location = New System.Drawing.Point(259, 12)
@@ -763,6 +769,7 @@ Partial Class FormReturPenjualan
         '
         'TxtTotalQTY
         '
+        Me.TxtTotalQTY.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
         Me.TxtTotalQTY.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.TxtTotalQTY.ForeColor = System.Drawing.Color.Green
         Me.TxtTotalQTY.Location = New System.Drawing.Point(259, 36)
@@ -779,7 +786,7 @@ Partial Class FormReturPenjualan
         Me.Label11.Location = New System.Drawing.Point(51, 39)
         Me.Label11.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Me.Label11.Name = "Label11"
-        Me.Label11.Size = New System.Drawing.Size(66, 16)
+        Me.Label11.Size = New System.Drawing.Size(65, 16)
         Me.Label11.TabIndex = 224
         Me.Label11.Text = "Total qty :"
         '
@@ -790,7 +797,7 @@ Partial Class FormReturPenjualan
         Me.Label1.Location = New System.Drawing.Point(25, 15)
         Me.Label1.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Me.Label1.Name = "Label1"
-        Me.Label1.Size = New System.Drawing.Size(92, 16)
+        Me.Label1.Size = New System.Drawing.Size(91, 16)
         Me.Label1.TabIndex = 224
         Me.Label1.Text = "Total Barang :"
         '
@@ -801,7 +808,7 @@ Partial Class FormReturPenjualan
         Me.Label20.Location = New System.Drawing.Point(202, 90)
         Me.Label20.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Me.Label20.Name = "Label20"
-        Me.Label20.Size = New System.Drawing.Size(45, 16)
+        Me.Label20.Size = New System.Drawing.Size(44, 16)
         Me.Label20.TabIndex = 223
         Me.Label20.Text = "Laba :"
         Me.Label20.Visible = False
@@ -813,12 +820,13 @@ Partial Class FormReturPenjualan
         Me.Label7.Location = New System.Drawing.Point(26, 64)
         Me.Label7.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Me.Label7.Name = "Label7"
-        Me.Label7.Size = New System.Drawing.Size(91, 16)
+        Me.Label7.Size = New System.Drawing.Size(90, 16)
         Me.Label7.TabIndex = 223
         Me.Label7.Text = "Total Rupiah :"
         '
         'TxtTotalLaba
         '
+        Me.TxtTotalLaba.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
         Me.TxtTotalLaba.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.TxtTotalLaba.ForeColor = System.Drawing.Color.Green
         Me.TxtTotalLaba.Location = New System.Drawing.Point(259, 87)
@@ -830,6 +838,7 @@ Partial Class FormReturPenjualan
         '
         'TxtTotalRupiah
         '
+        Me.TxtTotalRupiah.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
         Me.TxtTotalRupiah.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.TxtTotalRupiah.ForeColor = System.Drawing.Color.Green
         Me.TxtTotalRupiah.Location = New System.Drawing.Point(259, 61)
@@ -866,7 +875,7 @@ Partial Class FormReturPenjualan
         Me.Label9.Location = New System.Drawing.Point(15, 128)
         Me.Label9.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Me.Label9.Name = "Label9"
-        Me.Label9.Size = New System.Drawing.Size(150, 16)
+        Me.Label9.Size = New System.Drawing.Size(149, 16)
         Me.Label9.TabIndex = 219
         Me.Label9.Text = "Metode pengembalian :"
         '
@@ -969,7 +978,7 @@ Partial Class FormReturPenjualan
         Me.Label16.Location = New System.Drawing.Point(20, 6)
         Me.Label16.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Me.Label16.Name = "Label16"
-        Me.Label16.Size = New System.Drawing.Size(421, 16)
+        Me.Label16.Size = New System.Drawing.Size(420, 16)
         Me.Label16.TabIndex = 229
         Me.Label16.Text = "Pilih tanggal pembelian untuk mencari nomor nota penjualan :"
         '
@@ -1108,7 +1117,7 @@ Partial Class FormReturPenjualan
         Me.LblNAmaPel.Location = New System.Drawing.Point(96, 32)
         Me.LblNAmaPel.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Me.LblNAmaPel.Name = "LblNAmaPel"
-        Me.LblNAmaPel.Size = New System.Drawing.Size(45, 16)
+        Me.LblNAmaPel.Size = New System.Drawing.Size(44, 16)
         Me.LblNAmaPel.TabIndex = 251
         Me.LblNAmaPel.Text = "Nama"
         '
@@ -1119,7 +1128,7 @@ Partial Class FormReturPenjualan
         Me.Label19.Location = New System.Drawing.Point(48, 111)
         Me.Label19.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Me.Label19.Name = "Label19"
-        Me.Label19.Size = New System.Drawing.Size(46, 16)
+        Me.Label19.Size = New System.Drawing.Size(45, 16)
         Me.Label19.TabIndex = 253
         Me.Label19.Text = "Jenis :"
         '
@@ -1130,7 +1139,7 @@ Partial Class FormReturPenjualan
         Me.LblJenisPel.Location = New System.Drawing.Point(96, 111)
         Me.LblJenisPel.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Me.LblJenisPel.Name = "LblJenisPel"
-        Me.LblJenisPel.Size = New System.Drawing.Size(40, 16)
+        Me.LblJenisPel.Size = New System.Drawing.Size(39, 16)
         Me.LblJenisPel.TabIndex = 252
         Me.LblJenisPel.Text = "Jenis"
         '
@@ -1212,7 +1221,7 @@ Partial Class FormReturPenjualan
         Me.LblPilihbarang.Location = New System.Drawing.Point(27, 6)
         Me.LblPilihbarang.Margin = New System.Windows.Forms.Padding(5, 0, 5, 0)
         Me.LblPilihbarang.Name = "LblPilihbarang"
-        Me.LblPilihbarang.Size = New System.Drawing.Size(88, 16)
+        Me.LblPilihbarang.Size = New System.Drawing.Size(87, 16)
         Me.LblPilihbarang.TabIndex = 230
         Me.LblPilihbarang.Text = "Pilih barang"
         '
@@ -1292,7 +1301,7 @@ Partial Class FormReturPenjualan
         Me.Label12.Location = New System.Drawing.Point(802, 80)
         Me.Label12.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Me.Label12.Name = "Label12"
-        Me.Label12.Size = New System.Drawing.Size(105, 16)
+        Me.Label12.Size = New System.Drawing.Size(104, 16)
         Me.Label12.TabIndex = 257
         Me.Label12.Text = "Alasan diretur:"
         '
@@ -1303,7 +1312,7 @@ Partial Class FormReturPenjualan
         Me.Label22.Location = New System.Drawing.Point(435, 50)
         Me.Label22.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Me.Label22.Name = "Label22"
-        Me.Label22.Size = New System.Drawing.Size(70, 16)
+        Me.Label22.Size = New System.Drawing.Size(69, 16)
         Me.Label22.TabIndex = 258
         Me.Label22.Text = "Tanggal :"
         '

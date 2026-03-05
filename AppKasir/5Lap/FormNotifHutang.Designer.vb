@@ -31,7 +31,9 @@ Partial Class FormNotifHutang
         Me.Label8 = New System.Windows.Forms.Label()
         Me.LabelJudul = New System.Windows.Forms.Label()
         Me.BtnClose = New System.Windows.Forms.Button()
+        Me.Panel1 = New System.Windows.Forms.Panel()
         CType(Me.pembelian_hutangBindingSource, System.ComponentModel.ISupportInitialize).BeginInit()
+        Me.Panel1.SuspendLayout()
         Me.SuspendLayout()
         '
         'pembelian_hutangBindingSource
@@ -45,10 +47,10 @@ Partial Class FormNotifHutang
         ReportDataSource1.Value = Me.pembelian_hutangBindingSource
         Me.ReportViewer1.LocalReport.DataSources.Add(ReportDataSource1)
         Me.ReportViewer1.LocalReport.ReportEmbeddedResource = "KasirLancar.NotifReportHutang.rdlc"
-        Me.ReportViewer1.Location = New System.Drawing.Point(0, 31)
+        Me.ReportViewer1.Location = New System.Drawing.Point(0, 0)
         Me.ReportViewer1.Name = "ReportViewer1"
         Me.ReportViewer1.ServerReport.BearerToken = Nothing
-        Me.ReportViewer1.Size = New System.Drawing.Size(799, 534)
+        Me.ReportViewer1.Size = New System.Drawing.Size(799, 608)
         Me.ReportViewer1.TabIndex = 0
         '
         'CmbSupplier
@@ -64,13 +66,13 @@ Partial Class FormNotifHutang
         'Label8
         '
         Me.Label8.AutoSize = True
-        Me.Label8.BackColor = System.Drawing.Color.Transparent
+        Me.Label8.BackColor = System.Drawing.Color.Gold
         Me.Label8.Font = New System.Drawing.Font("Century Gothic", 9.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label8.Location = New System.Drawing.Point(375, 8)
+        Me.Label8.Location = New System.Drawing.Point(383, 7)
         Me.Label8.Name = "Label8"
-        Me.Label8.Size = New System.Drawing.Size(61, 16)
+        Me.Label8.Size = New System.Drawing.Size(54, 16)
         Me.Label8.TabIndex = 159
-        Me.Label8.Text = "Supplier"
+        Me.Label8.Text = "SUPLIER"
         Me.Label8.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
         '
         'LabelJudul
@@ -88,7 +90,7 @@ Partial Class FormNotifHutang
         'BtnClose
         '
         Me.BtnClose.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.BtnClose.BackColor = System.Drawing.Color.Yellow
+        Me.BtnClose.BackColor = System.Drawing.Color.Gold
         Me.BtnClose.FlatAppearance.BorderSize = 0
         Me.BtnClose.FlatAppearance.MouseDownBackColor = System.Drawing.Color.GreenYellow
         Me.BtnClose.FlatAppearance.MouseOverBackColor = System.Drawing.Color.GreenYellow
@@ -103,15 +105,24 @@ Partial Class FormNotifHutang
         Me.BtnClose.TextAlign = System.Drawing.ContentAlignment.MiddleRight
         Me.BtnClose.UseVisualStyleBackColor = False
         '
+        'Panel1
+        '
+        Me.Panel1.Controls.Add(Me.ReportViewer1)
+        Me.Panel1.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.Panel1.Location = New System.Drawing.Point(0, 31)
+        Me.Panel1.Name = "Panel1"
+        Me.Panel1.Size = New System.Drawing.Size(799, 608)
+        Me.Panel1.TabIndex = 204
+        '
         'FormNotifHutang
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(799, 565)
+        Me.ClientSize = New System.Drawing.Size(799, 639)
+        Me.Controls.Add(Me.Panel1)
         Me.Controls.Add(Me.BtnClose)
         Me.Controls.Add(Me.CmbSupplier)
         Me.Controls.Add(Me.Label8)
-        Me.Controls.Add(Me.ReportViewer1)
         Me.Controls.Add(Me.LabelJudul)
         Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None
         Me.KeyPreview = True
@@ -119,6 +130,7 @@ Partial Class FormNotifHutang
         Me.ShowInTaskbar = False
         Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen
         CType(Me.pembelian_hutangBindingSource, System.ComponentModel.ISupportInitialize).EndInit()
+        Me.Panel1.ResumeLayout(False)
         Me.ResumeLayout(False)
         Me.PerformLayout()
 
@@ -129,6 +141,7 @@ Partial Class FormNotifHutang
     Friend WithEvents Label8 As Label
     Friend WithEvents LabelJudul As Label
     Friend WithEvents BtnClose As Button
+    Friend WithEvents Panel1 As Panel
     'Friend WithEvents PossDataSet As AppKasir.PossDataSet
     'Friend WithEvents pembelian_hutangTableAdapter As AppKasir.PossDataSetLancarTableAdapters.pembelian_hutangTableAdapter
 End Class

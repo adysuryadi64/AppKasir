@@ -26,7 +26,6 @@ Partial Class FormLapMutasiBarang
         Dim ReportDataSource1 As Microsoft.Reporting.WinForms.ReportDataSource = New Microsoft.Reporting.WinForms.ReportDataSource()
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(FormLapMutasiBarang))
         Me.Temp_Mutasi_BarangBindingSource = New System.Windows.Forms.BindingSource(Me.components)
-        'Me.PossDataSet = New AppKasir.DataSetKL()
         Me.ReportViewer1 = New Microsoft.Reporting.WinForms.ReportViewer()
         Me.Label3 = New System.Windows.Forms.Label()
         Me.Label2 = New System.Windows.Forms.Label()
@@ -43,9 +42,7 @@ Partial Class FormLapMutasiBarang
         Me.TxtNama = New System.Windows.Forms.TextBox()
         Me.Label1 = New System.Windows.Forms.Label()
         Me.Panel2 = New System.Windows.Forms.Panel()
-        'Me.Temp_Mutasi_BarangTableAdapter = New AppKasir.PossDataSetLancarTableAdapters.Temp_Mutasi_BarangTableAdapter()
         CType(Me.Temp_Mutasi_BarangBindingSource, System.ComponentModel.ISupportInitialize).BeginInit()
-        'CType(Me.PossDataSet, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.Panel1.SuspendLayout()
         Me.PanelCariNama.SuspendLayout()
         Me.Panel2.SuspendLayout()
@@ -54,12 +51,6 @@ Partial Class FormLapMutasiBarang
         'Temp_Mutasi_BarangBindingSource
         '
         Me.Temp_Mutasi_BarangBindingSource.DataMember = "Temp_Mutasi_Barang"
-        'Me.Temp_Mutasi_BarangBindingSource.DataSource = Me.PossDataSet
-        '
-        'PossDataSet
-        '
-        'Me.PossDataSet.DataSetName = "PossDataSet"
-        'Me.PossDataSet.SchemaSerializationMode = System.Data.SchemaSerializationMode.IncludeSchema
         '
         'ReportViewer1
         '
@@ -70,6 +61,7 @@ Partial Class FormLapMutasiBarang
         Me.ReportViewer1.LocalReport.ReportEmbeddedResource = "KasirLancar.ReportMutasiBarang.rdlc"
         Me.ReportViewer1.Location = New System.Drawing.Point(0, 0)
         Me.ReportViewer1.Name = "ReportViewer1"
+        Me.ReportViewer1.ServerReport.BearerToken = Nothing
         Me.ReportViewer1.Size = New System.Drawing.Size(1028, 425)
         Me.ReportViewer1.TabIndex = 168
         '
@@ -192,12 +184,11 @@ Partial Class FormLapMutasiBarang
         '
         Me.TxtKode.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
         Me.TxtKode.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.TxtKode.Location = New System.Drawing.Point(625, 46)
+        Me.TxtKode.Location = New System.Drawing.Point(585, 46)
         Me.TxtKode.Name = "TxtKode"
-        Me.TxtKode.Size = New System.Drawing.Size(38, 21)
+        Me.TxtKode.Size = New System.Drawing.Size(122, 21)
         Me.TxtKode.TabIndex = 173
         Me.TxtKode.Text = "Kode"
-        Me.TxtKode.Visible = False
         '
         'PanelCariNama
         '
@@ -223,7 +214,7 @@ Partial Class FormLapMutasiBarang
         'TxtNama
         '
         Me.TxtNama.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
-                    Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.TxtNama.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
         Me.TxtNama.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.TxtNama.Location = New System.Drawing.Point(6, 6)
@@ -251,10 +242,6 @@ Partial Class FormLapMutasiBarang
         Me.Panel2.Size = New System.Drawing.Size(1028, 425)
         Me.Panel2.TabIndex = 172
         '
-        'Temp_Mutasi_BarangTableAdapter
-        '
-        'Me.Temp_Mutasi_BarangTableAdapter.ClearBeforeFill = True
-        '
         'FormLapMutasiBarang
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
@@ -270,7 +257,6 @@ Partial Class FormLapMutasiBarang
         Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen
         Me.Text = "FormLapMutasiBarang"
         CType(Me.Temp_Mutasi_BarangBindingSource, System.ComponentModel.ISupportInitialize).EndInit()
-        'CType(Me.PossDataSet, System.ComponentModel.ISupportInitialize).EndInit()
         Me.Panel1.ResumeLayout(False)
         Me.Panel1.PerformLayout()
         Me.PanelCariNama.ResumeLayout(False)

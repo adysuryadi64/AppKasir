@@ -138,28 +138,7 @@
   <metadata name="TotalHarga.UserAddedColumn" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>True</value>
   </metadata>
-  <metadata name="No.UserAddedColumn" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-    <value>True</value>
-  </metadata>
-  <metadata name="kode.UserAddedColumn" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-    <value>True</value>
-  </metadata>
-  <metadata name="NamaBarang.UserAddedColumn" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-    <value>True</value>
-  </metadata>
-  <metadata name="QTY.UserAddedColumn" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-    <value>True</value>
-  </metadata>
-  <metadata name="Satuan.UserAddedColumn" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-    <value>True</value>
-  </metadata>
-  <metadata name="Harga.UserAddedColumn" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-    <value>True</value>
-  </metadata>
-  <metadata name="TotalDiskon.UserAddedColumn" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-    <value>True</value>
-  </metadata>
-  <metadata name="TotalHarga.UserAddedColumn" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+  <metadata name="SN.UserAddedColumn" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>True</value>
   </metadata>
   <metadata name="No.UserAddedColumn" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
@@ -172,11 +151,11 @@
   <data name="BtnCetak.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAYAAAA7MK6iAAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAO
-        wwAADsMBx2+oZAAAAQNJREFUSEvtljGKAkEQRUfERHDFC4h4HWMPscYGhmZmnsBIEBZjMTHwAgbmgmgs
-        CIYizPjUzzaDBtPTNg4yDz4FXb/qNx11kPNxoigqolpahWFY0arkMFhicEd1pa+VyWCg+phzg8vPtDIZ
-        DPyg4xv0p5UZhdcpo6YH1VFBMXF4ll90weAFdm8pDcUZaJweFn+QMVScQT2vEDxRnEE9r2Q/GOOZsrIV
-        cxvqEzbBe7WtYK6lFTHy4Dvqxfim4LEsBg7X6v/jIbgji4HzJo0RWqCljE7B1IP2zVGXo6Isr8Fw/whg
-        dg22+whkIfhAaduKuQE1fbAraYJvP5HpG9TTypxPEQRXGEMdqVozD8UAAAAASUVORK5CYII=
+        wgAADsIBFShKgAAAAPZJREFUSEvtljFqAmEYRJWQRjDiBULwOqlziFhbpLSzywlSBQSxDjYpcoEU9kJI
+        akGwDMKb8C1aOIi6u7+JhH0w3TCP3b/5arWKv0bShaR20QBN3zyIpEvgU+Xp+/ZeJLV8oQjAi2/vBbgC
+        Fgky8u3zQlJDUucEuZZUd18GcA+s/J1SAXxIunFviJdeTg3w6N74zScHGLq3EmcA35Le8waY+VaQR/zl
+        vWMAbn0rqMQZXgr+k/jZu1Ge7iimFne9G1/cAZ6AV+BtXSwlBubrvQnQi6vGu1tsDoEE4nyHwDmI55Lu
+        8gYYlBKXpYg4LpFxgjz4dsWv8wMYQx2pcAVaGwAAAABJRU5ErkJggg==
 </value>
   </data>
   <metadata name="$this.TrayHeight" type="System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">

@@ -2,13 +2,14 @@
 
 
 Public Class FormBayarPiutang
-
+    Private TransaksiLampau As String
     Private Sub FormBayarPiutang_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
+        TransaksiLampau = ModulHakAkses.BacaHakAksesSemua(FormGeneralSetting.LblTransaksiTanggalLampau.Text)
         Kondisiawal()
     End Sub
 
     Private Sub GenerateNomorBayarHutang()
-        Dim cekTanggal As String = Microsoft.VisualBasic.Format(DtpTanggal.Value, "yyMMdd")
+        Dim cekTanggal As String = DtpTanggal.Value.ToString("yyMMdd")
         Dim UrutKOde As String = ""
         Dim cekNomor As String = "BP-" & cekTanggal
 
@@ -57,15 +58,6 @@ Public Class FormBayarPiutang
 
         GenerateNomorBayarHutang()
         SelectNamaPelanggan()
-
-        '' Set akun berdasarkan lokasi
-        'If FormUtama.TxtLokasi.Text = "TOKO" Then
-        '    CmbRekening.SelectedItem = nama_rek_Jual_Toko
-        '    TxtRekening.Text = Kode_rek_Jual_Toko
-        'ElseIf FormUtama.TxtLokasi.Text = "GUDANG" Then
-        '    CmbRekening.SelectedItem = nama_rek_Jual_Gudang
-        '    TxtRekening.Text = Kode_rek_Jual_Gudang
-        'End If
 
     End Sub
 
@@ -374,8 +366,11 @@ Public Class FormBayarPiutang
 
         Cursor = Cursors.WaitCursor
 
-        DtpTanggal.Value = Now
-        GenerateNomorBayarHutang()
+        If TransaksiLampau = "Tidak" Then
+            DtpTanggal.Value = Now
+            GenerateNomorBayarHutang()
+        End If
+
 
         Dim transaction As MySqlTransaction = Nothing
 

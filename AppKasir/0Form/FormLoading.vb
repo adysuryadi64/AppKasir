@@ -26,6 +26,7 @@
                     AmbilDataMasterPerusahaan()
                 Case 4
                     BacaHakAkseUser()
+                    FormGeneralSetting.SinkronkanHakAksesTanpaDuplikat() ' Sinkronisasi hak akses tanpa duplikat
                 Case 5
                     ' Mengaktifkan elemen antarmuka setelah proses selesai
                     UpdateUIComponents()
@@ -78,7 +79,7 @@
         'End If
     End Sub
 
-    Public Sub MulaiPosting()
+    Public Sub MulaiPosting(ByVal Jenis As String)
         ' Menyimpan total langkah (jumlah fungsi yang akan dieksekusi)
         Dim totalLangkah As Integer = 6 ' Ubah sesuai dengan jumlah fungsi yang akan dieksekusi
 
@@ -96,15 +97,36 @@
                 Case 2
                     NotifikasiJatuhTempo.JumlahJatuhTempo()
                 Case 3
-                    ResetAllBarangToko()
-                    ResetAllBarangGudang()
+                    If Jenis = "Toko" Then
+                        ResetAllBarangToko()
+                    ElseIf Jenis = "Gudang" Then
+                        ResetAllBarangGudang()
+                    Else
+                        ResetAllBarangToko()
+                        ResetAllBarangGudang()
+                    End If
+
                 Case 4
-                    UpdateAllBarangTokoModule()
+                    If Jenis <> "Gudang" Then
+                        UpdateAllBarangTokoModule()
+                    End If
+
                 Case 5
-                    UpdateAllBarangGudangModule()
+                    If Jenis <> "Toko" Then
+                        UpdateAllBarangGudangModule()
+                    End If
+
                 Case 6
-                    ' Setelah UpdateAllBarangToko dan UpdateAllBarangGudang selesai
-                    HitungSemuaKode()
+
+                    If Jenis = "Toko" Then
+                        HitungStokToko()
+                    ElseIf Jenis = "Gudang" Then
+                        HitungStokGudang()
+                    Else
+                        ' Setelah UpdateAllBarangToko dan UpdateAllBarangGudang selesai
+                        HitungSemuaKode()
+                    End If
+
             End Select
         Next
         Close()

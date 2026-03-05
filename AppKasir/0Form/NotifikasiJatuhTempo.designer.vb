@@ -65,11 +65,11 @@ Partial Class NotifikasiJatuhTempo
         'Label2
         '
         Me.Label2.AutoSize = True
-        Me.Label2.Font = New System.Drawing.Font("Calibri", 11.25!, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.Label2.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.Label2.ForeColor = System.Drawing.Color.Black
         Me.Label2.Location = New System.Drawing.Point(100, 33)
         Me.Label2.Name = "Label2"
-        Me.Label2.Size = New System.Drawing.Size(182, 18)
+        Me.Label2.Size = New System.Drawing.Size(170, 16)
         Me.Label2.TabIndex = 14
         Me.Label2.Text = "Pemberitahuan jatuh tempo"
         '
@@ -86,10 +86,10 @@ Partial Class NotifikasiJatuhTempo
         'LinkLabelHutang
         '
         Me.LinkLabelHutang.AutoSize = True
-        Me.LinkLabelHutang.Font = New System.Drawing.Font("Calibri", 12.0!, CType((System.Drawing.FontStyle.Bold Or System.Drawing.FontStyle.Italic), System.Drawing.FontStyle), System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.LinkLabelHutang.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.LinkLabelHutang.Location = New System.Drawing.Point(196, 54)
         Me.LinkLabelHutang.Name = "LinkLabelHutang"
-        Me.LinkLabelHutang.Size = New System.Drawing.Size(86, 19)
+        Me.LinkLabelHutang.Size = New System.Drawing.Size(72, 16)
         Me.LinkLabelHutang.TabIndex = 12
         Me.LinkLabelHutang.TabStop = True
         Me.LinkLabelHutang.Text = "Lihat daftar"
@@ -133,10 +133,10 @@ Partial Class NotifikasiJatuhTempo
         'LinkLabelPiutang
         '
         Me.LinkLabelPiutang.AutoSize = True
-        Me.LinkLabelPiutang.Font = New System.Drawing.Font("Calibri", 12.0!, CType((System.Drawing.FontStyle.Bold Or System.Drawing.FontStyle.Italic), System.Drawing.FontStyle), System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.LinkLabelPiutang.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.LinkLabelPiutang.Location = New System.Drawing.Point(196, 80)
         Me.LinkLabelPiutang.Name = "LinkLabelPiutang"
-        Me.LinkLabelPiutang.Size = New System.Drawing.Size(86, 19)
+        Me.LinkLabelPiutang.Size = New System.Drawing.Size(72, 16)
         Me.LinkLabelPiutang.TabIndex = 20
         Me.LinkLabelPiutang.TabStop = True
         Me.LinkLabelPiutang.Text = "Lihat daftar"
@@ -144,22 +144,22 @@ Partial Class NotifikasiJatuhTempo
         'LblHutang
         '
         Me.LblHutang.AutoSize = True
-        Me.LblHutang.Font = New System.Drawing.Font("Calibri", 11.25!, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.LblHutang.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.LblHutang.ForeColor = System.Drawing.Color.Black
         Me.LblHutang.Location = New System.Drawing.Point(102, 54)
         Me.LblHutang.Name = "LblHutang"
-        Me.LblHutang.Size = New System.Drawing.Size(64, 18)
+        Me.LblHutang.Size = New System.Drawing.Size(60, 16)
         Me.LblHutang.TabIndex = 21
         Me.LblHutang.Text = "0 Hutang"
         '
         'LblPiutang
         '
         Me.LblPiutang.AutoSize = True
-        Me.LblPiutang.Font = New System.Drawing.Font("Calibri", 11.25!, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.LblPiutang.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.LblPiutang.ForeColor = System.Drawing.Color.Black
         Me.LblPiutang.Location = New System.Drawing.Point(102, 80)
         Me.LblPiutang.Name = "LblPiutang"
-        Me.LblPiutang.Size = New System.Drawing.Size(66, 18)
+        Me.LblPiutang.Size = New System.Drawing.Size(62, 16)
         Me.LblPiutang.TabIndex = 22
         Me.LblPiutang.Text = "0 Piutang"
         '

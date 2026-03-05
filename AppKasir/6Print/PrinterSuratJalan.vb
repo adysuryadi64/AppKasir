@@ -210,7 +210,7 @@ Public Class PrinterSuratJalan
         e.Graphics.DrawString("SURAT JALAN PENGIRIMAN", New Drawing.Font(fontJudulDot, ukuranFontJudul, FontStyle.Bold), Brushes.Black, Mulaikata3, tinggi)
 
         tinggi += 20 + jarakBarisDot
-        e.Graphics.DrawString("Tgl    : " & Microsoft.VisualBasic.Format(tglPengiriman, "dd-MM-yy hh:mm:ss"), New Drawing.Font(fontIsiDot, ukuranFontIsi), Brushes.Black, BatasKiri, tinggi)
+        e.Graphics.DrawString("Tgl    : " & tglPengiriman.ToString("yyyy-MM-dd HH:mm:ss"), New Drawing.Font(fontIsiDot, ukuranFontIsi), Brushes.Black, BatasKiri, tinggi)
         e.Graphics.DrawString("Nomor  : " & TxtNota.Text, New Drawing.Font(fontIsiDot, ukuranFontIsi), Brushes.Black, Mulaikata3, tinggi)
 
 
@@ -242,7 +242,7 @@ Public Class PrinterSuratJalan
                 e.Graphics.DrawString(row.Cells("NOTA_BELANJA").Value.ToString(), New Drawing.Font(fontIsiDot, ukuranFontIsi), Brushes.Black, Mulaikata1, tinggi)
                 e.Graphics.DrawString(row.Cells("NAMA_PELANGGAN").Value.ToString(), New Drawing.Font(fontIsiDot, ukuranFontIsi), Brushes.Black, Mulaikata2, tinggi)
                 e.Graphics.DrawString(row.Cells("ALAMAT_PELANGGAN").Value.ToString(), New Drawing.Font(fontIsiDot, ukuranFontIsi), Brushes.Black, Mulaikata3, tinggi)
-                e.Graphics.DrawString(Microsoft.VisualBasic.Format(Convert.ToDecimal(row.Cells("NILAI_BELANJA").Value), "##,##0"), New Drawing.Font(fontIsiDot, ukuranFontIsi), Brushes.Black, Mulaikata5, tinggi, kanan)
+                e.Graphics.DrawString(Convert.ToDecimal(row.Cells("NILAI_BELANJA").Value).ToString("##,##0"), New Drawing.Font(fontIsiDot, ukuranFontIsi), Brushes.Black, Mulaikata5, tinggi, kanan)
                 e.Graphics.DrawString(row.Cells("LOKASI").Value.ToString(), New Drawing.Font(fontIsiDot, ukuranFontIsi), Brushes.Black, Mulaikata5, tinggi)
                 e.Graphics.DrawString("! . . . . . . . .", New Drawing.Font("Courier New", 8), Brushes.Black, Mulaikata6, tinggi)
             End If

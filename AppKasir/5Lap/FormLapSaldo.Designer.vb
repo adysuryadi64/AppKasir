@@ -129,7 +129,7 @@ Partial Class FormLapSaldo
         Me.Label8.Font = New System.Drawing.Font("Century Gothic", 9.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.Label8.Location = New System.Drawing.Point(294, 82)
         Me.Label8.Name = "Label8"
-        Me.Label8.Size = New System.Drawing.Size(69, 16)
+        Me.Label8.Size = New System.Drawing.Size(68, 16)
         Me.Label8.TabIndex = 157
         Me.Label8.Text = "Rekening"
         Me.Label8.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
@@ -141,7 +141,7 @@ Partial Class FormLapSaldo
         Me.Label4.Font = New System.Drawing.Font("Century Gothic", 9.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.Label4.Location = New System.Drawing.Point(323, 53)
         Me.Label4.Name = "Label4"
-        Me.Label4.Size = New System.Drawing.Size(40, 16)
+        Me.Label4.Size = New System.Drawing.Size(39, 16)
         Me.Label4.TabIndex = 157
         Me.Label4.Text = "Kasir"
         Me.Label4.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
@@ -182,7 +182,7 @@ Partial Class FormLapSaldo
         Me.CbBulan.Font = New System.Drawing.Font("Century Gothic", 9.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.CbBulan.Location = New System.Drawing.Point(17, 80)
         Me.CbBulan.Name = "CbBulan"
-        Me.CbBulan.Size = New System.Drawing.Size(64, 20)
+        Me.CbBulan.Size = New System.Drawing.Size(63, 20)
         Me.CbBulan.TabIndex = 137
         Me.CbBulan.Text = "Bulan"
         Me.CbBulan.UseVisualStyleBackColor = True
@@ -193,7 +193,7 @@ Partial Class FormLapSaldo
         Me.CbTanggal.Font = New System.Drawing.Font("Century Gothic", 9.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.CbTanggal.Location = New System.Drawing.Point(17, 51)
         Me.CbTanggal.Name = "CbTanggal"
-        Me.CbTanggal.Size = New System.Drawing.Size(81, 20)
+        Me.CbTanggal.Size = New System.Drawing.Size(80, 20)
         Me.CbTanggal.TabIndex = 136
         Me.CbTanggal.Text = "Tanggal"
         Me.CbTanggal.UseVisualStyleBackColor = True
@@ -827,7 +827,7 @@ Partial Class FormLapSaldo
         Me.Label33.ForeColor = System.Drawing.Color.Navy
         Me.Label33.Location = New System.Drawing.Point(122, 470)
         Me.Label33.Name = "Label33"
-        Me.Label33.Size = New System.Drawing.Size(154, 48)
+        Me.Label33.Size = New System.Drawing.Size(153, 48)
         Me.Label33.TabIndex = 180
         Me.Label33.Text = "Keterangan :" & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & "(+) = Saldo bertambah" & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & "(-) = Saldo Berkurang"
         Me.Label33.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
@@ -1362,28 +1362,25 @@ Partial Class FormLapSaldo
         '
         'PanelView
         '
-        Me.PanelView.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
-                    Or System.Windows.Forms.AnchorStyles.Left) _
-                    Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.PanelView.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
         Me.PanelView.Controls.Add(Me.LblView)
         Me.PanelView.Controls.Add(Me.BtnHide)
         Me.PanelView.Controls.Add(Me.DGVView)
-        Me.PanelView.Location = New System.Drawing.Point(178, 115)
+        Me.PanelView.Location = New System.Drawing.Point(52, 465)
         Me.PanelView.Name = "PanelView"
-        Me.PanelView.Size = New System.Drawing.Size(813, 463)
+        Me.PanelView.Size = New System.Drawing.Size(969, 463)
         Me.PanelView.TabIndex = 212
         '
         'LblView
         '
         Me.LblView.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
-                    Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.LblView.BackColor = System.Drawing.Color.Transparent
         Me.LblView.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
         Me.LblView.Font = New System.Drawing.Font("Century Gothic", 11.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.LblView.Location = New System.Drawing.Point(3, 3)
         Me.LblView.Name = "LblView"
-        Me.LblView.Size = New System.Drawing.Size(766, 26)
+        Me.LblView.Size = New System.Drawing.Size(922, 26)
         Me.LblView.TabIndex = 155
         Me.LblView.Text = "Pembelian :"
         Me.LblView.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
@@ -1397,7 +1394,7 @@ Partial Class FormLapSaldo
         Me.BtnHide.FlatStyle = System.Windows.Forms.FlatStyle.Flat
         Me.BtnHide.ForeColor = System.Drawing.Color.White
         Me.BtnHide.Image = CType(resources.GetObject("BtnHide.Image"), System.Drawing.Image)
-        Me.BtnHide.Location = New System.Drawing.Point(776, 3)
+        Me.BtnHide.Location = New System.Drawing.Point(932, 3)
         Me.BtnHide.Margin = New System.Windows.Forms.Padding(4)
         Me.BtnHide.Name = "BtnHide"
         Me.BtnHide.Size = New System.Drawing.Size(31, 28)
@@ -1412,9 +1409,9 @@ Partial Class FormLapSaldo
         Me.DGVView.AllowUserToResizeColumns = False
         Me.DGVView.AllowUserToResizeRows = False
         Me.DGVView.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
-                    Or System.Windows.Forms.AnchorStyles.Left) _
-                    Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.DGVView.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.AllCells
+            Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.DGVView.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill
         Me.DGVView.BackgroundColor = System.Drawing.Color.White
         Me.DGVView.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D
         Me.DGVView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
@@ -1432,7 +1429,7 @@ Partial Class FormLapSaldo
         Me.DGVView.ReadOnly = True
         Me.DGVView.RowHeadersVisible = False
         Me.DGVView.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect
-        Me.DGVView.Size = New System.Drawing.Size(805, 423)
+        Me.DGVView.Size = New System.Drawing.Size(961, 423)
         Me.DGVView.TabIndex = 64
         '
         'BtnSetorBos

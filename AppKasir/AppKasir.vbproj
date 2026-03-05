@@ -9,15 +9,16 @@
     <OutputType>WinExe</OutputType>
     <StartupObject>KasirLancar.FormUtama</StartupObject>
     <RootNamespace>KasirLancar</RootNamespace>
-    <AssemblyName>Kasir Lancar</AssemblyName>
+    <AssemblyName>KasirLancar</AssemblyName>
     <FileAlignment>512</FileAlignment>
-    <MyType>WindowsForms</MyType>
-    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+    <MyType>WindowsFormsWithCustomSubMain</MyType>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <Deterministic>true</Deterministic>
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
     <IsWebBootstrapper>false</IsWebBootstrapper>
+    <TargetFrameworkProfile />
     <PublishUrl>publish\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Disk</InstallFrom>
@@ -42,10 +43,13 @@
     <DefineTrace>true</DefineTrace>
     <OutputPath>bin\Debug\</OutputPath>
     <DocumentationFile>Kasir Lancar.xml</DocumentationFile>
-    <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022</NoWarn>
+    <NoWarn>41999,42016,42017,42018,42019,42020,42021,42022,42032,42036</NoWarn>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
     <CodeAnalysisIgnoreGeneratedCode>true</CodeAnalysisIgnoreGeneratedCode>
     <RunCodeAnalysis>false</RunCodeAnalysis>
+    <WarningsAsErrors>
+    </WarningsAsErrors>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -55,7 +59,10 @@
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
     <DocumentationFile>Kasir Lancar.xml</DocumentationFile>
-    <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022</NoWarn>
+    <NoWarn>41999,42016,42017,42018,42019,42020,42021,42022,42032,42036</NoWarn>
+    <WarningsAsErrors>
+    </WarningsAsErrors>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
   </PropertyGroup>
   <PropertyGroup>
     <OptionExplicit>On</OptionExplicit>
@@ -73,6 +80,7 @@
     <ApplicationIcon>Kasir lancar.ico</ApplicationIcon>
   </PropertyGroup>
   <PropertyGroup>
+    <GenerateApplicationManifest>false</GenerateApplicationManifest>
     <ApplicationManifest>My Project\app.manifest</ApplicationManifest>
   </PropertyGroup>
   <PropertyGroup>
@@ -85,37 +93,72 @@
     <GenerateManifests>false</GenerateManifests>
   </PropertyGroup>
   <PropertyGroup>
-    <SignManifests>true</SignManifests>
+    <SignManifests>false</SignManifests>
   </PropertyGroup>
   <PropertyGroup>
     <TargetZone>LocalIntranet</TargetZone>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
+    <DebugSymbols>true</DebugSymbols>
+    <DefineDebug>true</DefineDebug>
+    <DefineTrace>true</DefineTrace>
+    <OutputPath>bin\x86\Debug\</OutputPath>
+    <DocumentationFile>Kasir Lancar.xml</DocumentationFile>
+    <NoWarn>41999,42016,42017,42018,42019,42020,42021,42022,42032,42036</NoWarn>
+    <DebugType>full</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>true</Prefer32Bit>
+    <WarningsAsErrors>
+    </WarningsAsErrors>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
+    <DefineTrace>true</DefineTrace>
+    <OutputPath>bin\x86\Release\</OutputPath>
+    <DocumentationFile>Kasir Lancar.xml</DocumentationFile>
+    <Optimize>true</Optimize>
+    <NoWarn>41999,42016,42017,42018,42019,42020,42021,42022,42032,42036</NoWarn>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <Prefer32Bit>true</Prefer32Bit>
+    <WarningsAsErrors>
+    </WarningsAsErrors>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+  </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Azure.Core, Version=1.46.1.0, Culture=neutral, PublicKeyToken=92742159e12e44c8, processorArchitecture=MSIL">
-      <HintPath>..\packages\Azure.Core.1.46.1\lib\net472\Azure.Core.dll</HintPath>
+    <Reference Include="Azure.Core, Version=1.50.0.0, Culture=neutral, PublicKeyToken=92742159e12e44c8, processorArchitecture=MSIL">
+      <HintPath>..\packages\Azure.Core.1.50.0\lib\net472\Azure.Core.dll</HintPath>
     </Reference>
-    <Reference Include="Azure.Identity, Version=1.14.0.0, Culture=neutral, PublicKeyToken=92742159e12e44c8, processorArchitecture=MSIL">
-      <HintPath>..\packages\Azure.Identity.1.14.0\lib\netstandard2.0\Azure.Identity.dll</HintPath>
+    <Reference Include="Azure.Identity, Version=1.17.1.0, Culture=neutral, PublicKeyToken=92742159e12e44c8, processorArchitecture=MSIL">
+      <HintPath>..\packages\Azure.Identity.1.17.1\lib\netstandard2.0\Azure.Identity.dll</HintPath>
+    </Reference>
+    <Reference Include="BouncyCastle.Crypto, Version=1.9.0.0, Culture=neutral, PublicKeyToken=0e99375e54769942, processorArchitecture=MSIL">
+      <HintPath>..\packages\Portable.BouncyCastle.1.9.0\lib\net40\BouncyCastle.Crypto.dll</HintPath>
     </Reference>
     <Reference Include="BouncyCastle.Cryptography, Version=2.0.0.0, Culture=neutral, PublicKeyToken=072edcf4a5328938, processorArchitecture=MSIL">
-      <HintPath>..\packages\BouncyCastle.Cryptography.2.6.0\lib\net461\BouncyCastle.Cryptography.dll</HintPath>
+      <HintPath>..\packages\BouncyCastle.Cryptography.2.6.2\lib\net461\BouncyCastle.Cryptography.dll</HintPath>
     </Reference>
-    <Reference Include="DevExpress.Data.Desktop.v24.2, Version=24.2.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
-    <Reference Include="DevExpress.Data.v24.2, Version=24.2.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
-    <Reference Include="DevExpress.Drawing.v24.2, Version=24.2.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a" />
-    <Reference Include="DevExpress.Images.v24.2, Version=24.2.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
-    <Reference Include="DevExpress.Printing.v24.2.Core, Version=24.2.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
-    <Reference Include="DevExpress.Utils.v24.2, Version=24.2.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
-    <Reference Include="DevExpress.XtraBars.v24.2, Version=24.2.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
-    <Reference Include="DevExpress.XtraEditors.v24.2, Version=24.2.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
-    <Reference Include="DevExpress.XtraGrid.v24.2, Version=24.2.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
-    <Reference Include="DevExpress.XtraLayout.v24.2, Version=24.2.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
-    <Reference Include="DevExpress.XtraPrinting.v24.2, Version=24.2.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a" />
-    <Reference Include="DevExpress.XtraScheduler.v24.2, Version=24.2.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
-    <Reference Include="DevExpress.XtraScheduler.v24.2.Core, Version=24.2.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a" />
-    <Reference Include="DevExpress.XtraScheduler.v24.2.Core.Desktop, Version=24.2.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a" />
-    <Reference Include="Google.Protobuf, Version=3.31.0.0, Culture=neutral, PublicKeyToken=a7d26565bac4d604, processorArchitecture=MSIL">
-      <HintPath>..\packages\Google.Protobuf.3.31.0\lib\net45\Google.Protobuf.dll</HintPath>
+    <Reference Include="ClosedXML, Version=0.105.0.0, Culture=neutral, PublicKeyToken=fd1eb21b62ae805b, processorArchitecture=MSIL">
+      <HintPath>..\packages\ClosedXML.0.105.0\lib\netstandard2.0\ClosedXML.dll</HintPath>
+    </Reference>
+    <Reference Include="ClosedXML.Parser, Version=1.0.0.0, Culture=neutral, PublicKeyToken=1d5f7376574c51ec, processorArchitecture=MSIL">
+      <HintPath>..\packages\ClosedXML.Parser.2.0.0\lib\netstandard2.0\ClosedXML.Parser.dll</HintPath>
+    </Reference>
+    <Reference Include="DocumentFormat.OpenXml, Version=3.1.1.0, Culture=neutral, PublicKeyToken=8fb06cb64d019a17, processorArchitecture=MSIL">
+      <HintPath>..\packages\DocumentFormat.OpenXml.3.1.1\lib\net46\DocumentFormat.OpenXml.dll</HintPath>
+    </Reference>
+    <Reference Include="DocumentFormat.OpenXml.Framework, Version=3.1.1.0, Culture=neutral, PublicKeyToken=8fb06cb64d019a17, processorArchitecture=MSIL">
+      <HintPath>..\packages\DocumentFormat.OpenXml.Framework.3.1.1\lib\net46\DocumentFormat.OpenXml.Framework.dll</HintPath>
+    </Reference>
+    <Reference Include="ExcelNumberFormat, Version=1.1.0.0, Culture=neutral, PublicKeyToken=23c6f5d73be07eca, processorArchitecture=MSIL">
+      <HintPath>..\packages\ExcelNumberFormat.1.1.0\lib\net20\ExcelNumberFormat.dll</HintPath>
+    </Reference>
+    <Reference Include="Google.Protobuf, Version=3.32.0.0, Culture=neutral, PublicKeyToken=a7d26565bac4d604, processorArchitecture=MSIL">
+      <HintPath>..\packages\Google.Protobuf.3.32.0\lib\net45\Google.Protobuf.dll</HintPath>
+    </Reference>
+    <Reference Include="itextsharp, Version=5.5.13.4, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
+      <HintPath>..\packages\iTextSharp.5.5.13.4\lib\net461\itextsharp.dll</HintPath>
     </Reference>
     <Reference Include="K4os.Compression.LZ4, Version=1.3.8.0, Culture=neutral, PublicKeyToken=2186fa9121ef231d, processorArchitecture=MSIL">
       <HintPath>..\packages\K4os.Compression.LZ4.1.3.8\lib\net462\K4os.Compression.LZ4.dll</HintPath>
@@ -131,6 +174,9 @@
     </Reference>
     <Reference Include="Microsoft.Bcl.Cryptography, Version=9.0.0.5, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Bcl.Cryptography.9.0.5\lib\net462\Microsoft.Bcl.Cryptography.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Bcl.HashCode, Version=1.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Bcl.HashCode.1.1.1\lib\net461\Microsoft.Bcl.HashCode.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Bcl.Memory, Version=9.0.0.5, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Bcl.Memory.9.0.5\lib\net462\Microsoft.Bcl.Memory.dll</HintPath>
@@ -160,14 +206,14 @@
     <Reference Include="Microsoft.Extensions.Primitives, Version=9.0.0.5, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Extensions.Primitives.9.0.5\lib\net462\Microsoft.Extensions.Primitives.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.Identity.Client, Version=4.72.0.0, Culture=neutral, PublicKeyToken=0a613f4dd989e8ae, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.Identity.Client.4.72.0\lib\net472\Microsoft.Identity.Client.dll</HintPath>
+    <Reference Include="Microsoft.Identity.Client, Version=4.79.2.0, Culture=neutral, PublicKeyToken=0a613f4dd989e8ae, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Identity.Client.4.79.2\lib\net472\Microsoft.Identity.Client.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.Identity.Client.Extensions.Msal, Version=4.72.0.0, Culture=neutral, PublicKeyToken=0a613f4dd989e8ae, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.Identity.Client.Extensions.Msal.4.72.0\lib\netstandard2.0\Microsoft.Identity.Client.Extensions.Msal.dll</HintPath>
+    <Reference Include="Microsoft.Identity.Client.Extensions.Msal, Version=4.78.0.0, Culture=neutral, PublicKeyToken=0a613f4dd989e8ae, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Identity.Client.Extensions.Msal.4.78.0\lib\netstandard2.0\Microsoft.Identity.Client.Extensions.Msal.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.IdentityModel.Abstractions, Version=8.10.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.IdentityModel.Abstractions.8.10.0\lib\net472\Microsoft.IdentityModel.Abstractions.dll</HintPath>
+    <Reference Include="Microsoft.IdentityModel.Abstractions, Version=8.14.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.IdentityModel.Abstractions.8.14.0\lib\net472\Microsoft.IdentityModel.Abstractions.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.IdentityModel.JsonWebTokens, Version=8.10.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.IdentityModel.JsonWebTokens.8.10.0\lib\net472\Microsoft.IdentityModel.JsonWebTokens.dll</HintPath>
@@ -209,17 +255,23 @@
     <Reference Include="Microsoft.VisualBasic.PowerPacks.Vs, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\VisualBasic.PowerPacks.Vs.1.0.0\lib\Microsoft.VisualBasic.PowerPacks.Vs.dll</HintPath>
     </Reference>
-    <Reference Include="MySql.Data, Version=9.3.0.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL">
-      <HintPath>..\packages\MySql.Data.9.3.0\lib\net48\MySql.Data.dll</HintPath>
+    <Reference Include="MySql.Data, Version=8.0.33.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL">
+      <HintPath>..\packages\MySql.Data.8.0.33\lib\net462\MySql.Data.dll</HintPath>
     </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
+    <Reference Include="RBush, Version=4.0.0.0, Culture=neutral, PublicKeyToken=c77e27b81f4d0187, processorArchitecture=MSIL">
+      <HintPath>..\packages\RBush.Signed.4.0.0\lib\net47\RBush.dll</HintPath>
+    </Reference>
+    <Reference Include="SixLabors.Fonts, Version=1.0.0.0, Culture=neutral, PublicKeyToken=d998eea7b14cab13, processorArchitecture=MSIL">
+      <HintPath>..\packages\SixLabors.Fonts.1.0.0\lib\netstandard2.0\SixLabors.Fonts.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Buffers, Version=4.0.5.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Buffers.4.6.1\lib\net462\System.Buffers.dll</HintPath>
     </Reference>
-    <Reference Include="System.ClientModel, Version=1.4.1.0, Culture=neutral, PublicKeyToken=92742159e12e44c8, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.ClientModel.1.4.1\lib\netstandard2.0\System.ClientModel.dll</HintPath>
+    <Reference Include="System.ClientModel, Version=1.8.0.0, Culture=neutral, PublicKeyToken=92742159e12e44c8, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.ClientModel.1.8.0\lib\netstandard2.0\System.ClientModel.dll</HintPath>
     </Reference>
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Configuration" />
@@ -293,14 +345,14 @@
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Net.Http" />
     <Reference Include="WindowsBase" />
-    <Reference Include="ZstdSharp, Version=0.8.5.0, Culture=neutral, PublicKeyToken=8d151af33a4ad5cf, processorArchitecture=MSIL">
-      <HintPath>..\packages\ZstdSharp.Port.0.8.5\lib\net462\ZstdSharp.dll</HintPath>
+    <Reference Include="ZstdSharp, Version=0.8.6.0, Culture=neutral, PublicKeyToken=8d151af33a4ad5cf, processorArchitecture=MSIL">
+      <HintPath>..\packages\ZstdSharp.Port.0.8.6\lib\net462\ZstdSharp.dll</HintPath>
     </Reference>
-    <Reference Include="zxing, Version=0.16.10.0, Culture=neutral, PublicKeyToken=4e88037ac681fe60, processorArchitecture=MSIL">
-      <HintPath>..\packages\ZXing.Net.0.16.10\lib\net48\zxing.dll</HintPath>
+    <Reference Include="zxing, Version=0.16.11.0, Culture=neutral, PublicKeyToken=4e88037ac681fe60, processorArchitecture=MSIL">
+      <HintPath>..\packages\ZXing.Net.0.16.11\lib\net47\zxing.dll</HintPath>
     </Reference>
-    <Reference Include="zxing.presentation, Version=0.16.10.0, Culture=neutral, PublicKeyToken=4e88037ac681fe60, processorArchitecture=MSIL">
-      <HintPath>..\packages\ZXing.Net.0.16.10\lib\net48\zxing.presentation.dll</HintPath>
+    <Reference Include="zxing.presentation, Version=0.16.11.0, Culture=neutral, PublicKeyToken=4e88037ac681fe60, processorArchitecture=MSIL">
+      <HintPath>..\packages\ZXing.Net.0.16.11\lib\net47\zxing.presentation.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -380,6 +432,12 @@
     <Compile Include="1Master\FormBarang.vb">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="1Master\CetakLabelBarcodeTSPL.Designer.vb">
+      <DependentUpon>CetakLabelBarcodeTSPL.vb</DependentUpon>
+    </Compile>
+    <Compile Include="1Master\CetakLabelBarcodeTSPL.vb">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="1Master\FormCetakBarcode.Designer.vb">
       <DependentUpon>FormCetakBarcode.vb</DependentUpon>
     </Compile>
@@ -402,6 +460,12 @@
       <DependentUpon>FormFlash.vb</DependentUpon>
     </Compile>
     <Compile Include="1Master\FormFlash.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="1Master\FormGeneralSetting.Designer.vb">
+      <DependentUpon>FormGeneralSetting.vb</DependentUpon>
+    </Compile>
+    <Compile Include="1Master\FormGeneralSetting.vb">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="1Master\FormHakUser.Designer.vb">
@@ -434,6 +498,12 @@
     <Compile Include="1Master\FormUser.vb">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="1Master\HistoriPembelianUC.Designer.vb">
+      <DependentUpon>HistoriPembelianUC.vb</DependentUpon>
+    </Compile>
+    <Compile Include="1Master\HistoriPembelianUC.vb">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="1Master\ModulHakAkses.vb" />
     <Compile Include="1Master\TambahBarang.designer.vb">
       <DependentUpon>TambahBarang.vb</DependentUpon>
@@ -463,42 +533,6 @@
       <DependentUpon>TambahSupliyer.vb</DependentUpon>
     </Compile>
     <Compile Include="1Master\TambahSupliyer.vb">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="2TransDev\FluentDesignFormUtama.Designer.vb">
-      <DependentUpon>FluentDesignFormUtama.vb</DependentUpon>
-    </Compile>
-    <Compile Include="2TransDev\FluentDesignFormUtama.vb">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="2TransDev\RibbonFormMenu.Designer.vb">
-      <DependentUpon>RibbonFormMenu.vb</DependentUpon>
-    </Compile>
-    <Compile Include="2TransDev\RibbonFormMenu.vb">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="2TransDev\WaitFormLoad.Designer.vb">
-      <DependentUpon>WaitFormLoad.vb</DependentUpon>
-    </Compile>
-    <Compile Include="2TransDev\WaitFormLoad.vb">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="2TransDev\XtraFormJual.Designer.vb">
-      <DependentUpon>XtraFormJual.vb</DependentUpon>
-    </Compile>
-    <Compile Include="2TransDev\XtraFormJual.vb">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="2TransDev\XtraUserControl1.Designer.vb">
-      <DependentUpon>XtraUserControl1.vb</DependentUpon>
-    </Compile>
-    <Compile Include="2TransDev\XtraUserControl1.vb">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="2Trans\CariBarang.designer.vb">
-      <DependentUpon>CariBarang.vb</DependentUpon>
-    </Compile>
-    <Compile Include="2Trans\CariBarang.vb">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="2Trans\FormBayarHutang.Designer.vb">
@@ -579,12 +613,6 @@
     <Compile Include="2Trans\FormTransferStok.vb">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="2Trans\FormTukarBarang.Designer.vb">
-      <DependentUpon>FormTukarBarang.vb</DependentUpon>
-    </Compile>
-    <Compile Include="2Trans\FormTukarBarang.vb">
-      <SubType>Form</SubType>
-    </Compile>
     <Compile Include="2Trans\NotaPembelian.Designer.vb">
       <DependentUpon>NotaPembelian.vb</DependentUpon>
     </Compile>
@@ -607,6 +635,12 @@
       <DependentUpon>NotaTransferBarang.vb</DependentUpon>
     </Compile>
     <Compile Include="2Trans\NotaTransferBarang.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="6Print\PrintReturBeli.Designer.vb">
+      <DependentUpon>PrintReturBeli.vb</DependentUpon>
+    </Compile>
+    <Compile Include="6Print\PrintReturBeli.vb">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="3Jurnal\FormKeuangan.Designer.vb">
@@ -655,6 +689,12 @@
       <DependentUpon>FormGrafikLaba.vb</DependentUpon>
     </Compile>
     <Compile Include="5Lap\FormGrafikLaba.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="5Lap\FormKartuStok.Designer.vb">
+      <DependentUpon>FormKartuStok.vb</DependentUpon>
+    </Compile>
+    <Compile Include="5Lap\FormKartuStok.vb">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="5Lap\FormLapBarang.Designer.vb">
@@ -771,10 +811,22 @@
     <Compile Include="5Lap\FormPenjualanPPn.vb">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="5Lap\FormRopertJual.Designer.vb">
+      <DependentUpon>FormRopertJual.vb</DependentUpon>
+    </Compile>
+    <Compile Include="5Lap\FormRopertJual.vb">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="5Lap\FormStokBarang.designer.vb">
       <DependentUpon>FormStokBarang.vb</DependentUpon>
     </Compile>
     <Compile Include="5Lap\FormStokBarang.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="6Print\FormCetakJual.Designer.vb">
+      <DependentUpon>FormCetakJual.vb</DependentUpon>
+    </Compile>
+    <Compile Include="6Print\FormCetakJual.vb">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="6Print\ModuleCetakJual.vb" />
@@ -848,21 +900,36 @@
     <Compile Include="8Uty\FormQuery.vb">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="8Uty\FormUpdateTabelDb.Designer.vb">
+      <DependentUpon>FormUpdateTabelDb.vb</DependentUpon>
+    </Compile>
+    <Compile Include="8Uty\FormUpdateTabelDb.vb">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="8Uty\SettingDatabase.Designer.vb">
       <DependentUpon>SettingDatabase.vb</DependentUpon>
     </Compile>
     <Compile Include="8Uty\SettingDatabase.vb">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="ApplicationEvents.vb" />
     <Compile Include="BilanganTerbilang.vb" />
     <Compile Include="DatabaseModule.vb" />
     <Compile Include="DatabaseRestore.vb" />
-    <Compile Include="DataSetKL1.Designer.vb">
+    <Compile Include="DataSetKL.Designer.vb">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>DataSetKL.xsd</DependentUpon>
     </Compile>
+    <Compile Include="DataSetKL.vb">
+      <DependentUpon>DataSetKL.xsd</DependentUpon>
+    </Compile>
     <Compile Include="ModuleEncrypt.vb" />
+    <Compile Include="My Project\Application.Designer.vb">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Application.myapp</DependentUpon>
+    </Compile>
     <Compile Include="My Project\AssemblyInfo.vb" />
     <Compile Include="My Project\Resources.Designer.vb">
       <AutoGen>True</AutoGen>
@@ -908,6 +975,9 @@
     <EmbeddedResource Include="1Master\FormBarang.resx">
       <DependentUpon>FormBarang.vb</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="1Master\CetakLabelBarcodeTSPL.resx">
+      <DependentUpon>CetakLabelBarcodeTSPL.vb</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="1Master\FormCetakBarcode.resx">
       <DependentUpon>FormCetakBarcode.vb</DependentUpon>
     </EmbeddedResource>
@@ -919,6 +989,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="1Master\FormFlash.resx">
       <DependentUpon>FormFlash.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="1Master\FormGeneralSetting.resx">
+      <DependentUpon>FormGeneralSetting.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="1Master\FormHakUser.resx">
       <DependentUpon>FormHakUser.vb</DependentUpon>
@@ -935,6 +1008,9 @@
     <EmbeddedResource Include="1Master\FormUser.resx">
       <DependentUpon>FormUser.vb</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="1Master\HistoriPembelianUC.resx">
+      <DependentUpon>HistoriPembelianUC.vb</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="1Master\TambahBarang.resx">
       <DependentUpon>TambahBarang.vb</DependentUpon>
     </EmbeddedResource>
@@ -949,24 +1025,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="1Master\TambahSupliyer.resx">
       <DependentUpon>TambahSupliyer.vb</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="2TransDev\FluentDesignFormUtama.resx">
-      <DependentUpon>FluentDesignFormUtama.vb</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="2TransDev\RibbonFormMenu.resx">
-      <DependentUpon>RibbonFormMenu.vb</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="2TransDev\WaitFormLoad.resx">
-      <DependentUpon>WaitFormLoad.vb</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="2TransDev\XtraFormJual.resx">
-      <DependentUpon>XtraFormJual.vb</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="2TransDev\XtraUserControl1.resx">
-      <DependentUpon>XtraUserControl1.vb</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="2Trans\CariBarang.resx">
-      <DependentUpon>CariBarang.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="2Trans\FormBayarHutang.resx">
       <DependentUpon>FormBayarHutang.vb</DependentUpon>
@@ -1006,9 +1064,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="2Trans\FormTransferStok.resx">
       <DependentUpon>FormTransferStok.vb</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="2Trans\FormTukarBarang.resx">
-      <DependentUpon>FormTukarBarang.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="2Trans\NotaPembelian.rdlc" />
     <EmbeddedResource Include="2Trans\NotaPembelian.resx">
@@ -1054,6 +1109,9 @@
     <EmbeddedResource Include="4Gaji\ReportLapGaji.rdlc" />
     <EmbeddedResource Include="5Lap\FormGrafikLaba.resx">
       <DependentUpon>FormGrafikLaba.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="5Lap\FormKartuStok.resx">
+      <DependentUpon>FormKartuStok.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="5Lap\FormLapBarang.resx">
       <DependentUpon>FormLapBarang.vb</DependentUpon>
@@ -1112,6 +1170,9 @@
     <EmbeddedResource Include="5Lap\FormPenjualanPPn.resx">
       <DependentUpon>FormPenjualanPPn.vb</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="5Lap\FormRopertJual.resx">
+      <DependentUpon>FormRopertJual.vb</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="5Lap\FormStokBarang.resx">
       <DependentUpon>FormStokBarang.vb</DependentUpon>
     </EmbeddedResource>
@@ -1147,11 +1208,17 @@
     <EmbeddedResource Include="5Lap\ReportTFBarang.rdlc" />
     <EmbeddedResource Include="5Lap\ReportTFBarangDetail.rdlc" />
     <EmbeddedResource Include="5Lap\ReportTransferStok.rdlc" />
+    <EmbeddedResource Include="6Print\FormCetakJual.resx">
+      <DependentUpon>FormCetakJual.vb</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="6Print\PrinterSuratJalan.resx">
       <DependentUpon>PrinterSuratJalan.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="6Print\PrintJual.resx">
       <DependentUpon>PrintJual.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="6Print\PrintReturBeli.resx">
+      <DependentUpon>PrintReturBeli.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="6Print\PrintReturJual.resx">
       <DependentUpon>PrintReturJual.vb</DependentUpon>
@@ -1181,6 +1248,9 @@
     <EmbeddedResource Include="8Uty\FormQuery.resx">
       <DependentUpon>FormQuery.vb</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="8Uty\FormUpdateTabelDb.resx">
+      <DependentUpon>FormUpdateTabelDb.vb</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="8Uty\ReportHistory.rdlc" />
     <EmbeddedResource Include="8Uty\SettingDatabase.resx">
       <DependentUpon>SettingDatabase.vb</DependentUpon>
@@ -1195,20 +1265,25 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="AppKasir_TemporaryKey.pfx" />
+    <None Include="AUDIT_SUMMARY_FINAL.md" />
+    <None Include="DATABASE_SCHEMA.md" />
     <None Include="DataSetKL.xsc">
       <DependentUpon>DataSetKL.xsd</DependentUpon>
     </None>
     <None Include="DataSetKL.xsd">
       <Generator>MSDataSetGenerator</Generator>
-      <LastGenOutput>DataSetKL1.Designer.vb</LastGenOutput>
       <SubType>Designer</SubType>
+      <LastGenOutput>DataSetKL.Designer.vb</LastGenOutput>
     </None>
     <None Include="DataSetKL.xss">
       <DependentUpon>DataSetKL.xsd</DependentUpon>
     </None>
+    <None Include="DEVELOPER_GUIDE.md" />
+    <None Include="DOCUMENTATION_AUDIT_FIXES.md" />
     <None Include="My Project\app.manifest" />
     <None Include="My Project\Application.myapp">
       <Generator>MyApplicationCodeGenerator</Generator>
+      <LastGenOutput>Application.Designer.vb</LastGenOutput>
     </None>
     <None Include="My Project\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -1219,7 +1294,8 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Kasir lancar.ico" />
+    <None Include="README.md" />
+    <None Include="Resources\kopi.png" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.8">
@@ -1244,7 +1320,9 @@
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </COMReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Content Include="Kasir lancar.ico" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.VisualBasic.targets" />
   <Import Project="..\packages\Microsoft.Data.SqlClient.SNI.6.0.2\build\net462\Microsoft.Data.SqlClient.SNI.targets" Condition="Exists('..\packages\Microsoft.Data.SqlClient.SNI.6.0.2\build\net462\Microsoft.Data.SqlClient.SNI.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

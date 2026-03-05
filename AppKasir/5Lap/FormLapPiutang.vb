@@ -183,9 +183,9 @@ Public Class FormLapPiutang
                     Dim HUTANG As Decimal = If(Not rd.IsDBNull(rd.GetOrdinal("HUTANG")), rd("HUTANG"), 0)
                     Dim NOMINAL_BAYAR As Decimal = If(Not rd.IsDBNull(rd.GetOrdinal("NOMINAL_BAYAR")), rd("NOMINAL_BAYAR"), 0)
 
-                    TxtTotalHutang.Text = Microsoft.VisualBasic.Format(HUTANG, "N0")
-                    TxtBayar.Text = Microsoft.VisualBasic.Format(NOMINAL_BAYAR, "N0")
-                    TxtHutang.Text = Microsoft.VisualBasic.Format(HUTANG - NOMINAL_BAYAR, "N0")
+                    TxtTotalHutang.Text = HUTANG.ToString("N0")
+                    TxtBayar.Text = NOMINAL_BAYAR.ToString("N0")
+                    TxtHutang.Text = HUTANG - NOMINAL_BAYAR.ToString("N0")
                 End If
             End Using
         End Using

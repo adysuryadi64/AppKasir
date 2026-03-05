@@ -6,7 +6,7 @@ Imports System.IO.Ports
 
 Public Class PrintJual
     ' Deklarasi variabel sebagai string
-    Private LblPrinterStrukString As String
+    Private PrinterPosString As String
     Private jenisprinter As String
     Private TxtMAjuString As Integer
     Private TxtMundurString As Integer
@@ -46,7 +46,7 @@ Public Class PrintJual
 
 
 
-    Public printer_nota As String
+
     Public MOdelStruk As String
     Public WithEvents PD As New PrintDocument
     Private ReadOnly PPD As New PrintPreviewDialog
@@ -84,7 +84,7 @@ Public Class PrintJual
                         ' Assign values to application settings
                         Select Case key
                             Case "PrinterPos"
-                                LblPrinterStrukString = value
+                                PrinterPosString = value
                             Case "JenisPrinterJual"
                                 jenisprinter = value
                             Case "Maju"
@@ -163,43 +163,56 @@ Public Class PrintJual
 
     End Sub
 
-    Public Sub ProsesCetak()
+    Public Sub ProsesCetak(ByVal pilihankertas As String)
         Ambildataprinter()
         Ambil_data()
         UrutkanNoDgvData()
         Ambildatapelanggan()
 
-        If jenisprinter = "Printer Thermal" Then
-            Printerstruk()
-        ElseIf jenisprinter = "Printer Dot Matrix" Then
-            PrinterDotMatrik()
-        Else
-            ' Jika bukan printer Thermal atau Dot Matrix, tampilkan preview
-            MOdelStruk = CmbModelStrukString
-            Changelongpaper()
+        Select Case pilihankertas
+            Case "Printer Thermal"
+                Printerstruk()
 
-            ' Gunakan model struk yang sesuai untuk preview
-            Select Case MOdelStruk
-                Case "Model 2 Tanpa Diskon"
-                    PPD2.Document = PD2
-                    PPD2.ShowDialog()
-                Case "Model 3 Tanpa Header"
-                    PPD3.Document = PD3
-                    PPD3.ShowDialog()
-                Case "Model 4 Lengkap Tanpa Logo"
-                    PPD1.Document = PD1
-                    PPD1.ShowDialog()
-                Case "Model 5 Tanpa Logo Tanpa Diskon"
-                    PPD4.Document = PD4
-                    PPD4.ShowDialog()
-                Case Else
-                    PPD.Document = PD
-                    PPD.ShowDialog()
-            End Select
-        End If
+            Case "Printer Dot Matrix"
+                PrinterDotMatrik()
+
+            Case Else
+                ' Default: gunakan pengaturan dari jenisprinter
+                Select Case jenisprinter
+                    Case "Printer Thermal"
+                        Printerstruk()
+
+                    Case "Printer Dot Matrix"
+                        PrinterDotMatrik()
+
+                    Case Else
+                        ' Jika bukan Thermal/Dot Matrix, tampilkan Preview
+                        MOdelStruk = CmbModelStrukString
+                        Changelongpaper()
+
+                        Select Case MOdelStruk
+                            Case "Model 2 Tanpa Diskon"
+                                PPD2.Document = PD2
+                                PPD2.ShowDialog()
+                            Case "Model 3 Tanpa Header"
+                                PPD3.Document = PD3
+                                PPD3.ShowDialog()
+                            Case "Model 4 Lengkap Tanpa Logo"
+                                PPD1.Document = PD1
+                                PPD1.ShowDialog()
+                            Case "Model 5 Tanpa Logo Tanpa Diskon"
+                                PPD4.Document = PD4
+                                PPD4.ShowDialog()
+                            Case Else
+                                PPD.Document = PD
+                                PPD.ShowDialog()
+                        End Select
+                End Select
+        End Select
 
         Close()
     End Sub
+
 
 
     Private Sub Btnsimpan_Click(ByVal sender As Object, ByVal e As EventArgs) Handles Btnsimpan.Click
@@ -226,12 +239,12 @@ Public Class PrintJual
     End Sub
 
     Public Sub Ambil_data()
-        Using cmd As New MySqlCommand("SELECT ID_BARANG, NAMA_BARANG, QTY, SATUAN, HARGA_JUAL, TOTAL_DISKON, TOTAL_HARGA FROM penjualan_detail WHERE FAKTUR_JUAL = @faktur", conn)
+        Using cmd As New MySqlCommand("SELECT ID_BARANG, NAMA_BARANG, SERIAL_NUMBER, QTY, SATUAN, HARGA_JUAL, TOTAL_DISKON, TOTAL_HARGA FROM penjualan_detail WHERE FAKTUR_JUAL = @faktur", conn)
             cmd.Parameters.AddWithValue("@faktur", TxtFaktur.Text)
             Using rd As MySqlDataReader = cmd.ExecuteReader()
                 DgvData.Rows.Clear()
                 Do While rd.Read()
-                    DgvData.Rows.Add(rd("ID_BARANG"), rd("NAMA_BARANG"), rd("QTY"), rd("SATUAN"), rd("HARGA_JUAL"), rd("TOTAL_DISKON"), rd("TOTAL_HARGA"))
+                    DgvData.Rows.Add(rd("ID_BARANG"), rd("NAMA_BARANG"), rd("QTY"), rd("SATUAN"), rd("HARGA_JUAL"), rd("TOTAL_DISKON"), rd("TOTAL_HARGA"), rd("SERIAL_NUMBER"))
                 Loop
             End Using
         End Using
@@ -316,49 +329,55 @@ Public Class PrintJual
         End Using
     End Sub
 
+    Private Function AmbilPrinterStruk() As String
+        Dim targetPrinter As String = If(LblPrinterStrukString <> "Printerdefault", LblPrinterStrukString, New PrinterSettings().PrinterName)
+
+        If PrinterSettings.InstalledPrinters.Cast(Of String)().Any(Function(p) p.Equals(targetPrinter, StringComparison.OrdinalIgnoreCase)) Then
+            Return targetPrinter
+        End If
+
+        ' Coba cari printer dengan nama mirip
+        Dim kandidat = PrinterSettings.InstalledPrinters.Cast(Of String)().
+        FirstOrDefault(Function(p) p.ToLower().Contains(targetPrinter.ToLower()))
+
+        If kandidat IsNot Nothing Then
+            MessageBox.Show($"Printer '{targetPrinter}' tidak ditemukan. Diganti dengan: {kandidat}", "Info", MessageBoxButtons.OK, MessageBoxIcon.Information)
+            Return kandidat
+        Else
+            MessageBox.Show($"Printer '{targetPrinter}' tidak ditemukan!", "Gagal", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            Return String.Empty
+        End If
+    End Function
 
     Public Sub Printerstruk()
-        Dim printer_nota As String
 
-        If LblPrinterStrukString <> "Printerdefault" Then
-            printer_nota = LblPrinterStrukString
-        Else
-            ' Langsung menetapkan default printer ke printer_nota tanpa variabel tambahan
-            printer_nota = New PrinterSettings().PrinterName
+        Dim printer_nota_pos As String = PrinterPosString
+        If String.IsNullOrEmpty(printer_nota_pos) Then
+            MessageBox.Show("Tidak ada printer yang tersedia untuk mencetak nota.", "Peringatan", MessageBoxButtons.OK, MessageBoxIcon.Warning)
+            Exit Sub
         End If
 
 
-        PD.PrinterSettings.PrinterName = printer_nota
-
+        PD.PrinterSettings.PrinterName = printer_nota_pos
         MOdelStruk = CmbModelStrukString
 
-        If MOdelStruk = "Model 2 Tanpa Diskon" Then
-            Changelongpaper()
-            PPD2.Document = PD2
-            'PPD2.ShowDialog()
-            PD2.Print()
-        ElseIf MOdelStruk = "Model 3 Tanpa Header" Then
-            Changelongpaper()
-            PPD3.Document = PD3
-            'PPD3.ShowDialog()
-            PD3.Print()
-        ElseIf MOdelStruk = "Model 4 Lengkap Tanpa Logo" Then
-            Changelongpaper()
-            PPD1.Document = PD1
-            'PPD1.ShowDialog()
-            PD1.Print()
-        ElseIf MOdelStruk = "Model 5 Tanpa Logo Tanpa Diskon" Then
-            Changelongpaper()
-            PPD4.Document = PD4
-            'PPD4.ShowDialog()
-            PD4.Print()
-        Else
-            Changelongpaper()
-            PPD.Document = PD
-            'PPD.ShowDialog()
-            PD.Print()
-        End If
+        Changelongpaper()
+
+        Select Case MOdelStruk
+            Case "Model 2 Tanpa Diskon"
+                PPD2.Document = PD2 : PD2.Print()
+            Case "Model 3 Tanpa Header"
+                PPD3.Document = PD3 : PD3.Print()
+            Case "Model 4 Lengkap Tanpa Logo"
+                PPD1.Document = PD1 : PD1.Print()
+            Case "Model 5 Tanpa Logo Tanpa Diskon"
+                PPD4.Document = PD4 : PD4.Print()
+            Case Else
+                PPD.Document = PD : PD.Print()
+        End Select
     End Sub
+
+
 
     Public Sub Changelongpaper()
         Dim rowcount As Integer
@@ -430,7 +449,7 @@ Public Class PrintJual
 
         tinggi += 10 + TxtJarakString
         e.Graphics.DrawString("Tanggal", New Drawing.Font(CmbFKetString, CmbUKetString), Brushes.Black, BatasKiri, tinggi)
-        e.Graphics.DrawString(": " & Microsoft.VisualBasic.Format(DTPTgl.Value, "dd-MM-yy hh:mm:ss"), New Drawing.Font(CmbFKetString, CmbUKetString), Brushes.Black, Mulaikata, tinggi)
+        e.Graphics.DrawString(": " & DTPTgl.Value.ToString("yyyy-MM-dd HH:mm:ss"), New Drawing.Font(CmbFKetString, CmbUKetString), Brushes.Black, Mulaikata, tinggi)
 
         tinggi += 10 + TxtJarakString
         e.Graphics.DrawString("Kasir", New Drawing.Font(CmbFKetString, CmbUKetString), Brushes.Black, BatasKiri, tinggi)
@@ -537,7 +556,7 @@ Public Class PrintJual
         If TxtStatusTrans.Text = "Belum Lunas" Then
             tinggi += 10 + TxtJarakString
             e.Graphics.DrawString("Jatuh Tempo :", New Drawing.Font(CmbFIsiString, CmbUIsiString), Brushes.Black, Mulaikata3, tinggi, kanan)
-            e.Graphics.DrawString(Microsoft.VisualBasic.Format(DTPJatuhTempo.Value, "dd-MM-yyyy"), New Drawing.Font(CmbFIsiString, CmbUIsiString), Brushes.Black, Mulaikata5, tinggi, kanan)
+            e.Graphics.DrawString(DTPJatuhTempo.Value.ToString("dd-MM-yyyy"), New Drawing.Font(CmbFIsiString, CmbUIsiString), Brushes.Black, Mulaikata5, tinggi, kanan)
         End If
 
         tinggi += 10 + TxtJarakString
@@ -628,7 +647,7 @@ Public Class PrintJual
 
         tinggi += 10 + TxtJarakString
         e.Graphics.DrawString("Tanggal", New Drawing.Font(CmbFKetString, CmbUKetString), Brushes.Black, BatasKiri, tinggi)
-        e.Graphics.DrawString(": " & Microsoft.VisualBasic.Format(DTPTgl.Value, "dd-MM-yy hh:mm:ss"), New Drawing.Font(CmbFKetString, CmbUKetString), Brushes.Black, Mulaikata, tinggi)
+        e.Graphics.DrawString(": " & DTPTgl.Value.ToString("yyyy-MM-dd HH:mm:ss"), New Drawing.Font(CmbFKetString, CmbUKetString), Brushes.Black, Mulaikata, tinggi)
 
         tinggi += 10 + TxtJarakString
         e.Graphics.DrawString("Kasir", New Drawing.Font(CmbFKetString, CmbUKetString), Brushes.Black, BatasKiri, tinggi)
@@ -736,7 +755,7 @@ Public Class PrintJual
         If TxtStatusTrans.Text = "Belum Lunas" Then
             tinggi += 10 + TxtJarakString
             e.Graphics.DrawString("Jatuh Tempo :", New Drawing.Font(CmbFIsiString, CmbUIsiString), Brushes.Black, Mulaikata3, tinggi, kanan)
-            e.Graphics.DrawString(Microsoft.VisualBasic.Format(DTPJatuhTempo.Value, "dd-MM-yyyy"), New Drawing.Font(CmbFIsiString, CmbUIsiString), Brushes.Black, Mulaikata5, tinggi, kanan)
+            e.Graphics.DrawString(DTPJatuhTempo.Value.ToString("dd-MM-yyyy"), New Drawing.Font(CmbFIsiString, CmbUIsiString), Brushes.Black, Mulaikata5, tinggi, kanan)
         End If
 
         tinggi += 10 + TxtJarakString
@@ -826,7 +845,7 @@ Public Class PrintJual
 
         tinggi += 10 + TxtJarakString
         e.Graphics.DrawString("Tgl", New Drawing.Font(CmbFKetString, CmbUKetString), Brushes.Black, BatasKiri, tinggi)
-        e.Graphics.DrawString(": " & Microsoft.VisualBasic.Format(DTPTgl.Value, "dd-MM-yy hh:mm:ss"), New Drawing.Font(CmbFKetString, CmbUKetString), Brushes.Black, Mulaikata, tinggi)
+        e.Graphics.DrawString(": " & DTPTgl.Value.ToString("yyyy-MM-dd HH:mm:ss"), New Drawing.Font(CmbFKetString, CmbUKetString), Brushes.Black, Mulaikata, tinggi)
 
         tinggi += 10 + TxtJarakString
         e.Graphics.DrawString("Kasir", New Drawing.Font(CmbFKetString, CmbUKetString), Brushes.Black, BatasKiri, tinggi)
@@ -920,7 +939,7 @@ Public Class PrintJual
         If TxtStatusTrans.Text = "Belum Lunas" Then
             tinggi += 10 + TxtJarakString
             e.Graphics.DrawString("Jatuh Tempo :", New Drawing.Font(CmbFIsiString, CmbUIsiString), Brushes.Black, Mulaikata3, tinggi, kanan)
-            e.Graphics.DrawString(Microsoft.VisualBasic.Format(DTPJatuhTempo.Value, "dd-MM-yyyy"), New Drawing.Font(CmbFIsiString, CmbUIsiString), Brushes.Black, Mulaikata5, tinggi, kanan)
+            e.Graphics.DrawString(DTPJatuhTempo.Value.ToString("dd-MM-yyyy"), New Drawing.Font(CmbFIsiString, CmbUIsiString), Brushes.Black, Mulaikata5, tinggi, kanan)
         End If
 
         tinggi += 10 + TxtJarakString
@@ -989,7 +1008,7 @@ Public Class PrintJual
 
         tinggi += 10 + TxtJarakString
         e.Graphics.DrawString("Tgl", New Drawing.Font(CmbFKetString, CmbUKetString), Brushes.Black, BatasKiri, tinggi)
-        e.Graphics.DrawString(": " & Microsoft.VisualBasic.Format(DTPTgl.Value, "dd-MM-yy hh:mm:ss"), New Drawing.Font(CmbFKetString, CmbUKetString), Brushes.Black, Mulaikata, tinggi)
+        e.Graphics.DrawString(": " & DTPTgl.Value.ToString("yyyy-MM-dd HH:mm:ss"), New Drawing.Font(CmbFKetString, CmbUKetString), Brushes.Black, Mulaikata, tinggi)
 
         tinggi += 10 + TxtJarakString
         e.Graphics.DrawString("Kasir", New Drawing.Font(CmbFKetString, CmbUKetString), Brushes.Black, BatasKiri, tinggi)
@@ -1076,7 +1095,7 @@ Public Class PrintJual
         If TxtStatusTrans.Text = "Belum Lunas" Then
             tinggi += 10 + TxtJarakString
             e.Graphics.DrawString("Jatuh Tempo :", New Drawing.Font(CmbFIsiString, CmbUIsiString), Brushes.Black, Mulaikata3, tinggi, kanan)
-            e.Graphics.DrawString(Microsoft.VisualBasic.Format(DTPJatuhTempo.Value, "dd-MM-yyyy"), New Drawing.Font(CmbFIsiString, CmbUIsiString), Brushes.Black, Mulaikata5, tinggi, kanan)
+            e.Graphics.DrawString(DTPJatuhTempo.Value.ToString("dd-MM-yyyy"), New Drawing.Font(CmbFIsiString, CmbUIsiString), Brushes.Black, Mulaikata5, tinggi, kanan)
         End If
 
         tinggi += 10 + TxtJarakString
@@ -1143,7 +1162,7 @@ Public Class PrintJual
 
         tinggi += 10 + TxtJarakString
         e.Graphics.DrawString("Tgl", New Drawing.Font(CmbFKetString, CmbUKetString), Brushes.Black, BatasKiri, tinggi)
-        e.Graphics.DrawString(": " & Microsoft.VisualBasic.Format(DTPTgl.Value, "dd-MM-yy hh:mm:ss"), New Drawing.Font(CmbFKetString, CmbUKetString), Brushes.Black, Mulaikata, tinggi)
+        e.Graphics.DrawString(": " & DTPTgl.Value.ToString("yyyy-MM-dd HH:mm:ss"), New Drawing.Font(CmbFKetString, CmbUKetString), Brushes.Black, Mulaikata, tinggi)
 
         tinggi += 10 + TxtJarakString
         e.Graphics.DrawString("Kasir", New Drawing.Font(CmbFKetString, CmbUKetString), Brushes.Black, BatasKiri, tinggi)
@@ -1257,7 +1276,7 @@ Public Class PrintJual
         If TxtStatusTrans.Text = "Belum Lunas" Then
             tinggi += 10 + TxtJarakString
             e.Graphics.DrawString("Jatuh Tempo :", New Drawing.Font(CmbFIsiString, CmbUIsiString), Brushes.Black, Mulaikata3, tinggi, kanan)
-            e.Graphics.DrawString(Microsoft.VisualBasic.Format(DTPJatuhTempo.Value, "dd-MM-yyyy"), New Drawing.Font(CmbFIsiString, CmbUIsiString), Brushes.Black, Mulaikata5, tinggi, kanan)
+            e.Graphics.DrawString(DTPJatuhTempo.Value.ToString("dd-MM-yyyy"), New Drawing.Font(CmbFIsiString, CmbUIsiString), Brushes.Black, Mulaikata5, tinggi, kanan)
         End If
 
         tinggi += 10 + TxtJarakString
@@ -1267,7 +1286,7 @@ Public Class PrintJual
         e.Graphics.DrawString(FOOTER1, New Drawing.Font(CmbFFootString, CmbUFootString), Brushes.Black, centermargin, tinggi, tengah)
         tinggi += 10 + TxtJarakString
         e.Graphics.DrawString(FOOTER2, New Drawing.Font(CmbFFootString, CmbUFootString), Brushes.Black, centermargin, tinggi, tengah)
-        tinggi -= TxtMundurString
+        TxtMundurString -= TxtMundurString
 
         Dim escapeCommand As String = Chr(27) & "d" & Chr(TxtMundurString) ' Memundurkan kertas sejauh ... baris
     End Sub
@@ -1324,17 +1343,15 @@ Public Class PrintJual
 
 
     Public Sub PrinterDotMatrik()
-        Dim printer_nota As String
-
-        If printerDot <> "Printerdefault" Then
-            printer_nota = printerDot
-        Else
-            ' Baca default printer pada komputer
-            Dim defaultPrinter As String = New PrinterSettings().PrinterName
-            printer_nota = defaultPrinter
+        Dim printer_nota_Dot As String
+        printer_nota_Dot = printerDot
+        If String.IsNullOrEmpty(printer_nota_Dot) Then
+            MessageBox.Show("Tidak ada printer yang tersedia untuk mencetak nota.", "Peringatan", MessageBoxButtons.OK, MessageBoxIcon.Warning)
+            Exit Sub
         End If
 
-        PDDot.PrinterSettings.PrinterName = printer_nota
+
+        PDDot.PrinterSettings.PrinterName = printer_nota_Dot
         RubahPanjangkertas()
         PPDDot.Document = PDDot
         'PPDDot.ShowDialog()
@@ -1404,13 +1421,17 @@ Public Class PrintJual
         e.Graphics.DrawString("N O T A  P E N J U A L A N", New Drawing.Font(fontJudulDot, ukuranFontJudul, FontStyle.Bold), Brushes.Black, Mulaikata5, tinggi)
 
         tinggi += 20 + jarakBarisDot
-        e.Graphics.DrawString(ALAMAT_PERUSAHAAN & " " & KOTA_PERUSAHAAN, New Drawing.Font(fontIsiDot, ukuranFontIsi), Brushes.Black, BatasKiri, tinggi)
-        e.Graphics.DrawString("Trx : " & TxtFaktur.Text & " / " & Microsoft.VisualBasic.Format(DTPTgl.Value, "dd-MM-yy hh:mm:ss"), New Drawing.Font(fontIsiDot, ukuranFontIsi), Brushes.Black, Mulaikata5, tinggi)
+        e.Graphics.DrawString(ALAMAT_PERUSAHAAN, New Drawing.Font(fontIsiDot, ukuranFontIsi), Brushes.Black, BatasKiri, tinggi)
+        e.Graphics.DrawString("Trx : " & TxtFaktur.Text, New Drawing.Font(fontIsiDot, ukuranFontIsi), Brushes.Black, Mulaikata5, tinggi)
 
+        tinggi += 10 + jarakBarisDot
+        e.Graphics.DrawString(KOTA_PERUSAHAAN, New Drawing.Font(fontIsiDot, ukuranFontIsi), Brushes.Black, BatasKiri, tinggi)
+        e.Graphics.DrawString("Tgl : " & DTPTgl.Value.ToString("yyyy-MM-dd HH:mm:ss"), New Drawing.Font(fontIsiDot, ukuranFontIsi), Brushes.Black, Mulaikata5, tinggi)
 
         tinggi += 10 + jarakBarisDot
         e.Graphics.DrawString(KONTAK_PERUSAHAAN, New Drawing.Font(fontIsiDot, ukuranFontIsi), Brushes.Black, BatasKiri, tinggi)
         e.Graphics.DrawString("Pel : " & LblJenisPl.Text & " " & CmbPelanggan.Text, New Drawing.Font(fontIsiDot, ukuranFontIsi), Brushes.Black, Mulaikata5, tinggi)
+
 
         tinggi += 14 + jarakBarisDot
         e.Graphics.DrawString(garis, New Drawing.Font("Courier New", 8), Brushes.Black, BatasKiri, tinggi)
@@ -1439,6 +1460,11 @@ Public Class PrintJual
                 e.Graphics.DrawString(Convert.ToDecimal(row.Cells("Harga").Value).ToString("#,0.##", cultureIndonesia), New Drawing.Font(fontIsiDot, ukuranFontIsi), Brushes.Black, Mulaikata6, tinggi, kanan)
                 e.Graphics.DrawString(Convert.ToDecimal(row.Cells("TotalDiskon").Value).ToString("#,0.##", cultureIndonesia), New Drawing.Font(fontIsiDot, ukuranFontIsi), Brushes.Black, Mulaikata7, tinggi, kanan)
                 e.Graphics.DrawString(Convert.ToDecimal(row.Cells("TotalHarga").Value).ToString("#,0.##", cultureIndonesia), New Drawing.Font(fontIsiDot, ukuranFontIsi), Brushes.Black, Mulaikata8, tinggi, kanan)
+                ' Tampilkan SN hanya jika tidak kosong
+                If row.Cells("SN").Value IsNot Nothing AndAlso Not String.IsNullOrEmpty(row.Cells("SN").Value.ToString()) Then
+                    tinggi += 10 + jarakBarisDot
+                    e.Graphics.DrawString("SN: " & row.Cells("SN").Value.ToString(), New Drawing.Font(fontIsiDot, ukuranFontIsi), Brushes.Black, Mulaikata1, tinggi)
+                End If
             End If
         Next
 
@@ -1502,9 +1528,7 @@ Public Class PrintJual
 
         ' Menuliskan garis-garis
         tinggi += 10 + jarakBarisDot
-        e.Graphics.DrawString(".....", New Drawing.Font(fontIsiDot, ukuranFontIsi), Brushes.Black, BatasKiri, tinggi)
-        e.Graphics.DrawString(".....", New Drawing.Font(fontIsiDot, ukuranFontIsi), Brushes.Black, Mulaikata2, tinggi)
-        e.Graphics.DrawString(TxtIdUser.Text & "\" & TxtIdKomputer.Text, New Drawing.Font(fontIsiDot, ukuranFontIsi), Brushes.Black, Mulaikata3, tinggi)
+
 
         ' Menuliskan Pembayaran
         e.Graphics.DrawString("Bayar :", New Drawing.Font(fontIsiDot, ukuranFontIsi), Brushes.Black, Mulaikata7, tinggi, kanan)
@@ -1512,6 +1536,8 @@ Public Class PrintJual
         If Decimal.TryParse(TxtBayar.Text, Tunai) Then
             e.Graphics.DrawString(Tunai.ToString("#,0.##", cultureIndonesia), New Drawing.Font(fontIsiDot, ukuranFontIsi), Brushes.Black, Mulaikata8, tinggi, kanan)
         End If
+
+
 
         ' Menuliskan label pembayaran dan kembali jika ada
         tinggi += 10 + jarakBarisDot
@@ -1521,15 +1547,24 @@ Public Class PrintJual
             e.Graphics.DrawString(Kembali.ToString("#,0.##", cultureIndonesia), New Drawing.Font(fontIsiDot, ukuranFontIsi), Brushes.Black, Mulaikata8, tinggi, kanan)
         End If
 
+        e.Graphics.DrawString(".....", New Drawing.Font(fontIsiDot, ukuranFontIsi), Brushes.Black, BatasKiri, tinggi)
+        e.Graphics.DrawString(".....", New Drawing.Font(fontIsiDot, ukuranFontIsi), Brushes.Black, Mulaikata2, tinggi)
+        e.Graphics.DrawString(TxtIdUser.Text & "\" & TxtIdKomputer.Text, New Drawing.Font(fontIsiDot, ukuranFontIsi), Brushes.Black, Mulaikata3, tinggi)
+
+        ' Menambah tinggi untuk jarak antar baris terakhir
+        tinggi += 20 + jarakBarisDot
+        ' Menuliskan footer
+        e.Graphics.DrawString(FOOTER1, New Drawing.Font(fontIsiDot, ukuranFontIsi), Brushes.Black, BatasKiri, tinggi)
+
         ' Menambah tinggi untuk jarak antar baris terakhir
         tinggi += 10 + jarakBarisDot
         ' Menuliskan footer
-        e.Graphics.DrawString(FOOTER2 & " " & FOOTER1, New Drawing.Font(fontIsiDot, ukuranFontIsi), Brushes.Black, BatasKiri, tinggi)
+        e.Graphics.DrawString(FOOTER3, New Drawing.Font(fontIsiDot, ukuranFontIsi), Brushes.Black, BatasKiri, tinggi)
 
         ' Menuliskan Jatuh Tempo jika status transaksi belum lunas
         If TxtStatusTrans.Text = "Belum Lunas" Then
             e.Graphics.DrawString("Jatuh Tempo :", New Drawing.Font(fontIsiDot, ukuranFontIsi), Brushes.Black, Mulaikata7, tinggi, kanan)
-            e.Graphics.DrawString(Microsoft.VisualBasic.Format(DTPJatuhTempo.Value, "dd-MM-yyyy"), New Drawing.Font(fontIsiDot, ukuranFontIsi), Brushes.Black, Mulaikata8, tinggi, kanan)
+            e.Graphics.DrawString(DTPJatuhTempo.Value.ToString("dd-MM-yyyy"), New Drawing.Font(fontIsiDot, ukuranFontIsi), Brushes.Black, Mulaikata8, tinggi, kanan)
         End If
 
         'Dim escapeCommandsesudah As String = Chr(27) & "d" & Chr(TxtMundurString) ' Memundurkan kertas sejauh 5 baris

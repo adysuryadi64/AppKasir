@@ -154,7 +154,7 @@ Partial Class FormStokOpname
         Me.lstBarang.ItemHeight = 17
         Me.lstBarang.Location = New System.Drawing.Point(18, 160)
         Me.lstBarang.Name = "lstBarang"
-        Me.lstBarang.Size = New System.Drawing.Size(532, 242)
+        Me.lstBarang.Size = New System.Drawing.Size(532, 327)
         Me.lstBarang.TabIndex = 2
         '
         'TxtFaktur
@@ -243,6 +243,7 @@ Partial Class FormStokOpname
         'TxtTotalRupiah
         '
         Me.TxtTotalRupiah.BackColor = System.Drawing.SystemColors.GradientActiveCaption
+        Me.TxtTotalRupiah.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
         Me.TxtTotalRupiah.Enabled = False
         Me.TxtTotalRupiah.Font = New System.Drawing.Font("Century Gothic", 15.75!, System.Drawing.FontStyle.Bold)
         Me.TxtTotalRupiah.Location = New System.Drawing.Point(315, 33)
@@ -285,6 +286,7 @@ Partial Class FormStokOpname
         'TxtSelisih
         '
         Me.TxtSelisih.BackColor = System.Drawing.SystemColors.GradientActiveCaption
+        Me.TxtSelisih.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
         Me.TxtSelisih.Enabled = False
         Me.TxtSelisih.Font = New System.Drawing.Font("Century Gothic", 15.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.TxtSelisih.Location = New System.Drawing.Point(194, 34)
@@ -316,6 +318,7 @@ Partial Class FormStokOpname
         '
         'TxtKeteranganToko
         '
+        Me.TxtKeteranganToko.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
         Me.TxtKeteranganToko.Font = New System.Drawing.Font("Century Gothic", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.TxtKeteranganToko.Location = New System.Drawing.Point(52, 75)
         Me.TxtKeteranganToko.Name = "TxtKeteranganToko"
@@ -325,6 +328,7 @@ Partial Class FormStokOpname
         'TxtStokSystem
         '
         Me.TxtStokSystem.BackColor = System.Drawing.SystemColors.GradientActiveCaption
+        Me.TxtStokSystem.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
         Me.TxtStokSystem.Enabled = False
         Me.TxtStokSystem.Font = New System.Drawing.Font("Century Gothic", 15.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.TxtStokSystem.Location = New System.Drawing.Point(14, 34)
@@ -337,6 +341,7 @@ Partial Class FormStokOpname
         'TxtNyata
         '
         Me.TxtNyata.BackColor = System.Drawing.Color.White
+        Me.TxtNyata.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
         Me.TxtNyata.Font = New System.Drawing.Font("Century Gothic", 15.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.TxtNyata.Location = New System.Drawing.Point(104, 34)
         Me.TxtNyata.Name = "TxtNyata"
@@ -504,7 +509,7 @@ Partial Class FormStokOpname
         Me.TxtBarcode.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
         Me.TxtBarcode.Font = New System.Drawing.Font("Century Gothic", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.TxtBarcode.ForeColor = System.Drawing.Color.Black
-        Me.TxtBarcode.Location = New System.Drawing.Point(374, 74)
+        Me.TxtBarcode.Location = New System.Drawing.Point(249, 62)
         Me.TxtBarcode.Name = "TxtBarcode"
         Me.TxtBarcode.ReadOnly = True
         Me.TxtBarcode.Size = New System.Drawing.Size(123, 23)
@@ -595,6 +600,7 @@ Partial Class FormStokOpname
         Me.Panel3.Controls.Add(Me.Label1)
         Me.Panel3.Controls.Add(Me.Label3)
         Me.Panel3.Controls.Add(Me.Label2)
+        Me.Panel3.Controls.Add(Me.TxtBarcode)
         Me.Panel3.Font = New System.Drawing.Font("Century Gothic", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.Panel3.Location = New System.Drawing.Point(18, 204)
         Me.Panel3.Name = "Panel3"
@@ -637,8 +643,8 @@ Partial Class FormStokOpname
         Me.DGVData.AllowUserToDeleteRows = False
         Me.DGVData.AllowUserToResizeRows = False
         Me.DGVData.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
-                    Or System.Windows.Forms.AnchorStyles.Left) _
-                    Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+            Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.DGVData.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.DisplayedCells
         Me.DGVData.BackgroundColor = System.Drawing.Color.White
         Me.DGVData.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
@@ -687,7 +693,6 @@ Partial Class FormStokOpname
         Me.Controls.Add(Me.PanelCariNama)
         Me.Controls.Add(Me.Panel2)
         Me.Controls.Add(Me.TxtLokasi)
-        Me.Controls.Add(Me.TxtBarcode)
         Me.Controls.Add(Me.Label4)
         Me.Controls.Add(Me.Panel1)
         Me.Controls.Add(Me.TxtSelisihQty)

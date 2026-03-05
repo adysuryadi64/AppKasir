@@ -64,7 +64,7 @@ Public Class FormGaji
 
 
     Private Sub GenerateNomorGaji()
-        Dim cekTanggal As String = Microsoft.VisualBasic.Format(DtpTanggal.Value, "yyMMdd")
+        Dim cekTanggal As String = DtpTanggal.Value.ToString("yyMMdd")
         Dim UrutKOde As String = ""
         Dim cekNomor As String = "GJ-" & cekTanggal
 
@@ -1269,6 +1269,8 @@ Public Class FormGaji
 
 
     Private Sub SimpanjurnalPotonganLain(ByVal transaction As MySqlTransaction, ByVal potonganlain As Decimal)
+
+        Dim absenKhusus As Decimal = If(Decimal.TryParse(TxtAbsenKhususRp.Text, absenKhusus), absenKhusus, 0D)
         ' Simpan ke jurnal
         Using cmd As New MySqlCommand("INSERT INTO JurnalUmum (NO_TRANSAKSI, TGL_TRANSAKSI, NO_NOTA, URAIAN, NAMA_AKUN_D, NOMOR_AKUN_D, NAMA_AKUN_K, NOMOR_AKUN_K, NOMINAL, JENIS_TRANSAKSI, LOKASI, ID_USER, ID_KOMPUTER) " &
                                         "VALUES (@NO_TRANSAKSI, @TGL_TRANSAKSI, @NO_NOTA, @URAIAN, @NAMA_AKUN_D, @NOMOR_AKUN_D, @NAMA_AKUN_K, @NOMOR_AKUN_K, @NOMINAL, @JENIS_TRANSAKSI, @LOKASI, @ID_USER, @ID_KOMPUTER)", conn, transaction)
@@ -1276,12 +1278,12 @@ Public Class FormGaji
             cmd.Parameters.AddWithValue("@NO_TRANSAKSI", LblNomor.Text)
             cmd.Parameters.AddWithValue("@TGL_TRANSAKSI", DtpTanggal.Value.ToString("yyyy-MM-dd HH:mm:ss"))
             cmd.Parameters.AddWithValue("@NO_NOTA", LblKode.Text)
-            cmd.Parameters.AddWithValue("@URAIAN", "Potongan lain lain dari gaji atas nama " & CmbNama.Text)
+            cmd.Parameters.AddWithValue("@URAIAN", "Potongan lain lain dari gaji atas nama " & CmbNama.Text & " Selain Absen Khusus")
             cmd.Parameters.AddWithValue("@NAMA_AKUN_D", "BEBAN GAJI KARYAWAN")
             cmd.Parameters.AddWithValue("@NOMOR_AKUN_D", "07.01.001")
             cmd.Parameters.AddWithValue("@NAMA_AKUN_K", "PENDAPATAN LAIN LAIN")
             cmd.Parameters.AddWithValue("@NOMOR_AKUN_K", "08.01.002")
-            cmd.Parameters.AddWithValue("@NOMINAL", potonganlain)
+            cmd.Parameters.AddWithValue("@NOMINAL", potonganlain - absenKhusus)
             cmd.Parameters.AddWithValue("@JENIS_TRANSAKSI", "Gaji")
             cmd.Parameters.AddWithValue("@LOKASI", FormUtama.SLokasi.Text)
             cmd.Parameters.AddWithValue("@ID_USER", FormUtama.SLogin.Text)

@@ -3,10 +3,11 @@ Imports System.Reflection
 Imports System.Text.Json
 
 
-
 Public Class FormUtama
     Private ReadOnly originalColor As Color
     Private ReadOnly originalColor1 As Color
+
+    Private TanyakanKertas As String = "Tidak"
 
     Public Sub ChangeBackgroundImage(ByVal imageFileName As String)
         Dim exePath As String = System.IO.Path.GetDirectoryName(Application.ExecutablePath)
@@ -31,7 +32,7 @@ Public Class FormUtama
     Private Sub SetButtonBackgroundColor(ByVal clickedButton As Button)
 
         Dim buttons As Button() = {
-        BtnToko, BtnBarang, BTnPelanggan, BtnSupliyer, BtnUser, BtnTabelRef, BtnHakAksesUser, BtnKaryawan, BtnArmada,
+        BtnToko, BtnBarang, BTnPelanggan, BtnSupliyer, BtnUser, BtnTabelRef, BtnHakAksesUser, BtnGeneralSetting, BtnKaryawan, BtnArmada,
         BtnBelanja, BtnPenjualan, BtnRetuBelanja, BtnReturPenjualan, BtnBayarHutang, BtnBayarPiutang, BtnStokOpname, BtnPindahStok, BtnTransferBarang,
         BtnSuratJalan
 }
@@ -46,6 +47,7 @@ Public Class FormUtama
     End Sub
 
     Private Sub FormUtama_Load(ByVal sender As Object, ByVal e As EventArgs) Handles MyBase.Load
+        AturTooltip()
         Terkunci()
 
         OpenConnection()
@@ -85,6 +87,330 @@ Public Class FormUtama
         DtpTransaksi.CustomFormat = "dd/MM/yyyy"
         GBTransaksi.Visible = False
         DGVTransaksi.Columns.Clear()
+    End Sub
+
+
+    Private Sub AturTooltip()
+        ' Atur tampilan tooltip
+        ToolTip1.IsBalloon = True
+        ToolTip1.ToolTipIcon = ToolTipIcon.Info
+        ToolTip1.ToolTipTitle = "Keterangan Menu"
+
+
+        ToolTip1.SetToolTip(BtnToko,
+    "🏢 DATA PERUSAHAAN / TOKO" & Environment.NewLine &
+    "Isi informasi dasar perusahaan atau toko seperti nama, alamat, kontak, dan logo." & Environment.NewLine &
+    "Data ini akan muncul di laporan dan nota transaksi.")
+
+        ToolTip1.SetToolTip(BtnBarang,
+    "📦 DATA BARANG" & Environment.NewLine &
+    "Kelola semua informasi barang yang dijual atau digunakan." & Environment.NewLine &
+    "Termasuk kode barang, nama, harga jual & beli, stok minimum, dan satuan." & Environment.NewLine &
+    "Wajib diisi sebelum melakukan transaksi.")
+
+        ToolTip1.SetToolTip(BTnPelanggan,
+    "🧑‍💼 DATA PELANGGAN" & Environment.NewLine &
+    "Simpan data pelanggan seperti nama, alamat, dan nomor HP." & Environment.NewLine &
+    "Digunakan saat melakukan penjualan (cash atau kredit)." & Environment.NewLine &
+    "Juga digunakan untuk laporan piutang dan riwayat pembelian.")
+
+        ToolTip1.SetToolTip(BtnSupliyer,
+    "🏬 DATA SUPPLIER" & Environment.NewLine &
+    "Catat data pemasok barang seperti nama perusahaan, alamat, dan kontak." & Environment.NewLine &
+    "Wajib diisi sebelum melakukan pembelian barang.")
+
+        ToolTip1.SetToolTip(BtnTabelRef,
+    "📚 TABEL REFERENSI AKUN NERACA" & Environment.NewLine &
+    "Digunakan untuk mengatur daftar akun keuangan seperti Aktiva, Pasiva, Modal, dan lainnya." & Environment.NewLine &
+    "Menjadi dasar pencatatan jurnal dan laporan keuangan seperti Neraca & Laba Rugi." & Environment.NewLine &
+    "Wajib diisi dengan benar agar semua transaksi bisa tercatat secara akuntansi.")
+
+
+        ToolTip1.SetToolTip(BtnArmada,
+    "🚚 DATA ARMADA PENGIRIMAN" & Environment.NewLine &
+    "Simpan informasi kendaraan dan driver yang digunakan untuk pengiriman barang." & Environment.NewLine &
+    "Berguna saat mencetak surat jalan dan kontrol pengiriman.")
+
+        ToolTip1.SetToolTip(BtnKaryawan,
+    "👨‍🔧 DATA KARYAWAN" & Environment.NewLine &
+    "Catat semua karyawan toko atau perusahaan: nama, jabatan, alamat, dan kontak." & Environment.NewLine &
+    "Digunakan untuk absensi, gaji, shift kerja, dan bon karyawan.")
+
+        ToolTip1.SetToolTip(BtnUser,
+    "👤 DATA USER (PENGGUNA SISTEM)" & Environment.NewLine &
+    "Kelola pengguna aplikasi: username, nama, dan hak akses." & Environment.NewLine &
+    "Setiap user akan login sesuai hak aksesnya masing-masing.")
+
+        ToolTip1.SetToolTip(BtnHakAksesUser,
+    "🔐 HAK AKSES" & Environment.NewLine &
+    "Atur menu dan fitur apa saja yang boleh diakses oleh setiap level user." & Environment.NewLine &
+    "Contoh: kasir hanya boleh akses penjualan, supervisor boleh lihat laporan.")
+
+        ' pengaturan ini untuk mengatur apakah suatu fungsi bisa di akses oleh semua user atau tidak // general setting
+        ToolTip1.SetToolTip(BtnGeneralSetting,
+            "⚙️ PENGATURAN UMUM" & Environment.NewLine &
+            "Atur preferensi sistem seperti mengatur apakah fungsi tertentu bisa diakses oleh semua user atau tidak." & Environment.NewLine &
+            "Contoh: apakah kasir boleh mengedit harga jual barang.")
+
+
+
+        ' Tooltip kompleks (multi-line + ikon)
+        ToolTip1.SetToolTip(BtnBelanja,
+            "📦 PEMBELIAN" & Environment.NewLine &
+            "Transaksi pembelian barang dari supplier." & Environment.NewLine &
+            "Stok akan bertambah secara otomatis.")
+
+        ToolTip1.SetToolTip(BtnPenjualan,
+            "🧾 PENJUALAN" & Environment.NewLine &
+            "Catat penjualan ke pelanggan, baik cash maupun kredit." & Environment.NewLine &
+            "Stok akan dikurangi sesuai barang yang terjual.")
+
+        ToolTip1.SetToolTip(BtnRetuBelanja,
+            "🔁 RETUR BELI" & Environment.NewLine &
+            "Kembalikan barang ke supplier jika rusak/salah kirim." & Environment.NewLine &
+            "Mengurangi stok dan hutang.")
+
+        ToolTip1.SetToolTip(BtnReturPenjualan,
+            "🔄 RETUR JUAL" & Environment.NewLine &
+            "Barang dikembalikan oleh pelanggan." & Environment.NewLine &
+            "Stok akan bertambah dan piutang disesuaikan.")
+
+        ToolTip1.SetToolTip(BtnBayarHutang,
+            "💸 BAYAR HUTANG" & Environment.NewLine &
+            "Bayar hutang ke supplier berdasarkan transaksi sebelumnya." & Environment.NewLine &
+            "Mencatat pengeluaran ke jurnal.")
+
+        ToolTip1.SetToolTip(BtnBayarPiutang,
+            "💰 BAYAR PIUTANG" & Environment.NewLine &
+            "Terima pembayaran dari pelanggan atas penjualan kredit." & Environment.NewLine &
+            "Masuk ke kas dan jurnal keuangan.")
+
+        ToolTip1.SetToolTip(BtnPindahStok,
+            "📤 TRANSFER STOK" & Environment.NewLine &
+            "Pindahkan stok antar lokasi, seperti dari gudang ke toko.")
+
+        ToolTip1.SetToolTip(BtnTransferBarang,
+            "🔁 TRANSFER BARANG" & Environment.NewLine &
+            "Mutasi barang antar jenis atau kode baru.")
+
+        ToolTip1.SetToolTip(BtnStokOpname,
+            "📊 STOK OPNAME" & Environment.NewLine &
+            "Cocokkan stok fisik dengan sistem dan sesuaikan bila berbeda.")
+
+        ToolTip1.SetToolTip(BtnSuratJalan,
+            "🚚 SURAT JALAN" & Environment.NewLine &
+            "Dokumen pengiriman barang ke pelanggan atau cabang.")
+        ToolTip1.SetToolTip(BtnRakit,
+            "🛠️ PERAKITAN BARANG" & Environment.NewLine &
+            "Gunakan menu ini untuk merakit barang baru dari bahan-bahan dasar." & Environment.NewLine &
+            "Cocok untuk membuat paket produk atau proses produksi sederhana." & Environment.NewLine &
+            "Stok bahan akan berkurang, dan stok produk jadi akan bertambah.")
+
+        ' ==================== MODUL GAJI & BONUS ====================
+        MasterGajiToolStripMenuItem.ToolTipText =
+        "💰 MASTER GAJI" & Environment.NewLine &
+        "Proses penggajian bulanan untuk seluruh karyawan." & Environment.NewLine &
+        "Termasuk: Hitung gaji bersih, slip gaji, dan arsip pembayaran."
+
+        BonKaryawanToolStripMenuItem.ToolTipText =
+        "💵 BON KARYAWAN" & Environment.NewLine &
+        "Pencatatan uang muka atau pinjaman sementara karyawan." & Environment.NewLine &
+        "Termasuk pencatatan dan pelunasan per periode."
+
+        BayarBonDiluarGajiToolStripMenuItem.ToolTipText =
+        "💸 BAYAR BON DILUAR GAJI" & Environment.NewLine &
+        "Pembayaran bonus khusus di luar siklus gaji normal." & Environment.NewLine &
+        "Dicatat terpisah untuk pelacakan keuangan."
+
+        LaporanGajiToolStripMenuItem.ToolTipText =
+        "📈 LAPORAN GAJI" & Environment.NewLine &
+        "Analisis komprehensif pengeluaran gaji perusahaan." & Environment.NewLine &
+        "Termasuk: Per departemen, posisi, dan periode waktu."
+
+        'LaporanBonusToolStripMenuItem.ToolTipText =
+        '"📊 LAPORAN BONUS" & Environment.NewLine &
+        '"Rekapitulasi seluruh pembayaran bonus karyawan." & Environment.NewLine &
+        '"Dapat difilter berdasarkan periode dan jenis bonus."
+
+        '' ==================== MODUL LAPORAN ====================
+        'LaporanPostingToolStripMenuItem.ToolTipText =
+        '"📤 LAPORAN POSTING" & Environment.NewLine &
+        '"Rekapitulasi seluruh proses posting transaksi ke sistem." & Environment.NewLine &
+        '"Menampilkan: Tanggal posting, user, dan transaksi terkait."
+
+        'MutasiSaldoToolStripMenuItem.ToolTipText =
+        '"🔄 MUTASI SALDO" & Environment.NewLine &
+        '"Laporan perubahan saldo akun per periode." & Environment.NewLine &
+        '"Format: Awal periode + Mutasi = Saldo Akhir"
+
+        'MutasiBarangToolStripMenuItem.ToolTipText =
+        '"📊 MUTASI BARANG" & Environment.NewLine &
+        '"Histori pergerakan stok per item barang." & Environment.NewLine &
+        '"Detail: Stok awal, masuk, keluar, dan sisa."
+
+        'JurnalUmumToolStripMenuItem.ToolTipText =
+        '"📝 JURNAL UMUM" & Environment.NewLine &
+        '"Cetak seluruh jurnal akuntansi periode berjalan." & Environment.NewLine &
+        '"Filter tersedia per tipe jurnal/tanggal."
+
+        'NeracaLabaRugiToolStripMenuItem.ToolTipText =
+        '"⚖️ NERACA / LABA RUGI" & Environment.NewLine &
+        '"Laporan posisi keuangan dan kinerja perusahaan." & Environment.NewLine &
+        '"Komponen: Aset, Kewajiban, Ekuitas, Pendapatan, Biaya."
+
+        'BukuBesarToolStripMenuItem.ToolTipText =
+        '"📒 BUKU BESAR" & Environment.NewLine &
+        '"Laporan transaksi kronologis per akun." & Environment.NewLine &
+        '"Menampilkan debit/kredit dan saldo berjalan."
+
+        'BukuBesarPembantuToolStripMenuItem.ToolTipText =
+        '"📑 BUKU BESAR PEMBANTU" & Environment.NewLine &
+        '"Detail transaksi per akun tertentu." & Environment.NewLine &
+        '"Contoh: Hutang per vendor atau Piutang per pelanggan."
+
+        'LaporanPembelianToolStripMenuItem.ToolTipText =
+        '"🛒 LAPORAN PEMBELIAN" & Environment.NewLine &
+        '"Analisis pembelian per supplier/item." & Environment.NewLine &
+        '"Termasuk: Total nilai, diskon, dan PPN."
+
+        'LaporanPenjualanToolStripMenuItem.ToolTipText =
+        '"🏷️ LAPORAN PENJUALAN" & Environment.NewLine &
+        '"Statistik penjualan per produk/pelanggan." & Environment.NewLine &
+        '"Dapat dikelompokkan harian/mingguan/bulanan."
+
+        'LaporanPPNToolStripMenuItem.ToolTipText =
+        '"🧾 LAP. PENJUALAN PPN/NON PPN" & Environment.NewLine &
+        '"Rekap transaksi taxable dan non-taxable." & Environment.NewLine &
+        '"Untuk pelaporan pajak keluaran."
+
+        'ReturPembelianToolStripMenuItem.ToolTipText =
+        '"🔄 LAP. RETUR PEMBELIAN" & Environment.NewLine &
+        '"Rekap barang yang dikembalikan ke supplier." & Environment.NewLine &
+        '"Termasuk alasan retur dan nilai pengembalian."
+
+        'ReturPenjualanToolStripMenuItem.ToolTipText =
+        '"🔄 LAP. RETUR PENJUALAN" & Environment.NewLine &
+        '"Statistik produk yang sering dikembalikan." & Environment.NewLine &
+        '"Analisis penyebab retur pelanggan."
+
+        'LaporanHutangToolStripMenuItem.ToolTipText =
+        '"📉 LAPORAN HUTANG" & Environment.NewLine &
+        '"Analisis aging hutang ke vendor." & Environment.NewLine &
+        '"Kategori: 30/60/90 hari jatuh tempo."
+
+        'LaporanPiutangToolStripMenuItem.ToolTipText =
+        '"📈 LAPORAN PIUTANG" & Environment.NewLine &
+        '"Analisis tagihan belum tertagih." & Environment.NewLine &
+        '"Prioritas penagihan berdasarkan aging."
+
+        'LaporanKasPenjualanToolStripMenuItem.ToolTipText =
+        '"💵 LAP. KAS PENJUALAN" & Environment.NewLine &
+        '"Rekonsiliasi harian kasir." & Environment.NewLine &
+        '"Pencocokan fisik uang dengan sistem."
+
+        'TransferStokToolStripMenuItem.ToolTipText =
+        '"🚛 LAP. TRANSFER STOK" & Environment.NewLine &
+        '"Tracking perpindahan barang antar gudang." & Environment.NewLine &
+        '"Audit trail untuk kontrol inventory."
+
+        'StokOpnameToolStripMenuItem.ToolTipText =
+        '"🔍 LAP. STOK OPNAME" & Environment.NewLine &
+        '"Hasil penghitungan fisik vs sistem." & Environment.NewLine &
+        '"Menampilkan selisih dan penyesuaian."
+
+        'StokBarangToolStripMenuItem.ToolTipText =
+        '"📦 LAP. STOK BARANG" & Environment.NewLine &
+        '"Kondisi persediaan current." & Environment.NewLine &
+        '"Dapat difilter per kategori/lokasi."
+
+        'LaporanGrafikToolStripMenuItem.ToolTipText =
+        '"📊 LAP. GRAFIK" & Environment.NewLine &
+        '"Visualisasi data dalam bentuk chart." & Environment.NewLine &
+        '"Opsi: Trend penjualan, komparasi bulanan."
+
+        'LaporanHistoryToolStripMenuItem.ToolTipText =
+        '"🕰️ LAP. HISTORY" & Environment.NewLine &
+        '"Audit trail seluruh aktivitas sistem." & Environment.NewLine &
+        '"Mencatat: User, aksi, dan timestamp."
+
+        '' ==================== PENGATURAN SISTEM ====================
+        'TutupBulanToolStripMenuItem.ToolTipText =
+        '"📅 TUTUP BULAN" & Environment.NewLine &
+        '"Proses akuntansi untuk menutup periode bulanan." & Environment.NewLine &
+        '"Termasuk: Penyusutan, pembukuan, dan reset transaksi sementara."
+
+        'BackupDBToolStripMenuItem.ToolTipText =
+        '"💾 BACKUP DATABASE" & Environment.NewLine &
+        '"Membuat cadangan seluruh data sistem ke file eksternal." & Environment.NewLine &
+        '"Direkomendasikan dilakukan secara berkala untuk keamanan data."
+
+        'RestoreDBToolStripMenuItem.ToolTipText =
+        '"🔄 RESTORE DATABASE" & Environment.NewLine &
+        '"Mengembalikan data dari file backup sebelumnya." & Environment.NewLine &
+        '"Digunakan saat terjadi kerusakan data atau migrasi sistem."
+
+        'PerbaikiDBToolStripMenuItem.ToolTipText =
+        '"🔧 PERBAIKI DATABASE" & Environment.NewLine &
+        '"Tools untuk memperbaiki kerusakan atau error pada database." & Environment.NewLine &
+        '"Mengoptimalkan performa dan konsistensi data."
+
+        'UpdateTabelToolStripMenuItem.ToolTipText =
+        '"🛠️ UPDATE TABEL DATABASE" & Environment.NewLine &
+        '"Memperbarui struktur tabel database ke versi terbaru." & Environment.NewLine &
+        '"Diperlukan saat ada perubahan skema data."
+
+        'QueryDBToolStripMenuItem.ToolTipText =
+        '"📊 QUERY DATABASE" & Environment.NewLine &
+        '"Interface untuk mengeksekusi perintah SQL langsung." & Environment.NewLine &
+        '"Hanya untuk pengguna tingkat lanjut/administrator."
+
+        'SettingPrinterToolStripMenuItem.ToolTipText =
+        '"🖨️ SETTING PRINTER" & Environment.NewLine &
+        '"Mengkonfigurasi perangkat cetak dan format dokumen." & Environment.NewLine &
+        '"Termasuk: Ukuran kertas, margin, dan printer default."
+
+        'HapusTransaksiTokoToolStripMenuItem.ToolTipText =
+        '"🗑️ HAPUS TRANSAKSI TOKO" & Environment.NewLine &
+        '"Membersihkan data transaksi penjualan di level toko." & Environment.NewLine &
+        '"PERHATIAN: Operasi ini tidak dapat dibatalkan!"
+
+        'HapusTransaksiGudangToolStripMenuItem.ToolTipText =
+        '"🗑️ HAPUS TRANSAKSI GUDANG" & Environment.NewLine &
+        '"Membersihkan data transaksi inventory di level gudang." & Environment.NewLine &
+        '"PERHATIAN: Pastikan sudah ada backup data!"
+
+        'UpdateAplikasiToolStripMenuItem.ToolTipText =
+        '"🔄 PERIKSA UPDATE APLIKASI" & Environment.NewLine &
+        '"Memeriksa dan menginstall pembaruan versi aplikasi." & Environment.NewLine &
+        '"Memastikan sistem selalu up-to-date dengan fitur terbaru."
+
+        '' ==================== WINDOW MANAGEMENT ====================
+        'CascadeWindowsToolStripMenuItem.ToolTipText =
+        '"🪟 CASCADE WINDOWS" & Environment.NewLine &
+        '"Menata jendela aplikasi secara bertumpuk." & Environment.NewLine &
+        '"Memudahkan navigasi multi-dokumen."
+
+        'TileHorizontalToolStripMenuItem.ToolTipText =
+        '"⏸️ TILE HORIZONTAL" & Environment.NewLine &
+        '"Mengatur jendela dalam layout horizontal." & Environment.NewLine &
+        '"Untuk komparasi data side-by-side."
+
+        'TileVerticalToolStripMenuItem.ToolTipText =
+        '"⏯️ TILE VERTICAL" & Environment.NewLine &
+        '"Mengatur jendela dalam layout vertikal." & Environment.NewLine &
+        '"Optimal untuk dokumen berorientasi portrait."
+
+        'ArrangeIconsToolStripMenuItem.ToolTipText =
+        '"🗄️ ARRANGE ICONS" & Environment.NewLine &
+        '"Merapikan ikon minimized windows." & Environment.NewLine &
+        '"Membersihkan area kerja yang berantakan."
+
+        'CloseAllWindowsToolStripMenuItem.ToolTipText =
+        '"❌ CLOSE ALL WINDOWS" & Environment.NewLine &
+        '"Menutup seluruh jendela yang terbuka." & Environment.NewLine &
+        '"Reset workspace ke kondisi awal."
+
+
     End Sub
 
     Public Sub AmbilKomputer()
@@ -315,7 +641,8 @@ Public Class FormUtama
         Next
     End Sub
 
-    Private Sub MenuPosting_Click(ByVal sender As Object, ByVal e As EventArgs) Handles MenuPosting.Click
+
+    Private Sub PostingTokoToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles PostingTokoToolStripMenuItem.Click
         GBTransaksi.Visible = False
         DGVTransaksi.Columns.Clear()
         PanelMaster.Visible = False
@@ -335,18 +662,78 @@ Public Class FormUtama
             Exit Sub
         End If
 
+        With FormLoading
+            .Label1.Text = "Proses posting! Silahkan menunggu konfigurasi data"
+            '.MdiParent = Nothing
+            .BringToFront()
+            .Show()
+            .MulaiPosting("Toko")
+        End With
+        PanelTransaksi.Visible = True
+    End Sub
 
-        SetMenuBackgroundColor(MenuPosting)
+    Private Sub PostingGudangToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles PostingGudangToolStripMenuItem.Click
+        GBTransaksi.Visible = False
+        DGVTransaksi.Columns.Clear()
+        PanelMaster.Visible = False
+        PanelTransaksi.Visible = False
 
+        For Each frm As Form In MdiChildren
+            frm.Close()
+        Next
+
+        ' Tampilkan pesan untuk memastikan sinkronisasi data
+        Dim result As DialogResult = MessageBox.Show("Penting! Jangan lupa untuk sering melakukan posting data agar sinkronisasi data tetap terjaga dan tidak terjadi perbedaan data antara sistem dan realita.",
+                                                       "Pesan Penting: Posting Data",
+                                                       MessageBoxButtons.YesNo,
+                                                       MessageBoxIcon.Information)
+
+        If result = DialogResult.No Then
+            Exit Sub
+        End If
 
         With FormLoading
             .Label1.Text = "Proses posting! Silahkan menunggu konfigurasi data"
             '.MdiParent = Nothing
             .BringToFront()
             .Show()
-            .MulaiPosting()
+            .MulaiPosting("Gudang")
         End With
         PanelTransaksi.Visible = True
+    End Sub
+
+    Private Sub PostingSemuaToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles PostingSemuaToolStripMenuItem.Click
+        GBTransaksi.Visible = False
+        DGVTransaksi.Columns.Clear()
+        PanelMaster.Visible = False
+        PanelTransaksi.Visible = False
+
+        For Each frm As Form In MdiChildren
+            frm.Close()
+        Next
+
+        ' Tampilkan pesan untuk memastikan sinkronisasi data
+        Dim result As DialogResult = MessageBox.Show("Penting! Jangan lupa untuk sering melakukan posting data agar sinkronisasi data tetap terjaga dan tidak terjadi perbedaan data antara sistem dan realita.",
+                                                       "Pesan Penting: Posting Data",
+                                                       MessageBoxButtons.YesNo,
+                                                       MessageBoxIcon.Information)
+
+        If result = DialogResult.No Then
+            Exit Sub
+        End If
+
+        With FormLoading
+            .Label1.Text = "Proses posting! Silahkan menunggu konfigurasi data"
+            '.MdiParent = Nothing
+            .BringToFront()
+            .Show()
+            .MulaiPosting("Semua")
+        End With
+        PanelTransaksi.Visible = True
+    End Sub
+
+    Private Sub MenuPosting_Click(ByVal sender As Object, ByVal e As EventArgs) Handles MenuPosting.Click
+        SetMenuBackgroundColor(MenuPosting)
     End Sub
 
     Private Sub WindowToolStripMenuItem_Click(ByVal sender As Object, ByVal e As EventArgs) Handles WindowToolStripMenuItem.Click
@@ -585,6 +972,22 @@ Public Class FormUtama
     End Sub
 
 
+    Private Sub BtnGeneralSetting_Click(sender As Object, e As EventArgs) Handles BtnGeneralSetting.Click
+
+        SetButtonBackgroundColor(BtnGeneralSetting)
+        For Each frm As Form In MdiChildren
+            frm.Close()
+        Next
+
+        With FormGeneralSetting
+            .MdiParent = Me
+            .BringToFront()
+            .Dock = DockStyle.Fill
+            .Show()
+        End With
+    End Sub
+
+
     '----------------------------------------- TRANSAKSI ---------------------------------------------------------------------------
 
     Private Sub BtnBelanja_Click(ByVal sender As Object, ByVal e As EventArgs) Handles BtnBelanja.Click
@@ -646,34 +1049,39 @@ Public Class FormUtama
         End Sub
     End Class
 
+
+
     Public Sub Datapembelian()
+        Dim searchTextfilter As String = "%" & TxtFilter.Text & "%"
         Dim tanggalAwal As Date = DtpTransaksi.Value.Date
         Dim tanggalAkhir As Date = DtpTransaksi.Value.Date.AddDays(1).AddTicks(-1)
 
 
-        Dim queryJumlah As String = "SELECT COUNT(*) AS RECORD, SUM(GRAND_TOTAL_BELI) AS TOTAL FROM pembelian WHERE TGL_BELI >= @tanggalAwal AND TGL_BELI <= @tanggalAkhir"
+        Dim queryJumlah As String = "SELECT COUNT(*) AS RECORD, SUM(GRAND_TOTAL_BELI) AS TOTAL FROM pembelian WHERE TGL_BELI >= @tanggalAwal AND TGL_BELI <= @tanggalAkhir AND ID_PEMBELIAN LIKE @SearchText"
         Using cmdHitungJumlah As New MySqlCommand(queryJumlah, conn)
             cmdHitungJumlah.Parameters.AddWithValue("@tanggalAwal", tanggalAwal.ToString("yyyy-MM-dd HH:mm:ss"))
             cmdHitungJumlah.Parameters.AddWithValue("@tanggalAkhir", tanggalAkhir.ToString("yyyy-MM-dd HH:mm:ss"))
+            cmdHitungJumlah.Parameters.AddWithValue("@SearchText", searchTextfilter)
             Using rdJumlah As MySqlDataReader = cmdHitungJumlah.ExecuteReader()
                 If rdJumlah.Read() Then
                     Dim jumlahRecord As Integer = If(Not Convert.IsDBNull(rdJumlah("RECORD")), CInt(rdJumlah("RECORD")), 0)
                     Dim totalBelanja As Decimal = If(Not Convert.IsDBNull(rdJumlah("TOTAL")), CDec(rdJumlah("TOTAL")), 0.0)
 
-                    TxtRangkuman.Text = "Jumlah Record: " & Microsoft.VisualBasic.Format(jumlahRecord, "N0") & Environment.NewLine & " , Total Belanja: Rp. " & Microsoft.VisualBasic.Format(totalBelanja, "N0")
+                    LblRangkuman.Text = "Jumlah Record: " & jumlahRecord.ToString("N0") & Environment.NewLine & "Total Belanja: Rp. " & totalBelanja.ToString("N0")
                 Else
-                    TxtRangkuman.Text = "0"
+                    LblRangkuman.Text = "0"
                 End If
             End Using
         End Using
 
         DGVTransaksi.Columns.Clear()
         DGVDetail.Columns.Clear()
-        Dim queryString As String = "SELECT ID_PEMBELIAN, NAMA_SUPLIYER, LOKASI, JENIS_BAYAR, GRAND_TOTAL_BELI, PEMBAYARAN, RETUR, TAGIHAN, STATUS_TRANSAKSI_BELI, ID_USER FROM pembelian WHERE TGL_BELI >= @tanggalAwal AND TGL_BELI <= @tanggalAkhir ORDER BY ID_PEMBELIAN ASC"
+        Dim queryString As String = "SELECT ID_PEMBELIAN, NAMA_SUPLIYER, LOKASI, JENIS_BAYAR, GRAND_TOTAL_BELI, PEMBAYARAN, RETUR, TAGIHAN, STATUS_TRANSAKSI_BELI, ID_USER FROM pembelian WHERE TGL_BELI >= @tanggalAwal AND TGL_BELI <= @tanggalAkhir  AND ID_PEMBELIAN LIKE @SearchText ORDER BY ID_PEMBELIAN ASC"
 
         Using da As New MySqlDataAdapter(queryString, conn)
             da.SelectCommand.Parameters.AddWithValue("@tanggalAwal", tanggalAwal.ToString("yyyy-MM-dd HH:mm:ss"))
             da.SelectCommand.Parameters.AddWithValue("@tanggalAkhir", tanggalAkhir.ToString("yyyy-MM-dd HH:mm:ss"))
+            da.SelectCommand.Parameters.AddWithValue("@SearchText", searchTextfilter)
             Using ds As New DataSet
                 da.Fill(ds, "pembelian")
                 DGVTransaksi.DataSource = ds.Tables("pembelian")
@@ -741,35 +1149,36 @@ Public Class FormUtama
     End Sub
 
     Public Sub Datapenjualan()
+        Dim searchTextfilter As String = "%" & TxtFilter.Text & "%"
         Dim tanggalAwal As Date = DtpTransaksi.Value.Date
         Dim tanggalAkhir As Date = DtpTransaksi.Value.Date.AddDays(1).AddTicks(-1)
 
 
-        Dim queryJumlah As String = "SELECT COUNT(*) AS RECORD, SUM(GRAND_TOTAL_STL_PAJAK) AS TOTAL FROM penjualan WHERE TGL_TRANSAKSI >= @tanggalAwal AND TGL_TRANSAKSI <= @tanggalAkhir"
+        Dim queryJumlah As String = "SELECT COUNT(*) AS RECORD, SUM(GRAND_TOTAL_STL_PAJAK) AS TOTAL FROM penjualan WHERE TGL_TRANSAKSI >= @tanggalAwal AND TGL_TRANSAKSI <= @tanggalAkhir AND ID_PENJUALAN LIKE @SearchText"
         Using cmdHitungJumlah As New MySqlCommand(queryJumlah, conn)
             cmdHitungJumlah.Parameters.AddWithValue("@tanggalAwal", tanggalAwal.ToString("yyyy-MM-dd HH:mm:ss"))
             cmdHitungJumlah.Parameters.AddWithValue("@tanggalAkhir", tanggalAkhir.ToString("yyyy-MM-dd HH:mm:ss"))
+            cmdHitungJumlah.Parameters.AddWithValue("@SearchText", searchTextfilter)
             Using rdJumlah As MySqlDataReader = cmdHitungJumlah.ExecuteReader()
                 If rdJumlah.Read() Then
                     Dim jumlahRecord As Integer = If(Not Convert.IsDBNull(rdJumlah("RECORD")), CInt(rdJumlah("RECORD")), 0)
                     Dim totalBelanja As Decimal = If(Not Convert.IsDBNull(rdJumlah("TOTAL")), CDec(rdJumlah("TOTAL")), 0.0)
 
-                    TxtRangkuman.Text = "Jumlah Record: " & Microsoft.VisualBasic.Format(jumlahRecord, "N0") & Environment.NewLine & " , Total Penjualan: Rp. " & Microsoft.VisualBasic.Format(totalBelanja, "N0")
+                    LblRangkuman.Text = "Jumlah Record: " & jumlahRecord.ToString("N0") & Environment.NewLine & "Total Penjualan: Rp. " & totalBelanja.ToString("N0")
                 Else
-                    TxtRangkuman.Text = "0"
+                    LblRangkuman.Text = "0"
                 End If
             End Using
         End Using
 
-
-
         DGVTransaksi.Columns.Clear()
         DGVDetail.Columns.Clear()
-        Dim queryString As String = "SELECT ID_PENJUALAN, NAMA_PELANGGAN, LOKASIBARANG, JENIS_PEMBAYARAN, GRAND_TOTAL_STL_PAJAK, BAYAR, KEMBALI, NILAI_RETUR, SISA_TAGIHAN, STATUS_TRANSAKSI, ID_USER FROM penjualan WHERE TGL_TRANSAKSI >= @tanggalAwal AND TGL_TRANSAKSI <= @tanggalAkhir ORDER BY ID_PENJUALAN ASC"
+        Dim queryString As String = "SELECT ID_PENJUALAN, NAMA_PELANGGAN, LOKASIBARANG, JENIS_PEMBAYARAN, GRAND_TOTAL_STL_PAJAK, BAYAR, KEMBALI, NILAI_RETUR, SISA_TAGIHAN, STATUS_TRANSAKSI, ID_USER FROM penjualan WHERE TGL_TRANSAKSI >= @tanggalAwal AND TGL_TRANSAKSI <= @tanggalAkhir AND ID_PENJUALAN LIKE @SearchText ORDER BY ID_PENJUALAN ASC"
 
         Using da As New MySqlDataAdapter(queryString, conn)
             da.SelectCommand.Parameters.AddWithValue("@tanggalAwal", tanggalAwal.ToString("yyyy-MM-dd HH:mm:ss"))
             da.SelectCommand.Parameters.AddWithValue("@tanggalAkhir", tanggalAkhir.ToString("yyyy-MM-dd HH:mm:ss"))
+            da.SelectCommand.Parameters.AddWithValue("@SearchText", searchTextfilter)
             Using ds As New DataSet
                 da.Fill(ds, "penjualan")
                 DGVTransaksi.DataSource = ds.Tables("penjualan")
@@ -830,8 +1239,7 @@ Public Class FormUtama
         BtnTambah.Visible = HakAkses(1) ' CanAdd 
         BTNEdit.Visible = HakAkses(2) ' CanEdit 
         BtnHapus.Visible = HakAkses(3) ' CanDelete 
-        BTNEdit.Visible = False
-        BtnPrint.Visible = False
+
 
         BtnTambah.Text = "Tambah Retur Beli (F2)"
         BTNEdit.Text = "Edit Retur Beli (F3)"
@@ -842,22 +1250,24 @@ Public Class FormUtama
     End Sub
 
     Public Sub DatareturPembelian()
+        Dim searchTextfilter As String = "%" & TxtFilter.Text & "%"
         Dim tanggalAwal As Date = DtpTransaksi.Value.Date
         Dim tanggalAkhir As Date = DtpTransaksi.Value.Date.AddDays(1).AddTicks(-1)
 
 
-        Dim queryJumlah As String = "SELECT COUNT(*) AS RECORD, SUM(TOTAL_RUPIAH) AS TOTAL FROM retur_pembelian WHERE TGL_RETUR_BELI >= @tanggalAwal AND TGL_RETUR_BELI <= @tanggalAkhir"
+        Dim queryJumlah As String = "SELECT COUNT(*) AS RECORD, SUM(TOTAL_RUPIAH) AS TOTAL FROM retur_pembelian WHERE TGL_RETUR_BELI >= @tanggalAwal AND TGL_RETUR_BELI <= @tanggalAkhir AND ID_RETUR_PEMBELIAN LIKE @SearchText"
         Using cmdHitungJumlah As New MySqlCommand(queryJumlah, conn)
             cmdHitungJumlah.Parameters.AddWithValue("@tanggalAwal", tanggalAwal.ToString("yyyy-MM-dd HH:mm:ss"))
             cmdHitungJumlah.Parameters.AddWithValue("@tanggalAkhir", tanggalAkhir.ToString("yyyy-MM-dd HH:mm:ss"))
+            cmdHitungJumlah.Parameters.AddWithValue("@SearchText", searchTextfilter)
             Using rdJumlah As MySqlDataReader = cmdHitungJumlah.ExecuteReader()
                 If rdJumlah.Read() Then
                     Dim jumlahRecord As Integer = If(Not Convert.IsDBNull(rdJumlah("RECORD")), CInt(rdJumlah("RECORD")), 0)
                     Dim totalBelanja As Decimal = If(Not Convert.IsDBNull(rdJumlah("TOTAL")), CDec(rdJumlah("TOTAL")), 0.0)
 
-                    TxtRangkuman.Text = "Jumlah Record: " & Microsoft.VisualBasic.Format(jumlahRecord, "N0") & Environment.NewLine & " , Total Retur Beli: Rp. " & Microsoft.VisualBasic.Format(totalBelanja, "N0")
+                    LblRangkuman.Text = "Jumlah Record: " & jumlahRecord.ToString("N0") & Environment.NewLine & "Total Retur Beli: Rp. " & totalBelanja.ToString("N0")
                 Else
-                    TxtRangkuman.Text = "0"
+                    LblRangkuman.Text = "0"
                 End If
             End Using
         End Using
@@ -865,11 +1275,12 @@ Public Class FormUtama
 
         DGVTransaksi.Columns.Clear()
         DGVDetail.Columns.Clear()
-        Dim queryString As String = "SELECT ID_RETUR_PEMBELIAN, NAMA_SUPPLIER, ID_PEMBELIAN, TGL_PEMBELIAN, PENYIMPANAN, TOTAL_BARANG, TOTAL_RUPIAH, NAMA_REKENING, KODE_REKENING, ID_USER FROM retur_pembelian WHERE TGL_RETUR_BELI >= @tanggalAwal AND TGL_RETUR_BELI <= @tanggalAkhir ORDER BY ID_RETUR_PEMBELIAN ASC"
+        Dim queryString As String = "SELECT ID_RETUR_PEMBELIAN, NAMA_SUPPLIER, ID_PEMBELIAN, TGL_PEMBELIAN, PENYIMPANAN, TOTAL_BARANG, TOTAL_RUPIAH, NAMA_REKENING, KODE_REKENING, ID_USER FROM retur_pembelian WHERE TGL_RETUR_BELI >= @tanggalAwal AND TGL_RETUR_BELI <= @tanggalAkhir AND ID_RETUR_PEMBELIAN LIKE @SearchText ORDER BY ID_RETUR_PEMBELIAN ASC"
 
         Using da As New MySqlDataAdapter(queryString, conn)
             da.SelectCommand.Parameters.AddWithValue("@tanggalAwal", tanggalAwal.ToString("yyyy-MM-dd HH:mm:ss"))
             da.SelectCommand.Parameters.AddWithValue("@tanggalAkhir", tanggalAkhir.ToString("yyyy-MM-dd HH:mm:ss"))
+            da.SelectCommand.Parameters.AddWithValue("@SearchText", searchTextfilter)
             Using ds As New DataSet
                 da.Fill(ds, "retur_pembelian")
                 DGVTransaksi.DataSource = ds.Tables("retur_pembelian")
@@ -932,21 +1343,23 @@ Public Class FormUtama
     End Sub
 
     Public Sub DataReturPenjualan()
+        Dim searchTextfilter As String = "%" & TxtFilter.Text & "%"
         Dim tanggalAwal As Date = DtpTransaksi.Value.Date
         Dim tanggalAkhir As Date = DtpTransaksi.Value.Date.AddDays(1).AddTicks(-1)
 
-        Dim queryJumlah As String = "SELECT COUNT(*) AS RECORD, SUM(TOTAL_RUPIAH) AS TOTAL FROM retur_penjualan WHERE TGL_RETUR_JUAL >= @tanggalAwal AND TGL_RETUR_JUAL <= @tanggalAkhir"
+        Dim queryJumlah As String = "SELECT COUNT(*) AS RECORD, SUM(TOTAL_RUPIAH) AS TOTAL FROM retur_penjualan WHERE TGL_RETUR_JUAL >= @tanggalAwal AND TGL_RETUR_JUAL <= @tanggalAkhir AND ID_RETUR_PENJUALAN LIKE @SearchText"
         Using cmdHitungJumlah As New MySqlCommand(queryJumlah, conn)
             cmdHitungJumlah.Parameters.AddWithValue("@tanggalAwal", tanggalAwal.ToString("yyyy-MM-dd HH:mm:ss"))
             cmdHitungJumlah.Parameters.AddWithValue("@tanggalAkhir", tanggalAkhir.ToString("yyyy-MM-dd HH:mm:ss"))
+            cmdHitungJumlah.Parameters.AddWithValue("@SearchText", searchTextfilter)
             Using rdJumlah As MySqlDataReader = cmdHitungJumlah.ExecuteReader()
                 If rdJumlah.Read() Then
                     Dim jumlahRecord As Integer = If(Not Convert.IsDBNull(rdJumlah("RECORD")), CInt(rdJumlah("RECORD")), 0)
                     Dim totalBelanja As Decimal = If(Not Convert.IsDBNull(rdJumlah("TOTAL")), CDec(rdJumlah("TOTAL")), 0.0)
 
-                    TxtRangkuman.Text = "Jumlah Record: " & Microsoft.VisualBasic.Format(jumlahRecord, "N0") & Environment.NewLine & " , Total Retur Jual: Rp. " & Microsoft.VisualBasic.Format(totalBelanja, "N0")
+                    LblRangkuman.Text = "Jumlah Record: " & jumlahRecord.ToString("N0") & Environment.NewLine & "Total Retur Jual: Rp. " & totalBelanja.ToString("N0")
                 Else
-                    TxtRangkuman.Text = "0"
+                    LblRangkuman.Text = "0"
                 End If
             End Using
         End Using
@@ -954,11 +1367,12 @@ Public Class FormUtama
 
         DGVTransaksi.Columns.Clear()
         DGVDetail.Columns.Clear()
-        Dim queryString As String = "SELECT ID_RETUR_PENJUALAN, NAMA_PELANGGAN, ID_PENJUALAN, TGL_PENJUALAN, PENYIMPANAN, TOTAL_BARANG, TOTAL_RUPIAH, NAMA_REKENING, ID_USER FROM retur_penjualan WHERE TGL_RETUR_JUAL >= @tanggalAwal AND TGL_RETUR_JUAL <= @tanggalAkhir ORDER BY ID_RETUR_PENJUALAN ASC"
+        Dim queryString As String = "SELECT ID_RETUR_PENJUALAN, NAMA_PELANGGAN, ID_PENJUALAN, TGL_PENJUALAN, PENYIMPANAN, TOTAL_BARANG, TOTAL_RUPIAH, NAMA_REKENING, ID_USER FROM retur_penjualan WHERE TGL_RETUR_JUAL >= @tanggalAwal AND TGL_RETUR_JUAL <= @tanggalAkhir AND ID_RETUR_PENJUALAN LIKE @SearchText ORDER BY ID_RETUR_PENJUALAN ASC"
 
         Using da As New MySqlDataAdapter(queryString, conn)
             da.SelectCommand.Parameters.AddWithValue("@tanggalAwal", tanggalAwal.ToString("yyyy-MM-dd HH:mm:ss"))
             da.SelectCommand.Parameters.AddWithValue("@tanggalAkhir", tanggalAkhir.ToString("yyyy-MM-dd HH:mm:ss"))
+            da.SelectCommand.Parameters.AddWithValue("@SearchText", searchTextfilter)
             Using ds As New DataSet
                 da.Fill(ds, "retur_penjualan")
                 DGVTransaksi.DataSource = ds.Tables("retur_penjualan")
@@ -1020,33 +1434,36 @@ Public Class FormUtama
     End Sub
 
     Public Sub DataBayarHutang()
+        Dim searchTextfilter As String = "%" & TxtFilter.Text & "%"
         Dim tanggalAwal As Date = DtpTransaksi.Value.Date
         Dim tanggalAkhir As Date = DtpTransaksi.Value.Date.AddDays(1).AddTicks(-1)
 
 
-        Dim queryJumlah As String = "SELECT COUNT(*) AS RECORD, SUM(NOMINALBAYAR) AS TOTAL FROM hutang WHERE TGLPEMBAYARAN >= @tanggalAwal AND TGLPEMBAYARAN <= @tanggalAkhir"
+        Dim queryJumlah As String = "SELECT COUNT(*) AS RECORD, SUM(NOMINALBAYAR) AS TOTAL FROM hutang WHERE TGLPEMBAYARAN >= @tanggalAwal AND TGLPEMBAYARAN <= @tanggalAkhir AND NOBAYARHUTANG LIKE @SearchText"
         Using cmdHitungJumlah As New MySqlCommand(queryJumlah, conn)
             cmdHitungJumlah.Parameters.AddWithValue("@tanggalAwal", tanggalAwal.ToString("yyyy-MM-dd HH:mm:ss"))
             cmdHitungJumlah.Parameters.AddWithValue("@tanggalAkhir", tanggalAkhir.ToString("yyyy-MM-dd HH:mm:ss"))
+            cmdHitungJumlah.Parameters.AddWithValue("@SearchText", searchTextfilter)
             Using rdJumlah As MySqlDataReader = cmdHitungJumlah.ExecuteReader()
                 If rdJumlah.Read() Then
                     Dim jumlahRecord As Integer = If(Not Convert.IsDBNull(rdJumlah("RECORD")), CInt(rdJumlah("RECORD")), 0)
                     Dim totalBelanja As Decimal = If(Not Convert.IsDBNull(rdJumlah("TOTAL")), CDec(rdJumlah("TOTAL")), 0.0)
 
-                    TxtRangkuman.Text = "Jumlah Record: " & Microsoft.VisualBasic.Format(jumlahRecord, "N0") & Environment.NewLine & " , Total Bayar Hutang: Rp. " & Microsoft.VisualBasic.Format(totalBelanja, "N0")
+                    LblRangkuman.Text = "Jumlah Record: " & jumlahRecord.ToString("N0") & Environment.NewLine & "Total Bayar Hutang: Rp. " & totalBelanja.ToString("N0")
                 Else
-                    TxtRangkuman.Text = "0"
+                    LblRangkuman.Text = "0"
                 End If
             End Using
         End Using
 
         DGVTransaksi.Columns.Clear()
         DGVDetail.Columns.Clear()
-        Dim queryString As String = "SELECT NOBAYARHUTANG, NAMASUPLIYER, TGLPEMBAYARAN, TOTALHUTANG, NOMINALBAYAR, SISAHUTANG, ID_USER_BAYAR FROM hutang WHERE TGLPEMBAYARAN >= @tanggalAwal AND TGLPEMBAYARAN <= @tanggalAkhir ORDER BY NOBAYARHUTANG ASC"
+        Dim queryString As String = "SELECT NOBAYARHUTANG, NAMASUPLIYER, TGLPEMBAYARAN, TOTALHUTANG, NOMINALBAYAR, SISAHUTANG, ID_USER_BAYAR FROM hutang WHERE TGLPEMBAYARAN >= @tanggalAwal AND TGLPEMBAYARAN <= @tanggalAkhir AND NOBAYARHUTANG LIKE @SearchText ORDER BY NOBAYARHUTANG ASC"
 
         Using da As New MySqlDataAdapter(queryString, conn)
             da.SelectCommand.Parameters.AddWithValue("@tanggalAwal", tanggalAwal.ToString("yyyy-MM-dd HH:mm:ss"))
             da.SelectCommand.Parameters.AddWithValue("@tanggalAkhir", tanggalAkhir.ToString("yyyy-MM-dd HH:mm:ss"))
+            da.SelectCommand.Parameters.AddWithValue("@SearchText", searchTextfilter)
             Using ds As New DataSet
                 da.Fill(ds, "hutang")
                 DGVTransaksi.DataSource = ds.Tables("hutang")
@@ -1110,32 +1527,35 @@ Public Class FormUtama
     End Sub
 
     Public Sub DataBayarPiutang()
+        Dim searchTextfilter As String = "%" & TxtFilter.Text & "%"
         Dim tanggalAwal As Date = DtpTransaksi.Value.Date
         Dim tanggalAkhir As Date = DtpTransaksi.Value.Date.AddDays(1).AddTicks(-1)
 
-        Dim queryJumlah As String = "SELECT COUNT(*) AS RECORD, SUM(NOMINAL_BAYAR) AS TOTAL FROM Piutang WHERE TGL_BAYAR >= @tanggalAwal AND TGL_BAYAR <= @tanggalAkhir"
+        Dim queryJumlah As String = "SELECT COUNT(*) AS RECORD, SUM(NOMINAL_BAYAR) AS TOTAL FROM Piutang WHERE TGL_BAYAR >= @tanggalAwal AND TGL_BAYAR <= @tanggalAkhir AND ID_BAYAR_PIUTANG LIKE @SearchText"
         Using cmdHitungJumlah As New MySqlCommand(queryJumlah, conn)
             cmdHitungJumlah.Parameters.AddWithValue("@tanggalAwal", tanggalAwal.ToString("yyyy-MM-dd HH:mm:ss"))
             cmdHitungJumlah.Parameters.AddWithValue("@tanggalAkhir", tanggalAkhir.ToString("yyyy-MM-dd HH:mm:ss"))
+            cmdHitungJumlah.Parameters.AddWithValue("@SearchText", searchTextfilter)
             Using rdJumlah As MySqlDataReader = cmdHitungJumlah.ExecuteReader()
                 If rdJumlah.Read() Then
                     Dim jumlahRecord As Integer = If(Not Convert.IsDBNull(rdJumlah("RECORD")), CInt(rdJumlah("RECORD")), 0)
                     Dim totalBelanja As Decimal = If(Not Convert.IsDBNull(rdJumlah("TOTAL")), CDec(rdJumlah("TOTAL")), 0.0)
 
-                    TxtRangkuman.Text = "Jumlah Record: " & Microsoft.VisualBasic.Format(jumlahRecord, "N0") & Environment.NewLine & " , Total Bayar Piutang: Rp. " & Microsoft.VisualBasic.Format(totalBelanja, "N0")
+                    LblRangkuman.Text = "Jumlah Record: " & jumlahRecord.ToString("N0") & Environment.NewLine & "Total Bayar Piutang: Rp. " & totalBelanja.ToString("N0")
                 Else
-                    TxtRangkuman.Text = "0"
+                    LblRangkuman.Text = "0"
                 End If
             End Using
         End Using
 
         DGVTransaksi.Columns.Clear()
         DGVDetail.Columns.Clear()
-        Dim queryString As String = "SELECT ID_BAYAR_PIUTANG, NAMA_PELANGGAN, TGL_BAYAR, TOTAL_PIUTANG, NOMINAL_BAYAR, SISA_PIUTANG, ID_USER_BAYAR FROM Piutang WHERE TGL_BAYAR >= @tanggalAwal AND TGL_BAYAR <= @tanggalAkhir ORDER BY ID_BAYAR_PIUTANG ASC"
+        Dim queryString As String = "SELECT ID_BAYAR_PIUTANG, NAMA_PELANGGAN, TGL_BAYAR, TOTAL_PIUTANG, NOMINAL_BAYAR, SISA_PIUTANG, ID_USER_BAYAR FROM Piutang WHERE TGL_BAYAR >= @tanggalAwal AND TGL_BAYAR <= @tanggalAkhir AND ID_BAYAR_PIUTANG LIKE @SearchText ORDER BY ID_BAYAR_PIUTANG ASC"
 
         Using da As New MySqlDataAdapter(queryString, conn)
             da.SelectCommand.Parameters.AddWithValue("@tanggalAwal", tanggalAwal.ToString("yyyy-MM-dd HH:mm:ss"))
             da.SelectCommand.Parameters.AddWithValue("@tanggalAkhir", tanggalAkhir.ToString("yyyy-MM-dd HH:mm:ss"))
+            da.SelectCommand.Parameters.AddWithValue("@SearchText", searchTextfilter)
             Using ds As New DataSet
                 da.Fill(ds, "Piutang")
                 DGVTransaksi.DataSource = ds.Tables("Piutang")
@@ -1198,21 +1618,23 @@ Public Class FormUtama
     End Sub
 
     Public Sub DataStokOpname()
+        Dim searchTextfilter As String = "%" & TxtFilter.Text & "%"
         Dim tanggalAwal As Date = DtpTransaksi.Value.Date
         Dim tanggalAkhir As Date = DtpTransaksi.Value.Date.AddDays(1).AddTicks(-1)
 
-        Dim queryJumlah As String = "SELECT COUNT(*) AS RECORD, SUM((TOTAL_QTY)) AS TOTAL FROM stok_opname WHERE TANGGAL >= @tanggalAwal AND TANGGAL <= @tanggalAkhir"
+        Dim queryJumlah As String = "SELECT COUNT(*) AS RECORD, SUM((TOTAL_QTY)) AS TOTAL FROM stok_opname WHERE TANGGAL >= @tanggalAwal AND TANGGAL <= @tanggalAkhir AND ID_STOK_OPNAME LIKE @SearchText"
         Using cmdHitungJumlah As New MySqlCommand(queryJumlah, conn)
             cmdHitungJumlah.Parameters.AddWithValue("@tanggalAwal", tanggalAwal.ToString("yyyy-MM-dd HH:mm:ss"))
             cmdHitungJumlah.Parameters.AddWithValue("@tanggalAkhir", tanggalAkhir.ToString("yyyy-MM-dd HH:mm:ss"))
+            cmdHitungJumlah.Parameters.AddWithValue("@SearchText", searchTextfilter)
             Using rdJumlah As MySqlDataReader = cmdHitungJumlah.ExecuteReader()
                 If rdJumlah.Read() Then
                     Dim jumlahRecord As Integer = If(Not Convert.IsDBNull(rdJumlah("RECORD")), CInt(rdJumlah("RECORD")), 0)
                     Dim totalBelanja As Decimal = If(Not Convert.IsDBNull(rdJumlah("TOTAL")), CDec(rdJumlah("TOTAL")), 0.0)
 
-                    TxtRangkuman.Text = "Jumlah Record: " & Microsoft.VisualBasic.Format(jumlahRecord, "N0") & Environment.NewLine & " , Total Selisih: Rp. " & Microsoft.VisualBasic.Format(totalBelanja, "N0")
+                    LblRangkuman.Text = "Jumlah Record: " & jumlahRecord.ToString("N0") & Environment.NewLine & "Total Selisih: Rp. " & totalBelanja.ToString("N0")
                 Else
-                    TxtRangkuman.Text = "0"
+                    LblRangkuman.Text = "0"
                 End If
             End Using
         End Using
@@ -1221,11 +1643,12 @@ Public Class FormUtama
         DGVTransaksi.Columns.Clear()
         DGVDetail.Columns.Clear()
 
-        Dim queryString As String = "SELECT ID_STOK_OPNAME, LOKASI, ID_BARANG, NAMA_BARANG, KATEGORI, STOK_SYSTEM, STOK_NYATA, STOK_SELISIH, TOTAL_QTY, SATUAN, KETERANGAN, ID_USER FROM stok_opname WHERE TANGGAL >= @tanggalAwal AND TANGGAL <= @tanggalAkhir ORDER BY ID_STOK_OPNAME ASC"
+        Dim queryString As String = "SELECT ID_STOK_OPNAME, LOKASI, ID_BARANG, NAMA_BARANG, KATEGORI, STOK_SYSTEM, STOK_NYATA, STOK_SELISIH, TOTAL_QTY, SATUAN, KETERANGAN, ID_USER FROM stok_opname WHERE TANGGAL >= @tanggalAwal AND TANGGAL <= @tanggalAkhir AND ID_STOK_OPNAME LIKE @SearchText ORDER BY ID_STOK_OPNAME ASC"
 
         Using da As New MySqlDataAdapter(queryString, conn)
             da.SelectCommand.Parameters.AddWithValue("@tanggalAwal", tanggalAwal.ToString("yyyy-MM-dd HH:mm:ss"))
             da.SelectCommand.Parameters.AddWithValue("@tanggalAkhir", tanggalAkhir.ToString("yyyy-MM-dd HH:mm:ss"))
+            da.SelectCommand.Parameters.AddWithValue("@SearchText", searchTextfilter)
             Using ds As New DataSet
                 da.Fill(ds, "stok_opname")
                 DGVTransaksi.DataSource = ds.Tables("stok_opname")
@@ -1289,22 +1712,24 @@ Public Class FormUtama
     End Sub
 
     Public Sub DataSuratjalan()
+        Dim searchTextfilter As String = "%" & TxtFilter.Text & "%"
         Dim tanggalAwal As Date = DtpTransaksi.Value.Date
         Dim tanggalAkhir As Date = DtpTransaksi.Value.Date.AddDays(1).AddTicks(-1)
 
 
-        Dim queryJumlah As String = "SELECT COUNT(*) AS RECORD, SUM(TOTAL_RUPIAH) AS TOTAL FROM Surat_Jalan WHERE TGL_PENGIRIMAN >= @tanggalAwal AND TGL_PENGIRIMAN <= @tanggalAkhir"
+        Dim queryJumlah As String = "SELECT COUNT(*) AS RECORD, SUM(TOTAL_RUPIAH) AS TOTAL FROM Surat_Jalan WHERE TGL_PENGIRIMAN >= @tanggalAwal AND TGL_PENGIRIMAN <= @tanggalAkhir AND NOTA LIKE @SearchText"
         Using cmdHitungJumlah As New MySqlCommand(queryJumlah, conn)
             cmdHitungJumlah.Parameters.AddWithValue("@tanggalAwal", tanggalAwal.ToString("yyyy-MM-dd HH:mm:ss"))
             cmdHitungJumlah.Parameters.AddWithValue("@tanggalAkhir", tanggalAkhir.ToString("yyyy-MM-dd HH:mm:ss"))
+            cmdHitungJumlah.Parameters.AddWithValue("@SearchText", searchTextfilter)
             Using rdJumlah As MySqlDataReader = cmdHitungJumlah.ExecuteReader()
                 If rdJumlah.Read() Then
                     Dim jumlahRecord As Integer = If(Not Convert.IsDBNull(rdJumlah("RECORD")), CInt(rdJumlah("RECORD")), 0)
                     Dim totalBelanja As Decimal = If(Not Convert.IsDBNull(rdJumlah("TOTAL")), CDec(rdJumlah("TOTAL")), 0.0)
 
-                    TxtRangkuman.Text = "Jumlah Record: " & Microsoft.VisualBasic.Format(jumlahRecord, "N0") & Environment.NewLine & " , Total Pengiriman: Rp. " & Microsoft.VisualBasic.Format(totalBelanja, "N0")
+                    LblRangkuman.Text = "Jumlah Record: " & jumlahRecord.ToString("N0") & Environment.NewLine & "Total Pengiriman: Rp. " & totalBelanja.ToString("N0")
                 Else
-                    TxtRangkuman.Text = "0"
+                    LblRangkuman.Text = "0"
                 End If
             End Using
         End Using
@@ -1313,11 +1738,12 @@ Public Class FormUtama
 
         DGVTransaksi.Columns.Clear()
         DGVDetail.Columns.Clear()
-        Dim queryString As String = "SELECT NOTA, TOTAL_PELANGGAN, TOTAL_RUPIAH, ARMADA, JENIS_ARMADA, SUPIR, HELPER1, HELPER2, ID_USER FROM Surat_Jalan WHERE TGL_PENGIRIMAN >= @tanggalAwal AND TGL_PENGIRIMAN <= @tanggalAkhir ORDER BY NOTA ASC"
+        Dim queryString As String = "SELECT NOTA, TOTAL_PELANGGAN, TOTAL_RUPIAH, ARMADA, JENIS_ARMADA, SUPIR, HELPER1, HELPER2, ID_USER FROM Surat_Jalan WHERE TGL_PENGIRIMAN >= @tanggalAwal AND TGL_PENGIRIMAN <= @tanggalAkhir AND NOTA LIKE @SearchText ORDER BY NOTA ASC"
 
         Using da As New MySqlDataAdapter(queryString, conn)
             da.SelectCommand.Parameters.AddWithValue("@tanggalAwal", tanggalAwal.ToString("yyyy-MM-dd HH:mm:ss"))
             da.SelectCommand.Parameters.AddWithValue("@tanggalAkhir", tanggalAkhir.ToString("yyyy-MM-dd HH:mm:ss"))
+            da.SelectCommand.Parameters.AddWithValue("@SearchText", searchTextfilter)
 
             Using ds As New DataSet()
                 da.Fill(ds, "SuratJalan")
@@ -1329,9 +1755,9 @@ Public Class FormUtama
             ' Set appropriate column headers and formats
             .Columns("NOTA").HeaderText = "NOTA"
             .Columns("TOTAL_PELANGGAN").HeaderText = "PELANGGAN"
-            .Columns("TOTAL_RUPIAH").HeaderText = "TOTAL RUPIAH"
+            .Columns("TOTAL_RUPIAH").HeaderText = "RUPIAH"
             .Columns("ARMADA").HeaderText = "ARMADA"
-            .Columns("JENIS_ARMADA").HeaderText = "JENIS ARMADA"
+            .Columns("JENIS_ARMADA").HeaderText = "ARMADA"
             .Columns("SUPIR").HeaderText = "SUPIR"
             .Columns("HELPER1").HeaderText = "HELPER 1"
             .Columns("HELPER2").HeaderText = "HELPER 2"
@@ -1387,23 +1813,26 @@ Public Class FormUtama
     End Sub
 
     Public Sub DataTransferBarang()
+        Dim searchTextfilter As String = "%" & TxtFilter.Text & "%"
         Dim tanggalAwal As Date = DtpTransaksi.Value.Date
         Dim tanggalAkhir As Date = DtpTransaksi.Value.Date.AddDays(1).AddTicks(-1)
 
         Dim queryJumlah As String = "SELECT COUNT(*) AS RECORD, SUM(TOTAL_RUPIAH) AS TOTAL " &
                                     "FROM Transfer_Barang " &
-                                    "WHERE TGL_TRANSFER >= @tanggalAwal AND TGL_TRANSFER <= @tanggalAkhir"
+                                    "WHERE TGL_TRANSFER >= @tanggalAwal AND TGL_TRANSFER <= @tanggalAkhir AND ID_TRANSFER LIKE @SearchText"
 
         Using cmdHitungJumlah As New MySqlCommand(queryJumlah, conn)
             cmdHitungJumlah.Parameters.AddWithValue("@tanggalAwal", tanggalAwal.ToString("yyyy-MM-dd HH:mm:ss"))
             cmdHitungJumlah.Parameters.AddWithValue("@tanggalAkhir", tanggalAkhir.ToString("yyyy-MM-dd HH:mm:ss"))
+            cmdHitungJumlah.Parameters.AddWithValue("@SearchText", searchTextfilter)
+
             Using rdJumlah As MySqlDataReader = cmdHitungJumlah.ExecuteReader()
                 If rdJumlah.Read() Then
                     Dim jumlahRecord As Integer = If(Not IsDBNull(rdJumlah("RECORD")), CInt(rdJumlah("RECORD")), 0)
                     Dim totalBelanja As Decimal = If(Not IsDBNull(rdJumlah("TOTAL")), CDec(rdJumlah("TOTAL")), 0.0)
-                    TxtRangkuman.Text = "Jumlah Record: " & Microsoft.VisualBasic.Format(jumlahRecord, "N0") & ", Total transfer barang: Rp. " & Microsoft.VisualBasic.Format(totalBelanja, "N0")
+                    LblRangkuman.Text = "Jumlah Record: " & jumlahRecord.ToString("N0") & Environment.NewLine & "Total transfer barang: Rp. " & totalBelanja.ToString("N0")
                 Else
-                    TxtRangkuman.Text = "0"
+                    LblRangkuman.Text = "0"
                 End If
             End Using
         End Using
@@ -1414,11 +1843,12 @@ Public Class FormUtama
         Dim queryString As String = "SELECT ID_TRANSFER, LOKASI, TOTAL_QTY, TOTAL_BARANG, TOTAL_RUPIAH, ID_USER " &
                                     "FROM Transfer_Barang " &
                                     "WHERE TGL_TRANSFER >= @tanggalAwal AND TGL_TRANSFER <= @tanggalAkhir " &
-                                    "ORDER BY ID_TRANSFER ASC"
+                                    "AND ID_TRANSFER LIKE @SearchText ORDER BY ID_TRANSFER ASC"
 
         Using da As New MySqlDataAdapter(queryString, conn)
             da.SelectCommand.Parameters.AddWithValue("@tanggalAwal", tanggalAwal.ToString("yyyy-MM-dd HH:mm:ss"))
             da.SelectCommand.Parameters.AddWithValue("@tanggalAkhir", tanggalAkhir.ToString("yyyy-MM-dd HH:mm:ss"))
+            da.SelectCommand.Parameters.AddWithValue("@SearchText", searchTextfilter)
 
             Using ds As New DataSet()
                 da.Fill(ds, "TransferBarang")
@@ -1490,32 +1920,37 @@ Public Class FormUtama
     End Sub
 
     Public Sub Datatransferstok()
+        Dim searchTextfilter As String = "%" & TxtFilter.Text & "%"
         Dim tanggalAwal As Date = DtpTransaksi.Value.Date
         Dim tanggalAkhir As Date = DtpTransaksi.Value.Date.AddDays(1).AddTicks(-1)
 
-        Dim queryJumlah As String = "SELECT COUNT(*) AS RECORD, SUM(Selisih) AS TOTAL FROM Transfer_stok WHERE TANGGAL >= @tanggalAwal AND TANGGAL <= @tanggalAkhir"
+        Dim queryJumlah As String = "SELECT COUNT(*) AS RECORD, SUM(Selisih) AS TOTAL FROM Transfer_stok WHERE TANGGAL >= @tanggalAwal AND TANGGAL <= @tanggalAkhir AND ID_TRANSFER LIKE @SearchText"
         Using cmdHitungJumlah As New MySqlCommand(queryJumlah, conn)
             cmdHitungJumlah.Parameters.AddWithValue("@tanggalAwal", tanggalAwal.ToString("yyyy-MM-dd HH:mm:ss"))
             cmdHitungJumlah.Parameters.AddWithValue("@tanggalAkhir", tanggalAkhir.ToString("yyyy-MM-dd HH:mm:ss"))
+            cmdHitungJumlah.Parameters.AddWithValue("@SearchText", searchTextfilter)
+
             Using rdJumlah As MySqlDataReader = cmdHitungJumlah.ExecuteReader()
                 If rdJumlah.Read() Then
                     Dim jumlahRecord As Integer = If(Not Convert.IsDBNull(rdJumlah("RECORD")), CInt(rdJumlah("RECORD")), 0)
                     Dim totalBelanja As Decimal = If(Not Convert.IsDBNull(rdJumlah("TOTAL")), CDec(rdJumlah("TOTAL")), 0.0)
 
-                    TxtRangkuman.Text = "Jumlah Record: " & Microsoft.VisualBasic.Format(jumlahRecord, "N0") & Environment.NewLine & " , Total Selisih: Rp. " & Microsoft.VisualBasic.Format(totalBelanja, "N0")
+                    LblRangkuman.Text = "Jumlah Record: " & jumlahRecord.ToString("N0") & Environment.NewLine & "Total Selisih: Rp. " & totalBelanja.ToString("N0")
                 Else
-                    TxtRangkuman.Text = "0"
+                    LblRangkuman.Text = "0"
                 End If
             End Using
         End Using
 
         DGVTransaksi.Columns.Clear()
         DGVDetail.Columns.Clear()
-        Dim queryString As String = "SELECT ID_TRANSFER, JENIS_TRANSFER, URAIAN, TANGGAL, ID_BARANG_M, NAMA_BARANG_M, QTY_M, SATUAN_M, ISI_M, QTY_SAT_M, HARGA_SAT_M, TOTAL_HARGA_M, ID_BARANG_K, NAMA_BARANG_K, QTY_K, SATUAN_K, ISI_K, QTY_SAT_K, HARGA_SAT_K, TOTAL_HARGA_K, Selisih, ID_USER FROM Transfer_stok WHERE TANGGAL >= @tanggalAwal AND TANGGAL <= @tanggalAkhir ORDER BY ID_TRANSFER ASC"
+        Dim queryString As String = "SELECT ID_TRANSFER, JENIS_TRANSFER, URAIAN, TANGGAL, ID_BARANG_M, NAMA_BARANG_M, QTY_M, SATUAN_M, ISI_M, QTY_SAT_M, HARGA_SAT_M, TOTAL_HARGA_M, ID_BARANG_K, NAMA_BARANG_K, QTY_K, SATUAN_K, ISI_K, QTY_SAT_K, HARGA_SAT_K, TOTAL_HARGA_K, Selisih, ID_USER FROM Transfer_stok WHERE TANGGAL >= @tanggalAwal AND TANGGAL <= @tanggalAkhir AND ID_TRANSFER LIKE @SearchText ORDER BY ID_TRANSFER ASC"
 
         Using da As New MySqlDataAdapter(queryString, conn)
             da.SelectCommand.Parameters.AddWithValue("@tanggalAwal", tanggalAwal.ToString("yyyy-MM-dd HH:mm:ss"))
             da.SelectCommand.Parameters.AddWithValue("@tanggalAkhir", tanggalAkhir.ToString("yyyy-MM-dd HH:mm:ss"))
+            da.SelectCommand.Parameters.AddWithValue("@SearchText", searchTextfilter)
+
             Using ds As New DataSet
                 da.Fill(ds, "Transfer_stok")
                 DGVTransaksi.DataSource = ds.Tables("Transfer_stok")
@@ -1581,7 +2016,7 @@ Public Class FormUtama
 
     End Sub
 
-    Private Sub DtpTransaksi_ValueChanged(ByVal sender As Object, ByVal e As EventArgs) Handles DtpTransaksi.ValueChanged
+    Private Sub DtpTransaksi_ValueChanged(ByVal sender As Object, ByVal e As EventArgs) Handles DtpTransaksi.ValueChanged, TxtFilter.TextChanged
         Select Case TxtTransaksi.Text
             Case "Pembelian"
                 Datapembelian()
@@ -1661,8 +2096,7 @@ Public Class FormUtama
                         TambahToolStripMenuItem.Visible = HakAkses(1) ' CanAdd 
                         EditToolStripMenuItem.Visible = HakAkses(2) ' CanEdit 
                         HapusToolStripMenuItem.Visible = HakAkses(3) ' CanDelete 
-                        EditToolStripMenuItem.Visible = False
-                        CetakToolStripMenuItem.Visible = False
+
 
                     Case "Retur Penjualan"
                         HakAkses = ModulHakAkses.BacaHakAkses(SLevel.Text, "Retur Penjualan", conn)
@@ -1780,7 +2214,8 @@ Public Class FormUtama
 
             Case "Retur Pembelian"
                 GBTransaksi.Visible = False
-                With FormReturPembelian
+                With FormReturBeli
+                    .LblJenisTrans.Text = "TambahReturBeli"
                     .MdiParent = Me
                     .BringToFront()
                     .Dock = DockStyle.Fill
@@ -1909,7 +2344,7 @@ Public Class FormUtama
                             .LblUtama.Text = "E D I T  P E M B E L I A N"
                             .TxtJenisTrans.Text = "EditPembelian"
                             .TxtFaktur.Text = idPembelian
-                            .Tampilsupliyer()
+                            .AmbilDataSupplier()
                             .BringToFront()
                             .ShowDialog()
                         End With
@@ -1963,7 +2398,29 @@ Public Class FormUtama
                 End Using
 
             Case "Retur Pembelian"
-                ' tidak membuat edit
+                GBTransaksi.Visible = False
+
+                If SLokasi.Text <> TxtLokasiUntukEdit.Text Then
+                    ' Pesan kesalahan jika pengguna tidak memiliki hak untuk menghapus
+                    Dim pesan As String = "Oops! Tidak ada hak untuk edit retur pembelian ini." & Environment.NewLine &
+                                          "User " & SLokasi.Text & " tidak berhak edit transaksi retur pembelian " & TxtLokasiUntukEdit.Text
+
+                    ' Tampilkan MessageBox dengan ikon peringatan
+                    MessageBox.Show(pesan, "Peringatan", MessageBoxButtons.OK, MessageBoxIcon.Warning)
+                    Exit Sub
+                End If
+
+                Dim idretrubeli As String = DGVTransaksi.CurrentRow.Cells("ID_RETUR_PEMBELIAN").Value.ToString()
+                With FormReturBeli
+                    .LblJenisTrans.Text = "EditReturBeli"
+                    .TxtFaktur.Text = idretrubeli
+                    .MdiParent = Me
+                    .BringToFront()
+                    .Dock = DockStyle.Fill
+                    .Show()
+                End With
+
+
             Case "Retur Penjualan"
                 ' tidak membuat edit
             Case "Bayar Hutang"
@@ -2900,17 +3357,42 @@ Public Class FormUtama
                 NotaPembelian.ShowDialog()
 
             Case "Penjualan"
+                TanyakanKertas = ModulHakAkses.BacaHakAksesSemua(FormGeneralSetting.LblJualJenisKertasCetak.Text)
                 'If TxtJenisPrinter.Text = "Printer Thermal" Then
                 With PrintJual
                     .TxtFaktur.Text = TxtFakturTransaksi.Text
-                    .ProsesCetak()
+                    If TanyakanKertas = "Iya" Then
+                        Dim result As DialogResult = MessageBox.Show("Pilih jenis printer untuk mencetak:" & vbCrLf & vbCrLf & "Yes = Printer Thermal" & vbCrLf & "No = Printer Dot Matrix",
+                                              "Pilih Jenis Printer",
+                                              MessageBoxButtons.YesNo,
+                                              MessageBoxIcon.Question)
+
+                        If result = DialogResult.Yes Then
+                            ' Cetak dengan Printer Thermal
+                            .ProsesCetak("Printer Thermal")
+                        ElseIf result = DialogResult.No Then
+                            ' Cetak dengan Printer Dot Matrix
+                            .ProsesCetak("Printer Dot Matrix")
+                        End If
+
+                    Else
+                        .ProsesCetak("")
+                    End If
                 End With
                 'Else
 
                 'ModuleCetakJual.PrintReport(TxtFakturTransaksi.Text)
                 'End If
             Case "Retur Pembelian"
-
+                Dim result As DialogResult = MessageBox.Show("Apakah Anda ingin mencetak retur barang?",
+                                                       "Konfirmasi Cetak",
+                                                       MessageBoxButtons.YesNo, MessageBoxIcon.Question)
+                If result = DialogResult.Yes Then
+                    With PrintReturBeli
+                        .TxtFaktur.Text = TxtFakturTransaksi.Text
+                        .ProsesCetak()
+                    End With
+                End If
 
             Case "Retur Penjualan"
                 If TxtJenisPrinter.Text = "Printer Thermal" Then
@@ -3717,6 +4199,19 @@ Public Class FormUtama
         End With
     End Sub
 
+    Private Sub PenjualanQtyToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles PenjualanQtyToolStripMenuItem.Click
+        For Each frm As Form In MdiChildren
+            frm.Close()
+        Next
+
+        With FormRopertJual
+            .MdiParent = Me
+            .BringToFront()
+            .Dock = DockStyle.Fill
+            .Show()
+        End With
+    End Sub
+
     Private Sub PenjualanPPNNonPPNToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles PenjualanPPNNonPPNToolStripMenuItem.Click
         For Each frm As Form In MdiChildren
             frm.Close()
@@ -3993,12 +4488,12 @@ Public Class FormUtama
             frm.Close()
         Next
 
-        'With FormHistory
-        '    .MdiParent = Me
-        '    .BringToFront()
-        '    .Dock = DockStyle.Fill
-        '    .Show()
-        'End With
+        With FormHistory
+            .MdiParent = Me
+            .BringToFront()
+            .Dock = DockStyle.Fill
+            .Show()
+        End With
     End Sub
 
     '----------------------------------------- UTILITY ---------------------------------------------------------------------------
@@ -4091,6 +4586,19 @@ Public Class FormUtama
         Next
 
         With FormPerbaikanDatabase
+            .MdiParent = Me
+            .BringToFront()
+            .Dock = DockStyle.Fill
+            .Show()
+        End With
+    End Sub
+
+    Private Sub UpdateTabelDatabaseToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles UpdateTabelDatabaseToolStripMenuItem.Click
+        For Each frm As Form In MdiChildren
+            frm.Close()
+        Next
+
+        With FormUpdateTabelDb
             .MdiParent = Me
             .BringToFront()
             .Dock = DockStyle.Fill
@@ -4209,10 +4717,11 @@ Public Class FormUtama
             DatabaseModule.CatatanAksiHistory("Berhasil menghapus transaksi toko")
         Catch ex As Exception
             ' Rollback transaksi jika terjadi kesalahan
-            transaction.Rollback()
+
             MessageBox.Show("Transaksi dibatalkan karena terjadi kesalahan." & vbCrLf &
                             "Detail kesalahan: " & ex.Message,
                             "Oops! Ada masalah...", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            transaction.Rollback()
         End Try
     End Sub
 
@@ -4500,17 +5009,7 @@ Public Class FormUtama
         End Using
     End Sub
 
-    Private Sub JualToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles JualToolStripMenuItem.Click
-        For Each frm As Form In MdiChildren
-            frm.Close()
-        Next
 
-        With XtraFormJual
-            .BringToFront()
-            .Dock = DockStyle.Fill
-            .ShowDialog()
-        End With
-    End Sub
 
 
 End Class

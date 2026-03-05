@@ -10,14 +10,15 @@ Public Class TambahKategori
     End Sub
 
     Public Sub Tampilkategori()
-        Using cmd As New MySqlCommand("select kode, nama, jenis from tbl_kategori", conn)
-            Using rd As MySqlDataReader = cmd.ExecuteReader()
-                DgvData.Rows.Clear()
-                Do While rd.Read()
-                    DgvData.Rows.Add(rd(0), rd(1), rd(2))
-                Loop
-            End Using
+        Dim dt As New DataTable()
+
+        Using cmd As New MySqlCommand("SELECT kode, nama, jenis FROM tbl_kategori ORDER BY nama", conn),
+      da As New MySqlDataAdapter(cmd)
+            da.Fill(dt)
         End Using
+
+        DgvData.DataSource = dt
+
 
         With DgvData
             .AllowUserToAddRows = False
@@ -61,74 +62,78 @@ Public Class TambahKategori
         Close()
     End Sub
 
-    Private Sub BtnSimpan_Click(ByVal sender As Object, ByVal e As EventArgs) Handles BtnSimpan.Click
-        If TxtKode.Text = "" Or TxtNama.Text = "" Or TxtJenis.Text = "" Then
+    Private Sub BtnSimpan_Click(sender As Object, e As EventArgs) Handles BtnSimpan.Click
+        If String.IsNullOrWhiteSpace(TxtKode.Text) OrElse
+       String.IsNullOrWhiteSpace(TxtNama.Text) OrElse
+       String.IsNullOrWhiteSpace(TxtJenis.Text) Then
             MessageBox.Show("Data harus diisi dengan lengkap !!!", "Peringatan", MessageBoxButtons.OK, MessageBoxIcon.Warning)
             Exit Sub
         End If
 
-        ' Memulai transaksi
+        Dim kode = StrConv(TxtKode.Text.Trim(), vbUpperCase)
+        Dim nama = StrConv(TxtNama.Text.Trim(), vbProperCase)
+        Dim jenis = StrConv(TxtJenis.Text.Trim(), vbProperCase)
+
         Dim transaction As MySqlTransaction = conn.BeginTransaction()
         Try
-            Using cmd As New MySqlCommand("SELECT kode FROM tbl_kategori WHERE kode = @Kode", conn, transaction)
-                cmd.Parameters.AddWithValue("@Kode", TxtKode.Text)
-                Using rd As MySqlDataReader = cmd.ExecuteReader()
-                    If rd.Read() AndAlso rd.HasRows Then
-                        If MessageBox.Show("Kode kategori sudah ada. Apakah ingin melanjutkan untuk mengedit data?", "Peringatan", MessageBoxButtons.YesNo) = DialogResult.Yes Then
-                            rd.Close() ' Menutup reader sebelum melanjutkan
-
-                            Using updateCmd As New MySqlCommand("UPDATE tbl_kategori SET nama = @Nama, jenis = @Jenis WHERE kode = @Kode", conn, transaction)
-                                updateCmd.Parameters.AddWithValue("@Nama", StrConv(TxtNama.Text, vbProperCase))
-                                updateCmd.Parameters.AddWithValue("@Jenis", StrConv(TxtJenis.Text, vbProperCase))
-                                updateCmd.Parameters.AddWithValue("@Kode", StrConv(TxtKode.Text, vbProperCase))
-                                updateCmd.ExecuteNonQuery()
-                                DatabaseModule.CatatanAksiHistory("Update kategori " & TxtNama.Text)
-                            End Using
-
-                            transaction.Commit() ' Menyimpan perubahan jika sukses
-                            Call Kondisiawal()
-                            Exit Sub
-                        Else
-                            rd.Close() ' Menutup reader jika pengguna memilih tidak
-                            Exit Sub
-                        End If
-                    End If
-                    rd.Close() ' Menutup reader jika tidak ada hasil
+            ' Cek apakah kode sudah ada
+            Dim kodeExists As Boolean = False
+            Using cmd As New MySqlCommand("SELECT 1 FROM tbl_kategori WHERE kode = @Kode LIMIT 1", conn, transaction)
+                cmd.Parameters.AddWithValue("@Kode", kode)
+                Using rd = cmd.ExecuteReader()
+                    kodeExists = rd.Read()
                 End Using
-
-                ' Memeriksa jika nama kategori sudah ada
-                Using checkCmd As New MySqlCommand("SELECT nama FROM tbl_kategori WHERE nama = @Nama", conn, transaction)
-                    checkCmd.Parameters.AddWithValue("@Nama", TxtNama.Text)
-                    Using checkReader As MySqlDataReader = checkCmd.ExecuteReader()
-                        If checkReader.Read() AndAlso checkReader.HasRows Then
-                            MessageBox.Show("Nama kategori sudah ada, silahkan ganti dengan yang lain !!!", "Peringatan", MessageBoxButtons.OK, MessageBoxIcon.Warning)
-                            TxtNama.Focus()
-                            checkReader.Close() ' Menutup reader
-                            transaction.Rollback() ' Membatalkan perubahan jika terjadi kesalahan
-                            Exit Sub
-                        End If
-                        checkReader.Close() ' Menutup reader setelah selesai
-                    End Using
-                End Using
-
-                ' Menyimpan data baru
-                Using insertCmd As New MySqlCommand("INSERT INTO tbl_kategori VALUES(@Kode, @Nama, @Jenis)", conn, transaction)
-                    insertCmd.Parameters.AddWithValue("@Kode", StrConv(TxtKode.Text, vbUpperCase))
-                    insertCmd.Parameters.AddWithValue("@Nama", StrConv(TxtNama.Text, vbProperCase))
-                    insertCmd.Parameters.AddWithValue("@Jenis", StrConv(TxtJenis.Text, vbProperCase))
-                    insertCmd.ExecuteNonQuery()
-                    DatabaseModule.CatatanAksiHistory("Tambah kategori " & TxtNama.Text)
-                End Using
-
-                transaction.Commit() ' Menyimpan perubahan
-                Call Kondisiawal()
             End Using
+
+            If kodeExists Then
+                If MessageBox.Show("Kode kategori sudah ada. Apakah ingin mengedit data?", "Konfirmasi", MessageBoxButtons.YesNo, MessageBoxIcon.Question) = DialogResult.Yes Then
+                    ' Update
+                    Using updateCmd As New MySqlCommand("UPDATE tbl_kategori SET nama = @Nama, jenis = @Jenis WHERE kode = @Kode", conn, transaction)
+                        updateCmd.Parameters.AddWithValue("@Nama", nama)
+                        updateCmd.Parameters.AddWithValue("@Jenis", jenis)
+                        updateCmd.Parameters.AddWithValue("@Kode", kode)
+                        updateCmd.ExecuteNonQuery()
+                    End Using
+                    DatabaseModule.CatatanAksiHistory("Update kategori " & nama)
+                    transaction.Commit()
+                    Kondisiawal()
+                End If
+                Exit Sub
+            End If
+
+            ' Cek apakah nama kategori sudah ada
+            Dim namaExists As Boolean = False
+            Using cmd As New MySqlCommand("SELECT 1 FROM tbl_kategori WHERE nama = @Nama LIMIT 1", conn, transaction)
+                cmd.Parameters.AddWithValue("@Nama", nama)
+                Using rd = cmd.ExecuteReader()
+                    namaExists = rd.Read()
+                End Using
+            End Using
+
+            If namaExists Then
+                MessageBox.Show("Nama kategori sudah ada, silakan ganti dengan yang lain.", "Peringatan", MessageBoxButtons.OK, MessageBoxIcon.Warning)
+                TxtNama.Focus()
+                transaction.Rollback()
+                Exit Sub
+            End If
+
+            ' Insert
+            Using insertCmd As New MySqlCommand("INSERT INTO tbl_kategori (kode, nama, jenis) VALUES (@Kode, @Nama, @Jenis)", conn, transaction)
+                insertCmd.Parameters.AddWithValue("@Kode", kode)
+                insertCmd.Parameters.AddWithValue("@Nama", nama)
+                insertCmd.Parameters.AddWithValue("@Jenis", jenis)
+                insertCmd.ExecuteNonQuery()
+            End Using
+            DatabaseModule.CatatanAksiHistory("Tambah kategori " & nama)
+            transaction.Commit()
+            Kondisiawal()
+
         Catch ex As Exception
-            ' Jika terjadi kesalahan, membatalkan transaksi
             transaction.Rollback()
             MessageBox.Show("Terjadi kesalahan: " & ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
         End Try
     End Sub
+
 
     Private Sub BtnHapus_Click(ByVal sender As Object, ByVal e As EventArgs) Handles BtnHapus.Click
         If TxtKode.Text = "" Or TxtNama.Text = "" Or TxtJenis.Text = "" Then

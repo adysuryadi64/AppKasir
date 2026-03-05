@@ -136,7 +136,7 @@ Partial Class FormDefauldPrinter
         Me.Label26.BackColor = System.Drawing.Color.Transparent
         Me.Label26.Font = New System.Drawing.Font("Century Gothic", 11.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.Label26.ForeColor = System.Drawing.Color.Black
-        Me.Label26.Location = New System.Drawing.Point(633, 97)
+        Me.Label26.Location = New System.Drawing.Point(635, 97)
         Me.Label26.Name = "Label26"
         Me.Label26.Size = New System.Drawing.Size(117, 20)
         Me.Label26.TabIndex = 60
@@ -159,7 +159,7 @@ Partial Class FormDefauldPrinter
         Me.Label12.BackColor = System.Drawing.Color.Transparent
         Me.Label12.Font = New System.Drawing.Font("Century Gothic", 11.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.Label12.ForeColor = System.Drawing.Color.Black
-        Me.Label12.Location = New System.Drawing.Point(654, 128)
+        Me.Label12.Location = New System.Drawing.Point(658, 128)
         Me.Label12.Name = "Label12"
         Me.Label12.Size = New System.Drawing.Size(94, 20)
         Me.Label12.TabIndex = 90
@@ -211,7 +211,7 @@ Partial Class FormDefauldPrinter
         Me.GroupBox1.Font = New System.Drawing.Font("Century Gothic", 11.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.GroupBox1.Location = New System.Drawing.Point(0, 0)
         Me.GroupBox1.Name = "GroupBox1"
-        Me.GroupBox1.Size = New System.Drawing.Size(621, 574)
+        Me.GroupBox1.Size = New System.Drawing.Size(621, 665)
         Me.GroupBox1.TabIndex = 94
         Me.GroupBox1.TabStop = False
         '
@@ -235,7 +235,7 @@ Partial Class FormDefauldPrinter
         Me.PanelDotMatrik.Controls.Add(Me.Label51)
         Me.PanelDotMatrik.Controls.Add(Me.Label52)
         Me.PanelDotMatrik.Controls.Add(Me.TxtBatasKiriDot)
-        Me.PanelDotMatrik.Location = New System.Drawing.Point(11, 111)
+        Me.PanelDotMatrik.Location = New System.Drawing.Point(11, 109)
         Me.PanelDotMatrik.Name = "PanelDotMatrik"
         Me.PanelDotMatrik.Size = New System.Drawing.Size(604, 396)
         Me.PanelDotMatrik.TabIndex = 184
@@ -1106,6 +1106,9 @@ Partial Class FormDefauldPrinter
         Me.Label5.Text = "Printer Nota/Struk"
         Me.Label5.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
         '
+        'Timer1
+        '
+        '
         'BtnKeluar
         '
         Me.BtnKeluar.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
@@ -1119,7 +1122,7 @@ Partial Class FormDefauldPrinter
         Me.BtnKeluar.ForeColor = System.Drawing.Color.White
         Me.BtnKeluar.Image = CType(resources.GetObject("BtnKeluar.Image"), System.Drawing.Image)
         Me.BtnKeluar.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft
-        Me.BtnKeluar.Location = New System.Drawing.Point(637, 512)
+        Me.BtnKeluar.Location = New System.Drawing.Point(639, 513)
         Me.BtnKeluar.Name = "BtnKeluar"
         Me.BtnKeluar.Size = New System.Drawing.Size(77, 36)
         Me.BtnKeluar.TabIndex = 172
@@ -1147,7 +1150,7 @@ Partial Class FormDefauldPrinter
         Me.Panel1.Dock = System.Windows.Forms.DockStyle.Fill
         Me.Panel1.Location = New System.Drawing.Point(0, 0)
         Me.Panel1.Name = "Panel1"
-        Me.Panel1.Size = New System.Drawing.Size(1172, 576)
+        Me.Panel1.Size = New System.Drawing.Size(1398, 667)
         Me.Panel1.TabIndex = 173
         '
         'CmbStatusKomputer
@@ -1155,7 +1158,7 @@ Partial Class FormDefauldPrinter
         Me.CmbStatusKomputer.Font = New System.Drawing.Font("Century Gothic", 12.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.CmbStatusKomputer.FormattingEnabled = True
         Me.CmbStatusKomputer.Items.AddRange(New Object() {"Server", "Admin1", "Admin2", "Admin3", "Kasir1", "Kasir2", "Kasir3"})
-        Me.CmbStatusKomputer.Location = New System.Drawing.Point(785, 266)
+        Me.CmbStatusKomputer.Location = New System.Drawing.Point(823, 279)
         Me.CmbStatusKomputer.Name = "CmbStatusKomputer"
         Me.CmbStatusKomputer.Size = New System.Drawing.Size(223, 27)
         Me.CmbStatusKomputer.TabIndex = 91
@@ -1166,7 +1169,7 @@ Partial Class FormDefauldPrinter
         Me.Label22.BackColor = System.Drawing.Color.Transparent
         Me.Label22.Font = New System.Drawing.Font("Century Gothic", 12.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.Label22.ForeColor = System.Drawing.Color.Black
-        Me.Label22.Location = New System.Drawing.Point(626, 269)
+        Me.Label22.Location = New System.Drawing.Point(664, 282)
         Me.Label22.Name = "Label22"
         Me.Label22.Size = New System.Drawing.Size(153, 19)
         Me.Label22.TabIndex = 125
@@ -1203,7 +1206,7 @@ Partial Class FormDefauldPrinter
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(1172, 576)
+        Me.ClientSize = New System.Drawing.Size(1398, 667)
         Me.Controls.Add(Me.Panel1)
         Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None
         Me.HelpButton = True

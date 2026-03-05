@@ -38,8 +38,8 @@ Partial Class FormKaryawan
         Me.Label2 = New System.Windows.Forms.Label()
         Me.Label5 = New System.Windows.Forms.Label()
         Me.PanelHeader = New System.Windows.Forms.Panel()
-        Me.BtnClose = New System.Windows.Forms.Button()
         Me.LblNama = New System.Windows.Forms.Label()
+        Me.BtnClose = New System.Windows.Forms.Button()
         Me.Dgvdata = New System.Windows.Forms.DataGridView()
         Me.BTNSimpan = New System.Windows.Forms.Button()
         Me.BTNHapus = New System.Windows.Forms.Button()
@@ -103,6 +103,7 @@ Partial Class FormKaryawan
         'TxtAwal
         '
         Me.TxtAwal.BackColor = System.Drawing.SystemColors.Window
+        Me.TxtAwal.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
         Me.TxtAwal.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.TxtAwal.Location = New System.Drawing.Point(130, 100)
         Me.TxtAwal.Name = "TxtAwal"
@@ -113,6 +114,7 @@ Partial Class FormKaryawan
         'TxtJabatan
         '
         Me.TxtJabatan.BackColor = System.Drawing.SystemColors.Window
+        Me.TxtJabatan.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
         Me.TxtJabatan.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.TxtJabatan.Location = New System.Drawing.Point(130, 52)
         Me.TxtJabatan.Name = "TxtJabatan"
@@ -122,6 +124,7 @@ Partial Class FormKaryawan
         'TxtKode
         '
         Me.TxtKode.BackColor = System.Drawing.SystemColors.Window
+        Me.TxtKode.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
         Me.TxtKode.Enabled = False
         Me.TxtKode.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.TxtKode.Location = New System.Drawing.Point(130, 5)
@@ -132,6 +135,7 @@ Partial Class FormKaryawan
         'TxtNama
         '
         Me.TxtNama.BackColor = System.Drawing.SystemColors.Window
+        Me.TxtNama.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
         Me.TxtNama.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.TxtNama.Location = New System.Drawing.Point(130, 28)
         Me.TxtNama.Name = "TxtNama"
@@ -192,6 +196,18 @@ Partial Class FormKaryawan
         Me.PanelHeader.Size = New System.Drawing.Size(1133, 30)
         Me.PanelHeader.TabIndex = 165
         '
+        'LblNama
+        '
+        Me.LblNama.AutoSize = True
+        Me.LblNama.BackColor = System.Drawing.Color.Transparent
+        Me.LblNama.Font = New System.Drawing.Font("Times New Roman", 15.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.LblNama.ForeColor = System.Drawing.Color.Black
+        Me.LblNama.Location = New System.Drawing.Point(222, 3)
+        Me.LblNama.Name = "LblNama"
+        Me.LblNama.Size = New System.Drawing.Size(243, 24)
+        Me.LblNama.TabIndex = 20
+        Me.LblNama.Text = "D A T A  K A R Y A W A N"
+        '
         'BtnClose
         '
         Me.BtnClose.BackColor = System.Drawing.Color.Gold
@@ -210,18 +226,6 @@ Partial Class FormKaryawan
         Me.BtnClose.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
         Me.BtnClose.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText
         Me.BtnClose.UseVisualStyleBackColor = False
-        '
-        'LblNama
-        '
-        Me.LblNama.AutoSize = True
-        Me.LblNama.BackColor = System.Drawing.Color.Transparent
-        Me.LblNama.Font = New System.Drawing.Font("Times New Roman", 15.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.LblNama.ForeColor = System.Drawing.Color.Black
-        Me.LblNama.Location = New System.Drawing.Point(222, 3)
-        Me.LblNama.Name = "LblNama"
-        Me.LblNama.Size = New System.Drawing.Size(243, 24)
-        Me.LblNama.TabIndex = 20
-        Me.LblNama.Text = "D A T A  K A R Y A W A N"
         '
         'Dgvdata
         '

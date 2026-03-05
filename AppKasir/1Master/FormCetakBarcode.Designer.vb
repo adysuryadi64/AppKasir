@@ -24,101 +24,157 @@ Partial Class FormCetakBarcode
     Private Sub InitializeComponent()
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(FormCetakBarcode))
         Me.PanelHeader = New System.Windows.Forms.Panel()
-        Me.BtnMinimize = New System.Windows.Forms.Button()
         Me.BtnClose = New System.Windows.Forms.Button()
         Me.LblUtama = New System.Windows.Forms.Label()
-        Me.Panel2 = New System.Windows.Forms.Panel()
-        Me.CmbJenisKertas = New System.Windows.Forms.ComboBox()
-        Me.Label14 = New System.Windows.Forms.Label()
+        Me.BtnMinimize = New System.Windows.Forms.Button()
+        Me.PanelPilihPrinter = New System.Windows.Forms.Panel()
         Me.CmbJenisPrinter = New System.Windows.Forms.ComboBox()
         Me.Label7 = New System.Windows.Forms.Label()
-        Me.TxtLebarKertas = New System.Windows.Forms.TextBox()
-        Me.TxtTinggiKertas = New System.Windows.Forms.TextBox()
-        Me.Label2 = New System.Windows.Forms.Label()
-        Me.Label5 = New System.Windows.Forms.Label()
-        Me.TxtTinggiBarcode = New System.Windows.Forms.TextBox()
-        Me.TxtLebarBarcode = New System.Windows.Forms.TextBox()
+        Me.TxtTinggiLabelMM = New System.Windows.Forms.TextBox()
+        Me.TxtLebarLabelMM = New System.Windows.Forms.TextBox()
         Me.Label8 = New System.Windows.Forms.Label()
         Me.Label1 = New System.Windows.Forms.Label()
-        Me.CmbJumlahBarcodePerBaris = New System.Windows.Forms.ComboBox()
-        Me.CmbTipeBarcode = New System.Windows.Forms.ComboBox()
+        Me.CmbJumlahKolomPerBaris = New System.Windows.Forms.ComboBox()
+        Me.CmbJenisFormatBarcode = New System.Windows.Forms.ComboBox()
         Me.Label4 = New System.Windows.Forms.Label()
         Me.Label6 = New System.Windows.Forms.Label()
         Me.Label9 = New System.Windows.Forms.Label()
         Me.Label11 = New System.Windows.Forms.Label()
         Me.Label13 = New System.Windows.Forms.Label()
-        Me.TxtStartY = New System.Windows.Forms.TextBox()
-        Me.TxtStartX = New System.Windows.Forms.TextBox()
+        Me.TxtPosisiAwalYMM = New System.Windows.Forms.TextBox()
+        Me.TxtPosisiAwalXMM = New System.Windows.Forms.TextBox()
         Me.Label10 = New System.Windows.Forms.Label()
         Me.Label12 = New System.Windows.Forms.Label()
-        Me.TxtGabY = New System.Windows.Forms.TextBox()
-        Me.TxtGabX = New System.Windows.Forms.TextBox()
+        Me.TxtJarakVertikalMM = New System.Windows.Forms.TextBox()
+        Me.TxtJarakHorizontalMM = New System.Windows.Forms.TextBox()
         Me.Label15 = New System.Windows.Forms.Label()
         Me.Label16 = New System.Windows.Forms.Label()
-        Me.ChkBoldSatuan = New System.Windows.Forms.CheckBox()
-        Me.CmbFontSatuan = New System.Windows.Forms.ComboBox()
-        Me.CmbUkuranSatuan = New System.Windows.Forms.ComboBox()
-        Me.ChkBoldToko = New System.Windows.Forms.CheckBox()
-        Me.ChkBoldHarga = New System.Windows.Forms.CheckBox()
-        Me.ChkBoldNama = New System.Windows.Forms.CheckBox()
-        Me.CmbFontToko = New System.Windows.Forms.ComboBox()
-        Me.CmbUkuranToko = New System.Windows.Forms.ComboBox()
-        Me.CmbFontHarga = New System.Windows.Forms.ComboBox()
-        Me.CmbUkuranHarga = New System.Windows.Forms.ComboBox()
-        Me.CmbFontNama = New System.Windows.Forms.ComboBox()
-        Me.CmbUkuranNama = New System.Windows.Forms.ComboBox()
-        Me.Panel1 = New System.Windows.Forms.Panel()
+        Me.ChkBoldSatuanBarang = New System.Windows.Forms.CheckBox()
+        Me.CmbFontSatuanBarang = New System.Windows.Forms.ComboBox()
+        Me.CmbUkuranFontSatuan = New System.Windows.Forms.ComboBox()
+        Me.ChkBoldNamaToko = New System.Windows.Forms.CheckBox()
+        Me.ChkBoldHargaBarang = New System.Windows.Forms.CheckBox()
+        Me.ChkBoldNamaBarang = New System.Windows.Forms.CheckBox()
+        Me.CmbFontNamaToko = New System.Windows.Forms.ComboBox()
+        Me.CmbUkuranFontToko = New System.Windows.Forms.ComboBox()
+        Me.CmbFontHargaBarang = New System.Windows.Forms.ComboBox()
+        Me.CmbUkuranFontHarga = New System.Windows.Forms.ComboBox()
+        Me.CmbFontNamaBarang = New System.Windows.Forms.ComboBox()
+        Me.CmbUkuranFontNama = New System.Windows.Forms.ComboBox()
+        Me.PanelPengaturanFont = New System.Windows.Forms.Panel()
         Me.Label17 = New System.Windows.Forms.Label()
-        Me.Panel3 = New System.Windows.Forms.Panel()
-        Me.Panel4 = New System.Windows.Forms.Panel()
-        Me.LstBarang = New System.Windows.Forms.ListBox()
+        Me.PanelPengaturanLabel = New System.Windows.Forms.Panel()
+        Me.Label28 = New System.Windows.Forms.Label()
+        Me.BtnMundurLabel = New System.Windows.Forms.Button()
+        Me.TxtJumlahLabelMundur = New System.Windows.Forms.TextBox()
+        Me.Label2 = New System.Windows.Forms.Label()
+        Me.TxtDensitasCetak = New System.Windows.Forms.TextBox()
+        Me.Label27 = New System.Windows.Forms.Label()
+        Me.TxtKecepatanCetak = New System.Windows.Forms.TextBox()
+        Me.Label26 = New System.Windows.Forms.Label()
+        Me.BtnSimpanPengaturan = New System.Windows.Forms.Button()
+        Me.BtnResetJarakLabel = New System.Windows.Forms.Button()
+        Me.TxtOffsetVertikalPixels = New System.Windows.Forms.TextBox()
+        Me.BtnResetKeDefault = New System.Windows.Forms.Button()
+        Me.LabelStatusInfo = New System.Windows.Forms.Label()
+        Me.Label22 = New System.Windows.Forms.Label()
+        Me.TxtPersentaseLebarAreaBarcode = New System.Windows.Forms.TextBox()
+        Me.Label14 = New System.Windows.Forms.Label()
+        Me.TxtMarginDalamAtasMM = New System.Windows.Forms.TextBox()
+        Me.Label5 = New System.Windows.Forms.Label()
+        Me.TxtMarginDalamKiriMM = New System.Windows.Forms.TextBox()
+        Me.PanelDataBarang = New System.Windows.Forms.Panel()
+        Me.TxtInputNamaBarang = New System.Windows.Forms.TextBox()
+        Me.BtnExportLabel = New System.Windows.Forms.Button()
         Me.Label3 = New System.Windows.Forms.Label()
-        Me.TxtJumlahCetak = New System.Windows.Forms.TextBox()
+        Me.BtnPreviewLabel = New System.Windows.Forms.Button()
+        Me.BtnCetakLabel = New System.Windows.Forms.Button()
+        Me.TxtJumlahLabelDicetak = New System.Windows.Forms.TextBox()
         Me.Label18 = New System.Windows.Forms.Label()
-        Me.TxtKodeBarcode = New System.Windows.Forms.TextBox()
-        Me.TxtKode = New System.Windows.Forms.TextBox()
-        Me.CmbSatuan = New System.Windows.Forms.ComboBox()
+        Me.TxtKodeBarcodeInput = New System.Windows.Forms.TextBox()
+        Me.CmbPilihSatuanBarang = New System.Windows.Forms.ComboBox()
         Me.Label19 = New System.Windows.Forms.Label()
-        Me.TxtNamaBarang = New System.Windows.Forms.TextBox()
-        Me.TxtHargaBarang = New System.Windows.Forms.TextBox()
+        Me.TxtInputHargaBarang = New System.Windows.Forms.TextBox()
         Me.Label20 = New System.Windows.Forms.Label()
         Me.Label21 = New System.Windows.Forms.Label()
-        Me.Panel5 = New System.Windows.Forms.Panel()
-        Me.PicPreviewBarcode3 = New System.Windows.Forms.PictureBox()
-        Me.PicPreviewBarcode2 = New System.Windows.Forms.PictureBox()
-        Me.PicPreviewBarcode1 = New System.Windows.Forms.PictureBox()
-        Me.PicPreviewBarcode0 = New System.Windows.Forms.PictureBox()
-        Me.BtnRestore = New System.Windows.Forms.Button()
-        Me.btnSimpanPerubahan = New System.Windows.Forms.Button()
-        Me.BtnCetakBarcode = New System.Windows.Forms.Button()
-        Me.BtnPreviewCetak = New System.Windows.Forms.Button()
-        Me.BtnResetGap = New System.Windows.Forms.Button()
-        Me.BtnResetPosisiXY = New System.Windows.Forms.Button()
-        Me.BtnExportBarcode = New System.Windows.Forms.Button()
+        Me.PicPreviewLabel0 = New System.Windows.Forms.PictureBox()
+        Me.PicPreviewLabel1 = New System.Windows.Forms.PictureBox()
+        Me.PicPreviewLabel2 = New System.Windows.Forms.PictureBox()
+        Me.PicPreviewLabel3 = New System.Windows.Forms.PictureBox()
+        Me.Panel1 = New System.Windows.Forms.Panel()
+        Me.PicPreviewLabel8 = New System.Windows.Forms.PictureBox()
+        Me.PicPreviewLabel9 = New System.Windows.Forms.PictureBox()
+        Me.PicPreviewLabel10 = New System.Windows.Forms.PictureBox()
+        Me.PicPreviewLabel11 = New System.Windows.Forms.PictureBox()
+        Me.PicPreviewLabel4 = New System.Windows.Forms.PictureBox()
+        Me.PicPreviewLabel5 = New System.Windows.Forms.PictureBox()
+        Me.PicPreviewLabel6 = New System.Windows.Forms.PictureBox()
+        Me.PicPreviewLabel7 = New System.Windows.Forms.PictureBox()
         Me.PanelHeader.SuspendLayout()
-        Me.Panel2.SuspendLayout()
+        Me.PanelPilihPrinter.SuspendLayout()
+        Me.PanelPengaturanFont.SuspendLayout()
+        Me.PanelPengaturanLabel.SuspendLayout()
+        Me.PanelDataBarang.SuspendLayout()
+        CType(Me.PicPreviewLabel0, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.PicPreviewLabel1, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.PicPreviewLabel2, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.PicPreviewLabel3, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.Panel1.SuspendLayout()
-        Me.Panel3.SuspendLayout()
-        Me.Panel4.SuspendLayout()
-        Me.Panel5.SuspendLayout()
-        CType(Me.PicPreviewBarcode3, System.ComponentModel.ISupportInitialize).BeginInit()
-        CType(Me.PicPreviewBarcode2, System.ComponentModel.ISupportInitialize).BeginInit()
-        CType(Me.PicPreviewBarcode1, System.ComponentModel.ISupportInitialize).BeginInit()
-        CType(Me.PicPreviewBarcode0, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.PicPreviewLabel8, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.PicPreviewLabel9, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.PicPreviewLabel10, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.PicPreviewLabel11, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.PicPreviewLabel4, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.PicPreviewLabel5, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.PicPreviewLabel6, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.PicPreviewLabel7, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
         'PanelHeader
         '
         Me.PanelHeader.BackColor = System.Drawing.Color.DarkGray
-        Me.PanelHeader.Controls.Add(Me.BtnMinimize)
         Me.PanelHeader.Controls.Add(Me.BtnClose)
         Me.PanelHeader.Controls.Add(Me.LblUtama)
         Me.PanelHeader.Dock = System.Windows.Forms.DockStyle.Top
         Me.PanelHeader.Font = New System.Drawing.Font("Century Gothic", 11.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.PanelHeader.Location = New System.Drawing.Point(0, 0)
         Me.PanelHeader.Name = "PanelHeader"
-        Me.PanelHeader.Size = New System.Drawing.Size(1089, 30)
+        Me.PanelHeader.Size = New System.Drawing.Size(1162, 30)
         Me.PanelHeader.TabIndex = 39
+        '
+        'BtnClose
+        '
+        Me.BtnClose.AllowDrop = True
+        Me.BtnClose.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.BtnClose.BackColor = System.Drawing.Color.Transparent
+        Me.BtnClose.Cursor = System.Windows.Forms.Cursors.Hand
+        Me.BtnClose.FlatAppearance.BorderSize = 0
+        Me.BtnClose.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Red
+        Me.BtnClose.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Red
+        Me.BtnClose.FlatStyle = System.Windows.Forms.FlatStyle.Flat
+        Me.BtnClose.Font = New System.Drawing.Font("Century Gothic", 12.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.BtnClose.ForeColor = System.Drawing.Color.White
+        Me.BtnClose.Image = CType(resources.GetObject("BtnClose.Image"), System.Drawing.Image)
+        Me.BtnClose.Location = New System.Drawing.Point(1128, 0)
+        Me.BtnClose.Name = "BtnClose"
+        Me.BtnClose.Size = New System.Drawing.Size(31, 28)
+        Me.BtnClose.TabIndex = 140
+        Me.BtnClose.TextAlign = System.Drawing.ContentAlignment.MiddleRight
+        Me.BtnClose.UseVisualStyleBackColor = False
+        '
+        'LblUtama
+        '
+        Me.LblUtama.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.LblUtama.BackColor = System.Drawing.Color.Yellow
+        Me.LblUtama.Font = New System.Drawing.Font("Century Gothic", 18.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.LblUtama.ForeColor = System.Drawing.Color.Black
+        Me.LblUtama.Location = New System.Drawing.Point(0, 0)
+        Me.LblUtama.Name = "LblUtama"
+        Me.LblUtama.Size = New System.Drawing.Size(1162, 30)
+        Me.LblUtama.TabIndex = 20
+        Me.LblUtama.Text = "CETAK BARCODE"
+        Me.LblUtama.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
         '
         'BtnMinimize
         '
@@ -136,80 +192,23 @@ Partial Class FormCetakBarcode
         Me.BtnMinimize.TabIndex = 0
         Me.BtnMinimize.UseVisualStyleBackColor = False
         '
-        'BtnClose
+        'PanelPilihPrinter
         '
-        Me.BtnClose.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.BtnClose.BackColor = System.Drawing.Color.Red
-        Me.BtnClose.FlatAppearance.BorderSize = 0
-        Me.BtnClose.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Crimson
-        Me.BtnClose.Font = New System.Drawing.Font("Century Gothic", 11.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.BtnClose.ForeColor = System.Drawing.Color.Blue
-        Me.BtnClose.Image = CType(resources.GetObject("BtnClose.Image"), System.Drawing.Image)
-        Me.BtnClose.Location = New System.Drawing.Point(1052, 3)
-        Me.BtnClose.Name = "BtnClose"
-        Me.BtnClose.Size = New System.Drawing.Size(23, 23)
-        Me.BtnClose.TabIndex = 0
-        Me.BtnClose.UseVisualStyleBackColor = False
-        '
-        'LblUtama
-        '
-        Me.LblUtama.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
-            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.LblUtama.BackColor = System.Drawing.Color.Yellow
-        Me.LblUtama.Font = New System.Drawing.Font("Century Gothic", 18.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.LblUtama.ForeColor = System.Drawing.Color.Black
-        Me.LblUtama.Location = New System.Drawing.Point(0, 0)
-        Me.LblUtama.Name = "LblUtama"
-        Me.LblUtama.Size = New System.Drawing.Size(1089, 30)
-        Me.LblUtama.TabIndex = 20
-        Me.LblUtama.Text = "CETAK BARCODE"
-        Me.LblUtama.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
-        '
-        'Panel2
-        '
-        Me.Panel2.BackColor = System.Drawing.Color.Transparent
-        Me.Panel2.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
-        Me.Panel2.Controls.Add(Me.CmbJenisKertas)
-        Me.Panel2.Controls.Add(Me.Label14)
-        Me.Panel2.Controls.Add(Me.CmbJenisPrinter)
-        Me.Panel2.Controls.Add(Me.Label7)
-        Me.Panel2.Controls.Add(Me.TxtLebarKertas)
-        Me.Panel2.Controls.Add(Me.TxtTinggiKertas)
-        Me.Panel2.Controls.Add(Me.Label2)
-        Me.Panel2.Controls.Add(Me.Label5)
-        Me.Panel2.Location = New System.Drawing.Point(5, 46)
-        Me.Panel2.Name = "Panel2"
-        Me.Panel2.Size = New System.Drawing.Size(503, 68)
-        Me.Panel2.TabIndex = 67
-        '
-        'CmbJenisKertas
-        '
-        Me.CmbJenisKertas.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
-        Me.CmbJenisKertas.Font = New System.Drawing.Font("Century Gothic", 9.75!)
-        Me.CmbJenisKertas.FormattingEnabled = True
-        Me.CmbJenisKertas.Location = New System.Drawing.Point(97, 37)
-        Me.CmbJenisKertas.Name = "CmbJenisKertas"
-        Me.CmbJenisKertas.Size = New System.Drawing.Size(177, 25)
-        Me.CmbJenisKertas.TabIndex = 82
-        '
-        'Label14
-        '
-        Me.Label14.AutoSize = True
-        Me.Label14.Font = New System.Drawing.Font("Century Gothic", 9.75!)
-        Me.Label14.ForeColor = System.Drawing.Color.Black
-        Me.Label14.Location = New System.Drawing.Point(4, 41)
-        Me.Label14.Name = "Label14"
-        Me.Label14.Size = New System.Drawing.Size(89, 17)
-        Me.Label14.TabIndex = 81
-        Me.Label14.Text = "Jenis Kertas :"
-        Me.Label14.TextAlign = System.Drawing.ContentAlignment.MiddleRight
+        Me.PanelPilihPrinter.BackColor = System.Drawing.Color.Transparent
+        Me.PanelPilihPrinter.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
+        Me.PanelPilihPrinter.Controls.Add(Me.CmbJenisPrinter)
+        Me.PanelPilihPrinter.Controls.Add(Me.Label7)
+        Me.PanelPilihPrinter.Location = New System.Drawing.Point(5, 36)
+        Me.PanelPilihPrinter.Name = "PanelPilihPrinter"
+        Me.PanelPilihPrinter.Size = New System.Drawing.Size(563, 42)
+        Me.PanelPilihPrinter.TabIndex = 67
         '
         'CmbJenisPrinter
         '
         Me.CmbJenisPrinter.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
         Me.CmbJenisPrinter.Font = New System.Drawing.Font("Century Gothic", 9.75!)
         Me.CmbJenisPrinter.FormattingEnabled = True
-        Me.CmbJenisPrinter.Location = New System.Drawing.Point(97, 8)
+        Me.CmbJenisPrinter.Location = New System.Drawing.Point(174, 8)
         Me.CmbJenisPrinter.Name = "CmbJenisPrinter"
         Me.CmbJenisPrinter.Size = New System.Drawing.Size(177, 25)
         Me.CmbJenisPrinter.TabIndex = 66
@@ -219,83 +218,43 @@ Partial Class FormCetakBarcode
         Me.Label7.AutoSize = True
         Me.Label7.Font = New System.Drawing.Font("Century Gothic", 9.75!)
         Me.Label7.ForeColor = System.Drawing.Color.Black
-        Me.Label7.Location = New System.Drawing.Point(3, 12)
+        Me.Label7.Location = New System.Drawing.Point(71, 12)
         Me.Label7.Name = "Label7"
         Me.Label7.Size = New System.Drawing.Size(90, 17)
         Me.Label7.TabIndex = 25
         Me.Label7.Text = "Jenis Printer :"
         Me.Label7.TextAlign = System.Drawing.ContentAlignment.MiddleRight
         '
-        'TxtLebarKertas
+        'TxtTinggiLabelMM
         '
-        Me.TxtLebarKertas.BackColor = System.Drawing.SystemColors.Window
-        Me.TxtLebarKertas.Font = New System.Drawing.Font("Century Gothic", 9.75!)
-        Me.TxtLebarKertas.Location = New System.Drawing.Point(397, 9)
-        Me.TxtLebarKertas.Name = "TxtLebarKertas"
-        Me.TxtLebarKertas.Size = New System.Drawing.Size(58, 23)
-        Me.TxtLebarKertas.TabIndex = 0
+        Me.TxtTinggiLabelMM.BackColor = System.Drawing.SystemColors.Window
+        Me.TxtTinggiLabelMM.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
+        Me.TxtTinggiLabelMM.Font = New System.Drawing.Font("Century Gothic", 9.75!)
+        Me.TxtTinggiLabelMM.Location = New System.Drawing.Point(263, 97)
+        Me.TxtTinggiLabelMM.Name = "TxtTinggiLabelMM"
+        Me.TxtTinggiLabelMM.Size = New System.Drawing.Size(75, 23)
+        Me.TxtTinggiLabelMM.TabIndex = 4
         '
-        'TxtTinggiKertas
+        'TxtLebarLabelMM
         '
-        Me.TxtTinggiKertas.BackColor = System.Drawing.SystemColors.Window
-        Me.TxtTinggiKertas.Font = New System.Drawing.Font("Century Gothic", 9.75!)
-        Me.TxtTinggiKertas.Location = New System.Drawing.Point(397, 38)
-        Me.TxtTinggiKertas.Name = "TxtTinggiKertas"
-        Me.TxtTinggiKertas.Size = New System.Drawing.Size(58, 23)
-        Me.TxtTinggiKertas.TabIndex = 1
-        '
-        'Label2
-        '
-        Me.Label2.AutoSize = True
-        Me.Label2.Font = New System.Drawing.Font("Century Gothic", 9.75!)
-        Me.Label2.ForeColor = System.Drawing.Color.Black
-        Me.Label2.Location = New System.Drawing.Point(304, 41)
-        Me.Label2.Name = "Label2"
-        Me.Label2.Size = New System.Drawing.Size(88, 17)
-        Me.Label2.TabIndex = 16
-        Me.Label2.Text = "Tinggi Kertas"
-        Me.Label2.TextAlign = System.Drawing.ContentAlignment.MiddleRight
-        '
-        'Label5
-        '
-        Me.Label5.AutoSize = True
-        Me.Label5.Font = New System.Drawing.Font("Century Gothic", 9.75!)
-        Me.Label5.ForeColor = System.Drawing.Color.Black
-        Me.Label5.Location = New System.Drawing.Point(306, 12)
-        Me.Label5.Name = "Label5"
-        Me.Label5.Size = New System.Drawing.Size(87, 17)
-        Me.Label5.TabIndex = 10
-        Me.Label5.Text = "Lebar Kertas"
-        Me.Label5.TextAlign = System.Drawing.ContentAlignment.MiddleRight
-        '
-        'TxtTinggiBarcode
-        '
-        Me.TxtTinggiBarcode.BackColor = System.Drawing.SystemColors.Window
-        Me.TxtTinggiBarcode.Font = New System.Drawing.Font("Century Gothic", 9.75!)
-        Me.TxtTinggiBarcode.Location = New System.Drawing.Point(132, 100)
-        Me.TxtTinggiBarcode.Name = "TxtTinggiBarcode"
-        Me.TxtTinggiBarcode.Size = New System.Drawing.Size(75, 23)
-        Me.TxtTinggiBarcode.TabIndex = 4
-        '
-        'TxtLebarBarcode
-        '
-        Me.TxtLebarBarcode.BackColor = System.Drawing.SystemColors.Window
-        Me.TxtLebarBarcode.Font = New System.Drawing.Font("Century Gothic", 9.75!)
-        Me.TxtLebarBarcode.Location = New System.Drawing.Point(132, 73)
-        Me.TxtLebarBarcode.Name = "TxtLebarBarcode"
-        Me.TxtLebarBarcode.Size = New System.Drawing.Size(75, 23)
-        Me.TxtLebarBarcode.TabIndex = 2
+        Me.TxtLebarLabelMM.BackColor = System.Drawing.SystemColors.Window
+        Me.TxtLebarLabelMM.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
+        Me.TxtLebarLabelMM.Font = New System.Drawing.Font("Century Gothic", 9.75!)
+        Me.TxtLebarLabelMM.Location = New System.Drawing.Point(263, 70)
+        Me.TxtLebarLabelMM.Name = "TxtLebarLabelMM"
+        Me.TxtLebarLabelMM.Size = New System.Drawing.Size(75, 23)
+        Me.TxtLebarLabelMM.TabIndex = 2
         '
         'Label8
         '
         Me.Label8.AutoSize = True
         Me.Label8.Font = New System.Drawing.Font("Century Gothic", 9.75!)
         Me.Label8.ForeColor = System.Drawing.Color.Black
-        Me.Label8.Location = New System.Drawing.Point(221, 103)
+        Me.Label8.Location = New System.Drawing.Point(125, 158)
         Me.Label8.Name = "Label8"
-        Me.Label8.Size = New System.Drawing.Size(48, 17)
+        Me.Label8.Size = New System.Drawing.Size(128, 17)
         Me.Label8.TabIndex = 22
-        Me.Label8.Text = "Start Y"
+        Me.Label8.Text = "Posisi Awal Y (mm)"
         Me.Label8.TextAlign = System.Drawing.ContentAlignment.MiddleRight
         '
         'Label1
@@ -303,43 +262,43 @@ Partial Class FormCetakBarcode
         Me.Label1.AutoSize = True
         Me.Label1.Font = New System.Drawing.Font("Century Gothic", 9.75!)
         Me.Label1.ForeColor = System.Drawing.Color.Black
-        Me.Label1.Location = New System.Drawing.Point(220, 76)
+        Me.Label1.Location = New System.Drawing.Point(124, 132)
         Me.Label1.Name = "Label1"
-        Me.Label1.Size = New System.Drawing.Size(49, 17)
+        Me.Label1.Size = New System.Drawing.Size(129, 17)
         Me.Label1.TabIndex = 13
-        Me.Label1.Text = "Strat X"
+        Me.Label1.Text = "Posisi Awal X (mm)"
         Me.Label1.TextAlign = System.Drawing.ContentAlignment.MiddleRight
         '
-        'CmbJumlahBarcodePerBaris
+        'CmbJumlahKolomPerBaris
         '
-        Me.CmbJumlahBarcodePerBaris.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
-        Me.CmbJumlahBarcodePerBaris.Font = New System.Drawing.Font("Century Gothic", 9.75!)
-        Me.CmbJumlahBarcodePerBaris.FormattingEnabled = True
-        Me.CmbJumlahBarcodePerBaris.Location = New System.Drawing.Point(132, 15)
-        Me.CmbJumlahBarcodePerBaris.Name = "CmbJumlahBarcodePerBaris"
-        Me.CmbJumlahBarcodePerBaris.Size = New System.Drawing.Size(357, 25)
-        Me.CmbJumlahBarcodePerBaris.TabIndex = 68
+        Me.CmbJumlahKolomPerBaris.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
+        Me.CmbJumlahKolomPerBaris.Font = New System.Drawing.Font("Century Gothic", 9.75!)
+        Me.CmbJumlahKolomPerBaris.FormattingEnabled = True
+        Me.CmbJumlahKolomPerBaris.Location = New System.Drawing.Point(263, 12)
+        Me.CmbJumlahKolomPerBaris.Name = "CmbJumlahKolomPerBaris"
+        Me.CmbJumlahKolomPerBaris.Size = New System.Drawing.Size(177, 25)
+        Me.CmbJumlahKolomPerBaris.TabIndex = 68
         '
-        'CmbTipeBarcode
+        'CmbJenisFormatBarcode
         '
-        Me.CmbTipeBarcode.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
-        Me.CmbTipeBarcode.Font = New System.Drawing.Font("Century Gothic", 9.75!)
-        Me.CmbTipeBarcode.FormattingEnabled = True
-        Me.CmbTipeBarcode.Location = New System.Drawing.Point(132, 44)
-        Me.CmbTipeBarcode.Name = "CmbTipeBarcode"
-        Me.CmbTipeBarcode.Size = New System.Drawing.Size(357, 25)
-        Me.CmbTipeBarcode.TabIndex = 83
+        Me.CmbJenisFormatBarcode.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
+        Me.CmbJenisFormatBarcode.Font = New System.Drawing.Font("Century Gothic", 9.75!)
+        Me.CmbJenisFormatBarcode.FormattingEnabled = True
+        Me.CmbJenisFormatBarcode.Location = New System.Drawing.Point(263, 41)
+        Me.CmbJenisFormatBarcode.Name = "CmbJenisFormatBarcode"
+        Me.CmbJenisFormatBarcode.Size = New System.Drawing.Size(177, 25)
+        Me.CmbJenisFormatBarcode.TabIndex = 83
         '
         'Label4
         '
         Me.Label4.AutoSize = True
         Me.Label4.Font = New System.Drawing.Font("Century Gothic", 9.75!)
         Me.Label4.ForeColor = System.Drawing.Color.Black
-        Me.Label4.Location = New System.Drawing.Point(29, 10)
+        Me.Label4.Location = New System.Drawing.Point(22, 10)
         Me.Label4.Name = "Label4"
-        Me.Label4.Size = New System.Drawing.Size(98, 17)
+        Me.Label4.Size = New System.Drawing.Size(139, 17)
         Me.Label4.TabIndex = 85
-        Me.Label4.Text = "Fonta Nama :"
+        Me.Label4.Text = "Font Nama Barang :"
         Me.Label4.TextAlign = System.Drawing.ContentAlignment.MiddleRight
         '
         'Label6
@@ -347,11 +306,11 @@ Partial Class FormCetakBarcode
         Me.Label6.AutoSize = True
         Me.Label6.Font = New System.Drawing.Font("Century Gothic", 9.75!)
         Me.Label6.ForeColor = System.Drawing.Color.Black
-        Me.Label6.Location = New System.Drawing.Point(13, 18)
+        Me.Label6.Location = New System.Drawing.Point(95, 12)
         Me.Label6.Name = "Label6"
-        Me.Label6.Size = New System.Drawing.Size(113, 17)
+        Me.Label6.Size = New System.Drawing.Size(158, 17)
         Me.Label6.TabIndex = 84
-        Me.Label6.Text = "Jumlah Barcode"
+        Me.Label6.Text = "Jumlah Kolom per Baris"
         Me.Label6.TextAlign = System.Drawing.ContentAlignment.MiddleRight
         '
         'Label9
@@ -359,7 +318,7 @@ Partial Class FormCetakBarcode
         Me.Label9.AutoSize = True
         Me.Label9.Font = New System.Drawing.Font("Century Gothic", 9.75!)
         Me.Label9.ForeColor = System.Drawing.Color.Black
-        Me.Label9.Location = New System.Drawing.Point(39, 40)
+        Me.Label9.Location = New System.Drawing.Point(73, 39)
         Me.Label9.Name = "Label9"
         Me.Label9.Size = New System.Drawing.Size(88, 17)
         Me.Label9.TabIndex = 87
@@ -371,7 +330,7 @@ Partial Class FormCetakBarcode
         Me.Label11.AutoSize = True
         Me.Label11.Font = New System.Drawing.Font("Century Gothic", 9.75!)
         Me.Label11.ForeColor = System.Drawing.Color.Black
-        Me.Label11.Location = New System.Drawing.Point(34, 69)
+        Me.Label11.Location = New System.Drawing.Point(68, 68)
         Me.Label11.Name = "Label11"
         Me.Label11.Size = New System.Drawing.Size(93, 17)
         Me.Label11.TabIndex = 89
@@ -383,41 +342,43 @@ Partial Class FormCetakBarcode
         Me.Label13.AutoSize = True
         Me.Label13.Font = New System.Drawing.Font("Century Gothic", 9.75!)
         Me.Label13.ForeColor = System.Drawing.Color.Black
-        Me.Label13.Location = New System.Drawing.Point(32, 47)
+        Me.Label13.Location = New System.Drawing.Point(162, 41)
         Me.Label13.Name = "Label13"
-        Me.Label13.Size = New System.Drawing.Size(94, 17)
+        Me.Label13.Size = New System.Drawing.Size(91, 17)
         Me.Label13.TabIndex = 91
-        Me.Label13.Text = "Type Barcode"
+        Me.Label13.Text = "Tipe Barcode"
         Me.Label13.TextAlign = System.Drawing.ContentAlignment.MiddleRight
         '
-        'TxtStartY
+        'TxtPosisiAwalYMM
         '
-        Me.TxtStartY.BackColor = System.Drawing.SystemColors.Window
-        Me.TxtStartY.Font = New System.Drawing.Font("Century Gothic", 9.75!)
-        Me.TxtStartY.Location = New System.Drawing.Point(271, 100)
-        Me.TxtStartY.Name = "TxtStartY"
-        Me.TxtStartY.Size = New System.Drawing.Size(75, 23)
-        Me.TxtStartY.TabIndex = 93
+        Me.TxtPosisiAwalYMM.BackColor = System.Drawing.SystemColors.Window
+        Me.TxtPosisiAwalYMM.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
+        Me.TxtPosisiAwalYMM.Font = New System.Drawing.Font("Century Gothic", 9.75!)
+        Me.TxtPosisiAwalYMM.Location = New System.Drawing.Point(263, 156)
+        Me.TxtPosisiAwalYMM.Name = "TxtPosisiAwalYMM"
+        Me.TxtPosisiAwalYMM.Size = New System.Drawing.Size(75, 23)
+        Me.TxtPosisiAwalYMM.TabIndex = 93
         '
-        'TxtStartX
+        'TxtPosisiAwalXMM
         '
-        Me.TxtStartX.BackColor = System.Drawing.SystemColors.Window
-        Me.TxtStartX.Font = New System.Drawing.Font("Century Gothic", 9.75!)
-        Me.TxtStartX.Location = New System.Drawing.Point(271, 73)
-        Me.TxtStartX.Name = "TxtStartX"
-        Me.TxtStartX.Size = New System.Drawing.Size(75, 23)
-        Me.TxtStartX.TabIndex = 92
+        Me.TxtPosisiAwalXMM.BackColor = System.Drawing.SystemColors.Window
+        Me.TxtPosisiAwalXMM.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
+        Me.TxtPosisiAwalXMM.Font = New System.Drawing.Font("Century Gothic", 9.75!)
+        Me.TxtPosisiAwalXMM.Location = New System.Drawing.Point(263, 129)
+        Me.TxtPosisiAwalXMM.Name = "TxtPosisiAwalXMM"
+        Me.TxtPosisiAwalXMM.Size = New System.Drawing.Size(75, 23)
+        Me.TxtPosisiAwalXMM.TabIndex = 92
         '
         'Label10
         '
         Me.Label10.AutoSize = True
         Me.Label10.Font = New System.Drawing.Font("Century Gothic", 9.75!)
         Me.Label10.ForeColor = System.Drawing.Color.Black
-        Me.Label10.Location = New System.Drawing.Point(23, 102)
+        Me.Label10.Location = New System.Drawing.Point(130, 96)
         Me.Label10.Name = "Label10"
-        Me.Label10.Size = New System.Drawing.Size(103, 17)
+        Me.Label10.Size = New System.Drawing.Size(123, 17)
         Me.Label10.TabIndex = 95
-        Me.Label10.Text = "Tinggi Barcode"
+        Me.Label10.Text = "Tinggi Label (mm)"
         Me.Label10.TextAlign = System.Drawing.ContentAlignment.MiddleRight
         '
         'Label12
@@ -425,41 +386,43 @@ Partial Class FormCetakBarcode
         Me.Label12.AutoSize = True
         Me.Label12.Font = New System.Drawing.Font("Century Gothic", 9.75!)
         Me.Label12.ForeColor = System.Drawing.Color.Black
-        Me.Label12.Location = New System.Drawing.Point(24, 75)
+        Me.Label12.Location = New System.Drawing.Point(131, 69)
         Me.Label12.Name = "Label12"
-        Me.Label12.Size = New System.Drawing.Size(102, 17)
+        Me.Label12.Size = New System.Drawing.Size(122, 17)
         Me.Label12.TabIndex = 94
-        Me.Label12.Text = "Lebar Barcode"
+        Me.Label12.Text = "Lebar Label (mm)"
         Me.Label12.TextAlign = System.Drawing.ContentAlignment.MiddleRight
         '
-        'TxtGabY
+        'TxtJarakVertikalMM
         '
-        Me.TxtGabY.BackColor = System.Drawing.SystemColors.Window
-        Me.TxtGabY.Font = New System.Drawing.Font("Century Gothic", 9.75!)
-        Me.TxtGabY.Location = New System.Drawing.Point(414, 100)
-        Me.TxtGabY.Name = "TxtGabY"
-        Me.TxtGabY.Size = New System.Drawing.Size(75, 23)
-        Me.TxtGabY.TabIndex = 99
+        Me.TxtJarakVertikalMM.BackColor = System.Drawing.SystemColors.Window
+        Me.TxtJarakVertikalMM.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
+        Me.TxtJarakVertikalMM.Font = New System.Drawing.Font("Century Gothic", 9.75!)
+        Me.TxtJarakVertikalMM.Location = New System.Drawing.Point(263, 213)
+        Me.TxtJarakVertikalMM.Name = "TxtJarakVertikalMM"
+        Me.TxtJarakVertikalMM.Size = New System.Drawing.Size(75, 23)
+        Me.TxtJarakVertikalMM.TabIndex = 99
         '
-        'TxtGabX
+        'TxtJarakHorizontalMM
         '
-        Me.TxtGabX.BackColor = System.Drawing.SystemColors.Window
-        Me.TxtGabX.Font = New System.Drawing.Font("Century Gothic", 9.75!)
-        Me.TxtGabX.Location = New System.Drawing.Point(414, 73)
-        Me.TxtGabX.Name = "TxtGabX"
-        Me.TxtGabX.Size = New System.Drawing.Size(75, 23)
-        Me.TxtGabX.TabIndex = 98
+        Me.TxtJarakHorizontalMM.BackColor = System.Drawing.SystemColors.Window
+        Me.TxtJarakHorizontalMM.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
+        Me.TxtJarakHorizontalMM.Font = New System.Drawing.Font("Century Gothic", 9.75!)
+        Me.TxtJarakHorizontalMM.Location = New System.Drawing.Point(263, 184)
+        Me.TxtJarakHorizontalMM.Name = "TxtJarakHorizontalMM"
+        Me.TxtJarakHorizontalMM.Size = New System.Drawing.Size(75, 23)
+        Me.TxtJarakHorizontalMM.TabIndex = 98
         '
         'Label15
         '
         Me.Label15.AutoSize = True
         Me.Label15.Font = New System.Drawing.Font("Century Gothic", 9.75!)
         Me.Label15.ForeColor = System.Drawing.Color.Black
-        Me.Label15.Location = New System.Drawing.Point(364, 103)
+        Me.Label15.Location = New System.Drawing.Point(41, 215)
         Me.Label15.Name = "Label15"
-        Me.Label15.Size = New System.Drawing.Size(48, 17)
+        Me.Label15.Size = New System.Drawing.Size(212, 17)
         Me.Label15.TabIndex = 97
-        Me.Label15.Text = "Gab Y"
+        Me.Label15.Text = "Jarak Vertikal Antar Label (mm)"
         Me.Label15.TextAlign = System.Drawing.ContentAlignment.MiddleRight
         '
         'Label16
@@ -467,284 +430,556 @@ Partial Class FormCetakBarcode
         Me.Label16.AutoSize = True
         Me.Label16.Font = New System.Drawing.Font("Century Gothic", 9.75!)
         Me.Label16.ForeColor = System.Drawing.Color.Black
-        Me.Label16.Location = New System.Drawing.Point(363, 76)
+        Me.Label16.Location = New System.Drawing.Point(24, 186)
         Me.Label16.Name = "Label16"
-        Me.Label16.Size = New System.Drawing.Size(49, 17)
+        Me.Label16.Size = New System.Drawing.Size(229, 17)
         Me.Label16.TabIndex = 96
-        Me.Label16.Text = "Gab X"
+        Me.Label16.Text = "Jarak Horizontal Antar Label (mm)"
         Me.Label16.TextAlign = System.Drawing.ContentAlignment.MiddleRight
         '
-        'ChkBoldSatuan
+        'ChkBoldSatuanBarang
         '
-        Me.ChkBoldSatuan.AutoSize = True
-        Me.ChkBoldSatuan.Font = New System.Drawing.Font("Century Gothic", 9.75!)
-        Me.ChkBoldSatuan.Location = New System.Drawing.Point(409, 67)
-        Me.ChkBoldSatuan.Name = "ChkBoldSatuan"
-        Me.ChkBoldSatuan.Size = New System.Drawing.Size(55, 21)
-        Me.ChkBoldSatuan.TabIndex = 76
-        Me.ChkBoldSatuan.Text = "Bold"
-        Me.ChkBoldSatuan.UseVisualStyleBackColor = True
+        Me.ChkBoldSatuanBarang.AutoSize = True
+        Me.ChkBoldSatuanBarang.Font = New System.Drawing.Font("Century Gothic", 9.75!)
+        Me.ChkBoldSatuanBarang.Location = New System.Drawing.Point(449, 66)
+        Me.ChkBoldSatuanBarang.Name = "ChkBoldSatuanBarang"
+        Me.ChkBoldSatuanBarang.Size = New System.Drawing.Size(55, 21)
+        Me.ChkBoldSatuanBarang.TabIndex = 76
+        Me.ChkBoldSatuanBarang.Text = "Bold"
+        Me.ChkBoldSatuanBarang.UseVisualStyleBackColor = True
         '
-        'CmbFontSatuan
+        'CmbFontSatuanBarang
         '
-        Me.CmbFontSatuan.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
-        Me.CmbFontSatuan.Font = New System.Drawing.Font("Century Gothic", 9.75!)
-        Me.CmbFontSatuan.FormattingEnabled = True
-        Me.CmbFontSatuan.Location = New System.Drawing.Point(134, 65)
-        Me.CmbFontSatuan.Name = "CmbFontSatuan"
-        Me.CmbFontSatuan.Size = New System.Drawing.Size(212, 25)
-        Me.CmbFontSatuan.TabIndex = 74
+        Me.CmbFontSatuanBarang.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
+        Me.CmbFontSatuanBarang.Font = New System.Drawing.Font("Century Gothic", 9.75!)
+        Me.CmbFontSatuanBarang.FormattingEnabled = True
+        Me.CmbFontSatuanBarang.Location = New System.Drawing.Point(174, 64)
+        Me.CmbFontSatuanBarang.Name = "CmbFontSatuanBarang"
+        Me.CmbFontSatuanBarang.Size = New System.Drawing.Size(212, 25)
+        Me.CmbFontSatuanBarang.TabIndex = 74
         '
-        'CmbUkuranSatuan
+        'CmbUkuranFontSatuan
         '
-        Me.CmbUkuranSatuan.Font = New System.Drawing.Font("Century Gothic", 9.75!)
-        Me.CmbUkuranSatuan.FormattingEnabled = True
-        Me.CmbUkuranSatuan.Location = New System.Drawing.Point(351, 65)
-        Me.CmbUkuranSatuan.Name = "CmbUkuranSatuan"
-        Me.CmbUkuranSatuan.Size = New System.Drawing.Size(51, 25)
-        Me.CmbUkuranSatuan.TabIndex = 75
+        Me.CmbUkuranFontSatuan.Font = New System.Drawing.Font("Century Gothic", 9.75!)
+        Me.CmbUkuranFontSatuan.FormattingEnabled = True
+        Me.CmbUkuranFontSatuan.Location = New System.Drawing.Point(391, 64)
+        Me.CmbUkuranFontSatuan.Name = "CmbUkuranFontSatuan"
+        Me.CmbUkuranFontSatuan.Size = New System.Drawing.Size(51, 25)
+        Me.CmbUkuranFontSatuan.TabIndex = 75
         '
-        'ChkBoldToko
+        'ChkBoldNamaToko
         '
-        Me.ChkBoldToko.AutoSize = True
-        Me.ChkBoldToko.Font = New System.Drawing.Font("Century Gothic", 9.75!)
-        Me.ChkBoldToko.Location = New System.Drawing.Point(409, 97)
-        Me.ChkBoldToko.Name = "ChkBoldToko"
-        Me.ChkBoldToko.Size = New System.Drawing.Size(55, 21)
-        Me.ChkBoldToko.TabIndex = 79
-        Me.ChkBoldToko.Text = "Bold"
-        Me.ChkBoldToko.UseVisualStyleBackColor = True
+        Me.ChkBoldNamaToko.AutoSize = True
+        Me.ChkBoldNamaToko.Font = New System.Drawing.Font("Century Gothic", 9.75!)
+        Me.ChkBoldNamaToko.Location = New System.Drawing.Point(449, 96)
+        Me.ChkBoldNamaToko.Name = "ChkBoldNamaToko"
+        Me.ChkBoldNamaToko.Size = New System.Drawing.Size(55, 21)
+        Me.ChkBoldNamaToko.TabIndex = 79
+        Me.ChkBoldNamaToko.Text = "Bold"
+        Me.ChkBoldNamaToko.UseVisualStyleBackColor = True
         '
-        'ChkBoldHarga
+        'ChkBoldHargaBarang
         '
-        Me.ChkBoldHarga.AutoSize = True
-        Me.ChkBoldHarga.Font = New System.Drawing.Font("Century Gothic", 9.75!)
-        Me.ChkBoldHarga.Location = New System.Drawing.Point(409, 38)
-        Me.ChkBoldHarga.Name = "ChkBoldHarga"
-        Me.ChkBoldHarga.Size = New System.Drawing.Size(55, 21)
-        Me.ChkBoldHarga.TabIndex = 73
-        Me.ChkBoldHarga.Text = "Bold"
-        Me.ChkBoldHarga.UseVisualStyleBackColor = True
+        Me.ChkBoldHargaBarang.AutoSize = True
+        Me.ChkBoldHargaBarang.Font = New System.Drawing.Font("Century Gothic", 9.75!)
+        Me.ChkBoldHargaBarang.Location = New System.Drawing.Point(449, 37)
+        Me.ChkBoldHargaBarang.Name = "ChkBoldHargaBarang"
+        Me.ChkBoldHargaBarang.Size = New System.Drawing.Size(55, 21)
+        Me.ChkBoldHargaBarang.TabIndex = 73
+        Me.ChkBoldHargaBarang.Text = "Bold"
+        Me.ChkBoldHargaBarang.UseVisualStyleBackColor = True
         '
-        'ChkBoldNama
+        'ChkBoldNamaBarang
         '
-        Me.ChkBoldNama.AutoSize = True
-        Me.ChkBoldNama.Font = New System.Drawing.Font("Century Gothic", 9.75!)
-        Me.ChkBoldNama.Location = New System.Drawing.Point(409, 8)
-        Me.ChkBoldNama.Name = "ChkBoldNama"
-        Me.ChkBoldNama.Size = New System.Drawing.Size(55, 21)
-        Me.ChkBoldNama.TabIndex = 70
-        Me.ChkBoldNama.Text = "Bold"
-        Me.ChkBoldNama.UseVisualStyleBackColor = True
+        Me.ChkBoldNamaBarang.AutoSize = True
+        Me.ChkBoldNamaBarang.Font = New System.Drawing.Font("Century Gothic", 9.75!)
+        Me.ChkBoldNamaBarang.Location = New System.Drawing.Point(449, 8)
+        Me.ChkBoldNamaBarang.Name = "ChkBoldNamaBarang"
+        Me.ChkBoldNamaBarang.Size = New System.Drawing.Size(55, 21)
+        Me.ChkBoldNamaBarang.TabIndex = 70
+        Me.ChkBoldNamaBarang.Text = "Bold"
+        Me.ChkBoldNamaBarang.UseVisualStyleBackColor = True
         '
-        'CmbFontToko
+        'CmbFontNamaToko
         '
-        Me.CmbFontToko.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
-        Me.CmbFontToko.Font = New System.Drawing.Font("Century Gothic", 9.75!)
-        Me.CmbFontToko.FormattingEnabled = True
-        Me.CmbFontToko.Location = New System.Drawing.Point(134, 95)
-        Me.CmbFontToko.Name = "CmbFontToko"
-        Me.CmbFontToko.Size = New System.Drawing.Size(212, 25)
-        Me.CmbFontToko.TabIndex = 77
+        Me.CmbFontNamaToko.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
+        Me.CmbFontNamaToko.Font = New System.Drawing.Font("Century Gothic", 9.75!)
+        Me.CmbFontNamaToko.FormattingEnabled = True
+        Me.CmbFontNamaToko.Location = New System.Drawing.Point(174, 94)
+        Me.CmbFontNamaToko.Name = "CmbFontNamaToko"
+        Me.CmbFontNamaToko.Size = New System.Drawing.Size(212, 25)
+        Me.CmbFontNamaToko.TabIndex = 77
         '
-        'CmbUkuranToko
+        'CmbUkuranFontToko
         '
-        Me.CmbUkuranToko.Font = New System.Drawing.Font("Century Gothic", 9.75!)
-        Me.CmbUkuranToko.FormattingEnabled = True
-        Me.CmbUkuranToko.Location = New System.Drawing.Point(351, 95)
-        Me.CmbUkuranToko.Name = "CmbUkuranToko"
-        Me.CmbUkuranToko.Size = New System.Drawing.Size(51, 25)
-        Me.CmbUkuranToko.TabIndex = 78
+        Me.CmbUkuranFontToko.Font = New System.Drawing.Font("Century Gothic", 9.75!)
+        Me.CmbUkuranFontToko.FormattingEnabled = True
+        Me.CmbUkuranFontToko.Location = New System.Drawing.Point(391, 94)
+        Me.CmbUkuranFontToko.Name = "CmbUkuranFontToko"
+        Me.CmbUkuranFontToko.Size = New System.Drawing.Size(51, 25)
+        Me.CmbUkuranFontToko.TabIndex = 78
         '
-        'CmbFontHarga
+        'CmbFontHargaBarang
         '
-        Me.CmbFontHarga.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
-        Me.CmbFontHarga.Font = New System.Drawing.Font("Century Gothic", 9.75!)
-        Me.CmbFontHarga.FormattingEnabled = True
-        Me.CmbFontHarga.Location = New System.Drawing.Point(134, 36)
-        Me.CmbFontHarga.Name = "CmbFontHarga"
-        Me.CmbFontHarga.Size = New System.Drawing.Size(212, 25)
-        Me.CmbFontHarga.TabIndex = 71
+        Me.CmbFontHargaBarang.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
+        Me.CmbFontHargaBarang.Font = New System.Drawing.Font("Century Gothic", 9.75!)
+        Me.CmbFontHargaBarang.FormattingEnabled = True
+        Me.CmbFontHargaBarang.Location = New System.Drawing.Point(174, 35)
+        Me.CmbFontHargaBarang.Name = "CmbFontHargaBarang"
+        Me.CmbFontHargaBarang.Size = New System.Drawing.Size(212, 25)
+        Me.CmbFontHargaBarang.TabIndex = 71
         '
-        'CmbUkuranHarga
+        'CmbUkuranFontHarga
         '
-        Me.CmbUkuranHarga.Font = New System.Drawing.Font("Century Gothic", 9.75!)
-        Me.CmbUkuranHarga.FormattingEnabled = True
-        Me.CmbUkuranHarga.Location = New System.Drawing.Point(351, 36)
-        Me.CmbUkuranHarga.Name = "CmbUkuranHarga"
-        Me.CmbUkuranHarga.Size = New System.Drawing.Size(51, 25)
-        Me.CmbUkuranHarga.TabIndex = 72
+        Me.CmbUkuranFontHarga.Font = New System.Drawing.Font("Century Gothic", 9.75!)
+        Me.CmbUkuranFontHarga.FormattingEnabled = True
+        Me.CmbUkuranFontHarga.Location = New System.Drawing.Point(391, 35)
+        Me.CmbUkuranFontHarga.Name = "CmbUkuranFontHarga"
+        Me.CmbUkuranFontHarga.Size = New System.Drawing.Size(51, 25)
+        Me.CmbUkuranFontHarga.TabIndex = 72
         '
-        'CmbFontNama
+        'CmbFontNamaBarang
         '
-        Me.CmbFontNama.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
-        Me.CmbFontNama.Font = New System.Drawing.Font("Century Gothic", 9.75!)
-        Me.CmbFontNama.FormattingEnabled = True
-        Me.CmbFontNama.Location = New System.Drawing.Point(134, 6)
-        Me.CmbFontNama.Name = "CmbFontNama"
-        Me.CmbFontNama.Size = New System.Drawing.Size(212, 25)
-        Me.CmbFontNama.TabIndex = 68
+        Me.CmbFontNamaBarang.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
+        Me.CmbFontNamaBarang.Font = New System.Drawing.Font("Century Gothic", 9.75!)
+        Me.CmbFontNamaBarang.FormattingEnabled = True
+        Me.CmbFontNamaBarang.Location = New System.Drawing.Point(174, 6)
+        Me.CmbFontNamaBarang.Name = "CmbFontNamaBarang"
+        Me.CmbFontNamaBarang.Size = New System.Drawing.Size(212, 25)
+        Me.CmbFontNamaBarang.TabIndex = 68
         '
-        'CmbUkuranNama
+        'CmbUkuranFontNama
         '
-        Me.CmbUkuranNama.Font = New System.Drawing.Font("Century Gothic", 9.75!)
-        Me.CmbUkuranNama.FormattingEnabled = True
-        Me.CmbUkuranNama.Location = New System.Drawing.Point(351, 6)
-        Me.CmbUkuranNama.Name = "CmbUkuranNama"
-        Me.CmbUkuranNama.Size = New System.Drawing.Size(51, 25)
-        Me.CmbUkuranNama.TabIndex = 69
+        Me.CmbUkuranFontNama.Font = New System.Drawing.Font("Century Gothic", 9.75!)
+        Me.CmbUkuranFontNama.FormattingEnabled = True
+        Me.CmbUkuranFontNama.Location = New System.Drawing.Point(391, 6)
+        Me.CmbUkuranFontNama.Name = "CmbUkuranFontNama"
+        Me.CmbUkuranFontNama.Size = New System.Drawing.Size(51, 25)
+        Me.CmbUkuranFontNama.TabIndex = 69
         '
-        'Panel1
+        'PanelPengaturanFont
         '
-        Me.Panel1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
-        Me.Panel1.Controls.Add(Me.Label17)
-        Me.Panel1.Controls.Add(Me.CmbFontNama)
-        Me.Panel1.Controls.Add(Me.Label11)
-        Me.Panel1.Controls.Add(Me.ChkBoldSatuan)
-        Me.Panel1.Controls.Add(Me.Label9)
-        Me.Panel1.Controls.Add(Me.CmbUkuranNama)
-        Me.Panel1.Controls.Add(Me.Label4)
-        Me.Panel1.Controls.Add(Me.CmbFontSatuan)
-        Me.Panel1.Controls.Add(Me.CmbUkuranHarga)
-        Me.Panel1.Controls.Add(Me.CmbUkuranSatuan)
-        Me.Panel1.Controls.Add(Me.CmbFontHarga)
-        Me.Panel1.Controls.Add(Me.ChkBoldToko)
-        Me.Panel1.Controls.Add(Me.CmbUkuranToko)
-        Me.Panel1.Controls.Add(Me.ChkBoldHarga)
-        Me.Panel1.Controls.Add(Me.CmbFontToko)
-        Me.Panel1.Controls.Add(Me.ChkBoldNama)
-        Me.Panel1.Location = New System.Drawing.Point(5, 120)
-        Me.Panel1.Name = "Panel1"
-        Me.Panel1.Size = New System.Drawing.Size(503, 129)
-        Me.Panel1.TabIndex = 90
+        Me.PanelPengaturanFont.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
+        Me.PanelPengaturanFont.Controls.Add(Me.Label17)
+        Me.PanelPengaturanFont.Controls.Add(Me.CmbFontNamaBarang)
+        Me.PanelPengaturanFont.Controls.Add(Me.Label11)
+        Me.PanelPengaturanFont.Controls.Add(Me.ChkBoldSatuanBarang)
+        Me.PanelPengaturanFont.Controls.Add(Me.Label9)
+        Me.PanelPengaturanFont.Controls.Add(Me.CmbUkuranFontNama)
+        Me.PanelPengaturanFont.Controls.Add(Me.Label4)
+        Me.PanelPengaturanFont.Controls.Add(Me.CmbFontSatuanBarang)
+        Me.PanelPengaturanFont.Controls.Add(Me.CmbUkuranFontHarga)
+        Me.PanelPengaturanFont.Controls.Add(Me.CmbUkuranFontSatuan)
+        Me.PanelPengaturanFont.Controls.Add(Me.CmbFontHargaBarang)
+        Me.PanelPengaturanFont.Controls.Add(Me.ChkBoldNamaToko)
+        Me.PanelPengaturanFont.Controls.Add(Me.CmbUkuranFontToko)
+        Me.PanelPengaturanFont.Controls.Add(Me.ChkBoldHargaBarang)
+        Me.PanelPengaturanFont.Controls.Add(Me.CmbFontNamaToko)
+        Me.PanelPengaturanFont.Controls.Add(Me.ChkBoldNamaBarang)
+        Me.PanelPengaturanFont.Location = New System.Drawing.Point(5, 84)
+        Me.PanelPengaturanFont.Name = "PanelPengaturanFont"
+        Me.PanelPengaturanFont.Size = New System.Drawing.Size(563, 129)
+        Me.PanelPengaturanFont.TabIndex = 90
         '
         'Label17
         '
         Me.Label17.AutoSize = True
         Me.Label17.Font = New System.Drawing.Font("Century Gothic", 9.75!)
         Me.Label17.ForeColor = System.Drawing.Color.Black
-        Me.Label17.Location = New System.Drawing.Point(49, 99)
+        Me.Label17.Location = New System.Drawing.Point(83, 98)
         Me.Label17.Name = "Label17"
         Me.Label17.Size = New System.Drawing.Size(78, 17)
         Me.Label17.TabIndex = 90
         Me.Label17.Text = "Font Toko :"
         Me.Label17.TextAlign = System.Drawing.ContentAlignment.MiddleRight
         '
-        'Panel3
+        'PanelPengaturanLabel
         '
-        Me.Panel3.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
-        Me.Panel3.Controls.Add(Me.TxtGabY)
-        Me.Panel3.Controls.Add(Me.CmbJumlahBarcodePerBaris)
-        Me.Panel3.Controls.Add(Me.TxtGabX)
-        Me.Panel3.Controls.Add(Me.Label1)
-        Me.Panel3.Controls.Add(Me.Label15)
-        Me.Panel3.Controls.Add(Me.Label8)
-        Me.Panel3.Controls.Add(Me.Label16)
-        Me.Panel3.Controls.Add(Me.TxtLebarBarcode)
-        Me.Panel3.Controls.Add(Me.Label10)
-        Me.Panel3.Controls.Add(Me.TxtTinggiBarcode)
-        Me.Panel3.Controls.Add(Me.Label12)
-        Me.Panel3.Controls.Add(Me.CmbTipeBarcode)
-        Me.Panel3.Controls.Add(Me.TxtStartY)
-        Me.Panel3.Controls.Add(Me.Label6)
-        Me.Panel3.Controls.Add(Me.TxtStartX)
-        Me.Panel3.Controls.Add(Me.Label13)
-        Me.Panel3.Location = New System.Drawing.Point(5, 255)
-        Me.Panel3.Name = "Panel3"
-        Me.Panel3.Size = New System.Drawing.Size(503, 133)
-        Me.Panel3.TabIndex = 91
+        Me.PanelPengaturanLabel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
+        Me.PanelPengaturanLabel.Controls.Add(Me.Label28)
+        Me.PanelPengaturanLabel.Controls.Add(Me.BtnMundurLabel)
+        Me.PanelPengaturanLabel.Controls.Add(Me.TxtJumlahLabelMundur)
+        Me.PanelPengaturanLabel.Controls.Add(Me.Label2)
+        Me.PanelPengaturanLabel.Controls.Add(Me.TxtDensitasCetak)
+        Me.PanelPengaturanLabel.Controls.Add(Me.Label27)
+        Me.PanelPengaturanLabel.Controls.Add(Me.TxtKecepatanCetak)
+        Me.PanelPengaturanLabel.Controls.Add(Me.Label26)
+        Me.PanelPengaturanLabel.Controls.Add(Me.BtnSimpanPengaturan)
+        Me.PanelPengaturanLabel.Controls.Add(Me.BtnResetJarakLabel)
+        Me.PanelPengaturanLabel.Controls.Add(Me.TxtOffsetVertikalPixels)
+        Me.PanelPengaturanLabel.Controls.Add(Me.BtnResetKeDefault)
+        Me.PanelPengaturanLabel.Controls.Add(Me.LabelStatusInfo)
+        Me.PanelPengaturanLabel.Controls.Add(Me.Label22)
+        Me.PanelPengaturanLabel.Controls.Add(Me.TxtPersentaseLebarAreaBarcode)
+        Me.PanelPengaturanLabel.Controls.Add(Me.Label14)
+        Me.PanelPengaturanLabel.Controls.Add(Me.TxtMarginDalamAtasMM)
+        Me.PanelPengaturanLabel.Controls.Add(Me.Label5)
+        Me.PanelPengaturanLabel.Controls.Add(Me.TxtMarginDalamKiriMM)
+        Me.PanelPengaturanLabel.Controls.Add(Me.TxtJarakVertikalMM)
+        Me.PanelPengaturanLabel.Controls.Add(Me.CmbJumlahKolomPerBaris)
+        Me.PanelPengaturanLabel.Controls.Add(Me.TxtJarakHorizontalMM)
+        Me.PanelPengaturanLabel.Controls.Add(Me.Label1)
+        Me.PanelPengaturanLabel.Controls.Add(Me.Label15)
+        Me.PanelPengaturanLabel.Controls.Add(Me.Label8)
+        Me.PanelPengaturanLabel.Controls.Add(Me.Label16)
+        Me.PanelPengaturanLabel.Controls.Add(Me.TxtLebarLabelMM)
+        Me.PanelPengaturanLabel.Controls.Add(Me.Label10)
+        Me.PanelPengaturanLabel.Controls.Add(Me.TxtTinggiLabelMM)
+        Me.PanelPengaturanLabel.Controls.Add(Me.Label12)
+        Me.PanelPengaturanLabel.Controls.Add(Me.CmbJenisFormatBarcode)
+        Me.PanelPengaturanLabel.Controls.Add(Me.TxtPosisiAwalYMM)
+        Me.PanelPengaturanLabel.Controls.Add(Me.Label6)
+        Me.PanelPengaturanLabel.Controls.Add(Me.TxtPosisiAwalXMM)
+        Me.PanelPengaturanLabel.Controls.Add(Me.Label13)
+        Me.PanelPengaturanLabel.Location = New System.Drawing.Point(687, 36)
+        Me.PanelPengaturanLabel.Name = "PanelPengaturanLabel"
+        Me.PanelPengaturanLabel.Size = New System.Drawing.Size(453, 535)
+        Me.PanelPengaturanLabel.TabIndex = 91
         '
-        'Panel4
+        'Label28
         '
-        Me.Panel4.BackColor = System.Drawing.Color.Transparent
-        Me.Panel4.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
-        Me.Panel4.Controls.Add(Me.LstBarang)
-        Me.Panel4.Controls.Add(Me.Label3)
-        Me.Panel4.Controls.Add(Me.TxtJumlahCetak)
-        Me.Panel4.Controls.Add(Me.Label18)
-        Me.Panel4.Controls.Add(Me.TxtKodeBarcode)
-        Me.Panel4.Controls.Add(Me.TxtKode)
-        Me.Panel4.Controls.Add(Me.CmbSatuan)
-        Me.Panel4.Controls.Add(Me.Label19)
-        Me.Panel4.Controls.Add(Me.TxtNamaBarang)
-        Me.Panel4.Controls.Add(Me.TxtHargaBarang)
-        Me.Panel4.Controls.Add(Me.Label20)
-        Me.Panel4.Controls.Add(Me.Label21)
-        Me.Panel4.Location = New System.Drawing.Point(514, 46)
-        Me.Panel4.Name = "Panel4"
-        Me.Panel4.Size = New System.Drawing.Size(563, 155)
-        Me.Panel4.TabIndex = 92
+        Me.Label28.AutoSize = True
+        Me.Label28.Font = New System.Drawing.Font("Century Gothic", 9.75!)
+        Me.Label28.ForeColor = System.Drawing.Color.Black
+        Me.Label28.Location = New System.Drawing.Point(109, 386)
+        Me.Label28.Name = "Label28"
+        Me.Label28.Size = New System.Drawing.Size(144, 17)
+        Me.Label28.TabIndex = 117
+        Me.Label28.Text = "Densitas printer (0-15)"
+        Me.Label28.TextAlign = System.Drawing.ContentAlignment.MiddleRight
         '
-        'LstBarang
+        'BtnMundurLabel
         '
-        Me.LstBarang.Font = New System.Drawing.Font("Century Gothic", 9.75!)
-        Me.LstBarang.FormattingEnabled = True
-        Me.LstBarang.ItemHeight = 17
-        Me.LstBarang.Location = New System.Drawing.Point(114, 32)
-        Me.LstBarang.Name = "LstBarang"
-        Me.LstBarang.Size = New System.Drawing.Size(440, 123)
-        Me.LstBarang.TabIndex = 72
+        Me.BtnMundurLabel.AutoSize = True
+        Me.BtnMundurLabel.BackColor = System.Drawing.Color.Orange
+        Me.BtnMundurLabel.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Bold)
+        Me.BtnMundurLabel.Image = CType(resources.GetObject("BtnMundurLabel.Image"), System.Drawing.Image)
+        Me.BtnMundurLabel.Location = New System.Drawing.Point(193, 433)
+        Me.BtnMundurLabel.Name = "BtnMundurLabel"
+        Me.BtnMundurLabel.Size = New System.Drawing.Size(103, 31)
+        Me.BtnMundurLabel.TabIndex = 106
+        Me.BtnMundurLabel.Text = "Mundur"
+        Me.BtnMundurLabel.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText
+        Me.BtnMundurLabel.UseVisualStyleBackColor = False
+        '
+        'TxtJumlahLabelMundur
+        '
+        Me.TxtJumlahLabelMundur.BackColor = System.Drawing.SystemColors.Window
+        Me.TxtJumlahLabelMundur.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
+        Me.TxtJumlahLabelMundur.Font = New System.Drawing.Font("Century Gothic", 9.75!)
+        Me.TxtJumlahLabelMundur.Location = New System.Drawing.Point(112, 438)
+        Me.TxtJumlahLabelMundur.Name = "TxtJumlahLabelMundur"
+        Me.TxtJumlahLabelMundur.Size = New System.Drawing.Size(75, 23)
+        Me.TxtJumlahLabelMundur.TabIndex = 107
+        Me.TxtJumlahLabelMundur.Text = "1"
+        '
+        'Label2
+        '
+        Me.Label2.AutoSize = True
+        Me.Label2.Font = New System.Drawing.Font("Century Gothic", 9.75!)
+        Me.Label2.ForeColor = System.Drawing.Color.Black
+        Me.Label2.Location = New System.Drawing.Point(38, 440)
+        Me.Label2.Name = "Label2"
+        Me.Label2.Size = New System.Drawing.Size(68, 17)
+        Me.Label2.TabIndex = 108
+        Me.Label2.Text = "Mundur X"
+        Me.Label2.TextAlign = System.Drawing.ContentAlignment.MiddleRight
+        '
+        'TxtDensitasCetak
+        '
+        Me.TxtDensitasCetak.BackColor = System.Drawing.SystemColors.Window
+        Me.TxtDensitasCetak.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
+        Me.TxtDensitasCetak.Font = New System.Drawing.Font("Century Gothic", 9.75!)
+        Me.TxtDensitasCetak.Location = New System.Drawing.Point(263, 384)
+        Me.TxtDensitasCetak.Name = "TxtDensitasCetak"
+        Me.TxtDensitasCetak.Size = New System.Drawing.Size(75, 23)
+        Me.TxtDensitasCetak.TabIndex = 116
+        '
+        'Label27
+        '
+        Me.Label27.AutoSize = True
+        Me.Label27.Font = New System.Drawing.Font("Century Gothic", 9.75!)
+        Me.Label27.ForeColor = System.Drawing.Color.Black
+        Me.Label27.Location = New System.Drawing.Point(90, 360)
+        Me.Label27.Name = "Label27"
+        Me.Label27.Size = New System.Drawing.Size(163, 17)
+        Me.Label27.TabIndex = 115
+        Me.Label27.Text = "Kecepatan printer (1-10)"
+        Me.Label27.TextAlign = System.Drawing.ContentAlignment.MiddleRight
+        '
+        'TxtKecepatanCetak
+        '
+        Me.TxtKecepatanCetak.BackColor = System.Drawing.SystemColors.Window
+        Me.TxtKecepatanCetak.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
+        Me.TxtKecepatanCetak.Font = New System.Drawing.Font("Century Gothic", 9.75!)
+        Me.TxtKecepatanCetak.Location = New System.Drawing.Point(263, 358)
+        Me.TxtKecepatanCetak.Name = "TxtKecepatanCetak"
+        Me.TxtKecepatanCetak.Size = New System.Drawing.Size(75, 23)
+        Me.TxtKecepatanCetak.TabIndex = 114
+        '
+        'Label26
+        '
+        Me.Label26.AutoSize = True
+        Me.Label26.Font = New System.Drawing.Font("Century Gothic", 9.75!)
+        Me.Label26.ForeColor = System.Drawing.Color.Black
+        Me.Label26.Location = New System.Drawing.Point(55, 331)
+        Me.Label26.Name = "Label26"
+        Me.Label26.Size = New System.Drawing.Size(198, 17)
+        Me.Label26.TabIndex = 113
+        Me.Label26.Text = "Offset vertikal barcode (pixel)"
+        Me.Label26.TextAlign = System.Drawing.ContentAlignment.MiddleRight
+        '
+        'BtnSimpanPengaturan
+        '
+        Me.BtnSimpanPengaturan.AutoSize = True
+        Me.BtnSimpanPengaturan.BackColor = System.Drawing.Color.Orange
+        Me.BtnSimpanPengaturan.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Bold)
+        Me.BtnSimpanPengaturan.Image = CType(resources.GetObject("BtnSimpanPengaturan.Image"), System.Drawing.Image)
+        Me.BtnSimpanPengaturan.Location = New System.Drawing.Point(266, 467)
+        Me.BtnSimpanPengaturan.Name = "BtnSimpanPengaturan"
+        Me.BtnSimpanPengaturan.Size = New System.Drawing.Size(146, 31)
+        Me.BtnSimpanPengaturan.TabIndex = 96
+        Me.BtnSimpanPengaturan.Text = "Simpan perubahan"
+        Me.BtnSimpanPengaturan.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText
+        Me.BtnSimpanPengaturan.UseVisualStyleBackColor = False
+        '
+        'BtnResetJarakLabel
+        '
+        Me.BtnResetJarakLabel.AutoSize = True
+        Me.BtnResetJarakLabel.BackColor = System.Drawing.Color.Orange
+        Me.BtnResetJarakLabel.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Bold)
+        Me.BtnResetJarakLabel.Image = CType(resources.GetObject("BtnResetJarakLabel.Image"), System.Drawing.Image)
+        Me.BtnResetJarakLabel.Location = New System.Drawing.Point(145, 467)
+        Me.BtnResetJarakLabel.Name = "BtnResetJarakLabel"
+        Me.BtnResetJarakLabel.Size = New System.Drawing.Size(115, 31)
+        Me.BtnResetJarakLabel.TabIndex = 98
+        Me.BtnResetJarakLabel.Text = "kalibrasi Gap"
+        Me.BtnResetJarakLabel.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText
+        Me.BtnResetJarakLabel.UseVisualStyleBackColor = False
+        '
+        'TxtOffsetVertikalPixels
+        '
+        Me.TxtOffsetVertikalPixels.BackColor = System.Drawing.SystemColors.Window
+        Me.TxtOffsetVertikalPixels.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
+        Me.TxtOffsetVertikalPixels.Font = New System.Drawing.Font("Century Gothic", 9.75!)
+        Me.TxtOffsetVertikalPixels.Location = New System.Drawing.Point(263, 329)
+        Me.TxtOffsetVertikalPixels.Name = "TxtOffsetVertikalPixels"
+        Me.TxtOffsetVertikalPixels.Size = New System.Drawing.Size(75, 23)
+        Me.TxtOffsetVertikalPixels.TabIndex = 112
+        '
+        'BtnResetKeDefault
+        '
+        Me.BtnResetKeDefault.AutoSize = True
+        Me.BtnResetKeDefault.BackColor = System.Drawing.Color.Orange
+        Me.BtnResetKeDefault.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Bold)
+        Me.BtnResetKeDefault.Image = CType(resources.GetObject("BtnResetKeDefault.Image"), System.Drawing.Image)
+        Me.BtnResetKeDefault.Location = New System.Drawing.Point(9, 467)
+        Me.BtnResetKeDefault.Name = "BtnResetKeDefault"
+        Me.BtnResetKeDefault.Size = New System.Drawing.Size(130, 31)
+        Me.BtnResetKeDefault.TabIndex = 97
+        Me.BtnResetKeDefault.Text = "Restore Default"
+        Me.BtnResetKeDefault.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText
+        Me.BtnResetKeDefault.UseVisualStyleBackColor = False
+        '
+        'LabelStatusInfo
+        '
+        Me.LabelStatusInfo.AutoSize = True
+        Me.LabelStatusInfo.Location = New System.Drawing.Point(6, 510)
+        Me.LabelStatusInfo.Name = "LabelStatusInfo"
+        Me.LabelStatusInfo.Size = New System.Drawing.Size(54, 13)
+        Me.LabelStatusInfo.TabIndex = 102
+        Me.LabelStatusInfo.Text = "Label Info"
+        '
+        'Label22
+        '
+        Me.Label22.AutoSize = True
+        Me.Label22.Font = New System.Drawing.Font("Century Gothic", 9.75!)
+        Me.Label22.ForeColor = System.Drawing.Color.Black
+        Me.Label22.Location = New System.Drawing.Point(23, 302)
+        Me.Label22.Name = "Label22"
+        Me.Label22.Size = New System.Drawing.Size(230, 17)
+        Me.Label22.TabIndex = 105
+        Me.Label22.Text = "Persentase lebar area barcode (%)"
+        Me.Label22.TextAlign = System.Drawing.ContentAlignment.MiddleRight
+        '
+        'TxtPersentaseLebarAreaBarcode
+        '
+        Me.TxtPersentaseLebarAreaBarcode.BackColor = System.Drawing.SystemColors.Window
+        Me.TxtPersentaseLebarAreaBarcode.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
+        Me.TxtPersentaseLebarAreaBarcode.Font = New System.Drawing.Font("Century Gothic", 9.75!)
+        Me.TxtPersentaseLebarAreaBarcode.Location = New System.Drawing.Point(263, 300)
+        Me.TxtPersentaseLebarAreaBarcode.Name = "TxtPersentaseLebarAreaBarcode"
+        Me.TxtPersentaseLebarAreaBarcode.Size = New System.Drawing.Size(75, 23)
+        Me.TxtPersentaseLebarAreaBarcode.TabIndex = 104
+        '
+        'Label14
+        '
+        Me.Label14.AutoSize = True
+        Me.Label14.Font = New System.Drawing.Font("Century Gothic", 9.75!)
+        Me.Label14.ForeColor = System.Drawing.Color.Black
+        Me.Label14.Location = New System.Drawing.Point(47, 273)
+        Me.Label14.Name = "Label14"
+        Me.Label14.Size = New System.Drawing.Size(206, 17)
+        Me.Label14.TabIndex = 103
+        Me.Label14.Text = "Margin atas dalam label (mm)"
+        Me.Label14.TextAlign = System.Drawing.ContentAlignment.MiddleRight
+        '
+        'TxtMarginDalamAtasMM
+        '
+        Me.TxtMarginDalamAtasMM.BackColor = System.Drawing.SystemColors.Window
+        Me.TxtMarginDalamAtasMM.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
+        Me.TxtMarginDalamAtasMM.Font = New System.Drawing.Font("Century Gothic", 9.75!)
+        Me.TxtMarginDalamAtasMM.Location = New System.Drawing.Point(263, 271)
+        Me.TxtMarginDalamAtasMM.Name = "TxtMarginDalamAtasMM"
+        Me.TxtMarginDalamAtasMM.Size = New System.Drawing.Size(75, 23)
+        Me.TxtMarginDalamAtasMM.TabIndex = 102
+        '
+        'Label5
+        '
+        Me.Label5.AutoSize = True
+        Me.Label5.Font = New System.Drawing.Font("Century Gothic", 9.75!)
+        Me.Label5.ForeColor = System.Drawing.Color.Black
+        Me.Label5.Location = New System.Drawing.Point(58, 244)
+        Me.Label5.Name = "Label5"
+        Me.Label5.Size = New System.Drawing.Size(195, 17)
+        Me.Label5.TabIndex = 101
+        Me.Label5.Text = "Margin kiri dalam label (mm)"
+        Me.Label5.TextAlign = System.Drawing.ContentAlignment.MiddleRight
+        '
+        'TxtMarginDalamKiriMM
+        '
+        Me.TxtMarginDalamKiriMM.BackColor = System.Drawing.SystemColors.Window
+        Me.TxtMarginDalamKiriMM.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
+        Me.TxtMarginDalamKiriMM.Font = New System.Drawing.Font("Century Gothic", 9.75!)
+        Me.TxtMarginDalamKiriMM.Location = New System.Drawing.Point(263, 242)
+        Me.TxtMarginDalamKiriMM.Name = "TxtMarginDalamKiriMM"
+        Me.TxtMarginDalamKiriMM.Size = New System.Drawing.Size(75, 23)
+        Me.TxtMarginDalamKiriMM.TabIndex = 100
+        '
+        'PanelDataBarang
+        '
+        Me.PanelDataBarang.BackColor = System.Drawing.Color.Transparent
+        Me.PanelDataBarang.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
+        Me.PanelDataBarang.Controls.Add(Me.TxtInputNamaBarang)
+        Me.PanelDataBarang.Controls.Add(Me.BtnExportLabel)
+        Me.PanelDataBarang.Controls.Add(Me.Label3)
+        Me.PanelDataBarang.Controls.Add(Me.BtnPreviewLabel)
+        Me.PanelDataBarang.Controls.Add(Me.BtnCetakLabel)
+        Me.PanelDataBarang.Controls.Add(Me.TxtJumlahLabelDicetak)
+        Me.PanelDataBarang.Controls.Add(Me.Label18)
+        Me.PanelDataBarang.Controls.Add(Me.TxtKodeBarcodeInput)
+        Me.PanelDataBarang.Controls.Add(Me.CmbPilihSatuanBarang)
+        Me.PanelDataBarang.Controls.Add(Me.Label19)
+        Me.PanelDataBarang.Controls.Add(Me.TxtInputHargaBarang)
+        Me.PanelDataBarang.Controls.Add(Me.Label20)
+        Me.PanelDataBarang.Controls.Add(Me.Label21)
+        Me.PanelDataBarang.Location = New System.Drawing.Point(5, 215)
+        Me.PanelDataBarang.Name = "PanelDataBarang"
+        Me.PanelDataBarang.Size = New System.Drawing.Size(563, 110)
+        Me.PanelDataBarang.TabIndex = 92
+        '
+        'TxtInputNamaBarang
+        '
+        Me.TxtInputNamaBarang.BackColor = System.Drawing.SystemColors.Window
+        Me.TxtInputNamaBarang.Font = New System.Drawing.Font("Century Gothic", 9.75!)
+        Me.TxtInputNamaBarang.Location = New System.Drawing.Point(114, 9)
+        Me.TxtInputNamaBarang.Name = "TxtInputNamaBarang"
+        Me.TxtInputNamaBarang.Size = New System.Drawing.Size(196, 23)
+        Me.TxtInputNamaBarang.TabIndex = 73
+        '
+        'BtnExportLabel
+        '
+        Me.BtnExportLabel.AutoSize = True
+        Me.BtnExportLabel.BackColor = System.Drawing.Color.Orange
+        Me.BtnExportLabel.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Bold)
+        Me.BtnExportLabel.Image = CType(resources.GetObject("BtnExportLabel.Image"), System.Drawing.Image)
+        Me.BtnExportLabel.Location = New System.Drawing.Point(372, 74)
+        Me.BtnExportLabel.Name = "BtnExportLabel"
+        Me.BtnExportLabel.Size = New System.Drawing.Size(77, 31)
+        Me.BtnExportLabel.TabIndex = 101
+        Me.BtnExportLabel.Text = "Export"
+        Me.BtnExportLabel.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText
+        Me.BtnExportLabel.UseVisualStyleBackColor = False
         '
         'Label3
         '
         Me.Label3.AutoSize = True
         Me.Label3.Font = New System.Drawing.Font("Century Gothic", 9.75!)
         Me.Label3.ForeColor = System.Drawing.Color.Black
-        Me.Label3.Location = New System.Drawing.Point(3, 102)
+        Me.Label3.Location = New System.Drawing.Point(323, 47)
         Me.Label3.Name = "Label3"
-        Me.Label3.Size = New System.Drawing.Size(103, 17)
+        Me.Label3.Size = New System.Drawing.Size(62, 17)
         Me.Label3.TabIndex = 71
-        Me.Label3.Text = "Code Barcode"
+        Me.Label3.Text = "Barcode"
         Me.Label3.TextAlign = System.Drawing.ContentAlignment.MiddleRight
         '
-        'TxtJumlahCetak
+        'BtnPreviewLabel
         '
-        Me.TxtJumlahCetak.BackColor = System.Drawing.SystemColors.Window
-        Me.TxtJumlahCetak.Font = New System.Drawing.Font("Century Gothic", 9.75!)
-        Me.TxtJumlahCetak.Location = New System.Drawing.Point(114, 127)
-        Me.TxtJumlahCetak.Name = "TxtJumlahCetak"
-        Me.TxtJumlahCetak.Size = New System.Drawing.Size(66, 23)
-        Me.TxtJumlahCetak.TabIndex = 69
+        Me.BtnPreviewLabel.AutoSize = True
+        Me.BtnPreviewLabel.BackColor = System.Drawing.Color.Orange
+        Me.BtnPreviewLabel.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Bold)
+        Me.BtnPreviewLabel.Image = CType(resources.GetObject("BtnPreviewLabel.Image"), System.Drawing.Image)
+        Me.BtnPreviewLabel.Location = New System.Drawing.Point(280, 74)
+        Me.BtnPreviewLabel.Name = "BtnPreviewLabel"
+        Me.BtnPreviewLabel.Size = New System.Drawing.Size(86, 31)
+        Me.BtnPreviewLabel.TabIndex = 94
+        Me.BtnPreviewLabel.Text = "Preview"
+        Me.BtnPreviewLabel.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText
+        Me.BtnPreviewLabel.UseVisualStyleBackColor = False
+        '
+        'BtnCetakLabel
+        '
+        Me.BtnCetakLabel.AutoSize = True
+        Me.BtnCetakLabel.BackColor = System.Drawing.Color.Orange
+        Me.BtnCetakLabel.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Bold)
+        Me.BtnCetakLabel.Image = CType(resources.GetObject("BtnCetakLabel.Image"), System.Drawing.Image)
+        Me.BtnCetakLabel.Location = New System.Drawing.Point(200, 73)
+        Me.BtnCetakLabel.Name = "BtnCetakLabel"
+        Me.BtnCetakLabel.Size = New System.Drawing.Size(74, 31)
+        Me.BtnCetakLabel.TabIndex = 95
+        Me.BtnCetakLabel.Text = "Cetak"
+        Me.BtnCetakLabel.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText
+        Me.BtnCetakLabel.UseVisualStyleBackColor = False
+        '
+        'TxtJumlahLabelDicetak
+        '
+        Me.TxtJumlahLabelDicetak.BackColor = System.Drawing.SystemColors.Window
+        Me.TxtJumlahLabelDicetak.Font = New System.Drawing.Font("Century Gothic", 9.75!)
+        Me.TxtJumlahLabelDicetak.Location = New System.Drawing.Point(114, 70)
+        Me.TxtJumlahLabelDicetak.Name = "TxtJumlahLabelDicetak"
+        Me.TxtJumlahLabelDicetak.Size = New System.Drawing.Size(66, 23)
+        Me.TxtJumlahLabelDicetak.TabIndex = 69
         '
         'Label18
         '
         Me.Label18.AutoSize = True
         Me.Label18.Font = New System.Drawing.Font("Century Gothic", 9.75!)
         Me.Label18.ForeColor = System.Drawing.Color.Black
-        Me.Label18.Location = New System.Drawing.Point(7, 130)
+        Me.Label18.Location = New System.Drawing.Point(7, 73)
         Me.Label18.Name = "Label18"
         Me.Label18.Size = New System.Drawing.Size(99, 17)
         Me.Label18.TabIndex = 70
         Me.Label18.Text = "Jumlah Cetak"
         Me.Label18.TextAlign = System.Drawing.ContentAlignment.MiddleRight
         '
-        'TxtKodeBarcode
+        'TxtKodeBarcodeInput
         '
-        Me.TxtKodeBarcode.BackColor = System.Drawing.SystemColors.Window
-        Me.TxtKodeBarcode.Font = New System.Drawing.Font("Century Gothic", 9.75!)
-        Me.TxtKodeBarcode.Location = New System.Drawing.Point(114, 99)
-        Me.TxtKodeBarcode.Name = "TxtKodeBarcode"
-        Me.TxtKodeBarcode.Size = New System.Drawing.Size(177, 23)
-        Me.TxtKodeBarcode.TabIndex = 68
+        Me.TxtKodeBarcodeInput.BackColor = System.Drawing.SystemColors.Window
+        Me.TxtKodeBarcodeInput.Font = New System.Drawing.Font("Century Gothic", 9.75!)
+        Me.TxtKodeBarcodeInput.Location = New System.Drawing.Point(391, 43)
+        Me.TxtKodeBarcodeInput.Name = "TxtKodeBarcodeInput"
+        Me.TxtKodeBarcodeInput.Size = New System.Drawing.Size(155, 23)
+        Me.TxtKodeBarcodeInput.TabIndex = 68
         '
-        'TxtKode
+        'CmbPilihSatuanBarang
         '
-        Me.TxtKode.BackColor = System.Drawing.SystemColors.Window
-        Me.TxtKode.Font = New System.Drawing.Font("Century Gothic", 9.75!)
-        Me.TxtKode.Location = New System.Drawing.Point(297, 43)
-        Me.TxtKode.Name = "TxtKode"
-        Me.TxtKode.Size = New System.Drawing.Size(78, 23)
-        Me.TxtKode.TabIndex = 67
-        '
-        'CmbSatuan
-        '
-        Me.CmbSatuan.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
-        Me.CmbSatuan.Font = New System.Drawing.Font("Century Gothic", 9.75!)
-        Me.CmbSatuan.FormattingEnabled = True
-        Me.CmbSatuan.Location = New System.Drawing.Point(114, 39)
-        Me.CmbSatuan.Name = "CmbSatuan"
-        Me.CmbSatuan.Size = New System.Drawing.Size(177, 25)
-        Me.CmbSatuan.TabIndex = 66
+        Me.CmbPilihSatuanBarang.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
+        Me.CmbPilihSatuanBarang.Font = New System.Drawing.Font("Century Gothic", 9.75!)
+        Me.CmbPilihSatuanBarang.FormattingEnabled = True
+        Me.CmbPilihSatuanBarang.Location = New System.Drawing.Point(114, 39)
+        Me.CmbPilihSatuanBarang.Name = "CmbPilihSatuanBarang"
+        Me.CmbPilihSatuanBarang.Size = New System.Drawing.Size(196, 25)
+        Me.CmbPilihSatuanBarang.TabIndex = 66
         '
         'Label19
         '
@@ -758,34 +993,25 @@ Partial Class FormCetakBarcode
         Me.Label19.Text = "Satuan"
         Me.Label19.TextAlign = System.Drawing.ContentAlignment.MiddleRight
         '
-        'TxtNamaBarang
+        'TxtInputHargaBarang
         '
-        Me.TxtNamaBarang.BackColor = System.Drawing.SystemColors.Window
-        Me.TxtNamaBarang.Font = New System.Drawing.Font("Century Gothic", 9.75!)
-        Me.TxtNamaBarang.Location = New System.Drawing.Point(114, 10)
-        Me.TxtNamaBarang.Name = "TxtNamaBarang"
-        Me.TxtNamaBarang.Size = New System.Drawing.Size(440, 23)
-        Me.TxtNamaBarang.TabIndex = 0
-        '
-        'TxtHargaBarang
-        '
-        Me.TxtHargaBarang.BackColor = System.Drawing.SystemColors.Window
-        Me.TxtHargaBarang.Font = New System.Drawing.Font("Century Gothic", 9.75!)
-        Me.TxtHargaBarang.Location = New System.Drawing.Point(114, 70)
-        Me.TxtHargaBarang.Name = "TxtHargaBarang"
-        Me.TxtHargaBarang.Size = New System.Drawing.Size(177, 23)
-        Me.TxtHargaBarang.TabIndex = 1
+        Me.TxtInputHargaBarang.BackColor = System.Drawing.SystemColors.Window
+        Me.TxtInputHargaBarang.Font = New System.Drawing.Font("Century Gothic", 9.75!)
+        Me.TxtInputHargaBarang.Location = New System.Drawing.Point(391, 10)
+        Me.TxtInputHargaBarang.Name = "TxtInputHargaBarang"
+        Me.TxtInputHargaBarang.Size = New System.Drawing.Size(155, 23)
+        Me.TxtInputHargaBarang.TabIndex = 1
         '
         'Label20
         '
         Me.Label20.AutoSize = True
         Me.Label20.Font = New System.Drawing.Font("Century Gothic", 9.75!)
         Me.Label20.ForeColor = System.Drawing.Color.Black
-        Me.Label20.Location = New System.Drawing.Point(8, 73)
+        Me.Label20.Location = New System.Drawing.Point(337, 12)
         Me.Label20.Name = "Label20"
-        Me.Label20.Size = New System.Drawing.Size(98, 17)
+        Me.Label20.Size = New System.Drawing.Size(48, 17)
         Me.Label20.TabIndex = 16
-        Me.Label20.Text = "Harga Barang"
+        Me.Label20.Text = "Harga"
         Me.Label20.TextAlign = System.Drawing.ContentAlignment.MiddleRight
         '
         'Label21
@@ -793,173 +1019,138 @@ Partial Class FormCetakBarcode
         Me.Label21.AutoSize = True
         Me.Label21.Font = New System.Drawing.Font("Century Gothic", 9.75!)
         Me.Label21.ForeColor = System.Drawing.Color.Black
-        Me.Label21.Location = New System.Drawing.Point(7, 13)
+        Me.Label21.Location = New System.Drawing.Point(53, 13)
         Me.Label21.Name = "Label21"
-        Me.Label21.Size = New System.Drawing.Size(99, 17)
+        Me.Label21.Size = New System.Drawing.Size(49, 17)
         Me.Label21.TabIndex = 10
-        Me.Label21.Text = "Nama Barang"
+        Me.Label21.Text = "Nama"
         Me.Label21.TextAlign = System.Drawing.ContentAlignment.MiddleRight
         '
-        'Panel5
+        'PicPreviewLabel0
         '
-        Me.Panel5.BackColor = System.Drawing.Color.Transparent
-        Me.Panel5.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
-        Me.Panel5.Controls.Add(Me.PicPreviewBarcode3)
-        Me.Panel5.Controls.Add(Me.PicPreviewBarcode2)
-        Me.Panel5.Controls.Add(Me.PicPreviewBarcode1)
-        Me.Panel5.Controls.Add(Me.PicPreviewBarcode0)
-        Me.Panel5.Location = New System.Drawing.Point(514, 255)
-        Me.Panel5.Name = "Panel5"
-        Me.Panel5.Size = New System.Drawing.Size(563, 304)
-        Me.Panel5.TabIndex = 93
+        Me.PicPreviewLabel0.Location = New System.Drawing.Point(3, 3)
+        Me.PicPreviewLabel0.Name = "PicPreviewLabel0"
+        Me.PicPreviewLabel0.Size = New System.Drawing.Size(145, 75)
+        Me.PicPreviewLabel0.TabIndex = 0
+        Me.PicPreviewLabel0.TabStop = False
         '
-        'PicPreviewBarcode3
+        'PicPreviewLabel1
         '
-        Me.PicPreviewBarcode3.Location = New System.Drawing.Point(3, 152)
-        Me.PicPreviewBarcode3.Name = "PicPreviewBarcode3"
-        Me.PicPreviewBarcode3.Size = New System.Drawing.Size(273, 143)
-        Me.PicPreviewBarcode3.TabIndex = 3
-        Me.PicPreviewBarcode3.TabStop = False
+        Me.PicPreviewLabel1.Location = New System.Drawing.Point(153, 3)
+        Me.PicPreviewLabel1.Name = "PicPreviewLabel1"
+        Me.PicPreviewLabel1.Size = New System.Drawing.Size(145, 75)
+        Me.PicPreviewLabel1.TabIndex = 103
+        Me.PicPreviewLabel1.TabStop = False
         '
-        'PicPreviewBarcode2
+        'PicPreviewLabel2
         '
-        Me.PicPreviewBarcode2.Location = New System.Drawing.Point(282, 152)
-        Me.PicPreviewBarcode2.Name = "PicPreviewBarcode2"
-        Me.PicPreviewBarcode2.Size = New System.Drawing.Size(272, 143)
-        Me.PicPreviewBarcode2.TabIndex = 2
-        Me.PicPreviewBarcode2.TabStop = False
+        Me.PicPreviewLabel2.Location = New System.Drawing.Point(304, 3)
+        Me.PicPreviewLabel2.Name = "PicPreviewLabel2"
+        Me.PicPreviewLabel2.Size = New System.Drawing.Size(145, 75)
+        Me.PicPreviewLabel2.TabIndex = 104
+        Me.PicPreviewLabel2.TabStop = False
         '
-        'PicPreviewBarcode1
+        'PicPreviewLabel3
         '
-        Me.PicPreviewBarcode1.Location = New System.Drawing.Point(282, 3)
-        Me.PicPreviewBarcode1.Name = "PicPreviewBarcode1"
-        Me.PicPreviewBarcode1.Size = New System.Drawing.Size(272, 143)
-        Me.PicPreviewBarcode1.TabIndex = 1
-        Me.PicPreviewBarcode1.TabStop = False
+        Me.PicPreviewLabel3.Location = New System.Drawing.Point(454, 3)
+        Me.PicPreviewLabel3.Name = "PicPreviewLabel3"
+        Me.PicPreviewLabel3.Size = New System.Drawing.Size(145, 75)
+        Me.PicPreviewLabel3.TabIndex = 105
+        Me.PicPreviewLabel3.TabStop = False
         '
-        'PicPreviewBarcode0
+        'Panel1
         '
-        Me.PicPreviewBarcode0.Location = New System.Drawing.Point(4, 3)
-        Me.PicPreviewBarcode0.Name = "PicPreviewBarcode0"
-        Me.PicPreviewBarcode0.Size = New System.Drawing.Size(272, 143)
-        Me.PicPreviewBarcode0.TabIndex = 0
-        Me.PicPreviewBarcode0.TabStop = False
+        Me.Panel1.Controls.Add(Me.PicPreviewLabel8)
+        Me.Panel1.Controls.Add(Me.PicPreviewLabel9)
+        Me.Panel1.Controls.Add(Me.PicPreviewLabel10)
+        Me.Panel1.Controls.Add(Me.PicPreviewLabel11)
+        Me.Panel1.Controls.Add(Me.PicPreviewLabel4)
+        Me.Panel1.Controls.Add(Me.PicPreviewLabel5)
+        Me.Panel1.Controls.Add(Me.PicPreviewLabel6)
+        Me.Panel1.Controls.Add(Me.PicPreviewLabel7)
+        Me.Panel1.Controls.Add(Me.PicPreviewLabel0)
+        Me.Panel1.Controls.Add(Me.PicPreviewLabel1)
+        Me.Panel1.Controls.Add(Me.PicPreviewLabel2)
+        Me.Panel1.Controls.Add(Me.PicPreviewLabel3)
+        Me.Panel1.Location = New System.Drawing.Point(5, 331)
+        Me.Panel1.Name = "Panel1"
+        Me.Panel1.Size = New System.Drawing.Size(613, 254)
+        Me.Panel1.TabIndex = 109
         '
-        'BtnRestore
+        'PicPreviewLabel8
         '
-        Me.BtnRestore.AutoSize = True
-        Me.BtnRestore.BackColor = System.Drawing.Color.Orange
-        Me.BtnRestore.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Bold)
-        Me.BtnRestore.Image = CType(resources.GetObject("BtnRestore.Image"), System.Drawing.Image)
-        Me.BtnRestore.Location = New System.Drawing.Point(83, 394)
-        Me.BtnRestore.Name = "BtnRestore"
-        Me.BtnRestore.Size = New System.Drawing.Size(130, 31)
-        Me.BtnRestore.TabIndex = 97
-        Me.BtnRestore.Text = "Restore Default"
-        Me.BtnRestore.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText
-        Me.BtnRestore.UseVisualStyleBackColor = False
+        Me.PicPreviewLabel8.Location = New System.Drawing.Point(3, 165)
+        Me.PicPreviewLabel8.Name = "PicPreviewLabel8"
+        Me.PicPreviewLabel8.Size = New System.Drawing.Size(145, 75)
+        Me.PicPreviewLabel8.TabIndex = 110
+        Me.PicPreviewLabel8.TabStop = False
         '
-        'btnSimpanPerubahan
+        'PicPreviewLabel9
         '
-        Me.btnSimpanPerubahan.AutoSize = True
-        Me.btnSimpanPerubahan.BackColor = System.Drawing.Color.Orange
-        Me.btnSimpanPerubahan.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Bold)
-        Me.btnSimpanPerubahan.Image = CType(resources.GetObject("btnSimpanPerubahan.Image"), System.Drawing.Image)
-        Me.btnSimpanPerubahan.Location = New System.Drawing.Point(349, 461)
-        Me.btnSimpanPerubahan.Name = "btnSimpanPerubahan"
-        Me.btnSimpanPerubahan.Size = New System.Drawing.Size(146, 31)
-        Me.btnSimpanPerubahan.TabIndex = 96
-        Me.btnSimpanPerubahan.Text = "Simpan perubahan"
-        Me.btnSimpanPerubahan.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText
-        Me.btnSimpanPerubahan.UseVisualStyleBackColor = False
+        Me.PicPreviewLabel9.Location = New System.Drawing.Point(153, 165)
+        Me.PicPreviewLabel9.Name = "PicPreviewLabel9"
+        Me.PicPreviewLabel9.Size = New System.Drawing.Size(145, 75)
+        Me.PicPreviewLabel9.TabIndex = 111
+        Me.PicPreviewLabel9.TabStop = False
         '
-        'BtnCetakBarcode
+        'PicPreviewLabel10
         '
-        Me.BtnCetakBarcode.AutoSize = True
-        Me.BtnCetakBarcode.BackColor = System.Drawing.Color.Orange
-        Me.BtnCetakBarcode.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Bold)
-        Me.BtnCetakBarcode.Image = CType(resources.GetObject("BtnCetakBarcode.Image"), System.Drawing.Image)
-        Me.BtnCetakBarcode.Location = New System.Drawing.Point(653, 209)
-        Me.BtnCetakBarcode.Name = "BtnCetakBarcode"
-        Me.BtnCetakBarcode.Size = New System.Drawing.Size(85, 31)
-        Me.BtnCetakBarcode.TabIndex = 95
-        Me.BtnCetakBarcode.Text = "Cetak"
-        Me.BtnCetakBarcode.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText
-        Me.BtnCetakBarcode.UseVisualStyleBackColor = False
+        Me.PicPreviewLabel10.Location = New System.Drawing.Point(304, 165)
+        Me.PicPreviewLabel10.Name = "PicPreviewLabel10"
+        Me.PicPreviewLabel10.Size = New System.Drawing.Size(145, 75)
+        Me.PicPreviewLabel10.TabIndex = 112
+        Me.PicPreviewLabel10.TabStop = False
         '
-        'BtnPreviewCetak
+        'PicPreviewLabel11
         '
-        Me.BtnPreviewCetak.AutoSize = True
-        Me.BtnPreviewCetak.BackColor = System.Drawing.Color.Orange
-        Me.BtnPreviewCetak.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Bold)
-        Me.BtnPreviewCetak.Image = CType(resources.GetObject("BtnPreviewCetak.Image"), System.Drawing.Image)
-        Me.BtnPreviewCetak.Location = New System.Drawing.Point(536, 209)
-        Me.BtnPreviewCetak.Name = "BtnPreviewCetak"
-        Me.BtnPreviewCetak.Size = New System.Drawing.Size(86, 31)
-        Me.BtnPreviewCetak.TabIndex = 94
-        Me.BtnPreviewCetak.Text = "Preview"
-        Me.BtnPreviewCetak.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText
-        Me.BtnPreviewCetak.UseVisualStyleBackColor = False
+        Me.PicPreviewLabel11.Location = New System.Drawing.Point(454, 165)
+        Me.PicPreviewLabel11.Name = "PicPreviewLabel11"
+        Me.PicPreviewLabel11.Size = New System.Drawing.Size(145, 75)
+        Me.PicPreviewLabel11.TabIndex = 113
+        Me.PicPreviewLabel11.TabStop = False
         '
-        'BtnResetGap
+        'PicPreviewLabel4
         '
-        Me.BtnResetGap.AutoSize = True
-        Me.BtnResetGap.BackColor = System.Drawing.Color.Orange
-        Me.BtnResetGap.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Bold)
-        Me.BtnResetGap.Image = CType(resources.GetObject("BtnResetGap.Image"), System.Drawing.Image)
-        Me.BtnResetGap.Location = New System.Drawing.Point(392, 394)
-        Me.BtnResetGap.Name = "BtnResetGap"
-        Me.BtnResetGap.Size = New System.Drawing.Size(103, 31)
-        Me.BtnResetGap.TabIndex = 98
-        Me.BtnResetGap.Text = "Reset Gab"
-        Me.BtnResetGap.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText
-        Me.BtnResetGap.UseVisualStyleBackColor = False
+        Me.PicPreviewLabel4.Location = New System.Drawing.Point(3, 84)
+        Me.PicPreviewLabel4.Name = "PicPreviewLabel4"
+        Me.PicPreviewLabel4.Size = New System.Drawing.Size(145, 75)
+        Me.PicPreviewLabel4.TabIndex = 106
+        Me.PicPreviewLabel4.TabStop = False
         '
-        'BtnResetPosisiXY
+        'PicPreviewLabel5
         '
-        Me.BtnResetPosisiXY.AutoSize = True
-        Me.BtnResetPosisiXY.BackColor = System.Drawing.Color.Orange
-        Me.BtnResetPosisiXY.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Bold)
-        Me.BtnResetPosisiXY.Image = CType(resources.GetObject("BtnResetPosisiXY.Image"), System.Drawing.Image)
-        Me.BtnResetPosisiXY.Location = New System.Drawing.Point(250, 394)
-        Me.BtnResetPosisiXY.Name = "BtnResetPosisiXY"
-        Me.BtnResetPosisiXY.Size = New System.Drawing.Size(102, 31)
-        Me.BtnResetPosisiXY.TabIndex = 99
-        Me.BtnResetPosisiXY.Text = "Reset X & Y"
-        Me.BtnResetPosisiXY.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText
-        Me.BtnResetPosisiXY.UseVisualStyleBackColor = False
+        Me.PicPreviewLabel5.Location = New System.Drawing.Point(153, 84)
+        Me.PicPreviewLabel5.Name = "PicPreviewLabel5"
+        Me.PicPreviewLabel5.Size = New System.Drawing.Size(145, 75)
+        Me.PicPreviewLabel5.TabIndex = 107
+        Me.PicPreviewLabel5.TabStop = False
         '
-        'BtnExportBarcode
+        'PicPreviewLabel6
         '
-        Me.BtnExportBarcode.AutoSize = True
-        Me.BtnExportBarcode.BackColor = System.Drawing.Color.Orange
-        Me.BtnExportBarcode.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Bold)
-        Me.BtnExportBarcode.Image = CType(resources.GetObject("BtnExportBarcode.Image"), System.Drawing.Image)
-        Me.BtnExportBarcode.Location = New System.Drawing.Point(768, 209)
-        Me.BtnExportBarcode.Name = "BtnExportBarcode"
-        Me.BtnExportBarcode.Size = New System.Drawing.Size(143, 31)
-        Me.BtnExportBarcode.TabIndex = 101
-        Me.BtnExportBarcode.Text = "Export Barcode"
-        Me.BtnExportBarcode.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText
-        Me.BtnExportBarcode.UseVisualStyleBackColor = False
+        Me.PicPreviewLabel6.Location = New System.Drawing.Point(304, 84)
+        Me.PicPreviewLabel6.Name = "PicPreviewLabel6"
+        Me.PicPreviewLabel6.Size = New System.Drawing.Size(145, 75)
+        Me.PicPreviewLabel6.TabIndex = 108
+        Me.PicPreviewLabel6.TabStop = False
+        '
+        'PicPreviewLabel7
+        '
+        Me.PicPreviewLabel7.Location = New System.Drawing.Point(454, 84)
+        Me.PicPreviewLabel7.Name = "PicPreviewLabel7"
+        Me.PicPreviewLabel7.Size = New System.Drawing.Size(145, 75)
+        Me.PicPreviewLabel7.TabIndex = 109
+        Me.PicPreviewLabel7.TabStop = False
         '
         'FormCetakBarcode
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(1089, 573)
-        Me.Controls.Add(Me.BtnExportBarcode)
-        Me.Controls.Add(Me.BtnResetPosisiXY)
-        Me.Controls.Add(Me.BtnResetGap)
-        Me.Controls.Add(Me.BtnRestore)
-        Me.Controls.Add(Me.btnSimpanPerubahan)
-        Me.Controls.Add(Me.BtnCetakBarcode)
-        Me.Controls.Add(Me.BtnPreviewCetak)
-        Me.Controls.Add(Me.Panel5)
-        Me.Controls.Add(Me.Panel4)
-        Me.Controls.Add(Me.Panel3)
+        Me.ClientSize = New System.Drawing.Size(1162, 600)
         Me.Controls.Add(Me.Panel1)
-        Me.Controls.Add(Me.Panel2)
+        Me.Controls.Add(Me.PanelDataBarang)
+        Me.Controls.Add(Me.PanelPengaturanLabel)
+        Me.Controls.Add(Me.PanelPengaturanFont)
+        Me.Controls.Add(Me.PanelPilihPrinter)
         Me.Controls.Add(Me.PanelHeader)
         Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None
         Me.Name = "FormCetakBarcode"
@@ -967,94 +1158,116 @@ Partial Class FormCetakBarcode
         Me.ShowInTaskbar = False
         Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen
         Me.PanelHeader.ResumeLayout(False)
-        Me.Panel2.ResumeLayout(False)
-        Me.Panel2.PerformLayout()
+        Me.PanelPilihPrinter.ResumeLayout(False)
+        Me.PanelPilihPrinter.PerformLayout()
+        Me.PanelPengaturanFont.ResumeLayout(False)
+        Me.PanelPengaturanFont.PerformLayout()
+        Me.PanelPengaturanLabel.ResumeLayout(False)
+        Me.PanelPengaturanLabel.PerformLayout()
+        Me.PanelDataBarang.ResumeLayout(False)
+        Me.PanelDataBarang.PerformLayout()
+        CType(Me.PicPreviewLabel0, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.PicPreviewLabel1, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.PicPreviewLabel2, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.PicPreviewLabel3, System.ComponentModel.ISupportInitialize).EndInit()
         Me.Panel1.ResumeLayout(False)
-        Me.Panel1.PerformLayout()
-        Me.Panel3.ResumeLayout(False)
-        Me.Panel3.PerformLayout()
-        Me.Panel4.ResumeLayout(False)
-        Me.Panel4.PerformLayout()
-        Me.Panel5.ResumeLayout(False)
-        CType(Me.PicPreviewBarcode3, System.ComponentModel.ISupportInitialize).EndInit()
-        CType(Me.PicPreviewBarcode2, System.ComponentModel.ISupportInitialize).EndInit()
-        CType(Me.PicPreviewBarcode1, System.ComponentModel.ISupportInitialize).EndInit()
-        CType(Me.PicPreviewBarcode0, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.PicPreviewLabel8, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.PicPreviewLabel9, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.PicPreviewLabel10, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.PicPreviewLabel11, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.PicPreviewLabel4, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.PicPreviewLabel5, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.PicPreviewLabel6, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.PicPreviewLabel7, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ResumeLayout(False)
-        Me.PerformLayout()
 
     End Sub
 
     Friend WithEvents PanelHeader As Panel
     Friend WithEvents BtnMinimize As Button
-    Friend WithEvents BtnClose As Button
     Friend WithEvents LblUtama As Label
-    Friend WithEvents Panel2 As Panel
+    Friend WithEvents PanelPilihPrinter As Panel
     Friend WithEvents CmbJenisPrinter As ComboBox
     Friend WithEvents Label7 As Label
-    Friend WithEvents TxtTinggiBarcode As TextBox
-    Friend WithEvents TxtLebarBarcode As TextBox
-    Friend WithEvents TxtLebarKertas As TextBox
-    Friend WithEvents TxtTinggiKertas As TextBox
+    Friend WithEvents TxtTinggiLabelMM As TextBox
+    Friend WithEvents TxtLebarLabelMM As TextBox
     Friend WithEvents Label8 As Label
     Friend WithEvents Label1 As Label
-    Friend WithEvents Label2 As Label
-    Friend WithEvents Label5 As Label
-    Friend WithEvents CmbJenisKertas As ComboBox
-    Friend WithEvents Label14 As Label
-    Friend WithEvents CmbJumlahBarcodePerBaris As ComboBox
+    Friend WithEvents CmbJumlahKolomPerBaris As ComboBox
     Friend WithEvents Label13 As Label
     Friend WithEvents Label11 As Label
     Friend WithEvents Label9 As Label
     Friend WithEvents Label4 As Label
     Friend WithEvents Label6 As Label
-    Friend WithEvents CmbTipeBarcode As ComboBox
-    Friend WithEvents TxtStartY As TextBox
-    Friend WithEvents TxtStartX As TextBox
+    Friend WithEvents CmbJenisFormatBarcode As ComboBox
+    Friend WithEvents TxtPosisiAwalYMM As TextBox
+    Friend WithEvents TxtPosisiAwalXMM As TextBox
     Friend WithEvents Label10 As Label
     Friend WithEvents Label12 As Label
-    Friend WithEvents TxtGabY As TextBox
-    Friend WithEvents TxtGabX As TextBox
+    Friend WithEvents TxtJarakVertikalMM As TextBox
+    Friend WithEvents TxtJarakHorizontalMM As TextBox
     Friend WithEvents Label15 As Label
     Friend WithEvents Label16 As Label
-    Friend WithEvents ChkBoldSatuan As CheckBox
-    Friend WithEvents CmbFontSatuan As ComboBox
-    Friend WithEvents CmbUkuranSatuan As ComboBox
-    Friend WithEvents ChkBoldToko As CheckBox
-    Friend WithEvents ChkBoldHarga As CheckBox
-    Friend WithEvents ChkBoldNama As CheckBox
-    Friend WithEvents CmbFontToko As ComboBox
-    Friend WithEvents CmbUkuranToko As ComboBox
-    Friend WithEvents CmbFontHarga As ComboBox
-    Friend WithEvents CmbUkuranHarga As ComboBox
-    Friend WithEvents CmbFontNama As ComboBox
-    Friend WithEvents CmbUkuranNama As ComboBox
-    Friend WithEvents Panel1 As Panel
+    Friend WithEvents ChkBoldSatuanBarang As CheckBox
+    Friend WithEvents CmbFontSatuanBarang As ComboBox
+    Friend WithEvents CmbUkuranFontSatuan As ComboBox
+    Friend WithEvents ChkBoldNamaToko As CheckBox
+    Friend WithEvents ChkBoldHargaBarang As CheckBox
+    Friend WithEvents ChkBoldNamaBarang As CheckBox
+    Friend WithEvents CmbFontNamaToko As ComboBox
+    Friend WithEvents CmbUkuranFontToko As ComboBox
+    Friend WithEvents CmbFontHargaBarang As ComboBox
+    Friend WithEvents CmbUkuranFontHarga As ComboBox
+    Friend WithEvents CmbFontNamaBarang As ComboBox
+    Friend WithEvents CmbUkuranFontNama As ComboBox
+    Friend WithEvents PanelPengaturanFont As Panel
     Friend WithEvents Label17 As Label
-    Friend WithEvents Panel3 As Panel
-    Friend WithEvents Panel4 As Panel
-    Friend WithEvents CmbSatuan As ComboBox
+    Friend WithEvents PanelPengaturanLabel As Panel
+    Friend WithEvents PanelDataBarang As Panel
+    Friend WithEvents CmbPilihSatuanBarang As ComboBox
     Friend WithEvents Label19 As Label
-    Friend WithEvents TxtNamaBarang As TextBox
-    Friend WithEvents TxtHargaBarang As TextBox
+    Friend WithEvents TxtInputHargaBarang As TextBox
     Friend WithEvents Label20 As Label
     Friend WithEvents Label21 As Label
-    Friend WithEvents TxtKode As TextBox
-    Friend WithEvents TxtKodeBarcode As TextBox
-    Friend WithEvents Panel5 As Panel
-    Friend WithEvents PicPreviewBarcode3 As PictureBox
-    Friend WithEvents PicPreviewBarcode2 As PictureBox
-    Friend WithEvents PicPreviewBarcode1 As PictureBox
-    Friend WithEvents PicPreviewBarcode0 As PictureBox
-    Friend WithEvents TxtJumlahCetak As TextBox
+    Friend WithEvents TxtKodeBarcodeInput As TextBox
+    Friend WithEvents PicPreviewLabel0 As PictureBox
+    Friend WithEvents TxtJumlahLabelDicetak As TextBox
     Friend WithEvents Label18 As Label
-    Friend WithEvents BtnRestore As Button
-    Friend WithEvents btnSimpanPerubahan As Button
-    Friend WithEvents BtnCetakBarcode As Button
-    Friend WithEvents BtnPreviewCetak As Button
-    Friend WithEvents BtnResetGap As Button
-    Friend WithEvents BtnResetPosisiXY As Button
-    Friend WithEvents BtnExportBarcode As Button
+    Friend WithEvents BtnResetKeDefault As Button
+    Friend WithEvents BtnSimpanPengaturan As Button
+    Friend WithEvents BtnCetakLabel As Button
+    Friend WithEvents BtnPreviewLabel As Button
+    Friend WithEvents BtnResetJarakLabel As Button
+    Friend WithEvents BtnExportLabel As Button
     Friend WithEvents Label3 As Label
-    Friend WithEvents LstBarang As ListBox
+    Friend WithEvents TxtInputNamaBarang As TextBox
+    Friend WithEvents LabelStatusInfo As Label
+    Friend WithEvents BtnClose As Button
+    Friend WithEvents PicPreviewLabel1 As PictureBox
+    Friend WithEvents PicPreviewLabel2 As PictureBox
+    Friend WithEvents PicPreviewLabel3 As PictureBox
+    Friend WithEvents BtnMundurLabel As Button
+    Friend WithEvents TxtJumlahLabelMundur As TextBox
+    Friend WithEvents Label2 As Label
+    Friend WithEvents Label28 As Label
+    Friend WithEvents TxtDensitasCetak As TextBox
+    Friend WithEvents Label27 As Label
+    Friend WithEvents TxtKecepatanCetak As TextBox
+    Friend WithEvents Label26 As Label
+    Friend WithEvents TxtOffsetVertikalPixels As TextBox
+    Friend WithEvents Label22 As Label
+    Friend WithEvents TxtPersentaseLebarAreaBarcode As TextBox
+    Friend WithEvents Label14 As Label
+    Friend WithEvents TxtMarginDalamAtasMM As TextBox
+    Friend WithEvents Label5 As Label
+    Friend WithEvents TxtMarginDalamKiriMM As TextBox
+    Friend WithEvents Panel1 As Panel
+    Friend WithEvents PicPreviewLabel8 As PictureBox
+    Friend WithEvents PicPreviewLabel9 As PictureBox
+    Friend WithEvents PicPreviewLabel10 As PictureBox
+    Friend WithEvents PicPreviewLabel11 As PictureBox
+    Friend WithEvents PicPreviewLabel4 As PictureBox
+    Friend WithEvents PicPreviewLabel5 As PictureBox
+    Friend WithEvents PicPreviewLabel6 As PictureBox
+    Friend WithEvents PicPreviewLabel7 As PictureBox
 End Class

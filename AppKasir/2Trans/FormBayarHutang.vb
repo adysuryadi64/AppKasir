@@ -1,18 +1,17 @@
 ﻿Imports System.Globalization
 
-
-
-
-
-
 Public Class FormBayarHutang
+    Private TransaksiLampau As String = "Tidak"
+
+
     Private Sub FormBayarHutang_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+        TransaksiLampau = ModulHakAkses.BacaHakAksesSemua(FormGeneralSetting.LblTransaksiTanggalLampau.Text)
         Kondisiawal()
     End Sub
 
 
     Private Sub GenerateNomorBayarHutang()
-        Dim cekTanggal As String = Microsoft.VisualBasic.Format(DtpTanggal.Value, "yyMMdd")
+        Dim cekTanggal As String = DtpTanggal.Value.ToString("yyMMdd")
         Dim UrutKOde As String = ""
         Dim cekNomor As String = "BH-" & cekTanggal
 
@@ -63,15 +62,6 @@ Public Class FormBayarHutang
 
         GenerateNomorBayarHutang()
         SelectNamaSupliyer()
-
-        '' Set akun berdasarkan lokasi
-        'If FormUtama.TxtLokasi.Text = "TOKO" Then
-        '    CmbRekening.SelectedItem = nama_rek_Jual_Toko
-        '    TxtRekening.Text = Kode_rek_Jual_Toko
-        'ElseIf FormUtama.TxtLokasi.Text = "GUDANG" Then
-        '    CmbRekening.SelectedItem = nama_rek_Jual_Gudang
-        '    TxtRekening.Text = Kode_rek_Jual_Gudang
-        'End If
     End Sub
 
 
@@ -234,16 +224,21 @@ Public Class FormBayarHutang
 
     Private Sub Totalhutang()
         ' Inisialisasi variabel untuk menyimpan total
-        Dim totalKolom8 As Decimal = 0
+        Dim totalKolom8 As Decimal = 0D
 
         ' Loop melalui setiap baris pada DataGridView
         For Each row As DataGridViewRow In DgvData.Rows
             ' Pastikan baris bukan baris baru yang ditandai untuk penambahan
             If Not row.IsNewRow Then
-                ' Dapatkan nilai dari kolom "TAGIHAN" dan anggap sebagai 0 jika null
-                totalKolom8 += If(row.Cells("TAGIHAN").Value IsNot Nothing AndAlso
-                                  Decimal.TryParse(row.Cells("TAGIHAN").Value.ToString(), Nothing),
-                                  Convert.ToDecimal(row.Cells("TAGIHAN").Value), 0)
+                If DgvData.Columns.Contains("TAGIHAN") Then
+                    Dim cellVal = row.Cells("TAGIHAN").Value
+                    If cellVal IsNot Nothing AndAlso Not IsDBNull(cellVal) Then
+                        Dim parsed As Decimal = 0D
+                        If Decimal.TryParse(Convert.ToString(cellVal), parsed) Then
+                            totalKolom8 += parsed
+                        End If
+                    End If
+                End If
             End If
         Next
 
@@ -298,16 +293,31 @@ Public Class FormBayarHutang
 
     Private Sub HitungTotalBayar()
         ' Inisialisasi variabel untuk menyimpan total
-        Dim totalBayar As Decimal = 0
+        Dim totalBayar As Decimal = 0D
 
         ' Loop melalui setiap baris pada DataGridView
         For Each row As DataGridViewRow In DgvData.Rows
-            ' Pastikan kolom centang diaktifkan
-            If Convert.ToBoolean(row.Cells(0).Value) Then
-                ' Dapatkan nilai dari kolom "Bayar" dan anggap 0 jika null
-                totalBayar += If(row.Cells("Bayar").Value IsNot Nothing AndAlso
-                                  Decimal.TryParse(row.Cells("Bayar").Value.ToString(), Nothing),
-                                  Convert.ToDecimal(row.Cells("Bayar").Value), 0)
+            If row.IsNewRow Then
+                Continue For
+            End If
+
+            ' Pastikan kolom cek (index 0) ada dan tidak null
+            Dim checkVal = row.Cells(0).Value
+            Dim isChecked As Boolean = False
+            If checkVal IsNot Nothing AndAlso Not IsDBNull(checkVal) Then
+                Boolean.TryParse(Convert.ToString(checkVal), isChecked)
+            End If
+
+            If isChecked Then
+                If DgvData.Columns.Contains("Bayar") Then
+                    Dim cellVal = row.Cells("Bayar").Value
+                    If cellVal IsNot Nothing AndAlso Not IsDBNull(cellVal) Then
+                        Dim parsed As Decimal = 0D
+                        If Decimal.TryParse(Convert.ToString(cellVal), parsed) Then
+                            totalBayar += parsed
+                        End If
+                    End If
+                End If
             End If
         Next
 
@@ -366,15 +376,16 @@ Public Class FormBayarHutang
 
         Return True
     End Function
-
     Private Sub BtnBayar_Click(ByVal sender As Object, ByVal e As EventArgs) Handles BtnBayar.Click
         If Not IsFormValid() Then
             Return
         End If
         Cursor = Cursors.WaitCursor
 
-        DtpTanggal.Value = Now
-        GenerateNomorBayarHutang()
+        If TransaksiLampau = "Tidak" Then
+            DtpTanggal.Value = Now
+            GenerateNomorBayarHutang()
+        End If
 
         ' Mulai transaksi
         Dim transaction As MySqlTransaction = Nothing
@@ -383,96 +394,102 @@ Public Class FormBayarHutang
             transaction = conn.BeginTransaction()
 
             For baris As Integer = 0 To DgvData.Rows.Count - 1
-                If Convert.ToBoolean(DgvData.Rows(baris).Cells(0).Value) = True Then
-
-                    Dim Status As String
-                    Dim hutang As Decimal = If(IsDBNull(DgvData.Rows(baris).Cells(8).Value) OrElse DgvData.Rows(baris).Cells(8).Value Is Nothing, 0, Convert.ToDecimal(DgvData.Rows(baris).Cells(8).Value))
-                    Dim bayar As Decimal = If(IsDBNull(DgvData.Rows(baris).Cells(10).Value) OrElse DgvData.Rows(baris).Cells(10).Value Is Nothing, 0, Convert.ToDecimal(DgvData.Rows(baris).Cells(10).Value))
-
-                    ' Memeriksa apakah nilai hutang sama dengan nilai bayar
-                    Status = If(hutang = bayar, "Lunas", "Belum Lunas")
-
-                    Using cmdUpdateBeli As New MySqlCommand("UPDATE pembelian SET PEMBAYARAN = PEMBAYARAN + @PEMBAYARAN, TAGIHAN = TAGIHAN - @TAGIHAN, TGL_BAYAR = @TGL_BAYAR, NOMINALBAYAR = NOMINALBAYAR + @NOMINALBAYAR, STATUS_TRANSAKSI_BELI = @STATUS_TRANSAKSI_BELI WHERE ID_PEMBELIAN = @ID_PEMBELIAN", conn, transaction)
-                        cmdUpdateBeli.Parameters.AddWithValue("@PEMBAYARAN", bayar)
-                        cmdUpdateBeli.Parameters.AddWithValue("@TAGIHAN", bayar)
-                        cmdUpdateBeli.Parameters.AddWithValue("@TGL_BAYAR", Microsoft.VisualBasic.Format(DtpTanggal.Value, "yyyy-MM-dd HH:mm:ss"))
-                        cmdUpdateBeli.Parameters.AddWithValue("@NOMINALBAYAR", bayar)
-                        cmdUpdateBeli.Parameters.AddWithValue("@STATUS_TRANSAKSI_BELI", Status)
-                        cmdUpdateBeli.Parameters.AddWithValue("@ID_PEMBELIAN", DgvData.Rows(baris).Cells("ID_PEMBELIAN").Value)
-
-                        cmdUpdateBeli.ExecuteNonQuery()
-                    End Using
-
-
-                    Using cmd As New MySqlCommand("INSERT INTO JurnalUmum (NO_TRANSAKSI, TGL_TRANSAKSI, NO_NOTA, URAIAN, NAMA_AKUN_D, NOMOR_AKUN_D, NAMA_AKUN_K, NOMOR_AKUN_K, NAMA_BANTU_D, KODE_BANTU_D, NOMINAL, JENIS_TRANSAKSI, LOKASI, ID_USER, ID_KOMPUTER) " &
-                                  "VALUES (@NO_TRANSAKSI, @TGL_TRANSAKSI, @NO_NOTA, @URAIAN, @NAMA_AKUN_D, @NOMOR_AKUN_D, @NAMA_AKUN_K, @NOMOR_AKUN_K, @NAMA_BANTU_D, @KODE_BANTU_D, @NOMINAL, @JENIS_TRANSAKSI, @LOKASI, @ID_USER, @ID_KOMPUTER)", conn, transaction)
-
-                        cmd.Parameters.AddWithValue("@NO_TRANSAKSI", LblNomorBayar.Text)
-                        cmd.Parameters.AddWithValue("@TGL_TRANSAKSI", DtpTanggal.Value.ToString("yyyy-MM-dd HH:mm:ss"))
-                        cmd.Parameters.AddWithValue("@NO_NOTA", DgvData.Rows(baris).Cells("ID_PEMBELIAN").Value)
-                        cmd.Parameters.AddWithValue("@URAIAN", "Bayar hutang ke " & CmbSupliyer.Text & " Jatuh tempo " & DgvData.Rows(baris).Cells("JATUH_TEMPO").Value)
-                        cmd.Parameters.AddWithValue("@NAMA_AKUN_D", nama_rek_Hutang_Beli)
-                        cmd.Parameters.AddWithValue("@NOMOR_AKUN_D", Kode_rek_Hutang_Beli)
-                        cmd.Parameters.AddWithValue("@NAMA_AKUN_K", CmbRekening.Text)
-                        cmd.Parameters.AddWithValue("@NOMOR_AKUN_K", TxtRekening.Text)
-                        cmd.Parameters.AddWithValue("@NAMA_BANTU_D", CmbSupliyer.Text)
-                        cmd.Parameters.AddWithValue("@KODE_BANTU_D", LblKodeSupliyer.Text)
-                        cmd.Parameters.AddWithValue("@NOMINAL", bayar)
-                        cmd.Parameters.AddWithValue("@JENIS_TRANSAKSI", "Bayar hutang")
-                        cmd.Parameters.AddWithValue("@LOKASI", FormUtama.SLokasi.Text)
-                        cmd.Parameters.AddWithValue("@ID_USER", FormUtama.SLogin.Text)
-                        cmd.Parameters.AddWithValue("@ID_KOMPUTER", FormUtama.Comp.Text)
-
-                        cmd.ExecuteNonQuery()
-                    End Using
-
-
-                    Using cmdHutangDetail As New MySqlCommand("INSERT INTO Hutang_Detail (ID_BAYAR, TANGGAL_BAYAR, LOKASI, ID_BELI, KODE, NAMA, TANGGAL_BELI, TOTAL_HUTANG, DIBAYAR, RETUR, HUTANG, JATUH_TEMPO, PEMBAYARAN, STATUS, ID_USER, ID_KOMPUTER) " &
-                                    "VALUES (@ID_BAYAR, @TANGGAL_BAYAR, @LOKASI, @ID_BELI, @KODE, @NAMA, @TANGGAL_BELI, @TOTAL_HUTANG, @DIBAYAR, @RETUR, @HUTANG, @JATUH_TEMPO, @PEMBAYARAN, @STATUS, @ID_USER, @ID_KOMPUTER)", conn, transaction)
-
-                        ' Set nilai untuk parameter
-                        cmdHutangDetail.Parameters.AddWithValue("@ID_BAYAR", LblNomorBayar.Text)
-                        cmdHutangDetail.Parameters.AddWithValue("@TANGGAL_BAYAR", DtpTanggal.Value.ToString("yyyy-MM-dd HH:mm:ss"))
-                        cmdHutangDetail.Parameters.AddWithValue("@LOKASI", FormUtama.SLokasi.Text)
-                        cmdHutangDetail.Parameters.AddWithValue("@ID_BELI", DgvData.Rows(baris).Cells(1).Value)
-                        cmdHutangDetail.Parameters.AddWithValue("@KODE", DgvData.Rows(baris).Cells(2).Value)
-                        cmdHutangDetail.Parameters.AddWithValue("@NAMA", DgvData.Rows(baris).Cells(3).Value)
-
-                        ' Jika nilai TANGGAL_BELI adalah DateTime, format nilainya. Jika tidak, gunakan nilai default
-                        Dim tanggalBeli As DateTime
-                        If DateTime.TryParse(DgvData.Rows(baris).Cells(4).Value.ToString(), tanggalBeli) Then
-                            cmdHutangDetail.Parameters.AddWithValue("@TANGGAL_BELI", tanggalBeli.ToString("yyyy-MM-dd HH:mm:ss"))
-                        Else
-                            cmdHutangDetail.Parameters.AddWithValue("@TANGGAL_BELI", DBNull.Value)
-                        End If
-
-                        cmdHutangDetail.Parameters.AddWithValue("@TOTAL_HUTANG", If(IsDBNull(DgvData.Rows(baris).Cells(5).Value) OrElse DgvData.Rows(baris).Cells(5).Value Is Nothing, 0, Convert.ToDecimal(DgvData.Rows(baris).Cells(5).Value)))
-                        cmdHutangDetail.Parameters.AddWithValue("@DIBAYAR", If(IsDBNull(DgvData.Rows(baris).Cells(6).Value) OrElse DgvData.Rows(baris).Cells(6).Value Is Nothing, 0, Convert.ToDecimal(DgvData.Rows(baris).Cells(6).Value)))
-                        cmdHutangDetail.Parameters.AddWithValue("@RETUR", If(IsDBNull(DgvData.Rows(baris).Cells(7).Value) OrElse DgvData.Rows(baris).Cells(7).Value Is Nothing, 0, Convert.ToDecimal(DgvData.Rows(baris).Cells(7).Value)))
-                        cmdHutangDetail.Parameters.AddWithValue("@HUTANG", hutang)
-
-                        ' Jika nilai JATUH_TEMPO adalah DateTime, format nilainya. Jika tidak, gunakan nilai default
-                        Dim jatuhTempo As DateTime
-                        If DateTime.TryParse(DgvData.Rows(baris).Cells(9).Value.ToString(), jatuhTempo) Then
-                            cmdHutangDetail.Parameters.AddWithValue("@JATUH_TEMPO", jatuhTempo.ToString("yyyy-MM-dd HH:mm:ss"))
-                        Else
-                            cmdHutangDetail.Parameters.AddWithValue("@JATUH_TEMPO", DBNull.Value)
-                        End If
-
-                        cmdHutangDetail.Parameters.AddWithValue("@PEMBAYARAN", bayar)
-                        cmdHutangDetail.Parameters.AddWithValue("@STATUS", Status)
-                        cmdHutangDetail.Parameters.AddWithValue("@ID_USER", FormUtama.SLogin.Text)
-                        cmdHutangDetail.Parameters.AddWithValue("@ID_KOMPUTER", FormUtama.Comp.Text)
-
-                        ' Eksekusi query
-                        cmdHutangDetail.ExecuteNonQuery()
-                    End Using
-
+                If DgvData.Rows(baris).IsNewRow Then
+                    Continue For
                 End If
+
+                Dim checkVal = DgvData.Rows(baris).Cells(0).Value
+                If checkVal Is Nothing OrElse IsDBNull(checkVal) OrElse Not Convert.ToBoolean(checkVal) Then
+                    Continue For
+                End If
+
+                Dim Status As String
+                Dim hutang As Decimal = If(IsDBNull(DgvData.Rows(baris).Cells(8).Value) OrElse DgvData.Rows(baris).Cells(8).Value Is Nothing, 0D, Convert.ToDecimal(DgvData.Rows(baris).Cells(8).Value))
+                Dim bayar As Decimal = If(IsDBNull(DgvData.Rows(baris).Cells(10).Value) OrElse DgvData.Rows(baris).Cells(10).Value Is Nothing, 0D, Convert.ToDecimal(DgvData.Rows(baris).Cells(10).Value))
+
+                ' Memeriksa apakah nilai hutang sama dengan nilai bayar
+                Status = If(hutang = bayar, "Lunas", "Belum Lunas")
+
+                Using cmdUpdateBeli As New MySqlCommand("UPDATE pembelian SET PEMBAYARAN = PEMBAYARAN + @PEMBAYARAN, TAGIHAN = TAGIHAN - @TAGIHAN, TGL_BAYAR = @TGL_BAYAR, NOMINALBAYAR = NOMINALBAYAR + @NOMINALBAYAR, STATUS_TRANSAKSI_BELI = @STATUS_TRANSAKSI_BELI WHERE ID_PEMBELIAN = @ID_PEMBELIAN", conn, transaction)
+                    cmdUpdateBeli.Parameters.AddWithValue("@PEMBAYARAN", bayar)
+                    cmdUpdateBeli.Parameters.AddWithValue("@TAGIHAN", bayar)
+                    cmdUpdateBeli.Parameters.AddWithValue("@TGL_BAYAR", DtpTanggal.Value.ToString("yyyy-MM-dd HH:mm:ss"))
+                    cmdUpdateBeli.Parameters.AddWithValue("@NOMINALBAYAR", bayar)
+                    cmdUpdateBeli.Parameters.AddWithValue("@STATUS_TRANSAKSI_BELI", Status)
+                    cmdUpdateBeli.Parameters.AddWithValue("@ID_PEMBELIAN", DgvData.Rows(baris).Cells("ID_PEMBELIAN").Value)
+
+                    cmdUpdateBeli.ExecuteNonQuery()
+                End Using
+
+                Using cmd As New MySqlCommand("INSERT INTO JurnalUmum (NO_TRANSAKSI, TGL_TRANSAKSI, NO_NOTA, URAIAN, NAMA_AKUN_D, NOMOR_AKUN_D, NAMA_AKUN_K, NOMOR_AKUN_K, NAMA_BANTU_D, KODE_BANTU_D, NOMINAL, JENIS_TRANSAKSI, LOKASI, ID_USER, ID_KOMPUTER) " &
+                          "VALUES (@NO_TRANSAKSI, @TGL_TRANSAKSI, @NO_NOTA, @URAIAN, @NAMA_AKUN_D, @NOMOR_AKUN_D, @NAMA_AKUN_K, @NOMOR_AKUN_K, @NAMA_BANTU_D, @KODE_BANTU_D, @NOMINAL, @JENIS_TRANSAKSI, @LOKASI, @ID_USER, @ID_KOMPUTER)", conn, transaction)
+
+                    cmd.Parameters.AddWithValue("@NO_TRANSAKSI", LblNomorBayar.Text)
+                    cmd.Parameters.AddWithValue("@TGL_TRANSAKSI", DtpTanggal.Value.ToString("yyyy-MM-dd HH:mm:ss"))
+                    cmd.Parameters.AddWithValue("@NO_NOTA", DgvData.Rows(baris).Cells("ID_PEMBELIAN").Value)
+                    cmd.Parameters.AddWithValue("@URAIAN", "Bayar hutang ke " & CmbSupliyer.Text & " Jatuh tempo " & DgvData.Rows(baris).Cells("JATUH_TEMPO").Value)
+                    cmd.Parameters.AddWithValue("@NAMA_AKUN_D", nama_rek_Hutang_Beli)
+                    cmd.Parameters.AddWithValue("@NOMOR_AKUN_D", Kode_rek_Hutang_Beli)
+                    cmd.Parameters.AddWithValue("@NAMA_AKUN_K", CmbRekening.Text)
+                    cmd.Parameters.AddWithValue("@NOMOR_AKUN_K", TxtRekening.Text)
+                    cmd.Parameters.AddWithValue("@NAMA_BANTU_D", CmbSupliyer.Text)
+                    cmd.Parameters.AddWithValue("@KODE_BANTU_D", LblKodeSupliyer.Text)
+                    cmd.Parameters.AddWithValue("@NOMINAL", bayar)
+                    cmd.Parameters.AddWithValue("@JENIS_TRANSAKSI", "Bayar hutang")
+                    cmd.Parameters.AddWithValue("@LOKASI", FormUtama.SLokasi.Text)
+                    cmd.Parameters.AddWithValue("@ID_USER", FormUtama.SLogin.Text)
+                    cmd.Parameters.AddWithValue("@ID_KOMPUTER", FormUtama.Comp.Text)
+
+                    cmd.ExecuteNonQuery()
+                End Using
+
+                Using cmdHutangDetail As New MySqlCommand("INSERT INTO Hutang_Detail (ID_BAYAR, TANGGAL_BAYAR, LOKASI, ID_BELI, KODE, NAMA, TANGGAL_BELI, TOTAL_HUTANG, DIBAYAR, RETUR, HUTANG, JATUH_TEMPO, PEMBAYARAN, STATUS, ID_USER, ID_KOMPUTER) " &
+                            "VALUES (@ID_BAYAR, @TANGGAL_BAYAR, @LOKASI, @ID_BELI, @KODE, @NAMA, @TANGGAL_BELI, @TOTAL_HUTANG, @DIBAYAR, @RETUR, @HUTANG, @JATUH_TEMPO, @PEMBAYARAN, @STATUS, @ID_USER, @ID_KOMPUTER)", conn, transaction)
+
+                    ' Set nilai untuk parameter
+                    cmdHutangDetail.Parameters.AddWithValue("@ID_BAYAR", LblNomorBayar.Text)
+                    cmdHutangDetail.Parameters.AddWithValue("@TANGGAL_BAYAR", DtpTanggal.Value.ToString("yyyy-MM-dd HH:mm:ss"))
+                    cmdHutangDetail.Parameters.AddWithValue("@LOKASI", FormUtama.SLokasi.Text)
+                    cmdHutangDetail.Parameters.AddWithValue("@ID_BELI", DgvData.Rows(baris).Cells(1).Value)
+                    cmdHutangDetail.Parameters.AddWithValue("@KODE", DgvData.Rows(baris).Cells(2).Value)
+                    cmdHutangDetail.Parameters.AddWithValue("@NAMA", DgvData.Rows(baris).Cells(3).Value)
+
+                    ' Jika nilai TANGGAL_BELI adalah DateTime, format nilainya. Jika tidak, gunakan nilai default
+                    Dim tanggalBeli As DateTime
+                    Dim cellTanggalBeli = DgvData.Rows(baris).Cells(4).Value
+                    If cellTanggalBeli IsNot Nothing AndAlso Not IsDBNull(cellTanggalBeli) AndAlso DateTime.TryParse(Convert.ToString(cellTanggalBeli), tanggalBeli) Then
+                        cmdHutangDetail.Parameters.AddWithValue("@TANGGAL_BELI", tanggalBeli.ToString("yyyy-MM-dd HH:mm:ss"))
+                    Else
+                        cmdHutangDetail.Parameters.AddWithValue("@TANGGAL_BELI", DBNull.Value)
+                    End If
+
+                    cmdHutangDetail.Parameters.AddWithValue("@TOTAL_HUTANG", If(IsDBNull(DgvData.Rows(baris).Cells(5).Value) OrElse DgvData.Rows(baris).Cells(5).Value Is Nothing, 0D, Convert.ToDecimal(DgvData.Rows(baris).Cells(5).Value)))
+                    cmdHutangDetail.Parameters.AddWithValue("@DIBAYAR", If(IsDBNull(DgvData.Rows(baris).Cells(6).Value) OrElse DgvData.Rows(baris).Cells(6).Value Is Nothing, 0D, Convert.ToDecimal(DgvData.Rows(baris).Cells(6).Value)))
+                    cmdHutangDetail.Parameters.AddWithValue("@RETUR", If(IsDBNull(DgvData.Rows(baris).Cells(7).Value) OrElse DgvData.Rows(baris).Cells(7).Value Is Nothing, 0D, Convert.ToDecimal(DgvData.Rows(baris).Cells(7).Value)))
+                    cmdHutangDetail.Parameters.AddWithValue("@HUTANG", hutang)
+
+                    ' Jika nilai JATUH_TEMPO adalah DateTime, format nilainya. Jika tidak, gunakan nilai default
+                    Dim jatuhTempo As DateTime
+                    Dim cellJatuhTempo = DgvData.Rows(baris).Cells(9).Value
+                    If cellJatuhTempo IsNot Nothing AndAlso Not IsDBNull(cellJatuhTempo) AndAlso DateTime.TryParse(Convert.ToString(cellJatuhTempo), jatuhTempo) Then
+                        cmdHutangDetail.Parameters.AddWithValue("@JATUH_TEMPO", jatuhTempo.ToString("yyyy-MM-dd HH:mm:ss"))
+                    Else
+                        cmdHutangDetail.Parameters.AddWithValue("@JATUH_TEMPO", DBNull.Value)
+                    End If
+
+                    cmdHutangDetail.Parameters.AddWithValue("@PEMBAYARAN", bayar)
+                    cmdHutangDetail.Parameters.AddWithValue("@STATUS", Status)
+                    cmdHutangDetail.Parameters.AddWithValue("@ID_USER", FormUtama.SLogin.Text)
+                    cmdHutangDetail.Parameters.AddWithValue("@ID_KOMPUTER", FormUtama.Comp.Text)
+
+                    ' Eksekusi query
+                    cmdHutangDetail.ExecuteNonQuery()
+                End Using
+
             Next
 
             Dim query As String = "INSERT INTO hutang (NOBAYARHUTANG, KODESUPLIYER, NAMASUPLIYER, TGLPEMBAYARAN, LOKASI, TOTALHUTANG, NOMINALBAYAR, SISAHUTANG, ID_USER_BAYAR, ID_KOMPUTER_BAYAR) " &
-                          "VALUES (@NOBAYARHUTANG, @KODESUPLIYER, @NAMASUPLIYER, @TGLPEMBAYARAN, @LOKASI, @TOTALHUTANG, @NOMINALBAYAR, @SISAHUTANG, @IDUser, @IDKomputer)"
+                      "VALUES (@NOBAYARHUTANG, @KODESUPLIYER, @NAMASUPLIYER, @TGLPEMBAYARAN, @LOKASI, @TOTALHUTANG, @NOMINALBAYAR, @SISAHUTANG, @IDUser, @IDKomputer)"
 
             Using cmd As New MySqlCommand(query, conn, transaction)
                 cmd.Parameters.AddWithValue("@NOBAYARHUTANG", LblNomorBayar.Text)
@@ -490,21 +507,25 @@ Public Class FormBayarHutang
                 cmd.ExecuteNonQuery()
             End Using
 
-
             ' Commit transaksi jika semua berhasil
             transaction.Commit()
             DatabaseModule.CatatanAksiHistory("Bayar hutang " & LblNomorBayar.Text)
             Kondisiawal()
 
         Catch ex As Exception
-            transaction.Rollback()
+            If transaction IsNot Nothing Then
+                Try
+                    transaction.Rollback()
+                Catch rollEx As Exception
+                    ' Log rollback error jika perlu, jangan override exception handling
+                End Try
+            End If
 
             MessageBox.Show("Terjadi kesalahan: " & ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
         Finally
             Cursor = Cursors.Default
         End Try
     End Sub
-
 
     Private Sub BtnKeluar_Click(ByVal sender As Object, ByVal e As EventArgs) Handles BtnKeluar.Click
         Close()
@@ -540,7 +561,7 @@ Public Class FormBayarHutang
         End Select
     End Sub
 
-    Private Sub Button2_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles Button2.Click
+    Private Sub BBtnHide_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles BtnHide.Click
         PanelView.Visible = False
     End Sub
 End Class

@@ -62,7 +62,7 @@ Partial Class FormBayarHutang
         Me.Label2 = New System.Windows.Forms.Label()
         Me.PanelView = New System.Windows.Forms.Panel()
         Me.LblDetail = New System.Windows.Forms.Label()
-        Me.Button2 = New System.Windows.Forms.Button()
+        Me.BtnHide = New System.Windows.Forms.Button()
         Me.DgvDetail = New System.Windows.Forms.DataGridView()
         Me.Label1 = New System.Windows.Forms.Label()
         CType(Me.DgvData, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -192,7 +192,7 @@ Partial Class FormBayarHutang
         Me.Label12.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.Label12.Location = New System.Drawing.Point(37, 96)
         Me.Label12.Name = "Label12"
-        Me.Label12.Size = New System.Drawing.Size(63, 16)
+        Me.Label12.Size = New System.Drawing.Size(62, 16)
         Me.Label12.TabIndex = 84
         Me.Label12.Text = "Supliyer :"
         '
@@ -213,7 +213,7 @@ Partial Class FormBayarHutang
         Me.LblKodeSupliyer.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.LblKodeSupliyer.Location = New System.Drawing.Point(367, 96)
         Me.LblKodeSupliyer.Name = "LblKodeSupliyer"
-        Me.LblKodeSupliyer.Size = New System.Drawing.Size(40, 16)
+        Me.LblKodeSupliyer.Size = New System.Drawing.Size(39, 16)
         Me.LblKodeSupliyer.TabIndex = 85
         Me.LblKodeSupliyer.Text = "Kode"
         Me.LblKodeSupliyer.Visible = False
@@ -294,12 +294,13 @@ Partial Class FormBayarHutang
         Me.Label22.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.Label22.Location = New System.Drawing.Point(438, 69)
         Me.Label22.Name = "Label22"
-        Me.Label22.Size = New System.Drawing.Size(115, 16)
+        Me.Label22.Size = New System.Drawing.Size(114, 16)
         Me.Label22.TabIndex = 98
         Me.Label22.Text = "Total Hutang : Rp."
         '
         'TxtTotalHutang
         '
+        Me.TxtTotalHutang.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
         Me.TxtTotalHutang.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.TxtTotalHutang.Location = New System.Drawing.Point(694, 66)
         Me.TxtTotalHutang.Name = "TxtTotalHutang"
@@ -315,12 +316,13 @@ Partial Class FormBayarHutang
         Me.Label19.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.Label19.Location = New System.Drawing.Point(445, 96)
         Me.Label19.Name = "Label19"
-        Me.Label19.Size = New System.Drawing.Size(108, 16)
+        Me.Label19.Size = New System.Drawing.Size(107, 16)
         Me.Label19.TabIndex = 96
         Me.Label19.Text = "Total Bayar : Rp."
         '
         'TxtTotalBayar
         '
+        Me.TxtTotalBayar.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
         Me.TxtTotalBayar.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.TxtTotalBayar.Location = New System.Drawing.Point(694, 93)
         Me.TxtTotalBayar.Name = "TxtTotalBayar"
@@ -347,12 +349,13 @@ Partial Class FormBayarHutang
         Me.Label3.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.Label3.Location = New System.Drawing.Point(442, 124)
         Me.Label3.Name = "Label3"
-        Me.Label3.Size = New System.Drawing.Size(111, 16)
+        Me.Label3.Size = New System.Drawing.Size(110, 16)
         Me.Label3.TabIndex = 102
         Me.Label3.Text = "Sisa Hutang : Rp."
         '
         'TxtSisaHutang
         '
+        Me.TxtSisaHutang.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
         Me.TxtSisaHutang.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.TxtSisaHutang.Location = New System.Drawing.Point(694, 121)
         Me.TxtSisaHutang.Name = "TxtSisaHutang"
@@ -368,7 +371,7 @@ Partial Class FormBayarHutang
         Me.Label4.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.Label4.Location = New System.Drawing.Point(45, 69)
         Me.Label4.Name = "Label4"
-        Me.Label4.Size = New System.Drawing.Size(55, 16)
+        Me.Label4.Size = New System.Drawing.Size(54, 16)
         Me.Label4.TabIndex = 104
         Me.Label4.Text = "Nomor :"
         '
@@ -379,7 +382,7 @@ Partial Class FormBayarHutang
         Me.LblNomorBayar.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.LblNomorBayar.Location = New System.Drawing.Point(106, 69)
         Me.LblNomorBayar.Name = "LblNomorBayar"
-        Me.LblNomorBayar.Size = New System.Drawing.Size(40, 16)
+        Me.LblNomorBayar.Size = New System.Drawing.Size(39, 16)
         Me.LblNomorBayar.TabIndex = 105
         Me.LblNomorBayar.Text = "Kode"
         '
@@ -390,7 +393,7 @@ Partial Class FormBayarHutang
         Me.TxtRekening.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.TxtRekening.Location = New System.Drawing.Point(367, 124)
         Me.TxtRekening.Name = "TxtRekening"
-        Me.TxtRekening.Size = New System.Drawing.Size(40, 16)
+        Me.TxtRekening.Size = New System.Drawing.Size(39, 16)
         Me.TxtRekening.TabIndex = 107
         Me.TxtRekening.Text = "Kode"
         Me.TxtRekening.Visible = False
@@ -412,7 +415,7 @@ Partial Class FormBayarHutang
         Me.Label2.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.Label2.Location = New System.Drawing.Point(5, 124)
         Me.Label2.Name = "Label2"
-        Me.Label2.Size = New System.Drawing.Size(95, 16)
+        Me.Label2.Size = New System.Drawing.Size(94, 16)
         Me.Label2.TabIndex = 108
         Me.Label2.Text = "Sumber dana :"
         '
@@ -421,7 +424,7 @@ Partial Class FormBayarHutang
         Me.PanelView.Anchor = System.Windows.Forms.AnchorStyles.Top
         Me.PanelView.BackColor = System.Drawing.Color.Orange
         Me.PanelView.Controls.Add(Me.LblDetail)
-        Me.PanelView.Controls.Add(Me.Button2)
+        Me.PanelView.Controls.Add(Me.BtnHide)
         Me.PanelView.Controls.Add(Me.DgvDetail)
         Me.PanelView.Location = New System.Drawing.Point(191, 189)
         Me.PanelView.Name = "PanelView"
@@ -436,24 +439,24 @@ Partial Class FormBayarHutang
         Me.LblDetail.Font = New System.Drawing.Font("Century Gothic", 9.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.LblDetail.Location = New System.Drawing.Point(3, 6)
         Me.LblDetail.Name = "LblDetail"
-        Me.LblDetail.Size = New System.Drawing.Size(104, 16)
+        Me.LblDetail.Size = New System.Drawing.Size(103, 16)
         Me.LblDetail.TabIndex = 234
         Me.LblDetail.Text = "Sumber dana :"
         '
-        'Button2
+        'BtnHide
         '
-        Me.Button2.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.Button2.BackColor = System.Drawing.Color.Red
-        Me.Button2.FlatAppearance.BorderSize = 0
-        Me.Button2.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Gray
-        Me.Button2.FlatStyle = System.Windows.Forms.FlatStyle.Flat
-        Me.Button2.ForeColor = System.Drawing.Color.White
-        Me.Button2.Image = CType(resources.GetObject("Button2.Image"), System.Drawing.Image)
-        Me.Button2.Location = New System.Drawing.Point(727, 3)
-        Me.Button2.Name = "Button2"
-        Me.Button2.Size = New System.Drawing.Size(23, 23)
-        Me.Button2.TabIndex = 233
-        Me.Button2.UseVisualStyleBackColor = False
+        Me.BtnHide.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.BtnHide.BackColor = System.Drawing.Color.Red
+        Me.BtnHide.FlatAppearance.BorderSize = 0
+        Me.BtnHide.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Gray
+        Me.BtnHide.FlatStyle = System.Windows.Forms.FlatStyle.Flat
+        Me.BtnHide.ForeColor = System.Drawing.Color.White
+        Me.BtnHide.Image = CType(resources.GetObject("BtnHide.Image"), System.Drawing.Image)
+        Me.BtnHide.Location = New System.Drawing.Point(727, 3)
+        Me.BtnHide.Name = "BtnHide"
+        Me.BtnHide.Size = New System.Drawing.Size(23, 23)
+        Me.BtnHide.TabIndex = 233
+        Me.BtnHide.UseVisualStyleBackColor = False
         '
         'DgvDetail
         '
@@ -495,7 +498,7 @@ Partial Class FormBayarHutang
         Me.Label1.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.Label1.Location = New System.Drawing.Point(35, 43)
         Me.Label1.Name = "Label1"
-        Me.Label1.Size = New System.Drawing.Size(65, 16)
+        Me.Label1.Size = New System.Drawing.Size(64, 16)
         Me.Label1.TabIndex = 110
         Me.Label1.Text = "Tanggal :"
         '
@@ -569,7 +572,7 @@ Partial Class FormBayarHutang
     Friend WithEvents PanelView As System.Windows.Forms.Panel
     Friend WithEvents DgvDetail As System.Windows.Forms.DataGridView
     Friend WithEvents LblDetail As System.Windows.Forms.Label
-    Friend WithEvents Button2 As System.Windows.Forms.Button
+    Friend WithEvents BtnHide As System.Windows.Forms.Button
     Friend WithEvents Label1 As System.Windows.Forms.Label
     Friend WithEvents Check As System.Windows.Forms.DataGridViewCheckBoxColumn
     Friend WithEvents ID_PEMBELIAN As System.Windows.Forms.DataGridViewTextBoxColumn

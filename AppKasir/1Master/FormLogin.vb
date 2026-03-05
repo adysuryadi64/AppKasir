@@ -53,7 +53,6 @@ Public Class FormLogin
 
 
     Private Sub Form_Login_Load(ByVal sender As Object, ByVal e As EventArgs) Handles MyBase.Load
-        OpenConnection()
         Call Userakun()
         CmbUser.DroppedDown = True ' Memunculkan dropdown list
         CmbUser.Focus()
@@ -126,7 +125,7 @@ Public Class FormLogin
             With FormUtama
                 .SLogin.Text = "Programer"
                 .SLevel.Text = "Master"
-                .STanggal.Text = Microsoft.VisualBasic.Format(Now, "dd MMMM yyyy")
+                .STanggal.Text = Now.ToString("dd MMMM yyyy")
                 .SServer1.Text = "IP Address : " & ipAddress
                 .SServer.Text = " | Database : " & konfigurasi.Server & " \ " & konfigurasi.Database
             End With
@@ -151,7 +150,7 @@ Public Class FormLogin
                         With FormUtama
                             .SLogin.Text = If(Not Convert.IsDBNull(rd("NAMA_USER")), rd("NAMA_USER").ToString(), "")
                             .SLevel.Text = rd("LVL").ToString()
-                            .STanggal.Text = Microsoft.VisualBasic.Format(Now, "dd MMMM yyyy")
+                            .STanggal.Text = Now.ToString("dd MMMM yyyy")
                             .SServer1.Text = "IP Address : " & ipAddress
                             .SServer.Text = " | Database : " & konfigurasi.Server
                         End With
@@ -183,7 +182,7 @@ Public Class FormLogin
             yearRange = startYear.ToString()
         End If
 
-        FormUtama.SVersi.Text = My.Application.Info.Version.ToString() & " Copyright © " & yearRange
+        FormUtama.SVersi.Text = My.Application.Info.Version.ToString() & "    | Copyright © " & yearRange
     End Sub
 
 

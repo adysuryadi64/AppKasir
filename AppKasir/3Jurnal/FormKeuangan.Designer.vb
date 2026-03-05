@@ -22,6 +22,7 @@ Partial Class FormKeuangan
     'Do not modify it using the code editor.
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
+        Me.components = New System.ComponentModel.Container()
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(FormKeuangan))
         Me.BtnBayarBon = New System.Windows.Forms.Button()
         Me.BtnSetorBos = New System.Windows.Forms.Button()
@@ -68,6 +69,7 @@ Partial Class FormKeuangan
         Me.LblRinciPengeluaran = New System.Windows.Forms.Label()
         Me.BtnBiaya = New System.Windows.Forms.Button()
         Me.PanelUtility = New System.Windows.Forms.Panel()
+        Me.ToolTip1 = New System.Windows.Forms.ToolTip(Me.components)
         Me.PanelPemasukan.SuspendLayout()
         Me.PanelRinciKeuangan.SuspendLayout()
         CType(Me.DgvKeuangan, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -211,7 +213,7 @@ Partial Class FormKeuangan
         Me.PanelPemasukan.Font = New System.Drawing.Font("Century Gothic", 9.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.PanelPemasukan.Location = New System.Drawing.Point(12, 55)
         Me.PanelPemasukan.Name = "PanelPemasukan"
-        Me.PanelPemasukan.Size = New System.Drawing.Size(326, 527)
+        Me.PanelPemasukan.Size = New System.Drawing.Size(390, 527)
         Me.PanelPemasukan.TabIndex = 203
         '
         'BTNKeluar
@@ -249,9 +251,9 @@ Partial Class FormKeuangan
         'TxtDebetKeuanganNama
         '
         Me.TxtDebetKeuanganNama.Font = New System.Drawing.Font("Century Gothic", 9.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.TxtDebetKeuanganNama.Location = New System.Drawing.Point(251, 374)
+        Me.TxtDebetKeuanganNama.Location = New System.Drawing.Point(338, 411)
         Me.TxtDebetKeuanganNama.Name = "TxtDebetKeuanganNama"
-        Me.TxtDebetKeuanganNama.Size = New System.Drawing.Size(26, 23)
+        Me.TxtDebetKeuanganNama.Size = New System.Drawing.Size(39, 23)
         Me.TxtDebetKeuanganNama.TabIndex = 261
         Me.TxtDebetKeuanganNama.Visible = False
         '
@@ -268,9 +270,9 @@ Partial Class FormKeuangan
         'TxtKreditKeuanganNama
         '
         Me.TxtKreditKeuanganNama.Font = New System.Drawing.Font("Century Gothic", 9.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.TxtKreditKeuanganNama.Location = New System.Drawing.Point(251, 404)
+        Me.TxtKreditKeuanganNama.Location = New System.Drawing.Point(338, 440)
         Me.TxtKreditKeuanganNama.Name = "TxtKreditKeuanganNama"
-        Me.TxtKreditKeuanganNama.Size = New System.Drawing.Size(26, 23)
+        Me.TxtKreditKeuanganNama.Size = New System.Drawing.Size(39, 23)
         Me.TxtKreditKeuanganNama.TabIndex = 262
         Me.TxtKreditKeuanganNama.Visible = False
         '
@@ -287,9 +289,9 @@ Partial Class FormKeuangan
         'TxtBantuDKeuanganNama
         '
         Me.TxtBantuDKeuanganNama.Font = New System.Drawing.Font("Century Gothic", 9.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.TxtBantuDKeuanganNama.Location = New System.Drawing.Point(251, 436)
+        Me.TxtBantuDKeuanganNama.Location = New System.Drawing.Point(338, 469)
         Me.TxtBantuDKeuanganNama.Name = "TxtBantuDKeuanganNama"
-        Me.TxtBantuDKeuanganNama.Size = New System.Drawing.Size(26, 23)
+        Me.TxtBantuDKeuanganNama.Size = New System.Drawing.Size(39, 23)
         Me.TxtBantuDKeuanganNama.TabIndex = 263
         Me.TxtBantuDKeuanganNama.Visible = False
         '
@@ -306,9 +308,9 @@ Partial Class FormKeuangan
         'TxtBantuKKeuanganNama
         '
         Me.TxtBantuKKeuanganNama.Font = New System.Drawing.Font("Century Gothic", 9.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.TxtBantuKKeuanganNama.Location = New System.Drawing.Point(251, 467)
+        Me.TxtBantuKKeuanganNama.Location = New System.Drawing.Point(338, 498)
         Me.TxtBantuKKeuanganNama.Name = "TxtBantuKKeuanganNama"
-        Me.TxtBantuKKeuanganNama.Size = New System.Drawing.Size(26, 23)
+        Me.TxtBantuKKeuanganNama.Size = New System.Drawing.Size(39, 23)
         Me.TxtBantuKKeuanganNama.TabIndex = 264
         Me.TxtBantuKKeuanganNama.Visible = False
         '
@@ -319,24 +321,24 @@ Partial Class FormKeuangan
         Me.CmbBantuKKeuangan.FormattingEnabled = True
         Me.CmbBantuKKeuangan.Location = New System.Drawing.Point(70, 268)
         Me.CmbBantuKKeuangan.Name = "CmbBantuKKeuangan"
-        Me.CmbBantuKKeuangan.Size = New System.Drawing.Size(231, 25)
+        Me.CmbBantuKKeuangan.Size = New System.Drawing.Size(307, 25)
         Me.CmbBantuKKeuangan.TabIndex = 253
         '
         'TxtDebetKeuangan
         '
         Me.TxtDebetKeuangan.Font = New System.Drawing.Font("Century Gothic", 9.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.TxtDebetKeuangan.Location = New System.Drawing.Point(283, 375)
+        Me.TxtDebetKeuangan.Location = New System.Drawing.Point(338, 353)
         Me.TxtDebetKeuangan.Name = "TxtDebetKeuangan"
-        Me.TxtDebetKeuangan.Size = New System.Drawing.Size(18, 23)
+        Me.TxtDebetKeuangan.Size = New System.Drawing.Size(39, 23)
         Me.TxtDebetKeuangan.TabIndex = 259
         Me.TxtDebetKeuangan.Visible = False
         '
         'TxtKreditKeuangan
         '
         Me.TxtKreditKeuangan.Font = New System.Drawing.Font("Century Gothic", 9.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.TxtKreditKeuangan.Location = New System.Drawing.Point(283, 405)
+        Me.TxtKreditKeuangan.Location = New System.Drawing.Point(338, 382)
         Me.TxtKreditKeuangan.Name = "TxtKreditKeuangan"
-        Me.TxtKreditKeuangan.Size = New System.Drawing.Size(18, 23)
+        Me.TxtKreditKeuangan.Size = New System.Drawing.Size(39, 23)
         Me.TxtKreditKeuangan.TabIndex = 260
         Me.TxtKreditKeuangan.Visible = False
         '
@@ -347,7 +349,7 @@ Partial Class FormKeuangan
         Me.CmbBantuDKeuangan.FormattingEnabled = True
         Me.CmbBantuDKeuangan.Location = New System.Drawing.Point(70, 237)
         Me.CmbBantuDKeuangan.Name = "CmbBantuDKeuangan"
-        Me.CmbBantuDKeuangan.Size = New System.Drawing.Size(231, 25)
+        Me.CmbBantuDKeuangan.Size = New System.Drawing.Size(307, 25)
         Me.CmbBantuDKeuangan.TabIndex = 251
         '
         'CmbKreditKeuangan
@@ -357,7 +359,7 @@ Partial Class FormKeuangan
         Me.CmbKreditKeuangan.FormattingEnabled = True
         Me.CmbKreditKeuangan.Location = New System.Drawing.Point(70, 205)
         Me.CmbKreditKeuangan.Name = "CmbKreditKeuangan"
-        Me.CmbKreditKeuangan.Size = New System.Drawing.Size(231, 25)
+        Me.CmbKreditKeuangan.Size = New System.Drawing.Size(307, 25)
         Me.CmbKreditKeuangan.TabIndex = 249
         '
         'CmbDebetKeuangan
@@ -367,7 +369,7 @@ Partial Class FormKeuangan
         Me.CmbDebetKeuangan.FormattingEnabled = True
         Me.CmbDebetKeuangan.Location = New System.Drawing.Point(70, 175)
         Me.CmbDebetKeuangan.Name = "CmbDebetKeuangan"
-        Me.CmbDebetKeuangan.Size = New System.Drawing.Size(231, 25)
+        Me.CmbDebetKeuangan.Size = New System.Drawing.Size(307, 25)
         Me.CmbDebetKeuangan.TabIndex = 247
         '
         'Label45
@@ -463,18 +465,20 @@ Partial Class FormKeuangan
         'TxtBantuDKeuangan
         '
         Me.TxtBantuDKeuangan.Font = New System.Drawing.Font("Century Gothic", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.TxtBantuDKeuangan.Location = New System.Drawing.Point(307, 238)
+        Me.TxtBantuDKeuangan.Location = New System.Drawing.Point(338, 297)
         Me.TxtBantuDKeuangan.Name = "TxtBantuDKeuangan"
-        Me.TxtBantuDKeuangan.Size = New System.Drawing.Size(10, 22)
+        Me.TxtBantuDKeuangan.Size = New System.Drawing.Size(39, 22)
         Me.TxtBantuDKeuangan.TabIndex = 252
+        Me.TxtBantuDKeuangan.Visible = False
         '
         'TxtBantuKKeuangan
         '
         Me.TxtBantuKKeuangan.Font = New System.Drawing.Font("Century Gothic", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.TxtBantuKKeuangan.Location = New System.Drawing.Point(307, 269)
+        Me.TxtBantuKKeuangan.Location = New System.Drawing.Point(338, 325)
         Me.TxtBantuKKeuangan.Name = "TxtBantuKKeuangan"
-        Me.TxtBantuKKeuangan.Size = New System.Drawing.Size(10, 22)
+        Me.TxtBantuKKeuangan.Size = New System.Drawing.Size(39, 22)
         Me.TxtBantuKKeuangan.TabIndex = 254
+        Me.TxtBantuKKeuangan.Visible = False
         '
         'LblNominalKeuangan
         '
@@ -557,7 +561,7 @@ Partial Class FormKeuangan
         Me.TxtUraianKeuangan.Location = New System.Drawing.Point(70, 121)
         Me.TxtUraianKeuangan.Multiline = True
         Me.TxtUraianKeuangan.Name = "TxtUraianKeuangan"
-        Me.TxtUraianKeuangan.Size = New System.Drawing.Size(231, 48)
+        Me.TxtUraianKeuangan.Size = New System.Drawing.Size(307, 48)
         Me.TxtUraianKeuangan.TabIndex = 178
         '
         'Label69
@@ -579,9 +583,9 @@ Partial Class FormKeuangan
         Me.PanelRinciKeuangan.Controls.Add(Me.LblTotalNominal)
         Me.PanelRinciKeuangan.Controls.Add(Me.DgvKeuangan)
         Me.PanelRinciKeuangan.Controls.Add(Me.LblRinciPengeluaran)
-        Me.PanelRinciKeuangan.Location = New System.Drawing.Point(335, 55)
+        Me.PanelRinciKeuangan.Location = New System.Drawing.Point(408, 55)
         Me.PanelRinciKeuangan.Name = "PanelRinciKeuangan"
-        Me.PanelRinciKeuangan.Size = New System.Drawing.Size(808, 527)
+        Me.PanelRinciKeuangan.Size = New System.Drawing.Size(1317, 527)
         Me.PanelRinciKeuangan.TabIndex = 265
         '
         'LblTotalNominal
@@ -608,7 +612,7 @@ Partial Class FormKeuangan
         Me.DgvKeuangan.ReadOnly = True
         Me.DgvKeuangan.RowHeadersVisible = False
         Me.DgvKeuangan.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect
-        Me.DgvKeuangan.Size = New System.Drawing.Size(805, 488)
+        Me.DgvKeuangan.Size = New System.Drawing.Size(1314, 488)
         Me.DgvKeuangan.TabIndex = 205
         '
         'LblRinciPengeluaran
@@ -653,14 +657,14 @@ Partial Class FormKeuangan
         Me.PanelUtility.Dock = System.Windows.Forms.DockStyle.Top
         Me.PanelUtility.Location = New System.Drawing.Point(0, 0)
         Me.PanelUtility.Name = "PanelUtility"
-        Me.PanelUtility.Size = New System.Drawing.Size(1155, 40)
+        Me.PanelUtility.Size = New System.Drawing.Size(1737, 40)
         Me.PanelUtility.TabIndex = 267
         '
         'FormKeuangan
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(1155, 594)
+        Me.ClientSize = New System.Drawing.Size(1737, 594)
         Me.Controls.Add(Me.PanelUtility)
         Me.Controls.Add(Me.PanelRinciKeuangan)
         Me.Controls.Add(Me.PanelPemasukan)
@@ -725,4 +729,5 @@ Partial Class FormKeuangan
     Friend WithEvents BTNKeluar As System.Windows.Forms.Button
     Friend WithEvents BtnBiaya As System.Windows.Forms.Button
     Friend WithEvents PanelUtility As System.Windows.Forms.Panel
+    Friend WithEvents ToolTip1 As ToolTip
 End Class

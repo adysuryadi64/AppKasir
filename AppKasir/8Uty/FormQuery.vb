@@ -14,18 +14,19 @@ Public Class FormQuery
             If query.Trim().ToUpper().StartsWith("SELECT") Then
                 ' Gunakan DataAdapter untuk mengeksekusi query SELECT
                 Using cmd As New MySqlCommand(query, conn)
-                    Dim reader As MySqlDataReader = cmd.ExecuteReader()
+                    Using reader As MySqlDataReader = cmd.ExecuteReader()
 
-                    ' Tampilkan hasil dari query SELECT ke ListBox
-                    While reader.Read()
-                        ' Ambil semua kolom dari baris hasil dan gabungkan ke satu string
-                        Dim rowData As String = ""
-                        For i As Integer = 0 To reader.FieldCount - 1
-                            rowData &= reader.GetValue(i).ToString() & vbTab
-                        Next
-                        ' Tambahkan baris hasil ke ListBox
-                        ListBoxHasil.Items.Add(rowData.Trim())
-                    End While
+                        ' Tampilkan hasil dari query SELECT ke ListBox
+                        While reader.Read()
+                            ' Ambil semua kolom dari baris hasil dan gabungkan ke satu string
+                            Dim rowData As String = ""
+                            For i As Integer = 0 To reader.FieldCount - 1
+                                rowData &= reader.GetValue(i).ToString() & vbTab
+                            Next
+                            ' Tambahkan baris hasil ke ListBox
+                            ListBoxHasil.Items.Add(rowData.Trim())
+                        End While
+                    End Using
                 End Using
             Else
                 ' Tampilkan peringatan bahaya sebelum eksekusi query non-SELECT
@@ -105,7 +106,6 @@ Public Class FormQuery
 
 
 
-    ' Ketika pengguna mengklik nama tabel pada ListBoxTabel
     Private Sub ListBoxTabel_SelectedIndexChanged(ByVal sender As Object, ByVal e As EventArgs) Handles ListBoxTabel.SelectedIndexChanged
         ' Ambil nama tabel yang dipilih dari ListBoxTabel
         Dim selectedTable As String = ListBoxTabel.SelectedItem.ToString()
@@ -117,16 +117,29 @@ Public Class FormQuery
             ' Query untuk mendapatkan nama-nama kolom dari tabel yang dipilih
             Dim query As String = "SELECT COLUMN_NAME FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = @DatabaseSchema AND TABLE_NAME = @tableName;"
 
+            Dim konfigurasi As DatabaseConfiguration
+            ' Membaca konfigurasi dari file biner
+            If Not File.Exists(configFilePath) Then
+                MessageBox.Show("File konfigurasi tidak ditemukan!", "Kesalahan", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                Return
+            End If
+
+            Dim json As String = File.ReadAllText(configFilePath)
+            konfigurasi = JsonSerializer.Deserialize(Of DatabaseConfiguration)(json)
+
+            Dim database As String = konfigurasi.Database ' Ganti dengan nama database Anda
+
             ' Eksekusi query untuk mendapatkan nama kolom
             Using cmd As New MySqlCommand(query, conn)
-                cmd.Parameters.AddWithValue("@DatabaseSchema", "databasekl")
+                cmd.Parameters.AddWithValue("@DatabaseSchema", database)
                 cmd.Parameters.AddWithValue("@tableName", selectedTable)
-                Dim reader As MySqlDataReader = cmd.ExecuteReader()
 
-                ' Tambahkan setiap nama kolom ke ListBoxKolom
-                While reader.Read()
-                    ListBoxKolom.Items.Add(reader("COLUMN_NAME").ToString())
-                End While
+                Using reader As MySqlDataReader = cmd.ExecuteReader()
+                    ' Tambahkan setiap nama kolom ke ListBoxKolom
+                    While reader.Read()
+                        ListBoxKolom.Items.Add(reader("COLUMN_NAME").ToString())
+                    End While
+                End Using
             End Using
         Catch ex As Exception
             ' Tampilkan pesan error jika ada kesalahan

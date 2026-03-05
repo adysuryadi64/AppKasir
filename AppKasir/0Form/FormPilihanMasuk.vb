@@ -26,7 +26,7 @@
         If CmbMasuk.Items.Contains(pilihan) Then
             CmbMasuk.SelectedItem = pilihan
         Else
-            CmbMasuk.SelectedItem = "SELALU TANYA" ' Default
+            CmbMasuk.SelectedItem = "TOKO" ' Default
         End If
     End Sub
 

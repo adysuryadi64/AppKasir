@@ -60,9 +60,12 @@ Public Class FormLapBarang
             cmdHitungJumlahToko.Parameters.AddWithValue("@NAMA_BARANG", "%" & TxtCari.Text & "%")
             Using rdJumlahToko As MySqlDataReader = cmdHitungJumlahToko.ExecuteReader()
                 If rdJumlahToko.Read() AndAlso Not rdJumlahToko.IsDBNull(rdJumlahToko.GetOrdinal("RECORD")) Then
-                    LblRecordToko.Text = Microsoft.VisualBasic.Format(rdJumlahToko("RECORD"), "N0")
-                Else
-                    LblRecordToko.Text = "0"
+                    Dim jumlahToko As Integer
+                    If Integer.TryParse(rdJumlahToko("RECORD").ToString(), jumlahToko) Then
+                        LblRecordToko.Text = jumlahToko.ToString("N0")
+                    Else
+                        LblRecordToko.Text = "0"
+                    End If
                 End If
             End Using
         End Using
@@ -72,9 +75,12 @@ Public Class FormLapBarang
             cmdHitungJumlahGudang.Parameters.AddWithValue("@NAMA_BARANG", "%" & TxtCari.Text & "%")
             Using rdJumlahGudang As MySqlDataReader = cmdHitungJumlahGudang.ExecuteReader()
                 If rdJumlahGudang.Read() AndAlso Not rdJumlahGudang.IsDBNull(rdJumlahGudang.GetOrdinal("RECORD")) Then
-                    LblRecordGudang.Text = Microsoft.VisualBasic.Format(rdJumlahGudang("RECORD"), "N0")
-                Else
-                    LblRecordGudang.Text = "0"
+                    Dim jumlahGudang As Integer
+                    If Integer.TryParse(rdJumlahGudang("RECORD").ToString(), jumlahGudang) Then
+                        LblRecordGudang.Text = jumlahGudang.ToString("N0")
+                    Else
+                        LblRecordGudang.Text = "0"
+                    End If
                 End If
             End Using
         End Using
@@ -102,8 +108,8 @@ Public Class FormLapBarang
                     totalToko += stokToko
                 End While
 
-                LblStokToko.Text = Microsoft.VisualBasic.Format(totalToko, "N0")
-                LblRpToko.Text = Microsoft.VisualBasic.Format(totalRupiahToko, "N0")
+                LblStokToko.Text = totalToko.ToString("N0")
+                LblRpToko.Text = totalRupiahToko.ToString("N0")
             End Using
         End Using
 
@@ -125,15 +131,15 @@ Public Class FormLapBarang
                 End While
 
 
-                LblStokGudang.Text = Microsoft.VisualBasic.Format(totalGudang, "N0")
-                LblRpGudang.Text = Microsoft.VisualBasic.Format(totalRupiahGudang, "N0")
+                LblStokGudang.Text = totalGudang.ToString("N0")
+                LblRpGudang.Text = totalRupiahGudang.ToString("N0")
 
             End Using
         End Using
 
         ' Menghitung total kuantitas dan nilai rupiah
-        LblTotalQty.Text = Microsoft.VisualBasic.Format(Convert.ToDecimal(LblStokToko.Text) + Convert.ToDecimal(LblStokGudang.Text), "N0")
-        LblTotalRp.Text = Microsoft.VisualBasic.Format(Convert.ToDecimal(LblRpToko.Text) + Convert.ToDecimal(LblRpGudang.Text), "N0")
+        LblTotalQty.Text = Convert.ToDecimal(LblStokToko.Text) + Convert.ToDecimal(LblStokGudang.Text).ToString("N0")
+        LblTotalRp.Text = Convert.ToDecimal(LblRpToko.Text) + Convert.ToDecimal(LblRpGudang.Text).ToString("N0")
 
         Dim query As String = "SELECT ID_BARANG, NAMA_BARANG, NAMA_KATEGORI, HARGA_BELI, STOK_TOKO, (HARGA_BELI * (STOK_TOKO * SATUAN_ISI_STOK)) AS RP_TOKO, STOK_GUDANG, (HARGA_BELI * (STOK_GUDANG * SATUAN_ISI_STOK)) AS RP_GUDANG, SATUAN_STOK FROM tbl_barang WHERE NAMA_BARANG like @NAMA_BARANG ORDER BY NAMA_BARANG"
 
@@ -148,8 +154,8 @@ Public Class FormLapBarang
                     ReportViewer1.LocalReport.DataSources.Add(New ReportDataSource("DataSet1", dataset.Tables("StokBarang")))
 
                     ' Setel parameter untuk laporan RDLC
-                    Dim totalQtyParameter As New ReportParameter("totalqty", Microsoft.VisualBasic.Format(Convert.ToDecimal(LblTotalQty.Text), "N0"))
-                    Dim totalRupiahParameter As New ReportParameter("TotalRupiah", "Rp. " & Microsoft.VisualBasic.Format(Convert.ToDecimal(LblTotalRp.Text), "N0"))
+                    Dim totalQtyParameter As New ReportParameter("totalqty", Convert.ToDecimal(LblTotalQty.Text).ToString("N0"))
+                    Dim totalRupiahParameter As New ReportParameter("TotalRupiah", "Rp. " & Convert.ToDecimal(LblTotalRp.Text).ToString("N0"))
                     Dim perusahaanParameter As New ReportParameter("Perusahaan", NAMA_PERUSAHAAN)
                     Dim jenisLaporanParameter As New ReportParameter("JenisLaporan", "Laporan Stok Barang " & TxtCari.Text)
 
@@ -175,9 +181,12 @@ Public Class FormLapBarang
         Using cmdHitungJumlahToko As New MySqlCommand(queryJumlahToko, conn)
             Using rdJumlahToko As MySqlDataReader = cmdHitungJumlahToko.ExecuteReader()
                 If rdJumlahToko.Read() AndAlso Not rdJumlahToko.IsDBNull(rdJumlahToko.GetOrdinal("RECORD")) Then
-                    LblRecordToko.Text = Microsoft.VisualBasic.Format(rdJumlahToko("RECORD"), "N0")
-                Else
-                    LblRecordToko.Text = "0"
+                    Dim jumlahToko As Integer
+                    If Integer.TryParse(rdJumlahToko("RECORD").ToString(), jumlahToko) Then
+                        LblRecordToko.Text = jumlahToko.ToString("N0")
+                    Else
+                        LblRecordToko.Text = "0"
+                    End If
                 End If
             End Using
         End Using
@@ -186,9 +195,12 @@ Public Class FormLapBarang
         Using cmdHitungJumlahGudang As New MySqlCommand(queryJumlahGudang, conn)
             Using rdJumlahGudang As MySqlDataReader = cmdHitungJumlahGudang.ExecuteReader()
                 If rdJumlahGudang.Read() AndAlso Not rdJumlahGudang.IsDBNull(rdJumlahGudang.GetOrdinal("RECORD")) Then
-                    LblRecordGudang.Text = Microsoft.VisualBasic.Format(rdJumlahGudang("RECORD"), "N0")
-                Else
-                    LblRecordGudang.Text = "0"
+                    Dim jumlahGudang As Integer
+                    If Integer.TryParse(rdJumlahGudang("RECORD").ToString(), jumlahGudang) Then
+                        LblRecordGudang.Text = jumlahGudang.ToString("N0")
+                    Else
+                        LblRecordGudang.Text = "0"
+                    End If
                 End If
             End Using
         End Using
@@ -210,8 +222,8 @@ Public Class FormLapBarang
                     totalToko += stokToko
                 End While
 
-                LblStokToko.Text = Microsoft.VisualBasic.Format(totalToko, "N0")
-                LblRpToko.Text = Microsoft.VisualBasic.Format(totalRupiahToko, "N0")
+                LblStokToko.Text = totalToko.ToString("N0")
+                LblRpToko.Text = totalRupiahToko.ToString("N0")
             End Using
         End Using
 
@@ -233,13 +245,13 @@ Public Class FormLapBarang
                 End While
 
 
-                LblStokGudang.Text = Microsoft.VisualBasic.Format(totalGudang, "N0")
-                LblRpGudang.Text = Microsoft.VisualBasic.Format(totalRupiahGudang, "N0")
+                LblStokGudang.Text = totalGudang.ToString("N0")
+                LblRpGudang.Text = totalRupiahGudang.ToString("N0")
             End Using
         End Using
 
-        LblTotalQty.Text = Microsoft.VisualBasic.Format(Convert.ToDecimal(LblStokToko.Text) + Convert.ToDecimal(LblStokGudang.Text), "N0")
-        LblTotalRp.Text = Microsoft.VisualBasic.Format(Convert.ToDecimal(LblRpToko.Text) + Convert.ToDecimal(LblRpGudang.Text), "N0")
+        LblTotalQty.Text = Convert.ToDecimal(LblStokToko.Text) + Convert.ToDecimal(LblStokGudang.Text).ToString("N0")
+        LblTotalRp.Text = Convert.ToDecimal(LblRpToko.Text) + Convert.ToDecimal(LblRpGudang.Text).ToString("N0")
 
 
 
@@ -256,8 +268,8 @@ Public Class FormLapBarang
                     ReportViewer1.LocalReport.DataSources.Add(New ReportDataSource("DataSet1", dataset.Tables("StokBarang")))
 
                     ' Setel parameter untuk laporan RDLC
-                    Dim totalQtyParameter As New ReportParameter("totalqty", Microsoft.VisualBasic.Format(Convert.ToDecimal(LblTotalQty.Text), "N0"))
-                    Dim totalRupiahParameter As New ReportParameter("TotalRupiah", "Rp. " & Microsoft.VisualBasic.Format(Convert.ToDecimal(LblTotalRp.Text), "N0"))
+                    Dim totalQtyParameter As New ReportParameter("totalqty", Convert.ToDecimal(LblTotalQty.Text).ToString("N0"))
+                    Dim totalRupiahParameter As New ReportParameter("TotalRupiah", "Rp. " & Convert.ToDecimal(LblTotalRp.Text).ToString("N0"))
                     Dim perusahaanParameter As New ReportParameter("Perusahaan", NAMA_PERUSAHAAN)
                     Dim jenisLaporanParameter As New ReportParameter("JenisLaporan", "Laporan Stok Barang Kosong")
 
@@ -283,9 +295,13 @@ Public Class FormLapBarang
         Using cmdHitungJumlahToko As New MySqlCommand(queryJumlahToko, conn)
             Using rdJumlahToko As MySqlDataReader = cmdHitungJumlahToko.ExecuteReader()
                 If rdJumlahToko.Read() AndAlso Not rdJumlahToko.IsDBNull(rdJumlahToko.GetOrdinal("RECORD")) Then
-                    LblRecordToko.Text = Microsoft.VisualBasic.Format(rdJumlahToko("RECORD"), "N0")
-                Else
-                    LblRecordToko.Text = "0"
+                    Dim jumlahToko As Integer
+                    If Integer.TryParse(rdJumlahToko("RECORD").ToString(), jumlahToko) Then
+                        LblRecordToko.Text = jumlahToko.ToString("N0")
+                    Else
+                        LblRecordToko.Text = "0"
+                    End If
+
                 End If
             End Using
         End Using
@@ -294,9 +310,13 @@ Public Class FormLapBarang
         Using cmdHitungJumlahGudang As New MySqlCommand(queryJumlahGudang, conn)
             Using rdJumlahGudang As MySqlDataReader = cmdHitungJumlahGudang.ExecuteReader()
                 If rdJumlahGudang.Read() AndAlso Not rdJumlahGudang.IsDBNull(rdJumlahGudang.GetOrdinal("RECORD")) Then
-                    LblRecordGudang.Text = Microsoft.VisualBasic.Format(rdJumlahGudang("RECORD"), "N0")
-                Else
-                    LblRecordGudang.Text = "0"
+                    Dim jumlahGudang As Integer
+                    If Integer.TryParse(rdJumlahGudang("RECORD").ToString(), jumlahGudang) Then
+                        LblRecordGudang.Text = jumlahGudang.ToString("N0")
+                    Else
+                        LblRecordGudang.Text = "0"
+                    End If
+
                 End If
             End Using
         End Using
@@ -318,8 +338,8 @@ Public Class FormLapBarang
                     totalToko += stokToko
                 End While
 
-                LblStokToko.Text = Microsoft.VisualBasic.Format(totalToko, "N0")
-                LblRpToko.Text = Microsoft.VisualBasic.Format(totalRupiahToko, "N0")
+                LblStokToko.Text = totalToko.ToString("N0")
+                LblRpToko.Text = totalRupiahToko.ToString("N0")
             End Using
         End Using
 
@@ -341,13 +361,13 @@ Public Class FormLapBarang
                 End While
 
 
-                LblStokGudang.Text = Microsoft.VisualBasic.Format(totalGudang, "N0")
-                LblRpGudang.Text = Microsoft.VisualBasic.Format(totalRupiahGudang, "N0")
+                LblStokGudang.Text = totalGudang.ToString("N0")
+                LblRpGudang.Text = totalRupiahGudang.ToString("N0")
             End Using
         End Using
 
-        LblTotalQty.Text = Microsoft.VisualBasic.Format(Convert.ToDecimal(LblStokToko.Text) + Convert.ToDecimal(LblStokGudang.Text), "N0")
-        LblTotalRp.Text = Microsoft.VisualBasic.Format(Convert.ToDecimal(LblRpToko.Text) + Convert.ToDecimal(LblRpGudang.Text), "N0")
+        LblTotalQty.Text = Convert.ToDecimal(LblStokToko.Text) + Convert.ToDecimal(LblStokGudang.Text).ToString("N0")
+        LblTotalRp.Text = Convert.ToDecimal(LblRpToko.Text) + Convert.ToDecimal(LblRpGudang.Text).ToString("N0")
 
 
         Dim query As String = "SELECT ID_BARANG, NAMA_BARANG, NAMA_KATEGORI, HARGA_BELI, STOK_TOKO, (HARGA_BELI * (STOK_TOKO * SATUAN_ISI_STOK)) AS RP_TOKO, STOK_GUDANG, (HARGA_BELI * (STOK_GUDANG * SATUAN_ISI_STOK)) AS RP_GUDANG, SATUAN_STOK FROM tbl_barang WHERE STOK_TOKO > 0 OR STOK_GUDANG > 0 ORDER BY NAMA_BARANG"
@@ -362,8 +382,8 @@ Public Class FormLapBarang
                     ReportViewer1.LocalReport.DataSources.Add(New ReportDataSource("DataSet1", dataset.Tables("StokBarang")))
 
                     ' Setel parameter untuk laporan RDLC
-                    Dim totalQtyParameter As New ReportParameter("totalqty", Microsoft.VisualBasic.Format(Convert.ToDecimal(LblTotalQty.Text), "N0"))
-                    Dim totalRupiahParameter As New ReportParameter("TotalRupiah", "Rp. " & Microsoft.VisualBasic.Format(Convert.ToDecimal(LblTotalRp.Text), "N0"))
+                    Dim totalQtyParameter As New ReportParameter("totalqty", Convert.ToDecimal(LblTotalQty.Text).ToString("N0"))
+                    Dim totalRupiahParameter As New ReportParameter("TotalRupiah", "Rp. " & Convert.ToDecimal(LblTotalRp.Text).ToString("N0"))
                     Dim perusahaanParameter As New ReportParameter("Perusahaan", NAMA_PERUSAHAAN)
                     Dim jenisLaporanParameter As New ReportParameter("JenisLaporan", "Laporan Stok Barang Tidak Kosong")
 
@@ -390,9 +410,13 @@ Public Class FormLapBarang
         Using cmdHitungJumlahToko As New MySqlCommand(queryJumlahToko, conn)
             Using rdJumlahToko As MySqlDataReader = cmdHitungJumlahToko.ExecuteReader()
                 If rdJumlahToko.Read() AndAlso Not rdJumlahToko.IsDBNull(rdJumlahToko.GetOrdinal("RECORD")) Then
-                    LblRecordToko.Text = Microsoft.VisualBasic.Format(rdJumlahToko("RECORD"), "N0")
-                Else
-                    LblRecordToko.Text = "0"
+                    Dim jumlahToko As Integer
+                    If Integer.TryParse(rdJumlahToko("RECORD").ToString(), jumlahToko) Then
+                        LblRecordToko.Text = jumlahToko.ToString("N0")
+                    Else
+                        LblRecordToko.Text = "0"
+                    End If
+
                 End If
             End Using
         End Using
@@ -401,9 +425,12 @@ Public Class FormLapBarang
         Using cmdHitungJumlahGudang As New MySqlCommand(queryJumlahGudang, conn)
             Using rdJumlahGudang As MySqlDataReader = cmdHitungJumlahGudang.ExecuteReader()
                 If rdJumlahGudang.Read() AndAlso Not rdJumlahGudang.IsDBNull(rdJumlahGudang.GetOrdinal("RECORD")) Then
-                    LblRecordGudang.Text = Microsoft.VisualBasic.Format(rdJumlahGudang("RECORD"), "N0")
-                Else
-                    LblRecordGudang.Text = "0"
+                    Dim jumlahGudang As Integer
+                    If Integer.TryParse(rdJumlahGudang("RECORD").ToString(), jumlahGudang) Then
+                        LblRecordGudang.Text = jumlahGudang.ToString("N0")
+                    Else
+                        LblRecordGudang.Text = "0"
+                    End If
                 End If
             End Using
         End Using
@@ -425,8 +452,8 @@ Public Class FormLapBarang
                     totalToko += stokToko
                 End While
 
-                LblStokToko.Text = Microsoft.VisualBasic.Format(totalToko, "N0")
-                LblRpToko.Text = Microsoft.VisualBasic.Format(totalRupiahToko, "N0")
+                LblStokToko.Text = totalToko.ToString("N0")
+                LblRpToko.Text = totalRupiahToko.ToString("N0")
             End Using
         End Using
 
@@ -448,13 +475,13 @@ Public Class FormLapBarang
                 End While
 
 
-                LblStokGudang.Text = Microsoft.VisualBasic.Format(totalGudang, "N0")
-                LblRpGudang.Text = Microsoft.VisualBasic.Format(totalRupiahGudang, "N0")
+                LblStokGudang.Text = totalGudang.ToString("N0")
+                LblRpGudang.Text = totalRupiahGudang.ToString("N0")
             End Using
         End Using
 
-        LblTotalQty.Text = Microsoft.VisualBasic.Format(Convert.ToDecimal(LblStokToko.Text) + Convert.ToDecimal(LblStokGudang.Text), "N0")
-        LblTotalRp.Text = Microsoft.VisualBasic.Format(Convert.ToDecimal(LblRpToko.Text) + Convert.ToDecimal(LblRpGudang.Text), "N0")
+        LblTotalQty.Text = Convert.ToDecimal(LblStokToko.Text) + Convert.ToDecimal(LblStokGudang.Text).ToString("N0")
+        LblTotalRp.Text = Convert.ToDecimal(LblRpToko.Text) + Convert.ToDecimal(LblRpGudang.Text).ToString("N0")
 
 
         Dim query As String = "SELECT ID_BARANG, NAMA_BARANG, NAMA_KATEGORI, HARGA_BELI, STOK_TOKO, (HARGA_BELI * (STOK_TOKO * SATUAN_ISI_STOK)) AS RP_TOKO, STOK_GUDANG, (HARGA_BELI * (STOK_GUDANG * SATUAN_ISI_STOK)) AS RP_GUDANG, SATUAN_STOK FROM tbl_barang WHERE STOK_TOKO < 0 OR STOK_GUDANG < 0 ORDER BY NAMA_BARANG"
@@ -469,8 +496,8 @@ Public Class FormLapBarang
                     ReportViewer1.LocalReport.DataSources.Add(New ReportDataSource("DataSet1", dataset.Tables("StokBarang")))
 
                     ' Setel parameter untuk laporan RDLC
-                    Dim totalQtyParameter As New ReportParameter("totalqty", Microsoft.VisualBasic.Format(Convert.ToDecimal(LblTotalQty.Text), "N0"))
-                    Dim totalRupiahParameter As New ReportParameter("TotalRupiah", "Rp. " & Microsoft.VisualBasic.Format(Convert.ToDecimal(LblTotalRp.Text), "N0"))
+                    Dim totalQtyParameter As New ReportParameter("totalqty", Convert.ToDecimal(LblTotalQty.Text).ToString("N0"))
+                    Dim totalRupiahParameter As New ReportParameter("TotalRupiah", "Rp. " & Convert.ToDecimal(LblTotalRp.Text).ToString("N0"))
                     Dim perusahaanParameter As New ReportParameter("Perusahaan", NAMA_PERUSAHAAN)
                     Dim jenisLaporanParameter As New ReportParameter("JenisLaporan", "Laporan Stok Barang Minus")
 

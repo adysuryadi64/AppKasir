@@ -21,10 +21,49 @@ Public Class FormCompany
         IsiComboBoxAkun()
         Ambildataperusahaan()
 
-        PBGantiLogo.Image = LoadImage("LOGO.PNG")
+
+        TampilkanGambarJikaBelum(PBNota, "LOGO.PNG")
+        TampilkanGambarJikaBelum(PBToko, "TOKO.JPG")
+        TampilkanGambarJikaBelum(PBGudang, "GUDANG.JPG")
 
         Me.Cursor = Cursors.Default
     End Sub
+
+
+    Private Sub TampilkanGambarJikaBelum(picBox As PictureBox, namaFile As String)
+        ' Jika PictureBox sudah memiliki gambar, tidak perlu memuat ulang
+        If picBox.Image IsNot Nothing Then Return
+
+        Dim path As String = IO.Path.Combine(Application.StartupPath, namaFile)
+
+        ' Periksa apakah file gambar ada
+        If Not IO.File.Exists(path) Then Return
+
+        Try
+            ' Baca semua byte sekaligus (File.ReadAllBytes otomatis menutup file)
+            Dim imageBytes As Byte() = IO.File.ReadAllBytes(path)
+
+            ' Buat gambar dari memory stream
+            Using ms As New IO.MemoryStream(imageBytes)
+                ' Buat salinan gambar yang benar-benar independen
+                Dim newImage As Image = Image.FromStream(ms)
+
+                ' Hapus gambar lama jika ada (sebagai langkah preventif)
+                If picBox.Image IsNot Nothing Then
+                    picBox.Image.Dispose()
+                End If
+
+                ' Set gambar baru ke PictureBox
+                picBox.Image = CType(newImage.Clone(), Image)
+            End Using
+
+        Catch ex As Exception
+            MessageBox.Show("Gagal memuat gambar: " & ex.Message, "Error",
+                      MessageBoxButtons.OK, MessageBoxIcon.Error)
+        End Try
+    End Sub
+
+
 
     Public Sub IsiComboBoxAkun()
         CmbRekBarang.Items.Clear()
@@ -130,6 +169,7 @@ Public Class FormCompany
         TxtPemilik.Text = PEMILIK_PERUSAHAAN
         txtfoter1.Text = FOOTER1
         txtfoter2.Text = FOOTER2
+        TxtFooter3.Text = FOOTER3
         TxtRekBarang.Text = KODE_REK_BARANG
         CmbRekBarang.Text = NAMA_REK_BARANG
         TxtLawanRekBarang.Text = LAWAN_KODE_REK_BARANG
@@ -217,7 +257,7 @@ Public Class FormCompany
                     If dataCount > 0 Then
                         ' Jika data perusahaan sudah ada, lakukan proses edit data
                         Dim query As String = "UPDATE TBL_PERUSAHAAN SET " &
-                                              "NAMA=@NAMA, ALAMAT=@ALAMAT, KOTA=@KOTA, HP=@HP, PEMILIK=@PEMILIK, FOOTER1=@FOOTER1, FOOTER2=@FOOTER2, " &
+                                              "NAMA=@NAMA, ALAMAT=@ALAMAT, KOTA=@KOTA, HP=@HP, PEMILIK=@PEMILIK, FOOTER1=@FOOTER1, FOOTER2=@FOOTER2, FOOTER3=@FOOTER3," &
                                               "NAMA_REK_BARANG=@NAMA_REK_BARANG, KODE_REK_BARANG=@KODE_REK_BARANG, LAWAN_NAMA_REK_BARANG=@LAWAN_NAMA_REK_BARANG, " &
                                               "LAWAN_KODE_REK_BARANG=@LAWAN_KODE_REK_BARANG, NAMA_REK_BELI_TOKO=@NAMA_REK_BELI_TOKO, KODE_REK_BELI_TOKO=@KODE_REK_BELI_TOKO, " &
                                               "NAMA_REK_BELI_GUDANG=@NAMA_REK_BELI_GUDANG, KODE_REK_BELI_GUDANG=@KODE_REK_BELI_GUDANG, NAMA_REK_JUAL_TOKO=@NAMA_REK_JUAL_TOKO, " &
@@ -234,6 +274,7 @@ Public Class FormCompany
                             cmd.Parameters.AddWithValue("@PEMILIK", TxtPemilik.Text.ToUpper())
                             cmd.Parameters.AddWithValue("@FOOTER1", CultureInfo.CurrentCulture.TextInfo.ToTitleCase(txtfoter1.Text.ToLower()))
                             cmd.Parameters.AddWithValue("@FOOTER2", CultureInfo.CurrentCulture.TextInfo.ToTitleCase(txtfoter2.Text.ToLower()))
+                            cmd.Parameters.AddWithValue("@FOOTER3", CultureInfo.CurrentCulture.TextInfo.ToTitleCase(TxtFooter3.Text.ToLower()))
                             cmd.Parameters.AddWithValue("@NAMA_REK_BARANG", CmbRekBarang.Text)
                             cmd.Parameters.AddWithValue("@KODE_REK_BARANG", TxtRekBarang.Text)
                             cmd.Parameters.AddWithValue("@LAWAN_NAMA_REK_BARANG", CmbLawanRekBarang.Text)
@@ -261,13 +302,13 @@ Public Class FormCompany
                         End Using
 
                     Else
-                        Dim query As String = "INSERT INTO tbl_perusahaan (KODE, NAMA, ALAMAT, KOTA, HP, PEMILIK, FOOTER1, FOOTER2, " &
+                        Dim query As String = "INSERT INTO tbl_perusahaan (KODE, NAMA, ALAMAT, KOTA, HP, PEMILIK, FOOTER1, FOOTER2, FOOTER3, " &
                        "NAMA_REK_BARANG, KODE_REK_BARANG, LAWAN_NAMA_REK_BARANG, LAWAN_KODE_REK_BARANG, " &
                        "NAMA_REK_BELI_TOKO, KODE_REK_BELI_TOKO, NAMA_REK_BELI_GUDANG, KODE_REK_BELI_GUDANG, " &
                        "NAMA_REK_JUAL_TOKO, KODE_REK_JUAL_TOKO, NAMA_REK_JUAL_GUDANG, KODE_REK_JUAL_GUDANG, " &
                        "NAMA_REK_HUTANG_BELI, KODE_REK_HUTANG_BELI, NAMA_REK_PIUTANG_JUAL, KODE_REK_PIUTANG_JUAL, " &
                        "SYSTEM_TUTUP_BULAN, TANGGAL_TUTUP_BULAN) " &
-                       "VALUES (@KODE, @NAMA, @ALAMAT, @KOTA, @HP, @PEMILIK, @FOOTER1, @FOOTER2, @NAMA_REK_BARANG, @KODE_REK_BARANG, " &
+                       "VALUES (@KODE, @NAMA, @ALAMAT, @KOTA, @HP, @PEMILIK, @FOOTER1, @FOOTER2, @FOOTER3, @NAMA_REK_BARANG, @KODE_REK_BARANG, " &
                        "@LAWAN_NAMA_REK_BARANG, @LAWAN_KODE_REK_BARANG, @NAMA_REK_BELI_TOKO, @KODE_REK_BELI_TOKO, " &
                        "@NAMA_REK_BELI_GUDANG, @KODE_REK_BELI_GUDANG, @NAMA_REK_JUAL_TOKO, @KODE_REK_JUAL_TOKO, " &
                        "@NAMA_REK_JUAL_GUDANG, @KODE_REK_JUAL_GUDANG, @NAMA_REK_HUTANG_BELI, @KODE_REK_HUTANG_BELI, " &
@@ -282,6 +323,7 @@ Public Class FormCompany
                             cmd.Parameters.AddWithValue("@PEMILIK", TxtPemilik.Text.ToUpper())
                             cmd.Parameters.AddWithValue("@FOOTER1", CultureInfo.CurrentCulture.TextInfo.ToTitleCase(txtfoter1.Text.ToLower()))
                             cmd.Parameters.AddWithValue("@FOOTER2", CultureInfo.CurrentCulture.TextInfo.ToTitleCase(txtfoter2.Text.ToLower()))
+                            cmd.Parameters.AddWithValue("@FOOTER3", CultureInfo.CurrentCulture.TextInfo.ToTitleCase(TxtFooter3.Text.ToLower()))
                             cmd.Parameters.AddWithValue("@NAMA_REK_BARANG", CmbRekBarang.Text)
                             cmd.Parameters.AddWithValue("@KODE_REK_BARANG", TxtRekBarang.Text)
                             cmd.Parameters.AddWithValue("@LAWAN_NAMA_REK_BARANG", CmbLawanRekBarang.Text)
@@ -351,6 +393,7 @@ Public Class FormCompany
         Txtkotatoko.Clear()
         txtfoter1.Clear()
         txtfoter2.Clear()
+        TxtFooter3.Clear()
     End Sub
 
 
@@ -409,34 +452,122 @@ Public Class FormCompany
         End If
     End Function
 
+    Private Sub BtnNota_Click(sender As Object, e As EventArgs) Handles BtnNota.Click
+        PilihDanTampilkanGambar(PBNota, "LOGO.PNG")
+    End Sub
 
-    Private Sub BTNGantiLogo_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles BTNGantiLogo.Click
-        ' Konfigurasi OpenFileDialog
-        OpenFileDialog1.Filter = "Image Files|*.jpg;*.jpeg;*.png;*.bmp;*.gif"
-        OpenFileDialog1.Title = "Pilih Gambar"
+    Private Sub BtnToko_Click(sender As Object, e As EventArgs) Handles BtnToko.Click
+        PilihDanTampilkanGambar(PBToko, "TOKO.JPG")
+    End Sub
 
-        ' Tampilkan OpenFileDialog dan periksa apakah pengguna memilih file
-        If OpenFileDialog1.ShowDialog() = DialogResult.OK Then
+    Private Sub BtnGudang_Click(sender As Object, e As EventArgs) Handles BtnGudang.Click
+        PilihDanTampilkanGambar(PBGudang, "GUDANG.JPG")
+    End Sub
+
+
+
+    Private Sub PilihDanTampilkanGambar(picBox As PictureBox, namaFileTujuan As String)
+        Using dlg As New OpenFileDialog With {
+        .Filter = "Image Files|*.jpg;*.jpeg;*.png;*.bmp;*.gif",
+        .Title = "Pilih Gambar",
+        .RestoreDirectory = True
+    }
+            If dlg.ShowDialog() <> DialogResult.OK Then Return
+
             Try
-                ' Tentukan path tujuan (folder yang sama dengan executable) dan nama file baru
-                Dim destinationPath As String = Path.Combine(Application.StartupPath, "LOGO.PNG")
+                ' 1. Optimasi pembebasan gambar lama
+                DisposeImage(picBox.Image)
+                picBox.Image = Nothing
 
-                ' Salin file ke lokasi tujuan dengan nama baru
-                File.Copy(OpenFileDialog1.FileName, destinationPath, True)
+                ' 2. Salin file dengan optimasi
+                Dim tujuan As String = Path.Combine(Application.StartupPath, namaFileTujuan)
+                File.Copy(dlg.FileName, tujuan, True)
 
-                ' Tampilkan gambar yang telah disalin di PictureBox
-                Using fs As New FileStream(destinationPath, FileMode.Open, FileAccess.Read)
-                    PBGantiLogo.Image = Image.FromStream(fs)
-                End Using
+                ' 3. Load gambar dengan cara lebih efisien
+                picBox.Image = LoadImageWithoutLocking(dlg.FileName)
 
-                MessageBox.Show("Gambar berhasil disalin dan diubah namanya menjadi LOGO.PNG!", "Sukses", MessageBoxButtons.OK, MessageBoxIcon.Information)
+                ' 4. Perbarui background dengan optimasi
+                Dim lokasi As String = FormUtama.SLokasi.Text
+                Dim bgImage As String = If(lokasi = "TOKO", "Toko.jpg", "Gudang.jpg")
+                GantiBackground(bgImage, lokasi)
+
+                MessageBox.Show("Gambar berhasil diperbarui!", "Sukses",
+                         MessageBoxButtons.OK, MessageBoxIcon.Information)
+
+            Catch ex As IOException When ex.HResult = &H80070020 ' File sedang digunakan
+                MessageBox.Show("File sedang digunakan oleh proses lain.", "Error",
+                         MessageBoxButtons.OK, MessageBoxIcon.Error)
             Catch ex As Exception
-                MessageBox.Show("Terjadi kesalahan: " & ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                MessageBox.Show($"Terjadi kesalahan: {ex.Message}", "Error",
+                         MessageBoxButtons.OK, MessageBoxIcon.Error)
+            End Try
+        End Using
+    End Sub
+
+    Private Function LoadImageWithoutLocking(filePath As String) As Image
+        ' Menggunakan FileStream dengan buffering optimal
+        Using fs As New FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.Read, 4096, FileOptions.SequentialScan)
+            Dim buffer As Byte() = New Byte(fs.Length - 1) {}
+            fs.Read(buffer, 0, buffer.Length)
+
+            ' Membuat MemoryStream dari buffer
+            Using ms As New MemoryStream(buffer)
+                ' Membuat salinan independen
+                Return New Bitmap(ms)
+            End Using
+        End Using
+    End Function
+
+    Private Sub GantiBackground(bgImage As String, lokasi As String)
+        Try
+            Dim fullPath As String = Path.Combine(Application.StartupPath, bgImage)
+
+            If Not File.Exists(fullPath) Then
+                MessageBox.Show($"Gambar latar '{bgImage}' tidak ditemukan.", "Perhatian",
+                            MessageBoxButtons.OK, MessageBoxIcon.Warning)
+                Return
+            End If
+
+            ' Load gambar ke dalam memory tanpa mengunci file
+            Dim newBg As Image
+            Using fs As New FileStream(fullPath, FileMode.Open, FileAccess.Read, FileShare.Read)
+                newBg = Image.FromStream(fs)
+            End Using
+
+            ' Aman dari thread manapun
+            If FormUtama.IsHandleCreated Then
+                If FormUtama.InvokeRequired Then
+                    FormUtama.Invoke(Sub()
+                                         FormUtama.BackgroundImage?.Dispose()
+                                         FormUtama.BackgroundImage = newBg
+                                     End Sub)
+                Else
+                    FormUtama.BackgroundImage?.Dispose()
+                    FormUtama.BackgroundImage = newBg
+                End If
+            End If
+
+        Catch ex As Exception
+            MessageBox.Show("Gagal memperbarui latar belakang: " & ex.Message, "Error",
+                        MessageBoxButtons.OK, MessageBoxIcon.Error)
+        End Try
+    End Sub
+
+
+    Private Sub DisposeImage(img As Image)
+        If img IsNot Nothing Then
+            Try
+                img.Dispose()
+            Catch
+                ' Ignore disposal errors
             End Try
         End If
     End Sub
 
+
     Private Sub BtnClose_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles BtnClose.Click
         Me.Close()
     End Sub
+
+
 End Class

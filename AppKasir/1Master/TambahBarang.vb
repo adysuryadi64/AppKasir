@@ -77,6 +77,8 @@
 
             Kondisiawal()
             ResetIsi()
+            ' Fokus ke txtNama
+            TxtNama.Focus()
 
         ElseIf LblUtama.Text = "E D I T   B A R A N G" Then
             Me.Size = New Size(1143, 619)
@@ -90,6 +92,8 @@
             BtnBaru.Visible = False
             PanelInfoRubahHarga.Visible = False
             Hitunghargasebelumedit()
+            ' Fokus ke txtNama
+            TxtNama.Focus()
 
 
         ElseIf LblUtama.Text = "EDIT HARGA JUAL DARI PEMBELIAN" Then
@@ -113,6 +117,7 @@
 
         Me.Cursor = Cursors.Default
     End Sub
+
 
     Public Sub Kondisiawal()
         TxtKode.Enabled = False
@@ -249,6 +254,7 @@
         Dim kodeSupliyer As String = String.Empty
         Dim namaSupliyer As String = String.Empty
         Dim hargaBeli As Decimal = 0D
+        Dim hargabeliterakhir As Decimal = 0D
         Dim satuanUmumKecil As String = String.Empty
         Dim satuanUmumSedang As String = String.Empty
         Dim satuanUmumBesar As String = String.Empty
@@ -272,7 +278,7 @@
 
         ' SQL Query
         Dim sql As String = "SELECT NAMA_BARANG, KODE_KATEGORI, NAMA_KATEGORI, KODE_SUPLIYER, " &
-                            "NAMA_SUPLIYER, HARGA_BELI, SATUAN_UMUM_KECIL, SATUAN_UMUM_SEDANG, SATUAN_UMUM_BESAR, " &
+                            "NAMA_SUPLIYER, HARGA_BELI, HARGA_BELI_TERAKHIR, SATUAN_UMUM_KECIL, SATUAN_UMUM_SEDANG, SATUAN_UMUM_BESAR, " &
                             "ISI_UMUM_KECIL, ISI_UMUM_SEDANG, ISI_UMUM_BESAR, HARGA_JUAL_UMUM_KECIL, " &
                             "HARGA_JUAL_UMUM_SEDANG, HARGA_JUAL_UMUM_BESAR, SATUAN_PARTAI_KECIL, " &
                             "SATUAN_PARTAI_SEDANG, SATUAN_PARTAI_BESAR, ISI_PARTAI_KECIL, ISI_PARTAI_SEDANG, " &
@@ -292,6 +298,7 @@
                     kodeSupliyer = rd("KODE_SUPLIYER").ToString()
                     namaSupliyer = rd("NAMA_SUPLIYER").ToString()
                     hargaBeli = If(rd("HARGA_BELI") IsNot DBNull.Value, Decimal.Parse(rd("HARGA_BELI").ToString()), 0D)
+                    hargabeliterakhir = If(rd("HARGA_BELI_TERAKHIR") IsNot DBNull.Value, Decimal.Parse(rd("HARGA_BELI_TERAKHIR").ToString()), 0D)
                     satuanUmumKecil = rd("SATUAN_UMUM_KECIL").ToString()
                     satuanUmumSedang = rd("SATUAN_UMUM_SEDANG").ToString()
                     satuanUmumBesar = rd("SATUAN_UMUM_BESAR").ToString()
@@ -323,6 +330,7 @@
         CmbSupliyer.Text = namaSupliyer
         TxtKodeSupliyer.Text = kodeSupliyer
         TxtHrgBeli.Text = hargaBeli.ToString("0.##")
+        TxtHargaBeliTerakhir.Text = hargabeliterakhir.ToString("0.##")
         CmbSatUmumKecil.Text = satuanUmumKecil
         CmbSatUmumSedang.Text = satuanUmumSedang
         CmbSatUmumBesar.Text = satuanUmumBesar
@@ -959,7 +967,8 @@
 
         ' Mengambil nilai harga beli dan validasi
         If Decimal.TryParse(TxtHrgBeli.Text, hargaBeli) AndAlso hargaBeli > 0 Then
-            LblHargaBeli.Text = "Rp. " & FormatNumber(hargaBeli, 0)
+            ' Format dengan pemisah ribuan dan maksimal 2 angka desimal jika perlu
+            LblHargaBeli.Text = "Rp. " & hargaBeli.ToString("#,0.##", cultureIndonesia)
         Else
             LblHargaBeli.Text = "Rp. 0"
             hargaBeli = 0D
@@ -968,6 +977,7 @@
         ' Menghitung harga beli untuk setiap jenis
         UpdateHargaBeli(hargaBeli)
     End Sub
+
 
 
     'Private Sub DisableControls()
@@ -1015,9 +1025,10 @@
             hargaBeliterakhir = 0D
         End If
 
-        ' Menampilkan harga beli dalam format Rupiah
-        LblHargaBeliTerakhir.Text = "Rp. " & FormatNumber(hargaBeliterakhir, 0)
+        ' Format dengan maksimal 2 angka di belakang koma (tanpa 0 tambahan)
+        LblHargaBeliTerakhir.Text = "Rp. " & hargaBeliterakhir.ToString("#,0.##", cultureIndonesia)
     End Sub
+
 
     Private Sub CmbSatUmumKecil_SelectedIndexChanged(ByVal sender As Object, ByVal e As EventArgs) Handles CmbSatUmumKecil.SelectedIndexChanged
         If Not String.IsNullOrEmpty(CmbSatUmumKecil.Text) Then

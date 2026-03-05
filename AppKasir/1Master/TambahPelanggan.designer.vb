@@ -23,7 +23,7 @@ Partial Class TambahPelanggan
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(TambahPelanggan))
-        Dim DataGridViewCellStyle1 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
+        Dim DataGridViewCellStyle3 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
         Me.Label5 = New System.Windows.Forms.Label()
         Me.Label6 = New System.Windows.Forms.Label()
         Me.Label3 = New System.Windows.Forms.Label()
@@ -133,6 +133,7 @@ Partial Class TambahPelanggan
         '
         'TxtKode
         '
+        Me.TxtKode.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
         Me.TxtKode.Enabled = False
         Me.TxtKode.Font = New System.Drawing.Font("Century Gothic", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.TxtKode.Location = New System.Drawing.Point(124, 42)
@@ -143,6 +144,7 @@ Partial Class TambahPelanggan
         '
         'TxtNama
         '
+        Me.TxtNama.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
         Me.TxtNama.Font = New System.Drawing.Font("Century Gothic", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.TxtNama.Location = New System.Drawing.Point(124, 66)
         Me.TxtNama.Margin = New System.Windows.Forms.Padding(4, 3, 4, 3)
@@ -164,6 +166,7 @@ Partial Class TambahPelanggan
         '
         'TxtAlamat
         '
+        Me.TxtAlamat.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
         Me.TxtAlamat.Font = New System.Drawing.Font("Century Gothic", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.TxtAlamat.Location = New System.Drawing.Point(124, 90)
         Me.TxtAlamat.Margin = New System.Windows.Forms.Padding(4, 3, 4, 3)
@@ -174,6 +177,7 @@ Partial Class TambahPelanggan
         '
         'TxtTelp
         '
+        Me.TxtTelp.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
         Me.TxtTelp.Font = New System.Drawing.Font("Century Gothic", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.TxtTelp.Location = New System.Drawing.Point(124, 133)
         Me.TxtTelp.Margin = New System.Windows.Forms.Padding(4, 3, 4, 3)
@@ -183,6 +187,7 @@ Partial Class TambahPelanggan
         '
         'TxtAwal
         '
+        Me.TxtAwal.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
         Me.TxtAwal.Font = New System.Drawing.Font("Century Gothic", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.TxtAwal.Location = New System.Drawing.Point(512, 66)
         Me.TxtAwal.Margin = New System.Windows.Forms.Padding(4, 3, 4, 3)
@@ -356,19 +361,19 @@ Partial Class TambahPelanggan
         Me.Dgvdata.AllowUserToOrderColumns = True
         Me.Dgvdata.AllowUserToResizeRows = False
         Me.Dgvdata.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
-                    Or System.Windows.Forms.AnchorStyles.Left) _
-                    Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+            Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.Dgvdata.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.AllCells
         Me.Dgvdata.BackgroundColor = System.Drawing.Color.White
         Me.Dgvdata.CellBorderStyle = System.Windows.Forms.DataGridViewCellBorderStyle.Raised
-        DataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter
-        DataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Control
-        DataGridViewCellStyle1.Font = New System.Drawing.Font("Century Gothic", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        DataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.WindowText
-        DataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight
-        DataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText
-        DataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.[True]
-        Me.Dgvdata.ColumnHeadersDefaultCellStyle = DataGridViewCellStyle1
+        DataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter
+        DataGridViewCellStyle3.BackColor = System.Drawing.SystemColors.Control
+        DataGridViewCellStyle3.Font = New System.Drawing.Font("Century Gothic", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        DataGridViewCellStyle3.ForeColor = System.Drawing.SystemColors.WindowText
+        DataGridViewCellStyle3.SelectionBackColor = System.Drawing.SystemColors.Highlight
+        DataGridViewCellStyle3.SelectionForeColor = System.Drawing.SystemColors.HighlightText
+        DataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.[True]
+        Me.Dgvdata.ColumnHeadersDefaultCellStyle = DataGridViewCellStyle3
         Me.Dgvdata.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
         Me.Dgvdata.Location = New System.Drawing.Point(6, 189)
         Me.Dgvdata.Margin = New System.Windows.Forms.Padding(4, 3, 4, 3)
@@ -441,6 +446,7 @@ Partial Class TambahPelanggan
         '
         'TxtJangkaPiutang
         '
+        Me.TxtJangkaPiutang.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
         Me.TxtJangkaPiutang.Font = New System.Drawing.Font("Century Gothic", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.TxtJangkaPiutang.Location = New System.Drawing.Point(512, 42)
         Me.TxtJangkaPiutang.Margin = New System.Windows.Forms.Padding(4, 3, 4, 3)
@@ -477,7 +483,7 @@ Partial Class TambahPelanggan
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(8.0!, 17.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.BackColor = System.Drawing.Color.PaleGreen
+        Me.BackColor = System.Drawing.SystemColors.Control
         Me.ClientSize = New System.Drawing.Size(1158, 567)
         Me.Controls.Add(Me.Label12)
         Me.Controls.Add(Me.TxtJangkaPiutang)

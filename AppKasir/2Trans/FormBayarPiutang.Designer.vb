@@ -22,10 +22,10 @@ Partial Class FormBayarPiutang
     'Do not modify it using the code editor.
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
-        Dim DataGridViewCellStyle1 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
+        Dim DataGridViewCellStyle4 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(FormBayarPiutang))
-        Dim DataGridViewCellStyle2 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
-        Dim DataGridViewCellStyle3 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
+        Dim DataGridViewCellStyle5 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
+        Dim DataGridViewCellStyle6 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
         Me.Label2 = New System.Windows.Forms.Label()
         Me.TxtRekening = New System.Windows.Forms.Label()
         Me.CmbRekening = New System.Windows.Forms.ComboBox()
@@ -78,7 +78,7 @@ Partial Class FormBayarPiutang
         Me.Label2.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.Label2.Location = New System.Drawing.Point(18, 128)
         Me.Label2.Name = "Label2"
-        Me.Label2.Size = New System.Drawing.Size(98, 16)
+        Me.Label2.Size = New System.Drawing.Size(97, 16)
         Me.Label2.TabIndex = 130
         Me.Label2.Text = "Metode bayar :"
         '
@@ -89,7 +89,7 @@ Partial Class FormBayarPiutang
         Me.TxtRekening.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.TxtRekening.Location = New System.Drawing.Point(319, 128)
         Me.TxtRekening.Name = "TxtRekening"
-        Me.TxtRekening.Size = New System.Drawing.Size(40, 16)
+        Me.TxtRekening.Size = New System.Drawing.Size(39, 16)
         Me.TxtRekening.TabIndex = 129
         Me.TxtRekening.Text = "Kode"
         Me.TxtRekening.Visible = False
@@ -111,7 +111,7 @@ Partial Class FormBayarPiutang
         Me.LblNomorBayar.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.LblNomorBayar.Location = New System.Drawing.Point(126, 73)
         Me.LblNomorBayar.Name = "LblNomorBayar"
-        Me.LblNomorBayar.Size = New System.Drawing.Size(40, 16)
+        Me.LblNomorBayar.Size = New System.Drawing.Size(39, 16)
         Me.LblNomorBayar.TabIndex = 127
         Me.LblNomorBayar.Text = "Kode"
         '
@@ -122,7 +122,7 @@ Partial Class FormBayarPiutang
         Me.Label4.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.Label4.Location = New System.Drawing.Point(61, 73)
         Me.Label4.Name = "Label4"
-        Me.Label4.Size = New System.Drawing.Size(55, 16)
+        Me.Label4.Size = New System.Drawing.Size(54, 16)
         Me.Label4.TabIndex = 126
         Me.Label4.Text = "Nomor :"
         '
@@ -144,7 +144,7 @@ Partial Class FormBayarPiutang
         Me.Label3.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.Label3.Location = New System.Drawing.Point(439, 129)
         Me.Label3.Name = "Label3"
-        Me.Label3.Size = New System.Drawing.Size(113, 16)
+        Me.Label3.Size = New System.Drawing.Size(112, 16)
         Me.Label3.TabIndex = 124
         Me.Label3.Text = "Sisa Piutang : Rp."
         '
@@ -187,7 +187,7 @@ Partial Class FormBayarPiutang
         Me.Label22.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.Label22.Location = New System.Drawing.Point(435, 76)
         Me.Label22.Name = "Label22"
-        Me.Label22.Size = New System.Drawing.Size(117, 16)
+        Me.Label22.Size = New System.Drawing.Size(116, 16)
         Me.Label22.TabIndex = 120
         Me.Label22.Text = "Total Piutang : Rp."
         '
@@ -208,7 +208,7 @@ Partial Class FormBayarPiutang
         Me.Label19.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.Label19.Location = New System.Drawing.Point(444, 103)
         Me.Label19.Name = "Label19"
-        Me.Label19.Size = New System.Drawing.Size(108, 16)
+        Me.Label19.Size = New System.Drawing.Size(107, 16)
         Me.Label19.TabIndex = 118
         Me.Label19.Text = "Total Bayar : Rp."
         '
@@ -231,7 +231,6 @@ Partial Class FormBayarPiutang
         Me.DtpTanggal.Name = "DtpTanggal"
         Me.DtpTanggal.Size = New System.Drawing.Size(121, 22)
         Me.DtpTanggal.TabIndex = 114
-        Me.DtpTanggal.Visible = False
         '
         'DgvData
         '
@@ -243,14 +242,14 @@ Partial Class FormBayarPiutang
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.DgvData.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill
         Me.DgvData.BackgroundColor = System.Drawing.SystemColors.Control
-        DataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter
-        DataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Control
-        DataGridViewCellStyle1.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        DataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.WindowText
-        DataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Control
-        DataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText
-        DataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.[True]
-        Me.DgvData.ColumnHeadersDefaultCellStyle = DataGridViewCellStyle1
+        DataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter
+        DataGridViewCellStyle4.BackColor = System.Drawing.SystemColors.Control
+        DataGridViewCellStyle4.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        DataGridViewCellStyle4.ForeColor = System.Drawing.SystemColors.WindowText
+        DataGridViewCellStyle4.SelectionBackColor = System.Drawing.SystemColors.Control
+        DataGridViewCellStyle4.SelectionForeColor = System.Drawing.SystemColors.HighlightText
+        DataGridViewCellStyle4.WrapMode = System.Windows.Forms.DataGridViewTriState.[True]
+        Me.DgvData.ColumnHeadersDefaultCellStyle = DataGridViewCellStyle4
         Me.DgvData.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
         Me.DgvData.Columns.AddRange(New System.Windows.Forms.DataGridViewColumn() {Me.Check, Me.IDPEMBELIAN, Me.KODESUPLIYER, Me.NAMASUPLIYER, Me.Uraian, Me.TGLPEMBELIAN, Me.TOTALBELANJA, Me.DIBAYAR, Me.Retur, Me.NOMINALHUTANG, Me.TGLJATUHTEMPO, Me.Bayar, Me.View})
         Me.DgvData.EnableHeadersVisualStyles = False
@@ -339,7 +338,7 @@ Partial Class FormBayarPiutang
         Me.LblKodePelanggan.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.LblKodePelanggan.Location = New System.Drawing.Point(319, 99)
         Me.LblKodePelanggan.Name = "LblKodePelanggan"
-        Me.LblKodePelanggan.Size = New System.Drawing.Size(40, 16)
+        Me.LblKodePelanggan.Size = New System.Drawing.Size(39, 16)
         Me.LblKodePelanggan.TabIndex = 113
         Me.LblKodePelanggan.Text = "Kode"
         Me.LblKodePelanggan.Visible = False
@@ -351,7 +350,7 @@ Partial Class FormBayarPiutang
         Me.Label12.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.Label12.Location = New System.Drawing.Point(36, 99)
         Me.Label12.Name = "Label12"
-        Me.Label12.Size = New System.Drawing.Size(80, 16)
+        Me.Label12.Size = New System.Drawing.Size(79, 16)
         Me.Label12.TabIndex = 112
         Me.Label12.Text = "Pelanggan :"
         '
@@ -421,7 +420,7 @@ Partial Class FormBayarPiutang
         Me.Label1.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.Label1.Location = New System.Drawing.Point(51, 46)
         Me.Label1.Name = "Label1"
-        Me.Label1.Size = New System.Drawing.Size(65, 16)
+        Me.Label1.Size = New System.Drawing.Size(64, 16)
         Me.Label1.TabIndex = 131
         Me.Label1.Text = "Tanggal :"
         '
@@ -444,7 +443,7 @@ Partial Class FormBayarPiutang
         Me.LblDetail.Font = New System.Drawing.Font("Century Gothic", 9.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.LblDetail.Location = New System.Drawing.Point(3, 5)
         Me.LblDetail.Name = "LblDetail"
-        Me.LblDetail.Size = New System.Drawing.Size(104, 16)
+        Me.LblDetail.Size = New System.Drawing.Size(103, 16)
         Me.LblDetail.TabIndex = 234
         Me.LblDetail.Text = "Sumber dana :"
         '
@@ -472,23 +471,23 @@ Partial Class FormBayarPiutang
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.DgvDetail.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill
         Me.DgvDetail.BackgroundColor = System.Drawing.Color.White
-        DataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter
-        DataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Control
-        DataGridViewCellStyle2.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        DataGridViewCellStyle2.ForeColor = System.Drawing.SystemColors.WindowText
-        DataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Highlight
-        DataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HighlightText
-        DataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.[True]
-        Me.DgvDetail.ColumnHeadersDefaultCellStyle = DataGridViewCellStyle2
+        DataGridViewCellStyle5.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter
+        DataGridViewCellStyle5.BackColor = System.Drawing.SystemColors.Control
+        DataGridViewCellStyle5.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        DataGridViewCellStyle5.ForeColor = System.Drawing.SystemColors.WindowText
+        DataGridViewCellStyle5.SelectionBackColor = System.Drawing.SystemColors.Highlight
+        DataGridViewCellStyle5.SelectionForeColor = System.Drawing.SystemColors.HighlightText
+        DataGridViewCellStyle5.WrapMode = System.Windows.Forms.DataGridViewTriState.[True]
+        Me.DgvDetail.ColumnHeadersDefaultCellStyle = DataGridViewCellStyle5
         Me.DgvDetail.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
-        DataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft
-        DataGridViewCellStyle3.BackColor = System.Drawing.SystemColors.Window
-        DataGridViewCellStyle3.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        DataGridViewCellStyle3.ForeColor = System.Drawing.SystemColors.ControlText
-        DataGridViewCellStyle3.SelectionBackColor = System.Drawing.SystemColors.Highlight
-        DataGridViewCellStyle3.SelectionForeColor = System.Drawing.SystemColors.HighlightText
-        DataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.[False]
-        Me.DgvDetail.DefaultCellStyle = DataGridViewCellStyle3
+        DataGridViewCellStyle6.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft
+        DataGridViewCellStyle6.BackColor = System.Drawing.SystemColors.Window
+        DataGridViewCellStyle6.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        DataGridViewCellStyle6.ForeColor = System.Drawing.SystemColors.ControlText
+        DataGridViewCellStyle6.SelectionBackColor = System.Drawing.SystemColors.Highlight
+        DataGridViewCellStyle6.SelectionForeColor = System.Drawing.SystemColors.HighlightText
+        DataGridViewCellStyle6.WrapMode = System.Windows.Forms.DataGridViewTriState.[False]
+        Me.DgvDetail.DefaultCellStyle = DataGridViewCellStyle6
         Me.DgvDetail.Location = New System.Drawing.Point(3, 27)
         Me.DgvDetail.Name = "DgvDetail"
         Me.DgvDetail.RowHeadersVisible = False

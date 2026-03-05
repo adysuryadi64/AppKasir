@@ -22,12 +22,16 @@ Partial Class FormPerbaikanDatabase
     'Do not modify it using the code editor.
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
+        Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(FormPerbaikanDatabase))
         Me.BtnAnalyze = New System.Windows.Forms.Button()
         Me.ListBoxResults = New System.Windows.Forms.ListBox()
         Me.BtnCleanup = New System.Windows.Forms.Button()
         Me.BtnCheckTables = New System.Windows.Forms.Button()
         Me.BtnChecksumTables = New System.Windows.Forms.Button()
         Me.BtnDuplikat = New System.Windows.Forms.Button()
+        Me.BtnCetak = New System.Windows.Forms.Button()
+        Me.PrintPreviewDialog1 = New System.Windows.Forms.PrintPreviewDialog()
+        Me.BtnSimpanPDF = New System.Windows.Forms.Button()
         Me.SuspendLayout()
         '
         'BtnAnalyze
@@ -96,11 +100,45 @@ Partial Class FormPerbaikanDatabase
         Me.BtnDuplikat.Text = "Duplikat kode dan nama barang"
         Me.BtnDuplikat.UseVisualStyleBackColor = True
         '
+        'BtnCetak
+        '
+        Me.BtnCetak.AutoSize = True
+        Me.BtnCetak.Font = New System.Drawing.Font("Arial Narrow", 9.75!, System.Drawing.FontStyle.Bold)
+        Me.BtnCetak.Location = New System.Drawing.Point(768, 12)
+        Me.BtnCetak.Name = "BtnCetak"
+        Me.BtnCetak.Size = New System.Drawing.Size(58, 26)
+        Me.BtnCetak.TabIndex = 6
+        Me.BtnCetak.Text = "Cetak"
+        Me.BtnCetak.UseVisualStyleBackColor = True
+        '
+        'PrintPreviewDialog1
+        '
+        Me.PrintPreviewDialog1.AutoScrollMargin = New System.Drawing.Size(0, 0)
+        Me.PrintPreviewDialog1.AutoScrollMinSize = New System.Drawing.Size(0, 0)
+        Me.PrintPreviewDialog1.ClientSize = New System.Drawing.Size(400, 300)
+        Me.PrintPreviewDialog1.Enabled = True
+        Me.PrintPreviewDialog1.Icon = CType(resources.GetObject("PrintPreviewDialog1.Icon"), System.Drawing.Icon)
+        Me.PrintPreviewDialog1.Name = "PrintPreviewDialog1"
+        Me.PrintPreviewDialog1.Visible = False
+        '
+        'BtnSimpanPDF
+        '
+        Me.BtnSimpanPDF.AutoSize = True
+        Me.BtnSimpanPDF.Font = New System.Drawing.Font("Arial Narrow", 9.75!, System.Drawing.FontStyle.Bold)
+        Me.BtnSimpanPDF.Location = New System.Drawing.Point(832, 12)
+        Me.BtnSimpanPDF.Name = "BtnSimpanPDF"
+        Me.BtnSimpanPDF.Size = New System.Drawing.Size(68, 26)
+        Me.BtnSimpanPDF.TabIndex = 7
+        Me.BtnSimpanPDF.Text = "Cetak Pdf"
+        Me.BtnSimpanPDF.UseVisualStyleBackColor = True
+        '
         'FormPerbaikanDatabase
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(966, 560)
+        Me.Controls.Add(Me.BtnSimpanPDF)
+        Me.Controls.Add(Me.BtnCetak)
         Me.Controls.Add(Me.BtnDuplikat)
         Me.Controls.Add(Me.BtnChecksumTables)
         Me.Controls.Add(Me.BtnCheckTables)
@@ -123,4 +161,7 @@ Partial Class FormPerbaikanDatabase
     Friend WithEvents BtnCheckTables As Button
     Friend WithEvents BtnChecksumTables As Button
     Friend WithEvents BtnDuplikat As Button
+    Friend WithEvents BtnCetak As Button
+    Friend WithEvents PrintPreviewDialog1 As PrintPreviewDialog
+    Friend WithEvents BtnSimpanPDF As Button
 End Class

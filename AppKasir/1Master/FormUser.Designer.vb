@@ -59,7 +59,7 @@ Partial Class FormUser
         Me.CmbLevel.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
         Me.CmbLevel.Font = New System.Drawing.Font("Century Gothic", 9.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.CmbLevel.FormattingEnabled = True
-        Me.CmbLevel.Items.AddRange(New Object() {"Master", "Admin", "Kasir", "Gudang", "Owner"})
+        Me.CmbLevel.Items.AddRange(New Object() {"Owner", "Master", "Admin", "Kasir", "Gudang"})
         Me.CmbLevel.Location = New System.Drawing.Point(127, 68)
         Me.CmbLevel.Name = "CmbLevel"
         Me.CmbLevel.Size = New System.Drawing.Size(200, 24)
@@ -160,9 +160,8 @@ Partial Class FormUser
         '
         'DgvData
         '
-        Me.DgvData.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
-            Or System.Windows.Forms.AnchorStyles.Left) _
-            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.DgvData.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
+            Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
         Me.DgvData.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill
         Me.DgvData.BackgroundColor = System.Drawing.Color.White
         DataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter
@@ -363,7 +362,7 @@ Partial Class FormUser
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.BackColor = System.Drawing.SystemColors.GradientActiveCaption
+        Me.BackColor = System.Drawing.SystemColors.Control
         Me.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch
         Me.ClientSize = New System.Drawing.Size(973, 500)
         Me.Controls.Add(Me.PanelHeader)

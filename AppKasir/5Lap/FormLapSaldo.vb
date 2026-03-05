@@ -65,7 +65,7 @@ Public Class FormLapSaldo
             Tampildatablnthn()
             CmbBln.Enabled = True
             CmbThn.Enabled = True
-            CmbThn.Text = Microsoft.VisualBasic.Format(Now, "yyyy")
+            CmbThn.Text = Now.ToString("yyyy")
             CbTanggal.Checked = False
             CmbKasir.SelectedIndex = 0
             DtpTanggal.Enabled = False
@@ -91,54 +91,27 @@ Public Class FormLapSaldo
     Private angkabulan As Integer
 
     Private Sub Convertbulansetor()
-        Select Case CmbBln.Text
-            Case "Januari"
-                angkabulan = 1
-            Case "Februari"
-                angkabulan = 2
-            Case "Maret"
-                angkabulan = 3
-            Case "April"
-                angkabulan = 4
-            Case "Mei"
-                angkabulan = 5
-            Case "Juni"
-                angkabulan = 6
-            Case "Juli"
-                angkabulan = 7
-            Case "Agustus"
-                angkabulan = 8
-            Case "September"
-                angkabulan = 9
-            Case "Oktober"
-                angkabulan = 10
-            Case "November"
-                angkabulan = 11
-            Case "Desember"
-                angkabulan = 12
-        End Select
+        angkabulan = CmbBln.SelectedIndex + 1
     End Sub
 
     Public Sub Tampildatablnthn()
         CmbBln.Items.Clear()
         CmbThn.Items.Clear()
-        Dim i As Integer
-        For i = 2022 To Year(Now)
+
+        ' Tambah tahun dari 2022 sampai tahun sekarang
+        For i As Integer = 2022 To Year(Now)
             CmbThn.Items.Add(i)
         Next
-        CmbBln.Items.Add("Januari")
-        CmbBln.Items.Add("Februari")
-        CmbBln.Items.Add("Maret")
-        CmbBln.Items.Add("April")
-        CmbBln.Items.Add("Mei")
-        CmbBln.Items.Add("Juni")
-        CmbBln.Items.Add("Juli")
-        CmbBln.Items.Add("Agustus")
-        CmbBln.Items.Add("September")
-        CmbBln.Items.Add("Oktober")
-        CmbBln.Items.Add("November")
-        CmbBln.Items.Add("Desember")
+
+        ' Tambah nama-nama bulan
+        Dim namaBulan() As String = {
+        "Januari", "Februari", "Maret", "April", "Mei", "Juni",
+        "Juli", "Agustus", "September", "Oktober", "November", "Desember"
+    }
+
+        CmbBln.Items.AddRange(namaBulan)
     End Sub
+
 
     Public Sub TampilKasirBulan()
         CmbKasir.Items.Clear()
@@ -210,23 +183,161 @@ Public Class FormLapSaldo
             tanggalsaldoawal = tanggalAwal.AddDays(-1).AddSeconds(86399)
         End If
 
-        ExecuteQuery("Pembelian", "NOMOR_AKUN_K", {"Pembelian"}, kasir, tanggalAwal, tanggalAkhir)
-        ExecuteQuery("Penjualan", "NOMOR_AKUN_D", {"Penjualan"}, kasir, tanggalAwal, tanggalAkhir)
-        ExecuteQuery("Retur Pembelian", "NOMOR_AKUN_D", {"Retur Pembelian"}, kasir, tanggalAwal, tanggalAkhir)
-        ExecuteQuery("Retur Penjualan", "NOMOR_AKUN_K", {"Retur Penjualan"}, kasir, tanggalAwal, tanggalAkhir)
-        ExecuteQuery("Bayar Hutang", "NOMOR_AKUN_K", {"Bayar Hutang"}, kasir, tanggalAwal, tanggalAkhir)
-        ExecuteQuery("Bayar Piutang", "NOMOR_AKUN_D", {"Bayar Piutang"}, kasir, tanggalAwal, tanggalAkhir)
-        ExecuteQuery("Pemasukan", "NOMOR_AKUN_D", {"Pemasukan", "Bayar bon"}, kasir, tanggalAwal, tanggalAkhir)
-        ExecuteQuery("Pengeluaran", "NOMOR_AKUN_K", {"Pengeluaran", "Bon", "Gaji"}, kasir, tanggalAwal, tanggalAkhir)
-        ExecuteQuery("Biaya", "NOMOR_AKUN_K", {"Biaya"}, kasir, tanggalAwal, tanggalAkhir)
-        ExecuteQuery("RekeningDebet", "NOMOR_AKUN_D", {"RekeningDebet"}, kasir, tanggalAwal, tanggalAkhir)
-        ExecuteQuery("RekeningKredit", "NOMOR_AKUN_K", {"RekeningKredit"}, kasir, tanggalAwal, tanggalAkhir)
-        ExecuteQuery("Setor Bos", "NOMOR_AKUN_K", {"SETOR KE BOS"}, kasir, tanggalAwal, tanggalAkhir)
+        ' metode cepat
+        LoadRekapSekaliBaca(tanggalAwal, tanggalAkhir, kasir)
 
-        Dim saldoAwal As Decimal = HitungSaldoAwal(TxtRekening.Text, kasir, tanggalsaldoawal)
-        TxtSaldoAwal.Text = saldoAwal.ToString("N0")
+        Dim saldoAwal As Decimal = HitungSaldoAwalSekaliBaca(TxtRekening.Text, kasir, tanggalsaldoawal)
+        TxtSaldoAwal.Text = saldoAwal.ToString("N0", cultureIndonesia)
+
+        'metode lama
+        'ExecuteQuery("Pembelian", "NOMOR_AKUN_K", {"Pembelian"}, kasir, tanggalAwal, tanggalAkhir)
+        'ExecuteQuery("Penjualan", "NOMOR_AKUN_D", {"Penjualan"}, kasir, tanggalAwal, tanggalAkhir)
+        'ExecuteQuery("Retur Pembelian", "NOMOR_AKUN_D", {"Retur Pembelian"}, kasir, tanggalAwal, tanggalAkhir)
+        'ExecuteQuery("Retur Penjualan", "NOMOR_AKUN_K", {"Retur Penjualan"}, kasir, tanggalAwal, tanggalAkhir)
+        'ExecuteQuery("Bayar Hutang", "NOMOR_AKUN_K", {"Bayar Hutang"}, kasir, tanggalAwal, tanggalAkhir)
+        'ExecuteQuery("Bayar Piutang", "NOMOR_AKUN_D", {"Bayar Piutang"}, kasir, tanggalAwal, tanggalAkhir)
+        'ExecuteQuery("Pemasukan", "NOMOR_AKUN_D", {"Pemasukan", "Bayar bon"}, kasir, tanggalAwal, tanggalAkhir)
+        'ExecuteQuery("Pengeluaran", "NOMOR_AKUN_K", {"Pengeluaran", "Bon", "Gaji"}, kasir, tanggalAwal, tanggalAkhir)
+        'ExecuteQuery("Biaya", "NOMOR_AKUN_K", {"Biaya"}, kasir, tanggalAwal, tanggalAkhir)
+        'ExecuteQuery("RekeningDebet", "NOMOR_AKUN_D", {"PINDAH REKENING"}, kasir, tanggalAwal, tanggalAkhir)
+        'ExecuteQuery("RekeningKredit", "NOMOR_AKUN_K", {"PINDAH REKENING"}, kasir, tanggalAwal, tanggalAkhir)
+        'ExecuteQuery("Setor Bos", "NOMOR_AKUN_K", {"SETOR KE BOS"}, kasir, tanggalAwal, tanggalAkhir)
+
+        'Dim saldoAwal As Decimal = HitungSaldoAwal(TxtRekening.Text, kasir, tanggalsaldoawal)
+        'TxtSaldoAwal.Text = saldoAwal.ToString("N0", cultureIndonesia)
         Cursor = Cursors.Default
     End Sub
+
+
+    Private Sub LoadRekapSekaliBaca(tglAwal As Date, tglAkhir As Date, kasir As String)
+
+        Dim sql As String =
+"SELECT
+-- PEMBELIAN
+IFNULL(SUM(CASE WHEN JENIS_TRANSAKSI='Pembelian' AND NOMOR_AKUN_K=@AKUN THEN NOMINAL ELSE 0 END),0) AS PembelianTotal,
+IFNULL(COUNT(CASE WHEN JENIS_TRANSAKSI='Pembelian' AND NOMOR_AKUN_K=@AKUN THEN 1 END),0) AS PembelianNota,
+
+-- PENJUALAN
+IFNULL(SUM(CASE WHEN JENIS_TRANSAKSI='Penjualan' AND NOMOR_AKUN_D=@AKUN THEN NOMINAL ELSE 0 END),0) AS PenjualanTotal,
+IFNULL(COUNT(CASE WHEN JENIS_TRANSAKSI='Penjualan' AND NOMOR_AKUN_D=@AKUN THEN 1 END),0) AS PenjualanNota,
+
+-- RETUR BELI
+IFNULL(SUM(CASE WHEN JENIS_TRANSAKSI='Retur Pembelian' AND NOMOR_AKUN_D=@AKUN THEN NOMINAL ELSE 0 END),0) AS ReturBeliTotal,
+IFNULL(COUNT(CASE WHEN JENIS_TRANSAKSI='Retur Pembelian' AND NOMOR_AKUN_D=@AKUN THEN 1 END),0) AS ReturBeliNota,
+
+-- RETUR JUAL
+IFNULL(SUM(CASE WHEN JENIS_TRANSAKSI='Retur Penjualan' AND NOMOR_AKUN_K=@AKUN THEN NOMINAL ELSE 0 END),0) AS ReturJualTotal,
+IFNULL(COUNT(CASE WHEN JENIS_TRANSAKSI='Retur Penjualan' AND NOMOR_AKUN_K=@AKUN THEN 1 END),0) AS ReturJualNota,
+
+-- BAYAR HUTANG
+IFNULL(SUM(CASE WHEN JENIS_TRANSAKSI='Bayar Hutang' AND NOMOR_AKUN_K=@AKUN THEN NOMINAL ELSE 0 END),0) AS BayarHutangTotal,
+IFNULL(COUNT(CASE WHEN JENIS_TRANSAKSI='Bayar Hutang' AND NOMOR_AKUN_K=@AKUN THEN 1 END),0) AS BayarHutangNota,
+
+-- BAYAR PIUTANG
+IFNULL(SUM(CASE WHEN JENIS_TRANSAKSI='Bayar Piutang' AND NOMOR_AKUN_D=@AKUN THEN NOMINAL ELSE 0 END),0) AS BayarPiutangTotal,
+IFNULL(COUNT(CASE WHEN JENIS_TRANSAKSI='Bayar Piutang' AND NOMOR_AKUN_D=@AKUN THEN 1 END),0) AS BayarPiutangNota,
+
+-- PEMASUKAN
+IFNULL(SUM(CASE WHEN JENIS_TRANSAKSI IN ('Pemasukan','Bayar bon') AND NOMOR_AKUN_D=@AKUN THEN NOMINAL ELSE 0 END),0) AS PemasukanTotal,
+IFNULL(COUNT(CASE WHEN JENIS_TRANSAKSI IN ('Pemasukan','Bayar bon') AND NOMOR_AKUN_D=@AKUN THEN 1 END),0) AS PemasukanNota,
+
+-- PENGELUARAN
+IFNULL(SUM(CASE WHEN JENIS_TRANSAKSI IN ('Pengeluaran','Bon','Gaji') AND NOMOR_AKUN_K=@AKUN THEN NOMINAL ELSE 0 END),0) AS PengeluaranTotal,
+IFNULL(COUNT(CASE WHEN JENIS_TRANSAKSI IN ('Pengeluaran','Bon','Gaji') AND NOMOR_AKUN_K=@AKUN THEN 1 END),0) AS PengeluaranNota,
+
+-- BIAYA
+IFNULL(SUM(CASE WHEN JENIS_TRANSAKSI='Biaya' AND NOMOR_AKUN_K=@AKUN THEN NOMINAL ELSE 0 END),0) AS BiayaTotal,
+IFNULL(COUNT(CASE WHEN JENIS_TRANSAKSI='Biaya' AND NOMOR_AKUN_K=@AKUN THEN 1 END),0) AS BiayaNota,
+
+-- PINDAH REKENING
+IFNULL(SUM(CASE WHEN JENIS_TRANSAKSI='PINDAH REKENING' AND NOMOR_AKUN_D=@AKUN THEN NOMINAL ELSE 0 END),0) AS PRDebetTotal,
+IFNULL(COUNT(CASE WHEN JENIS_TRANSAKSI='PINDAH REKENING' AND NOMOR_AKUN_D=@AKUN THEN 1 END),0) AS PRDebetNota,
+
+IFNULL(SUM(CASE WHEN JENIS_TRANSAKSI='PINDAH REKENING' AND NOMOR_AKUN_K=@AKUN THEN NOMINAL ELSE 0 END),0) AS PRKreditTotal,
+IFNULL(COUNT(CASE WHEN JENIS_TRANSAKSI='PINDAH REKENING' AND NOMOR_AKUN_K=@AKUN THEN 1 END),0) AS PRKreditNota,
+
+-- SETOR BOS
+IFNULL(SUM(CASE WHEN JENIS_TRANSAKSI='SETOR KE BOS' AND NOMOR_AKUN_K=@AKUN THEN NOMINAL ELSE 0 END),0) AS SetorBosTotal
+
+FROM JurnalUmum
+WHERE TGL_TRANSAKSI >= @TANGGAL_AWAL AND TGL_TRANSAKSI <= @TANGGAL_AKHIR
+AND ID_USER LIKE @USER;"
+
+        Using cmd As New MySqlCommand(sql, conn)
+            cmd.Parameters.AddWithValue("@TANGGAL_AWAL", tglAwal.ToString("yyyy-MM-dd HH:mm:ss"))
+            cmd.Parameters.AddWithValue("@TANGGAL_AKHIR", tglAkhir.ToString("yyyy-MM-dd HH:mm:ss"))
+            cmd.Parameters.AddWithValue("@AKUN", TxtRekening.Text)
+            cmd.Parameters.AddWithValue("@USER", "%" & kasir & "%")
+
+            Using rd = cmd.ExecuteReader()
+                If rd.Read() Then
+                    TxtTotalPembelian.Text = Convert.ToDecimal(rd("PembelianTotal")).ToString("N0", cultureIndonesia)
+                    TxtNotaPembelian.Text = Convert.ToInt32(rd("PembelianNota")).ToString("N0", cultureIndonesia)
+
+                    TxtTotalPenjualan.Text = Convert.ToDecimal(rd("PenjualanTotal")).ToString("N0", cultureIndonesia)
+                    TxtNotaPenjualan.Text = Convert.ToInt32(rd("PenjualanNota")).ToString("N0", cultureIndonesia)
+
+                    TxtTotalReturBeli.Text = Convert.ToDecimal(rd("ReturBeliTotal")).ToString("N0", cultureIndonesia)
+                    TxtNotaReturBeli.Text = Convert.ToInt32(rd("ReturBeliNota")).ToString("N0", cultureIndonesia)
+
+                    TxtTotalReturJual.Text = Convert.ToDecimal(rd("ReturJualTotal")).ToString("N0", cultureIndonesia)
+                    TxtNotaReturJual.Text = Convert.ToInt32(rd("ReturJualNota")).ToString("N0", cultureIndonesia)
+
+                    TxtTotalBayarHutang.Text = Convert.ToDecimal(rd("BayarHutangTotal")).ToString("N0", cultureIndonesia)
+                    TxtNotaBAyarHutang.Text = Convert.ToInt32(rd("BayarHutangNota")).ToString("N0", cultureIndonesia)
+
+                    TxtTotalBayarPiutang.Text = Convert.ToDecimal(rd("BayarPiutangTotal")).ToString("N0", cultureIndonesia)
+                    TxtNotaBayarPiutang.Text = Convert.ToInt32(rd("BayarPiutangNota")).ToString("N0", cultureIndonesia)
+
+                    TxtTotalJurnalPemasukan.Text = Convert.ToDecimal(rd("PemasukanTotal")).ToString("N0", cultureIndonesia)
+                    TxtNotaJurnalPemasukan.Text = Convert.ToInt32(rd("PemasukanNota")).ToString("N0", cultureIndonesia)
+
+                    TxtTotalJurnalPengeluaran.Text = Convert.ToDecimal(rd("PengeluaranTotal")).ToString("N0", cultureIndonesia)
+                    TxtNotaJurnalPengeluaran.Text = Convert.ToInt32(rd("PengeluaranNota")).ToString("N0", cultureIndonesia)
+
+                    TxtTotalJurnalBiaya.Text = Convert.ToDecimal(rd("BiayaTotal")).ToString("N0", cultureIndonesia)
+                    TxtNotaJurnalBiaya.Text = Convert.ToInt32(rd("BiayaNota")).ToString("N0", cultureIndonesia)
+
+                    TxtTotalJurnalPR.Text = Convert.ToDecimal(rd("PRDebetTotal")).ToString("N0", cultureIndonesia)
+                    TxtNotaJurnalPR.Text = Convert.ToInt32(rd("PRDebetNota")).ToString("N0", cultureIndonesia)
+
+                    TxtTotalJurnalPRK.Text = Convert.ToDecimal(rd("PRKreditTotal")).ToString("N0", cultureIndonesia)
+                    TxtNotaJurnalPRK.Text = Convert.ToInt32(rd("PRKreditNota")).ToString("N0", cultureIndonesia)
+
+                    TxtSetorbos.Text = Convert.ToDecimal(rd("SetorBosTotal")).ToString("N0", cultureIndonesia)
+                End If
+            End Using
+        End Using
+    End Sub
+
+
+    Private Function HitungSaldoAwalSekaliBaca(ByVal akun As String, ByVal kasir As String, ByVal batas As Date) As Decimal
+        Dim sql As String =
+"SELECT
+SUM(CASE WHEN NOMOR_AKUN_D=@AKUN THEN NOMINAL ELSE 0 END) AS Debet,
+SUM(CASE WHEN NOMOR_AKUN_K=@AKUN THEN NOMINAL ELSE 0 END) AS Kredit
+FROM JurnalUmum
+WHERE TGL_TRANSAKSI <= @BATAS
+AND ID_USER LIKE @USER;"
+
+        Using cmd As New MySqlCommand(sql, conn)
+            cmd.Parameters.AddWithValue("@AKUN", akun)
+            cmd.Parameters.AddWithValue("@BATAS", batas.AddTicks(-1).ToString("yyyy-MM-dd HH:mm:ss"))
+            cmd.Parameters.AddWithValue("@USER", "%" & kasir & "%")
+
+            Using rd = cmd.ExecuteReader()
+                If rd.Read() Then
+                    Dim d As Decimal = If(IsDBNull(rd("Debet")), 0D, rd("Debet"))
+                    Dim k As Decimal = If(IsDBNull(rd("Kredit")), 0D, rd("Kredit"))
+                    Return d - k
+                End If
+            End Using
+        End Using
+
+        Return 0
+    End Function
+
+
 
     Private Sub ExecuteQuery(ByVal namaTransaksi As String, ByVal akun As String, ByVal jenisTransaksiList As String(), ByVal kasir As String, ByVal tanggalAwal As Date, ByVal tanggalAkhir As Date)
         Dim jenisTransaksiInClause As String = String.Join("', '", jenisTransaksiList)
@@ -243,34 +354,35 @@ Public Class FormLapSaldo
             Using rd As MySqlDataReader = cmd.ExecuteReader()
                 rd.Read()
                 If rd.HasRows Then
-                    Dim result As Decimal = If(Not rd.IsDBNull(rd.GetOrdinal("Result")), rd("Result"), 0)
+                    Dim result As Decimal = If(Not rd.IsDBNull(rd.GetOrdinal("Result")), Convert.ToDecimal(rd("Result")), 0)
                     Select Case namaTransaksi
                         Case "Pembelian"
-                            TxtTotalPembelian.Text = Microsoft.VisualBasic.Format(result, "N0")
+                            TxtTotalPembelian.Text = result.ToString("N0", cultureIndonesia)
                         Case "Penjualan"
-                            TxtTotalPenjualan.Text = Microsoft.VisualBasic.Format(result, "N0")
+                            TxtTotalPenjualan.Text = result.ToString("N0", cultureIndonesia)
                         Case "Retur Pembelian"
-                            TxtTotalReturBeli.Text = Microsoft.VisualBasic.Format(result, "N0")
+                            TxtTotalReturBeli.Text = result.ToString("N0", cultureIndonesia)
                         Case "Retur Penjualan"
-                            TxtTotalReturJual.Text = Microsoft.VisualBasic.Format(result, "N0")
+                            TxtTotalReturJual.Text = result.ToString("N0", cultureIndonesia)
                         Case "Bayar Hutang"
-                            TxtTotalBayarHutang.Text = Microsoft.VisualBasic.Format(result, "N0")
+                            TxtTotalBayarHutang.Text = result.ToString("N0", cultureIndonesia)
                         Case "Bayar Piutang"
-                            TxtTotalBayarPiutang.Text = Microsoft.VisualBasic.Format(result, "N0")
+                            TxtTotalBayarPiutang.Text = result.ToString("N0", cultureIndonesia)
                         Case "Pemasukan"
-                            TxtTotalJurnalPemasukan.Text = Microsoft.VisualBasic.Format(result, "N0")
+                            TxtTotalJurnalPemasukan.Text = result.ToString("N0", cultureIndonesia)
                         Case "Pengeluaran"
-                            TxtTotalJurnalPengeluaran.Text = Microsoft.VisualBasic.Format(result, "N0")
+                            TxtTotalJurnalPengeluaran.Text = result.ToString("N0", cultureIndonesia)
                         Case "Biaya"
-                            TxtTotalJurnalBiaya.Text = Microsoft.VisualBasic.Format(result, "N0")
+                            TxtTotalJurnalBiaya.Text = result.ToString("N0", cultureIndonesia)
                         Case "RekeningDebet"
-                            TxtTotalJurnalPR.Text = Microsoft.VisualBasic.Format(result, "N0")
+                            TxtTotalJurnalPR.Text = result.ToString("N0", cultureIndonesia)
                         Case "RekeningKredit"
-                            TxtTotalJurnalPRK.Text = Microsoft.VisualBasic.Format(result, "N0")
+                            TxtTotalJurnalPRK.Text = result.ToString("N0", cultureIndonesia)
                         Case "Setor Bos"
-                            TxtSetorbos.Text = Microsoft.VisualBasic.Format(result, "N0")
+                            TxtSetorbos.Text = result.ToString("N0", cultureIndonesia)
                     End Select
                 End If
+
             End Using
         End Using
 
@@ -288,113 +400,141 @@ Public Class FormLapSaldo
                     Dim result2 As Integer = If(Not rd2.IsDBNull(rd2.GetOrdinal("Result")), Convert.ToInt32(rd2("Result")), 0)
                     Select Case namaTransaksi
                         Case "Pembelian"
-                            TxtNotaPembelian.Text = Microsoft.VisualBasic.Format(result2, "N0")
+                            TxtNotaPembelian.Text = result2.ToString("N0", cultureIndonesia)
                         Case "Penjualan"
-                            TxtNotaPenjualan.Text = Microsoft.VisualBasic.Format(result2, "N0")
+                            TxtNotaPenjualan.Text = result2.ToString("N0", cultureIndonesia)
                         Case "Retur Pembelian"
-                            TxtNotaReturBeli.Text = Microsoft.VisualBasic.Format(result2, "N0")
+                            TxtNotaReturBeli.Text = result2.ToString("N0", cultureIndonesia)
                         Case "Retur Penjualan"
-                            TxtNotaReturJual.Text = Microsoft.VisualBasic.Format(result2, "N0")
+                            TxtNotaReturJual.Text = result2.ToString("N0", cultureIndonesia)
                         Case "Bayar Hutang"
-                            TxtNotaBAyarHutang.Text = Microsoft.VisualBasic.Format(result2, "N0")
+                            TxtNotaBAyarHutang.Text = result2.ToString("N0", cultureIndonesia)
                         Case "Bayar Piutang"
-                            TxtNotaBayarPiutang.Text = Microsoft.VisualBasic.Format(result2, "N0")
+                            TxtNotaBayarPiutang.Text = result2.ToString("N0", cultureIndonesia)
                         Case "Pemasukan"
-                            TxtNotaJurnalPemasukan.Text = Microsoft.VisualBasic.Format(result2, "N0")
+                            TxtNotaJurnalPemasukan.Text = result2.ToString("N0", cultureIndonesia)
                         Case "Pengeluaran"
-                            TxtNotaJurnalPengeluaran.Text = Microsoft.VisualBasic.Format(result2, "N0")
+                            TxtNotaJurnalPengeluaran.Text = result2.ToString("N0", cultureIndonesia)
                         Case "Biaya"
-                            TxtNotaJurnalBiaya.Text = Microsoft.VisualBasic.Format(result2, "N0")
+                            TxtNotaJurnalBiaya.Text = result2.ToString("N0", cultureIndonesia)
                         Case "RekeningDebet"
-                            TxtNotaJurnalPR.Text = Microsoft.VisualBasic.Format(result2, "N0")
+                            TxtNotaJurnalPR.Text = result2.ToString("N0", cultureIndonesia)
                         Case "RekeningKredit"
-                            TxtNotaJurnalPRK.Text = Microsoft.VisualBasic.Format(result2, "N0")
+                            TxtNotaJurnalPRK.Text = result2.ToString("N0", cultureIndonesia)
                     End Select
                 End If
             End Using
+
         End Using
     End Sub
 
+    Private Sub TxtTotal_TextChanged(ByVal sender As Object, ByVal e As EventArgs) Handles _
+    TxtTotalPembelian.TextChanged, TxtTotalPenjualan.TextChanged, TxtTotalReturBeli.TextChanged,
+    TxtTotalReturJual.TextChanged, TxtTotalBayarHutang.TextChanged, TxtTotalBayarPiutang.TextChanged,
+    TxtTotalJurnalPemasukan.TextChanged, TxtTotalJurnalPengeluaran.TextChanged, TxtTotalJurnalBiaya.TextChanged,
+    TxtTotalJurnalPR.TextChanged, TxtTotalJurnalPRK.TextChanged, TxtSetorbos.TextChanged
 
-
-    Private Sub TxtTotal_TextChanged(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles TxtTotalPembelian.TextChanged, TxtTotalPenjualan.TextChanged, TxtTotalReturBeli.TextChanged, TxtTotalReturJual.TextChanged, TxtTotalBayarHutang.TextChanged, TxtTotalBayarPiutang.TextChanged, TxtTotalJurnalPemasukan.TextChanged, TxtTotalJurnalPengeluaran.TextChanged, TxtTotalJurnalBiaya.TextChanged, TxtTotalJurnalPR.TextChanged, TxtTotalJurnalPRK.TextChanged, TxtSetorbos.TextChanged
         Dim totalHariIni As Decimal = 0
+        Dim value As Decimal
 
-        totalHariIni -= If(Decimal.TryParse(TxtTotalPembelian.Text, Nothing), Decimal.Parse(TxtTotalPembelian.Text), 0)
-        totalHariIni += If(Decimal.TryParse(TxtTotalPenjualan.Text, Nothing), Decimal.Parse(TxtTotalPenjualan.Text), 0)
-        totalHariIni += If(Decimal.TryParse(TxtTotalReturBeli.Text, Nothing), Decimal.Parse(TxtTotalReturBeli.Text), 0)
-        totalHariIni -= If(Decimal.TryParse(TxtTotalReturJual.Text, Nothing), Decimal.Parse(TxtTotalReturJual.Text), 0)
-        totalHariIni -= If(Decimal.TryParse(TxtTotalBayarHutang.Text, Nothing), Decimal.Parse(TxtTotalBayarHutang.Text), 0)
-        totalHariIni += If(Decimal.TryParse(TxtTotalBayarPiutang.Text, Nothing), Decimal.Parse(TxtTotalBayarPiutang.Text), 0)
-        totalHariIni += If(Decimal.TryParse(TxtTotalJurnalPemasukan.Text, Nothing), Decimal.Parse(TxtTotalJurnalPemasukan.Text), 0)
-        totalHariIni -= If(Decimal.TryParse(TxtTotalJurnalPengeluaran.Text, Nothing), Decimal.Parse(TxtTotalJurnalPengeluaran.Text), 0)
-        totalHariIni -= If(Decimal.TryParse(TxtTotalJurnalBiaya.Text, Nothing), Decimal.Parse(TxtTotalJurnalBiaya.Text), 0)
-        totalHariIni += If(Decimal.TryParse(TxtTotalJurnalPR.Text, Nothing), Decimal.Parse(TxtTotalJurnalPR.Text), 0)
-        totalHariIni -= If(Decimal.TryParse(TxtTotalJurnalPRK.Text, Nothing), Decimal.Parse(TxtTotalJurnalPRK.Text), 0)
+        If Decimal.TryParse(TxtTotalPembelian.Text, Globalization.NumberStyles.Any, cultureIndonesia, value) Then totalHariIni -= value
+        If Decimal.TryParse(TxtTotalPenjualan.Text, Globalization.NumberStyles.Any, cultureIndonesia, value) Then totalHariIni += value
+        If Decimal.TryParse(TxtTotalReturBeli.Text, Globalization.NumberStyles.Any, cultureIndonesia, value) Then totalHariIni += value
+        If Decimal.TryParse(TxtTotalReturJual.Text, Globalization.NumberStyles.Any, cultureIndonesia, value) Then totalHariIni -= value
+        If Decimal.TryParse(TxtTotalBayarHutang.Text, Globalization.NumberStyles.Any, cultureIndonesia, value) Then totalHariIni -= value
+        If Decimal.TryParse(TxtTotalBayarPiutang.Text, Globalization.NumberStyles.Any, cultureIndonesia, value) Then totalHariIni += value
+        If Decimal.TryParse(TxtTotalJurnalPemasukan.Text, Globalization.NumberStyles.Any, cultureIndonesia, value) Then totalHariIni += value
+        If Decimal.TryParse(TxtTotalJurnalPengeluaran.Text, Globalization.NumberStyles.Any, cultureIndonesia, value) Then totalHariIni -= value
+        If Decimal.TryParse(TxtTotalJurnalBiaya.Text, Globalization.NumberStyles.Any, cultureIndonesia, value) Then totalHariIni -= value
+        If Decimal.TryParse(TxtTotalJurnalPR.Text, Globalization.NumberStyles.Any, cultureIndonesia, value) Then totalHariIni += value
+        If Decimal.TryParse(TxtTotalJurnalPRK.Text, Globalization.NumberStyles.Any, cultureIndonesia, value) Then totalHariIni -= value
 
-        TxtTotalHariIni.Text = totalHariIni.ToString("N0")
-        totalHariIni -= If(Decimal.TryParse(TxtSetorbos.Text, Nothing), Decimal.Parse(TxtSetorbos.Text), 0)
-        TxtSaldoHAriIni.Text = totalHariIni.ToString("N0")
-        TxtSaldoDilaci.Text = totalHariIni.ToString("N0")
+        TxtTotalHariIni.Text = totalHariIni.ToString("N0", cultureIndonesia)
+
+        Dim setorBosDecimal As Decimal = 0
+        If Decimal.TryParse(TxtSetorbos.Text, Globalization.NumberStyles.Any, cultureIndonesia, setorBosDecimal) Then
+            totalHariIni -= setorBosDecimal
+        End If
+
+        TxtSaldoHAriIni.Text = totalHariIni.ToString("N0", cultureIndonesia)
+        TxtSaldoDilaci.Text = totalHariIni.ToString("N0", cultureIndonesia)
     End Sub
 
-    Private Sub TxtNota_TextChanged(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles TxtNotaPembelian.TextChanged, TxtNotaPenjualan.TextChanged, TxtNotaReturBeli.TextChanged, TxtNotaReturJual.TextChanged, TxtNotaBAyarHutang.TextChanged, TxtNotaBayarPiutang.TextChanged, TxtNotaJurnalPemasukan.TextChanged, TxtNotaJurnalPengeluaran.TextChanged, TxtNotaJurnalBiaya.TextChanged, TxtNotaJurnalPR.TextChanged, TxtNotaJurnalPRK.TextChanged
+
+    Private Sub TxtNota_TextChanged(ByVal sender As Object, ByVal e As EventArgs) Handles _
+    TxtNotaPembelian.TextChanged, TxtNotaPenjualan.TextChanged, TxtNotaReturBeli.TextChanged,
+    TxtNotaReturJual.TextChanged, TxtNotaBAyarHutang.TextChanged, TxtNotaBayarPiutang.TextChanged,
+    TxtNotaJurnalPemasukan.TextChanged, TxtNotaJurnalPengeluaran.TextChanged, TxtNotaJurnalBiaya.TextChanged,
+    TxtNotaJurnalPR.TextChanged, TxtNotaJurnalPRK.TextChanged
+
         Dim notaHariIni As Integer = 0
+        Dim val As Integer
 
-        notaHariIni -= If(Integer.TryParse(TxtNotaPembelian.Text, Nothing), Integer.Parse(TxtNotaPembelian.Text), 0)
-        notaHariIni += If(Integer.TryParse(TxtNotaPenjualan.Text, Nothing), Integer.Parse(TxtNotaPenjualan.Text), 0)
-        notaHariIni += If(Integer.TryParse(TxtNotaReturBeli.Text, Nothing), Integer.Parse(TxtNotaReturBeli.Text), 0)
-        notaHariIni -= If(Integer.TryParse(TxtNotaReturJual.Text, Nothing), Integer.Parse(TxtNotaReturJual.Text), 0)
-        notaHariIni -= If(Integer.TryParse(TxtNotaBAyarHutang.Text, Nothing), Integer.Parse(TxtNotaBAyarHutang.Text), 0)
-        notaHariIni += If(Integer.TryParse(TxtNotaBayarPiutang.Text, Nothing), Integer.Parse(TxtNotaBayarPiutang.Text), 0)
-        notaHariIni += If(Integer.TryParse(TxtNotaJurnalPemasukan.Text, Nothing), Integer.Parse(TxtNotaJurnalPemasukan.Text), 0)
-        notaHariIni -= If(Integer.TryParse(TxtNotaJurnalPengeluaran.Text, Nothing), Integer.Parse(TxtNotaJurnalPengeluaran.Text), 0)
-        notaHariIni -= If(Integer.TryParse(TxtNotaJurnalBiaya.Text, Nothing), Integer.Parse(TxtNotaJurnalBiaya.Text), 0)
-        notaHariIni += If(Integer.TryParse(TxtNotaJurnalPR.Text, Nothing), Integer.Parse(TxtNotaJurnalPR.Text), 0)
-        notaHariIni -= If(Integer.TryParse(TxtNotaJurnalPRK.Text, Nothing), Integer.Parse(TxtNotaJurnalPRK.Text), 0)
+        If Integer.TryParse(TxtNotaPembelian.Text, val) Then notaHariIni -= val
+        If Integer.TryParse(TxtNotaPenjualan.Text, val) Then notaHariIni += val
+        If Integer.TryParse(TxtNotaReturBeli.Text, val) Then notaHariIni += val
+        If Integer.TryParse(TxtNotaReturJual.Text, val) Then notaHariIni -= val
+        If Integer.TryParse(TxtNotaBAyarHutang.Text, val) Then notaHariIni -= val
+        If Integer.TryParse(TxtNotaBayarPiutang.Text, val) Then notaHariIni += val
+        If Integer.TryParse(TxtNotaJurnalPemasukan.Text, val) Then notaHariIni += val
+        If Integer.TryParse(TxtNotaJurnalPengeluaran.Text, val) Then notaHariIni -= val
+        If Integer.TryParse(TxtNotaJurnalBiaya.Text, val) Then notaHariIni -= val
+        If Integer.TryParse(TxtNotaJurnalPR.Text, val) Then notaHariIni += val
+        If Integer.TryParse(TxtNotaJurnalPRK.Text, val) Then notaHariIni -= val
 
-        TxtNotaHariIni.Text = notaHariIni.ToString("N0")
+        TxtNotaHariIni.Text = notaHariIni.ToString("N0", cultureIndonesia)
     End Sub
+
 
     Private Function HitungSaldoAwal(ByVal nomorAkun As String, ByVal kasir As String, ByVal tanggalsaldoawal As Date) As Decimal
         Dim saldoAwalD As Decimal = 0
         Dim saldoAwalK As Decimal = 0
+        Dim cultureID As New CultureInfo("id-ID")
+        Dim tanggalStr As String = tanggalsaldoawal.AddTicks(-1).ToString("yyyy-MM-dd HH:mm:ss")
+        Dim userFilter As String = "%" & kasir & "%"
 
-        ' Query untuk menghitung SUM(NOMINAL) jika NOMOR_AKUN_D = TxtRekening.Text dan ID_USER = cmbkasir.text
+        ' Ambil total debit (D)
         Dim queryNominalD As String = "SELECT SUM(NOMINAL) AS TOTAL FROM JurnalUmum WHERE NOMOR_AKUN_D = @NOMOR_AKUN_D AND TGL_TRANSAKSI <= @TANGGAL AND ID_USER LIKE @ID_USER"
         Using cmdNominalD As New MySqlCommand(queryNominalD, conn)
             cmdNominalD.Parameters.AddWithValue("@NOMOR_AKUN_D", nomorAkun)
-            cmdNominalD.Parameters.AddWithValue("@TANGGAL", tanggalsaldoawal.AddTicks(-1).ToString("yyyy-MM-dd HH:mm:ss"))
-            cmdNominalD.Parameters.AddWithValue("@ID_USER", "%" & kasir & "%")
+            cmdNominalD.Parameters.AddWithValue("@TANGGAL", tanggalStr)
+            cmdNominalD.Parameters.AddWithValue("@ID_USER", userFilter)
             Dim result As Object = cmdNominalD.ExecuteScalar()
-            If result IsNot Nothing AndAlso Not IsDBNull(result) AndAlso Decimal.TryParse(result.ToString(), saldoAwalD) Then
-                ' Jika berhasil mengambil nilai, saldoAwalD akan diisi dengan hasilnya
+            If result IsNot Nothing AndAlso Not IsDBNull(result) Then
+                Decimal.TryParse(result.ToString(), NumberStyles.Any, cultureID, saldoAwalD)
             End If
         End Using
 
-        ' Query untuk menghitung SUM(NOMINAL) jika NOMOR_AKUN_K = TxtRekening.Text dan ID_USER = cmbkasir.text
+        ' Ambil total kredit (K)
         Dim queryNominalK As String = "SELECT SUM(NOMINAL) AS TOTAL FROM JurnalUmum WHERE NOMOR_AKUN_K = @NOMOR_AKUN_K AND TGL_TRANSAKSI <= @TANGGAL AND ID_USER LIKE @ID_USER"
         Using cmdNominalK As New MySqlCommand(queryNominalK, conn)
             cmdNominalK.Parameters.AddWithValue("@NOMOR_AKUN_K", nomorAkun)
-            cmdNominalK.Parameters.AddWithValue("@TANGGAL", tanggalsaldoawal.AddTicks(-1).ToString("yyyy-MM-dd HH:mm:ss"))
-            cmdNominalK.Parameters.AddWithValue("@ID_USER", "%" & kasir & "%")
+            cmdNominalK.Parameters.AddWithValue("@TANGGAL", tanggalStr)
+            cmdNominalK.Parameters.AddWithValue("@ID_USER", userFilter)
             Dim result As Object = cmdNominalK.ExecuteScalar()
-            If result IsNot Nothing AndAlso Not IsDBNull(result) AndAlso Decimal.TryParse(result.ToString(), saldoAwalK) Then
-                ' Jika berhasil mengambil nilai, saldoAwalK akan diisi dengan hasilnya
+            If result IsNot Nothing AndAlso Not IsDBNull(result) Then
+                Decimal.TryParse(result.ToString(), NumberStyles.Any, cultureID, saldoAwalK)
             End If
         End Using
 
-        ' Selanjutnya, Anda dapat menggunakan saldoAwalD dan saldoAwalK sesuai kebutuhan
         Return saldoAwalD - saldoAwalK
     End Function
 
 
+
     Private Sub TextBox_TextChanged(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles TxtSaldoAwal.TextChanged, TxtSaldoHAriIni.TextChanged
         Dim TotalAkhir As Decimal = 0
+        Dim nilai As Decimal
 
-        TotalAkhir += If(Decimal.TryParse(TxtSaldoAwal.Text, Nothing), Decimal.Parse(TxtSaldoAwal.Text), 0)
-        TotalAkhir += If(Decimal.TryParse(TxtSaldoHAriIni.Text, Nothing), Decimal.Parse(TxtSaldoHAriIni.Text), 0)
-        TxtSaldoAkhir.Text = TotalAkhir.ToString("N0")
+        If Decimal.TryParse(TxtSaldoAwal.Text, NumberStyles.Number, cultureIndonesia, nilai) Then
+            TotalAkhir += nilai
+        End If
+
+        If Decimal.TryParse(TxtSaldoHAriIni.Text, NumberStyles.Number, cultureIndonesia, nilai) Then
+            TotalAkhir += nilai
+        End If
+
+        TxtSaldoAkhir.Text = TotalAkhir.ToString("N0", cultureIndonesia)
     End Sub
 
     ' Deklarasi variabel sebagai string
@@ -763,91 +903,92 @@ Public Class FormLapSaldo
             tinggi += 10 + TxtJarakString
             e.Graphics.DrawString("(-)  Pembelian", New Drawing.Font(CmbFIsiString, CmbUIsiString), Brushes.Black, BatasKiri, tinggi)
             e.Graphics.DrawString(":", New Drawing.Font(CmbFIsiString, CmbUIsiString), Brushes.Black, Mulaikata4, tinggi, kanan)
-            e.Graphics.DrawString(Microsoft.VisualBasic.Format(totalNotaPembelian, "N0"), New Drawing.Font(CmbFIsiString, CmbUIsiString), Brushes.Black, Mulaikata3, tinggi, kanan)
-            e.Graphics.DrawString(Microsoft.VisualBasic.Format(totalPembelian, "N0"), New Drawing.Font(CmbFIsiString, CmbUIsiString), Brushes.Black, Mulaikata5, tinggi, kanan)
+            e.Graphics.DrawString(totalNotaPembelian.ToString("N0", cultureIndonesia), New Drawing.Font(CmbFIsiString, CmbUIsiString), Brushes.Black, Mulaikata3, tinggi, kanan)
+            e.Graphics.DrawString(totalPembelian.ToString("N0", cultureIndonesia), New Drawing.Font(CmbFIsiString, CmbUIsiString), Brushes.Black, Mulaikata5, tinggi, kanan)
         End If
 
         If totalPenjualan <> 0 Then
             tinggi += 10 + TxtJarakString
             e.Graphics.DrawString("(+) Penjualan", New Drawing.Font(CmbFIsiString, CmbUIsiString), Brushes.Black, BatasKiri, tinggi)
             e.Graphics.DrawString(":", New Drawing.Font(CmbFIsiString, CmbUIsiString), Brushes.Black, Mulaikata4, tinggi, kanan)
-            e.Graphics.DrawString(Microsoft.VisualBasic.Format(totalNotaPenjualan, "N0"), New Drawing.Font(CmbFIsiString, CmbUIsiString), Brushes.Black, Mulaikata3, tinggi, kanan)
-            e.Graphics.DrawString(Microsoft.VisualBasic.Format(totalPenjualan, "N0"), New Drawing.Font(CmbFIsiString, CmbUIsiString), Brushes.Black, Mulaikata5, tinggi, kanan)
+            e.Graphics.DrawString(totalNotaPenjualan.ToString("N0", cultureIndonesia), New Drawing.Font(CmbFIsiString, CmbUIsiString), Brushes.Black, Mulaikata3, tinggi, kanan)
+            e.Graphics.DrawString(totalPenjualan.ToString("N0", cultureIndonesia), New Drawing.Font(CmbFIsiString, CmbUIsiString), Brushes.Black, Mulaikata5, tinggi, kanan)
         End If
 
         If totalReturBeli <> 0 Then
             tinggi += 10 + TxtJarakString
             e.Graphics.DrawString("(+) Retur beli", New Drawing.Font(CmbFIsiString, CmbUIsiString), Brushes.Black, BatasKiri, tinggi)
             e.Graphics.DrawString(":", New Drawing.Font(CmbFIsiString, CmbUIsiString), Brushes.Black, Mulaikata4, tinggi, kanan)
-            e.Graphics.DrawString(Microsoft.VisualBasic.Format(totalNotaReturBeli, "N0"), New Drawing.Font(CmbFIsiString, CmbUIsiString), Brushes.Black, Mulaikata3, tinggi, kanan)
-            e.Graphics.DrawString(Microsoft.VisualBasic.Format(totalReturBeli, "N0"), New Drawing.Font(CmbFIsiString, CmbUIsiString), Brushes.Black, Mulaikata5, tinggi, kanan)
+            e.Graphics.DrawString(totalNotaReturBeli.ToString("N0", cultureIndonesia), New Drawing.Font(CmbFIsiString, CmbUIsiString), Brushes.Black, Mulaikata3, tinggi, kanan)
+            e.Graphics.DrawString(totalReturBeli.ToString("N0", cultureIndonesia), New Drawing.Font(CmbFIsiString, CmbUIsiString), Brushes.Black, Mulaikata5, tinggi, kanan)
         End If
 
         If totalReturJual <> 0 Then
             tinggi += 10 + TxtJarakString
             e.Graphics.DrawString("(-)  Retur jual", New Drawing.Font(CmbFIsiString, CmbUIsiString), Brushes.Black, BatasKiri, tinggi)
             e.Graphics.DrawString(":", New Drawing.Font(CmbFIsiString, CmbUIsiString), Brushes.Black, Mulaikata4, tinggi, kanan)
-            e.Graphics.DrawString(Microsoft.VisualBasic.Format(totalNotaReturJual, "N0"), New Drawing.Font(CmbFIsiString, CmbUIsiString), Brushes.Black, Mulaikata3, tinggi, kanan)
-            e.Graphics.DrawString(Microsoft.VisualBasic.Format(totalReturJual, "N0"), New Drawing.Font(CmbFIsiString, CmbUIsiString), Brushes.Black, Mulaikata5, tinggi, kanan)
+            e.Graphics.DrawString(totalNotaReturJual.ToString("N0", cultureIndonesia), New Drawing.Font(CmbFIsiString, CmbUIsiString), Brushes.Black, Mulaikata3, tinggi, kanan)
+            e.Graphics.DrawString(totalReturJual.ToString("N0", cultureIndonesia), New Drawing.Font(CmbFIsiString, CmbUIsiString), Brushes.Black, Mulaikata5, tinggi, kanan)
         End If
 
         If totalBayarHutang <> 0 Then
             tinggi += 10 + TxtJarakString
             e.Graphics.DrawString("(-)  Bayar hutang", New Drawing.Font(CmbFIsiString, CmbUIsiString), Brushes.Black, BatasKiri, tinggi)
             e.Graphics.DrawString(":", New Drawing.Font(CmbFIsiString, CmbUIsiString), Brushes.Black, Mulaikata4, tinggi, kanan)
-            e.Graphics.DrawString(Microsoft.VisualBasic.Format(totalNotaBayarHutang, "N0"), New Drawing.Font(CmbFIsiString, CmbUIsiString), Brushes.Black, Mulaikata3, tinggi, kanan)
-            e.Graphics.DrawString(Microsoft.VisualBasic.Format(totalBayarHutang, "N0"), New Drawing.Font(CmbFIsiString, CmbUIsiString), Brushes.Black, Mulaikata5, tinggi, kanan)
+            e.Graphics.DrawString(totalNotaBayarHutang.ToString("N0", cultureIndonesia), New Drawing.Font(CmbFIsiString, CmbUIsiString), Brushes.Black, Mulaikata3, tinggi, kanan)
+            e.Graphics.DrawString(totalBayarHutang.ToString("N0", cultureIndonesia), New Drawing.Font(CmbFIsiString, CmbUIsiString), Brushes.Black, Mulaikata5, tinggi, kanan)
         End If
 
         If totalBayarPiutang <> 0 Then
             tinggi += 10 + TxtJarakString
             e.Graphics.DrawString("(+) Piutang di bayar", New Drawing.Font(CmbFIsiString, CmbUIsiString), Brushes.Black, BatasKiri, tinggi)
             e.Graphics.DrawString(":", New Drawing.Font(CmbFIsiString, CmbUIsiString), Brushes.Black, Mulaikata4, tinggi, kanan)
-            e.Graphics.DrawString(Microsoft.VisualBasic.Format(totalNotaBayarPiutang, "N0"), New Drawing.Font(CmbFIsiString, CmbUIsiString), Brushes.Black, Mulaikata3, tinggi, kanan)
-            e.Graphics.DrawString(Microsoft.VisualBasic.Format(totalBayarPiutang, "N0"), New Drawing.Font(CmbFIsiString, CmbUIsiString), Brushes.Black, Mulaikata5, tinggi, kanan)
+            e.Graphics.DrawString(totalNotaBayarPiutang.ToString("N0", cultureIndonesia), New Drawing.Font(CmbFIsiString, CmbUIsiString), Brushes.Black, Mulaikata3, tinggi, kanan)
+            e.Graphics.DrawString(totalBayarPiutang.ToString("N0", cultureIndonesia), New Drawing.Font(CmbFIsiString, CmbUIsiString), Brushes.Black, Mulaikata5, tinggi, kanan)
         End If
 
         If totalJurnalPemasukan <> 0 Then
             tinggi += 10 + TxtJarakString
             e.Graphics.DrawString("(+) Jurnal Pemasukan", New Drawing.Font(CmbFIsiString, CmbUIsiString), Brushes.Black, BatasKiri, tinggi)
             e.Graphics.DrawString(":", New Drawing.Font(CmbFIsiString, CmbUIsiString), Brushes.Black, Mulaikata4, tinggi, kanan)
-            e.Graphics.DrawString(Microsoft.VisualBasic.Format(totalNotaJurnalPemasukan, "N0"), New Drawing.Font(CmbFIsiString, CmbUIsiString), Brushes.Black, Mulaikata3, tinggi, kanan)
-            e.Graphics.DrawString(Microsoft.VisualBasic.Format(totalJurnalPemasukan, "N0"), New Drawing.Font(CmbFIsiString, CmbUIsiString), Brushes.Black, Mulaikata5, tinggi, kanan)
+            e.Graphics.DrawString(totalNotaJurnalPemasukan.ToString("N0", cultureIndonesia), New Drawing.Font(CmbFIsiString, CmbUIsiString), Brushes.Black, Mulaikata3, tinggi, kanan)
+            e.Graphics.DrawString(totalJurnalPemasukan.ToString("N0", cultureIndonesia), New Drawing.Font(CmbFIsiString, CmbUIsiString), Brushes.Black, Mulaikata5, tinggi, kanan)
         End If
 
         If totalJurnalPengeluaran <> 0 Then
             tinggi += 10 + TxtJarakString
             e.Graphics.DrawString("(-)  Jurnal Pengeluaran", New Drawing.Font(CmbFIsiString, CmbUIsiString), Brushes.Black, BatasKiri, tinggi)
             e.Graphics.DrawString(":", New Drawing.Font(CmbFIsiString, CmbUIsiString), Brushes.Black, Mulaikata4, tinggi, kanan)
-            e.Graphics.DrawString(Microsoft.VisualBasic.Format(totalNotaJurnalPengeluaran, "N0"), New Drawing.Font(CmbFIsiString, CmbUIsiString), Brushes.Black, Mulaikata3, tinggi, kanan)
-            e.Graphics.DrawString(Microsoft.VisualBasic.Format(totalJurnalPengeluaran, "N0"), New Drawing.Font(CmbFIsiString, CmbUIsiString), Brushes.Black, Mulaikata5, tinggi, kanan)
+            e.Graphics.DrawString(totalNotaJurnalPengeluaran.ToString("N0", cultureIndonesia), New Drawing.Font(CmbFIsiString, CmbUIsiString), Brushes.Black, Mulaikata3, tinggi, kanan)
+            e.Graphics.DrawString(totalJurnalPengeluaran.ToString("N0", cultureIndonesia), New Drawing.Font(CmbFIsiString, CmbUIsiString), Brushes.Black, Mulaikata5, tinggi, kanan)
         End If
 
         If totalJurnalBiaya <> 0 Then
             tinggi += 10 + TxtJarakString
             e.Graphics.DrawString("(-)  Jurnal Biaya", New Drawing.Font(CmbFIsiString, CmbUIsiString), Brushes.Black, BatasKiri, tinggi)
             e.Graphics.DrawString(":", New Drawing.Font(CmbFIsiString, CmbUIsiString), Brushes.Black, Mulaikata4, tinggi, kanan)
-            e.Graphics.DrawString(Microsoft.VisualBasic.Format(totalNotaJurnalBiaya, "N0"), New Drawing.Font(CmbFIsiString, CmbUIsiString), Brushes.Black, Mulaikata3, tinggi, kanan)
-            e.Graphics.DrawString(Microsoft.VisualBasic.Format(totalJurnalBiaya, "N0"), New Drawing.Font(CmbFIsiString, CmbUIsiString), Brushes.Black, Mulaikata5, tinggi, kanan)
+            e.Graphics.DrawString(totalNotaJurnalBiaya.ToString("N0", cultureIndonesia), New Drawing.Font(CmbFIsiString, CmbUIsiString), Brushes.Black, Mulaikata3, tinggi, kanan)
+            e.Graphics.DrawString(totalJurnalBiaya.ToString("N0", cultureIndonesia), New Drawing.Font(CmbFIsiString, CmbUIsiString), Brushes.Black, Mulaikata5, tinggi, kanan)
         End If
 
         If totalJurnalPR <> 0 Then
             tinggi += 10 + TxtJarakString
             e.Graphics.DrawString("(+) Jurnal Pindah rek (+)", New Drawing.Font(CmbFIsiString, CmbUIsiString), Brushes.Black, BatasKiri, tinggi)
             e.Graphics.DrawString(":", New Drawing.Font(CmbFIsiString, CmbUIsiString), Brushes.Black, Mulaikata4, tinggi, kanan)
-            e.Graphics.DrawString(Microsoft.VisualBasic.Format(totalNotaJurnalPR, "N0"), New Drawing.Font(CmbFIsiString, CmbUIsiString), Brushes.Black, Mulaikata3, tinggi, kanan)
-            e.Graphics.DrawString(Microsoft.VisualBasic.Format(totalJurnalPR, "N0"), New Drawing.Font(CmbFIsiString, CmbUIsiString), Brushes.Black, Mulaikata5, tinggi, kanan)
+            e.Graphics.DrawString(totalNotaJurnalPR.ToString("N0", cultureIndonesia), New Drawing.Font(CmbFIsiString, CmbUIsiString), Brushes.Black, Mulaikata3, tinggi, kanan)
+            e.Graphics.DrawString(totalJurnalPR.ToString("N0", cultureIndonesia), New Drawing.Font(CmbFIsiString, CmbUIsiString), Brushes.Black, Mulaikata5, tinggi, kanan)
         End If
 
         If totalJurnalPRK <> 0 Then
             tinggi += 10 + TxtJarakString
             e.Graphics.DrawString("(-)  Jurnal Pindah rek (-)", New Drawing.Font(CmbFIsiString, CmbUIsiString), Brushes.Black, BatasKiri, tinggi)
             e.Graphics.DrawString(":", New Drawing.Font(CmbFIsiString, CmbUIsiString), Brushes.Black, Mulaikata4, tinggi, kanan)
-            e.Graphics.DrawString(Microsoft.VisualBasic.Format(totalNotaJurnalPRK, "N0"), New Drawing.Font(CmbFIsiString, CmbUIsiString), Brushes.Black, Mulaikata3, tinggi, kanan)
-            e.Graphics.DrawString(Microsoft.VisualBasic.Format(totalJurnalPRK, "N0"), New Drawing.Font(CmbFIsiString, CmbUIsiString), Brushes.Black, Mulaikata5, tinggi, kanan)
+            e.Graphics.DrawString(totalNotaJurnalPRK.ToString("N0", cultureIndonesia), New Drawing.Font(CmbFIsiString, CmbUIsiString), Brushes.Black, Mulaikata3, tinggi, kanan)
+            e.Graphics.DrawString(totalJurnalPRK.ToString("N0", cultureIndonesia), New Drawing.Font(CmbFIsiString, CmbUIsiString), Brushes.Black, Mulaikata5, tinggi, kanan)
         End If
 
         Dim saldoHariIni As Decimal = If(Decimal.TryParse(TxtTotalHariIni.Text, saldoHariIni), saldoHariIni, 0)
+        Dim totalHariIni As Decimal = If(Decimal.TryParse(TxtSaldoHAriIni.Text, totalHariIni), totalHariIni, 0)
         Dim setorkebos As Decimal = If(Decimal.TryParse(TxtSetorbos.Text, setorkebos), setorkebos, 0)
         Dim sisadilaci As Decimal = If(Decimal.TryParse(TxtSaldoDilaci.Text, sisadilaci), sisadilaci, 0)
 
@@ -861,19 +1002,19 @@ Public Class FormLapSaldo
         tinggi += 10 + TxtJarakString
         e.Graphics.DrawString("       Saldo Hari ini", New Drawing.Font(CmbFIsiString, CmbUIsiString), Brushes.Black, BatasKiri, tinggi)
         e.Graphics.DrawString(":", New Drawing.Font(CmbFIsiString, CmbUIsiString), Brushes.Black, Mulaikata4, tinggi, kanan)
-        e.Graphics.DrawString(Microsoft.VisualBasic.Format(saldoHariIni, "N0"), New Drawing.Font(CmbFIsiString, CmbUIsiString), Brushes.Black, Mulaikata5, tinggi, kanan)
+        e.Graphics.DrawString(saldoHariIni.ToString("N0", cultureIndonesia), New Drawing.Font(CmbFIsiString, CmbUIsiString), Brushes.Black, Mulaikata5, tinggi, kanan)
 
         If TxtTypeAkun.Text = "KAS" Then
             tinggi += 10 + TxtJarakString
             e.Graphics.DrawString("       Uang di setor", New Drawing.Font(CmbFIsiString, CmbUIsiString), Brushes.Black, BatasKiri, tinggi)
             e.Graphics.DrawString(":", New Drawing.Font(CmbFIsiString, CmbUIsiString), Brushes.Black, Mulaikata4, tinggi, kanan)
-            e.Graphics.DrawString(Microsoft.VisualBasic.Format(setorkebos, "N0"), New Drawing.Font(CmbFIsiString, CmbUIsiString), Brushes.Black, Mulaikata5, tinggi, kanan)
+            e.Graphics.DrawString(setorkebos.ToString("N0", cultureIndonesia), New Drawing.Font(CmbFIsiString, CmbUIsiString), Brushes.Black, Mulaikata5, tinggi, kanan)
 
 
             tinggi += 10 + TxtJarakString
             e.Graphics.DrawString("       Uang di laci", New Drawing.Font(CmbFIsiString, CmbUIsiString), Brushes.Black, BatasKiri, tinggi)
             e.Graphics.DrawString(":", New Drawing.Font(CmbFIsiString, CmbUIsiString), Brushes.Black, Mulaikata4, tinggi, kanan)
-            e.Graphics.DrawString(Microsoft.VisualBasic.Format(sisadilaci, "N0"), New Drawing.Font(CmbFIsiString, CmbUIsiString), Brushes.Black, Mulaikata5, tinggi, kanan)
+            e.Graphics.DrawString(sisadilaci.ToString("N0", cultureIndonesia), New Drawing.Font(CmbFIsiString, CmbUIsiString), Brushes.Black, Mulaikata5, tinggi, kanan)
         End If
 
         tinggi += 10 + TxtJarakString
@@ -881,22 +1022,22 @@ Public Class FormLapSaldo
 
         tinggi += 10 + TxtJarakString
         e.Graphics.DrawString("Saldo awal :", New Drawing.Font(CmbFIsiString, CmbUIsiString), Brushes.Black, Mulaikata4, tinggi, kanan)
-        e.Graphics.DrawString(Microsoft.VisualBasic.Format(saldoAwal, "N0"), New Drawing.Font(CmbFIsiString, CmbUIsiString), Brushes.Black, Mulaikata5, tinggi, kanan)
+        e.Graphics.DrawString(saldoAwal.ToString("N0", cultureIndonesia), New Drawing.Font(CmbFIsiString, CmbUIsiString), Brushes.Black, Mulaikata5, tinggi, kanan)
 
         tinggi += 10 + TxtJarakString
-        e.Graphics.DrawString("Saldo hari ini :", New Drawing.Font(CmbFIsiString, CmbUIsiString), Brushes.Black, Mulaikata4, tinggi, kanan)
-        e.Graphics.DrawString(Microsoft.VisualBasic.Format(saldoHariIni, "N0"), New Drawing.Font(CmbFIsiString, CmbUIsiString), Brushes.Black, Mulaikata5, tinggi, kanan)
+        e.Graphics.DrawString("Hari ini :", New Drawing.Font(CmbFIsiString, CmbUIsiString), Brushes.Black, Mulaikata4, tinggi, kanan)
+        e.Graphics.DrawString(totalHariIni.ToString("N0", cultureIndonesia), New Drawing.Font(CmbFIsiString, CmbUIsiString), Brushes.Black, Mulaikata5, tinggi, kanan)
 
         tinggi += 10 + TxtJarakString
         e.Graphics.DrawString("Saldo Akhir :", New Drawing.Font(CmbFIsiString, CmbUIsiString), Brushes.Black, Mulaikata4, tinggi, kanan)
-        e.Graphics.DrawString(Microsoft.VisualBasic.Format(saldoTotal, "N0"), New Drawing.Font(CmbFIsiString, CmbUIsiString), Brushes.Black, Mulaikata5, tinggi, kanan)
+        e.Graphics.DrawString(saldoTotal.ToString("N0", cultureIndonesia), New Drawing.Font(CmbFIsiString, CmbUIsiString), Brushes.Black, Mulaikata5, tinggi, kanan)
 
 
         tinggi += 10 + TxtJarakString
         e.Graphics.DrawString(garis, New Drawing.Font("Courier New", 8), Brushes.Black, BatasKiri, tinggi)
 
         tinggi += 10 + TxtJarakString
-        e.Graphics.DrawString(kotatoko & ", " & Microsoft.VisualBasic.Format(Now, "dd-MM-yyyy"), New Drawing.Font(CmbFKetString, CmbUKetString), Brushes.Black, Mulaikata5, tinggi, kanan)
+        e.Graphics.DrawString(kotatoko & ", " & Now.ToString("dd-MM-yyyy"), New Drawing.Font(CmbFKetString, CmbUKetString), Brushes.Black, Mulaikata5, tinggi, kanan)
 
 
         tinggi += 10 + TxtJarakString
@@ -1078,91 +1219,92 @@ Public Class FormLapSaldo
             tinggi += 10 + TxtJarakString
             e.Graphics.DrawString("(-)  Pembelian", New Drawing.Font(CmbFIsiString, CmbUIsiString), Brushes.Black, BatasKiri, tinggi)
             e.Graphics.DrawString(":", New Drawing.Font(CmbFIsiString, CmbUIsiString), Brushes.Black, Mulaikata4, tinggi, kanan)
-            e.Graphics.DrawString(Microsoft.VisualBasic.Format(totalNotaPembelian, "N0"), New Drawing.Font(CmbFIsiString, CmbUIsiString), Brushes.Black, Mulaikata3, tinggi, kanan)
-            e.Graphics.DrawString(Microsoft.VisualBasic.Format(totalPembelian, "N0"), New Drawing.Font(CmbFIsiString, CmbUIsiString), Brushes.Black, Mulaikata5, tinggi, kanan)
+            e.Graphics.DrawString(totalNotaPembelian.ToString("N0", cultureIndonesia), New Drawing.Font(CmbFIsiString, CmbUIsiString), Brushes.Black, Mulaikata3, tinggi, kanan)
+            e.Graphics.DrawString(totalPembelian.ToString("N0", cultureIndonesia), New Drawing.Font(CmbFIsiString, CmbUIsiString), Brushes.Black, Mulaikata5, tinggi, kanan)
         End If
 
         If totalPenjualan <> 0 Then
             tinggi += 10 + TxtJarakString
             e.Graphics.DrawString("(+) Penjualan", New Drawing.Font(CmbFIsiString, CmbUIsiString), Brushes.Black, BatasKiri, tinggi)
             e.Graphics.DrawString(":", New Drawing.Font(CmbFIsiString, CmbUIsiString), Brushes.Black, Mulaikata4, tinggi, kanan)
-            e.Graphics.DrawString(Microsoft.VisualBasic.Format(totalNotaPenjualan, "N0"), New Drawing.Font(CmbFIsiString, CmbUIsiString), Brushes.Black, Mulaikata3, tinggi, kanan)
-            e.Graphics.DrawString(Microsoft.VisualBasic.Format(totalPenjualan, "N0"), New Drawing.Font(CmbFIsiString, CmbUIsiString), Brushes.Black, Mulaikata5, tinggi, kanan)
+            e.Graphics.DrawString(totalNotaPenjualan.ToString("N0", cultureIndonesia), New Drawing.Font(CmbFIsiString, CmbUIsiString), Brushes.Black, Mulaikata3, tinggi, kanan)
+            e.Graphics.DrawString(totalPenjualan.ToString("N0", cultureIndonesia), New Drawing.Font(CmbFIsiString, CmbUIsiString), Brushes.Black, Mulaikata5, tinggi, kanan)
         End If
 
         If totalReturBeli <> 0 Then
             tinggi += 10 + TxtJarakString
             e.Graphics.DrawString("(+) Retur beli", New Drawing.Font(CmbFIsiString, CmbUIsiString), Brushes.Black, BatasKiri, tinggi)
             e.Graphics.DrawString(":", New Drawing.Font(CmbFIsiString, CmbUIsiString), Brushes.Black, Mulaikata4, tinggi, kanan)
-            e.Graphics.DrawString(Microsoft.VisualBasic.Format(totalNotaReturBeli, "N0"), New Drawing.Font(CmbFIsiString, CmbUIsiString), Brushes.Black, Mulaikata3, tinggi, kanan)
-            e.Graphics.DrawString(Microsoft.VisualBasic.Format(totalReturBeli, "N0"), New Drawing.Font(CmbFIsiString, CmbUIsiString), Brushes.Black, Mulaikata5, tinggi, kanan)
+            e.Graphics.DrawString(totalNotaReturBeli.ToString("N0", cultureIndonesia), New Drawing.Font(CmbFIsiString, CmbUIsiString), Brushes.Black, Mulaikata3, tinggi, kanan)
+            e.Graphics.DrawString(totalReturBeli.ToString("N0", cultureIndonesia), New Drawing.Font(CmbFIsiString, CmbUIsiString), Brushes.Black, Mulaikata5, tinggi, kanan)
         End If
 
         If totalReturJual <> 0 Then
             tinggi += 10 + TxtJarakString
             e.Graphics.DrawString("(-)  Retur jual", New Drawing.Font(CmbFIsiString, CmbUIsiString), Brushes.Black, BatasKiri, tinggi)
             e.Graphics.DrawString(":", New Drawing.Font(CmbFIsiString, CmbUIsiString), Brushes.Black, Mulaikata4, tinggi, kanan)
-            e.Graphics.DrawString(Microsoft.VisualBasic.Format(totalNotaReturJual, "N0"), New Drawing.Font(CmbFIsiString, CmbUIsiString), Brushes.Black, Mulaikata3, tinggi, kanan)
-            e.Graphics.DrawString(Microsoft.VisualBasic.Format(totalReturJual, "N0"), New Drawing.Font(CmbFIsiString, CmbUIsiString), Brushes.Black, Mulaikata5, tinggi, kanan)
+            e.Graphics.DrawString(totalNotaReturJual.ToString("N0", cultureIndonesia), New Drawing.Font(CmbFIsiString, CmbUIsiString), Brushes.Black, Mulaikata3, tinggi, kanan)
+            e.Graphics.DrawString(totalReturJual.ToString("N0", cultureIndonesia), New Drawing.Font(CmbFIsiString, CmbUIsiString), Brushes.Black, Mulaikata5, tinggi, kanan)
         End If
 
         If totalBayarHutang <> 0 Then
             tinggi += 10 + TxtJarakString
             e.Graphics.DrawString("(-)  Bayar hutang", New Drawing.Font(CmbFIsiString, CmbUIsiString), Brushes.Black, BatasKiri, tinggi)
             e.Graphics.DrawString(":", New Drawing.Font(CmbFIsiString, CmbUIsiString), Brushes.Black, Mulaikata4, tinggi, kanan)
-            e.Graphics.DrawString(Microsoft.VisualBasic.Format(totalNotaBayarHutang, "N0"), New Drawing.Font(CmbFIsiString, CmbUIsiString), Brushes.Black, Mulaikata3, tinggi, kanan)
-            e.Graphics.DrawString(Microsoft.VisualBasic.Format(totalBayarHutang, "N0"), New Drawing.Font(CmbFIsiString, CmbUIsiString), Brushes.Black, Mulaikata5, tinggi, kanan)
+            e.Graphics.DrawString(totalNotaBayarHutang.ToString("N0", cultureIndonesia), New Drawing.Font(CmbFIsiString, CmbUIsiString), Brushes.Black, Mulaikata3, tinggi, kanan)
+            e.Graphics.DrawString(totalBayarHutang.ToString("N0", cultureIndonesia), New Drawing.Font(CmbFIsiString, CmbUIsiString), Brushes.Black, Mulaikata5, tinggi, kanan)
         End If
 
         If totalBayarPiutang <> 0 Then
             tinggi += 10 + TxtJarakString
             e.Graphics.DrawString("(+) Piutang di bayar", New Drawing.Font(CmbFIsiString, CmbUIsiString), Brushes.Black, BatasKiri, tinggi)
             e.Graphics.DrawString(":", New Drawing.Font(CmbFIsiString, CmbUIsiString), Brushes.Black, Mulaikata4, tinggi, kanan)
-            e.Graphics.DrawString(Microsoft.VisualBasic.Format(totalNotaBayarPiutang, "N0"), New Drawing.Font(CmbFIsiString, CmbUIsiString), Brushes.Black, Mulaikata3, tinggi, kanan)
-            e.Graphics.DrawString(Microsoft.VisualBasic.Format(totalBayarPiutang, "N0"), New Drawing.Font(CmbFIsiString, CmbUIsiString), Brushes.Black, Mulaikata5, tinggi, kanan)
+            e.Graphics.DrawString(totalNotaBayarPiutang.ToString("N0", cultureIndonesia), New Drawing.Font(CmbFIsiString, CmbUIsiString), Brushes.Black, Mulaikata3, tinggi, kanan)
+            e.Graphics.DrawString(totalBayarPiutang.ToString("N0", cultureIndonesia), New Drawing.Font(CmbFIsiString, CmbUIsiString), Brushes.Black, Mulaikata5, tinggi, kanan)
         End If
 
         If totalJurnalPemasukan <> 0 Then
             tinggi += 10 + TxtJarakString
             e.Graphics.DrawString("(+) Jurnal Pemasukan", New Drawing.Font(CmbFIsiString, CmbUIsiString), Brushes.Black, BatasKiri, tinggi)
             e.Graphics.DrawString(":", New Drawing.Font(CmbFIsiString, CmbUIsiString), Brushes.Black, Mulaikata4, tinggi, kanan)
-            e.Graphics.DrawString(Microsoft.VisualBasic.Format(totalNotaJurnalPemasukan, "N0"), New Drawing.Font(CmbFIsiString, CmbUIsiString), Brushes.Black, Mulaikata3, tinggi, kanan)
-            e.Graphics.DrawString(Microsoft.VisualBasic.Format(totalJurnalPemasukan, "N0"), New Drawing.Font(CmbFIsiString, CmbUIsiString), Brushes.Black, Mulaikata5, tinggi, kanan)
+            e.Graphics.DrawString(totalNotaJurnalPemasukan.ToString("N0", cultureIndonesia), New Drawing.Font(CmbFIsiString, CmbUIsiString), Brushes.Black, Mulaikata3, tinggi, kanan)
+            e.Graphics.DrawString(totalJurnalPemasukan.ToString("N0", cultureIndonesia), New Drawing.Font(CmbFIsiString, CmbUIsiString), Brushes.Black, Mulaikata5, tinggi, kanan)
         End If
 
         If totalJurnalPengeluaran <> 0 Then
             tinggi += 10 + TxtJarakString
             e.Graphics.DrawString("(-)  Jurnal Pengeluaran", New Drawing.Font(CmbFIsiString, CmbUIsiString), Brushes.Black, BatasKiri, tinggi)
             e.Graphics.DrawString(":", New Drawing.Font(CmbFIsiString, CmbUIsiString), Brushes.Black, Mulaikata4, tinggi, kanan)
-            e.Graphics.DrawString(Microsoft.VisualBasic.Format(totalNotaJurnalPengeluaran, "N0"), New Drawing.Font(CmbFIsiString, CmbUIsiString), Brushes.Black, Mulaikata3, tinggi, kanan)
-            e.Graphics.DrawString(Microsoft.VisualBasic.Format(totalJurnalPengeluaran, "N0"), New Drawing.Font(CmbFIsiString, CmbUIsiString), Brushes.Black, Mulaikata5, tinggi, kanan)
+            e.Graphics.DrawString(totalNotaJurnalPengeluaran.ToString("N0", cultureIndonesia), New Drawing.Font(CmbFIsiString, CmbUIsiString), Brushes.Black, Mulaikata3, tinggi, kanan)
+            e.Graphics.DrawString(totalJurnalPengeluaran.ToString("N0", cultureIndonesia), New Drawing.Font(CmbFIsiString, CmbUIsiString), Brushes.Black, Mulaikata5, tinggi, kanan)
         End If
 
         If totalJurnalBiaya <> 0 Then
             tinggi += 10 + TxtJarakString
             e.Graphics.DrawString("(-)  Jurnal Biaya", New Drawing.Font(CmbFIsiString, CmbUIsiString), Brushes.Black, BatasKiri, tinggi)
             e.Graphics.DrawString(":", New Drawing.Font(CmbFIsiString, CmbUIsiString), Brushes.Black, Mulaikata4, tinggi, kanan)
-            e.Graphics.DrawString(Microsoft.VisualBasic.Format(totalNotaJurnalBiaya, "N0"), New Drawing.Font(CmbFIsiString, CmbUIsiString), Brushes.Black, Mulaikata3, tinggi, kanan)
-            e.Graphics.DrawString(Microsoft.VisualBasic.Format(totalJurnalBiaya, "N0"), New Drawing.Font(CmbFIsiString, CmbUIsiString), Brushes.Black, Mulaikata5, tinggi, kanan)
+            e.Graphics.DrawString(totalNotaJurnalBiaya.ToString("N0", cultureIndonesia), New Drawing.Font(CmbFIsiString, CmbUIsiString), Brushes.Black, Mulaikata3, tinggi, kanan)
+            e.Graphics.DrawString(totalJurnalBiaya.ToString("N0", cultureIndonesia), New Drawing.Font(CmbFIsiString, CmbUIsiString), Brushes.Black, Mulaikata5, tinggi, kanan)
         End If
 
         If totalJurnalPR <> 0 Then
             tinggi += 10 + TxtJarakString
             e.Graphics.DrawString("(+) Jurnal Pindah rek (+)", New Drawing.Font(CmbFIsiString, CmbUIsiString), Brushes.Black, BatasKiri, tinggi)
             e.Graphics.DrawString(":", New Drawing.Font(CmbFIsiString, CmbUIsiString), Brushes.Black, Mulaikata4, tinggi, kanan)
-            e.Graphics.DrawString(Microsoft.VisualBasic.Format(totalNotaJurnalPR, "N0"), New Drawing.Font(CmbFIsiString, CmbUIsiString), Brushes.Black, Mulaikata3, tinggi, kanan)
-            e.Graphics.DrawString(Microsoft.VisualBasic.Format(totalJurnalPR, "N0"), New Drawing.Font(CmbFIsiString, CmbUIsiString), Brushes.Black, Mulaikata5, tinggi, kanan)
+            e.Graphics.DrawString(totalNotaJurnalPR.ToString("N0", cultureIndonesia), New Drawing.Font(CmbFIsiString, CmbUIsiString), Brushes.Black, Mulaikata3, tinggi, kanan)
+            e.Graphics.DrawString(totalJurnalPR.ToString("N0", cultureIndonesia), New Drawing.Font(CmbFIsiString, CmbUIsiString), Brushes.Black, Mulaikata5, tinggi, kanan)
         End If
 
         If totalJurnalPRK <> 0 Then
             tinggi += 10 + TxtJarakString
             e.Graphics.DrawString("(-)  Jurnal Pindah rek (-)", New Drawing.Font(CmbFIsiString, CmbUIsiString), Brushes.Black, BatasKiri, tinggi)
             e.Graphics.DrawString(":", New Drawing.Font(CmbFIsiString, CmbUIsiString), Brushes.Black, Mulaikata4, tinggi, kanan)
-            e.Graphics.DrawString(Microsoft.VisualBasic.Format(totalNotaJurnalPRK, "N0"), New Drawing.Font(CmbFIsiString, CmbUIsiString), Brushes.Black, Mulaikata3, tinggi, kanan)
-            e.Graphics.DrawString(Microsoft.VisualBasic.Format(totalJurnalPRK, "N0"), New Drawing.Font(CmbFIsiString, CmbUIsiString), Brushes.Black, Mulaikata5, tinggi, kanan)
+            e.Graphics.DrawString(totalNotaJurnalPRK.ToString("N0", cultureIndonesia), New Drawing.Font(CmbFIsiString, CmbUIsiString), Brushes.Black, Mulaikata3, tinggi, kanan)
+            e.Graphics.DrawString(totalJurnalPRK.ToString("N0", cultureIndonesia), New Drawing.Font(CmbFIsiString, CmbUIsiString), Brushes.Black, Mulaikata5, tinggi, kanan)
         End If
 
         Dim saldoHariIni As Decimal = If(Decimal.TryParse(TxtTotalHariIni.Text, saldoHariIni), saldoHariIni, 0)
+        Dim totalHariIni As Decimal = If(Decimal.TryParse(TxtSaldoHAriIni.Text, totalHariIni), totalHariIni, 0)
         Dim setorkebos As Decimal = If(Decimal.TryParse(TxtSetorbos.Text, setorkebos), setorkebos, 0)
         Dim sisadilaci As Decimal = If(Decimal.TryParse(TxtSaldoDilaci.Text, sisadilaci), sisadilaci, 0)
 
@@ -1174,21 +1316,18 @@ Public Class FormLapSaldo
         e.Graphics.DrawString(garisdua, New Drawing.Font("Courier New", 8), Brushes.Black, Mulaikata5, tinggi, kanan)
 
         tinggi += 10 + TxtJarakString
-        e.Graphics.DrawString("       Saldo Hari ini", New Drawing.Font(CmbFIsiString, CmbUIsiString), Brushes.Black, BatasKiri, tinggi)
-        e.Graphics.DrawString(":", New Drawing.Font(CmbFIsiString, CmbUIsiString), Brushes.Black, Mulaikata4, tinggi, kanan)
-        e.Graphics.DrawString(Microsoft.VisualBasic.Format(saldoHariIni, "N0"), New Drawing.Font(CmbFIsiString, CmbUIsiString), Brushes.Black, Mulaikata5, tinggi, kanan)
+        e.Graphics.DrawString("Saldo Hari ini :", New Drawing.Font(CmbFIsiString, CmbUIsiString), Brushes.Black, Mulaikata4, tinggi, kanan)
+        e.Graphics.DrawString(saldoHariIni.ToString("N0", cultureIndonesia), New Drawing.Font(CmbFIsiString, CmbUIsiString), Brushes.Black, Mulaikata5, tinggi, kanan)
 
         If TxtTypeAkun.Text = "KAS" Then
             tinggi += 10 + TxtJarakString
-            e.Graphics.DrawString("       Uang di setor", New Drawing.Font(CmbFIsiString, CmbUIsiString), Brushes.Black, BatasKiri, tinggi)
-            e.Graphics.DrawString(":", New Drawing.Font(CmbFIsiString, CmbUIsiString), Brushes.Black, Mulaikata4, tinggi, kanan)
-            e.Graphics.DrawString(Microsoft.VisualBasic.Format(setorkebos, "N0"), New Drawing.Font(CmbFIsiString, CmbUIsiString), Brushes.Black, Mulaikata5, tinggi, kanan)
+            e.Graphics.DrawString("Uang di setor :", New Drawing.Font(CmbFIsiString, CmbUIsiString), Brushes.Black, Mulaikata4, tinggi, kanan)
+            e.Graphics.DrawString(setorkebos.ToString("N0", cultureIndonesia), New Drawing.Font(CmbFIsiString, CmbUIsiString), Brushes.Black, Mulaikata5, tinggi, kanan)
 
 
             tinggi += 10 + TxtJarakString
-            e.Graphics.DrawString("       Uang di laci", New Drawing.Font(CmbFIsiString, CmbUIsiString), Brushes.Black, BatasKiri, tinggi)
-            e.Graphics.DrawString(":", New Drawing.Font(CmbFIsiString, CmbUIsiString), Brushes.Black, Mulaikata4, tinggi, kanan)
-            e.Graphics.DrawString(Microsoft.VisualBasic.Format(sisadilaci, "N0"), New Drawing.Font(CmbFIsiString, CmbUIsiString), Brushes.Black, Mulaikata5, tinggi, kanan)
+            e.Graphics.DrawString("Uang di laci : ", New Drawing.Font(CmbFIsiString, CmbUIsiString), Brushes.Black, Mulaikata4, tinggi, kanan)
+            e.Graphics.DrawString(sisadilaci.ToString("N0", cultureIndonesia), New Drawing.Font(CmbFIsiString, CmbUIsiString), Brushes.Black, Mulaikata5, tinggi, kanan)
         End If
 
         tinggi += 10 + TxtJarakString
@@ -1196,23 +1335,22 @@ Public Class FormLapSaldo
 
         tinggi += 10 + TxtJarakString
         e.Graphics.DrawString("Saldo awal :", New Drawing.Font(CmbFIsiString, CmbUIsiString), Brushes.Black, Mulaikata4, tinggi, kanan)
-        e.Graphics.DrawString(Microsoft.VisualBasic.Format(saldoAwal, "N0"), New Drawing.Font(CmbFIsiString, CmbUIsiString), Brushes.Black, Mulaikata5, tinggi, kanan)
+        e.Graphics.DrawString(saldoAwal.ToString("N0", cultureIndonesia), New Drawing.Font(CmbFIsiString, CmbUIsiString), Brushes.Black, Mulaikata5, tinggi, kanan)
 
         tinggi += 10 + TxtJarakString
-        e.Graphics.DrawString("Saldo hari ini :", New Drawing.Font(CmbFIsiString, CmbUIsiString), Brushes.Black, Mulaikata4, tinggi, kanan)
-        e.Graphics.DrawString(Microsoft.VisualBasic.Format(saldoHariIni, "N0"), New Drawing.Font(CmbFIsiString, CmbUIsiString), Brushes.Black, Mulaikata5, tinggi, kanan)
+        e.Graphics.DrawString("Hari ini :", New Drawing.Font(CmbFIsiString, CmbUIsiString), Brushes.Black, Mulaikata4, tinggi, kanan)
+        e.Graphics.DrawString(totalHariIni.ToString("N0", cultureIndonesia), New Drawing.Font(CmbFIsiString, CmbUIsiString), Brushes.Black, Mulaikata5, tinggi, kanan)
 
         tinggi += 10 + TxtJarakString
         e.Graphics.DrawString("Saldo Akhir :", New Drawing.Font(CmbFIsiString, CmbUIsiString), Brushes.Black, Mulaikata4, tinggi, kanan)
-        e.Graphics.DrawString(Microsoft.VisualBasic.Format(saldoTotal, "N0"), New Drawing.Font(CmbFIsiString, CmbUIsiString), Brushes.Black, Mulaikata5, tinggi, kanan)
+        e.Graphics.DrawString(saldoTotal.ToString("N0", cultureIndonesia), New Drawing.Font(CmbFIsiString, CmbUIsiString), Brushes.Black, Mulaikata5, tinggi, kanan)
 
 
         tinggi += 10 + TxtJarakString
         e.Graphics.DrawString(garis, New Drawing.Font("Courier New", 8), Brushes.Black, BatasKiri, tinggi)
 
         tinggi += 10 + TxtJarakString
-        e.Graphics.DrawString(kotatoko & ", " & Microsoft.VisualBasic.Format(Now, "dd-MM-yyyy"), New Drawing.Font(CmbFKetString, CmbUKetString), Brushes.Black, Mulaikata5, tinggi, kanan)
-
+        e.Graphics.DrawString(kotatoko & ", " & Now.ToString("dd-MM-yyyy"), New Drawing.Font(CmbFKetString, CmbUKetString), Brushes.Black, Mulaikata5, tinggi, kanan)
 
         tinggi += 10 + TxtJarakString
         e.Graphics.DrawString("ACC", New Drawing.Font(CmbFFootString, CmbUFootString), Brushes.Black, BatasKiri, tinggi)
@@ -1241,15 +1379,20 @@ Public Class FormLapSaldo
             Throw New ApplicationException("Tanggal atau bulan belum dipilih.")
         Else
             PanelView.Visible = True
+
+            ' Posisikan PanelView di tengah form induk
+            PanelView.Left = (Me.ClientSize.Width - PanelView.Width) \ 2
+            PanelView.Top = (Me.ClientSize.Height - PanelView.Height) \ 2
+
             ' Clear DataTable sebelum mengisi data baru
             If dt.Rows.Count > 0 Then
                 dt.Clear()
             End If
             ' Memutuskan sumber data
             DGVView.DataSource = Nothing
-
         End If
     End Sub
+
 
     Private Sub GetTanggalAwalAkhir(ByRef tanggalAwal As Date, ByRef tanggalAkhir As Date, ByRef tanggalperiode As String)
         If CbTanggal.Checked Then
@@ -1360,6 +1503,15 @@ Public Class FormLapSaldo
                     .Columns(columnName).DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight
                 End If
             Next
+
+            ' ===== KHUSUS KOLOM NO =====
+            If DGVView.Columns.Contains("No") Then
+                With DGVView.Columns("No")
+                    .Width = 40
+                    .MinimumWidth = 40
+                    .AutoSizeMode = DataGridViewAutoSizeColumnMode.None
+                End With
+            End If
 
             ' Rename columns
             For Each column As DataGridViewColumn In .Columns
@@ -1474,6 +1626,15 @@ Public Class FormLapSaldo
                 End If
             Next
 
+            ' ===== KHUSUS KOLOM NO =====
+            If DGVView.Columns.Contains("No") Then
+                With DGVView.Columns("No")
+                    .Width = 40
+                    .MinimumWidth = 40
+                    .AutoSizeMode = DataGridViewAutoSizeColumnMode.None
+                End With
+            End If
+
             ' Rename columns
             For Each column As DataGridViewColumn In .Columns
                 If columnNames.ContainsKey(column.Name) Then
@@ -1584,6 +1745,15 @@ Public Class FormLapSaldo
                     .Columns(columnName).DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight
                 End If
             Next
+
+            ' ===== KHUSUS KOLOM NO =====
+            If DGVView.Columns.Contains("No") Then
+                With DGVView.Columns("No")
+                    .Width = 40
+                    .MinimumWidth = 40
+                    .AutoSizeMode = DataGridViewAutoSizeColumnMode.None
+                End With
+            End If
 
             ' Rename columns
             For Each column As DataGridViewColumn In .Columns
@@ -1696,6 +1866,15 @@ Public Class FormLapSaldo
                 End If
             Next
 
+            ' ===== KHUSUS KOLOM NO =====
+            If DGVView.Columns.Contains("No") Then
+                With DGVView.Columns("No")
+                    .Width = 40
+                    .MinimumWidth = 40
+                    .AutoSizeMode = DataGridViewAutoSizeColumnMode.None
+                End With
+            End If
+
             ' Rename columns
             For Each column As DataGridViewColumn In .Columns
                 If columnNames.ContainsKey(column.Name) Then
@@ -1806,6 +1985,15 @@ Public Class FormLapSaldo
                     .Columns(columnName).DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight
                 End If
             Next
+
+            ' ===== KHUSUS KOLOM NO =====
+            If DGVView.Columns.Contains("No") Then
+                With DGVView.Columns("No")
+                    .Width = 40
+                    .MinimumWidth = 40
+                    .AutoSizeMode = DataGridViewAutoSizeColumnMode.None
+                End With
+            End If
 
             ' Ganti nama kolom
             For Each column As DataGridViewColumn In .Columns
@@ -1919,6 +2107,16 @@ Public Class FormLapSaldo
                 End If
             Next
 
+
+            ' ===== KHUSUS KOLOM NO =====
+            If DGVView.Columns.Contains("No") Then
+                With DGVView.Columns("No")
+                    .Width = 40
+                    .MinimumWidth = 40
+                    .AutoSizeMode = DataGridViewAutoSizeColumnMode.None
+                End With
+            End If
+
             ' Ganti nama kolom
             For Each column As DataGridViewColumn In .Columns
                 If columnNames.ContainsKey(column.Name) Then
@@ -2022,9 +2220,9 @@ Public Class FormLapSaldo
             Case "BIAYA"
                 jenisLabelConditions.Add("(" & kodeAkunField & " = @KODE_AKUN AND JENIS_TRANSAKSI = 'Biaya')")
             Case "PINDAH REKENING MASUK"
-                jenisLabelConditions.Add("(" & kodeAkunField & " = @KODE_AKUN AND JENIS_TRANSAKSI = 'pindah rekening masuk')")
+                jenisLabelConditions.Add("(" & kodeAkunField & " = @KODE_AKUN AND JENIS_TRANSAKSI = 'PINDAH REKENING')")
             Case "PINDAH REKENING KELUAR"
-                jenisLabelConditions.Add("(" & kodeAkunField & " = @KODE_AKUN AND JENIS_TRANSAKSI = 'pindah rekening keluar')")
+                jenisLabelConditions.Add("(" & kodeAkunField & " = @KODE_AKUN AND JENIS_TRANSAKSI = 'PINDAH REKENING')")
             Case "SETOR KE BOS"
                 jenisLabelConditions.Add("(" & kodeAkunField & " = @KODE_AKUN AND JENIS_TRANSAKSI = 'SETOR KE BOS')")
         End Select
@@ -2104,6 +2302,23 @@ Public Class FormLapSaldo
                 DGVView.Columns(columnName).DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight
             End If
         Next
+
+        ' ===== KHUSUS KOLOM NO =====
+        If DGVView.Columns.Contains("No") Then
+            With DGVView.Columns("No")
+                .Width = 40
+                .MinimumWidth = 40
+                .AutoSizeMode = DataGridViewAutoSizeColumnMode.None
+            End With
+        End If
+
+        If DGVView.Columns.Contains("URAIAN") Then
+            With DGVView.Columns("URAIAN")
+                .AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells
+                .DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft
+            End With
+        End If
+
     End Sub
 
     Private Sub SetDataGridViewStyles()

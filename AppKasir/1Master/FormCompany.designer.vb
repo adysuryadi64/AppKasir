@@ -33,7 +33,7 @@ Partial Class FormCompany
         Me.Label1 = New System.Windows.Forms.Label()
         Me.TxtNama = New System.Windows.Forms.TextBox()
         Me.Label6 = New System.Windows.Forms.Label()
-        Me.BTNGantiLogo = New System.Windows.Forms.Button()
+        Me.BtnNota = New System.Windows.Forms.Button()
         Me.OpenFileDialog1 = New System.Windows.Forms.OpenFileDialog()
         Me.TxtKabKota = New System.Windows.Forms.TextBox()
         Me.Label17 = New System.Windows.Forms.Label()
@@ -90,16 +90,26 @@ Partial Class FormCompany
         Me.Label25 = New System.Windows.Forms.Label()
         Me.TxtTutupBulan = New System.Windows.Forms.TextBox()
         Me.LblTutupBulan = New System.Windows.Forms.Label()
-        Me.PBGantiLogo = New System.Windows.Forms.PictureBox()
+        Me.PBNota = New System.Windows.Forms.PictureBox()
         Me.Label106 = New System.Windows.Forms.Label()
         Me.PanelHeader = New System.Windows.Forms.Panel()
-        Me.Label28 = New System.Windows.Forms.Label()
         Me.BtnClose = New System.Windows.Forms.Button()
+        Me.Label28 = New System.Windows.Forms.Label()
+        Me.Label26 = New System.Windows.Forms.Label()
+        Me.PBToko = New System.Windows.Forms.PictureBox()
+        Me.BtnToko = New System.Windows.Forms.Button()
+        Me.Label29 = New System.Windows.Forms.Label()
+        Me.PBGudang = New System.Windows.Forms.PictureBox()
+        Me.BtnGudang = New System.Windows.Forms.Button()
+        Me.TxtFooter3 = New System.Windows.Forms.TextBox()
+        Me.Label30 = New System.Windows.Forms.Label()
         Me.Panel1.SuspendLayout()
         Me.Panel2.SuspendLayout()
         Me.Panel3.SuspendLayout()
-        CType(Me.PBGantiLogo, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.PBNota, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.PanelHeader.SuspendLayout()
+        CType(Me.PBToko, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.PBGudang, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
         'TxtIdPerusahaan
@@ -207,21 +217,22 @@ Partial Class FormCompany
         Me.Label6.Text = "Nama :"
         Me.Label6.TextAlign = System.Drawing.ContentAlignment.MiddleRight
         '
-        'BTNGantiLogo
+        'BtnNota
         '
-        Me.BTNGantiLogo.BackColor = System.Drawing.Color.FromArgb(CType(CType(128, Byte), Integer), CType(CType(255, Byte), Integer), CType(CType(128, Byte), Integer))
-        Me.BTNGantiLogo.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom
-        Me.BTNGantiLogo.FlatStyle = System.Windows.Forms.FlatStyle.Popup
-        Me.BTNGantiLogo.Font = New System.Drawing.Font("Book Antiqua", 14.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.BTNGantiLogo.ForeColor = System.Drawing.Color.Black
-        Me.BTNGantiLogo.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft
-        Me.BTNGantiLogo.Location = New System.Drawing.Point(941, 205)
-        Me.BTNGantiLogo.Name = "BTNGantiLogo"
-        Me.BTNGantiLogo.Size = New System.Drawing.Size(126, 33)
-        Me.BTNGantiLogo.TabIndex = 20
-        Me.BTNGantiLogo.Text = "Ganti Logo"
-        Me.BTNGantiLogo.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText
-        Me.BTNGantiLogo.UseVisualStyleBackColor = False
+        Me.BtnNota.AutoSize = True
+        Me.BtnNota.BackColor = System.Drawing.Color.FromArgb(CType(CType(128, Byte), Integer), CType(CType(255, Byte), Integer), CType(CType(128, Byte), Integer))
+        Me.BtnNota.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom
+        Me.BtnNota.FlatStyle = System.Windows.Forms.FlatStyle.Popup
+        Me.BtnNota.Font = New System.Drawing.Font("Century Gothic", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.BtnNota.ForeColor = System.Drawing.Color.Black
+        Me.BtnNota.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft
+        Me.BtnNota.Location = New System.Drawing.Point(940, 181)
+        Me.BtnNota.Name = "BtnNota"
+        Me.BtnNota.Size = New System.Drawing.Size(126, 28)
+        Me.BtnNota.TabIndex = 20
+        Me.BtnNota.Text = "Ganti Logo nota"
+        Me.BtnNota.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText
+        Me.BtnNota.UseVisualStyleBackColor = False
         '
         'OpenFileDialog1
         '
@@ -262,6 +273,7 @@ Partial Class FormCompany
         'TxtPemilik
         '
         Me.TxtPemilik.BackColor = System.Drawing.SystemColors.Window
+        Me.TxtPemilik.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
         Me.TxtPemilik.Font = New System.Drawing.Font("Century Gothic", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.TxtPemilik.Location = New System.Drawing.Point(80, 183)
         Me.TxtPemilik.Name = "TxtPemilik"
@@ -283,6 +295,7 @@ Partial Class FormCompany
         'txtfoter2
         '
         Me.txtfoter2.BackColor = System.Drawing.SystemColors.Window
+        Me.txtfoter2.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
         Me.txtfoter2.Font = New System.Drawing.Font("Century Gothic", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.txtfoter2.Location = New System.Drawing.Point(80, 238)
         Me.txtfoter2.Multiline = True
@@ -294,6 +307,7 @@ Partial Class FormCompany
         'Txtkontaktoko
         '
         Me.Txtkontaktoko.BackColor = System.Drawing.SystemColors.Window
+        Me.Txtkontaktoko.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
         Me.Txtkontaktoko.Font = New System.Drawing.Font("Century Gothic", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.Txtkontaktoko.Location = New System.Drawing.Point(80, 158)
         Me.Txtkontaktoko.Name = "Txtkontaktoko"
@@ -304,6 +318,7 @@ Partial Class FormCompany
         'Txtkotatoko
         '
         Me.Txtkotatoko.BackColor = System.Drawing.SystemColors.Window
+        Me.Txtkotatoko.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
         Me.Txtkotatoko.Font = New System.Drawing.Font("Century Gothic", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.Txtkotatoko.Location = New System.Drawing.Point(80, 133)
         Me.Txtkotatoko.Name = "Txtkotatoko"
@@ -314,6 +329,7 @@ Partial Class FormCompany
         'txtnamatoko
         '
         Me.txtnamatoko.BackColor = System.Drawing.SystemColors.Window
+        Me.txtnamatoko.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
         Me.txtnamatoko.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper
         Me.txtnamatoko.Font = New System.Drawing.Font("Century Gothic", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.txtnamatoko.Location = New System.Drawing.Point(80, 62)
@@ -369,6 +385,7 @@ Partial Class FormCompany
         'txtfoter1
         '
         Me.txtfoter1.BackColor = System.Drawing.SystemColors.Window
+        Me.txtfoter1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
         Me.txtfoter1.Font = New System.Drawing.Font("Century Gothic", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.txtfoter1.Location = New System.Drawing.Point(80, 208)
         Me.txtfoter1.Multiline = True
@@ -391,6 +408,7 @@ Partial Class FormCompany
         'Txtalamattoko
         '
         Me.Txtalamattoko.BackColor = System.Drawing.SystemColors.Window
+        Me.Txtalamattoko.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
         Me.Txtalamattoko.Font = New System.Drawing.Font("Century Gothic", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.Txtalamattoko.Location = New System.Drawing.Point(80, 86)
         Me.Txtalamattoko.Multiline = True
@@ -413,6 +431,7 @@ Partial Class FormCompany
         'TxtKode
         '
         Me.TxtKode.BackColor = System.Drawing.SystemColors.Window
+        Me.TxtKode.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
         Me.TxtKode.Enabled = False
         Me.TxtKode.Font = New System.Drawing.Font("Century Gothic", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.TxtKode.Location = New System.Drawing.Point(80, 38)
@@ -438,39 +457,45 @@ Partial Class FormCompany
         '
         'BtnHapus
         '
+        Me.BtnHapus.AutoSize = True
         Me.BtnHapus.BackColor = System.Drawing.Color.SandyBrown
         Me.BtnHapus.FlatAppearance.BorderSize = 0
         Me.BtnHapus.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(CType(CType(255, Byte), Integer), CType(CType(192, Byte), Integer), CType(CType(192, Byte), Integer))
         Me.BtnHapus.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Red
         Me.BtnHapus.FlatStyle = System.Windows.Forms.FlatStyle.Flat
-        Me.BtnHapus.Font = New System.Drawing.Font("Century Gothic", 11.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.BtnHapus.Font = New System.Drawing.Font("Century Gothic", 11.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.BtnHapus.ForeColor = System.Drawing.Color.Black
         Me.BtnHapus.Image = CType(resources.GetObject("BtnHapus.Image"), System.Drawing.Image)
         Me.BtnHapus.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft
-        Me.BtnHapus.Location = New System.Drawing.Point(907, 477)
+        Me.BtnHapus.Location = New System.Drawing.Point(364, 502)
         Me.BtnHapus.Name = "BtnHapus"
-        Me.BtnHapus.Size = New System.Drawing.Size(140, 35)
+        Me.BtnHapus.Size = New System.Drawing.Size(124, 35)
         Me.BtnHapus.TabIndex = 161
         Me.BtnHapus.Text = "Hapus (F3)"
+        Me.BtnHapus.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
+        Me.BtnHapus.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText
         Me.BtnHapus.UseVisualStyleBackColor = False
         Me.BtnHapus.Visible = False
         '
         'BtnSimpan
         '
+        Me.BtnSimpan.AutoSize = True
         Me.BtnSimpan.BackColor = System.Drawing.Color.SandyBrown
         Me.BtnSimpan.FlatAppearance.BorderSize = 0
         Me.BtnSimpan.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(CType(CType(128, Byte), Integer), CType(CType(128, Byte), Integer), CType(CType(255, Byte), Integer))
         Me.BtnSimpan.FlatAppearance.MouseOverBackColor = System.Drawing.Color.MidnightBlue
         Me.BtnSimpan.FlatStyle = System.Windows.Forms.FlatStyle.Flat
-        Me.BtnSimpan.Font = New System.Drawing.Font("Century Gothic", 11.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.BtnSimpan.Font = New System.Drawing.Font("Century Gothic", 11.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.BtnSimpan.ForeColor = System.Drawing.Color.Black
         Me.BtnSimpan.Image = CType(resources.GetObject("BtnSimpan.Image"), System.Drawing.Image)
         Me.BtnSimpan.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft
-        Me.BtnSimpan.Location = New System.Drawing.Point(907, 436)
+        Me.BtnSimpan.Location = New System.Drawing.Point(364, 461)
         Me.BtnSimpan.Name = "BtnSimpan"
-        Me.BtnSimpan.Size = New System.Drawing.Size(140, 35)
+        Me.BtnSimpan.Size = New System.Drawing.Size(124, 35)
         Me.BtnSimpan.TabIndex = 159
         Me.BtnSimpan.Text = "Simpan (F2)"
+        Me.BtnSimpan.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
+        Me.BtnSimpan.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText
         Me.BtnSimpan.UseVisualStyleBackColor = False
         '
         'Label4
@@ -528,7 +553,9 @@ Partial Class FormCompany
         Me.Panel1.Controls.Add(Me.CmbHutangBeli)
         Me.Panel1.Controls.Add(Me.Label23)
         Me.Panel1.Controls.Add(Me.TxtRekBarang)
+        Me.Panel1.Controls.Add(Me.BtnHapus)
         Me.Panel1.Controls.Add(Me.CmbRekBarang)
+        Me.Panel1.Controls.Add(Me.BtnSimpan)
         Me.Panel1.Controls.Add(Me.Label22)
         Me.Panel1.Controls.Add(Me.TxtJualGudang)
         Me.Panel1.Controls.Add(Me.CmbJualGudang)
@@ -548,7 +575,7 @@ Partial Class FormCompany
         Me.Panel1.Controls.Add(Me.Label7)
         Me.Panel1.Location = New System.Drawing.Point(380, 39)
         Me.Panel1.Name = "Panel1"
-        Me.Panel1.Size = New System.Drawing.Size(517, 471)
+        Me.Panel1.Size = New System.Drawing.Size(517, 547)
         Me.Panel1.TabIndex = 166
         '
         'TxtPiutangJual
@@ -772,6 +799,8 @@ Partial Class FormCompany
         '
         Me.Panel2.AutoScroll = True
         Me.Panel2.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
+        Me.Panel2.Controls.Add(Me.TxtFooter3)
+        Me.Panel2.Controls.Add(Me.Label30)
         Me.Panel2.Controls.Add(Me.Label8)
         Me.Panel2.Controls.Add(Me.TxtKode)
         Me.Panel2.Controls.Add(Me.TxtPemilik)
@@ -791,7 +820,7 @@ Partial Class FormCompany
         Me.Panel2.Controls.Add(Me.Label18)
         Me.Panel2.Location = New System.Drawing.Point(7, 39)
         Me.Panel2.Name = "Panel2"
-        Me.Panel2.Size = New System.Drawing.Size(369, 290)
+        Me.Panel2.Size = New System.Drawing.Size(369, 357)
         Me.Panel2.TabIndex = 167
         '
         'Panel3
@@ -803,7 +832,7 @@ Partial Class FormCompany
         Me.Panel3.Controls.Add(Me.Label25)
         Me.Panel3.Controls.Add(Me.TxtTutupBulan)
         Me.Panel3.Controls.Add(Me.LblTutupBulan)
-        Me.Panel3.Location = New System.Drawing.Point(7, 333)
+        Me.Panel3.Location = New System.Drawing.Point(7, 402)
         Me.Panel3.Name = "Panel3"
         Me.Panel3.Size = New System.Drawing.Size(369, 95)
         Me.Panel3.TabIndex = 168
@@ -844,6 +873,7 @@ Partial Class FormCompany
         'TxtTutupBulan
         '
         Me.TxtTutupBulan.BackColor = System.Drawing.SystemColors.Window
+        Me.TxtTutupBulan.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
         Me.TxtTutupBulan.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.TxtTutupBulan.Location = New System.Drawing.Point(141, 60)
         Me.TxtTutupBulan.Name = "TxtTutupBulan"
@@ -862,21 +892,21 @@ Partial Class FormCompany
         Me.LblTutupBulan.Text = "Tanggal tutup bulan :"
         Me.LblTutupBulan.TextAlign = System.Drawing.ContentAlignment.MiddleRight
         '
-        'PBGantiLogo
+        'PBNota
         '
-        Me.PBGantiLogo.BackColor = System.Drawing.Color.WhiteSmoke
-        Me.PBGantiLogo.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
-        Me.PBGantiLogo.Location = New System.Drawing.Point(907, 81)
-        Me.PBGantiLogo.Name = "PBGantiLogo"
-        Me.PBGantiLogo.Size = New System.Drawing.Size(194, 118)
-        Me.PBGantiLogo.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom
-        Me.PBGantiLogo.TabIndex = 192
-        Me.PBGantiLogo.TabStop = False
+        Me.PBNota.BackColor = System.Drawing.Color.WhiteSmoke
+        Me.PBNota.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
+        Me.PBNota.Location = New System.Drawing.Point(906, 62)
+        Me.PBNota.Name = "PBNota"
+        Me.PBNota.Size = New System.Drawing.Size(194, 118)
+        Me.PBNota.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom
+        Me.PBNota.TabIndex = 192
+        Me.PBNota.TabStop = False
         '
         'Label106
         '
         Me.Label106.AutoSize = True
-        Me.Label106.Location = New System.Drawing.Point(969, 65)
+        Me.Label106.Location = New System.Drawing.Point(968, 45)
         Me.Label106.Name = "Label106"
         Me.Label106.Size = New System.Drawing.Size(70, 13)
         Me.Label106.TabIndex = 196
@@ -892,8 +922,24 @@ Partial Class FormCompany
         Me.PanelHeader.Location = New System.Drawing.Point(0, 0)
         Me.PanelHeader.Margin = New System.Windows.Forms.Padding(4, 3, 4, 3)
         Me.PanelHeader.Name = "PanelHeader"
-        Me.PanelHeader.Size = New System.Drawing.Size(1151, 34)
+        Me.PanelHeader.Size = New System.Drawing.Size(1115, 34)
         Me.PanelHeader.TabIndex = 197
+        '
+        'BtnClose
+        '
+        Me.BtnClose.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.BtnClose.BackColor = System.Drawing.Color.SandyBrown
+        Me.BtnClose.FlatAppearance.BorderSize = 0
+        Me.BtnClose.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Gray
+        Me.BtnClose.FlatStyle = System.Windows.Forms.FlatStyle.Flat
+        Me.BtnClose.ForeColor = System.Drawing.Color.Black
+        Me.BtnClose.Image = CType(resources.GetObject("BtnClose.Image"), System.Drawing.Image)
+        Me.BtnClose.Location = New System.Drawing.Point(1081, 2)
+        Me.BtnClose.Margin = New System.Windows.Forms.Padding(4, 3, 4, 3)
+        Me.BtnClose.Name = "BtnClose"
+        Me.BtnClose.Size = New System.Drawing.Size(31, 31)
+        Me.BtnClose.TabIndex = 0
+        Me.BtnClose.UseVisualStyleBackColor = False
         '
         'Label28
         '
@@ -910,36 +956,123 @@ Partial Class FormCompany
         Me.Label28.TabIndex = 20
         Me.Label28.Text = "COMPANY"
         '
-        'BtnClose
+        'Label26
         '
-        Me.BtnClose.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.BtnClose.BackColor = System.Drawing.Color.SandyBrown
-        Me.BtnClose.FlatAppearance.BorderSize = 0
-        Me.BtnClose.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Gray
-        Me.BtnClose.FlatStyle = System.Windows.Forms.FlatStyle.Flat
-        Me.BtnClose.ForeColor = System.Drawing.Color.Black
-        Me.BtnClose.Image = CType(resources.GetObject("BtnClose.Image"), System.Drawing.Image)
-        Me.BtnClose.Location = New System.Drawing.Point(1117, 2)
-        Me.BtnClose.Margin = New System.Windows.Forms.Padding(4, 3, 4, 3)
-        Me.BtnClose.Name = "BtnClose"
-        Me.BtnClose.Size = New System.Drawing.Size(31, 31)
-        Me.BtnClose.TabIndex = 0
-        Me.BtnClose.UseVisualStyleBackColor = False
+        Me.Label26.AutoSize = True
+        Me.Label26.Location = New System.Drawing.Point(968, 238)
+        Me.Label26.Name = "Label26"
+        Me.Label26.Size = New System.Drawing.Size(70, 13)
+        Me.Label26.TabIndex = 200
+        Me.Label26.Text = "LOGO TOKO"
+        Me.Label26.TextAlign = System.Drawing.ContentAlignment.MiddleRight
+        '
+        'PBToko
+        '
+        Me.PBToko.BackColor = System.Drawing.Color.WhiteSmoke
+        Me.PBToko.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
+        Me.PBToko.Location = New System.Drawing.Point(906, 255)
+        Me.PBToko.Name = "PBToko"
+        Me.PBToko.Size = New System.Drawing.Size(194, 118)
+        Me.PBToko.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom
+        Me.PBToko.TabIndex = 199
+        Me.PBToko.TabStop = False
+        '
+        'BtnToko
+        '
+        Me.BtnToko.AutoSize = True
+        Me.BtnToko.BackColor = System.Drawing.Color.FromArgb(CType(CType(128, Byte), Integer), CType(CType(255, Byte), Integer), CType(CType(128, Byte), Integer))
+        Me.BtnToko.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom
+        Me.BtnToko.FlatStyle = System.Windows.Forms.FlatStyle.Popup
+        Me.BtnToko.Font = New System.Drawing.Font("Century Gothic", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.BtnToko.ForeColor = System.Drawing.Color.Black
+        Me.BtnToko.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft
+        Me.BtnToko.Location = New System.Drawing.Point(940, 374)
+        Me.BtnToko.Name = "BtnToko"
+        Me.BtnToko.Size = New System.Drawing.Size(126, 28)
+        Me.BtnToko.TabIndex = 198
+        Me.BtnToko.Text = "Ganti Logo Toko"
+        Me.BtnToko.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText
+        Me.BtnToko.UseVisualStyleBackColor = False
+        '
+        'Label29
+        '
+        Me.Label29.AutoSize = True
+        Me.Label29.Location = New System.Drawing.Point(960, 417)
+        Me.Label29.Name = "Label29"
+        Me.Label29.Size = New System.Drawing.Size(87, 13)
+        Me.Label29.TabIndex = 203
+        Me.Label29.Text = "LOGO GUDANG"
+        Me.Label29.TextAlign = System.Drawing.ContentAlignment.MiddleRight
+        '
+        'PBGudang
+        '
+        Me.PBGudang.BackColor = System.Drawing.Color.WhiteSmoke
+        Me.PBGudang.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
+        Me.PBGudang.Location = New System.Drawing.Point(906, 434)
+        Me.PBGudang.Name = "PBGudang"
+        Me.PBGudang.Size = New System.Drawing.Size(194, 118)
+        Me.PBGudang.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom
+        Me.PBGudang.TabIndex = 202
+        Me.PBGudang.TabStop = False
+        '
+        'BtnGudang
+        '
+        Me.BtnGudang.AutoSize = True
+        Me.BtnGudang.BackColor = System.Drawing.Color.FromArgb(CType(CType(128, Byte), Integer), CType(CType(255, Byte), Integer), CType(CType(128, Byte), Integer))
+        Me.BtnGudang.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom
+        Me.BtnGudang.FlatStyle = System.Windows.Forms.FlatStyle.Popup
+        Me.BtnGudang.Font = New System.Drawing.Font("Century Gothic", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.BtnGudang.ForeColor = System.Drawing.Color.Black
+        Me.BtnGudang.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft
+        Me.BtnGudang.Location = New System.Drawing.Point(929, 553)
+        Me.BtnGudang.Name = "BtnGudang"
+        Me.BtnGudang.Size = New System.Drawing.Size(149, 28)
+        Me.BtnGudang.TabIndex = 201
+        Me.BtnGudang.Text = "Ganti Logo Gudang"
+        Me.BtnGudang.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText
+        Me.BtnGudang.UseVisualStyleBackColor = False
+        '
+        'TxtFooter3
+        '
+        Me.TxtFooter3.BackColor = System.Drawing.SystemColors.Window
+        Me.TxtFooter3.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
+        Me.TxtFooter3.Font = New System.Drawing.Font("Century Gothic", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.TxtFooter3.Location = New System.Drawing.Point(80, 285)
+        Me.TxtFooter3.Multiline = True
+        Me.TxtFooter3.Name = "TxtFooter3"
+        Me.TxtFooter3.Size = New System.Drawing.Size(282, 67)
+        Me.TxtFooter3.TabIndex = 65
+        Me.TxtFooter3.Text = "Garansi barang elektronik"
+        '
+        'Label30
+        '
+        Me.Label30.AutoSize = True
+        Me.Label30.Font = New System.Drawing.Font("Century Gothic", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.Label30.Location = New System.Drawing.Point(13, 285)
+        Me.Label30.Name = "Label30"
+        Me.Label30.Size = New System.Drawing.Size(59, 17)
+        Me.Label30.TabIndex = 66
+        Me.Label30.Text = "Foter 3 :"
+        Me.Label30.TextAlign = System.Drawing.ContentAlignment.MiddleRight
         '
         'FormCompany
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(1151, 522)
+        Me.ClientSize = New System.Drawing.Size(1115, 598)
+        Me.Controls.Add(Me.Label29)
+        Me.Controls.Add(Me.PBGudang)
+        Me.Controls.Add(Me.BtnGudang)
+        Me.Controls.Add(Me.Label26)
+        Me.Controls.Add(Me.PBToko)
+        Me.Controls.Add(Me.BtnToko)
         Me.Controls.Add(Me.PanelHeader)
         Me.Controls.Add(Me.Label106)
-        Me.Controls.Add(Me.PBGantiLogo)
+        Me.Controls.Add(Me.PBNota)
         Me.Controls.Add(Me.Panel3)
         Me.Controls.Add(Me.Panel2)
         Me.Controls.Add(Me.Panel1)
-        Me.Controls.Add(Me.BTNGantiLogo)
-        Me.Controls.Add(Me.BtnHapus)
-        Me.Controls.Add(Me.BtnSimpan)
+        Me.Controls.Add(Me.BtnNota)
         Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None
         Me.KeyPreview = True
         Me.Name = "FormCompany"
@@ -952,9 +1085,11 @@ Partial Class FormCompany
         Me.Panel2.PerformLayout()
         Me.Panel3.ResumeLayout(False)
         Me.Panel3.PerformLayout()
-        CType(Me.PBGantiLogo, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.PBNota, System.ComponentModel.ISupportInitialize).EndInit()
         Me.PanelHeader.ResumeLayout(False)
         Me.PanelHeader.PerformLayout()
+        CType(Me.PBToko, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.PBGudang, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ResumeLayout(False)
         Me.PerformLayout()
 
@@ -970,7 +1105,7 @@ Partial Class FormCompany
     Friend WithEvents Label6 As System.Windows.Forms.Label
     Friend WithEvents TxtIdPerusahaan As System.Windows.Forms.TextBox
     Friend WithEvents Label9 As System.Windows.Forms.Label
-    Friend WithEvents BTNGantiLogo As System.Windows.Forms.Button
+    Friend WithEvents BtnNota As System.Windows.Forms.Button
     Friend WithEvents OpenFileDialog1 As System.Windows.Forms.OpenFileDialog
     Friend WithEvents TxtKabKota As System.Windows.Forms.TextBox
     Friend WithEvents Label17 As System.Windows.Forms.Label
@@ -1027,9 +1162,17 @@ Partial Class FormCompany
     Friend WithEvents LblTutupBulan As System.Windows.Forms.Label
     Friend WithEvents Label27 As System.Windows.Forms.Label
     Friend WithEvents CmbTutupBulan As System.Windows.Forms.ComboBox
-    Friend WithEvents PBGantiLogo As System.Windows.Forms.PictureBox
+    Friend WithEvents PBNota As System.Windows.Forms.PictureBox
     Friend WithEvents Label106 As System.Windows.Forms.Label
     Friend WithEvents PanelHeader As System.Windows.Forms.Panel
     Friend WithEvents Label28 As System.Windows.Forms.Label
     Friend WithEvents BtnClose As Button
+    Friend WithEvents Label26 As Label
+    Friend WithEvents PBToko As PictureBox
+    Friend WithEvents BtnToko As Button
+    Friend WithEvents Label29 As Label
+    Friend WithEvents PBGudang As PictureBox
+    Friend WithEvents BtnGudang As Button
+    Friend WithEvents TxtFooter3 As TextBox
+    Friend WithEvents Label30 As Label
 End Class

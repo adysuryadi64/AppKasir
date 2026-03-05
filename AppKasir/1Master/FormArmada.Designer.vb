@@ -192,6 +192,7 @@ Partial Class FormArmada
         'TxtJenis
         '
         Me.TxtJenis.BackColor = System.Drawing.SystemColors.Window
+        Me.TxtJenis.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
         Me.TxtJenis.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.TxtJenis.Location = New System.Drawing.Point(130, 57)
         Me.TxtJenis.Name = "TxtJenis"
@@ -201,6 +202,7 @@ Partial Class FormArmada
         'TxtKode
         '
         Me.TxtKode.BackColor = System.Drawing.SystemColors.Window
+        Me.TxtKode.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
         Me.TxtKode.Enabled = False
         Me.TxtKode.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.TxtKode.Location = New System.Drawing.Point(130, 10)
@@ -211,6 +213,7 @@ Partial Class FormArmada
         'TxtNopol
         '
         Me.TxtNopol.BackColor = System.Drawing.SystemColors.Window
+        Me.TxtNopol.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
         Me.TxtNopol.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.TxtNopol.Location = New System.Drawing.Point(130, 33)
         Me.TxtNopol.Name = "TxtNopol"

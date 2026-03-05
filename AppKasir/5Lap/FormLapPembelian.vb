@@ -269,8 +269,8 @@ Public Class FormLapPembelian
             cmdDataRetur.Parameters.AddWithValue("@IdUser", String.Format("%{0}%", kasir))
 
             Using rdDataRetur As MySqlDataReader = cmdDataRetur.ExecuteReader()
-                Dim datasetRetur As New DataSetKL()
-                datasetRetur.Load(rdDataRetur, LoadOption.OverwriteChanges, "pembelian")
+                Dim dt As New DataTable("pembelian")
+                dt.Load(rdDataRetur)
 
                 ' Menambahkan parameter ke laporan RDLC
                 Dim keterangan As String = "          kasir : " & CmbKasir.Text & "          Rekening : " & CmbRekening.Text
@@ -282,7 +282,9 @@ Public Class FormLapPembelian
 }
                 ' Menetapkan dataset dan parameter ke laporan RDLC
                 ReportViewer1.LocalReport.DataSources.Clear()
-                ReportViewer1.LocalReport.DataSources.Add(New ReportDataSource("DataSet1", datasetRetur.Tables("pembelian")))
+                ReportViewer1.LocalReport.DataSources.Add(
+        New ReportDataSource("DataSet1", dt)
+    )
                 ReportViewer1.LocalReport.SetParameters(parametersRetur)
 
                 ' Menampilkan laporan RDLC
@@ -305,8 +307,8 @@ Public Class FormLapPembelian
             command.Parameters.AddWithValue("@NAMA_SUPLIYER", String.Format("%{0}%", rekeningatauSupplier))
 
             Using reader As MySqlDataReader = command.ExecuteReader()
-                Dim dataset As New DataSetKL()
-                dataset.Load(reader, LoadOption.OverwriteChanges, "pembelian_detail1")
+                Dim dt As New DataTable("pembelian_detail1")
+                dt.Load(reader)
 
                 Dim keterangan As String = "          kasir : " & CmbKasir.Text & "          Supplier : " & CmbRekening.Text
 
@@ -317,12 +319,15 @@ Public Class FormLapPembelian
                 }
 
                 ReportViewer2.LocalReport.DataSources.Clear()
-                ReportViewer2.LocalReport.DataSources.Add(New ReportDataSource("DataSet1", dataset.Tables("pembelian_detail1")))
+                ReportViewer2.LocalReport.DataSources.Add(
+        New ReportDataSource("DataSet1", dt)
+    )
                 ReportViewer2.LocalReport.SetParameters(parameters)
                 ReportViewer2.RefreshReport()
             End Using
         End Using
     End Sub
+
 
     Private Sub PembelianBarang(ByVal kasir As String, ByVal rekeningatauSupplier As String, ByVal tanggalAwal As Date, ByVal tanggalAkhir As Date)
         Dim query As String = "SELECT ID_BARANG, NAMA_BARANG, MAX(SATUAN) AS SATUAN, SUM(QTY) as QTY, " &
@@ -340,8 +345,8 @@ Public Class FormLapPembelian
             command.Parameters.AddWithValue("@NAMA_SUPLIYER", String.Format("%{0}%", rekeningatauSupplier))
 
             Using reader As MySqlDataReader = command.ExecuteReader()
-                Dim dataset As New DataSetKL()
-                dataset.Load(reader, LoadOption.OverwriteChanges, "pembelian_barang")
+                Dim dt As New DataTable("pembelian_barang")
+                dt.Load(reader)   ' ✅ BENAR
 
                 Dim keterangan As String = "                    kasir : " & CmbKasir.Text & "                    Supplier : " & CmbRekening.Text
 
@@ -352,7 +357,9 @@ Public Class FormLapPembelian
                 }
 
                 ReportViewer3.LocalReport.DataSources.Clear()
-                ReportViewer3.LocalReport.DataSources.Add(New ReportDataSource("DataSet1", dataset.Tables("pembelian_barang")))
+                ReportViewer3.LocalReport.DataSources.Add(
+                New ReportDataSource("DataSet1", dt)   ' ✅ BENAR
+            )
                 ReportViewer3.LocalReport.SetParameters(parameters)
                 ReportViewer3.RefreshReport()
             End Using
@@ -373,8 +380,8 @@ Public Class FormLapPembelian
             cmdDataRetur.Parameters.AddWithValue("@IdUser", String.Format("%{0}%", kasir))
 
             Using rdDataRetur As MySqlDataReader = cmdDataRetur.ExecuteReader()
-                Dim datasetRetur As New DataSetKL()
-                datasetRetur.Load(rdDataRetur, LoadOption.OverwriteChanges, "pembelianHutang")
+                Dim dt As New DataTable("pembelianHutang")
+                dt.Load(rdDataRetur)
 
                 ' Menambahkan parameter ke laporan RDLC
                 Dim keterangan As String = "          kasir : " & CmbKasir.Text & "          Rekening : " & CmbRekening.Text
@@ -386,7 +393,9 @@ Public Class FormLapPembelian
 }
                 ' Menetapkan dataset dan parameter ke laporan RDLC
                 ReportViewer4.LocalReport.DataSources.Clear()
-                ReportViewer4.LocalReport.DataSources.Add(New ReportDataSource("DataSet1", datasetRetur.Tables("pembelianHutang")))
+                ReportViewer4.LocalReport.DataSources.Add(
+        New ReportDataSource("DataSet1", dt)
+    )
                 ReportViewer4.LocalReport.SetParameters(parametersRetur)
 
                 ' Menampilkan laporan RDLC

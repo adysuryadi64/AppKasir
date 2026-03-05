@@ -25,23 +25,14 @@ Partial Class NotaPembelian
         Me.components = New System.ComponentModel.Container()
         Dim ReportDataSource1 As Microsoft.Reporting.WinForms.ReportDataSource = New Microsoft.Reporting.WinForms.ReportDataSource()
         Me.NotaPembelianBindingSource = New System.Windows.Forms.BindingSource(Me.components)
-        'Me.PossDataSet = New AppKasir.PossDataSetLancar()
         Me.ReportViewer1 = New Microsoft.Reporting.WinForms.ReportViewer()
-        'Me.NotaPembelianTableAdapter = New AppKasir.PossDataSetLancarTableAdapters.NotaPembelianTableAdapter()
         Me.TxtIdPembelian = New System.Windows.Forms.TextBox()
         CType(Me.NotaPembelianBindingSource, System.ComponentModel.ISupportInitialize).BeginInit()
-        'CType(Me.PossDataSet, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
         'NotaPembelianBindingSource
         '
         Me.NotaPembelianBindingSource.DataMember = "NotaPembelian"
-        'Me.NotaPembelianBindingSource.DataSource = Me.PossDataSet
-        '
-        'PossDataSet
-        '
-        'Me.PossDataSet.DataSetName = "PossDataSet"
-        'Me.PossDataSet.SchemaSerializationMode = System.Data.SchemaSerializationMode.IncludeSchema
         '
         'ReportViewer1
         '
@@ -52,12 +43,9 @@ Partial Class NotaPembelian
         Me.ReportViewer1.LocalReport.ReportEmbeddedResource = "KasirLancar.NotaPembelian.rdlc"
         Me.ReportViewer1.Location = New System.Drawing.Point(0, 0)
         Me.ReportViewer1.Name = "ReportViewer1"
+        Me.ReportViewer1.ServerReport.BearerToken = Nothing
         Me.ReportViewer1.Size = New System.Drawing.Size(806, 695)
         Me.ReportViewer1.TabIndex = 0
-        '
-        'NotaPembelianTableAdapter
-        '
-        'Me.NotaPembelianTableAdapter.ClearBeforeFill = True
         '
         'TxtIdPembelian
         '
@@ -81,7 +69,6 @@ Partial Class NotaPembelian
         Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen
         Me.Text = "Nota Pembelian"
         CType(Me.NotaPembelianBindingSource, System.ComponentModel.ISupportInitialize).EndInit()
-        'CType(Me.PossDataSet, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ResumeLayout(False)
         Me.PerformLayout()
 

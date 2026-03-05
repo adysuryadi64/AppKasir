@@ -1,7 +1,5 @@
 ﻿Imports System.Reflection
 
-
-
 Public Class FormArmada
 
     Private Sub FormArmada_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load

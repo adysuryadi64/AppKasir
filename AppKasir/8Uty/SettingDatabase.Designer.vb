@@ -42,12 +42,14 @@ Partial Class SettingDatabase
         Me.Panel4 = New System.Windows.Forms.Panel()
         Me.BtnClose = New System.Windows.Forms.Button()
         Me.Label7 = New System.Windows.Forms.Label()
+        Me.BtnBuatDB = New System.Windows.Forms.Button()
         Me.Panel2.SuspendLayout()
         Me.Panel4.SuspendLayout()
         Me.SuspendLayout()
         '
         'Panel2
         '
+        Me.Panel2.Controls.Add(Me.BtnBuatDB)
         Me.Panel2.Controls.Add(Me.ListDatabase)
         Me.Panel2.Controls.Add(Me.BtnCekDatabase)
         Me.Panel2.Controls.Add(Me.LblStatus)
@@ -73,7 +75,7 @@ Partial Class SettingDatabase
         Me.ListDatabase.FormattingEnabled = True
         Me.ListDatabase.Location = New System.Drawing.Point(416, 23)
         Me.ListDatabase.Name = "ListDatabase"
-        Me.ListDatabase.Size = New System.Drawing.Size(139, 108)
+        Me.ListDatabase.Size = New System.Drawing.Size(139, 134)
         Me.ListDatabase.TabIndex = 182
         '
         'BtnCekDatabase
@@ -88,7 +90,7 @@ Partial Class SettingDatabase
         Me.BtnCekDatabase.ForeColor = System.Drawing.Color.Black
         Me.BtnCekDatabase.Image = CType(resources.GetObject("BtnCekDatabase.Image"), System.Drawing.Image)
         Me.BtnCekDatabase.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft
-        Me.BtnCekDatabase.Location = New System.Drawing.Point(416, 137)
+        Me.BtnCekDatabase.Location = New System.Drawing.Point(416, 164)
         Me.BtnCekDatabase.Name = "BtnCekDatabase"
         Me.BtnCekDatabase.Size = New System.Drawing.Size(139, 35)
         Me.BtnCekDatabase.TabIndex = 181
@@ -182,7 +184,7 @@ Partial Class SettingDatabase
         Me.BtnCek.ForeColor = System.Drawing.Color.Black
         Me.BtnCek.Image = CType(resources.GetObject("BtnCek.Image"), System.Drawing.Image)
         Me.BtnCek.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft
-        Me.BtnCek.Location = New System.Drawing.Point(271, 166)
+        Me.BtnCek.Location = New System.Drawing.Point(144, 166)
         Me.BtnCek.Name = "BtnCek"
         Me.BtnCek.Size = New System.Drawing.Size(139, 33)
         Me.BtnCek.TabIndex = 59
@@ -302,6 +304,26 @@ Partial Class SettingDatabase
         Me.Label7.TabIndex = 1
         Me.Label7.Text = "Koneksi Database"
         '
+        'BtnBuatDB
+        '
+        Me.BtnBuatDB.BackColor = System.Drawing.Color.Silver
+        Me.BtnBuatDB.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom
+        Me.BtnBuatDB.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(CType(CType(224, Byte), Integer), CType(CType(224, Byte), Integer), CType(CType(224, Byte), Integer))
+        Me.BtnBuatDB.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(CType(CType(224, Byte), Integer), CType(CType(224, Byte), Integer), CType(CType(224, Byte), Integer))
+        Me.BtnBuatDB.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Yellow
+        Me.BtnBuatDB.FlatStyle = System.Windows.Forms.FlatStyle.Popup
+        Me.BtnBuatDB.Font = New System.Drawing.Font("Century Gothic", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.BtnBuatDB.ForeColor = System.Drawing.Color.Black
+        Me.BtnBuatDB.Image = CType(resources.GetObject("BtnBuatDB.Image"), System.Drawing.Image)
+        Me.BtnBuatDB.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft
+        Me.BtnBuatDB.Location = New System.Drawing.Point(13, 326)
+        Me.BtnBuatDB.Name = "BtnBuatDB"
+        Me.BtnBuatDB.Size = New System.Drawing.Size(139, 33)
+        Me.BtnBuatDB.TabIndex = 183
+        Me.BtnBuatDB.Text = "Buat Database"
+        Me.BtnBuatDB.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText
+        Me.BtnBuatDB.UseVisualStyleBackColor = False
+        '
         'SettingDatabase
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
@@ -341,4 +363,5 @@ Partial Class SettingDatabase
     Friend WithEvents ListDatabase As System.Windows.Forms.ListBox
     Friend WithEvents BtnCekDatabase As System.Windows.Forms.Button
     Friend WithEvents BtnClose As Button
+    Friend WithEvents BtnBuatDB As Button
 End Class

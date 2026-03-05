@@ -2,11 +2,9 @@
 Imports System.Text.Json
 
 Public Class SettingDatabase
-    Private configFilePath As String
 
     Private Sub Form1_Load(ByVal sender As Object, ByVal e As EventArgs) Handles MyBase.Load
         LblStatus.Text = "Silahkan tes koneksi dulu sebelum menyimpan ... !!!"
-        configFilePath = Path.Combine(Application.StartupPath, "database.json")
         LoadConfiguration()
     End Sub
 
@@ -186,5 +184,28 @@ Public Class SettingDatabase
 
     Private Sub BtnClose_Click(sender As Object, e As EventArgs) Handles BtnClose.Click
         Me.Close()
+    End Sub
+
+    Private Sub BtnBuatDB_Click(sender As Object, e As EventArgs) Handles BtnBuatDB.Click
+        Using openFileDialog As New OpenFileDialog()
+            openFileDialog.Filter = "SQL Files (*.sql)|*.sql|All Files (*.*)|*.*"
+            openFileDialog.Title = "Pilih File Backup"
+
+            If openFileDialog.ShowDialog() = DialogResult.OK Then
+                Dim backupFilePath As String = openFileDialog.FileName
+
+                ' Deserialisasi konfigurasi dari file biner
+                Using stream As New FileStream(configFilePath, FileMode.Open, FileAccess.Read)
+                    Dim json As String = File.ReadAllText(configFilePath)
+                    Dim konfigurasi As DatabaseConfiguration = JsonSerializer.Deserialize(Of DatabaseConfiguration)(json)
+                    konfigurasi.Password = DecryptPassword(konfigurasi.Password)
+
+                    Cursor = Cursors.WaitCursor
+                    ' Panggil metode restore
+                    DatabaseRestore.RestoreDatabase(konfigurasi, backupFilePath)
+                    Cursor = Cursors.Default
+                End Using
+            End If
+        End Using
     End Sub
 End Class

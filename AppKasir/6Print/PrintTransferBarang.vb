@@ -212,7 +212,7 @@ Public Class PrintTransferBarang
         e.Graphics.DrawString(keteranganLokasi, New Drawing.Font(fontJudulDot, ukuranFontJudul, FontStyle.Bold), Brushes.Black, Mulaikata3, tinggi)
 
         tinggi += 20 + jarakBarisDot
-        e.Graphics.DrawString("Tgl    : " & Microsoft.VisualBasic.Format(tglTransfer, "dd-MM-yy hh:mm:ss"), New Drawing.Font(fontIsiDot, ukuranFontIsi), Brushes.Black, BatasKiri, tinggi)
+        e.Graphics.DrawString("Tgl    : " & tglTransfer.ToString("yyyy-MM-dd HH:mm:ss"), New Drawing.Font(fontIsiDot, ukuranFontIsi), Brushes.Black, BatasKiri, tinggi)
         e.Graphics.DrawString("Nomor  : " & TxtNota.Text, New Drawing.Font(fontIsiDot, ukuranFontIsi), Brushes.Black, Mulaikata3, tinggi)
 
 
@@ -243,10 +243,15 @@ Public Class PrintTransferBarang
                 e.Graphics.DrawString(rowIndex.ToString() & ". ", New Drawing.Font(fontIsiDot, ukuranFontIsi), Brushes.Black, Mulaikata1, tinggi, kanan)
                 e.Graphics.DrawString(row.Cells("ID_BARANG").Value.ToString(), New Drawing.Font(fontIsiDot, ukuranFontIsi), Brushes.Black, Mulaikata1, tinggi)
                 e.Graphics.DrawString(row.Cells("NAMA_BARANG").Value.ToString(), New Drawing.Font(fontIsiDot, ukuranFontIsi), Brushes.Black, Mulaikata2, tinggi)
-                e.Graphics.DrawString(Microsoft.VisualBasic.Format(Convert.ToDecimal(row.Cells("HARGA").Value), "##,##0"), New Drawing.Font(fontIsiDot, ukuranFontIsi), Brushes.Black, Mulaikata5, tinggi, kanan)
-                e.Graphics.DrawString(Microsoft.VisualBasic.Format(Convert.ToDecimal(row.Cells("QTY").Value), "##,##0"), New Drawing.Font(fontIsiDot, ukuranFontIsi), Brushes.Black, Mulaikata6, tinggi, kanan)
+
+                ' Format angka dengan ribuan dan tanpa desimal
+                e.Graphics.DrawString(Convert.ToDecimal(row.Cells("HARGA").Value).ToString("N0"), New Drawing.Font(fontIsiDot, ukuranFontIsi), Brushes.Black, Mulaikata5, tinggi, kanan)
+                e.Graphics.DrawString(Convert.ToDecimal(row.Cells("QTY").Value).ToString("N0"), New Drawing.Font(fontIsiDot, ukuranFontIsi), Brushes.Black, Mulaikata6, tinggi, kanan)
+
                 e.Graphics.DrawString(row.Cells("SATUAN").Value.ToString(), New Drawing.Font(fontIsiDot, ukuranFontIsi), Brushes.Black, Mulaikata6, tinggi)
-                e.Graphics.DrawString(Microsoft.VisualBasic.Format(Convert.ToDecimal(row.Cells("TOTAL").Value), "##,##0"), New Drawing.Font(fontIsiDot, ukuranFontIsi), Brushes.Black, Mulaikata7, tinggi, kanan)
+
+                e.Graphics.DrawString(Convert.ToDecimal(row.Cells("TOTAL").Value).ToString("N0"), New Drawing.Font(fontIsiDot, ukuranFontIsi), Brushes.Black, Mulaikata7, tinggi, kanan)
+
             End If
         Next
 

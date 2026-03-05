@@ -24,6 +24,7 @@ Public Class FormHistory
         DateTimePicker1.Value = DateTime.Now
         DateTimePicker2.Value = DateTime.Now
         ReportViewer1.RefreshReport()
+        ComboBox1.SelectedIndex = 0
     End Sub
 
     Private Sub BtnPreview_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles BtnPreview.Click

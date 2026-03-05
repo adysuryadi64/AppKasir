@@ -44,6 +44,7 @@ Partial Class FormBarang
         Me.Txtkodebarang = New System.Windows.Forms.TextBox()
         Me.ContextMenuStrip1 = New System.Windows.Forms.ContextMenuStrip(Me.components)
         Me.DetailStokToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.HistoriPembelianToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.RefreshToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripMenuItem2 = New System.Windows.Forms.ToolStripSeparator()
         Me.TambahToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
@@ -213,6 +214,7 @@ Partial Class FormBarang
         Me.Label83 = New System.Windows.Forms.Label()
         Me.Label25 = New System.Windows.Forms.Label()
         Me.Label26 = New System.Windows.Forms.Label()
+        Me.BarcodeToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         CType(Me.DGBarang, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.PanelOperasi.SuspendLayout()
         Me.PanelCari.SuspendLayout()
@@ -306,6 +308,7 @@ Partial Class FormBarang
         'TxtCari
         '
         Me.TxtCari.BackColor = System.Drawing.Color.White
+        Me.TxtCari.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
         Me.TxtCari.Font = New System.Drawing.Font("Century Gothic", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.TxtCari.ForeColor = System.Drawing.Color.Black
         Me.TxtCari.Location = New System.Drawing.Point(5, 4)
@@ -440,6 +443,7 @@ Partial Class FormBarang
         'Txtnamabarang
         '
         Me.Txtnamabarang.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.Txtnamabarang.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
         Me.Txtnamabarang.Font = New System.Drawing.Font("Calibri", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.Txtnamabarang.ForeColor = System.Drawing.Color.Teal
         Me.Txtnamabarang.Location = New System.Drawing.Point(535, 446)
@@ -451,6 +455,7 @@ Partial Class FormBarang
         'Txtkodebarang
         '
         Me.Txtkodebarang.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.Txtkodebarang.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
         Me.Txtkodebarang.Font = New System.Drawing.Font("Calibri", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.Txtkodebarang.ForeColor = System.Drawing.Color.Teal
         Me.Txtkodebarang.Location = New System.Drawing.Point(566, 446)
@@ -462,15 +467,21 @@ Partial Class FormBarang
         'ContextMenuStrip1
         '
         Me.ContextMenuStrip1.Font = New System.Drawing.Font("Segoe UI", 9.0!)
-        Me.ContextMenuStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.DetailStokToolStripMenuItem, Me.RefreshToolStripMenuItem, Me.ToolStripMenuItem2, Me.TambahToolStripMenuItem, Me.EditToolStripMenuItem, Me.HapusStokToolStripMenuItem, Me.ToolStripMenuItem3, Me.TambahStokToolStripMenuItem, Me.KurangiStokToolStripMenuItem, Me.ToolStripMenuItem1, Me.FilterBarangToolStripMenuItem, Me.HargaBeliHargaJualUmumKecilToolStripMenuItem, Me.ToolStripMenuItem5, Me.ExportDataBarangToolStripMenuItem, Me.ImportDataBarangToolStripMenuItem, Me.ToolStripMenuItem4, Me.CetakBarcodeToolStripMenuItem, Me.LabelBarangToolStripMenuItem, Me.PerbaikiDatabase, Me.PerbaruiStokBarangToolStripMenuItem, Me.ToolStripMenuItem6, Me.CetakLabelToolStripMenuItem, Me.CetakBarcodeToolStripMenuItem1})
+        Me.ContextMenuStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.DetailStokToolStripMenuItem, Me.HistoriPembelianToolStripMenuItem, Me.RefreshToolStripMenuItem, Me.ToolStripMenuItem2, Me.TambahToolStripMenuItem, Me.EditToolStripMenuItem, Me.HapusStokToolStripMenuItem, Me.ToolStripMenuItem3, Me.TambahStokToolStripMenuItem, Me.KurangiStokToolStripMenuItem, Me.ToolStripMenuItem1, Me.FilterBarangToolStripMenuItem, Me.HargaBeliHargaJualUmumKecilToolStripMenuItem, Me.ToolStripMenuItem5, Me.ExportDataBarangToolStripMenuItem, Me.ImportDataBarangToolStripMenuItem, Me.ToolStripMenuItem4, Me.CetakBarcodeToolStripMenuItem, Me.LabelBarangToolStripMenuItem, Me.PerbaikiDatabase, Me.PerbaruiStokBarangToolStripMenuItem, Me.ToolStripMenuItem6, Me.CetakLabelToolStripMenuItem, Me.CetakBarcodeToolStripMenuItem1, Me.BarcodeToolStripMenuItem})
         Me.ContextMenuStrip1.Name = "ContextMenuStrip1"
-        Me.ContextMenuStrip1.Size = New System.Drawing.Size(212, 436)
+        Me.ContextMenuStrip1.Size = New System.Drawing.Size(212, 480)
         '
         'DetailStokToolStripMenuItem
         '
         Me.DetailStokToolStripMenuItem.Name = "DetailStokToolStripMenuItem"
         Me.DetailStokToolStripMenuItem.Size = New System.Drawing.Size(211, 22)
         Me.DetailStokToolStripMenuItem.Text = "Detail Barang"
+        '
+        'HistoriPembelianToolStripMenuItem
+        '
+        Me.HistoriPembelianToolStripMenuItem.Name = "HistoriPembelianToolStripMenuItem"
+        Me.HistoriPembelianToolStripMenuItem.Size = New System.Drawing.Size(211, 22)
+        Me.HistoriPembelianToolStripMenuItem.Text = "Histori pembelian"
         '
         'RefreshToolStripMenuItem
         '
@@ -771,6 +782,7 @@ Partial Class FormBarang
         '
         'TxtStokTotalGudangT
         '
+        Me.TxtStokTotalGudangT.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
         Me.TxtStokTotalGudangT.Font = New System.Drawing.Font("Century Gothic", 11.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.TxtStokTotalGudangT.Location = New System.Drawing.Point(312, 78)
         Me.TxtStokTotalGudangT.Name = "TxtStokTotalGudangT"
@@ -781,6 +793,7 @@ Partial Class FormBarang
         '
         'TxtStokTotalTokoT
         '
+        Me.TxtStokTotalTokoT.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
         Me.TxtStokTotalTokoT.Font = New System.Drawing.Font("Century Gothic", 11.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.TxtStokTotalTokoT.Location = New System.Drawing.Point(312, 47)
         Me.TxtStokTotalTokoT.Name = "TxtStokTotalTokoT"
@@ -791,6 +804,7 @@ Partial Class FormBarang
         '
         'TxtSatIsiGudangT
         '
+        Me.TxtSatIsiGudangT.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
         Me.TxtSatIsiGudangT.Font = New System.Drawing.Font("Century Gothic", 11.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.TxtSatIsiGudangT.Location = New System.Drawing.Point(279, 78)
         Me.TxtSatIsiGudangT.Name = "TxtSatIsiGudangT"
@@ -801,6 +815,7 @@ Partial Class FormBarang
         '
         'TxtSatIsiTokoT
         '
+        Me.TxtSatIsiTokoT.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
         Me.TxtSatIsiTokoT.Font = New System.Drawing.Font("Century Gothic", 11.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.TxtSatIsiTokoT.Location = New System.Drawing.Point(279, 47)
         Me.TxtSatIsiTokoT.Name = "TxtSatIsiTokoT"
@@ -833,6 +848,7 @@ Partial Class FormBarang
         '
         'TxtIsiStokGudangT
         '
+        Me.TxtIsiStokGudangT.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
         Me.TxtIsiStokGudangT.Font = New System.Drawing.Font("Century Gothic", 11.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.TxtIsiStokGudangT.Location = New System.Drawing.Point(105, 78)
         Me.TxtIsiStokGudangT.Name = "TxtIsiStokGudangT"
@@ -861,6 +877,7 @@ Partial Class FormBarang
         '
         'TxtIsiStokTokoT
         '
+        Me.TxtIsiStokTokoT.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
         Me.TxtIsiStokTokoT.Font = New System.Drawing.Font("Century Gothic", 11.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.TxtIsiStokTokoT.Location = New System.Drawing.Point(105, 47)
         Me.TxtIsiStokTokoT.Name = "TxtIsiStokTokoT"
@@ -2299,6 +2316,12 @@ Partial Class FormBarang
         Me.Label26.Text = "Kode"
         Me.Label26.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
         '
+        'BarcodeToolStripMenuItem
+        '
+        Me.BarcodeToolStripMenuItem.Name = "BarcodeToolStripMenuItem"
+        Me.BarcodeToolStripMenuItem.Size = New System.Drawing.Size(211, 22)
+        Me.BarcodeToolStripMenuItem.Text = "barcode"
+        '
         'FormBarang
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
@@ -2523,4 +2546,6 @@ Partial Class FormBarang
     Friend WithEvents Label107 As System.Windows.Forms.Label
     Friend WithEvents CetakLabelToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents CetakBarcodeToolStripMenuItem1 As ToolStripMenuItem
+    Friend WithEvents HistoriPembelianToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents BarcodeToolStripMenuItem As ToolStripMenuItem
 End Class

@@ -1,6 +1,9 @@
 ﻿Public Class FormTransferStok
 
+    Private TransaksiLampau As String
+
     Private Sub FormGanti_Barang_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
+        TransaksiLampau = ModulHakAkses.BacaHakAksesSemua(FormGeneralSetting.LblTransaksiTanggalLampau.Text)
         LblLokasi.Text = FormUtama.SLokasi.Text
         Kondisiawal()
     End Sub
@@ -99,7 +102,7 @@
     End Sub
 
     Private Sub GenerateNomorTransferstok()
-        Dim cekTanggal As String = Microsoft.VisualBasic.Format(DtpTanggal.Value, "yyMMdd")
+        Dim cekTanggal As String = DtpTanggal.Value.ToString("yyMMdd")
         Dim UrutKOde As String = ""
         Dim cekNomor As String = "TS-" & cekTanggal
 
@@ -753,8 +756,12 @@
             Return
         End If
 
-        DtpTanggal.Value = DateTime.Now
-        GenerateNomorTransferstok()
+        If TransaksiLampau = "TIDAK" Then
+            DtpTanggal.Value = DateTime.Now
+            GenerateNomorTransferstok()
+        End If
+
+
         Dim transaction As MySqlTransaction = conn.BeginTransaction()
         Try
             UpdateStokMasukKeluar(transaction)

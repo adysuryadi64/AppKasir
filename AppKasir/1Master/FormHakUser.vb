@@ -13,34 +13,29 @@ Public Class FormHakUser
 
     Private Sub FormHakUser_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
         Me.Cursor = Cursors.WaitCursor
+
         Dim HAAkses As Boolean() = ModulHakAkses.BacaHakAkses(FormUtama.SLevel.Text, "Hak Akses", conn)
-        ' Terapkan nilai hak akses ke tombol-tombol
-        BtnSimpan.Visible = HAAkses(2) ' CanEdit 
+        BtnSimpan.Visible = HAAkses(2)
 
-        DataHakaksesuser()
-
-        BacaCombobox()
-        CheckModuleAllUser()
-
-        CmbUser.SelectedIndex = 0
-
-        DGVMaster.ClearSelection()
-
-        Cursor = Cursors.Default
-
-
-
-        ' Masukkan semua label ke dalam list
         labels = New List(Of Label) From {LblMasterData, LblTransaksi, LblJurnal, LblKaryawan, LblLaporan, LblUtility, LblPosting}
-
-        ' Masukkan semua DataGridView ke dalam list
         dgvList = New List(Of DataGridView) From {DGVMaster, DgvTransaksi, DgvJurnal, DgvKaryawan, DgvLaporan, DgvUtility, DgvPosting}
 
-        ' Tambahkan event handler ke setiap label
         For Each lbl As Label In labels
             AddHandler lbl.Click, AddressOf Label_Click
         Next
 
+        ' Isi DataGridView dengan data template terlebih dahulu
+        IsiDataGridViewTemplate()
+
+        ' Sinkronkan database dengan template DataGridView
+        'SinkronkanDatabaseDenganTemplate()
+
+        If CmbUser.Items.Count > 0 Then
+            CmbUser.SelectedIndex = 1
+        End If
+
+        Label_Click(LblMasterData, EventArgs.Empty)
+        Me.Cursor = Cursors.Default
     End Sub
 
     Private Sub Label_Click(sender As Object, e As EventArgs)
@@ -103,7 +98,7 @@ Public Class FormHakUser
         End Select
     End Sub
 
-    Public Sub DataHakaksesuser()
+    Public Sub IsiDataGridViewTemplate()
         ' Menampilkan hanya DataGridView yang sesuai
         DGVMaster.Visible = True
         DgvTransaksi.Visible = False
@@ -113,7 +108,7 @@ Public Class FormHakUser
         DgvUtility.Visible = False
         DgvPosting.Visible = False
 
-        ' Mengisi DataGridView dengan data yang sudah disediakan
+        ' Mengisi DataGridView dengan data template
         IsiDataGridView(DGVMaster, "MASTER", {"Toko", "Barang", "Harga Beli", "Tambah Stok", "Kurang Stok",
                                           "Export Barang", "Import Barang", "Perbaiki Data Barang",
                                           "Perbaiki isi satuan", "Pelanggan", "Supplier", "Tabel Referensi",
@@ -125,8 +120,8 @@ Public Class FormHakUser
 
         IsiDataGridView(DgvJurnal, "JURNAL", {})
 
-        IsiDataGridView(DgvKaryawan, "MENUKARYAWAN", {"MASTER GAJI", "BON", "BAYAR", "LAP BON", "LAP BON KAR",
-                                                  "GAJI", "LAP GAJI"})
+        IsiDataGridView(DgvKaryawan, "MENUKARYAWAN", {"Master gaji", "Bon", "Bayar", "Lap bon", "Lap bon karyawan",
+                                                  "Gaji", "Lap Gaji"})
 
         IsiDataGridView(DgvLaporan, "LAPORAN", {"Mutasi saldo", "Mutasi barang", "Jurnal Umum", "Neraca", "Buku Besar",
                                             "Buku Besar Pembantu", "Lap Pembelian", "Lap Penjualan",
@@ -139,8 +134,7 @@ Public Class FormHakUser
 
         IsiDataGridView(DgvPosting, "POSTING", {}, 1)
 
-        CheckAndSyncModule()
-
+        SinkronkanDatabaseDenganTemplate()
     End Sub
 
     Private Sub IsiDataGridView(dgv As DataGridView, header As String, items() As String, Optional colCount As Integer = 4)
@@ -168,118 +162,100 @@ Public Class FormHakUser
     End Sub
 
 
-    Public Sub BacaCombobox()
-        Dim SelectQuery As String = "SELECT Role, ModuleName FROM hakaksesuser WHERE ModuleName <> ''"
-        Dim moduleDict As New Dictionary(Of String, String)()
 
-        ' Ambil semua data dalam satu query
-        Using cmd As New MySqlCommand(SelectQuery, conn)
-            Using reader As MySqlDataReader = cmd.ExecuteReader()
-                While reader.Read()
-                    moduleDict(reader("Role").ToString()) = reader("ModuleName").ToString()
-                End While
-            End Using
-        End Using
+    Public Sub SinkronkanDatabaseDenganTemplate()
+        Try
+            ' Hapus duplikasi data yang mungkin ada
+            HapusDuplikasiDatabase()
 
-        ' Array ComboBox dan Label
-        Dim comboboxes() As ComboBox = {CmbBeliFokus, CmbBeliSatuan, CmbBeliRugi, CmbBeliMuculJual, CmbBeliUpdate, CmbBeliEditHarga, CmbBeliAverage, CmbJualFokus, CmbJualSatuan, CmbJualEditHarga, CmbJualRugi, CmbJualMinus, CmbEditHargaJual, CmbTransferFocus, CmbTransferSatuan, CmbTransferMinus, CmbReturFokus, CmbReturSatuan, CmbReturMinus}
-        Dim labels() As Label = {LblBeliFokus, LblBeliSatuan, LblBeliRugi, LblBeliMuculJual, LblBeliUpdate, LblBeliEditHarga, LblBeliAverage, LblJualFokus, LblJualSatuan, LblJualEditHarga, LblJualRugi, LblJualMinus, LblEditHargaJual, LblTransferFocus, LblTransferSatuan, LblTransferMinus, LblReturFokus, LblReturSatuan, LblReturMinus}
+            ' Sinkronkan setiap DataGridView
+            SinkronkanDataGridView(DGVMaster, "MASTER")
+            SinkronkanDataGridView(DgvTransaksi, "TRANSAKSI")
+            SinkronkanDataGridView(DgvJurnal, "JURNAL")
+            SinkronkanDataGridView(DgvKaryawan, "MENUKARYAWAN")
+            SinkronkanDataGridView(DgvLaporan, "LAPORAN")
+            SinkronkanDataGridView(DgvUtility, "UTILITY")
+            SinkronkanDataGridView(DgvPosting, "POSTING")
 
-        Dim defaultValues() As Integer = {0, 1, 1, 0, 0, 0, 2, 0, 1, 0, 1, 1, 1, 0, 1, 1, 0, 1, 1}
-        ' Set nilai pada ComboBox
-        For i As Integer = 0 To comboboxes.Length - 1
-            Dim role As String = labels(i).Text
-            If moduleDict.ContainsKey(role) Then
-                comboboxes(i).Text = moduleDict(role)
-            Else
-                comboboxes(i).SelectedIndex = defaultValues(i) ' Default jika tidak ditemukan
-            End If
-        Next
+        Catch ex As Exception
+            MessageBox.Show("Error sinkronasi: " & ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
+        End Try
     End Sub
 
-    Public Sub CheckModuleAllUser()
-        Dim roles() As String = {LblBeliFokus.Text, LblBeliSatuan.Text, LblBeliRugi.Text, LblBeliUpdate.Text, LblBeliMuculJual.Text, LblBeliEditHarga.Text, LblBeliAverage.Text, LblJualFokus.Text, LblJualSatuan.Text, LblJualEditHarga.Text, LblJualRugi.Text, LblJualMinus.Text, LblEditHargaJual.Text, LblTransferFocus.Text, LblTransferSatuan.Text, LblTransferMinus.Text, LblReturFokus.Text, LblReturSatuan.Text, LblReturMinus.Text}
-
-        ' Gunakan query tunggal untuk semua role
-        Dim insertQuery As String = "INSERT IGNORE INTO hakaksesuser (UserName, Role) VALUES (@UserName, @Role)"
-        Using cmd As New MySqlCommand(insertQuery, conn)
-            cmd.Parameters.AddWithValue("@UserName", "Semua")
-
-            ' Tambahkan deklarasi eksplisit untuk 'role'
-            For Each role As String In roles
-                cmd.Parameters.Clear() ' Bersihkan parameter sebelum menambah yang baru
-                cmd.Parameters.AddWithValue("@UserName", "Semua")
-                cmd.Parameters.AddWithValue("@Role", role)
-                cmd.ExecuteNonQuery()
-            Next
-        End Using
-    End Sub
-
-
-    Public Sub CheckAndSyncModule()
-        ' Panggil fungsi untuk setiap DataGridView
-        CheckAndSyncModuleMaster(DGVMaster, "ModulMasterData")
-        CheckAndSyncModuleMaster(DgvTransaksi, "ModulTransaksi")
-        CheckAndSyncModuleMaster(DgvJurnal, "ModulJurnal")
-        CheckAndSyncModuleMaster(DgvKaryawan, "ModulKaryawan")
-        CheckAndSyncModuleMaster(DgvLaporan, "ModulLaporan")
-        CheckAndSyncModuleMaster(DgvUtility, "ModulUtility")
-        CheckAndSyncModuleMaster(DgvPosting, "ModulPosting")
-    End Sub
-
-    Public Sub CheckAndSyncModuleMaster(ByVal dgv As DataGridView, ByVal moduleNameColumn As String)
-        Dim existingModules As New HashSet(Of String)
-
-        ' 1️⃣ Ambil semua data dari database untuk mendeteksi duplikasi
-        Dim fetchQuery As String = "SELECT CONCAT(UserName, '_', ModuleName) AS UniqueKey FROM hakaksesuser"
-        Using cmd As New MySqlCommand(fetchQuery, conn)
-            Using reader As MySqlDataReader = cmd.ExecuteReader()
-                While reader.Read()
-                    existingModules.Add(reader("UniqueKey").ToString())
-                End While
-            End Using
-        End Using
-
+    Private Sub HapusDuplikasiDatabase()
         Dim deleteDuplicatesQuery As String = "
-    DELETE hakaksesuser FROM hakaksesuser
-    JOIN (
-        SELECT MIN(NO) AS KeepNO, UserName, ModuleName
-        FROM hakaksesuser
-        WHERE UserName <> 'Semua' -- Batasi UserName tidak boleh 'Semua'
-        GROUP BY UserName, ModuleName
-    ) AS KeepRows
-    ON hakaksesuser.UserName = KeepRows.UserName 
-    AND hakaksesuser.ModuleName = KeepRows.ModuleName
-    WHERE hakaksesuser.NO > KeepRows.KeepNO
-    AND hakaksesuser.UserName <> 'Semua'" '-- Pastikan hanya baris duplikat yang bukan 'Semua' dihapus
+            DELETE hakaksesuser FROM hakaksesuser
+            JOIN (
+                SELECT MIN(NO) AS KeepNO, UserName, ModuleName
+                FROM hakaksesuser
+                WHERE UserName <> 'Semua'
+                GROUP BY UserName, ModuleName
+            ) AS KeepRows
+            ON hakaksesuser.UserName = KeepRows.UserName 
+            AND hakaksesuser.ModuleName = KeepRows.ModuleName
+            WHERE hakaksesuser.NO > KeepRows.KeepNO
+            AND hakaksesuser.UserName <> 'Semua'"
 
         Using deleteCmd As New MySqlCommand(deleteDuplicatesQuery, conn)
             deleteCmd.ExecuteNonQuery()
         End Using
+    End Sub
 
+    Private Sub SinkronkanDataGridView(dgv As DataGridView, roleCategory As String)
+        Dim daftarLevel() As String = {"Owner", "Master", "Admin", "Kasir", "Gudang"}
 
-        ' 3️⃣ Tambahkan Data Baru Jika Belum Ada
-        For Each level As String In {"Master", "Admin", "Kasir", "Gudang"}
-            Dim defaultValue As Integer = If(level = "Master", 1, 0)
+        For Each level As String In daftarLevel
+            ' 1. Ambil daftar modul yang ada di database untuk level ini
+            Dim modulDiDatabase As New HashSet(Of String)
+            Dim queryGetModul As String = "SELECT ModuleName FROM hakaksesuser WHERE UserName = @UserName AND Role = @Role"
+            Using cmd As New MySqlCommand(queryGetModul, conn)
+                cmd.Parameters.AddWithValue("@UserName", level)
+                cmd.Parameters.AddWithValue("@Role", roleCategory)
+                Using reader As MySqlDataReader = cmd.ExecuteReader()
+                    While reader.Read()
+                        modulDiDatabase.Add(reader("ModuleName").ToString())
+                    End While
+                End Using
+            End Using
 
+            ' 2. Ambil daftar modul yang ada di DataGridView
+            Dim modulDiDataGridView As New HashSet(Of String)
             For Each row As DataGridViewRow In dgv.Rows
-                If row.IsNewRow Then Continue For ' Hindari baris kosong
+                If Not row.IsNewRow AndAlso row.Cells(0).Value IsNot Nothing Then
+                    Dim moduleName As String = row.Cells(0).Value.ToString()
+                    If Not String.IsNullOrWhiteSpace(moduleName) Then
+                        modulDiDataGridView.Add(moduleName)
+                    End If
+                End If
+            Next
 
-                Dim moduleName As String = row.Cells(moduleNameColumn).Value?.ToString()
-                If String.IsNullOrWhiteSpace(moduleName) Then Continue For
+            ' 3. Hapus modul dari database yang tidak ada di DataGridView
+            For Each modulDB As String In modulDiDatabase
+                If Not modulDiDataGridView.Contains(modulDB) Then
+                    Dim deleteQuery As String = "DELETE FROM hakaksesuser WHERE UserName = @UserName AND ModuleName = @ModuleName AND Role = @Role"
+                    Using deleteCmd As New MySqlCommand(deleteQuery, conn)
+                        deleteCmd.Parameters.AddWithValue("@UserName", level)
+                        deleteCmd.Parameters.AddWithValue("@ModuleName", modulDB)
+                        deleteCmd.Parameters.AddWithValue("@Role", roleCategory)
+                        deleteCmd.ExecuteNonQuery()
+                    End Using
+                End If
+            Next
 
-                Dim uniqueKey As String = $"{level}_{moduleName}"
+            ' 4. Tambah modul ke database yang ada di DataGridView tapi belum ada di database
+            For Each modulDGV As String In modulDiDataGridView
+                If Not modulDiDatabase.Contains(modulDGV) Then
+                    Dim defaultValue As Integer = If(level = "Master" OrElse level = "Owner", 1, 0)
 
-                ' Jika kombinasi UserName dan ModuleName belum ada, tambahkan
-                If Not existingModules.Contains(uniqueKey) Then
                     Dim insertQuery As String = "INSERT INTO hakaksesuser (UserName, Role, ModuleName, CanRead, CanAdd, CanEdit, CanDelete) 
-                                             VALUES (@UserName, @Role, @ModuleName, @CanRead, @CanAdd, @CanEdit, @CanDelete)"
+                                               VALUES (@UserName, @Role, @ModuleName, @CanRead, @CanAdd, @CanEdit, @CanDelete)"
                     Using insertCmd As New MySqlCommand(insertQuery, conn)
                         insertCmd.Parameters.AddWithValue("@UserName", level)
-                        insertCmd.Parameters.AddWithValue("@Role", LblMasterData.Text)
-                        insertCmd.Parameters.AddWithValue("@ModuleName", moduleName)
+                        insertCmd.Parameters.AddWithValue("@Role", roleCategory)
+                        insertCmd.Parameters.AddWithValue("@ModuleName", modulDGV)
 
-                        If moduleNameColumn = "ModulTransaksi" Then
+                        ' Untuk kategori TRANSAKSI, berikan akses Read dan Add secara default
+                        If roleCategory = "TRANSAKSI" Then
                             insertCmd.Parameters.AddWithValue("@CanRead", 1)
                             insertCmd.Parameters.AddWithValue("@CanAdd", 1)
                         Else
@@ -297,7 +273,7 @@ Public Class FormHakUser
         Next
     End Sub
 
-
+    ' Event handlers untuk CellPainting tetap sama seperti sebelumnya
     Private Sub DGVMaster_CellPainting(ByVal sender As Object, ByVal e As DataGridViewCellPaintingEventArgs) Handles DGVMaster.CellPainting
         'Cek apakah kolom saat ini adalah kolom dengan checkbox
         If e.ColumnIndex = 2 AndAlso e.RowIndex >= 0 Then
@@ -315,7 +291,6 @@ Public Class FormHakUser
                 e.Handled = True
             End If
         End If
-
 
         'Cek apakah kolom saat ini adalah kolom dengan checkbox
         If e.ColumnIndex = 3 AndAlso e.RowIndex >= 0 Then
@@ -343,7 +318,6 @@ Public Class FormHakUser
                 e.Handled = True
             End If
         End If
-
     End Sub
 
     Private Sub DgvTransaksi_CellPainting(ByVal sender As Object, ByVal e As DataGridViewCellPaintingEventArgs) Handles DgvTransaksi.CellPainting
@@ -384,12 +358,57 @@ Public Class FormHakUser
         End If
     End Sub
 
-
     Private Sub BtnKeluar_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles BtnKeluar.Click
         Close()
     End Sub
 
     Private Sub CmbUser_SelectedIndexChanged(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles CmbUser.SelectedIndexChanged
+        SinkronkanModulYangBelumAda()
+        Ambildatadaridatabase()
+    End Sub
+
+    Private Sub SinkronkanModulYangBelumAda()
+        Dim daftarLevel() As String = {"Owner", "Master", "Admin", "Kasir", "Gudang"}
+        Dim daftarGrid As New List(Of DataGridView) From {DGVMaster, DgvTransaksi, DgvJurnal, DgvKaryawan, DgvLaporan, DgvUtility, DgvPosting}
+
+        For Each level As String In daftarLevel
+            Dim existingModules As New HashSet(Of String)
+            Dim query As String = "SELECT ModuleName FROM hakaksesuser WHERE UserName = @UserName"
+            Using cmd As New MySqlCommand(query, conn)
+                cmd.Parameters.AddWithValue("@UserName", level)
+                Using reader As MySqlDataReader = cmd.ExecuteReader()
+                    While reader.Read()
+                        existingModules.Add(reader("ModuleName").ToString())
+                    End While
+                End Using
+            End Using
+
+            For Each dgv As DataGridView In daftarGrid
+                For Each row As DataGridViewRow In dgv.Rows
+                    If row.IsNewRow Then Continue For
+                    Dim modul As String = row.Cells(0).Value?.ToString()
+                    If String.IsNullOrWhiteSpace(modul) Then Continue For
+                    If Not existingModules.Contains(modul) Then
+                        Dim defVal As Integer = If(level = "Master", 1, 0)
+                        Dim insertQuery As String = "INSERT INTO hakaksesuser (UserName, Role, ModuleName, CanRead, CanAdd, CanEdit, CanDelete) " &
+                                                   "VALUES (@UserName, @Role, @ModuleName, @CanRead, @CanAdd, @CanEdit, @CanDelete)"
+                        Using insertCmd As New MySqlCommand(insertQuery, conn)
+                            insertCmd.Parameters.AddWithValue("@UserName", level)
+                            insertCmd.Parameters.AddWithValue("@Role", LblMasterData.Text)
+                            insertCmd.Parameters.AddWithValue("@ModuleName", modul)
+                            insertCmd.Parameters.AddWithValue("@CanRead", defVal)
+                            insertCmd.Parameters.AddWithValue("@CanAdd", defVal)
+                            insertCmd.Parameters.AddWithValue("@CanEdit", defVal)
+                            insertCmd.Parameters.AddWithValue("@CanDelete", defVal)
+                            insertCmd.ExecuteNonQuery()
+                        End Using
+                    End If
+                Next
+            Next
+        Next
+    End Sub
+
+    Private Sub Ambildatadaridatabase()
         ChkAll.Checked = False
         ChkNonAll.Checked = False
 
@@ -506,8 +525,6 @@ Public Class FormHakUser
         Try
             transaksi = conn.BeginTransaction() ' Mulai transaksi
 
-            UpdateHakAksesUser(transaksi)
-
             ' Gunakan Dictionary untuk mengelola DataGridView dan jumlah kolom yang digunakan
             Dim daftarGrid As New Dictionary(Of DataGridView, Integer()) From {
             {DGVMaster, {1, 2, 3, 4}},
@@ -534,56 +551,13 @@ Public Class FormHakUser
         End Try
     End Sub
 
-    Public Sub UpdateHakAksesUser(transaksi As MySqlTransaction)
-        Using cmd As New MySqlCommand("UPDATE hakaksesuser SET ModuleName = @ModuleName WHERE Role = @Role", conn, transaksi)
-            cmd.Parameters.Add("@ModuleName", MySqlDbType.VarChar)
-            cmd.Parameters.Add("@Role", MySqlDbType.VarChar)
-            cmd.Prepare()
-
-            ' List pasangan ComboBox dan Label
-            Dim updatePairs As New List(Of Tuple(Of ComboBox, Label)) From {
-            New Tuple(Of ComboBox, Label)(CmbBeliFokus, LblBeliFokus),
-            New Tuple(Of ComboBox, Label)(CmbBeliSatuan, LblBeliSatuan),
-            New Tuple(Of ComboBox, Label)(CmbBeliRugi, LblBeliRugi),
-            New Tuple(Of ComboBox, Label)(CmbBeliMuculJual, LblBeliMuculJual),
-            New Tuple(Of ComboBox, Label)(CmbBeliUpdate, LblBeliUpdate),
-            New Tuple(Of ComboBox, Label)(CmbBeliEditHarga, LblBeliEditHarga),
-            New Tuple(Of ComboBox, Label)(CmbBeliAverage, LblBeliAverage),
-            New Tuple(Of ComboBox, Label)(CmbJualFokus, LblJualFokus),
-            New Tuple(Of ComboBox, Label)(CmbJualSatuan, LblJualSatuan),
-            New Tuple(Of ComboBox, Label)(CmbJualEditHarga, LblJualEditHarga),
-            New Tuple(Of ComboBox, Label)(CmbJualRugi, LblJualRugi),
-            New Tuple(Of ComboBox, Label)(CmbJualMinus, LblJualMinus),
-            New Tuple(Of ComboBox, Label)(CmbEditHargaJual, LblEditHargaJual),
-            New Tuple(Of ComboBox, Label)(CmbTransferFocus, LblTransferFocus),
-            New Tuple(Of ComboBox, Label)(CmbTransferSatuan, LblTransferSatuan),
-            New Tuple(Of ComboBox, Label)(CmbTransferMinus, LblTransferMinus),
-            New Tuple(Of ComboBox, Label)(CmbReturFokus, LblReturFokus),
-            New Tuple(Of ComboBox, Label)(CmbReturSatuan, LblReturSatuan),
-            New Tuple(Of ComboBox, Label)(CmbReturMinus, LblReturMinus)
-        }
-
-            ' Loop untuk update data
-            For Each pair As Tuple(Of ComboBox, Label) In updatePairs
-                Dim moduleName As String = pair.Item1.Text.Trim()
-                Dim roleName As String = pair.Item2.Text.Trim()
-
-                ' Hanya update jika moduleName tidak kosong
-                If Not String.IsNullOrEmpty(moduleName) AndAlso Not String.IsNullOrEmpty(roleName) Then
-                    cmd.Parameters("@ModuleName").Value = moduleName
-                    cmd.Parameters("@Role").Value = roleName
-                    cmd.ExecuteNonQuery()
-                End If
-            Next
-        End Using
-    End Sub
 
 
 
 
     ' Fungsi untuk memperbarui hak akses dari DataGridView
     Private Sub UpdateHakAkses(grid As DataGridView, colIndex As Integer(), transaksi As MySqlTransaction)
-        If Not grid.Visible Then Exit Sub
+        'If Not grid.Visible Then Exit Sub
 
         For Each row As DataGridViewRow In grid.Rows
             If Not row.IsNewRow Then

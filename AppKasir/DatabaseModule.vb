@@ -169,6 +169,7 @@ Public Module DatabaseModule
     Public PEMILIK_PERUSAHAAN As String = ""
     Public FOOTER1 As String = ""
     Public FOOTER2 As String = ""
+    Public FOOTER3 As String = ""
     Public JENIS_TUTUP_BULAN As String = ""
     Public TANGGAL_TUTUP_BULAN As Integer = 1
 
@@ -191,7 +192,7 @@ Public Module DatabaseModule
 
 
     Public Sub AmbilDataMasterPerusahaan()
-        Dim sql As String = "SELECT KODE, NAMA, ALAMAT, KOTA, HP, PEMILIK, FOOTER1, FOOTER2, System_tutup_bulan, Tanggal_Tutup_bulan, " &
+        Dim sql As String = "SELECT KODE, NAMA, ALAMAT, KOTA, HP, PEMILIK, FOOTER1, FOOTER2, FOOTER3, System_tutup_bulan, Tanggal_Tutup_bulan, " &
                             "KODE_REK_BARANG, NAMA_REK_BARANG, lawan_nama_rek_barang, lawan_Kode_rek_barang, " &
                             "Kode_rek_Beli_toko, nama_rek_Beli_toko, Kode_rek_Beli_Gudang, nama_rek_Beli_Gudang, " &
                             "Kode_rek_Jual_Toko, nama_rek_Jual_Toko, Kode_rek_Jual_Gudang, nama_rek_Jual_Gudang, " &
@@ -210,6 +211,7 @@ Public Module DatabaseModule
                     PEMILIK_PERUSAHAAN = reader("PEMILIK").ToString()
                     FOOTER1 = reader("FOOTER1").ToString()
                     FOOTER2 = reader("FOOTER2").ToString()
+                    FOOTER3 = reader("FOOTER3").ToString()
                     JENIS_TUTUP_BULAN = reader("System_tutup_bulan").ToString()
                     TANGGAL_TUTUP_BULAN = reader("Tanggal_Tutup_bulan").ToString()
                     KODE_REK_BARANG = reader("KODE_REK_BARANG").ToString()
@@ -297,6 +299,67 @@ Public Module DatabaseModule
             ' Menangani jika TANGGAL_TUTUP_BULAN tidak valid
             MessageBox.Show("Tanggal tutup bulan tidak valid.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
         End If
+    End Sub
+
+
+    Public Sub HitungStokToko()
+        Using transaction As MySqlTransaction = conn.BeginTransaction()
+            Try
+                Dim query As String =
+                "UPDATE tbl_barang SET " &
+                "STOK_TOKO = COALESCE(AWAL_TOKO, 0) " &
+                "+ COALESCE(TAMBAH_TOKO, 0) " &
+                "- COALESCE(KURANG_TOKO, 0) " &
+                "+ COALESCE(PEMBELIAN_TOKO, 0) " &
+                "- COALESCE(PENJUALAN_TOKO, 0) " &
+                "- COALESCE(RETUR_BELI_TOKO, 0) " &
+                "+ COALESCE(RETUR_JUAL_TOKO, 0) " &
+                "+ COALESCE(OPNAME_TOKO, 0) " &
+                "+ COALESCE(TRANSFER_STOK_MASUK_TOKO, 0) " &
+                "- COALESCE(TRANSFER_STOK_KELUAR_TOKO, 0) " &
+                "+ COALESCE(TRANSFER_BARANG_MASUK_TOKO, 0) " &
+                "- COALESCE(TRANSFER_BARANG_KELUAR_TOKO, 0)"
+
+                Using command As New MySqlCommand(query, conn, transaction)
+                    command.ExecuteNonQuery()
+                End Using
+
+                transaction.Commit()
+            Catch ex As Exception
+                transaction.Rollback()
+                MessageBox.Show("Terjadi kesalahan (Toko): " & ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            End Try
+        End Using
+    End Sub
+
+    Public Sub HitungStokGudang()
+        Using transaction As MySqlTransaction = conn.BeginTransaction()
+            Try
+                Dim query As String =
+                "UPDATE tbl_barang SET " &
+                "STOK_GUDANG = COALESCE(AWAL_GUDANG, 0) " &
+                "+ COALESCE(TAMBAH_GUDANG, 0) " &
+                "- COALESCE(KURANG_GUDANG, 0) " &
+                "+ COALESCE(PEMBELIAN_GUDANG, 0) " &
+                "- COALESCE(PENJUALAN_GUDANG, 0) " &
+                "- COALESCE(RETUR_BELI_GUDANG, 0) " &
+                "+ COALESCE(RETUR_JUAL_GUDANG, 0) " &
+                "+ COALESCE(OPNAME_GUDANG, 0) " &
+                "+ COALESCE(TRANSFER_STOK_MASUK_GUDANG, 0) " &
+                "- COALESCE(TRANSFER_STOK_KELUAR_GUDANG, 0) " &
+                "+ COALESCE(TRANSFER_BARANG_MASUK_GUDANG, 0) " &
+                "- COALESCE(TRANSFER_BARANG_KELUAR_GUDANG, 0)"
+
+                Using command As New MySqlCommand(query, conn, transaction)
+                    command.ExecuteNonQuery()
+                End Using
+
+                transaction.Commit()
+            Catch ex As Exception
+                transaction.Rollback()
+                MessageBox.Show("Terjadi kesalahan (Gudang): " & ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            End Try
+        End Using
     End Sub
 
 

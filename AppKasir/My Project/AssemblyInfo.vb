@@ -8,7 +8,7 @@ Imports System.Runtime.InteropServices
 ' Review the values of the assembly attributes
 
 <Assembly: AssemblyTitle("KasirLancar")>
-<Assembly: AssemblyDescription("Kasir Lancar")>
+<Assembly: AssemblyDescription("KasirLancar")>
 <Assembly: AssemblyCompany("KasirLancar.com")>
 <Assembly: AssemblyProduct("Kasir Lancar")>
 <Assembly: AssemblyCopyright("Copyright ©  2025")>
@@ -27,5 +27,5 @@ Imports System.Runtime.InteropServices
 '      Revision
 '
 
-<Assembly: AssemblyVersion("15.2025.5.20")>
-<Assembly: AssemblyFileVersion("15.2025.5.20")>
+<Assembly: AssemblyVersion("15.2026.2.3")>
+<Assembly: AssemblyFileVersion("15.2026.2.3")>

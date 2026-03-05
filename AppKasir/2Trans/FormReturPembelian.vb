@@ -74,7 +74,7 @@ Public Class FormReturPembelian
 
     Private Sub GenerateNomorReturPembelian()
 
-        Dim cekTanggal As String = Microsoft.VisualBasic.Format(DTPRetur.Value, "yyMMdd")
+        Dim cekTanggal As String = DTPRetur.Value.ToString("yyMMdd")
         Dim UrutKOde As String = ""
         Dim cekNomor As String = "RB-" & cekTanggal
 
@@ -909,14 +909,14 @@ Public Class FormReturPembelian
     End Sub
 
     Private Sub Simpanreturpembelian(ByVal transaction As MySqlTransaction)
-        Dim query As String = "INSERT INTO retur_pembelian (ID_RETUR_PEMBELIAN, TGL_RETUR_BELI, ID_SUPPLIER, NAMA_SUPPLIER, ALAMAT_SUPLPLIER, KONTAK_SUPPLIER, ID_PEMBELIAN, TGL_PEMBELIAN, STATUS_PEMBELIAN, PENYIMPANAN, BAYAR_PEMBELIAN, SISA_PEMBELIAN, TOTAL_BARANG, TOTAL_QTY, TOTAL_RUPIAH, NAMA_REKENING, KODE_REKENING, ALASAN_RETUR, ID_USER, ID_KOMPUTER) VALUES (@ID_RETUR_PEMBELIAN, @TGL_RETUR_BELI, @ID_SUPPLIER, @NAMA_SUPPLIER, @ALAMAT_SUPLPLIER, @KONTAK_SUPPLIER, @ID_PEMBELIAN, @TGL_PEMBELIAN, @STATUS_PEMBELIAN, @PENYIMPANAN, @BAYAR_PEMBELIAN, @SISA_PEMBELIAN, @TOTAL_BARANG, @TOTAL_QTY, @TOTAL_RUPIAH, @NAMA_REKENING, @KODE_REKENING, @ALASAN_RETUR, @ID_USER, @ID_KOMPUTER)"
+        Dim query As String = "INSERT INTO retur_pembelian (ID_RETUR_PEMBELIAN, TGL_RETUR_BELI, ID_SUPPLIER, NAMA_SUPPLIER, ALAMAT_SUPPLIER, KONTAK_SUPPLIER, ID_PEMBELIAN, TGL_PEMBELIAN, STATUS_PEMBELIAN, PENYIMPANAN, BAYAR_PEMBELIAN, SISA_PEMBELIAN, TOTAL_BARANG, TOTAL_QTY, TOTAL_RUPIAH, NAMA_REKENING, KODE_REKENING, ALASAN_RETUR, ID_USER, ID_KOMPUTER) VALUES (@ID_RETUR_PEMBELIAN, @TGL_RETUR_BELI, @ID_SUPPLIER, @NAMA_SUPPLIER, @ALAMAT_SUPPLIER, @KONTAK_SUPPLIER, @ID_PEMBELIAN, @TGL_PEMBELIAN, @STATUS_PEMBELIAN, @PENYIMPANAN, @BAYAR_PEMBELIAN, @SISA_PEMBELIAN, @TOTAL_BARANG, @TOTAL_QTY, @TOTAL_RUPIAH, @NAMA_REKENING, @KODE_REKENING, @ALASAN_RETUR, @ID_USER, @ID_KOMPUTER)"
 
         Using cmd As New MySqlCommand(query, conn, transaction)
             cmd.Parameters.AddWithValue("@ID_RETUR_PEMBELIAN", LblNoNotaRetur.Text)
             cmd.Parameters.AddWithValue("@TGL_RETUR_BELI", DTPRetur.Value.ToString("yyyy-MM-dd HH:mm:ss"))
             cmd.Parameters.AddWithValue("@ID_SUPPLIER", LblKodeSupplier.Text)
             cmd.Parameters.AddWithValue("@NAMA_SUPPLIER", CmbSupplier.Text)
-            cmd.Parameters.AddWithValue("@ALAMAT_SUPLPLIER", LblAlamatSupplier.Text)
+            cmd.Parameters.AddWithValue("@ALAMAT_SUPPLIER", LblAlamatSupplier.Text)
             cmd.Parameters.AddWithValue("@KONTAK_SUPPLIER", LblKontakSupplier.Text)
             cmd.Parameters.AddWithValue("@ID_PEMBELIAN", TxtNotaBeli.Text)
             cmd.Parameters.AddWithValue("@TGL_PEMBELIAN", DTPtglBeli.Value.ToString("yyyy-MM-dd HH:mm:ss"))

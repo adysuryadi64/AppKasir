@@ -1,6 +1,5 @@
 ﻿Imports System.Drawing.Imaging
 Imports System.Drawing.Printing
-Imports System.Globalization
 Imports System.IO
 Imports System.Text
 Imports Microsoft.Reporting.WinForms
@@ -26,24 +25,22 @@ Module ModuleCetakJual
                     ' Format DateTime ke string sesuai format yang diinginkan
                     pelanggan.TglTransaksi = tglTransaksi.ToString("dd-MM-yy HH:mm:ss")
 
-                    ' Format angka menggunakan pemisah ribuan Indonesia
-                    Dim culture As CultureInfo = New CultureInfo("id-ID")
-                    pelanggan.DiskonTotalRp = Convert.ToDecimal(rd("DISKON_TOTAL_RP")).ToString("N0", culture)
-                    pelanggan.GrandTotalStlPajak = Convert.ToDecimal(rd("GRAND_TOTAL_STL_PAJAK")).ToString("N0", culture)
-                    pelanggan.PajakRp = Convert.ToDecimal(rd("PAJAK_RP")).ToString("N0", culture)
-                    pelanggan.Bayar = Convert.ToDecimal(rd("BAYAR")).ToString("N0", culture)
+                    pelanggan.DiskonTotalRp = Convert.ToDecimal(rd("DISKON_TOTAL_RP")).ToString("N0", cultureIndonesia)
+                    pelanggan.GrandTotalStlPajak = Convert.ToDecimal(rd("GRAND_TOTAL_STL_PAJAK")).ToString("N0", cultureIndonesia)
+                    pelanggan.PajakRp = Convert.ToDecimal(rd("PAJAK_RP")).ToString("N0", cultureIndonesia)
+                    pelanggan.Bayar = Convert.ToDecimal(rd("BAYAR")).ToString("N0", cultureIndonesia)
 
                     ' Menangani nilai Sisa Tagihan
                     Dim sisaTagihanValue As Object = rd("SISA_TAGIHAN")
                     Dim sisaTagihanDecimal As Decimal = 0D ' Menggunakan 0.0 sebagai nilai default
 
                     If sisaTagihanValue Is Nothing OrElse IsDBNull(sisaTagihanValue) OrElse sisaTagihanValue = 0 Then
-                        pelanggan.Kembali = Convert.ToDecimal(rd("KEMBALI")).ToString("N0", culture)
+                        pelanggan.Kembali = Convert.ToDecimal(rd("KEMBALI")).ToString("N0", cultureIndonesia)
                         pelanggan.StatusTransaksi = "Kembali :"
                         pelanggan.TanggalJT = ""
                     Else
                         If Decimal.TryParse(sisaTagihanValue.ToString(), sisaTagihanDecimal) Then
-                            pelanggan.Kembali = sisaTagihanDecimal.ToString("N0", culture)
+                            pelanggan.Kembali = sisaTagihanDecimal.ToString("N0", cultureIndonesia)
                             pelanggan.StatusTransaksi = "Hutang :"
 
                             ' Pastikan bahwa nilai dari database diubah menjadi DateTime terlebih dahulu

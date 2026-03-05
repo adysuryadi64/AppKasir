@@ -1,5 +1,4 @@
-﻿Imports System.Globalization
-Imports Microsoft.Reporting.WinForms
+﻿Imports Microsoft.Reporting.WinForms
 
 
 Public Class FormLapMutasiBarang
@@ -32,9 +31,9 @@ Public Class FormLapMutasiBarang
                         Dim lokasi As String = CmbLokasi.Text
                         Select Case lokasi
                             Case "TOKO"
-                                saldoAwal += Convert.ToDecimal(reader("AWAL_TOKO"), New CultureInfo("id-ID"))
+                                saldoAwal += Convert.ToDecimal(reader("AWAL_TOKO"))
                             Case "GUDANG"
-                                saldoAwal += Convert.ToDecimal(reader("AWAL_GUDANG"), New CultureInfo("id-ID"))
+                                saldoAwal += Convert.ToDecimal(reader("AWAL_GUDANG"))
                         End Select
                     End While
                 End Using

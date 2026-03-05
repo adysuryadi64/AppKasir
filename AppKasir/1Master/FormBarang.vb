@@ -361,13 +361,16 @@ Public Class FormBarang
     End Sub
 
     Private Sub Tambahbrg()
-        TambahBarang.LblUtama.Text = "T A M B A H   B A R A N G"
-        TambahBarang.ShowDialog()
+        Using f As New TambahBarang()
+            f.LblUtama.Text = "T A M B A H   B A R A N G"
+            f.ShowDialog()
+        End Using
 
         DGBarang.Enabled = True
         PanelOperasi.Enabled = True
         CariData()
     End Sub
+
 
     Private Sub BtnUbah_Click(ByVal sender As Object, ByVal e As EventArgs) Handles BtnUbah.Click, EditToolStripMenuItem.Click
         If PanelDetailBarang.Visible = True Then
@@ -1550,7 +1553,22 @@ Public Class FormBarang
     End Sub
 
     Private Sub CetakBarcodeToolStripMenuItem1_Click(sender As Object, e As EventArgs) Handles CetakBarcodeToolStripMenuItem1.Click
-        FormCetakBarcode.ShowDialog()
+        ' Validasi ada barang yang dipilih
+        If DGBarang.SelectedRows.Count = 0 Then
+            MessageBox.Show("Silakan pilih barang terlebih dahulu!", "Peringatan", MessageBoxButtons.OK, MessageBoxIcon.Warning)
+            Return
+        End If
+
+        ' Ambil data barang yang dipilih
+        Dim selectedRow As DataGridViewRow = DGBarang.SelectedRows(0)
+        Dim namaBarang As String = selectedRow.Cells("NAMA_BARANG").Value.ToString()
+        Dim kodeBarang As String = selectedRow.Cells("ID_BARANG").Value.ToString()
+
+        ' Buka form cetak barcode dan kirim data
+        Dim formCetak As New CetakLabelBarcodeTSPL()
+        formCetak.NamaBarangDikirim = namaBarang
+        formCetak.KodeBarangDikirim = kodeBarang
+        formCetak.ShowDialog()
     End Sub
 
     Private Sub Form_Barang_KeyDown(ByVal sender As System.Object, ByVal e As System.Windows.Forms.KeyEventArgs) Handles MyBase.KeyDown
@@ -1626,5 +1644,54 @@ Public Class FormBarang
         HandleDataWhere(WhereClause)
     End Sub
 
+    Private Sub HistoriPembelianToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles HistoriPembelianToolStripMenuItem.Click
+        TampilkanHistoriPembelian()
+    End Sub
 
+    Public Sub TampilkanHistoriPembelian()
+        ' Ambil dari baris yang sedang dipilih di DGVBarang
+        If DGBarang.SelectedRows.Count = 0 Then
+            MessageBox.Show("Silakan pilih barang terlebih dahulu!", "Informasi", MessageBoxButtons.OK, MessageBoxIcon.Information)
+            Return
+        End If
+
+        Dim selectedRow As DataGridViewRow = DGBarang.SelectedRows(0)
+        Dim idBarang As String = selectedRow.Cells("ID_BARANG").Value.ToString()
+        Dim namaBarang As String = selectedRow.Cells("NAMA_BARANG").Value.ToString()
+
+        ' Buat form untuk menampilkan user control
+        Dim formHistori As New Form()
+        formHistori.Text = $"Histori Pembelian - {namaBarang}"
+        formHistori.Size = New Size(1000, 600)
+        formHistori.StartPosition = FormStartPosition.CenterScreen
+
+        ' Buat instance user control
+        Dim uc As New HistoriPembelianUC()
+        uc.KodeBarang = idBarang
+        uc.Dock = DockStyle.Fill
+
+        ' Hubungkan event jika ingin update harga otomatis
+        AddHandler uc.BarisDiklik, AddressOf HistoriPembelian_BarisDiklick
+
+        ' Tambahkan ke form
+        formHistori.Controls.Add(uc)
+
+        ' Tampilkan sebagai modal dialog
+        formHistori.ShowDialog()
+    End Sub
+
+    Private Sub HistoriPembelian_BarisDiklick(fakturBeli As String, harga As Decimal)
+        ' Update harga beli di form barang jika diperlukan
+        If harga > 0 AndAlso DGBarang.SelectedRows.Count > 0 Then
+            ' Update tampilan sementara
+            TxtHargaBeli.Text = harga.ToString("N0")
+
+            ' Jika ingin update database juga:
+            ' UpdateHargaBeliDiDatabase(DGBarang.SelectedRows(0).Cells("ID_BARANG").Value.ToString(), harga)
+        End If
+    End Sub
+
+    Private Sub BarcodeToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles BarcodeToolStripMenuItem.Click
+
+    End Sub
 End Class

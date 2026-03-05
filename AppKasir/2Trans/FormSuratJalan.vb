@@ -125,7 +125,7 @@
 
 
     Private Sub GenerateNomorSuratJalan()
-        Dim cekTanggal As String = Microsoft.VisualBasic.Format(DtpSuratJalan.Value, "yyMMdd")
+        Dim cekTanggal As String = DtpSuratJalan.Value.ToString("yyMMdd")
         Dim UrutKOde As String = ""
         Dim cekNomor As String = "SJ-" & cekTanggal
 

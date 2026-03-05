@@ -291,7 +291,7 @@ Public Class PrintReturJual
 
         tinggi += 10 + TxtJarakString
         e.Graphics.DrawString("Tanggal", New Drawing.Font(CmbFKetString, CmbUKetString), Brushes.Black, BatasKiri, tinggi)
-        e.Graphics.DrawString(": " & Microsoft.VisualBasic.Format(DTPTgl.Value, "dd-MM-yy hh:mm:ss"), New Drawing.Font(CmbFKetString, CmbUKetString), Brushes.Black, Mulaikata, tinggi)
+        e.Graphics.DrawString(": " & DTPTgl.Value.ToString("yyyy-MM-dd HH:mm:ss"), New Drawing.Font(CmbFKetString, CmbUKetString), Brushes.Black, Mulaikata, tinggi)
 
         tinggi += 10 + TxtJarakString
         e.Graphics.DrawString("Kasir", New Drawing.Font(CmbFKetString, CmbUKetString), Brushes.Black, BatasKiri, tinggi)
@@ -330,13 +330,36 @@ Public Class PrintReturJual
 
         For baris As Integer = 0 To DgvData.RowCount - 2
             tinggi += 14 + TxtJarakString
-            e.Graphics.DrawString(DgvData.Rows(baris).Cells("NamaBarang").Value.ToString, New Drawing.Font(CmbFIsiString, CmbUIsiString), Brushes.Black, BatasKiri, tinggi)
+
+            ' Nama Barang
+            Dim namaBarang As String = DgvData.Rows(baris).Cells("NamaBarang").Value?.ToString()
+            e.Graphics.DrawString(namaBarang, New Drawing.Font(CmbFIsiString, CmbUIsiString), Brushes.Black, BatasKiri, tinggi)
+
             tinggi += 10 + TxtJarakString
-            e.Graphics.DrawString(DgvData.Rows(baris).Cells("QTY").Value.ToString, New Drawing.Font(CmbFIsiString, CmbUIsiString), Brushes.Black, Mulaikata1, tinggi, kanan)
-            e.Graphics.DrawString(DgvData.Rows(baris).Cells("Satuan").Value.ToString, New Drawing.Font(CmbFIsiString, CmbUIsiString), Brushes.Black, Mulaikata2, tinggi)
-            e.Graphics.DrawString(Microsoft.VisualBasic.Format(DgvData.Rows(baris).Cells("Harga").Value, "##,##0"), New Drawing.Font(CmbFIsiString, CmbUIsiString), Brushes.Black, Mulaikata3, tinggi, kanan)
-            e.Graphics.DrawString(Microsoft.VisualBasic.Format(DgvData.Rows(baris).Cells("TotalDiskon").Value, "##,##0"), New Drawing.Font(CmbFIsiString, CmbUIsiString), Brushes.Black, Mulaikata4, tinggi, kanan)
-            e.Graphics.DrawString(Microsoft.VisualBasic.Format(DgvData.Rows(baris).Cells("TotalHarga").Value, "##,##0"), New Drawing.Font(CmbFIsiString, CmbUIsiString), Brushes.Black, Mulaikata5, tinggi, kanan)
+
+            ' QTY
+            Dim qtyValue As Decimal
+            Decimal.TryParse(DgvData.Rows(baris).Cells("QTY").Value?.ToString(), qtyValue)
+            e.Graphics.DrawString(qtyValue.ToString("#,0.##", cultureIndonesia), New Drawing.Font(CmbFIsiString, CmbUIsiString), Brushes.Black, Mulaikata1, tinggi, kanan)
+
+            ' Satuan
+            Dim satuan As String = DgvData.Rows(baris).Cells("Satuan").Value?.ToString()
+            e.Graphics.DrawString(satuan, New Drawing.Font(CmbFIsiString, CmbUIsiString), Brushes.Black, Mulaikata2, tinggi)
+
+            ' Harga
+            Dim hargaValue As Decimal
+            Decimal.TryParse(DgvData.Rows(baris).Cells("Harga").Value?.ToString(), hargaValue)
+            e.Graphics.DrawString(hargaValue.ToString("#,0.##", cultureIndonesia), New Drawing.Font(CmbFIsiString, CmbUIsiString), Brushes.Black, Mulaikata3, tinggi, kanan)
+
+            ' Total Diskon
+            Dim totalDiskonValue As Decimal
+            Decimal.TryParse(DgvData.Rows(baris).Cells("TotalDiskon").Value?.ToString(), totalDiskonValue)
+            e.Graphics.DrawString(totalDiskonValue.ToString("#,0.##", cultureIndonesia), New Drawing.Font(CmbFIsiString, CmbUIsiString), Brushes.Black, Mulaikata4, tinggi, kanan)
+
+            ' Total Harga
+            Dim totalHargaValue As Decimal
+            Decimal.TryParse(DgvData.Rows(baris).Cells("TotalHarga").Value?.ToString(), totalHargaValue)
+            e.Graphics.DrawString(totalHargaValue.ToString("#,0.##", cultureIndonesia), New Drawing.Font(CmbFIsiString, CmbUIsiString), Brushes.Black, Mulaikata5, tinggi, kanan)
         Next
 
         tinggi += 10 + TxtJarakString
@@ -346,9 +369,12 @@ Public Class PrintReturJual
         e.Graphics.DrawString(TxtJmlhBrg.Text & " item", New Drawing.Font(CmbFIsiString, CmbUIsiString), Brushes.Black, BatasKiri, tinggi)
 
         e.Graphics.DrawString("Total :", New Drawing.Font(CmbFIsiString, CmbUIsiString), Brushes.Black, Mulaikata3, tinggi, kanan)
-        Dim harga As Double = TxtTotal.Text
-        e.Graphics.DrawString(Microsoft.VisualBasic.Format(harga, "##,##0"), New Drawing.Font(CmbFIsiString, CmbUIsiString), Brushes.Black, Mulaikata5, tinggi, kanan)
+        ' Ambil nilai total dari TextBox secara aman
+        Dim harga As Double
+        Double.TryParse(TxtTotal.Text, Globalization.NumberStyles.Any, cultureIndonesia, harga)
 
+        ' Tampilkan nilai total dengan format "#,0.##"
+        e.Graphics.DrawString(harga.ToString("#,0.##", cultureIndonesia), New Drawing.Font(CmbFIsiString, CmbUIsiString), Brushes.Black, Mulaikata5, tinggi, kanan)
 
         tinggi += 10 + TxtJarakString
         e.Graphics.DrawString(garis, New Drawing.Font("Courier New", 8), Brushes.Black, BatasKiri, tinggi)
@@ -358,7 +384,7 @@ Public Class PrintReturJual
         tinggi += 10 + TxtJarakString
         e.Graphics.DrawString(FOOTER2, New Drawing.Font(CmbFFootString, CmbUFootString), Brushes.Black, centermargin, tinggi, tengah)
 
-        tinggi -= TxtMundurString
+        TxtMundurString -= TxtMundurString
 
     End Sub
 
@@ -416,7 +442,7 @@ Public Class PrintReturJual
 
         tinggi += 10 + TxtJarakString
         e.Graphics.DrawString("Tanggal", New Drawing.Font(CmbFKetString, CmbUKetString), Brushes.Black, BatasKiri, tinggi)
-        e.Graphics.DrawString(": " & Microsoft.VisualBasic.Format(DTPTgl.Value, "dd-MM-yy hh:mm:ss"), New Drawing.Font(CmbFKetString, CmbUKetString), Brushes.Black, Mulaikata, tinggi)
+        e.Graphics.DrawString(": " & DTPTgl.Value.ToString("yyyy-MM-dd HH:mm:ss"), New Drawing.Font(CmbFKetString, CmbUKetString), Brushes.Black, Mulaikata, tinggi)
 
         tinggi += 10 + TxtJarakString
         e.Graphics.DrawString("Kasir", New Drawing.Font(CmbFKetString, CmbUKetString), Brushes.Black, BatasKiri, tinggi)
@@ -456,14 +482,38 @@ Public Class PrintReturJual
 
         For baris As Integer = 0 To DgvData.RowCount - 2
             tinggi += 14 + TxtJarakString
-            e.Graphics.DrawString(DgvData.Rows(baris).Cells("NamaBarang").Value.ToString, New Drawing.Font(CmbFIsiString, CmbUIsiString), Brushes.Black, BatasKiri, tinggi)
+
+            ' Nama Barang
+            Dim namaBarang As String = DgvData.Rows(baris).Cells("NamaBarang").Value?.ToString()
+            e.Graphics.DrawString(namaBarang, New Drawing.Font(CmbFIsiString, CmbUIsiString), Brushes.Black, BatasKiri, tinggi)
+
             tinggi += 10 + TxtJarakString
-            e.Graphics.DrawString(DgvData.Rows(baris).Cells("QTY").Value.ToString, New Drawing.Font(CmbFIsiString, CmbUIsiString), Brushes.Black, Mulaikata1, tinggi, kanan)
-            e.Graphics.DrawString(DgvData.Rows(baris).Cells("Satuan").Value.ToString, New Drawing.Font(CmbFIsiString, CmbUIsiString), Brushes.Black, Mulaikata2, tinggi)
-            e.Graphics.DrawString(Microsoft.VisualBasic.Format(DgvData.Rows(baris).Cells("Harga").Value, "##,##0"), New Drawing.Font(CmbFIsiString, CmbUIsiString), Brushes.Black, Mulaikata3, tinggi, kanan)
-            e.Graphics.DrawString(Microsoft.VisualBasic.Format(DgvData.Rows(baris).Cells("TotalDiskon").Value, "##,##0"), New Drawing.Font(CmbFIsiString, CmbUIsiString), Brushes.Black, Mulaikata4, tinggi, kanan)
-            e.Graphics.DrawString(Microsoft.VisualBasic.Format(DgvData.Rows(baris).Cells("TotalHarga").Value, "##,##0"), New Drawing.Font(CmbFIsiString, CmbUIsiString), Brushes.Black, Mulaikata5, tinggi, kanan)
+
+            ' QTY
+            Dim qtyValue As Decimal
+            Decimal.TryParse(DgvData.Rows(baris).Cells("QTY").Value?.ToString(), qtyValue)
+            e.Graphics.DrawString(qtyValue.ToString("#,0.##", cultureIndonesia), New Drawing.Font(CmbFIsiString, CmbUIsiString), Brushes.Black, Mulaikata1, tinggi, kanan)
+
+            ' Satuan
+            Dim satuan As String = DgvData.Rows(baris).Cells("Satuan").Value?.ToString()
+            e.Graphics.DrawString(satuan, New Drawing.Font(CmbFIsiString, CmbUIsiString), Brushes.Black, Mulaikata2, tinggi)
+
+            ' Harga
+            Dim hargaValue As Decimal
+            Decimal.TryParse(DgvData.Rows(baris).Cells("Harga").Value?.ToString(), hargaValue)
+            e.Graphics.DrawString(hargaValue.ToString("#,0.##", cultureIndonesia), New Drawing.Font(CmbFIsiString, CmbUIsiString), Brushes.Black, Mulaikata3, tinggi, kanan)
+
+            ' Total Diskon
+            Dim totalDiskonValue As Decimal
+            Decimal.TryParse(DgvData.Rows(baris).Cells("TotalDiskon").Value?.ToString(), totalDiskonValue)
+            e.Graphics.DrawString(totalDiskonValue.ToString("#,0.##", cultureIndonesia), New Drawing.Font(CmbFIsiString, CmbUIsiString), Brushes.Black, Mulaikata4, tinggi, kanan)
+
+            ' Total Harga
+            Dim totalHargaValue As Decimal
+            Decimal.TryParse(DgvData.Rows(baris).Cells("TotalHarga").Value?.ToString(), totalHargaValue)
+            e.Graphics.DrawString(totalHargaValue.ToString("#,0.##", cultureIndonesia), New Drawing.Font(CmbFIsiString, CmbUIsiString), Brushes.Black, Mulaikata5, tinggi, kanan)
         Next
+
 
         tinggi += 10 + TxtJarakString
         e.Graphics.DrawString(garis, New Drawing.Font("Courier New", 8), Brushes.Black, BatasKiri, tinggi)
@@ -472,8 +522,12 @@ Public Class PrintReturJual
         e.Graphics.DrawString(TxtJmlhBrg.Text & " item", New Drawing.Font(CmbFIsiString, CmbUIsiString), Brushes.Black, BatasKiri, tinggi)
 
         e.Graphics.DrawString("Total :", New Drawing.Font(CmbFIsiString, CmbUIsiString), Brushes.Black, Mulaikata3, tinggi, kanan)
-        Dim harga As Double = TxtTotal.Text
-        e.Graphics.DrawString(Microsoft.VisualBasic.Format(harga, "##,##0"), New Drawing.Font(CmbFIsiString, CmbUIsiString), Brushes.Black, Mulaikata5, tinggi, kanan)
+        ' Ambil nilai total dari TextBox secara aman
+        Dim harga As Double
+        Double.TryParse(TxtTotal.Text, Globalization.NumberStyles.Any, cultureIndonesia, harga)
+
+        ' Tampilkan nilai total dengan format "#,0.##"
+        e.Graphics.DrawString(harga.ToString("#,0.##", cultureIndonesia), New Drawing.Font(CmbFIsiString, CmbUIsiString), Brushes.Black, Mulaikata5, tinggi, kanan)
 
 
         tinggi += 10 + TxtJarakString
@@ -484,7 +538,7 @@ Public Class PrintReturJual
         tinggi += 10 + TxtJarakString
         e.Graphics.DrawString(FOOTER2, New Drawing.Font(CmbFFootString, CmbUFootString), Brushes.Black, centermargin, tinggi, tengah)
 
-        tinggi -= TxtMundurString
+        TxtMundurString -= TxtMundurString
 
     End Sub
 
@@ -537,7 +591,7 @@ Public Class PrintReturJual
 
         tinggi += 10 + TxtJarakString
         e.Graphics.DrawString("Tanggal", New Drawing.Font(CmbFKetString, CmbUKetString), Brushes.Black, BatasKiri, tinggi)
-        e.Graphics.DrawString(": " & Microsoft.VisualBasic.Format(DTPTgl.Value, "dd-MM-yy hh:mm:ss"), New Drawing.Font(CmbFKetString, CmbUKetString), Brushes.Black, Mulaikata, tinggi)
+        e.Graphics.DrawString(": " & DTPTgl.Value.ToString("yyyy-MM-dd HH:mm:ss"), New Drawing.Font(CmbFKetString, CmbUKetString), Brushes.Black, Mulaikata, tinggi)
 
         tinggi += 10 + TxtJarakString
         e.Graphics.DrawString("Kasir", New Drawing.Font(CmbFKetString, CmbUKetString), Brushes.Black, BatasKiri, tinggi)
@@ -576,13 +630,36 @@ Public Class PrintReturJual
 
         For baris As Integer = 0 To DgvData.RowCount - 2
             tinggi += 14 + TxtJarakString
-            e.Graphics.DrawString(DgvData.Rows(baris).Cells("NamaBarang").Value.ToString, New Drawing.Font(CmbFIsiString, CmbUIsiString), Brushes.Black, BatasKiri, tinggi)
+
+            ' Nama Barang
+            Dim namaBarang As String = DgvData.Rows(baris).Cells("NamaBarang").Value?.ToString()
+            e.Graphics.DrawString(namaBarang, New Drawing.Font(CmbFIsiString, CmbUIsiString), Brushes.Black, BatasKiri, tinggi)
+
             tinggi += 10 + TxtJarakString
-            e.Graphics.DrawString(DgvData.Rows(baris).Cells("QTY").Value.ToString, New Drawing.Font(CmbFIsiString, CmbUIsiString), Brushes.Black, Mulaikata1, tinggi, kanan)
-            e.Graphics.DrawString(DgvData.Rows(baris).Cells("Satuan").Value.ToString, New Drawing.Font(CmbFIsiString, CmbUIsiString), Brushes.Black, Mulaikata2, tinggi)
-            e.Graphics.DrawString(Microsoft.VisualBasic.Format(DgvData.Rows(baris).Cells("Harga").Value, "##,##0"), New Drawing.Font(CmbFIsiString, CmbUIsiString), Brushes.Black, Mulaikata3, tinggi, kanan)
-            'e.Graphics.DrawString(Microsoft.VisualBasic.Format(DgvData.Rows(baris).Cells("TotalDiskon").Value, "##,##0"), New Drawing.Font(CmbFIsiString, CmbUIsiString), Brushes.Black, Mulaikata4, tinggi, kanan)
-            e.Graphics.DrawString(Microsoft.VisualBasic.Format(DgvData.Rows(baris).Cells("TotalHarga").Value, "##,##0"), New Drawing.Font(CmbFIsiString, CmbUIsiString), Brushes.Black, Mulaikata5, tinggi, kanan)
+
+            ' QTY
+            Dim qtyValue As Decimal
+            Decimal.TryParse(DgvData.Rows(baris).Cells("QTY").Value?.ToString(), qtyValue)
+            e.Graphics.DrawString(qtyValue.ToString("#,0.##", cultureIndonesia), New Drawing.Font(CmbFIsiString, CmbUIsiString), Brushes.Black, Mulaikata1, tinggi, kanan)
+
+            ' Satuan
+            Dim satuan As String = DgvData.Rows(baris).Cells("Satuan").Value?.ToString()
+            e.Graphics.DrawString(satuan, New Drawing.Font(CmbFIsiString, CmbUIsiString), Brushes.Black, Mulaikata2, tinggi)
+
+            ' Harga
+            Dim hargaValue As Decimal
+            Decimal.TryParse(DgvData.Rows(baris).Cells("Harga").Value?.ToString(), hargaValue)
+            e.Graphics.DrawString(hargaValue.ToString("#,0.##", cultureIndonesia), New Drawing.Font(CmbFIsiString, CmbUIsiString), Brushes.Black, Mulaikata3, tinggi, kanan)
+
+            ' Total Diskon
+            'Dim totalDiskonValue As Decimal
+            'Decimal.TryParse(DgvData.Rows(baris).Cells("TotalDiskon").Value?.ToString(), totalDiskonValue)
+            'e.Graphics.DrawString(totalDiskonValue.ToString("#,0.##", cultureIndonesia), New Drawing.Font(CmbFIsiString, CmbUIsiString), Brushes.Black, Mulaikata4, tinggi, kanan)
+
+            ' Total Harga
+            Dim totalHargaValue As Decimal
+            Decimal.TryParse(DgvData.Rows(baris).Cells("TotalHarga").Value?.ToString(), totalHargaValue)
+            e.Graphics.DrawString(totalHargaValue.ToString("#,0.##", cultureIndonesia), New Drawing.Font(CmbFIsiString, CmbUIsiString), Brushes.Black, Mulaikata5, tinggi, kanan)
         Next
 
         tinggi += 10 + TxtJarakString
@@ -592,8 +669,12 @@ Public Class PrintReturJual
         e.Graphics.DrawString(TxtJmlhBrg.Text & " item", New Drawing.Font(CmbFIsiString, CmbUIsiString), Brushes.Black, BatasKiri, tinggi)
 
         e.Graphics.DrawString("Total :", New Drawing.Font(CmbFIsiString, CmbUIsiString), Brushes.Black, Mulaikata3, tinggi, kanan)
-        Dim harga As Double = TxtTotal.Text
-        e.Graphics.DrawString(Microsoft.VisualBasic.Format(harga, "##,##0"), New Drawing.Font(CmbFIsiString, CmbUIsiString), Brushes.Black, Mulaikata5, tinggi, kanan)
+        ' Ambil nilai total dari TextBox secara aman
+        Dim harga As Double
+        Double.TryParse(TxtTotal.Text, Globalization.NumberStyles.Any, cultureIndonesia, harga)
+
+        ' Tampilkan nilai total dengan format "#,0.##"
+        e.Graphics.DrawString(harga.ToString("#,0.##", cultureIndonesia), New Drawing.Font(CmbFIsiString, CmbUIsiString), Brushes.Black, Mulaikata5, tinggi, kanan)
 
         tinggi += 10 + TxtJarakString
         e.Graphics.DrawString(garis, New Drawing.Font("Courier New", 8), Brushes.Black, BatasKiri, tinggi)
@@ -602,7 +683,7 @@ Public Class PrintReturJual
         e.Graphics.DrawString(FOOTER1, New Drawing.Font(CmbFFootString, CmbUFootString), Brushes.Black, centermargin, tinggi, tengah)
         tinggi += 10 + TxtJarakString
         e.Graphics.DrawString(FOOTER2, New Drawing.Font(CmbFFootString, CmbUFootString), Brushes.Black, centermargin, tinggi, tengah)
-        tinggi -= TxtMundurString
+        TxtMundurString -= TxtMundurString
     End Sub
 
 
@@ -660,7 +741,7 @@ Public Class PrintReturJual
 
         tinggi += 10 + TxtJarakString
         e.Graphics.DrawString("Tanggal", New Drawing.Font(CmbFKetString, CmbUKetString), Brushes.Black, BatasKiri, tinggi)
-        e.Graphics.DrawString(": " & Microsoft.VisualBasic.Format(DTPTgl.Value, "dd-MM-yy hh:mm:ss"), New Drawing.Font(CmbFKetString, CmbUKetString), Brushes.Black, Mulaikata, tinggi)
+        e.Graphics.DrawString(": " & DTPTgl.Value.ToString("yyyy-MM-dd HH:mm:ss"), New Drawing.Font(CmbFKetString, CmbUKetString), Brushes.Black, Mulaikata, tinggi)
 
         tinggi += 10 + TxtJarakString
         e.Graphics.DrawString("Kasir", New Drawing.Font(CmbFKetString, CmbUKetString), Brushes.Black, BatasKiri, tinggi)
@@ -687,12 +768,36 @@ Public Class PrintReturJual
 
         For baris As Integer = 0 To DgvData.RowCount - 2
             tinggi += 14 + TxtJarakString
-            e.Graphics.DrawString(DgvData.Rows(baris).Cells("NamaBarang").Value.ToString, New Drawing.Font(CmbFIsiString, CmbUIsiString), Brushes.Black, BatasKiri, tinggi)
+
+            ' Nama Barang
+            Dim namaBarang As String = DgvData.Rows(baris).Cells("NamaBarang").Value?.ToString()
+            e.Graphics.DrawString(namaBarang, New Drawing.Font(CmbFIsiString, CmbUIsiString), Brushes.Black, BatasKiri, tinggi)
+
             tinggi += 10 + TxtJarakString
-            e.Graphics.DrawString(DgvData.Rows(baris).Cells("QTY").Value.ToString, New Drawing.Font(CmbFIsiString, CmbUIsiString), Brushes.Black, Mulaikata1, tinggi, kanan)
-            e.Graphics.DrawString(DgvData.Rows(baris).Cells("Satuan").Value.ToString, New Drawing.Font(CmbFIsiString, CmbUIsiString), Brushes.Black, Mulaikata2, tinggi)
-            e.Graphics.DrawString(Microsoft.VisualBasic.Format(DgvData.Rows(baris).Cells("Harga").Value, "##,##0"), New Drawing.Font(CmbFIsiString, CmbUIsiString), Brushes.Black, Mulaikata3, tinggi, kanan)
-            e.Graphics.DrawString(Microsoft.VisualBasic.Format(DgvData.Rows(baris).Cells("TotalHarga").Value, "##,##0"), New Drawing.Font(CmbFIsiString, CmbUIsiString), Brushes.Black, Mulaikata5, tinggi, kanan)
+
+            ' QTY
+            Dim qtyValue As Decimal
+            Decimal.TryParse(DgvData.Rows(baris).Cells("QTY").Value?.ToString(), qtyValue)
+            e.Graphics.DrawString(qtyValue.ToString("#,0.##", cultureIndonesia), New Drawing.Font(CmbFIsiString, CmbUIsiString), Brushes.Black, Mulaikata1, tinggi, kanan)
+
+            ' Satuan
+            Dim satuan As String = DgvData.Rows(baris).Cells("Satuan").Value?.ToString()
+            e.Graphics.DrawString(satuan, New Drawing.Font(CmbFIsiString, CmbUIsiString), Brushes.Black, Mulaikata2, tinggi)
+
+            ' Harga
+            Dim hargaValue As Decimal
+            Decimal.TryParse(DgvData.Rows(baris).Cells("Harga").Value?.ToString(), hargaValue)
+            e.Graphics.DrawString(hargaValue.ToString("#,0.##", cultureIndonesia), New Drawing.Font(CmbFIsiString, CmbUIsiString), Brushes.Black, Mulaikata3, tinggi, kanan)
+
+            ' Total Diskon
+            ' Dim totalDiskonValue As Decimal
+            'Decimal.TryParse(DgvData.Rows(baris).Cells("TotalDiskon").Value?.ToString(), totalDiskonValue)
+            'e.Graphics.DrawString(totalDiskonValue.ToString("#,0.##", cultureIndonesia), New Drawing.Font(CmbFIsiString, CmbUIsiString), Brushes.Black, Mulaikata4, tinggi, kanan)
+
+            ' Total Harga
+            Dim totalHargaValue As Decimal
+            Decimal.TryParse(DgvData.Rows(baris).Cells("TotalHarga").Value?.ToString(), totalHargaValue)
+            e.Graphics.DrawString(totalHargaValue.ToString("#,0.##", cultureIndonesia), New Drawing.Font(CmbFIsiString, CmbUIsiString), Brushes.Black, Mulaikata5, tinggi, kanan)
         Next
 
         tinggi += 10 + TxtJarakString
@@ -702,8 +807,12 @@ Public Class PrintReturJual
         e.Graphics.DrawString(TxtJmlhBrg.Text & " item", New Drawing.Font(CmbFIsiString, CmbUIsiString), Brushes.Black, BatasKiri, tinggi)
 
         e.Graphics.DrawString("Total :", New Drawing.Font(CmbFIsiString, CmbUIsiString), Brushes.Black, Mulaikata3, tinggi, kanan)
-        Dim harga As Double = TxtTotal.Text
-        e.Graphics.DrawString(Microsoft.VisualBasic.Format(harga, "##,##0"), New Drawing.Font(CmbFIsiString, CmbUIsiString), Brushes.Black, Mulaikata5, tinggi, kanan)
+        ' Ambil nilai total dari TextBox secara aman
+        Dim harga As Double
+        Double.TryParse(TxtTotal.Text, Globalization.NumberStyles.Any, cultureIndonesia, harga)
+
+        ' Tampilkan nilai total dengan format "#,0.##"
+        e.Graphics.DrawString(harga.ToString("#,0.##", cultureIndonesia), New Drawing.Font(CmbFIsiString, CmbUIsiString), Brushes.Black, Mulaikata5, tinggi, kanan)
 
         tinggi += 10 + TxtJarakString
         e.Graphics.DrawString(garis, New Drawing.Font("Courier New", 8), Brushes.Black, BatasKiri, tinggi)
@@ -712,7 +821,7 @@ Public Class PrintReturJual
         e.Graphics.DrawString(FOOTER1, New Drawing.Font(CmbFFootString, CmbUFootString), Brushes.Black, centermargin, tinggi, tengah)
         tinggi += 10 + TxtJarakString
         e.Graphics.DrawString(FOOTER2, New Drawing.Font(CmbFFootString, CmbUFootString), Brushes.Black, centermargin, tinggi, tengah)
-        tinggi -= TxtMundurString
+        TxtMundurString -= TxtMundurString
     End Sub
 
     Public Sub Aturnilaiport()

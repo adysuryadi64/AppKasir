@@ -99,6 +99,7 @@ Partial Class FormTabelReferensi
         '
         'TxtSaldoAwal
         '
+        Me.TxtSaldoAwal.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
         Me.TxtSaldoAwal.Font = New System.Drawing.Font("Century Gothic", 9.75!)
         Me.TxtSaldoAwal.Location = New System.Drawing.Point(109, 318)
         Me.TxtSaldoAwal.Name = "TxtSaldoAwal"
@@ -155,6 +156,7 @@ Partial Class FormTabelReferensi
         '
         'TxtNama
         '
+        Me.TxtNama.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
         Me.TxtNama.Font = New System.Drawing.Font("Century Gothic", 9.75!)
         Me.TxtNama.Location = New System.Drawing.Point(109, 152)
         Me.TxtNama.Multiline = True
@@ -212,8 +214,8 @@ Partial Class FormTabelReferensi
         Me.Dgvdata.AllowUserToDeleteRows = False
         Me.Dgvdata.AllowUserToResizeRows = False
         Me.Dgvdata.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
-                    Or System.Windows.Forms.AnchorStyles.Left) _
-                    Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+            Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.Dgvdata.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill
         Me.Dgvdata.BackgroundColor = System.Drawing.Color.White
         DataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft
@@ -359,6 +361,7 @@ Partial Class FormTabelReferensi
         '
         'TxtStatus
         '
+        Me.TxtStatus.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
         Me.TxtStatus.Font = New System.Drawing.Font("Century Gothic", 9.75!)
         Me.TxtStatus.Location = New System.Drawing.Point(109, 39)
         Me.TxtStatus.Name = "TxtStatus"

@@ -4,6 +4,8 @@ Imports System.Reflection
 
 Public Class FormStokOpname
 
+    Private TransaksiLampau As String
+
     Private Sub BarangStokOpnameForm_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
 
         If LblUtama.Text <> "TAMBAH STOK OPNAME" Then
@@ -13,6 +15,7 @@ Public Class FormStokOpname
             lstBarang.Visible = False
             TxtNyata.Select()
         Else
+            TransaksiLampau = ModulHakAkses.BacaHakAksesSemua(FormGeneralSetting.LblTransaksiTanggalLampau.Text)
             TxtLokasi.Text = FormUtama.SLokasi.Text
             TxtNama.Visible = True
             Label4.Visible = True
@@ -67,7 +70,7 @@ Public Class FormStokOpname
     End Sub
 
     Private Sub GenerateNomorOpname()
-        Dim cekTanggal As String = Microsoft.VisualBasic.Format(DTPTgl.Value, "yyMMdd")
+        Dim cekTanggal As String = DTPTgl.Value.ToString("yyMMdd")
         Dim UrutKOde As String = ""
         Dim cekNomor As String = "SO-" & cekTanggal
 
@@ -258,46 +261,88 @@ Public Class FormStokOpname
     End Class
 
 
-    Private Sub TxtNama_TextChanged(ByVal sender As Object, ByVal e As EventArgs) Handles TxtNama.TextChanged
-        If LblUtama.Text = "TAMBAH STOK OPNAME" Then
-            ProsesInput()
-        End If
-
-    End Sub
+    Dim lastKeyTime As DateTime = DateTime.Now
+    Dim isBarcodeScan As Boolean = False
+    Dim suppressTextChanged As Boolean = False
 
     Private Sub TxtNama_KeyDown(ByVal sender As Object, ByVal e As KeyEventArgs) Handles TxtNama.KeyDown
+        'Deteksi kecepatan input
+        Dim currentTime = DateTime.Now
+        Dim elapsedMs = (currentTime - lastKeyTime).TotalMilliseconds
+        lastKeyTime = currentTime
+
+        'Deteksi barcode (input cepat + Enter)
         If e.KeyCode = Keys.Enter Then
-            ProsesInput()
-        ElseIf e.KeyCode = Keys.Down AndAlso lstBarang.Visible Then
+            isBarcodeScan = (elapsedMs < 50) AndAlso (TxtNama.Text.Length >= 5 OrElse TxtNama.Text.All(AddressOf Char.IsDigit))
+            suppressTextChanged = True
+            ProsesInput(isBarcodeScan)
+
+            'Logika existing untuk listbox
+            If lstBarang.Items.Count = 1 Then
+                AmbilDataDariListBox()
+            ElseIf lstBarang.Items.Count > 0 Then
+                lstBarang.Focus()
+                lstBarang.SelectedIndex = 0
+                e.SuppressKeyPress = True
+            End If
+        ElseIf e.KeyCode = Keys.Down AndAlso lstBarang.Visible AndAlso lstBarang.Items.Count > 0 Then
             lstBarang.Focus()
             lstBarang.SelectedIndex = 0
             e.SuppressKeyPress = True
         End If
     End Sub
 
-    Private Sub ProsesInput()
+    Private Sub TxtNama_TextChanged(ByVal sender As Object, ByVal e As EventArgs) Handles TxtNama.TextChanged
+        If suppressTextChanged Then
+            suppressTextChanged = False
+            Return
+        End If
+        ProsesInput(False) 'Manual input
+    End Sub
+
+    Private Sub ProsesInput(ByVal isBarcode As Boolean)
         If Not String.IsNullOrEmpty(TxtNama.Text) Then
-            Dim indexAsterisk As Integer = TxtNama.Text.IndexOf("*")
+            Dim inputText As String = TxtNama.Text.Trim()
 
-            If indexAsterisk >= 0 Then
-                lstBarang.Items.Clear()
-                Dim angkaSebelumAsterisk As String = TxtNama.Text.Substring(0, indexAsterisk).Trim()
+            ' Cek apakah input kemungkinan barcode (semua karakter angka atau panjang >= 5)
+            Dim kemungkinanBarcode As Boolean = inputText.All(AddressOf Char.IsDigit) OrElse inputText.Length >= 5
 
-                ' Periksa apakah nilai sebelum * mengandung titik atau koma
-                If angkaSebelumAsterisk.Contains(".") Or angkaSebelumAsterisk.Contains(",") Then
-                    angkaSebelumAsterisk = angkaSebelumAsterisk.Replace(".", ",") ' Mengubah titik menjadi koma
-                    TxtQty.Text = angkaSebelumAsterisk
-                ElseIf Decimal.TryParse(angkaSebelumAsterisk, Nothing) Then
-                    TxtQty.Text = angkaSebelumAsterisk
+            ' Hitung jumlah huruf alfabet
+            Dim validLetters As String = ""
+            For Each c As Char In inputText
+                If Char.IsLetter(c) Then
+                    validLetters &= c
+                End If
+            Next
+
+            ' Lanjutkan hanya jika huruf alfabet >= 2 ATAU kemungkinan barcode
+            If validLetters.Length >= 2 OrElse kemungkinanBarcode Then
+
+                ' Temukan posisi * pertama
+                Dim indexAsterisk As Integer = inputText.IndexOf("*")
+
+                If indexAsterisk >= 0 Then
+                    ' Format: qty * nama
+                    lstBarang.Items.Clear()
+
+                    Dim angkaSebelumAsterisk As String = inputText.Substring(0, indexAsterisk).Trim()
+                    If angkaSebelumAsterisk.Contains(".") OrElse angkaSebelumAsterisk.Contains(",") Then
+                        angkaSebelumAsterisk = angkaSebelumAsterisk.Replace(".", ",")
+                        TxtQty.Text = angkaSebelumAsterisk
+                    ElseIf Decimal.TryParse(angkaSebelumAsterisk, Nothing) Then
+                        TxtQty.Text = angkaSebelumAsterisk
+                    Else
+                        TxtQty.Text = "1"
+                    End If
+
+                    Dim searchKeyword As String = inputText.Substring(indexAsterisk + 1).Trim()
+                    TampilkanDaftarBarang(searchKeyword)
+
                 Else
+                    ' Tidak ada * → proses langsung
+                    TampilkanDaftarBarang(inputText)
                     TxtQty.Text = "1"
                 End If
-
-                Dim searchKeyword As String = TxtNama.Text.Substring(indexAsterisk + 1).Trim()
-                TampilkanDaftarBarang(searchKeyword)
-            Else
-                TampilkanDaftarBarang(TxtNama.Text)
-                TxtQty.Text = "1"
             End If
         Else
             lstBarang.Items.Clear()
@@ -306,38 +351,56 @@ Public Class FormStokOpname
         End If
     End Sub
 
+
     Private Sub TampilkanDaftarBarang(ByVal searchKeyword As String)
         ' Mengambil data dari database
-        Dim query As String = "SELECT NAMA_BARANG, BARCODE_KECIL, BARCODE_SEDANG, BARCODE_BESAR FROM tbl_barang WHERE NAMA_BARANG LIKE @searchTerm OR BARCODE_KECIL LIKE @searchTerm OR BARCODE_SEDANG LIKE @searchTerm OR BARCODE_BESAR LIKE @searchTerm ORDER BY NAMA_BARANG"
+        Dim query As String = "SELECT NAMA_BARANG, STOK_TOKO, STOK_GUDANG, BARCODE_KECIL, BARCODE_SEDANG, BARCODE_BESAR FROM tbl_barang WHERE TRIM(ID_BARANG) LIKE @Nama OR TRIM(NAMA_BARANG) LIKE @Nama OR TRIM(BARCODE_KECIL) LIKE @Nama OR TRIM(BARCODE_SEDANG) LIKE @Nama OR TRIM(BARCODE_BESAR) LIKE @Nama ORDER BY NAMA_BARANG"
 
         Using cmd As New MySqlCommand(query, conn)
-            cmd.Parameters.AddWithValue("@searchTerm", "%" & searchKeyword & "%")
+            cmd.Parameters.AddWithValue("@Nama", "%" & searchKeyword & "%")
             Using rd As MySqlDataReader = cmd.ExecuteReader()
                 ' Clear ListBox before adding new items
                 lstBarang.Items.Clear()
                 TxtBarcode.Clear()
 
                 While rd.Read()
-                    ' Tambahkan nama barang ke dalam ListBox
-                    lstBarang.Items.Add(rd("NAMA_BARANG").ToString())
+                    Dim itemText As String = rd("NAMA_BARANG").ToString()
+                    Select Case TxtLokasi.Text
+                        Case "TOKO"
+                            ' Tambahkan stok toko setelah nama barang
+                            Dim stokToko As Decimal = If(IsDBNull(rd("STOK_TOKO")), 0D, ParseDecimal(rd("STOK_TOKO")))
+                            itemText &= " => " & stokToko.ToString("N0") ' Format stok dengan dua desimal
+                        Case "GUDANG"
+                            ' Tambahkan stok gudang setelah nama barang
+                            Dim stokGudang As Decimal = If(IsDBNull(rd("STOK_GUDANG")), 0D, ParseDecimal(rd("STOK_GUDANG")))
+                            itemText &= " => " & stokGudang.ToString("N0") ' Format stok dengan dua desimal
+                    End Select
 
                     ' Check if the searchKeyword matches any barcode field
                     If searchKeyword = rd("BARCODE_SEDANG").ToString() Or searchKeyword = rd("BARCODE_BESAR").ToString() Then
                         ' Set TxtBarcode.Text to the matched barcode value
                         TxtBarcode.Text = searchKeyword
                     End If
+
+                    ' Tambahkan item ke ListBox
+                    lstBarang.Items.Add(itemText)
                 End While
 
                 ' Tampilkan ListBox hanya jika lebih dari satu hasil pencarian
                 lstBarang.Visible = lstBarang.Items.Count > 0
-
-                ' jika listbox hanya satu hasil pencarian langsung panggil
-                If lstBarang.Items.Count = 1 Then
-                    AmbilDataDariListBox()
-                End If
             End Using
         End Using
     End Sub
+
+    Private Function ParseDecimal(ByVal value As Object) As Decimal
+        If value Is Nothing Then Return 0D
+
+        Dim s As String = value.ToString().Trim().Replace(",", ".") ' selalu ubah ke titik
+        Dim result As Decimal = 0
+        Decimal.TryParse(s, Globalization.NumberStyles.Any, Globalization.CultureInfo.InvariantCulture, result)
+        Return result
+    End Function
+
 
     Private Sub LstBarang_KeyDown(ByVal sender As Object, ByVal e As KeyEventArgs) Handles lstBarang.KeyDown
         If e.KeyCode = Keys.Enter AndAlso lstBarang.SelectedItem IsNot Nothing Then
@@ -354,18 +417,33 @@ Public Class FormStokOpname
     Private Sub AmbilDataDariListBox()
         Dim namayangdiambil As String
 
-        If lstBarang.SelectedItem IsNot Nothing Then
-            Dim selectedValue As String = lstBarang.SelectedItem.ToString()
+        If lstBarang.Items.Count = 1 OrElse (lstBarang.Items.Count > 1 AndAlso lstBarang.SelectedItem IsNot Nothing) Then
+            ' Ambil nilai dari item yang dipilih atau item pertama jika hanya satu
+            Dim selectedValue As String = If(lstBarang.Items.Count = 1, lstBarang.Items(0).ToString(), lstBarang.SelectedItem.ToString())
+
+            ' Cari posisi karakter "*" jika ada
             Dim indexAsterisk As Integer = selectedValue.IndexOf("*")
 
+            ' Tentukan nilai namayangdiambil berdasarkan kondisi pertama
             If indexAsterisk >= 0 Then
-                Dim textBeforeAsterisk As String = selectedValue.Substring(0, indexAsterisk).Trim()
-                namayangdiambil = textBeforeAsterisk
+                namayangdiambil = selectedValue.Substring(0, indexAsterisk).Trim()
             Else
                 namayangdiambil = selectedValue
             End If
 
+            ' Mencari posisi karakter " => " jika ada (mengganti - dengan => sesuai dengan kebutuhan Anda)
+            Dim indexArrow As Integer = selectedValue.IndexOf(" => ")
+
+            If indexArrow >= 0 Then
+                ' Ambil teks sebelum karakter " => "
+                namayangdiambil = selectedValue.Substring(0, indexArrow).Trim()
+            End If
+
+            ' Panggil fungsi dengan nama yang telah diproses
             Ambildatalaindaridbbarang(namayangdiambil)
+        Else
+            ' Menampilkan pesan jika tidak ada item yang dipilih atau lebih dari satu item dan tidak ada yang dipilih
+            MessageBox.Show("Silakan pilih barang terlebih dahulu!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
         End If
     End Sub
 
@@ -499,7 +577,7 @@ Public Class FormStokOpname
             Exit Sub
         End If
 
-        If LblUtama.Text = "TAMBAH STOK OPNAME" Then
+        If LblUtama.Text = "TAMBAH STOK OPNAME" AndAlso TransaksiLampau = "Tidak" Then
             DTPTgl.Value = DateTime.Now
             GenerateNomorOpname()
         End If
@@ -558,7 +636,7 @@ Public Class FormStokOpname
 
         Using insertCmd As New MySqlCommand(insertQuery, conn, transaction)
             insertCmd.Parameters.AddWithValue("@ID_STOK_OPNAME", TxtFaktur.Text)
-            insertCmd.Parameters.AddWithValue("@TANGGAL", Microsoft.VisualBasic.Format(DTPTgl.Value, "yyyy-MM-dd HH:mm:ss"))
+            insertCmd.Parameters.AddWithValue("@TANGGAL", DTPTgl.Value.ToString("yyyy-MM-dd HH:mm:ss"))
             insertCmd.Parameters.AddWithValue("@LOKASI", TxtLokasi.Text)
             insertCmd.Parameters.AddWithValue("@ID_BARANG", TxtKode.Text)
             insertCmd.Parameters.AddWithValue("@NAMA_BARANG", TxtnamaHasil.Text)

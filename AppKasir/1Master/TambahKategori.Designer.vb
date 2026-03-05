@@ -23,7 +23,7 @@ Partial Class TambahKategori
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(TambahKategori))
-        Dim DataGridViewCellStyle1 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
+        Dim DataGridViewCellStyle2 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
         Me.Panel3 = New System.Windows.Forms.Panel()
         Me.Panel2 = New System.Windows.Forms.Panel()
         Me.Panel1 = New System.Windows.Forms.Panel()
@@ -36,9 +36,6 @@ Partial Class TambahKategori
         Me.Label5 = New System.Windows.Forms.Label()
         Me.Label1 = New System.Windows.Forms.Label()
         Me.DgvData = New System.Windows.Forms.DataGridView()
-        Me.Column1 = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.Column2 = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.Column3 = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.BtnHapus = New System.Windows.Forms.Button()
         Me.BtnSimpan = New System.Windows.Forms.Button()
         Me.BtnBaru = New System.Windows.Forms.Button()
@@ -117,6 +114,7 @@ Partial Class TambahKategori
         '
         'TxtNama
         '
+        Me.TxtNama.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
         Me.TxtNama.Font = New System.Drawing.Font("Century Gothic", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.TxtNama.Location = New System.Drawing.Point(74, 52)
         Me.TxtNama.Margin = New System.Windows.Forms.Padding(4)
@@ -126,6 +124,7 @@ Partial Class TambahKategori
         '
         'TxtKode
         '
+        Me.TxtKode.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
         Me.TxtKode.Font = New System.Drawing.Font("Century Gothic", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.TxtKode.Location = New System.Drawing.Point(270, 52)
         Me.TxtKode.Margin = New System.Windows.Forms.Padding(4)
@@ -135,6 +134,7 @@ Partial Class TambahKategori
         '
         'TxtJenis
         '
+        Me.TxtJenis.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
         Me.TxtJenis.Font = New System.Drawing.Font("Century Gothic", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.TxtJenis.Location = New System.Drawing.Point(74, 83)
         Me.TxtJenis.Margin = New System.Windows.Forms.Padding(4)
@@ -152,7 +152,7 @@ Partial Class TambahKategori
         Me.Label5.Location = New System.Drawing.Point(28, 86)
         Me.Label5.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Me.Label5.Name = "Label5"
-        Me.Label5.Size = New System.Drawing.Size(40, 16)
+        Me.Label5.Size = New System.Drawing.Size(39, 16)
         Me.Label5.TabIndex = 79
         Me.Label5.Text = "Jenis"
         '
@@ -165,7 +165,7 @@ Partial Class TambahKategori
         Me.Label1.Location = New System.Drawing.Point(20, 55)
         Me.Label1.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Me.Label1.Name = "Label1"
-        Me.Label1.Size = New System.Drawing.Size(48, 16)
+        Me.Label1.Size = New System.Drawing.Size(47, 16)
         Me.Label1.TabIndex = 76
         Me.Label1.Text = "Nama"
         '
@@ -173,16 +173,15 @@ Partial Class TambahKategori
         '
         Me.DgvData.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill
         Me.DgvData.BackgroundColor = System.Drawing.Color.White
-        DataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter
-        DataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Control
-        DataGridViewCellStyle1.Font = New System.Drawing.Font("Century Gothic", 9.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        DataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.WindowText
-        DataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight
-        DataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText
-        DataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.[True]
-        Me.DgvData.ColumnHeadersDefaultCellStyle = DataGridViewCellStyle1
+        DataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter
+        DataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Control
+        DataGridViewCellStyle2.Font = New System.Drawing.Font("Century Gothic", 9.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        DataGridViewCellStyle2.ForeColor = System.Drawing.SystemColors.WindowText
+        DataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Highlight
+        DataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HighlightText
+        DataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.[True]
+        Me.DgvData.ColumnHeadersDefaultCellStyle = DataGridViewCellStyle2
         Me.DgvData.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
-        Me.DgvData.Columns.AddRange(New System.Windows.Forms.DataGridViewColumn() {Me.Column1, Me.Column2, Me.Column3})
         Me.DgvData.Location = New System.Drawing.Point(7, 167)
         Me.DgvData.Margin = New System.Windows.Forms.Padding(4)
         Me.DgvData.Name = "DgvData"
@@ -191,25 +190,6 @@ Partial Class TambahKategori
         Me.DgvData.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect
         Me.DgvData.Size = New System.Drawing.Size(537, 420)
         Me.DgvData.TabIndex = 7
-        '
-        'Column1
-        '
-        Me.Column1.FillWeight = 50.0!
-        Me.Column1.HeaderText = "Kode"
-        Me.Column1.Name = "Column1"
-        Me.Column1.ReadOnly = True
-        '
-        'Column2
-        '
-        Me.Column2.HeaderText = "Nama"
-        Me.Column2.Name = "Column2"
-        Me.Column2.ReadOnly = True
-        '
-        'Column3
-        '
-        Me.Column3.HeaderText = "Jenis"
-        Me.Column3.Name = "Column3"
-        Me.Column3.ReadOnly = True
         '
         'BtnHapus
         '
@@ -279,7 +259,7 @@ Partial Class TambahKategori
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(8.0!, 16.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.BackColor = System.Drawing.Color.White
+        Me.BackColor = System.Drawing.SystemColors.Control
         Me.ClientSize = New System.Drawing.Size(551, 591)
         Me.Controls.Add(Me.BtnBaru)
         Me.Controls.Add(Me.BtnHapus)
@@ -325,8 +305,5 @@ Partial Class TambahKategori
     Friend WithEvents Label1 As System.Windows.Forms.Label
     Friend WithEvents DgvData As System.Windows.Forms.DataGridView
     Friend WithEvents BtnHapus As System.Windows.Forms.Button
-    Friend WithEvents Column1 As System.Windows.Forms.DataGridViewTextBoxColumn
-    Friend WithEvents Column2 As System.Windows.Forms.DataGridViewTextBoxColumn
-    Friend WithEvents Column3 As System.Windows.Forms.DataGridViewTextBoxColumn
     Friend WithEvents BtnBaru As Button
 End Class

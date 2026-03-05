@@ -24,10 +24,10 @@ Partial Class FormUtama
     Private Sub InitializeComponent()
         Me.components = New System.ComponentModel.Container()
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(FormUtama))
-        Dim DataGridViewCellStyle5 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
-        Dim DataGridViewCellStyle6 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
-        Dim DataGridViewCellStyle7 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
-        Dim DataGridViewCellStyle8 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
+        Dim DataGridViewCellStyle1 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
+        Dim DataGridViewCellStyle2 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
+        Dim DataGridViewCellStyle3 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
+        Dim DataGridViewCellStyle4 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
         Me.StatusStrip1 = New System.Windows.Forms.StatusStrip()
         Me.SServer1 = New System.Windows.Forms.ToolStripStatusLabel()
         Me.SServer = New System.Windows.Forms.ToolStripStatusLabel()
@@ -59,6 +59,7 @@ Partial Class FormUtama
         Me.FormatSqlToolStripMenuItem1 = New System.Windows.Forms.ToolStripMenuItem()
         Me.FormatZipToolStripMenuItem1 = New System.Windows.Forms.ToolStripMenuItem()
         Me.PerbaikiDatabaseToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.UpdateTabelDatabaseToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.QueryDatabaseToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripMenuItem7 = New System.Windows.Forms.ToolStripSeparator()
         Me.SettingPrinterToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
@@ -68,7 +69,6 @@ Partial Class FormUtama
         Me.ToolStripMenuItem9 = New System.Windows.Forms.ToolStripSeparator()
         Me.PeriksaUpdateAplikasiToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.CekIpKomputerToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
-        Me.JualToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.MenuLaporan = New System.Windows.Forms.ToolStripMenuItem()
         Me.MutasiSaldoToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.MutasiBarangToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
@@ -91,6 +91,7 @@ Partial Class FormUtama
         Me.PenjualanTerhutangToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripMenuItem5 = New System.Windows.Forms.ToolStripSeparator()
         Me.PenjualanSalesToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.PenjualanQtyToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.PenjualanPPNNonPPNToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ReturPembelianToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ReturPembelianToolStripMenuItem1 = New System.Windows.Forms.ToolStripMenuItem()
@@ -120,6 +121,9 @@ Partial Class FormUtama
         Me.Label1 = New System.Windows.Forms.Label()
         Me.HelpToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.MenuPosting = New System.Windows.Forms.ToolStripMenuItem()
+        Me.PostingTokoToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.PostingGudangToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.PostingSemuaToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.MenuStrip1 = New System.Windows.Forms.MenuStrip()
         Me.FileToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.LoginToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
@@ -152,6 +156,7 @@ Partial Class FormUtama
         Me.activationKeyTextBox = New System.Windows.Forms.TextBox()
         Me.serialTextBox = New System.Windows.Forms.TextBox()
         Me.PanelMaster = New System.Windows.Forms.Panel()
+        Me.BtnGeneralSetting = New System.Windows.Forms.Button()
         Me.BtnKaryawan = New System.Windows.Forms.Button()
         Me.BtnArmada = New System.Windows.Forms.Button()
         Me.BtnTabelRef = New System.Windows.Forms.Button()
@@ -174,7 +179,8 @@ Partial Class FormUtama
         Me.BtnReturPenjualan = New System.Windows.Forms.Button()
         Me.BtnBayarHutang = New System.Windows.Forms.Button()
         Me.GBTransaksi = New System.Windows.Forms.GroupBox()
-        Me.TxtRangkuman = New System.Windows.Forms.TextBox()
+        Me.TxtFilter = New System.Windows.Forms.TextBox()
+        Me.BtnCari = New System.Windows.Forms.Button()
         Me.Panel2 = New System.Windows.Forms.Panel()
         Me.DGVTransaksi = New System.Windows.Forms.DataGridView()
         Me.Label2 = New System.Windows.Forms.Label()
@@ -183,6 +189,7 @@ Partial Class FormUtama
         Me.TxtTransaksi = New System.Windows.Forms.TextBox()
         Me.DGVDetail = New System.Windows.Forms.DataGridView()
         Me.Panel1 = New System.Windows.Forms.Panel()
+        Me.LblRangkuman = New System.Windows.Forms.Label()
         Me.TxtLokasiUntukEdit = New System.Windows.Forms.TextBox()
         Me.BTNKeluar = New System.Windows.Forms.Button()
         Me.TxtFakturTransaksi = New System.Windows.Forms.TextBox()
@@ -197,6 +204,7 @@ Partial Class FormUtama
         Me.EditToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.HapusToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.CetakToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ToolTip1 = New System.Windows.Forms.ToolTip(Me.components)
         Me.StatusStrip1.SuspendLayout()
         Me.MenuStrip1.SuspendLayout()
         Me.GroupBox1.SuspendLayout()
@@ -339,7 +347,7 @@ Partial Class FormUtama
         '
         'MenuUtility
         '
-        Me.MenuUtility.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.SystemTutupBulanToolStripMenuItem, Me.PilihanSaatMasukAplikasiToolStripMenuItem, Me.ToolStripMenuItem6, Me.DatabaseToolStripMenuItem, Me.BackupDatabaseToolStripMenuItem, Me.RestoreDatabaseToolStripMenuItem, Me.PerbaikiDatabaseToolStripMenuItem, Me.QueryDatabaseToolStripMenuItem, Me.ToolStripMenuItem7, Me.SettingPrinterToolStripMenuItem, Me.ToolStripMenuItem8, Me.HapusTransaksiTokoToolStripMenuItem, Me.HapusTransaksiGudangToolStripMenuItem, Me.ToolStripMenuItem9, Me.PeriksaUpdateAplikasiToolStripMenuItem, Me.CekIpKomputerToolStripMenuItem, Me.JualToolStripMenuItem})
+        Me.MenuUtility.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.SystemTutupBulanToolStripMenuItem, Me.PilihanSaatMasukAplikasiToolStripMenuItem, Me.ToolStripMenuItem6, Me.DatabaseToolStripMenuItem, Me.BackupDatabaseToolStripMenuItem, Me.RestoreDatabaseToolStripMenuItem, Me.PerbaikiDatabaseToolStripMenuItem, Me.UpdateTabelDatabaseToolStripMenuItem, Me.QueryDatabaseToolStripMenuItem, Me.ToolStripMenuItem7, Me.SettingPrinterToolStripMenuItem, Me.ToolStripMenuItem8, Me.HapusTransaksiTokoToolStripMenuItem, Me.HapusTransaksiGudangToolStripMenuItem, Me.ToolStripMenuItem9, Me.PeriksaUpdateAplikasiToolStripMenuItem, Me.CekIpKomputerToolStripMenuItem})
         Me.MenuUtility.Font = New System.Drawing.Font("Bookman Old Style", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.MenuUtility.Name = "MenuUtility"
         Me.MenuUtility.Size = New System.Drawing.Size(113, 24)
@@ -351,6 +359,7 @@ Partial Class FormUtama
         Me.SystemTutupBulanToolStripMenuItem.Name = "SystemTutupBulanToolStripMenuItem"
         Me.SystemTutupBulanToolStripMenuItem.Size = New System.Drawing.Size(300, 24)
         Me.SystemTutupBulanToolStripMenuItem.Text = "System Tutup Bulan"
+        Me.SystemTutupBulanToolStripMenuItem.Visible = False
         '
         'PilihanSaatMasukAplikasiToolStripMenuItem
         '
@@ -422,6 +431,13 @@ Partial Class FormUtama
         Me.PerbaikiDatabaseToolStripMenuItem.Size = New System.Drawing.Size(300, 24)
         Me.PerbaikiDatabaseToolStripMenuItem.Text = "Perbaiki Database"
         '
+        'UpdateTabelDatabaseToolStripMenuItem
+        '
+        Me.UpdateTabelDatabaseToolStripMenuItem.Image = CType(resources.GetObject("UpdateTabelDatabaseToolStripMenuItem.Image"), System.Drawing.Image)
+        Me.UpdateTabelDatabaseToolStripMenuItem.Name = "UpdateTabelDatabaseToolStripMenuItem"
+        Me.UpdateTabelDatabaseToolStripMenuItem.Size = New System.Drawing.Size(300, 24)
+        Me.UpdateTabelDatabaseToolStripMenuItem.Text = "Update Tabel Database"
+        '
         'QueryDatabaseToolStripMenuItem
         '
         Me.QueryDatabaseToolStripMenuItem.Image = CType(resources.GetObject("QueryDatabaseToolStripMenuItem.Image"), System.Drawing.Image)
@@ -478,12 +494,6 @@ Partial Class FormUtama
         Me.CekIpKomputerToolStripMenuItem.Name = "CekIpKomputerToolStripMenuItem"
         Me.CekIpKomputerToolStripMenuItem.Size = New System.Drawing.Size(300, 24)
         Me.CekIpKomputerToolStripMenuItem.Text = "Cek Ip Komputer"
-        '
-        'JualToolStripMenuItem
-        '
-        Me.JualToolStripMenuItem.Name = "JualToolStripMenuItem"
-        Me.JualToolStripMenuItem.Size = New System.Drawing.Size(300, 24)
-        Me.JualToolStripMenuItem.Text = "jual"
         '
         'MenuLaporan
         '
@@ -574,7 +584,7 @@ Partial Class FormUtama
         '
         'PenjualanToolStripMenuItem
         '
-        Me.PenjualanToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.RekapPenjualanByNotaToolStripMenuItem, Me.RekapPenjualanToolStripMenuItem, Me.ToolStripMenuItem2, Me.PenjualanToolStripMenuItem1, Me.PenjualanDetailToolStripMenuItem, Me.PenjualanBarangToolStripMenuItem, Me.PenjualanTerhutangToolStripMenuItem, Me.ToolStripMenuItem5, Me.PenjualanSalesToolStripMenuItem})
+        Me.PenjualanToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.RekapPenjualanByNotaToolStripMenuItem, Me.RekapPenjualanToolStripMenuItem, Me.ToolStripMenuItem2, Me.PenjualanToolStripMenuItem1, Me.PenjualanDetailToolStripMenuItem, Me.PenjualanBarangToolStripMenuItem, Me.PenjualanTerhutangToolStripMenuItem, Me.ToolStripMenuItem5, Me.PenjualanSalesToolStripMenuItem, Me.PenjualanQtyToolStripMenuItem})
         Me.PenjualanToolStripMenuItem.Image = CType(resources.GetObject("PenjualanToolStripMenuItem.Image"), System.Drawing.Image)
         Me.PenjualanToolStripMenuItem.Name = "PenjualanToolStripMenuItem"
         Me.PenjualanToolStripMenuItem.Size = New System.Drawing.Size(279, 24)
@@ -638,6 +648,13 @@ Partial Class FormUtama
         Me.PenjualanSalesToolStripMenuItem.Name = "PenjualanSalesToolStripMenuItem"
         Me.PenjualanSalesToolStripMenuItem.Size = New System.Drawing.Size(301, 24)
         Me.PenjualanSalesToolStripMenuItem.Text = "Penjualan Sales"
+        '
+        'PenjualanQtyToolStripMenuItem
+        '
+        Me.PenjualanQtyToolStripMenuItem.Image = CType(resources.GetObject("PenjualanQtyToolStripMenuItem.Image"), System.Drawing.Image)
+        Me.PenjualanQtyToolStripMenuItem.Name = "PenjualanQtyToolStripMenuItem"
+        Me.PenjualanQtyToolStripMenuItem.Size = New System.Drawing.Size(301, 24)
+        Me.PenjualanQtyToolStripMenuItem.Text = "Penjualan Qty"
         '
         'PenjualanPPNNonPPNToolStripMenuItem
         '
@@ -845,10 +862,29 @@ Partial Class FormUtama
         '
         'MenuPosting
         '
+        Me.MenuPosting.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.PostingTokoToolStripMenuItem, Me.PostingGudangToolStripMenuItem, Me.PostingSemuaToolStripMenuItem})
         Me.MenuPosting.Font = New System.Drawing.Font("Bookman Old Style", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.MenuPosting.Name = "MenuPosting"
         Me.MenuPosting.Size = New System.Drawing.Size(79, 24)
         Me.MenuPosting.Text = "Posting"
+        '
+        'PostingTokoToolStripMenuItem
+        '
+        Me.PostingTokoToolStripMenuItem.Name = "PostingTokoToolStripMenuItem"
+        Me.PostingTokoToolStripMenuItem.Size = New System.Drawing.Size(204, 24)
+        Me.PostingTokoToolStripMenuItem.Text = "Posting Toko"
+        '
+        'PostingGudangToolStripMenuItem
+        '
+        Me.PostingGudangToolStripMenuItem.Name = "PostingGudangToolStripMenuItem"
+        Me.PostingGudangToolStripMenuItem.Size = New System.Drawing.Size(204, 24)
+        Me.PostingGudangToolStripMenuItem.Text = "Posting Gudang"
+        '
+        'PostingSemuaToolStripMenuItem
+        '
+        Me.PostingSemuaToolStripMenuItem.Name = "PostingSemuaToolStripMenuItem"
+        Me.PostingSemuaToolStripMenuItem.Size = New System.Drawing.Size(204, 24)
+        Me.PostingSemuaToolStripMenuItem.Text = "Posting Semua"
         '
         'MenuStrip1
         '
@@ -1087,6 +1123,7 @@ Partial Class FormUtama
         '
         Me.PanelMaster.BackColor = System.Drawing.Color.Chocolate
         Me.PanelMaster.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
+        Me.PanelMaster.Controls.Add(Me.BtnGeneralSetting)
         Me.PanelMaster.Controls.Add(Me.BtnKaryawan)
         Me.PanelMaster.Controls.Add(Me.BtnArmada)
         Me.PanelMaster.Controls.Add(Me.BtnTabelRef)
@@ -1101,6 +1138,25 @@ Partial Class FormUtama
         Me.PanelMaster.Size = New System.Drawing.Size(1264, 40)
         Me.PanelMaster.TabIndex = 1
         Me.PanelMaster.Visible = False
+        '
+        'BtnGeneralSetting
+        '
+        Me.BtnGeneralSetting.AutoSize = True
+        Me.BtnGeneralSetting.BackColor = System.Drawing.Color.Chocolate
+        Me.BtnGeneralSetting.FlatAppearance.BorderColor = System.Drawing.Color.White
+        Me.BtnGeneralSetting.FlatAppearance.BorderSize = 0
+        Me.BtnGeneralSetting.FlatAppearance.MouseDownBackColor = System.Drawing.Color.LightSeaGreen
+        Me.BtnGeneralSetting.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Yellow
+        Me.BtnGeneralSetting.Font = New System.Drawing.Font("Arial Narrow", 9.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.BtnGeneralSetting.ForeColor = System.Drawing.Color.Black
+        Me.BtnGeneralSetting.Image = CType(resources.GetObject("BtnGeneralSetting.Image"), System.Drawing.Image)
+        Me.BtnGeneralSetting.Location = New System.Drawing.Point(883, 3)
+        Me.BtnGeneralSetting.Name = "BtnGeneralSetting"
+        Me.BtnGeneralSetting.Size = New System.Drawing.Size(123, 33)
+        Me.BtnGeneralSetting.TabIndex = 10
+        Me.BtnGeneralSetting.Text = "General Setting"
+        Me.BtnGeneralSetting.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText
+        Me.BtnGeneralSetting.UseVisualStyleBackColor = False
         '
         'BtnKaryawan
         '
@@ -1511,7 +1567,8 @@ Partial Class FormUtama
         Me.GBTransaksi.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
             Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.GBTransaksi.Controls.Add(Me.TxtRangkuman)
+        Me.GBTransaksi.Controls.Add(Me.TxtFilter)
+        Me.GBTransaksi.Controls.Add(Me.BtnCari)
         Me.GBTransaksi.Controls.Add(Me.GroupBox1)
         Me.GBTransaksi.Controls.Add(Me.Panel2)
         Me.GBTransaksi.Controls.Add(Me.Label2)
@@ -1527,18 +1584,24 @@ Partial Class FormUtama
         Me.GBTransaksi.TabStop = False
         Me.GBTransaksi.Visible = False
         '
-        'TxtRangkuman
+        'TxtFilter
         '
-        Me.TxtRangkuman.BackColor = System.Drawing.SystemColors.Control
-        Me.TxtRangkuman.BorderStyle = System.Windows.Forms.BorderStyle.None
-        Me.TxtRangkuman.Font = New System.Drawing.Font("Century Gothic", 11.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.TxtRangkuman.ForeColor = System.Drawing.Color.Black
-        Me.TxtRangkuman.Location = New System.Drawing.Point(3, 9)
-        Me.TxtRangkuman.Name = "TxtRangkuman"
-        Me.TxtRangkuman.ReadOnly = True
-        Me.TxtRangkuman.Size = New System.Drawing.Size(461, 19)
-        Me.TxtRangkuman.TabIndex = 167
-        Me.TxtRangkuman.Text = "Jumlah"
+        Me.TxtFilter.BackColor = System.Drawing.Color.White
+        Me.TxtFilter.Font = New System.Drawing.Font("Century Gothic", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.TxtFilter.ForeColor = System.Drawing.Color.Black
+        Me.TxtFilter.Location = New System.Drawing.Point(3, 9)
+        Me.TxtFilter.Name = "TxtFilter"
+        Me.TxtFilter.Size = New System.Drawing.Size(414, 23)
+        Me.TxtFilter.TabIndex = 0
+        '
+        'BtnCari
+        '
+        Me.BtnCari.Image = CType(resources.GetObject("BtnCari.Image"), System.Drawing.Image)
+        Me.BtnCari.Location = New System.Drawing.Point(419, 9)
+        Me.BtnCari.Name = "BtnCari"
+        Me.BtnCari.Size = New System.Drawing.Size(25, 23)
+        Me.BtnCari.TabIndex = 18
+        Me.BtnCari.UseVisualStyleBackColor = True
         '
         'Panel2
         '
@@ -1560,23 +1623,23 @@ Partial Class FormUtama
         Me.DGVTransaksi.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill
         Me.DGVTransaksi.BackgroundColor = System.Drawing.Color.White
         Me.DGVTransaksi.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D
-        DataGridViewCellStyle5.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft
-        DataGridViewCellStyle5.BackColor = System.Drawing.SystemColors.Control
-        DataGridViewCellStyle5.Font = New System.Drawing.Font("Arial Narrow", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        DataGridViewCellStyle5.ForeColor = System.Drawing.SystemColors.WindowText
-        DataGridViewCellStyle5.SelectionBackColor = System.Drawing.SystemColors.Highlight
-        DataGridViewCellStyle5.SelectionForeColor = System.Drawing.SystemColors.HighlightText
-        DataGridViewCellStyle5.WrapMode = System.Windows.Forms.DataGridViewTriState.[True]
-        Me.DGVTransaksi.ColumnHeadersDefaultCellStyle = DataGridViewCellStyle5
+        DataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft
+        DataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Control
+        DataGridViewCellStyle1.Font = New System.Drawing.Font("Arial Narrow", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        DataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.WindowText
+        DataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight
+        DataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText
+        DataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.[True]
+        Me.DGVTransaksi.ColumnHeadersDefaultCellStyle = DataGridViewCellStyle1
         Me.DGVTransaksi.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
-        DataGridViewCellStyle6.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft
-        DataGridViewCellStyle6.BackColor = System.Drawing.SystemColors.Window
-        DataGridViewCellStyle6.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        DataGridViewCellStyle6.ForeColor = System.Drawing.SystemColors.ControlText
-        DataGridViewCellStyle6.SelectionBackColor = System.Drawing.SystemColors.Highlight
-        DataGridViewCellStyle6.SelectionForeColor = System.Drawing.SystemColors.HighlightText
-        DataGridViewCellStyle6.WrapMode = System.Windows.Forms.DataGridViewTriState.[False]
-        Me.DGVTransaksi.DefaultCellStyle = DataGridViewCellStyle6
+        DataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft
+        DataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Window
+        DataGridViewCellStyle2.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        DataGridViewCellStyle2.ForeColor = System.Drawing.SystemColors.ControlText
+        DataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Highlight
+        DataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HighlightText
+        DataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.[False]
+        Me.DGVTransaksi.DefaultCellStyle = DataGridViewCellStyle2
         Me.DGVTransaksi.Dock = System.Windows.Forms.DockStyle.Fill
         Me.DGVTransaksi.Location = New System.Drawing.Point(0, 0)
         Me.DGVTransaksi.Margin = New System.Windows.Forms.Padding(3, 7, 3, 7)
@@ -1645,23 +1708,23 @@ Partial Class FormUtama
         Me.DGVDetail.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill
         Me.DGVDetail.BackgroundColor = System.Drawing.Color.White
         Me.DGVDetail.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D
-        DataGridViewCellStyle7.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft
-        DataGridViewCellStyle7.BackColor = System.Drawing.SystemColors.Control
-        DataGridViewCellStyle7.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        DataGridViewCellStyle7.ForeColor = System.Drawing.SystemColors.WindowText
-        DataGridViewCellStyle7.SelectionBackColor = System.Drawing.SystemColors.Highlight
-        DataGridViewCellStyle7.SelectionForeColor = System.Drawing.SystemColors.HighlightText
-        DataGridViewCellStyle7.WrapMode = System.Windows.Forms.DataGridViewTriState.[True]
-        Me.DGVDetail.ColumnHeadersDefaultCellStyle = DataGridViewCellStyle7
+        DataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft
+        DataGridViewCellStyle3.BackColor = System.Drawing.SystemColors.Control
+        DataGridViewCellStyle3.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        DataGridViewCellStyle3.ForeColor = System.Drawing.SystemColors.WindowText
+        DataGridViewCellStyle3.SelectionBackColor = System.Drawing.SystemColors.Highlight
+        DataGridViewCellStyle3.SelectionForeColor = System.Drawing.SystemColors.HighlightText
+        DataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.[True]
+        Me.DGVDetail.ColumnHeadersDefaultCellStyle = DataGridViewCellStyle3
         Me.DGVDetail.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
-        DataGridViewCellStyle8.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft
-        DataGridViewCellStyle8.BackColor = System.Drawing.SystemColors.Window
-        DataGridViewCellStyle8.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        DataGridViewCellStyle8.ForeColor = System.Drawing.SystemColors.ControlText
-        DataGridViewCellStyle8.SelectionBackColor = System.Drawing.SystemColors.HighlightText
-        DataGridViewCellStyle8.SelectionForeColor = System.Drawing.SystemColors.ControlText
-        DataGridViewCellStyle8.WrapMode = System.Windows.Forms.DataGridViewTriState.[False]
-        Me.DGVDetail.DefaultCellStyle = DataGridViewCellStyle8
+        DataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft
+        DataGridViewCellStyle4.BackColor = System.Drawing.SystemColors.Window
+        DataGridViewCellStyle4.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        DataGridViewCellStyle4.ForeColor = System.Drawing.SystemColors.ControlText
+        DataGridViewCellStyle4.SelectionBackColor = System.Drawing.SystemColors.HighlightText
+        DataGridViewCellStyle4.SelectionForeColor = System.Drawing.SystemColors.ControlText
+        DataGridViewCellStyle4.WrapMode = System.Windows.Forms.DataGridViewTriState.[False]
+        Me.DGVDetail.DefaultCellStyle = DataGridViewCellStyle4
         Me.DGVDetail.Location = New System.Drawing.Point(902, 33)
         Me.DGVDetail.Margin = New System.Windows.Forms.Padding(3, 7, 3, 7)
         Me.DGVDetail.Name = "DGVDetail"
@@ -1673,6 +1736,7 @@ Partial Class FormUtama
         'Panel1
         '
         Me.Panel1.BackColor = System.Drawing.Color.Chocolate
+        Me.Panel1.Controls.Add(Me.LblRangkuman)
         Me.Panel1.Controls.Add(Me.TxtLokasiUntukEdit)
         Me.Panel1.Controls.Add(Me.BTNKeluar)
         Me.Panel1.Controls.Add(Me.TxtFakturTransaksi)
@@ -1686,10 +1750,18 @@ Partial Class FormUtama
         Me.Panel1.Size = New System.Drawing.Size(1258, 35)
         Me.Panel1.TabIndex = 60
         '
+        'LblRangkuman
+        '
+        Me.LblRangkuman.Location = New System.Drawing.Point(896, 8)
+        Me.LblRangkuman.Name = "LblRangkuman"
+        Me.LblRangkuman.Size = New System.Drawing.Size(321, 25)
+        Me.LblRangkuman.TabIndex = 169
+        Me.LblRangkuman.Text = "Label3"
+        '
         'TxtLokasiUntukEdit
         '
         Me.TxtLokasiUntukEdit.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.TxtLokasiUntukEdit.Location = New System.Drawing.Point(1014, 7)
+        Me.TxtLokasiUntukEdit.Location = New System.Drawing.Point(337, 8)
         Me.TxtLokasiUntukEdit.Name = "TxtLokasiUntukEdit"
         Me.TxtLokasiUntukEdit.Size = New System.Drawing.Size(99, 20)
         Me.TxtLokasiUntukEdit.TabIndex = 168
@@ -1719,7 +1791,7 @@ Partial Class FormUtama
         'TxtFakturTransaksi
         '
         Me.TxtFakturTransaksi.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.TxtFakturTransaksi.Location = New System.Drawing.Point(915, 7)
+        Me.TxtFakturTransaksi.Location = New System.Drawing.Point(571, 8)
         Me.TxtFakturTransaksi.Name = "TxtFakturTransaksi"
         Me.TxtFakturTransaksi.Size = New System.Drawing.Size(99, 20)
         Me.TxtFakturTransaksi.TabIndex = 164
@@ -1873,6 +1945,12 @@ Partial Class FormUtama
         Me.CetakToolStripMenuItem.Size = New System.Drawing.Size(125, 22)
         Me.CetakToolStripMenuItem.Text = "CETAK"
         '
+        'ToolTip1
+        '
+        Me.ToolTip1.IsBalloon = True
+        Me.ToolTip1.ToolTipIcon = System.Windows.Forms.ToolTipIcon.Info
+        Me.ToolTip1.ToolTipTitle = "Informasi"
+        '
         'FormUtama
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
@@ -1994,7 +2072,6 @@ Partial Class FormUtama
     Friend WithEvents TxtJenisPrinter As System.Windows.Forms.TextBox
     Friend WithEvents Panel2 As System.Windows.Forms.Panel
     Friend WithEvents BtnNotif As System.Windows.Forms.Button
-    Friend WithEvents TxtRangkuman As System.Windows.Forms.TextBox
     Friend WithEvents CMSTransaksi As System.Windows.Forms.ContextMenuStrip
     Friend WithEvents TambahToolStripMenuItem As System.Windows.Forms.ToolStripMenuItem
     Friend WithEvents EditToolStripMenuItem As System.Windows.Forms.ToolStripMenuItem
@@ -2087,5 +2164,14 @@ Partial Class FormUtama
     Friend WithEvents PeriksaUpdateAplikasiToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents CekIpKomputerToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents BtnRakit As Button
-    Friend WithEvents JualToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents UpdateTabelDatabaseToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents BtnCari As Button
+    Friend WithEvents TxtFilter As TextBox
+    Friend WithEvents LblRangkuman As Label
+    Friend WithEvents ToolTip1 As ToolTip
+    Friend WithEvents PenjualanQtyToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents BtnGeneralSetting As Button
+    Friend WithEvents PostingTokoToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents PostingGudangToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents PostingSemuaToolStripMenuItem As ToolStripMenuItem
 End Class

@@ -327,7 +327,7 @@ Partial Class TambahBarang
         Me.GBJualUmum.Location = New System.Drawing.Point(12, 256)
         Me.GBJualUmum.Name = "GBJualUmum"
         Me.GBJualUmum.Size = New System.Drawing.Size(791, 152)
-        Me.GBJualUmum.TabIndex = 49
+        Me.GBJualUmum.TabIndex = 2
         Me.GBJualUmum.TabStop = False
         Me.GBJualUmum.Text = "Harga Jual Pelanggan Umum"
         '
@@ -467,7 +467,7 @@ Partial Class TambahBarang
         Me.TxtHArgaJUalUmumBesar.Location = New System.Drawing.Point(346, 115)
         Me.TxtHArgaJUalUmumBesar.Name = "TxtHArgaJUalUmumBesar"
         Me.TxtHArgaJUalUmumBesar.Size = New System.Drawing.Size(116, 23)
-        Me.TxtHArgaJUalUmumBesar.TabIndex = 82
+        Me.TxtHArgaJUalUmumBesar.TabIndex = 6
         Me.TxtHArgaJUalUmumBesar.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
         '
         'CmbSatUmumBesar
@@ -478,7 +478,7 @@ Partial Class TambahBarang
         Me.CmbSatUmumBesar.Location = New System.Drawing.Point(81, 114)
         Me.CmbSatUmumBesar.Name = "CmbSatUmumBesar"
         Me.CmbSatUmumBesar.Size = New System.Drawing.Size(99, 25)
-        Me.CmbSatUmumBesar.TabIndex = 85
+        Me.CmbSatUmumBesar.TabIndex = 5
         '
         'TxtHargaBeliUmumBesar
         '
@@ -541,7 +541,7 @@ Partial Class TambahBarang
         Me.TxtHArgaJUalUmumKecil.Location = New System.Drawing.Point(346, 51)
         Me.TxtHArgaJUalUmumKecil.Name = "TxtHArgaJUalUmumKecil"
         Me.TxtHArgaJUalUmumKecil.Size = New System.Drawing.Size(116, 23)
-        Me.TxtHArgaJUalUmumKecil.TabIndex = 62
+        Me.TxtHArgaJUalUmumKecil.TabIndex = 2
         Me.TxtHArgaJUalUmumKecil.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
         '
         'TxtHArgaJUalUmumSedang
@@ -553,7 +553,7 @@ Partial Class TambahBarang
         Me.TxtHArgaJUalUmumSedang.Location = New System.Drawing.Point(346, 83)
         Me.TxtHArgaJUalUmumSedang.Name = "TxtHArgaJUalUmumSedang"
         Me.TxtHArgaJUalUmumSedang.Size = New System.Drawing.Size(116, 23)
-        Me.TxtHArgaJUalUmumSedang.TabIndex = 73
+        Me.TxtHArgaJUalUmumSedang.TabIndex = 4
         Me.TxtHArgaJUalUmumSedang.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
         '
         'TxtLabaRpUmumSedang
@@ -608,7 +608,7 @@ Partial Class TambahBarang
         Me.CmbSatUmumKecil.Location = New System.Drawing.Point(81, 50)
         Me.CmbSatUmumKecil.Name = "CmbSatUmumKecil"
         Me.CmbSatUmumKecil.Size = New System.Drawing.Size(99, 25)
-        Me.CmbSatUmumKecil.TabIndex = 66
+        Me.CmbSatUmumKecil.TabIndex = 1
         '
         'TxtIsiUmumKecil
         '
@@ -639,6 +639,7 @@ Partial Class TambahBarang
         Me.CmbSatUmumSedang.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
         Me.CmbSatUmumSedang.Font = New System.Drawing.Font("Century Gothic", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.CmbSatUmumSedang.FormattingEnabled = True
+        Me.CmbSatUmumSedang.ItemHeight = 17
         Me.CmbSatUmumSedang.Location = New System.Drawing.Point(81, 82)
         Me.CmbSatUmumSedang.Name = "CmbSatUmumSedang"
         Me.CmbSatUmumSedang.Size = New System.Drawing.Size(99, 25)
@@ -737,7 +738,7 @@ Partial Class TambahBarang
         Me.GBJualPartai.Location = New System.Drawing.Point(12, 414)
         Me.GBJualPartai.Name = "GBJualPartai"
         Me.GBJualPartai.Size = New System.Drawing.Size(791, 150)
-        Me.GBJualPartai.TabIndex = 52
+        Me.GBJualPartai.TabIndex = 3
         Me.GBJualPartai.TabStop = False
         Me.GBJualPartai.Text = "Harga Jual Pelanggan Partai"
         '
@@ -856,7 +857,7 @@ Partial Class TambahBarang
         Me.CmbSatPartaiBesar.Location = New System.Drawing.Point(81, 109)
         Me.CmbSatPartaiBesar.Name = "CmbSatPartaiBesar"
         Me.CmbSatPartaiBesar.Size = New System.Drawing.Size(99, 25)
-        Me.CmbSatPartaiBesar.TabIndex = 85
+        Me.CmbSatPartaiBesar.TabIndex = 5
         '
         'TxtHArgaJualPartaiBesar
         '
@@ -867,7 +868,7 @@ Partial Class TambahBarang
         Me.TxtHArgaJualPartaiBesar.Location = New System.Drawing.Point(346, 110)
         Me.TxtHArgaJualPartaiBesar.Name = "TxtHArgaJualPartaiBesar"
         Me.TxtHArgaJualPartaiBesar.Size = New System.Drawing.Size(116, 23)
-        Me.TxtHArgaJualPartaiBesar.TabIndex = 82
+        Me.TxtHArgaJualPartaiBesar.TabIndex = 6
         Me.TxtHArgaJualPartaiBesar.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
         '
         'TxtHargaBeliPartaiBesar
@@ -939,7 +940,7 @@ Partial Class TambahBarang
         Me.TxtHArgaJualPartaiSedang.Location = New System.Drawing.Point(346, 78)
         Me.TxtHArgaJualPartaiSedang.Name = "TxtHArgaJualPartaiSedang"
         Me.TxtHArgaJualPartaiSedang.Size = New System.Drawing.Size(116, 23)
-        Me.TxtHArgaJualPartaiSedang.TabIndex = 73
+        Me.TxtHArgaJualPartaiSedang.TabIndex = 4
         Me.TxtHArgaJualPartaiSedang.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
         '
         'TxtHargaBeliPartaiSedang
@@ -973,7 +974,7 @@ Partial Class TambahBarang
         Me.CmbSatPartaiKecil.Location = New System.Drawing.Point(81, 45)
         Me.CmbSatPartaiKecil.Name = "CmbSatPartaiKecil"
         Me.CmbSatPartaiKecil.Size = New System.Drawing.Size(99, 25)
-        Me.CmbSatPartaiKecil.TabIndex = 66
+        Me.CmbSatPartaiKecil.TabIndex = 1
         '
         'CmbSatPartaiSedang
         '
@@ -983,7 +984,7 @@ Partial Class TambahBarang
         Me.CmbSatPartaiSedang.Location = New System.Drawing.Point(81, 77)
         Me.CmbSatPartaiSedang.Name = "CmbSatPartaiSedang"
         Me.CmbSatPartaiSedang.Size = New System.Drawing.Size(99, 25)
-        Me.CmbSatPartaiSedang.TabIndex = 76
+        Me.CmbSatPartaiSedang.TabIndex = 3
         '
         'TxtLabaPersenPartaiKecil
         '
@@ -1071,7 +1072,7 @@ Partial Class TambahBarang
         Me.TxtHArgaJualPartaikecil.Location = New System.Drawing.Point(346, 46)
         Me.TxtHArgaJualPartaikecil.Name = "TxtHArgaJualPartaikecil"
         Me.TxtHArgaJualPartaikecil.Size = New System.Drawing.Size(116, 23)
-        Me.TxtHArgaJualPartaikecil.TabIndex = 62
+        Me.TxtHArgaJualPartaikecil.TabIndex = 2
         Me.TxtHArgaJualPartaikecil.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
         '
         'Label28
@@ -1131,7 +1132,7 @@ Partial Class TambahBarang
         Me.GBBarang.Location = New System.Drawing.Point(12, 36)
         Me.GBBarang.Name = "GBBarang"
         Me.GBBarang.Size = New System.Drawing.Size(581, 181)
-        Me.GBBarang.TabIndex = 53
+        Me.GBBarang.TabIndex = 1
         Me.GBBarang.TabStop = False
         Me.GBBarang.Text = "Pengaturan Barang"
         '
@@ -1182,7 +1183,7 @@ Partial Class TambahBarang
         Me.CBManual.Location = New System.Drawing.Point(430, 86)
         Me.CBManual.Name = "CBManual"
         Me.CBManual.Size = New System.Drawing.Size(89, 24)
-        Me.CBManual.TabIndex = 87
+        Me.CBManual.TabIndex = 5
         Me.CBManual.Text = "Manual"
         Me.CBManual.UseVisualStyleBackColor = True
         '
@@ -1205,7 +1206,7 @@ Partial Class TambahBarang
         Me.CmbSupliyer.Location = New System.Drawing.Point(103, 85)
         Me.CmbSupliyer.Name = "CmbSupliyer"
         Me.CmbSupliyer.Size = New System.Drawing.Size(177, 24)
-        Me.CmbSupliyer.TabIndex = 68
+        Me.CmbSupliyer.TabIndex = 3
         '
         'Label8
         '
@@ -1236,7 +1237,7 @@ Partial Class TambahBarang
         Me.CmbKategori.Location = New System.Drawing.Point(103, 54)
         Me.CmbKategori.Name = "CmbKategori"
         Me.CmbKategori.Size = New System.Drawing.Size(177, 24)
-        Me.CmbKategori.TabIndex = 63
+        Me.CmbKategori.TabIndex = 2
         '
         'Label3
         '
@@ -1250,20 +1251,22 @@ Partial Class TambahBarang
         '
         'TxtHrgBeli
         '
+        Me.TxtHrgBeli.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
         Me.TxtHrgBeli.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.TxtHrgBeli.Location = New System.Drawing.Point(103, 118)
         Me.TxtHrgBeli.Name = "TxtHrgBeli"
         Me.TxtHrgBeli.Size = New System.Drawing.Size(118, 22)
-        Me.TxtHrgBeli.TabIndex = 57
+        Me.TxtHrgBeli.TabIndex = 4
         Me.TxtHrgBeli.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
         '
         'TxtNama
         '
+        Me.TxtNama.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
         Me.TxtNama.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.TxtNama.Location = New System.Drawing.Point(103, 25)
         Me.TxtNama.Name = "TxtNama"
         Me.TxtNama.Size = New System.Drawing.Size(466, 22)
-        Me.TxtNama.TabIndex = 56
+        Me.TxtNama.TabIndex = 1
         '
         'Label6
         '
@@ -1297,6 +1300,7 @@ Partial Class TambahBarang
         '
         'TxtKode
         '
+        Me.TxtKode.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
         Me.TxtKode.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.TxtKode.Location = New System.Drawing.Point(430, 55)
         Me.TxtKode.Name = "TxtKode"
@@ -1347,7 +1351,7 @@ Partial Class TambahBarang
         Me.GBStok.Location = New System.Drawing.Point(811, 256)
         Me.GBStok.Name = "GBStok"
         Me.GBStok.Size = New System.Drawing.Size(326, 152)
-        Me.GBStok.TabIndex = 79
+        Me.GBStok.TabIndex = 5
         Me.GBStok.TabStop = False
         '
         'CmBstokAwal
@@ -1373,6 +1377,7 @@ Partial Class TambahBarang
         '
         'TxtJmlhToko
         '
+        Me.TxtJmlhToko.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
         Me.TxtJmlhToko.Font = New System.Drawing.Font("Century Gothic", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.TxtJmlhToko.Location = New System.Drawing.Point(223, 10)
         Me.TxtJmlhToko.Name = "TxtJmlhToko"
@@ -1382,6 +1387,7 @@ Partial Class TambahBarang
         '
         'TxtJmlhGudang
         '
+        Me.TxtJmlhGudang.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
         Me.TxtJmlhGudang.Font = New System.Drawing.Font("Century Gothic", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.TxtJmlhGudang.Location = New System.Drawing.Point(274, 10)
         Me.TxtJmlhGudang.Name = "TxtJmlhGudang"
@@ -1391,6 +1397,7 @@ Partial Class TambahBarang
         '
         'TxtIsiStokAwal
         '
+        Me.TxtIsiStokAwal.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
         Me.TxtIsiStokAwal.Font = New System.Drawing.Font("Century Gothic", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.TxtIsiStokAwal.Location = New System.Drawing.Point(277, 39)
         Me.TxtIsiStokAwal.Name = "TxtIsiStokAwal"
@@ -1400,6 +1407,7 @@ Partial Class TambahBarang
         '
         'TxtIsiStokAkhir
         '
+        Me.TxtIsiStokAkhir.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
         Me.TxtIsiStokAkhir.Font = New System.Drawing.Font("Century Gothic", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.TxtIsiStokAkhir.Location = New System.Drawing.Point(277, 72)
         Me.TxtIsiStokAkhir.Name = "TxtIsiStokAkhir"
@@ -1468,6 +1476,7 @@ Partial Class TambahBarang
         '
         'TxtStokAwal
         '
+        Me.TxtStokAwal.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
         Me.TxtStokAwal.Font = New System.Drawing.Font("Century Gothic", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.TxtStokAwal.Location = New System.Drawing.Point(95, 40)
         Me.TxtStokAwal.Name = "TxtStokAwal"
@@ -1478,6 +1487,7 @@ Partial Class TambahBarang
         '
         'TextMin
         '
+        Me.TextMin.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
         Me.TextMin.Font = New System.Drawing.Font("Century Gothic", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.TextMin.Location = New System.Drawing.Point(95, 121)
         Me.TextMin.Name = "TextMin"
@@ -1487,6 +1497,7 @@ Partial Class TambahBarang
         '
         'TxtStokAkhir
         '
+        Me.TxtStokAkhir.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
         Me.TxtStokAkhir.Font = New System.Drawing.Font("Century Gothic", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.TxtStokAkhir.Location = New System.Drawing.Point(95, 73)
         Me.TxtStokAkhir.Name = "TxtStokAkhir"
@@ -1517,11 +1528,12 @@ Partial Class TambahBarang
         Me.GBBarcode.Location = New System.Drawing.Point(599, 36)
         Me.GBBarcode.Name = "GBBarcode"
         Me.GBBarcode.Size = New System.Drawing.Size(421, 147)
-        Me.GBBarcode.TabIndex = 102
+        Me.GBBarcode.TabIndex = 4
         Me.GBBarcode.TabStop = False
         '
         'TxtBarcodeUmumBesar
         '
+        Me.TxtBarcodeUmumBesar.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
         Me.TxtBarcodeUmumBesar.Font = New System.Drawing.Font("Century Gothic", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.TxtBarcodeUmumBesar.Location = New System.Drawing.Point(78, 106)
         Me.TxtBarcodeUmumBesar.Name = "TxtBarcodeUmumBesar"
@@ -1530,6 +1542,7 @@ Partial Class TambahBarang
         '
         'TxtBarcodeUmumSedang
         '
+        Me.TxtBarcodeUmumSedang.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
         Me.TxtBarcodeUmumSedang.Font = New System.Drawing.Font("Century Gothic", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.TxtBarcodeUmumSedang.Location = New System.Drawing.Point(78, 74)
         Me.TxtBarcodeUmumSedang.Name = "TxtBarcodeUmumSedang"
@@ -1538,6 +1551,7 @@ Partial Class TambahBarang
         '
         'TxtBarcodeUmumKecil
         '
+        Me.TxtBarcodeUmumKecil.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
         Me.TxtBarcodeUmumKecil.Font = New System.Drawing.Font("Century Gothic", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.TxtBarcodeUmumKecil.Location = New System.Drawing.Point(78, 41)
         Me.TxtBarcodeUmumKecil.Name = "TxtBarcodeUmumKecil"
@@ -1694,7 +1708,7 @@ Partial Class TambahBarang
         Me.PanelInfoRubahHarga.Location = New System.Drawing.Point(598, 36)
         Me.PanelInfoRubahHarga.Name = "PanelInfoRubahHarga"
         Me.PanelInfoRubahHarga.Size = New System.Drawing.Size(204, 181)
-        Me.PanelInfoRubahHarga.TabIndex = 169
+        Me.PanelInfoRubahHarga.TabIndex = 7
         '
         'LblJenisUpdate
         '
@@ -1843,7 +1857,7 @@ Partial Class TambahBarang
         Me.GBPoint.Location = New System.Drawing.Point(810, 414)
         Me.GBPoint.Name = "GBPoint"
         Me.GBPoint.Size = New System.Drawing.Size(328, 150)
-        Me.GBPoint.TabIndex = 168
+        Me.GBPoint.TabIndex = 6
         Me.GBPoint.TabStop = False
         '
         'Label4
@@ -1903,6 +1917,7 @@ Partial Class TambahBarang
         '
         'TxtKomisiSalesRp
         '
+        Me.TxtKomisiSalesRp.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
         Me.TxtKomisiSalesRp.Font = New System.Drawing.Font("Century Gothic", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.TxtKomisiSalesRp.Location = New System.Drawing.Point(168, 94)
         Me.TxtKomisiSalesRp.Name = "TxtKomisiSalesRp"
@@ -1911,6 +1926,7 @@ Partial Class TambahBarang
         '
         'TxtPointKaryawan
         '
+        Me.TxtPointKaryawan.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
         Me.TxtPointKaryawan.Font = New System.Drawing.Font("Century Gothic", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.TxtPointKaryawan.Location = New System.Drawing.Point(168, 67)
         Me.TxtPointKaryawan.Name = "TxtPointKaryawan"
@@ -1919,6 +1935,7 @@ Partial Class TambahBarang
         '
         'TxtPointMember
         '
+        Me.TxtPointMember.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
         Me.TxtPointMember.Font = New System.Drawing.Font("Century Gothic", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.TxtPointMember.Location = New System.Drawing.Point(168, 41)
         Me.TxtPointMember.Name = "TxtPointMember"
@@ -1927,6 +1944,7 @@ Partial Class TambahBarang
         '
         'TxtKomisiSalesPersen
         '
+        Me.TxtKomisiSalesPersen.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
         Me.TxtKomisiSalesPersen.Font = New System.Drawing.Font("Century Gothic", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.TxtKomisiSalesPersen.Location = New System.Drawing.Point(168, 121)
         Me.TxtKomisiSalesPersen.Name = "TxtKomisiSalesPersen"
@@ -1935,6 +1953,7 @@ Partial Class TambahBarang
         '
         'TxtLokasiRak
         '
+        Me.TxtLokasiRak.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
         Me.TxtLokasiRak.Font = New System.Drawing.Font("Century Gothic", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.TxtLokasiRak.Location = New System.Drawing.Point(168, 15)
         Me.TxtLokasiRak.Name = "TxtLokasiRak"
