@@ -1,4 +1,4 @@
-﻿<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()> _
+<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()> _
 Partial Class FormQuery
     Inherits System.Windows.Forms.Form
 
@@ -75,13 +75,16 @@ Partial Class FormQuery
         'BtnEksekusi
         '
         Me.BtnEksekusi.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.BtnEksekusi.BackColor = System.Drawing.Color.Teal
-        Me.BtnEksekusi.FlatAppearance.BorderSize = 0
-        Me.BtnEksekusi.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(CType(CType(128, Byte), Integer), CType(CType(255, Byte), Integer), CType(CType(255, Byte), Integer))
-        Me.BtnEksekusi.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(CType(CType(0, Byte), Integer), CType(CType(192, Byte), Integer), CType(CType(192, Byte), Integer))
+        Me.BtnEksekusi.AutoSize = True
+        Me.BtnEksekusi.BackColor = System.Drawing.Color.White
+        Me.BtnEksekusi.Cursor = System.Windows.Forms.Cursors.Hand
+        Me.BtnEksekusi.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(CType(CType(100, Byte), Integer), CType(CType(116, Byte), Integer), CType(CType(139, Byte), Integer))
+        Me.BtnEksekusi.FlatAppearance.BorderSize = 1
+        Me.BtnEksekusi.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(CType(CType(226, Byte), Integer), CType(CType(232, Byte), Integer), CType(CType(240, Byte), Integer))
+        Me.BtnEksekusi.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(CType(CType(241, Byte), Integer), CType(CType(245, Byte), Integer), CType(CType(249, Byte), Integer))
         Me.BtnEksekusi.FlatStyle = System.Windows.Forms.FlatStyle.Flat
-        Me.BtnEksekusi.Font = New System.Drawing.Font("Century Gothic", 12.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.BtnEksekusi.ForeColor = System.Drawing.Color.White
+        Me.BtnEksekusi.Font = New System.Drawing.Font("Segoe UI", 9.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.BtnEksekusi.ForeColor = System.Drawing.Color.Black
         Me.BtnEksekusi.Image = CType(resources.GetObject("BtnEksekusi.Image"), System.Drawing.Image)
         Me.BtnEksekusi.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft
         Me.BtnEksekusi.Location = New System.Drawing.Point(995, 151)
@@ -89,18 +92,21 @@ Partial Class FormQuery
         Me.BtnEksekusi.Size = New System.Drawing.Size(121, 30)
         Me.BtnEksekusi.TabIndex = 135
         Me.BtnEksekusi.Text = "Jalankan"
+        Me.BtnEksekusi.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
         Me.BtnEksekusi.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText
         Me.BtnEksekusi.UseVisualStyleBackColor = False
         '
         'BtnClose
         '
         Me.BtnClose.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.BtnClose.BackColor = System.Drawing.Color.Yellow
+        Me.BtnClose.BackColor = System.Drawing.Color.White
+        Me.BtnClose.Cursor = System.Windows.Forms.Cursors.Hand
         Me.BtnClose.FlatAppearance.BorderSize = 0
-        Me.BtnClose.FlatAppearance.MouseDownBackColor = System.Drawing.Color.GreenYellow
-        Me.BtnClose.FlatAppearance.MouseOverBackColor = System.Drawing.Color.GreenYellow
-        Me.BtnClose.Font = New System.Drawing.Font("Century Gothic", 12.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.BtnClose.ForeColor = System.Drawing.Color.Black
+        Me.BtnClose.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(CType(CType(226, Byte), Integer), CType(CType(232, Byte), Integer), CType(CType(240, Byte), Integer))
+        Me.BtnClose.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(CType(CType(241, Byte), Integer), CType(CType(245, Byte), Integer), CType(CType(249, Byte), Integer))
+        Me.BtnClose.FlatStyle = System.Windows.Forms.FlatStyle.Flat
+        Me.BtnClose.Font = New System.Drawing.Font("Segoe UI", 9.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.BtnClose.ForeColor = System.Drawing.Color.White
         Me.BtnClose.Image = CType(resources.GetObject("BtnClose.Image"), System.Drawing.Image)
         Me.BtnClose.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft
         Me.BtnClose.Location = New System.Drawing.Point(1083, 0)
@@ -178,6 +184,7 @@ Partial Class FormQuery
         '
         'FormQuery
         '
+        Me.KeyPreview = True
         Me.AutoScaleDimensions = New System.Drawing.SizeF(7.0!, 15.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(1128, 459)
@@ -215,3 +222,4 @@ Partial Class FormQuery
     Friend WithEvents ContextMenuStrip1 As System.Windows.Forms.ContextMenuStrip
     Friend WithEvents CopyToolStripMenuItem As System.Windows.Forms.ToolStripMenuItem
 End Class
+

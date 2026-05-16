@@ -1,4 +1,4 @@
-﻿
+
 
 
 Public Class FormHakUser
@@ -12,6 +12,7 @@ Public Class FormHakUser
 
 
     Private Sub FormHakUser_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
+        ModuleTheme.TerapkanTheme(Me)
         Me.Cursor = Cursors.WaitCursor
 
         Dim HAAkses As Boolean() = ModulHakAkses.BacaHakAksesDariCache("Hak Akses")
@@ -112,11 +113,11 @@ Public Class FormHakUser
         IsiDataGridView(DGVMaster, "MASTER", {"Toko", "Barang", "Harga Beli", "Tambah Stok", "Kurang Stok",
                                           "Export Barang", "Import Barang", "Perbaiki Data Barang",
                                           "Perbaiki isi satuan", "Pelanggan", "Supplier", "Tabel Referensi",
-                                          "Armada", "Karyawan", "User", "Hak Akses"})
+                                          "Armada", "Karyawan", "User", "Hak Akses", "Cabang Master"})
 
         IsiDataGridView(DgvTransaksi, "TRANSAKSI", {"Pembelian", "Penjualan", "Retur Pembelian", "Retur Penjualan",
                                                 "Bayar Hutang", "Bayar Piutang", "Transfer Stok",
-                                                "Transfer Barang", "Stok Opname", "Surat Jalan"})
+                                                "Transfer Barang", "Stok Opname", "Surat Jalan", "Transfer Cabang"})
 
         IsiDataGridView(DgvJurnal, "JURNAL", {})
 
@@ -124,15 +125,28 @@ Public Class FormHakUser
                                                   "Gaji", "Lap Gaji"})
 
         IsiDataGridView(DgvLaporan, "LAPORAN", {"Mutasi saldo", "Mutasi barang", "Jurnal Umum", "Neraca", "Buku Besar",
-                                            "Buku Besar Pembantu", "Lap Pembelian", "Lap Penjualan",
-                                            "Jual PPnNonPPn", "Retur Beli", "Retur Jual", "Hutang", "Piutang",
-                                            "Kas Penjualan", "Transfer Stok", "Transfer Barang", "Stok Opname",
-                                            "Stok Barang", "Grafik", "History"}, 1)
+                                            "Buku Besar Pembantu",
+                                            "Lap Pembelian", "Lap Pembelian Detail", "Lap Pembelian Barang", "Lap Pembelian Hutang",
+                                            "Rekap Penjualan Nota", "Rekap Penjualan Barang",
+                                            "Lap Penjualan", "Lap Penjualan Detail", "Lap Penjualan Barang",
+                                            "Lap Penjualan Hutang", "Lap Penjualan Sales", "Lap Penjualan Qty", "Jual PPnNonPPn",
+                                            "Retur Beli", "Retur Beli Detail", "Retur Beli Barang",
+                                            "Retur Jual", "Retur Jual Detail", "Retur Jual Barang",
+                                            "Hutang By Pembelian", "Hutang By Pelunasan", "Hutang By Jatuh Tempo", "Rekap Bayar Hutang",
+                                            "Piutang By Penjualan", "Piutang By Pelunasan", "Piutang By Jatuh Tempo", "Rekap Bayar Piutang",
+                                            "Kas Penjualan",
+                                            "Lap Transfer Stok", "Lap Transfer Barang", "Lap Transfer Barang Detail",
+                                            "Lap Stok Opname", "Stok Barang", "Kartu Stok",
+                                            "Barang Terlaris", "Barang Tidak Bergerak", "Stok Minimum", "Stok Masa Lampau",
+                                            "Ranking Supplier", "Ranking Kasir", "Ranking Barang Terbanyak Dibeli",
+                                            "Ranking Pelanggan Piutang Terbesar", "Ranking Supplier Hutang Terbesar",
+                                            "Omset Per Pelanggan", "Omset Per Kategori",
+                                            "Grafik", "History"}, 1)
 
         IsiDataGridView(DgvUtility, "UTILITY", {"Database", "Backup Database", "Restore Database", "Perbaiki Database",
-                                            "Query", "Setting Printer"}, 1)
+                                            "Setting Printer"}, 1)
 
-        IsiDataGridView(DgvPosting, "POSTING", {}, 1)
+        IsiDataGridView(DgvPosting, "POSTING", {"Posting Toko", "Posting Gudang", "Posting Semua"}, 1)
 
         SinkronkanDatabaseDenganTemplate()
     End Sub
@@ -536,6 +550,29 @@ Public Class FormHakUser
             {DgvPosting, {1}}  ' Hanya CanRead
         }
 
+            ' ========================================
+            ' START: Audit Trail - Ubah Hak Akses User
+            ' ========================================
+            Dim namaUserHak As String = CmbUser.Text
+            Dim sbSnapshot As New System.Text.StringBuilder()
+            Dim jumlahModul As Integer = 0
+            sbSnapshot.AppendLine($"User: {namaUserHak}")
+            sbSnapshot.AppendLine($"Daftar Modul:")
+            For Each pair As KeyValuePair(Of DataGridView, Integer()) In daftarGrid
+                For Each row As DataGridViewRow In pair.Key.Rows
+                    If Not row.IsNewRow AndAlso row.Cells(0).Value IsNot Nothing Then
+                        jumlahModul += 1
+                        Dim modulName As String = row.Cells(0).Value.ToString()
+                        sbSnapshot.AppendLine($"  - {modulName}")
+                    End If
+                Next
+            Next
+            sbSnapshot.Insert(0, $"Jumlah Modul Diubah: {jumlahModul}" & vbNewLine)
+            ModuleAuditTrail.CatatAuditMaster("USER:" & namaUserHak, "EDIT", "Hak Akses User", sbSnapshot.ToString(), trans:=transaksi)
+            ' ========================================
+            ' END: Audit Trail - Ubah Hak Akses User
+            ' ========================================
+
             For Each pair As KeyValuePair(Of DataGridView, Integer()) In daftarGrid
                 UpdateHakAkses(pair.Key, pair.Value, transaksi)
             Next
@@ -544,7 +581,6 @@ Public Class FormHakUser
             ' Commit transaksi jika tidak ada kesalahan
             transaksi.Commit()
             MessageBox.Show("Perubahan telah disimpan.", "Informasi", MessageBoxButtons.OK, MessageBoxIcon.Information)
-            DatabaseModule.CatatanAksiHistory("Update hak akses user")
 
             ' === REFRESH CACHE SETELAH UPDATE ===
             ModulHakAkses.RefreshHakAksesCache()

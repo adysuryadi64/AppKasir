@@ -1,4 +1,4 @@
-﻿Imports System.IO
+Imports System.IO
 
 Public Class ACTIVATION_FORM
     Private Const ConfigFilePath As String = "config.bin"
@@ -53,6 +53,7 @@ Public Class ACTIVATION_FORM
 
 
     Private Sub ACTIVATION_FORM_Load(ByVal sender As Object, ByVal e As EventArgs) Handles MyBase.Load
+        ModuleTheme.TerapkanTheme(Me)
         CekAktivasiProgramDiAktivasiForm()
     End Sub
 
@@ -115,9 +116,27 @@ Public Class ACTIVATION_FORM
     End Sub
 
 
+    ''' <summary>Serial number yang dihitung dari hardware</summary>
+    Public ReadOnly Property SerialNumber As String
+        Get
+            Return serialTextBox.Text
+        End Get
+    End Property
+
+    ''' <summary>Activation key yang tersimpan di license.ini</summary>
+    Public ReadOnly Property ActivationKey As String
+        Get
+            Return activationKeyTextBox.Text
+        End Get
+    End Property
+
+    ''' <summary>True jika program sudah diaktivasi</summary>
+    Public Function IsActivated() As Boolean
+        CekAktivasiProgramDiAktivasiForm()
+        Return statusLabel.ForeColor = Color.DarkGreen
+    End Function
+
     Public Sub CheckLicense()
-        Dim kg As New KeyGenerator
-        Dim key As String = kg.GenerateKey(serialTextBox.Text)
         If System.IO.File.Exists(bejoLicenseFile) Then
             BejoWriteSettings(bejoLicenseFile, "LICENSE", "serial", serialTextBox.Text)
             activationKeyTextBox.Text = BejoReadSettings(bejoLicenseFile, "LICENSE", "activation_key", "")
@@ -125,7 +144,6 @@ Public Class ACTIVATION_FORM
             BejoWriteSettings(bejoLicenseFile, "LICENSE", "serial", serialTextBox.Text)
             activationKeyTextBox.Text = ""
         End If
-
     End Sub
 
     Private Sub BtnAktivasi_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles BtnAktivasi.Click
@@ -135,7 +153,7 @@ Public Class ACTIVATION_FORM
         If activationKeyTextBox.Text <> key Then
             statusLabel.ForeColor = Color.Red
             statusLabel.Text = "Not Activated/invalid key"
-            MsgBox("Invalid activation key!", vbExclamation)
+            MessageBox.Show("Invalid activation key!", "Peringatan", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
         Else
             BejoWriteSettings(bejoLicenseFile, "LICENSE", "activation_key", activationKeyTextBox.Text)
             statusLabel.ForeColor = Color.DarkGreen

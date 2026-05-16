@@ -1,9 +1,10 @@
-﻿Imports Microsoft.Reporting.WinForms
+Imports Microsoft.Reporting.WinForms
 
 Public Class FormLapTransferBarang
 
     Private Sub FormLapTransferBarang_Load(sender As Object, e As EventArgs) Handles MyBase.Load
-        Select Case LabelJudul.Text
+        ModuleTheme.TerapkanTheme(Me)
+        Select Case LblHeaderForm.Text
             Case "LAPORAN TRANSFER BARANG"
                 PanelTF.Visible = True
                 PanelTFDetail.Visible = False
@@ -18,7 +19,7 @@ Public Class FormLapTransferBarang
         Dim tanggalAwal As Date = DTPAwal.Value.Date
         Dim tanggalAkhir As Date = DTPAkhir.Value.Date.AddDays(1).AddTicks(-1)
 
-        Select Case LabelJudul.Text
+        Select Case LblHeaderForm.Text
             Case "LAPORAN TRANSFER BARANG"
                 TransferBarang(tanggalAwal, tanggalAkhir)
             Case "LAPORAN TRANSFER BARANG DETAIL"
@@ -43,7 +44,7 @@ Public Class FormLapTransferBarang
 
                 Dim reportParameters As New ReportParameterCollection From {
                 New ReportParameter("Periode", "Periode: " & tanggalAwal.ToString("dd/MM/yyyy") & " s/d " & tanggalAkhir.ToString("dd/MM/yyyy")),
-                New ReportParameter("Kasir", "Dicetak oleh: " & FormUtama.SLogin.Text),
+                New ReportParameter("Kasir", "Dicetak oleh: " & FormUtama.StatusNamaUser.Text),
                 New ReportParameter("Perusahaan", NAMA_PERUSAHAAN)
             }
 
@@ -74,7 +75,7 @@ Public Class FormLapTransferBarang
 
                 Dim reportParametersDetail As New ReportParameterCollection From {
                 New ReportParameter("Periode", "Periode: " & tanggalAwal.ToString("dd/MM/yyyy") & " s/d " & tanggalAkhir.ToString("dd/MM/yyyy")),
-                New ReportParameter("Kasir", "Dicetak oleh: " & FormUtama.SLogin.Text),
+                New ReportParameter("Kasir", "Dicetak oleh: " & FormUtama.StatusNamaUser.Text),
                 New ReportParameter("Perusahaan", NAMA_PERUSAHAAN)
             }
 
@@ -92,4 +93,10 @@ Public Class FormLapTransferBarang
     Private Sub PanelReturJual_Paint(sender As Object, e As PaintEventArgs) Handles PanelReturJual.Paint
 
     End Sub
+    Private Sub FormLapTransferBarang_KeyDown(sender As Object, e As KeyEventArgs) Handles MyBase.KeyDown
+        Select Case e.KeyCode
+        Case Keys.F5 : BtnTampilkan.PerformClick()
+    End Select
+    End Sub
+
 End Class

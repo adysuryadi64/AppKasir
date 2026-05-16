@@ -1,28 +1,28 @@
-﻿Public Class FormBon
+Public Class FormBon
 
     Private Sub FormBon_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
+        ModuleTheme.TerapkanTheme(Me)
         If LblJenis.Text = "BON" Then
             Dim BON As Boolean() = ModulHakAkses.BacaHakAksesDariCache("BON")
-            ' Terapkan nilai hak akses ke tombol-tombol
-            BtnSimpann.Visible = BON(1) ' CanAdd 
-            DgvKeuangan.Columns("EDITKEUANGAN").Visible = BON(2) ' CanEdit 
-            DgvKeuangan.Columns("HAPUSKEUANGAN").Visible = BON(3) ' CanDelete 
+            BtnSimpann.Visible = BON(1)
+            DgvKeuangan.Columns("EDITKEUANGAN").Visible = BON(2)
+            DgvKeuangan.Columns("HAPUSKEUANGAN").Visible = BON(3)
             Label5.Text = "Saldo Bon Awal :"
             Label71.Text = "Nominal Bon :"
             Label8.Text = "Saldo Bon Akhir :"
         Else
             Dim BAYAR As Boolean() = ModulHakAkses.BacaHakAksesDariCache("BAYAR")
-            ' Terapkan nilai hak akses ke tombol-tombol
-            BtnSimpann.Visible = BAYAR(1) ' CanAdd 
-            DgvKeuangan.Columns("EDITKEUANGAN").Visible = BAYAR(2) ' CanEdit 
-            DgvKeuangan.Columns("HAPUSKEUANGAN").Visible = BAYAR(3) ' CanDelete 
+            BtnSimpann.Visible = BAYAR(1)
+            DgvKeuangan.Columns("EDITKEUANGAN").Visible = BAYAR(2)
+            DgvKeuangan.Columns("HAPUSKEUANGAN").Visible = BAYAR(3)
             Label5.Text = "Saldo Bon Awal :"
             Label71.Text = "Nominal Bayar :"
             Label8.Text = "Saldo Bon Akhir :"
         End If
-        DtpTanggal.Value = DateTime.Now
+        ModulHakAkses.ResetDTPKeTanggalHariIni(DtpTanggal)
         ResetControls()
-
+        CmbPilihCetak.Text = BacaPengaturanPrinter("BonKaryawan", "CetakOtomatis", "IYA")
+        CmbProsesCetak.Text = BacaPengaturanPrinter("BonKaryawan", "PilihPrinter", "LANGSUNG CETAK")
     End Sub
     Private Sub ResetControls()
 
@@ -33,6 +33,7 @@
 
         AmbilDataKaryawan()
 
+        ModulHakAkses.ResetDTPKeTanggalHariIni(DtpTanggal)
         DtpTanggal.Format = DateTimePickerFormat.Custom
         DtpTanggal.CustomFormat = "dd/MM/yyyy"
 
@@ -41,7 +42,7 @@
 
         LblKode.Text = ""
         CmbNama.SelectedIndex = -1
-        CmbRekening.SelectedIndex = -1
+        CmbRekening.SelectedItem = nama_rek_Bon_Karyawan
         LblSaldoBon.Text = ""
         TxtNominal.Text = ""
         LblKode.Text = ""
@@ -54,34 +55,17 @@
     End Sub
 
     Private Sub GenerateNomorBon()
-        Dim cekTanggal As String = DtpTanggal.Value.ToString("yyMMdd")
-        Dim UrutKOde As String = ""
-        Dim cekNomor As String = "BK-" & cekTanggal
-
-        ' Query untuk mendapatkan nomor maksimum berdasarkan format
-        Using cmd As New MySqlCommand("SELECT MAX(FAKTUR) FROM Bon_karyawan WHERE FAKTUR LIKE @ceknomor", conn)
-            cmd.Parameters.AddWithValue("@ceknomor", cekNomor & "%")
-
-            ' Gunakan ExecuteScalar untuk mendapatkan nilai maksimum
-            Dim maxKode As Object = cmd.ExecuteScalar()
-
-            If Not IsDBNull(maxKode) AndAlso maxKode IsNot Nothing Then
-                Dim MaxNilaiKode As String = maxKode.ToString()
-                If Microsoft.VisualBasic.Left(MaxNilaiKode, 9) = "BK-" & cekTanggal Then
-                    ' Hitung nomor berikutnya
-                    Dim Hitung As Integer = CInt(Microsoft.VisualBasic.Right(MaxNilaiKode, 4)) + 1
-                    UrutKOde = "BK-" & cekTanggal & Microsoft.VisualBasic.Right("0000" & Hitung.ToString(), 4)
-                End If
-            End If
+        Using cmd As New MySqlCommand(
+            "CALL sp_hlp_faktur_generate(@prefix, @tgl, @tabel, @kolom, @nomor)", conn)
+            cmd.Parameters.AddWithValue("@prefix", "BK")
+            cmd.Parameters.AddWithValue("@tgl", DtpTanggal.Value.Date)
+            cmd.Parameters.AddWithValue("@tabel", "bon_karyawan")
+            cmd.Parameters.AddWithValue("@kolom", "FAKTUR")
+            Dim pNomor = cmd.Parameters.Add("@nomor", MySqlDbType.VarChar, 30)
+            pNomor.Direction = ParameterDirection.Output
+            cmd.ExecuteNonQuery()
+            LblNomor.Text = pNomor.Value?.ToString()
         End Using
-
-        ' Jika UrutKOde masih kosong, buat nomor pertama
-        If String.IsNullOrEmpty(UrutKOde) Then
-            UrutKOde = "BK-" & cekTanggal & "0001"
-        End If
-
-        LblNomor.Text = UrutKOde
-
     End Sub
 
 
@@ -89,7 +73,7 @@
     Private Sub AmbilDataKaryawan()
         CmbNama.Items.Clear()
         ' Query untuk mengambil akun KAS atau BANK
-        Dim queryArmada As String = "SELECT NAMA FROM tbl_Karyawan ORDER BY NAMA ASC"
+        Dim queryArmada As String = "SELECT NAMA FROM tbl_Karyawan WHERE Status = 'Aktif' ORDER BY NAMA ASC"
         Using cmd As New MySqlCommand(queryArmada, conn)
             Using rd As MySqlDataReader = cmd.ExecuteReader()
                 If rd.HasRows Then
@@ -200,30 +184,17 @@
         ' Format tanggal dan nominal
         dgv.Columns("TANGGAL").DefaultCellStyle.Format = "dd/MM/yyyy"
 
-        dgv.Columns("NOMINAL").DefaultCellStyle.Format = "N0"
-        dgv.Columns("NOMINAL").DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight
-
-        dgv.Columns("AKHIR_BON").DefaultCellStyle.Format = "N0"
-        dgv.Columns("AKHIR_BON").DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight
+        ModuleAngka.TerapkanFormatKolomAngka(dgv, "NOMINAL", "AKHIR_BON")
 
         ' Set header style
-        dgv.ColumnHeadersDefaultCellStyle.BackColor = Color.Yellow
 
         ' Set alternating row style
-        dgv.AlternatingRowsDefaultCellStyle.BackColor = Color.LightGray
 
         ' Set visual style
         dgv.BorderStyle = BorderStyle.FixedSingle
-        dgv.GridColor = Color.Silver
-        dgv.BackgroundColor = Color.White
 
         ' Enable double buffering to reduce flickering
-        EnableDoubleBuffering(dgv)
-    End Sub
-
-    ' Method to enable double buffering
-    Public Shared Sub EnableDoubleBuffering(ByVal dgv As DataGridView)
-        dgv.GetType().InvokeMember("DoubleBuffered", Reflection.BindingFlags.NonPublic Or Reflection.BindingFlags.Instance Or Reflection.BindingFlags.SetProperty, Nothing, dgv, New Object() {True})
+        ModuleTheme.ApplyThemeDataGridView(dgv)
     End Sub
 
 
@@ -242,19 +213,11 @@
                     LblRekening.Text = DgvKeuangan.Rows(e.RowIndex).Cells("KODE_REK").Value.ToString()
                     CmbRekening.Text = DgvKeuangan.Rows(e.RowIndex).Cells("NAMA_REK").Value.ToString()
 
-                    Dim awal As Decimal
-                    If Decimal.TryParse(DgvKeuangan.Rows(e.RowIndex).Cells("AWAL_BON").Value.ToString(), awal) Then
-                        LblSaldoBon.Text = awal.ToString("N0")
-                    Else
-                        LblSaldoBon.Text = "0"
-                    End If
+                    Dim awal As Decimal = ModuleAngka.ParseDecimal(DgvKeuangan.Rows(e.RowIndex).Cells("AWAL_BON").Value)
+                    LblSaldoBon.Text = ModuleAngka.FormatRupiah(awal)
 
-                    Dim nominal As Decimal
-                    If Decimal.TryParse(DgvKeuangan.Rows(e.RowIndex).Cells("NOMINAL").Value.ToString(), nominal) Then
-                        TxtNominal.Text = nominal.ToString("N0")
-                    Else
-                        TxtNominal.Text = "0"
-                    End If
+                    Dim nominal As Decimal = ModuleAngka.ParseDecimal(DgvKeuangan.Rows(e.RowIndex).Cells("NOMINAL").Value)
+                    TxtNominal.Text = nominal.ToString()
                     TxtKeterangan.Text = DgvKeuangan.Rows(e.RowIndex).Cells("KETERANGAN").Value.ToString()
                     BtnSimpann.Text = "EDIT (F8)"
                 End If
@@ -268,11 +231,59 @@
                     Dim result As DialogResult = MessageBox.Show("Apakah Anda yakin akan menghapus data ini?", "Hapus Data", MessageBoxButtons.YesNo)
                     If result = DialogResult.Yes Then
                         Dim kodeTransaksi As String = notaValue.ToString()
-                        Dim nominal As Decimal
-                        Decimal.TryParse(DgvKeuangan.Rows(e.RowIndex).Cells("NOMINAL").Value.ToString(), nominal)
+                        Dim nominal As Decimal = ModuleAngka.ParseDecimal(DgvKeuangan.Rows(e.RowIndex).Cells("NOMINAL").Value)
 
                         Using transaction As MySqlTransaction = conn.BeginTransaction()
                             Try
+                                ' ========================================
+                                ' STEP 1: SELECT daftar akun LAMA SEBELUM DELETE JurnalUmum
+                                ' ========================================
+                                Dim akunTerlibat As New HashSet(Of String)(StringComparer.OrdinalIgnoreCase)
+                                Using cmdAkunLama As New MySqlCommand(
+                                    "SELECT DISTINCT NOMOR_AKUN_D FROM JurnalUmum WHERE NO_TRANSAKSI = @fk AND NOMOR_AKUN_D <> '' " &
+                                    "UNION " &
+                                    "SELECT DISTINCT NOMOR_AKUN_K FROM JurnalUmum WHERE NO_TRANSAKSI = @fk AND NOMOR_AKUN_K <> ''",
+                                    conn, transaction)
+                                    cmdAkunLama.Parameters.AddWithValue("@fk", kodeTransaksi)
+                                    Using rd = cmdAkunLama.ExecuteReader()
+                                        While rd.Read()
+                                            Dim kode As String = rd(0).ToString().Trim()
+                                            If kode <> "" Then akunTerlibat.Add(kode)
+                                        End While
+                                    End Using
+                                End Using
+                                ' ========================================
+                                ' START: Audit Trail - Hapus Bon Karyawan
+                                ' ========================================
+                                Dim sbSnapshot As New System.Text.StringBuilder()
+                                Try
+                                    Using cmdSnap As New MySqlCommand(
+                                        "SELECT FAKTUR, TANGGAL, KODE, NAMA, KODE_REK, NAMA_REK, AWAL_BON, NOMINAL, AKHIR_BON, KETERANGAN " &
+                                        "FROM Bon_karyawan WHERE FAKTUR = @f LIMIT 1", conn, transaction)
+                                        cmdSnap.Parameters.AddWithValue("@f", kodeTransaksi)
+                                        Using rdSnap = cmdSnap.ExecuteReader()
+                                            If rdSnap.Read() Then
+                                                sbSnapshot.AppendLine($"Faktur: {rdSnap("FAKTUR")}")
+                                                sbSnapshot.AppendLine($"Tanggal: {Convert.ToDateTime(rdSnap("TANGGAL")).ToString("dd/MM/yyyy HH:mm:ss")}")
+                                                sbSnapshot.AppendLine($"Kode Karyawan: {rdSnap("KODE")}")
+                                                sbSnapshot.AppendLine($"Nama Karyawan: {rdSnap("NAMA")}")
+                                                sbSnapshot.AppendLine($"Kode Rekening: {rdSnap("KODE_REK")}")
+                                                sbSnapshot.AppendLine($"Nama Rekening: {rdSnap("NAMA_REK")}")
+                                                sbSnapshot.AppendLine($"Saldo Awal: {ModuleAngka.FormatRupiah(ModuleAngka.ParseDecimal(rdSnap("AWAL_BON")))}")
+                                                sbSnapshot.AppendLine($"Nominal: {ModuleAngka.FormatRupiah(ModuleAngka.ParseDecimal(rdSnap("NOMINAL")))}")
+                                                sbSnapshot.AppendLine($"Saldo Akhir: {ModuleAngka.FormatRupiah(ModuleAngka.ParseDecimal(rdSnap("AKHIR_BON")))}")
+                                                sbSnapshot.AppendLine($"Keterangan: {rdSnap("KETERANGAN")}")
+                                            End If
+                                        End Using
+                                    End Using
+                                Catch
+                                    sbSnapshot.AppendLine("Gagal baca data sebelum hapus")
+                                End Try
+                                ModuleAuditTrail.CatatAuditMaster("BON:" & kodeTransaksi, "HAPUS", "Bon Karyawan", sbSnapshot.ToString(), trans:=transaction)
+                                ' ========================================
+                                ' END: Audit Trail - Hapus Bon Karyawan
+                                ' ========================================
+
                                 Dim deleteQueries As String() = {
                                     "DELETE FROM Bon_karyawan WHERE FAKTUR = @FAKTUR",
                                     "DELETE FROM JurnalUmum WHERE NO_TRANSAKSI = @FAKTUR"
@@ -302,6 +313,17 @@
                                     cmdUpdate.ExecuteNonQuery()
                                 End Using
 
+                                ' Update saldo bon karyawan secara realtime
+                                Dim kodeKaryawan As String = DgvKeuangan.Rows(e.RowIndex).Cells("KODE").Value.ToString()
+                                UpdateBonKaryawan(kodeKaryawan, transaction)
+
+                                ' ========================================
+                                ' STEP 2: UPDATE saldo untuk semua akun yang terlibat
+                                ' ========================================
+                                For Each kodeAkun As String In akunTerlibat
+                                    UpdateSaldoAkun(kodeAkun, transaction)
+                                Next
+
                                 ' Commit transaksi
                                 transaction.Commit()
                                 ' Reset kontrol atau refresh DataGridView setelah operasi berhasil
@@ -325,29 +347,139 @@
             Dim transaction As MySqlTransaction = conn.BeginTransaction()
 
             Try
-                Dim Nominal As Decimal
+                Dim Nominal As Decimal = ModuleAngka.ParseDecimal(TxtNominal.Text)
 
-                If Not Decimal.TryParse(TxtNominal.Text.Replace(".", ""), Nominal) Then
-                    Nominal = 0D
-                End If
-
+                Dim akunLama As New HashSet(Of String)(StringComparer.OrdinalIgnoreCase)
                 If BtnSimpann.Text = "EDIT (F8)" Then
+                    ' ========================================
+                    ' STEP 1: SELECT daftar akun LAMA SEBELUM DELETE JurnalUmum
+                    ' ========================================
+                    Using cmdAkunLama As New MySqlCommand(
+                        "SELECT DISTINCT NOMOR_AKUN_D FROM JurnalUmum WHERE NO_TRANSAKSI = @fk AND NOMOR_AKUN_D <> '' " &
+                        "UNION " &
+                        "SELECT DISTINCT NOMOR_AKUN_K FROM JurnalUmum WHERE NO_TRANSAKSI = @fk AND NOMOR_AKUN_K <> ''",
+                        conn, transaction)
+                        cmdAkunLama.Parameters.AddWithValue("@fk", LblNomor.Text)
+                        Using rd = cmdAkunLama.ExecuteReader()
+                            While rd.Read()
+                                Dim kode As String = rd(0).ToString().Trim()
+                                If kode <> "" Then akunLama.Add(kode)
+                            End While
+                        End Using
+                    End Using
+                    ' ========================================
+                    ' START: Audit Trail - Edit Bon Karyawan
+                    ' ========================================
+                    Dim sbSnapshot As New System.Text.StringBuilder()
+                    Try
+                        Using cmdSnap As New MySqlCommand(
+                            "SELECT FAKTUR, TANGGAL, KODE, NAMA, KODE_REK, NAMA_REK, AWAL_BON, NOMINAL, AKHIR_BON, KETERANGAN " &
+                            "FROM Bon_karyawan WHERE FAKTUR = @f LIMIT 1", conn, transaction)
+                            cmdSnap.Parameters.AddWithValue("@f", LblNomor.Text)
+                            Using rdSnap = cmdSnap.ExecuteReader()
+                                If rdSnap.Read() Then
+                                    sbSnapshot.AppendLine($"Faktur: {rdSnap("FAKTUR")}")
+                                    sbSnapshot.AppendLine($"Tanggal: {Convert.ToDateTime(rdSnap("TANGGAL")).ToString("dd/MM/yyyy HH:mm:ss")}")
+                                    sbSnapshot.AppendLine($"Kode Karyawan: {rdSnap("KODE")}")
+                                    sbSnapshot.AppendLine($"Nama Karyawan: {rdSnap("NAMA")}")
+                                    sbSnapshot.AppendLine($"Kode Rekening: {rdSnap("KODE_REK")}")
+                                    sbSnapshot.AppendLine($"Nama Rekening: {rdSnap("NAMA_REK")}")
+                                    sbSnapshot.AppendLine($"Saldo Awal: {ModuleAngka.FormatRupiah(ModuleAngka.ParseDecimal(rdSnap("AWAL_BON")))}")
+                                    sbSnapshot.AppendLine($"Nominal: {ModuleAngka.FormatRupiah(ModuleAngka.ParseDecimal(rdSnap("NOMINAL")))}")
+                                    sbSnapshot.AppendLine($"Saldo Akhir: {ModuleAngka.FormatRupiah(ModuleAngka.ParseDecimal(rdSnap("AKHIR_BON")))}")
+                                    sbSnapshot.AppendLine($"Keterangan: {rdSnap("KETERANGAN")}")
+                                End If
+                            End Using
+                        End Using
+                    Catch
+                        sbSnapshot.AppendLine("Gagal baca data sebelum edit")
+                    End Try
+                    ModuleAuditTrail.CatatAuditMaster("BON:" & LblNomor.Text, "EDIT", "Bon Karyawan", sbSnapshot.ToString(), trans:=transaction)
+                    ' ========================================
+                    ' END: Audit Trail - Edit Bon Karyawan
+                    ' ========================================
                     HapusUntukEdit(transaction, Nominal)
                 End If
 
                 InsertBonKaryawan(transaction, Nominal)
                 Simpanjurnal(transaction, Nominal)
 
+                ' Update saldo bon karyawan secara realtime
+                UpdateBonKaryawan(LblKode.Text, transaction)
+
+                ' ========================================
+                ' STEP 2: SELECT daftar akun BARU
+                ' ========================================
+                Dim akunBaru As New HashSet(Of String)(StringComparer.OrdinalIgnoreCase)
+                Using cmdAkunBaru As New MySqlCommand(
+                    "SELECT DISTINCT NOMOR_AKUN_D FROM JurnalUmum WHERE NO_TRANSAKSI = @fk AND NOMOR_AKUN_D <> '' " &
+                    "UNION " &
+                    "SELECT DISTINCT NOMOR_AKUN_K FROM JurnalUmum WHERE NO_TRANSAKSI = @fk AND NOMOR_AKUN_K <> ''",
+                    conn, transaction)
+                    cmdAkunBaru.Parameters.AddWithValue("@fk", LblNomor.Text)
+                    Using rd = cmdAkunBaru.ExecuteReader()
+                        While rd.Read()
+                            Dim kode As String = rd(0).ToString().Trim()
+                            If kode <> "" Then akunBaru.Add(kode)
+                        End While
+                    End Using
+                End Using
+
+                ' ========================================
+                ' STEP 3: GABUNGKAN daftar akun LAMA + BARU
+                ' ========================================
+                Dim semuaAkunTerlibat As New HashSet(Of String)(akunLama, StringComparer.OrdinalIgnoreCase)
+                For Each akun In akunBaru
+                    semuaAkunTerlibat.Add(akun)
+                Next
+
+                ' ========================================
+                ' STEP 4: UPDATE saldo untuk SEMUA akun yang terlibat
+                ' ========================================
+                For Each kodeAkun As String In semuaAkunTerlibat
+                    UpdateSaldoAkun(kodeAkun, transaction)
+                Next
+
                 transaction.Commit()
 
+                ' Audit jurnal keseimbangan
+                CatatJurnalTidakSeimbang(LblNomor.Text, Nominal, Nominal, "Bon Karyawan",
+                    {"Bon/Bayar"})
 
+                Dim noBon As String = LblNomor.Text
                 ResetControls()
+
+                ' Cetak setelah simpan
+                Try
+                    Select Case CmbPilihCetak.Text.Trim().ToUpper()
+                        Case "IYA"
+                            LakukanCetakBon(noBon)
+                        Case "SELALU TANYA"
+                            If MessageBox.Show("Apakah Anda ingin mencetak bon karyawan?",
+                                               "Konfirmasi Cetak", MessageBoxButtons.YesNo, MessageBoxIcon.Question) = DialogResult.Yes Then
+                                LakukanCetakBon(noBon)
+                            End If
+                        Case "TAMPILKAN DI MONITOR"
+                            ModulePrinterBonKaryawan.CetakBonKaryawan(noBon, "Tampilkan di Monitor")
+                    End Select
+                Catch ex As Exception
+                    MessageBox.Show("Gagal mencetak bon karyawan." & vbCrLf & "Detail: " & ex.Message,
+                                    "Peringatan", MessageBoxButtons.OK, MessageBoxIcon.Warning)
+                End Try
 
             Catch ex As Exception
                 transaction.Rollback()
                 MessageBox.Show("Terjadi kesalahan: " & ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
             End Try
 
+        End If
+    End Sub
+
+    Private Sub LakukanCetakBon(faktur As String)
+        If CmbProsesCetak.Text = "TANYA PILIH PRINTER" Then
+            ModulePrinterBonKaryawan.TanyaPilihPrinterBonKaryawan(faktur)
+        Else
+            ModulePrinterBonKaryawan.CetakBonKaryawan(faktur)
         End If
     End Sub
 
@@ -380,7 +512,7 @@
                 Return False
             End If
 
-            Dim sisaBon As Decimal = If(Not Decimal.TryParse(LblSisaBon.Text, sisaBon), 0, sisaBon)
+            Dim sisaBon As Decimal = ModuleAngka.ParseDecimal(LblSisaBon.Text)
             If sisaBon < 0 Then
                 MessageBox.Show("Pembayaran bon lebih besar dari pada nominal bon", "Kesalahan", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
                 TxtNominal.Focus()
@@ -429,18 +561,18 @@
         Using cmd As New MySqlCommand(sql, conn, transaction)
             cmd.Parameters.AddWithValue("@FAKTUR", LblNomor.Text)
             cmd.Parameters.AddWithValue("@TANGGAL", DtpTanggal.Value.ToString("yyyy-MM-dd HH:mm:ss"))
-            cmd.Parameters.AddWithValue("@LOKASI", FormUtama.SLokasi.Text)
+            cmd.Parameters.AddWithValue("@LOKASI", FormUtama.StatusLokasi.Text)
             cmd.Parameters.AddWithValue("@JENIS", LblJenis.Text)
             cmd.Parameters.AddWithValue("@KODE", LblKode.Text)
             cmd.Parameters.AddWithValue("@NAMA", CmbNama.Text)
             cmd.Parameters.AddWithValue("@KODE_REK", LblRekening.Text)
             cmd.Parameters.AddWithValue("@NAMA_REK", CmbRekening.Text)
-            cmd.Parameters.AddWithValue("@AWAL_BON", Decimal.Parse(LblSaldoBon.Text.Replace(".", "")))
+            cmd.Parameters.AddWithValue("@AWAL_BON", ModuleAngka.ParseDecimal(LblSaldoBon.Text))
             cmd.Parameters.AddWithValue("@NOMINAL", Nominal)
-            cmd.Parameters.AddWithValue("@AKHIR_BON", Decimal.Parse(LblSisaBon.Text.Replace(".", "")))
+            cmd.Parameters.AddWithValue("@AKHIR_BON", ModuleAngka.ParseDecimal(LblSisaBon.Text))
             cmd.Parameters.AddWithValue("@KETERANGAN", TxtKeterangan.Text)
-            cmd.Parameters.AddWithValue("@ID_USER", FormUtama.SLogin.Text)
-            cmd.Parameters.AddWithValue("@ID_KOMPUTER", FormUtama.Comp.Text)
+            cmd.Parameters.AddWithValue("@ID_USER", FormUtama.StatusNamaUser.Text)
+            cmd.Parameters.AddWithValue("@ID_KOMPUTER", FormUtama.StatusNamaPC.Text)
 
             ' Execute the command
             cmd.ExecuteNonQuery()
@@ -488,32 +620,34 @@
             cmd.Parameters.AddWithValue("@NOMINAL", Nominal)
 
             If LblJenis.Text = "BON" Then
-                cmd.Parameters.AddWithValue("@JENIS_TRANSAKSI", "Bon")
+                cmd.Parameters.AddWithValue("@JENIS_TRANSAKSI", "BON")
             Else
-                cmd.Parameters.AddWithValue("@JENIS_TRANSAKSI", "Bayar bon")
+                cmd.Parameters.AddWithValue("@JENIS_TRANSAKSI", "BAYAR BON")
             End If
 
-            cmd.Parameters.AddWithValue("@LOKASI", FormUtama.SLokasi.Text)
-            cmd.Parameters.AddWithValue("@ID_USER", FormUtama.SLogin.Text)
-            cmd.Parameters.AddWithValue("@ID_KOMPUTER", FormUtama.Comp.Text)
+            cmd.Parameters.AddWithValue("@LOKASI", FormUtama.StatusLokasi.Text)
+            cmd.Parameters.AddWithValue("@ID_USER", FormUtama.StatusNamaUser.Text)
+            cmd.Parameters.AddWithValue("@ID_KOMPUTER", FormUtama.StatusNamaPC.Text)
 
             cmd.ExecuteNonQuery()
         End Using
+
+        ' Debug jurnal bon — D/K bertukar tergantung jenis BON vs BAYAR
+        Debug.WriteLine("═══════════════════════════════════════════════════════")
+        Debug.WriteLine("DEBUG JURNAL BON - Nomor: " & LblNomor.Text & " | Jenis: " & LblJenis.Text & " | " & CmbNama.Text)
+        Debug.WriteLine("═══════════════════════════════════════════════════════")
+        If LblJenis.Text = "BON" Then
+            Debug.WriteLine(String.Format("{0,-4} {1,-20} {2,-30} {3,-30} {4,12:N0} {5,12:N0}", "J1", "Bon", "PIUTANG KARYAWAN [01.03.002]", CmbRekening.Text & " [" & LblRekening.Text & "]", Nominal, Nominal))
+        Else
+            Debug.WriteLine(String.Format("{0,-4} {1,-20} {2,-30} {3,-30} {4,12:N0} {5,12:N0}", "J1", "Bayar Bon", CmbRekening.Text & " [" & LblRekening.Text & "]", "PIUTANG KARYAWAN [01.03.002]", Nominal, Nominal))
+        End If
+        Debug.WriteLine("✅ JURNAL SEIMBANG - D=K=" & Nominal.ToString("N0"))
+        Debug.WriteLine("═══════════════════════════════════════════════════════")
     End Sub
 
-
-
     Private Sub Label3_TextChanged(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles LblSaldoBon.TextChanged
-        Dim label3Value As Decimal
-        Dim txtNominalKeuanganValue As Decimal
-
-        If Not Decimal.TryParse(LblSaldoBon.Text, label3Value) Then
-            label3Value = 0
-        End If
-
-        If Not Decimal.TryParse(TxtNominal.Text, txtNominalKeuanganValue) Then
-            txtNominalKeuanganValue = 0
-        End If
+        Dim label3Value As Decimal = ModuleAngka.ParseDecimal(LblSaldoBon.Text)
+        Dim txtNominalKeuanganValue As Decimal = ModuleAngka.ParseDecimal(TxtNominal.Text)
 
         If LblJenis.Text = "BON" Then
             LblSisaBon.Text = (label3Value + txtNominalKeuanganValue).ToString("N0")
@@ -523,18 +657,10 @@
     End Sub
 
     Private Sub TxtNominalKeuangan_TextChanged(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles TxtNominal.TextChanged
-        Dim label3Value As Decimal
-        Dim txtNominalKeuanganValue As Decimal
+        Dim label3Value As Decimal = ModuleAngka.ParseDecimal(LblSaldoBon.Text)
+        Dim txtNominalKeuanganValue As Decimal = ModuleAngka.ParseDecimal(TxtNominal.Text)
 
-        If Not Decimal.TryParse(LblSaldoBon.Text, label3Value) Then
-            label3Value = 0
-        End If
-
-        If Not Decimal.TryParse(TxtNominal.Text, txtNominalKeuanganValue) Then
-            txtNominalKeuanganValue = 0
-        End If
-
-        LblNominal.Text = "Rp. " & txtNominalKeuanganValue.ToString("N0")
+        LblNominal.Text = "Rp. " & ModuleAngka.FormatRupiah(txtNominalKeuanganValue)
 
         If LblJenis.Text = "BON" Then
             LblSisaBon.Text = (label3Value + txtNominalKeuanganValue).ToString("N0")
@@ -547,5 +673,11 @@
         Me.Close()
     End Sub
 
+    Private Sub BtnSettingPrinter_Click(sender As Object, e As EventArgs) Handles BtnSettingPrinter.Click
+        Using frm As New FormPengaturanPrinter() With {.FilterTab = "Bon"}
+            frm.ShowDialog()
+        End Using
+        MuatSemuaPengaturan()
+    End Sub
 
 End Class

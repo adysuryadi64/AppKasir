@@ -1,4 +1,4 @@
-﻿<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()> _
+<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()> _
 Partial Class FormHakUser
     Inherits System.Windows.Forms.Form
 
@@ -46,7 +46,6 @@ Partial Class FormHakUser
         Me.HapusTransaksi = New System.Windows.Forms.DataGridViewCheckBoxColumn()
         Me.CmbUser = New System.Windows.Forms.ComboBox()
         Me.Label1 = New System.Windows.Forms.Label()
-        Me.Label2 = New System.Windows.Forms.Label()
         Me.LblMasterData = New System.Windows.Forms.Label()
         Me.LblUtility = New System.Windows.Forms.Label()
         Me.LblLaporan = New System.Windows.Forms.Label()
@@ -61,7 +60,7 @@ Partial Class FormHakUser
         Me.ChkAll = New System.Windows.Forms.CheckBox()
         Me.ChkNonAll = New System.Windows.Forms.CheckBox()
         Me.ToolTip1 = New System.Windows.Forms.ToolTip(Me.components)
-        Me.Panel1 = New System.Windows.Forms.Panel()
+        Me.PanelInput = New System.Windows.Forms.Panel()
         Me.LblPosting = New System.Windows.Forms.Label()
         Me.LblKaryawan = New System.Windows.Forms.Label()
         Me.DgvPosting = New System.Windows.Forms.DataGridView()
@@ -73,12 +72,13 @@ Partial Class FormHakUser
         Me.TambahKaryawan = New System.Windows.Forms.DataGridViewCheckBoxColumn()
         Me.EditKaryawan = New System.Windows.Forms.DataGridViewCheckBoxColumn()
         Me.HapusKaryawan = New System.Windows.Forms.DataGridViewCheckBoxColumn()
+        Me.LblHeader = New System.Windows.Forms.Label()
         CType(Me.DgvUtility, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.DgvLaporan, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.DgvJurnal, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.DgvTransaksi, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.DGVMaster, System.ComponentModel.ISupportInitialize).BeginInit()
-        Me.Panel1.SuspendLayout()
+        Me.PanelInput.SuspendLayout()
         CType(Me.DgvPosting, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.DgvKaryawan, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
@@ -86,42 +86,49 @@ Partial Class FormHakUser
         'BtnSimpan
         '
         Me.BtnSimpan.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
-        Me.BtnSimpan.BackColor = System.Drawing.Color.SandyBrown
-        Me.BtnSimpan.FlatAppearance.BorderSize = 0
-        Me.BtnSimpan.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(CType(CType(128, Byte), Integer), CType(CType(128, Byte), Integer), CType(CType(255, Byte), Integer))
-        Me.BtnSimpan.FlatAppearance.MouseOverBackColor = System.Drawing.Color.MidnightBlue
+        Me.BtnSimpan.AutoSize = True
+        Me.BtnSimpan.BackColor = System.Drawing.Color.White
+        Me.BtnSimpan.Cursor = System.Windows.Forms.Cursors.Hand
+        Me.BtnSimpan.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(CType(CType(22, Byte), Integer), CType(CType(163, Byte), Integer), CType(CType(74, Byte), Integer))
+        Me.BtnSimpan.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(CType(CType(187, Byte), Integer), CType(CType(247, Byte), Integer), CType(CType(208, Byte), Integer))
+        Me.BtnSimpan.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(CType(CType(220, Byte), Integer), CType(CType(252, Byte), Integer), CType(CType(231, Byte), Integer))
         Me.BtnSimpan.FlatStyle = System.Windows.Forms.FlatStyle.Flat
-        Me.BtnSimpan.Font = New System.Drawing.Font("Century Gothic", 12.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.BtnSimpan.ForeColor = System.Drawing.Color.Black
+        Me.BtnSimpan.Font = New System.Drawing.Font("Segoe UI", 9.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.BtnSimpan.ForeColor = System.Drawing.Color.FromArgb(CType(CType(22, Byte), Integer), CType(CType(163, Byte), Integer), CType(CType(74, Byte), Integer))
         Me.BtnSimpan.Image = CType(resources.GetObject("BtnSimpan.Image"), System.Drawing.Image)
         Me.BtnSimpan.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft
-        Me.BtnSimpan.Location = New System.Drawing.Point(217, 564)
+        Me.BtnSimpan.Location = New System.Drawing.Point(217, 476)
         Me.BtnSimpan.Margin = New System.Windows.Forms.Padding(4)
         Me.BtnSimpan.Name = "BtnSimpan"
         Me.BtnSimpan.Size = New System.Drawing.Size(169, 32)
         Me.BtnSimpan.TabIndex = 37
-        Me.BtnSimpan.Text = "       Simpan (F2)"
+        Me.BtnSimpan.Text = "Simpan (F2)"
+        Me.BtnSimpan.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
+        Me.BtnSimpan.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText
         Me.BtnSimpan.UseVisualStyleBackColor = False
         '
         'BtnKeluar
         '
         Me.BtnKeluar.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
-        Me.BtnKeluar.BackColor = System.Drawing.Color.SandyBrown
+        Me.BtnKeluar.AutoSize = True
+        Me.BtnKeluar.BackColor = System.Drawing.Color.White
         Me.BtnKeluar.Cursor = System.Windows.Forms.Cursors.Hand
-        Me.BtnKeluar.FlatAppearance.BorderSize = 0
-        Me.BtnKeluar.FlatAppearance.MouseDownBackColor = System.Drawing.Color.HotPink
-        Me.BtnKeluar.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Crimson
+        Me.BtnKeluar.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(CType(CType(220, Byte), Integer), CType(CType(38, Byte), Integer), CType(CType(38, Byte), Integer))
+        Me.BtnKeluar.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(CType(CType(252, Byte), Integer), CType(CType(165, Byte), Integer), CType(CType(165, Byte), Integer))
+        Me.BtnKeluar.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(CType(CType(254, Byte), Integer), CType(CType(226, Byte), Integer), CType(CType(226, Byte), Integer))
         Me.BtnKeluar.FlatStyle = System.Windows.Forms.FlatStyle.Flat
-        Me.BtnKeluar.Font = New System.Drawing.Font("Century Gothic", 12.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.BtnKeluar.ForeColor = System.Drawing.Color.Black
+        Me.BtnKeluar.Font = New System.Drawing.Font("Segoe UI", 9.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.BtnKeluar.ForeColor = System.Drawing.Color.FromArgb(CType(CType(220, Byte), Integer), CType(CType(38, Byte), Integer), CType(CType(38, Byte), Integer))
         Me.BtnKeluar.Image = CType(resources.GetObject("BtnKeluar.Image"), System.Drawing.Image)
         Me.BtnKeluar.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft
-        Me.BtnKeluar.Location = New System.Drawing.Point(415, 564)
+        Me.BtnKeluar.Location = New System.Drawing.Point(415, 476)
         Me.BtnKeluar.Margin = New System.Windows.Forms.Padding(4)
         Me.BtnKeluar.Name = "BtnKeluar"
         Me.BtnKeluar.Size = New System.Drawing.Size(140, 32)
         Me.BtnKeluar.TabIndex = 124
-        Me.BtnKeluar.Text = "     Keluar (Esc)"
+        Me.BtnKeluar.Text = "Keluar (Esc)"
+        Me.BtnKeluar.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
+        Me.BtnKeluar.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText
         Me.BtnKeluar.UseVisualStyleBackColor = False
         '
         'DgvUtility
@@ -134,14 +141,13 @@ Partial Class FormHakUser
             Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
         Me.DgvUtility.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill
         Me.DgvUtility.AutoSizeRowsMode = System.Windows.Forms.DataGridViewAutoSizeRowsMode.AllCells
-        Me.DgvUtility.BackgroundColor = System.Drawing.SystemColors.Control
         Me.DgvUtility.BorderStyle = System.Windows.Forms.BorderStyle.None
         Me.DgvUtility.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
         Me.DgvUtility.Columns.AddRange(New System.Windows.Forms.DataGridViewColumn() {Me.ModulUtility, Me.BacaUtility})
-        Me.DgvUtility.Location = New System.Drawing.Point(120, 232)
+        Me.DgvUtility.Location = New System.Drawing.Point(120, 196)
         Me.DgvUtility.Name = "DgvUtility"
         Me.DgvUtility.RowHeadersVisible = False
-        Me.DgvUtility.Size = New System.Drawing.Size(461, 499)
+        Me.DgvUtility.Size = New System.Drawing.Size(461, 447)
         Me.DgvUtility.TabIndex = 136
         '
         'ModulUtility
@@ -167,14 +173,13 @@ Partial Class FormHakUser
             Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
         Me.DgvLaporan.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill
         Me.DgvLaporan.AutoSizeRowsMode = System.Windows.Forms.DataGridViewAutoSizeRowsMode.AllCells
-        Me.DgvLaporan.BackgroundColor = System.Drawing.SystemColors.Control
         Me.DgvLaporan.BorderStyle = System.Windows.Forms.BorderStyle.None
         Me.DgvLaporan.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
         Me.DgvLaporan.Columns.AddRange(New System.Windows.Forms.DataGridViewColumn() {Me.ModulLaporan, Me.BacaLaporan})
-        Me.DgvLaporan.Location = New System.Drawing.Point(94, 198)
+        Me.DgvLaporan.Location = New System.Drawing.Point(94, 162)
         Me.DgvLaporan.Name = "DgvLaporan"
         Me.DgvLaporan.RowHeadersVisible = False
-        Me.DgvLaporan.Size = New System.Drawing.Size(461, 499)
+        Me.DgvLaporan.Size = New System.Drawing.Size(461, 447)
         Me.DgvLaporan.TabIndex = 136
         '
         'ModulLaporan
@@ -200,14 +205,13 @@ Partial Class FormHakUser
             Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
         Me.DgvJurnal.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill
         Me.DgvJurnal.AutoSizeRowsMode = System.Windows.Forms.DataGridViewAutoSizeRowsMode.AllCells
-        Me.DgvJurnal.BackgroundColor = System.Drawing.SystemColors.Control
         Me.DgvJurnal.BorderStyle = System.Windows.Forms.BorderStyle.None
         Me.DgvJurnal.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
         Me.DgvJurnal.Columns.AddRange(New System.Windows.Forms.DataGridViewColumn() {Me.ModulJurnal, Me.BacaJurnal, Me.TambahJurnal, Me.EditJurnal, Me.HapusJurnal})
-        Me.DgvJurnal.Location = New System.Drawing.Point(55, 135)
+        Me.DgvJurnal.Location = New System.Drawing.Point(55, 99)
         Me.DgvJurnal.Name = "DgvJurnal"
         Me.DgvJurnal.RowHeadersVisible = False
-        Me.DgvJurnal.Size = New System.Drawing.Size(461, 499)
+        Me.DgvJurnal.Size = New System.Drawing.Size(461, 447)
         Me.DgvJurnal.TabIndex = 136
         '
         'ModulJurnal
@@ -257,14 +261,13 @@ Partial Class FormHakUser
             Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
         Me.DgvTransaksi.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill
         Me.DgvTransaksi.AutoSizeRowsMode = System.Windows.Forms.DataGridViewAutoSizeRowsMode.AllCells
-        Me.DgvTransaksi.BackgroundColor = System.Drawing.SystemColors.Control
         Me.DgvTransaksi.BorderStyle = System.Windows.Forms.BorderStyle.None
         Me.DgvTransaksi.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
         Me.DgvTransaksi.Columns.AddRange(New System.Windows.Forms.DataGridViewColumn() {Me.ModulTransaksi, Me.BacaTransaksi, Me.TambahTransaksi, Me.EditTransaksi, Me.HapusTransaksi})
-        Me.DgvTransaksi.Location = New System.Drawing.Point(29, 101)
+        Me.DgvTransaksi.Location = New System.Drawing.Point(29, 65)
         Me.DgvTransaksi.Name = "DgvTransaksi"
         Me.DgvTransaksi.RowHeadersVisible = False
-        Me.DgvTransaksi.Size = New System.Drawing.Size(461, 499)
+        Me.DgvTransaksi.Size = New System.Drawing.Size(461, 447)
         Me.DgvTransaksi.TabIndex = 163
         '
         'ModulTransaksi
@@ -310,7 +313,7 @@ Partial Class FormHakUser
         Me.CmbUser.Font = New System.Drawing.Font("Century Gothic", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.CmbUser.FormattingEnabled = True
         Me.CmbUser.Items.AddRange(New Object() {"Owner", "Master", "Admin", "Kasir", "Gudang"})
-        Me.CmbUser.Location = New System.Drawing.Point(123, 40)
+        Me.CmbUser.Location = New System.Drawing.Point(123, 4)
         Me.CmbUser.Margin = New System.Windows.Forms.Padding(4)
         Me.CmbUser.Name = "CmbUser"
         Me.CmbUser.Size = New System.Drawing.Size(157, 25)
@@ -320,29 +323,18 @@ Partial Class FormHakUser
         '
         Me.Label1.AutoSize = True
         Me.Label1.Font = New System.Drawing.Font("Century Gothic", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label1.Location = New System.Drawing.Point(4, 44)
+        Me.Label1.Location = New System.Drawing.Point(4, 8)
         Me.Label1.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Me.Label1.Name = "Label1"
         Me.Label1.Size = New System.Drawing.Size(111, 17)
         Me.Label1.TabIndex = 125
         Me.Label1.Text = "Kelompok User :"
         '
-        'Label2
-        '
-        Me.Label2.AutoSize = True
-        Me.Label2.Font = New System.Drawing.Font("Century Gothic", 12.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label2.Location = New System.Drawing.Point(176, 6)
-        Me.Label2.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
-        Me.Label2.Name = "Label2"
-        Me.Label2.Size = New System.Drawing.Size(240, 19)
-        Me.Label2.TabIndex = 126
-        Me.Label2.Text = "SETING HAK AKSES UNTUK USER"
-        '
         'LblMasterData
         '
         Me.LblMasterData.BackColor = System.Drawing.Color.White
         Me.LblMasterData.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
-        Me.LblMasterData.Location = New System.Drawing.Point(7, 72)
+        Me.LblMasterData.Location = New System.Drawing.Point(7, 36)
         Me.LblMasterData.Name = "LblMasterData"
         Me.LblMasterData.Size = New System.Drawing.Size(99, 28)
         Me.LblMasterData.TabIndex = 127
@@ -353,7 +345,7 @@ Partial Class FormHakUser
         '
         Me.LblUtility.BackColor = System.Drawing.Color.White
         Me.LblUtility.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
-        Me.LblUtility.Location = New System.Drawing.Point(7, 240)
+        Me.LblUtility.Location = New System.Drawing.Point(7, 204)
         Me.LblUtility.Name = "LblUtility"
         Me.LblUtility.Size = New System.Drawing.Size(99, 28)
         Me.LblUtility.TabIndex = 134
@@ -364,7 +356,7 @@ Partial Class FormHakUser
         '
         Me.LblLaporan.BackColor = System.Drawing.Color.White
         Me.LblLaporan.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
-        Me.LblLaporan.Location = New System.Drawing.Point(7, 206)
+        Me.LblLaporan.Location = New System.Drawing.Point(7, 170)
         Me.LblLaporan.Name = "LblLaporan"
         Me.LblLaporan.Size = New System.Drawing.Size(99, 28)
         Me.LblLaporan.TabIndex = 133
@@ -375,7 +367,7 @@ Partial Class FormHakUser
         '
         Me.LblJurnal.BackColor = System.Drawing.Color.White
         Me.LblJurnal.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
-        Me.LblJurnal.Location = New System.Drawing.Point(7, 140)
+        Me.LblJurnal.Location = New System.Drawing.Point(7, 104)
         Me.LblJurnal.Name = "LblJurnal"
         Me.LblJurnal.Size = New System.Drawing.Size(99, 28)
         Me.LblJurnal.TabIndex = 132
@@ -386,7 +378,7 @@ Partial Class FormHakUser
         '
         Me.LblTransaksi.BackColor = System.Drawing.Color.White
         Me.LblTransaksi.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
-        Me.LblTransaksi.Location = New System.Drawing.Point(7, 106)
+        Me.LblTransaksi.Location = New System.Drawing.Point(7, 70)
         Me.LblTransaksi.Name = "LblTransaksi"
         Me.LblTransaksi.Size = New System.Drawing.Size(99, 28)
         Me.LblTransaksi.TabIndex = 131
@@ -403,14 +395,13 @@ Partial Class FormHakUser
             Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
         Me.DGVMaster.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill
         Me.DGVMaster.AutoSizeRowsMode = System.Windows.Forms.DataGridViewAutoSizeRowsMode.AllCells
-        Me.DGVMaster.BackgroundColor = System.Drawing.SystemColors.Control
         Me.DGVMaster.BorderStyle = System.Windows.Forms.BorderStyle.None
         Me.DGVMaster.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
         Me.DGVMaster.Columns.AddRange(New System.Windows.Forms.DataGridViewColumn() {Me.ModulMasterData, Me.BacaMasterData, Me.TambahMasterData, Me.EditMasterData, Me.HapusMasterData})
-        Me.DGVMaster.Location = New System.Drawing.Point(123, 72)
+        Me.DGVMaster.Location = New System.Drawing.Point(123, 36)
         Me.DGVMaster.Name = "DGVMaster"
         Me.DGVMaster.RowHeadersVisible = False
-        Me.DGVMaster.Size = New System.Drawing.Size(451, 499)
+        Me.DGVMaster.Size = New System.Drawing.Size(451, 447)
         Me.DGVMaster.TabIndex = 135
         '
         'ModulMasterData
@@ -453,9 +444,9 @@ Partial Class FormHakUser
         'ChkAll
         '
         Me.ChkAll.AutoSize = True
-        Me.ChkAll.Location = New System.Drawing.Point(384, 44)
+        Me.ChkAll.Location = New System.Drawing.Point(384, 8)
         Me.ChkAll.Name = "ChkAll"
-        Me.ChkAll.Size = New System.Drawing.Size(84, 21)
+        Me.ChkAll.Size = New System.Drawing.Size(75, 21)
         Me.ChkAll.TabIndex = 164
         Me.ChkAll.Text = "CheckAll"
         Me.ChkAll.UseVisualStyleBackColor = True
@@ -463,50 +454,49 @@ Partial Class FormHakUser
         'ChkNonAll
         '
         Me.ChkNonAll.AutoSize = True
-        Me.ChkNonAll.Location = New System.Drawing.Point(474, 44)
+        Me.ChkNonAll.Location = New System.Drawing.Point(474, 8)
         Me.ChkNonAll.Name = "ChkNonAll"
-        Me.ChkNonAll.Size = New System.Drawing.Size(100, 21)
+        Me.ChkNonAll.Size = New System.Drawing.Size(91, 21)
         Me.ChkNonAll.TabIndex = 165
         Me.ChkNonAll.Text = "UnCheckAll"
         Me.ChkNonAll.UseVisualStyleBackColor = True
         '
-        'Panel1
+        'PanelInput
         '
-        Me.Panel1.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
+        Me.PanelInput.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
             Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
-        Me.Panel1.AutoScroll = True
-        Me.Panel1.BackColor = System.Drawing.SystemColors.Control
-        Me.Panel1.Controls.Add(Me.LblPosting)
-        Me.Panel1.Controls.Add(Me.LblKaryawan)
-        Me.Panel1.Controls.Add(Me.LblMasterData)
-        Me.Panel1.Controls.Add(Me.LblUtility)
-        Me.Panel1.Controls.Add(Me.LblTransaksi)
-        Me.Panel1.Controls.Add(Me.LblJurnal)
-        Me.Panel1.Controls.Add(Me.LblLaporan)
-        Me.Panel1.Controls.Add(Me.BtnKeluar)
-        Me.Panel1.Controls.Add(Me.BtnSimpan)
-        Me.Panel1.Controls.Add(Me.DgvPosting)
-        Me.Panel1.Controls.Add(Me.DgvUtility)
-        Me.Panel1.Controls.Add(Me.DgvLaporan)
-        Me.Panel1.Controls.Add(Me.DgvKaryawan)
-        Me.Panel1.Controls.Add(Me.Label2)
-        Me.Panel1.Controls.Add(Me.ChkNonAll)
-        Me.Panel1.Controls.Add(Me.ChkAll)
-        Me.Panel1.Controls.Add(Me.CmbUser)
-        Me.Panel1.Controls.Add(Me.Label1)
-        Me.Panel1.Controls.Add(Me.DgvJurnal)
-        Me.Panel1.Controls.Add(Me.DgvTransaksi)
-        Me.Panel1.Controls.Add(Me.DGVMaster)
-        Me.Panel1.Location = New System.Drawing.Point(12, 12)
-        Me.Panel1.Name = "Panel1"
-        Me.Panel1.Size = New System.Drawing.Size(703, 618)
-        Me.Panel1.TabIndex = 166
+        Me.PanelInput.AutoScroll = True
+        Me.PanelInput.BackColor = System.Drawing.SystemColors.Control
+        Me.PanelInput.Controls.Add(Me.LblPosting)
+        Me.PanelInput.Controls.Add(Me.LblKaryawan)
+        Me.PanelInput.Controls.Add(Me.LblMasterData)
+        Me.PanelInput.Controls.Add(Me.LblUtility)
+        Me.PanelInput.Controls.Add(Me.LblTransaksi)
+        Me.PanelInput.Controls.Add(Me.LblJurnal)
+        Me.PanelInput.Controls.Add(Me.LblLaporan)
+        Me.PanelInput.Controls.Add(Me.BtnKeluar)
+        Me.PanelInput.Controls.Add(Me.BtnSimpan)
+        Me.PanelInput.Controls.Add(Me.DgvPosting)
+        Me.PanelInput.Controls.Add(Me.DgvUtility)
+        Me.PanelInput.Controls.Add(Me.DgvLaporan)
+        Me.PanelInput.Controls.Add(Me.DgvKaryawan)
+        Me.PanelInput.Controls.Add(Me.ChkNonAll)
+        Me.PanelInput.Controls.Add(Me.ChkAll)
+        Me.PanelInput.Controls.Add(Me.CmbUser)
+        Me.PanelInput.Controls.Add(Me.Label1)
+        Me.PanelInput.Controls.Add(Me.DgvJurnal)
+        Me.PanelInput.Controls.Add(Me.DgvTransaksi)
+        Me.PanelInput.Controls.Add(Me.DGVMaster)
+        Me.PanelInput.Location = New System.Drawing.Point(12, 64)
+        Me.PanelInput.Name = "PanelInput"
+        Me.PanelInput.Size = New System.Drawing.Size(703, 566)
+        Me.PanelInput.TabIndex = 166
         '
         'LblPosting
         '
         Me.LblPosting.BackColor = System.Drawing.Color.White
         Me.LblPosting.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
-        Me.LblPosting.Location = New System.Drawing.Point(7, 274)
+        Me.LblPosting.Location = New System.Drawing.Point(7, 238)
         Me.LblPosting.Name = "LblPosting"
         Me.LblPosting.Size = New System.Drawing.Size(99, 28)
         Me.LblPosting.TabIndex = 169
@@ -517,7 +507,7 @@ Partial Class FormHakUser
         '
         Me.LblKaryawan.BackColor = System.Drawing.Color.White
         Me.LblKaryawan.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
-        Me.LblKaryawan.Location = New System.Drawing.Point(7, 172)
+        Me.LblKaryawan.Location = New System.Drawing.Point(7, 136)
         Me.LblKaryawan.Name = "LblKaryawan"
         Me.LblKaryawan.Size = New System.Drawing.Size(99, 28)
         Me.LblKaryawan.TabIndex = 166
@@ -534,14 +524,13 @@ Partial Class FormHakUser
             Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
         Me.DgvPosting.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill
         Me.DgvPosting.AutoSizeRowsMode = System.Windows.Forms.DataGridViewAutoSizeRowsMode.AllCells
-        Me.DgvPosting.BackgroundColor = System.Drawing.SystemColors.Control
         Me.DgvPosting.BorderStyle = System.Windows.Forms.BorderStyle.None
         Me.DgvPosting.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
         Me.DgvPosting.Columns.AddRange(New System.Windows.Forms.DataGridViewColumn() {Me.ModulPosting, Me.BacaPosting})
-        Me.DgvPosting.Location = New System.Drawing.Point(138, 262)
+        Me.DgvPosting.Location = New System.Drawing.Point(138, 226)
         Me.DgvPosting.Name = "DgvPosting"
         Me.DgvPosting.RowHeadersVisible = False
-        Me.DgvPosting.Size = New System.Drawing.Size(461, 110)
+        Me.DgvPosting.Size = New System.Drawing.Size(461, 58)
         Me.DgvPosting.TabIndex = 168
         '
         'ModulPosting
@@ -567,14 +556,13 @@ Partial Class FormHakUser
             Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
         Me.DgvKaryawan.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill
         Me.DgvKaryawan.AutoSizeRowsMode = System.Windows.Forms.DataGridViewAutoSizeRowsMode.AllCells
-        Me.DgvKaryawan.BackgroundColor = System.Drawing.SystemColors.Control
         Me.DgvKaryawan.BorderStyle = System.Windows.Forms.BorderStyle.None
         Me.DgvKaryawan.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
         Me.DgvKaryawan.Columns.AddRange(New System.Windows.Forms.DataGridViewColumn() {Me.ModulKaryawan, Me.BacaKaryawan, Me.TambahKaryawan, Me.EditKaryawan, Me.HapusKaryawan})
-        Me.DgvKaryawan.Location = New System.Drawing.Point(72, 166)
+        Me.DgvKaryawan.Location = New System.Drawing.Point(72, 130)
         Me.DgvKaryawan.Name = "DgvKaryawan"
         Me.DgvKaryawan.RowHeadersVisible = False
-        Me.DgvKaryawan.Size = New System.Drawing.Size(461, 499)
+        Me.DgvKaryawan.Size = New System.Drawing.Size(461, 447)
         Me.DgvKaryawan.TabIndex = 167
         '
         'ModulKaryawan
@@ -614,13 +602,27 @@ Partial Class FormHakUser
         Me.HapusKaryawan.Resizable = System.Windows.Forms.DataGridViewTriState.[True]
         Me.HapusKaryawan.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic
         '
+        'LblHeader
+        '
+        Me.LblHeader.BackColor = System.Drawing.Color.GreenYellow
+        Me.LblHeader.Dock = System.Windows.Forms.DockStyle.Top
+        Me.LblHeader.Font = New System.Drawing.Font("Bookman Old Style", 24.0!, CType((System.Drawing.FontStyle.Bold Or System.Drawing.FontStyle.Italic), System.Drawing.FontStyle), System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.LblHeader.ForeColor = System.Drawing.Color.Black
+        Me.LblHeader.Location = New System.Drawing.Point(0, 0)
+        Me.LblHeader.Name = "LblHeader"
+        Me.LblHeader.Size = New System.Drawing.Size(721, 47)
+        Me.LblHeader.TabIndex = 167
+        Me.LblHeader.Text = "SETING HAK AKSES UNTUK USER"
+        Me.LblHeader.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
+        '
         'FormHakUser
         '
-        Me.AutoScaleDimensions = New System.Drawing.SizeF(8.0!, 17.0!)
+        Me.AutoScaleDimensions = New System.Drawing.SizeF(7.0!, 17.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(721, 637)
-        Me.Controls.Add(Me.Panel1)
-        Me.Font = New System.Drawing.Font("Century Gothic", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.Controls.Add(Me.LblHeader)
+        Me.Controls.Add(Me.PanelInput)
+        Me.Font = New System.Drawing.Font("Segoe UI", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None
         Me.KeyPreview = True
         Me.Margin = New System.Windows.Forms.Padding(4)
@@ -633,8 +635,8 @@ Partial Class FormHakUser
         CType(Me.DgvJurnal, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.DgvTransaksi, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.DGVMaster, System.ComponentModel.ISupportInitialize).EndInit()
-        Me.Panel1.ResumeLayout(False)
-        Me.Panel1.PerformLayout()
+        Me.PanelInput.ResumeLayout(False)
+        Me.PanelInput.PerformLayout()
         CType(Me.DgvPosting, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.DgvKaryawan, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ResumeLayout(False)
@@ -644,7 +646,6 @@ Partial Class FormHakUser
     Friend WithEvents CmbUser As System.Windows.Forms.ComboBox
     Friend WithEvents BtnKeluar As System.Windows.Forms.Button
     Friend WithEvents Label1 As System.Windows.Forms.Label
-    Friend WithEvents Label2 As System.Windows.Forms.Label
     Friend WithEvents LblMasterData As System.Windows.Forms.Label
     Friend WithEvents LblUtility As System.Windows.Forms.Label
     Friend WithEvents LblLaporan As System.Windows.Forms.Label
@@ -677,7 +678,7 @@ Partial Class FormHakUser
     Friend WithEvents BacaLaporan As System.Windows.Forms.DataGridViewCheckBoxColumn
     Friend WithEvents ModulUtility As System.Windows.Forms.DataGridViewTextBoxColumn
     Friend WithEvents BacaUtility As System.Windows.Forms.DataGridViewCheckBoxColumn
-    Friend WithEvents Panel1 As System.Windows.Forms.Panel
+    Friend WithEvents PanelInput As System.Windows.Forms.Panel
     Friend WithEvents LblKaryawan As System.Windows.Forms.Label
     Friend WithEvents DgvKaryawan As System.Windows.Forms.DataGridView
     Friend WithEvents ModulKaryawan As System.Windows.Forms.DataGridViewTextBoxColumn
@@ -689,4 +690,5 @@ Partial Class FormHakUser
     Friend WithEvents LblPosting As Label
     Friend WithEvents ModulPosting As DataGridViewTextBoxColumn
     Friend WithEvents BacaPosting As DataGridViewCheckBoxColumn
+    Friend WithEvents LblHeader As Label
 End Class

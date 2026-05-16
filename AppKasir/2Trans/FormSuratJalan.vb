@@ -1,7 +1,10 @@
-﻿Public Class FormSuratJalan
+Public Class FormSuratJalan
 
 
     Private Sub FormSuratJalan_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
+        ModuleTheme.TerapkanTheme(Me)
+        ' Nilai keuangan otomatis via nama TxtGrandtotal
+        ' Rename TxtTotalRupiah/TxtTotalPelanggan -> TxtGrandtotal untuk tema otomatis
         If LblJenisTrans.Text = "TambahSuratJalan" Then
             AmbilDataArmada()
             AmbilDataKaryawan()
@@ -10,6 +13,15 @@
             LoadSuratJalanDetail(LblNoNota.Text)
         End If
         PanelDataPenjualan.Visible = False
+    End Sub
+
+
+    Private Sub LakukanCetakSuratJalan(nota As String)
+        If BacaPengaturanPrinter("SuratJalan", "PilihPrinter", "LANGSUNG CETAK") = "TANYA PILIH PRINTER" Then
+            ModulePrinterSuratJalan.TanyaPilihPrinterSuratJalan(nota)
+        Else
+            ModulePrinterSuratJalan.CetakSuratJalan(nota)
+        End If
     End Sub
 
     Private Sub KondisiAwal()
@@ -29,7 +41,7 @@
         DtpPenjualan.Format = DateTimePickerFormat.Custom
         DtpPenjualan.CustomFormat = "dd/MM/yyyy"
 
-        DtpSuratJalan.Value = DateTime.Now
+        ModulHakAkses.ResetDTPKeTanggalHariIni(DtpSuratJalan)
         DtpSuratJalan.Format = DateTimePickerFormat.Custom
         DtpSuratJalan.CustomFormat = "dd/MM/yyyy HH:mm:ss"
 
@@ -64,7 +76,7 @@
                             rd("NAMA_PELANGGAN").ToString(),
                             rd("ALAMAT_PELANGGAN").ToString(),
                             Convert.ToDateTime(rd("TANGGAL_BELANJA")).ToString("yyyy-MM-dd HH:mm:ss"),
-                            Convert.ToDecimal(rd("NILAI_BELANJA")).ToString("N2"),
+                            ModuleAngka.ParseDecimal(rd("NILAI_BELANJA")).ToString("N2"),
                             rd("LOKASI").ToString()
                         )
                         End While
@@ -102,7 +114,7 @@
         CmbHelper2.Items.Clear()
 
         ' Query untuk mengambil nama karyawan dari database
-        Dim queryArmada As String = "SELECT Nama FROM tbl_Karyawan ORDER BY Nama ASC"
+        Dim queryArmada As String = "SELECT Nama FROM tbl_Karyawan WHERE Status = 'Aktif' ORDER BY Nama ASC"
         Using cmd As New MySqlCommand(queryArmada, conn)
             Using rd As MySqlDataReader = cmd.ExecuteReader()
                 If rd.HasRows Then
@@ -125,35 +137,17 @@
 
 
     Private Sub GenerateNomorSuratJalan()
-        Dim cekTanggal As String = DtpSuratJalan.Value.ToString("yyMMdd")
-        Dim UrutKOde As String = ""
-        Dim cekNomor As String = "SJ-" & cekTanggal
-
-        ' Query untuk mendapatkan nomor maksimum berdasarkan format
-        Using cmd As New MySqlCommand("SELECT MAX(NOTA) FROM Surat_Jalan WHERE NOTA LIKE @ceknomor", conn)
-            cmd.Parameters.AddWithValue("@ceknomor", cekNomor & "%")
-
-            ' Gunakan ExecuteScalar untuk mendapatkan nilai maksimum
-            Dim maxKode As Object = cmd.ExecuteScalar()
-
-            If Not IsDBNull(maxKode) AndAlso maxKode IsNot Nothing Then
-                Dim MaxNilaiKode As String = maxKode.ToString()
-                If Microsoft.VisualBasic.Left(MaxNilaiKode, 9) = "SJ-" & cekTanggal Then
-                    ' Hitung nomor berikutnya
-                    Dim Hitung As Integer = CInt(Microsoft.VisualBasic.Right(MaxNilaiKode, 4)) + 1
-                    UrutKOde = "SJ-" & cekTanggal & Microsoft.VisualBasic.Right("0000" & Hitung.ToString(), 4)
-                End If
-            End If
+        Using cmd As New MySqlCommand(
+            "CALL sp_hlp_faktur_generate(@prefix, @tgl, @tabel, @kolom, @nomor)", conn)
+            cmd.Parameters.AddWithValue("@prefix", "SJ")
+            cmd.Parameters.AddWithValue("@tgl", DtpSuratJalan.Value.Date)
+            cmd.Parameters.AddWithValue("@tabel", "surat_jalan")
+            cmd.Parameters.AddWithValue("@kolom", "NOTA")
+            Dim pNomor = cmd.Parameters.Add("@nomor", MySqlDbType.VarChar, 30)
+            pNomor.Direction = ParameterDirection.Output
+            cmd.ExecuteNonQuery()
+            LblNoNota.Text = pNomor.Value?.ToString()
         End Using
-
-        ' Jika UrutKOde masih kosong, buat nomor pertama
-        If String.IsNullOrEmpty(UrutKOde) Then
-            UrutKOde = "SJ-" & cekTanggal & "0001"
-        End If
-
-
-        LblNoNota.Text = UrutKOde
-
     End Sub
 
     Private Sub CenterPanel()
@@ -164,7 +158,7 @@
     End Sub
 
 
-    Private Sub Button2_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles Button2.Click
+    Private Sub BtnHideDaftar_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles BtnHideDaftar.Click
         PanelDataPenjualan.Visible = False
         PanelHeader.Enabled = True
         PanelNota.Enabled = True
@@ -257,8 +251,6 @@
             ' Pengaturan format dan visibilitas kolom
             .Columns("ID_PELANGGAN").Visible = False
             .Columns("TGL_TRANSAKSI").DefaultCellStyle.Format = "dd/MM/yyyy"
-            .Columns("GRAND_TOTAL_STL_PAJAK").DefaultCellStyle.Format = "N0"
-            .Columns("GRAND_TOTAL_STL_PAJAK").DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight
 
             ' Mengubah nama header kolom
             .Columns("ID_PENJUALAN").HeaderText = "NO NOTA"
@@ -269,6 +261,7 @@
             .Columns("LOKASIBARANG").HeaderText = "LOKASI"
             .ClearSelection()
         End With
+        ModuleAngka.TerapkanFormatKolomAngka(DGVPenjualan, "GRAND_TOTAL_STL_PAJAK")
 
     End Sub
 
@@ -319,10 +312,8 @@
         For Each row As DataGridViewRow In DGVSuratJalan.Rows
             If Not row.IsNewRow Then
                 totalData += 1
-                Dim nilaiRupiah As Decimal = 0
-                If Decimal.TryParse(row.Cells("NOMINAL").Value.ToString(), nilaiRupiah) Then
-                    totalRupiah += nilaiRupiah
-                End If
+                Dim nilaiRupiah As Decimal = ModuleAngka.ParseDecimal(row.Cells("NOMINAL").Value)
+                totalRupiah += nilaiRupiah
             End If
         Next
 
@@ -405,22 +396,67 @@
 
         Try
             If LblJenisTrans.Text = "TambahSuratJalan" Then
-                DtpSuratJalan.Value = DateTime.Now
+                ModulHakAkses.ResetDTPKeTanggalHariIni(DtpSuratJalan)
                 GenerateNomorSuratJalan()
             Else
                 Dim NoNota As String = LblNoNota.Text
 
+                transaction = conn.BeginTransaction()
+
+                ' ========================================
+                ' START: Audit Trail - Edit Surat Jalan
+                ' ========================================
+                Dim sbSnapshot As New System.Text.StringBuilder()
+                Try
+                    Using cmdSnap As New MySqlCommand(
+                        "SELECT NOTA, TANGGAL, KODE_SUPIR, NAMA_SUPIR, KODE_HELPER1, NAMA_HELPER1, KODE_HELPER2, NAMA_HELPER2, KETERANGAN " &
+                        "FROM surat_jalan WHERE NOTA = @n LIMIT 1", conn, transaction)
+                        cmdSnap.Parameters.AddWithValue("@n", NoNota)
+                        Using rdSnap = cmdSnap.ExecuteReader()
+                            If rdSnap.Read() Then
+                                sbSnapshot.AppendLine($"Nota: {rdSnap("NOTA")}")
+                                sbSnapshot.AppendLine($"Tanggal: {Convert.ToDateTime(rdSnap("TANGGAL")).ToString("dd/MM/yyyy HH:mm:ss")}")
+                                sbSnapshot.AppendLine($"Kode Supir: {rdSnap("KODE_SUPIR")}")
+                                sbSnapshot.AppendLine($"Nama Supir: {rdSnap("NAMA_SUPIR")}")
+                                sbSnapshot.AppendLine($"Kode Helper 1: {rdSnap("KODE_HELPER1")}")
+                                sbSnapshot.AppendLine($"Nama Helper 1: {rdSnap("NAMA_HELPER1")}")
+                                sbSnapshot.AppendLine($"Kode Helper 2: {rdSnap("KODE_HELPER2")}")
+                                sbSnapshot.AppendLine($"Nama Helper 2: {rdSnap("NAMA_HELPER2")}")
+                                sbSnapshot.AppendLine($"Keterangan: {rdSnap("KETERANGAN")}")
+                            End If
+                        End Using
+                    End Using
+
+                    sbSnapshot.AppendLine(vbCrLf & "Detail Barang:")
+                    Using cmdSnapDetail As New MySqlCommand(
+                        "SELECT KODE_BARANG, NAMA_BARANG, QTY, KETERANGAN_DETAIL " &
+                        "FROM surat_jalan_detail WHERE NOTA = @n ORDER BY KODE_BARANG", conn, transaction)
+                        cmdSnapDetail.Parameters.AddWithValue("@n", NoNota)
+                        Using rdSnapDetail = cmdSnapDetail.ExecuteReader()
+                            While rdSnapDetail.Read()
+                                sbSnapshot.AppendLine($"- {rdSnapDetail("KODE_BARANG")} - {rdSnapDetail("NAMA_BARANG")}: {rdSnapDetail("QTY")} unit - {rdSnapDetail("KETERANGAN_DETAIL")}")
+                            End While
+                        End Using
+                    End Using
+                Catch
+                    sbSnapshot.AppendLine("Gagal baca data sebelum edit")
+                End Try
+                ModuleAuditTrail.CatatAuditMaster("SJ:" & NoNota, "EDIT", "Surat Jalan", sbSnapshot.ToString(), trans:=transaction)
+                ' ========================================
+                ' END: Audit Trail - Edit Surat Jalan
+                ' ========================================
+
                 Dim queryDeleteSuratJalanDetail As String = "DELETE FROM surat_jalan_detail WHERE NOTA = @NOTA"
 
                 ' Hapus dari tabel surat_jalan_detail
-                Using cmdDetail As New MySqlCommand(queryDeleteSuratJalanDetail, conn)
+                Using cmdDetail As New MySqlCommand(queryDeleteSuratJalanDetail, conn, transaction)
                     cmdDetail.Parameters.AddWithValue("@NOTA", NoNota)
                     cmdDetail.ExecuteNonQuery()
                 End Using
 
                 Dim queryDeleteSuratJalan As String = "DELETE FROM surat_jalan WHERE NOTA = @NOTA"
                 ' Hapus dari tabel surat_jalan
-                Using cmd As New MySqlCommand(queryDeleteSuratJalan, conn)
+                Using cmd As New MySqlCommand(queryDeleteSuratJalan, conn, transaction)
                     cmd.Parameters.AddWithValue("@NOTA", NoNota)
                     cmd.ExecuteNonQuery()
                 End Using
@@ -428,7 +464,9 @@
             End If
 
 
-            transaction = conn.BeginTransaction()
+            If transaction Is Nothing Then
+                transaction = conn.BeginTransaction()
+            End If
 
             SimpanSuratJalan(transaction)
             SimpanSuratJalanDetail(transaction)
@@ -437,21 +475,30 @@
             ' Commit transaksi jika berhasil
             transaction.Commit()
 
-
-            With PrinterSuratJalan
-                .TxtNota.Text = LblNoNota.Text
-                .ProsesCetak()
-            End With
+            Dim notaCetak As String = LblNoNota.Text
 
             If LblJenisTrans.Text = "TambahSuratJalan" Then
-                DatabaseModule.CatatanAksiHistory("Simpan surat jalan " & LblNoNota.Text)
                 KondisiAwal()
             Else
-                DatabaseModule.CatatanAksiHistory("Edit surat jalan " & LblNoNota.Text)
                 Me.Close()
                 FormUtama.DataSuratjalan()
                 FormUtama.GBTransaksi.Visible = True
             End If
+
+            Try
+                Select Case BacaPengaturanPrinter("SuratJalan", "CetakOtomatis", "IYA").Trim().ToUpper()
+                    Case "IYA"
+                        LakukanCetakSuratJalan(notaCetak)
+                    Case "SELALU TANYA"
+                        If MessageBox.Show("Apakah Anda ingin mencetak surat jalan?",
+                                           "Konfirmasi Cetak", MessageBoxButtons.YesNo, MessageBoxIcon.Question) = DialogResult.Yes Then
+                            LakukanCetakSuratJalan(notaCetak)
+                        End If
+                End Select
+            Catch ex As Exception
+                MessageBox.Show("Gagal mencetak surat jalan." & vbCrLf & "Detail: " & ex.Message,
+                                "Peringatan", MessageBoxButtons.OK, MessageBoxIcon.Warning)
+            End Try
 
 
 
@@ -505,9 +552,9 @@
         Using cmd As New MySqlCommand(query, conn, transaction)
             cmd.Parameters.AddWithValue("@NOTA", LblNoNota.Text)
             cmd.Parameters.AddWithValue("@TGL_PENGIRIMAN", DtpSuratJalan.Value.ToString("yyyy-MM-dd HH:mm:ss"))
-            cmd.Parameters.AddWithValue("@LOKASI", FormUtama.SLokasi.Text)
-            cmd.Parameters.AddWithValue("@TOTAL_PELANGGAN", Convert.ToInt32(TxtTotalPelanggan.Text))
-            cmd.Parameters.AddWithValue("@TOTAL_RUPIAH", Convert.ToDecimal(TxtTotalRupiah.Text))
+            cmd.Parameters.AddWithValue("@LOKASI", FormUtama.StatusLokasi.Text)
+            cmd.Parameters.AddWithValue("@TOTAL_PELANGGAN", ModuleAngka.ParseInteger(TxtTotalPelanggan.Text))
+            cmd.Parameters.AddWithValue("@TOTAL_RUPIAH", ModuleAngka.ParseDecimal(TxtTotalRupiah.Text))
             cmd.Parameters.AddWithValue("@KODE_ARMADA", LblKodeArmada.Text)
             cmd.Parameters.AddWithValue("@ARMADA", CmbArmada.Text)
             cmd.Parameters.AddWithValue("@JENIS_ARMADA", LblJenisArmada.Text)
@@ -517,8 +564,8 @@
             cmd.Parameters.AddWithValue("@HELPER1", CmbHelper1.Text)
             cmd.Parameters.AddWithValue("@KODE_HELPER2", LblKodeHelper2.Text)
             cmd.Parameters.AddWithValue("@HELPER2", CmbHelper2.Text)
-            cmd.Parameters.AddWithValue("@ID_USER", FormUtama.SLogin.Text)
-            cmd.Parameters.AddWithValue("@ID_KOMPUTER", FormUtama.Comp.Text)
+            cmd.Parameters.AddWithValue("@ID_USER", FormUtama.StatusNamaUser.Text)
+            cmd.Parameters.AddWithValue("@ID_KOMPUTER", FormUtama.StatusNamaPC.Text)
 
             cmd.ExecuteNonQuery()
         End Using
@@ -533,7 +580,7 @@
                 Using cmd As New MySqlCommand(sqlrinci, conn, transaction)
                     cmd.Parameters.AddWithValue("@NOTA", LblNoNota.Text)
                     cmd.Parameters.AddWithValue("@TANGGAL_KIRIM", DtpSuratJalan.Value.ToString("yyyy-MM-dd HH:mm:ss"))
-                    cmd.Parameters.AddWithValue("@LOKASISIMPAN", FormUtama.SLokasi.Text)
+                    cmd.Parameters.AddWithValue("@LOKASISIMPAN", FormUtama.StatusLokasi.Text)
                     cmd.Parameters.AddWithValue("@NOTA_BELANJA", row.Cells("Nota").Value.ToString())
                     cmd.Parameters.AddWithValue("@KODE_PELANGGAN", row.Cells("Kode").Value.ToString())
                     cmd.Parameters.AddWithValue("@NAMA_PELANGGAN", row.Cells("Pelanggan").Value.ToString())
@@ -541,8 +588,8 @@
                     cmd.Parameters.AddWithValue("@TANGGAL_BELANJA", Convert.ToDateTime(row.Cells("Tanggal").Value).ToString("yyyy-MM-dd HH:mm:ss"))
                     cmd.Parameters.AddWithValue("@NILAI_BELANJA", Convert.ToDecimal(row.Cells("Nominal").Value))
                     cmd.Parameters.AddWithValue("@LOKASI", row.Cells("Lokasi").Value.ToString())
-                    cmd.Parameters.AddWithValue("@ID_USER", FormUtama.SLogin.Text)
-                    cmd.Parameters.AddWithValue("@ID_KOMPUTER", FormUtama.Comp.Text)
+                    cmd.Parameters.AddWithValue("@ID_USER", FormUtama.StatusNamaUser.Text)
+                    cmd.Parameters.AddWithValue("@ID_KOMPUTER", FormUtama.StatusNamaPC.Text)
                     cmd.ExecuteNonQuery()
                 End Using
             End If
@@ -550,7 +597,7 @@
     End Sub
 
 
-    Private Sub BtnClose_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles BtnClose.Click, BtnBatal.Click
+    Private Sub BtnClose_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles BtnKeluarForm.Click
         FormUtama.Refresdatagridview()
         FormUtama.GBTransaksi.Visible = True
         Close()
@@ -558,15 +605,39 @@
 
     Private Sub FormSuratJalan_KeyDown(ByVal sender As System.Object, ByVal e As System.Windows.Forms.KeyEventArgs) Handles MyBase.KeyDown
         Select Case e.KeyCode
+            Case Keys.F1
+                e.SuppressKeyPress = True
+                TampilkanBantuan()
             Case Keys.F8
                 BtnSimpann.PerformClick()
             Case Keys.Escape
                 If PanelDataPenjualan.Visible = True Then
-                    Button2.PerformClick()
+                    BtnHideDaftar.PerformClick()
                 Else
-                    BtnClose.PerformClick()
+                    BtnKeluarForm.PerformClick()
                 End If
 
         End Select
     End Sub
+    Private Sub BtnSettingPrinter_Click(sender As Object, e As EventArgs) Handles BtnSettingPrinter.Click
+        Using frm As New FormPengaturanPrinter() With {.FilterTab = "SuratJalan"}
+            frm.ShowDialog()
+        End Using
+        MuatSemuaPengaturan()
+    End Sub
+
+    ' ============================================
+    ' FUNGSI: TAMPILKAN BANTUAN SHORTCUT
+    ' ============================================
+    Private Sub TampilkanBantuan()
+        Dim helpText As String = "SHORTCUT KEYBOARD:" & vbCrLf & vbCrLf &
+                           "F1      : Tampilkan bantuan ini" & vbCrLf &
+                           "F2      : Ambil daftar penjualan" & vbCrLf &
+                           "F6      : Transfer ke surat jalan" & vbCrLf &
+                           "F8      : Simpan surat jalan" & vbCrLf &
+                           "ESC     : Tutup panel daftar / Keluar"
+        MessageBox.Show(helpText, "Bantuan - Shortcut Keyboard",
+                        MessageBoxButtons.OK, MessageBoxIcon.Information)
+    End Sub
+
 End Class

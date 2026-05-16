@@ -1,0 +1,53 @@
+# Proyek: AppKasir 2026 - Master Form Rules & Steering Guidelines
+
+## ⚠️ INSTRUKSI UTAMA (WAJIB DIBACA)
+Setiap kali menjalankan tugas, Anda **WAJIB** merujuk pada dokumen detail di direktori `.kiro\steering\` untuk mendapatkan batasan teknis yang lengkap. Dokumen di bawah ini adalah rangkuman eksekutif, namun detail implementasi ada di file sumber.
+
+---
+
+## 1. Prinsip Komunikasi & Kerja
+1. **Analisis & Konfirmasi (WAJIB)**: 
+   - **Pertanyaan**: Jika user bertanya (misal: "bagaimana logika X?"), jawab dengan analisa mendalam tanpa menawarkan perubahan kode kecuali diminta.
+   - **Perintah**: Jika user memberi perintah (misal: "perbaiki X"), lakukan analisa, jelaskan rencana, lalu **WAJIB berhenti dan bertanya** untuk konfirmasi sebelum eksekusi.
+2. **Jangan Ceroboh**: Verifikasi pemahaman instruksi. Jika ragu, tanyakan. Bedakan dengan jelas antara permintaan informasi (pertanyaan) dan permintaan tindakan (perintah).
+3. **Bahasa**: Wajib menggunakan **Bahasa Indonesia** untuk komentar, variabel, dan pesan error.
+4. **Zero Tolerance**: Proyek ini **TIDAK menggunakan GIT**. Setiap kesalahan bersifat destruktif. Gunakan `strReplace` dan **DILARANG** melakukan `fsWrite` atau `deleteFile` tanpa izin eksplisit.
+
+## 2. Referensi Wajib (Direktori: .kiro\steering\)
+Anda wajib membaca file berikut sesuai konteks tugas:
+
+- **[akses-database.md](file:///e:/1_Visual_Studio/AppKasir_2026/AppKasir/.kiro/steering/akses-database.md)**: 
+  - Detail koneksi (Password: 12345678).
+  - Larangan mengubah nama/tipe kolom tanpa persetujuan.
+  - Kewajiban verifikasi struktur via PowerShell (`DESCRIBE`, `SHOW COLUMNS`) sebelum menulis query.
+- **[coa-tbl-datareferensi.md](file:///e:/1_Visual_Studio/AppKasir_2026/AppKasir/.kiro/steering/coa-tbl-datareferensi.md)**:
+  - Daftar lengkap akun COA dan pemetaan jurnal.
+  - Larangan hardcode akun dinamis dari `tbl_perusahaan`.
+- **[standar-input-angka.md](file:///e:/1_Visual_Studio/AppKasir_2026/AppKasir/.kiro/steering/standar-input-angka.md)**:
+  - Pemisahan lapisan Data (Decimal), Display (#,0.##), dan Input (Plain).
+  - Penggunaan wajib `ModuleAngka.ParseDecimal`.
+- **[panduan-migrasi-form-transaksi.md](file:///e:/1_Visual_Studio/AppKasir_2026/AppKasir/.kiro/steering/panduan-migrasi-form-transaksi.md)**:
+  - Prosedur copy-paste-modify untuk form transaksi baru.
+  - Daftar fungsi yang wajib dipertahankan dan yang wajib diganti (seperti pencarian barang).
+- **[no-overwrite-files.md](file:///e:/1_Visual_Studio/AppKasir_2026/AppKasir/.kiro/steering/no-overwrite-files.md)**:
+  - Aturan ketat penggunaan `strReplace` dan larangan penggunaan Regex/PowerShell untuk modifikasi kode.
+
+## 3. Aturan Teknis Master Form (Merk, Kategori, Satuan)
+1. **Pengecekan Duplikat**: 
+   - **Ya**: Simpan & Lanjut.
+   - **Tidak**: Lewati baris saat ini.
+   - **Batal**: Hentikan seluruh proses (Exit For).
+2. **UI & UX**:
+   - `Proper Case` untuk Nama, `UPPER CASE` untuk Kode.
+   - Shortcut: F2 (Simpan), F4 (Baru), Esc (Tutup).
+   - Sembunyikan `CBManual` saat mode Edit.
+
+## 4. Prosedur Sebelum Menulis Kode
+1. Baca steering yang relevan di `.kiro\steering\`.
+2. `grepSearch` referensi serupa di codebase.
+3. Verifikasi struktur tabel ke database (jika terkait DB).
+4. Berikan penjelasan rencana perubahan kepada user.
+5. Eksekusi perubahan secara hati-hati menggunakan `strReplace`.
+
+---
+**Percaya Fungsi, Bukan Nama**: Selalu telusuri sumber data dan bagaimana nilainya dihitung sebelum menggunakan variabel.

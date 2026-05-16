@@ -103,13 +103,15 @@ Partial Class NotaStokOpname
         '
         'BtnPreview
         '
-        Me.BtnPreview.BackColor = System.Drawing.Color.Yellow
-        Me.BtnPreview.FlatAppearance.BorderColor = System.Drawing.Color.White
-        Me.BtnPreview.FlatAppearance.BorderSize = 0
-        Me.BtnPreview.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(CType(CType(128, Byte), Integer), CType(CType(255, Byte), Integer), CType(CType(255, Byte), Integer))
-        Me.BtnPreview.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Yellow
-        Me.BtnPreview.FlatStyle = System.Windows.Forms.FlatStyle.Popup
-        Me.BtnPreview.Font = New System.Drawing.Font("Microsoft Sans Serif", 11.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.BtnPreview.AutoSize = True
+        Me.BtnPreview.BackColor = System.Drawing.Color.White
+        Me.BtnPreview.Cursor = System.Windows.Forms.Cursors.Hand
+        Me.BtnPreview.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(100, 116, 139)
+        Me.BtnPreview.FlatAppearance.BorderSize = 1
+        Me.BtnPreview.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(226, 232, 240)
+        Me.BtnPreview.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(241, 245, 249)
+        Me.BtnPreview.FlatStyle = System.Windows.Forms.FlatStyle.Flat
+        Me.BtnPreview.Font = New System.Drawing.Font("Segoe UI", 9.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.BtnPreview.ForeColor = System.Drawing.Color.Black
         Me.BtnPreview.Image = CType(resources.GetObject("BtnPreview.Image"), System.Drawing.Image)
         Me.BtnPreview.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft
@@ -118,6 +120,8 @@ Partial Class NotaStokOpname
         Me.BtnPreview.Size = New System.Drawing.Size(185, 37)
         Me.BtnPreview.TabIndex = 162
         Me.BtnPreview.Text = "Preview"
+        Me.BtnPreview.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
+        Me.BtnPreview.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText
         Me.BtnPreview.UseVisualStyleBackColor = False
         '
         'TxtPerusahaan

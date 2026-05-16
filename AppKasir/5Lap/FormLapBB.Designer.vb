@@ -1,4 +1,4 @@
-﻿<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()> _
+<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()> _
 Partial Class FormLapBB
     Inherits System.Windows.Forms.Form
 
@@ -69,7 +69,7 @@ Partial Class FormLapBB
         '
         'Label1
         '
-        Me.Label1.BackColor = System.Drawing.Color.Gold
+        Me.Label1.BackColor = System.Drawing.SystemColors.Control
         Me.Label1.Font = New System.Drawing.Font("Microsoft Sans Serif", 12.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.Label1.Location = New System.Drawing.Point(12, 9)
         Me.Label1.Name = "Label1"
@@ -155,11 +155,15 @@ Partial Class FormLapBB
         '
         'BtnTampilBB
         '
-        Me.BtnTampilBB.BackColor = System.Drawing.Color.Yellow
-        Me.BtnTampilBB.FlatAppearance.BorderSize = 0
-        Me.BtnTampilBB.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(CType(CType(128, Byte), Integer), CType(CType(255, Byte), Integer), CType(CType(128, Byte), Integer))
-        Me.BtnTampilBB.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Green
-        Me.BtnTampilBB.Font = New System.Drawing.Font("Century Gothic", 11.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.BtnTampilBB.AutoSize = True
+        Me.BtnTampilBB.BackColor = System.Drawing.SystemColors.Control
+        Me.BtnTampilBB.Cursor = System.Windows.Forms.Cursors.Hand
+        Me.BtnTampilBB.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(CType(CType(100, Byte), Integer), CType(CType(116, Byte), Integer), CType(CType(139, Byte), Integer))
+        Me.BtnTampilBB.FlatAppearance.BorderSize = 1
+        Me.BtnTampilBB.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(CType(CType(226, Byte), Integer), CType(CType(232, Byte), Integer), CType(CType(240, Byte), Integer))
+        Me.BtnTampilBB.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(CType(CType(241, Byte), Integer), CType(CType(245, Byte), Integer), CType(CType(249, Byte), Integer))
+        Me.BtnTampilBB.FlatStyle = System.Windows.Forms.FlatStyle.Flat
+        Me.BtnTampilBB.Font = New System.Drawing.Font("Segoe UI", 9.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.BtnTampilBB.ForeColor = System.Drawing.Color.Black
         Me.BtnTampilBB.Image = CType(resources.GetObject("BtnTampilBB.Image"), System.Drawing.Image)
         Me.BtnTampilBB.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft
@@ -167,7 +171,8 @@ Partial Class FormLapBB
         Me.BtnTampilBB.Name = "BtnTampilBB"
         Me.BtnTampilBB.Size = New System.Drawing.Size(142, 37)
         Me.BtnTampilBB.TabIndex = 208
-        Me.BtnTampilBB.Text = "Tampilkan"
+        Me.BtnTampilBB.Text = "Tampilkan (F5)"
+        Me.BtnTampilBB.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
         Me.BtnTampilBB.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText
         Me.BtnTampilBB.UseVisualStyleBackColor = False
         '
@@ -213,6 +218,7 @@ Partial Class FormLapBB
         Me.Controls.Add(Me.Panel1)
         Me.Controls.Add(Me.CbmAkunBB)
         Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None
+        Me.KeyPreview = True
         Me.Name = "FormLapBB"
         Me.ShowIcon = False
         Me.ShowInTaskbar = False

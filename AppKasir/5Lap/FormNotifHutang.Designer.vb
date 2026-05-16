@@ -1,4 +1,4 @@
-﻿<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()> _
+<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()> _
 Partial Class FormNotifHutang
     Inherits System.Windows.Forms.Form
 
@@ -66,7 +66,7 @@ Partial Class FormNotifHutang
         'Label8
         '
         Me.Label8.AutoSize = True
-        Me.Label8.BackColor = System.Drawing.Color.Gold
+        Me.Label8.BackColor = System.Drawing.SystemColors.Control
         Me.Label8.Font = New System.Drawing.Font("Century Gothic", 9.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.Label8.Location = New System.Drawing.Point(383, 7)
         Me.Label8.Name = "Label8"
@@ -77,7 +77,7 @@ Partial Class FormNotifHutang
         '
         'LabelJudul
         '
-        Me.LabelJudul.BackColor = System.Drawing.Color.Gold
+        Me.LabelJudul.BackColor = System.Drawing.SystemColors.Control
         Me.LabelJudul.Dock = System.Windows.Forms.DockStyle.Top
         Me.LabelJudul.Font = New System.Drawing.Font("Bookman Old Style", 21.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.LabelJudul.Location = New System.Drawing.Point(0, 0)
@@ -90,19 +90,17 @@ Partial Class FormNotifHutang
         'BtnClose
         '
         Me.BtnClose.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.BtnClose.BackColor = System.Drawing.Color.Gold
+        Me.BtnClose.BackColor = System.Drawing.SystemColors.Control
+        Me.BtnClose.Cursor = System.Windows.Forms.Cursors.Hand
         Me.BtnClose.FlatAppearance.BorderSize = 0
-        Me.BtnClose.FlatAppearance.MouseDownBackColor = System.Drawing.Color.GreenYellow
-        Me.BtnClose.FlatAppearance.MouseOverBackColor = System.Drawing.Color.GreenYellow
-        Me.BtnClose.Font = New System.Drawing.Font("Century Gothic", 12.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.BtnClose.ForeColor = System.Drawing.Color.Black
+        Me.BtnClose.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(CType(CType(226, Byte), Integer), CType(CType(232, Byte), Integer), CType(CType(240, Byte), Integer))
+        Me.BtnClose.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(CType(CType(241, Byte), Integer), CType(CType(245, Byte), Integer), CType(CType(249, Byte), Integer))
+        Me.BtnClose.FlatStyle = System.Windows.Forms.FlatStyle.Flat
         Me.BtnClose.Image = CType(resources.GetObject("BtnClose.Image"), System.Drawing.Image)
-        Me.BtnClose.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft
         Me.BtnClose.Location = New System.Drawing.Point(769, 0)
         Me.BtnClose.Name = "BtnClose"
         Me.BtnClose.Size = New System.Drawing.Size(30, 30)
         Me.BtnClose.TabIndex = 203
-        Me.BtnClose.TextAlign = System.Drawing.ContentAlignment.MiddleRight
         Me.BtnClose.UseVisualStyleBackColor = False
         '
         'Panel1

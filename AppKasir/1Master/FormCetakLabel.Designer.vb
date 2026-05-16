@@ -1,4 +1,4 @@
-﻿<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()>
+<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()>
 Partial Class FormCetakLabel
     Inherits System.Windows.Forms.Form
 
@@ -23,12 +23,12 @@ Partial Class FormCetakLabel
     <System.Diagnostics.DebuggerStepThrough()>
     Private Sub InitializeComponent()
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(FormCetakLabel))
-        Dim DataGridViewCellStyle17 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
-        Dim DataGridViewCellStyle18 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
+        Dim DataGridViewCellStyle1 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
+        Dim DataGridViewCellStyle2 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
         Me.PanelHeader = New System.Windows.Forms.Panel()
         Me.BtnMinimize = New System.Windows.Forms.Button()
         Me.BtnClose = New System.Windows.Forms.Button()
-        Me.LblUtama = New System.Windows.Forms.Label()
+        Me.LblHeader = New System.Windows.Forms.Label()
         Me.Panel2 = New System.Windows.Forms.Panel()
         Me.Label10 = New System.Windows.Forms.Label()
         Me.Label17 = New System.Windows.Forms.Label()
@@ -75,11 +75,6 @@ Partial Class FormCetakLabel
         Me.TxtJarakY = New System.Windows.Forms.TextBox()
         Me.TxtTinggiLabel = New System.Windows.Forms.TextBox()
         Me.DGVLabel = New System.Windows.Forms.DataGridView()
-        Me.BtnPreview = New System.Windows.Forms.Button()
-        Me.BtnCetak = New System.Windows.Forms.Button()
-        Me.btnSimpanPerubahan = New System.Windows.Forms.Button()
-        Me.BtnRestore = New System.Windows.Forms.Button()
-        Me.BtnClear = New System.Windows.Forms.Button()
         Me.Kode = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.Nama = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.Satuan = New System.Windows.Forms.DataGridViewComboBoxColumn()
@@ -87,6 +82,11 @@ Partial Class FormCetakLabel
         Me.Toko = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.Gudang = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.Hapus = New System.Windows.Forms.DataGridViewButtonColumn()
+        Me.BtnPreview = New System.Windows.Forms.Button()
+        Me.BtnCetak = New System.Windows.Forms.Button()
+        Me.btnSimpanPerubahan = New System.Windows.Forms.Button()
+        Me.BtnRestore = New System.Windows.Forms.Button()
+        Me.BtnClear = New System.Windows.Forms.Button()
         Me.PanelHeader.SuspendLayout()
         Me.Panel2.SuspendLayout()
         Me.PanelThermal.SuspendLayout()
@@ -95,10 +95,9 @@ Partial Class FormCetakLabel
         '
         'PanelHeader
         '
-        Me.PanelHeader.BackColor = System.Drawing.Color.DarkGray
         Me.PanelHeader.Controls.Add(Me.BtnMinimize)
         Me.PanelHeader.Controls.Add(Me.BtnClose)
-        Me.PanelHeader.Controls.Add(Me.LblUtama)
+        Me.PanelHeader.Controls.Add(Me.LblHeader)
         Me.PanelHeader.Dock = System.Windows.Forms.DockStyle.Top
         Me.PanelHeader.Font = New System.Drawing.Font("Century Gothic", 11.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.PanelHeader.Location = New System.Drawing.Point(0, 0)
@@ -109,11 +108,12 @@ Partial Class FormCetakLabel
         'BtnMinimize
         '
         Me.BtnMinimize.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.BtnMinimize.BackColor = System.Drawing.Color.DimGray
+        Me.BtnMinimize.BackColor = System.Drawing.Color.White
+        Me.BtnMinimize.Cursor = System.Windows.Forms.Cursors.Hand
         Me.BtnMinimize.FlatAppearance.BorderSize = 0
-        Me.BtnMinimize.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(CType(CType(54, Byte), Integer), CType(CType(51, Byte), Integer), CType(CType(98, Byte), Integer))
-        Me.BtnMinimize.Font = New System.Drawing.Font("Century Gothic", 11.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.BtnMinimize.ForeColor = System.Drawing.Color.Blue
+        Me.BtnMinimize.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(CType(CType(226, Byte), Integer), CType(CType(232, Byte), Integer), CType(CType(240, Byte), Integer))
+        Me.BtnMinimize.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(CType(CType(241, Byte), Integer), CType(CType(245, Byte), Integer), CType(CType(249, Byte), Integer))
+        Me.BtnMinimize.FlatStyle = System.Windows.Forms.FlatStyle.Flat
         Me.BtnMinimize.Image = CType(resources.GetObject("BtnMinimize.Image"), System.Drawing.Image)
         Me.BtnMinimize.ImageAlign = System.Drawing.ContentAlignment.BottomCenter
         Me.BtnMinimize.Location = New System.Drawing.Point(1066, 3)
@@ -125,11 +125,12 @@ Partial Class FormCetakLabel
         'BtnClose
         '
         Me.BtnClose.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.BtnClose.BackColor = System.Drawing.Color.Red
+        Me.BtnClose.BackColor = System.Drawing.Color.White
+        Me.BtnClose.Cursor = System.Windows.Forms.Cursors.Hand
         Me.BtnClose.FlatAppearance.BorderSize = 0
-        Me.BtnClose.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Crimson
-        Me.BtnClose.Font = New System.Drawing.Font("Century Gothic", 11.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.BtnClose.ForeColor = System.Drawing.Color.Blue
+        Me.BtnClose.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(CType(CType(226, Byte), Integer), CType(CType(232, Byte), Integer), CType(CType(240, Byte), Integer))
+        Me.BtnClose.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(CType(CType(241, Byte), Integer), CType(CType(245, Byte), Integer), CType(CType(249, Byte), Integer))
+        Me.BtnClose.FlatStyle = System.Windows.Forms.FlatStyle.Flat
         Me.BtnClose.Image = CType(resources.GetObject("BtnClose.Image"), System.Drawing.Image)
         Me.BtnClose.Location = New System.Drawing.Point(1095, 3)
         Me.BtnClose.Name = "BtnClose"
@@ -137,19 +138,17 @@ Partial Class FormCetakLabel
         Me.BtnClose.TabIndex = 0
         Me.BtnClose.UseVisualStyleBackColor = False
         '
-        'LblUtama
+        'LblHeader
         '
-        Me.LblUtama.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
+        Me.LblHeader.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.LblUtama.BackColor = System.Drawing.Color.Yellow
-        Me.LblUtama.Font = New System.Drawing.Font("Century Gothic", 18.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.LblUtama.ForeColor = System.Drawing.Color.Black
-        Me.LblUtama.Location = New System.Drawing.Point(0, 0)
-        Me.LblUtama.Name = "LblUtama"
-        Me.LblUtama.Size = New System.Drawing.Size(1132, 30)
-        Me.LblUtama.TabIndex = 20
-        Me.LblUtama.Text = "CETAK LABEL RAK"
-        Me.LblUtama.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
+        Me.LblHeader.Font = New System.Drawing.Font("Century Gothic", 18.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.LblHeader.Location = New System.Drawing.Point(0, 0)
+        Me.LblHeader.Name = "LblHeader"
+        Me.LblHeader.Size = New System.Drawing.Size(1132, 30)
+        Me.LblHeader.TabIndex = 20
+        Me.LblHeader.Text = "CETAK LABEL RAK"
+        Me.LblHeader.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
         '
         'Panel2
         '
@@ -178,10 +177,8 @@ Partial Class FormCetakLabel
         '
         'Label10
         '
-        Me.Label10.BackColor = System.Drawing.Color.Silver
         Me.Label10.Dock = System.Windows.Forms.DockStyle.Top
         Me.Label10.Font = New System.Drawing.Font("Century Gothic", 11.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label10.ForeColor = System.Drawing.Color.Black
         Me.Label10.Location = New System.Drawing.Point(0, 0)
         Me.Label10.Name = "Label10"
         Me.Label10.Size = New System.Drawing.Size(474, 23)
@@ -405,7 +402,6 @@ Partial Class FormCetakLabel
         Me.PanelThermal.Size = New System.Drawing.Size(476, 354)
         Me.PanelThermal.TabIndex = 3
         '
-
         'ChkBoldSatuan
         '
         Me.ChkBoldSatuan.AutoSize = True
@@ -690,7 +686,6 @@ Partial Class FormCetakLabel
         'DGVLabel
         '
         Me.DGVLabel.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill
-        Me.DGVLabel.BackgroundColor = System.Drawing.Color.White
         Me.DGVLabel.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
         Me.DGVLabel.Columns.AddRange(New System.Windows.Forms.DataGridViewColumn() {Me.Kode, Me.Nama, Me.Satuan, Me.Isi, Me.Toko, Me.Gudang, Me.Hapus})
         Me.DGVLabel.Location = New System.Drawing.Point(5, 45)
@@ -698,76 +693,6 @@ Partial Class FormCetakLabel
         Me.DGVLabel.RowHeadersVisible = False
         Me.DGVLabel.Size = New System.Drawing.Size(645, 521)
         Me.DGVLabel.TabIndex = 1
-        '
-        'BtnPreview
-        '
-        Me.BtnPreview.AutoSize = True
-        Me.BtnPreview.BackColor = System.Drawing.Color.Orange
-        Me.BtnPreview.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Bold)
-        Me.BtnPreview.Image = CType(resources.GetObject("BtnPreview.Image"), System.Drawing.Image)
-        Me.BtnPreview.Location = New System.Drawing.Point(424, 572)
-        Me.BtnPreview.Name = "BtnPreview"
-        Me.BtnPreview.Size = New System.Drawing.Size(86, 31)
-        Me.BtnPreview.TabIndex = 4
-        Me.BtnPreview.Text = "Preview"
-        Me.BtnPreview.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText
-        Me.BtnPreview.UseVisualStyleBackColor = False
-        '
-        'BtnCetak
-        '
-        Me.BtnCetak.AutoSize = True
-        Me.BtnCetak.BackColor = System.Drawing.Color.Orange
-        Me.BtnCetak.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Bold)
-        Me.BtnCetak.Image = CType(resources.GetObject("BtnCetak.Image"), System.Drawing.Image)
-        Me.BtnCetak.Location = New System.Drawing.Point(565, 572)
-        Me.BtnCetak.Name = "BtnCetak"
-        Me.BtnCetak.Size = New System.Drawing.Size(85, 31)
-        Me.BtnCetak.TabIndex = 5
-        Me.BtnCetak.Text = "Cetak"
-        Me.BtnCetak.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText
-        Me.BtnCetak.UseVisualStyleBackColor = False
-        '
-        'btnSimpanPerubahan
-        '
-        Me.btnSimpanPerubahan.AutoSize = True
-        Me.btnSimpanPerubahan.BackColor = System.Drawing.Color.Orange
-        Me.btnSimpanPerubahan.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Bold)
-        Me.btnSimpanPerubahan.Image = CType(resources.GetObject("btnSimpanPerubahan.Image"), System.Drawing.Image)
-        Me.btnSimpanPerubahan.Location = New System.Drawing.Point(763, 572)
-        Me.btnSimpanPerubahan.Name = "btnSimpanPerubahan"
-        Me.btnSimpanPerubahan.Size = New System.Drawing.Size(146, 31)
-        Me.btnSimpanPerubahan.TabIndex = 6
-        Me.btnSimpanPerubahan.Text = "Simpan perubahan"
-        Me.btnSimpanPerubahan.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText
-        Me.btnSimpanPerubahan.UseVisualStyleBackColor = False
-        '
-        'BtnRestore
-        '
-        Me.BtnRestore.AutoSize = True
-        Me.BtnRestore.BackColor = System.Drawing.Color.Orange
-        Me.BtnRestore.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Bold)
-        Me.BtnRestore.Image = CType(resources.GetObject("BtnRestore.Image"), System.Drawing.Image)
-        Me.BtnRestore.Location = New System.Drawing.Point(939, 572)
-        Me.BtnRestore.Name = "BtnRestore"
-        Me.BtnRestore.Size = New System.Drawing.Size(130, 31)
-        Me.BtnRestore.TabIndex = 7
-        Me.BtnRestore.Text = "Restore Default"
-        Me.BtnRestore.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText
-        Me.BtnRestore.UseVisualStyleBackColor = False
-        '
-        'BtnClear
-        '
-        Me.BtnClear.AutoSize = True
-        Me.BtnClear.BackColor = System.Drawing.Color.Orange
-        Me.BtnClear.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Bold)
-        Me.BtnClear.Image = CType(resources.GetObject("BtnClear.Image"), System.Drawing.Image)
-        Me.BtnClear.Location = New System.Drawing.Point(38, 572)
-        Me.BtnClear.Name = "BtnClear"
-        Me.BtnClear.Size = New System.Drawing.Size(101, 31)
-        Me.BtnClear.TabIndex = 41
-        Me.BtnClear.Text = "Clear Data"
-        Me.BtnClear.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText
-        Me.BtnClear.UseVisualStyleBackColor = False
         '
         'Kode
         '
@@ -794,24 +719,22 @@ Partial Class FormCetakLabel
         Me.Isi.Name = "Isi"
         Me.Isi.Visible = False
         '
-
-        '
         'Toko
         '
-        DataGridViewCellStyle17.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight
-        DataGridViewCellStyle17.Format = "N0"
-        DataGridViewCellStyle17.NullValue = Nothing
-        Me.Toko.DefaultCellStyle = DataGridViewCellStyle17
+        DataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight
+        DataGridViewCellStyle1.Format = "N0"
+        DataGridViewCellStyle1.NullValue = Nothing
+        Me.Toko.DefaultCellStyle = DataGridViewCellStyle1
         Me.Toko.FillWeight = 40.0!
         Me.Toko.HeaderText = "Toko"
         Me.Toko.Name = "Toko"
         '
         'Gudang
         '
-        DataGridViewCellStyle18.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight
-        DataGridViewCellStyle18.Format = "N0"
-        DataGridViewCellStyle18.NullValue = Nothing
-        Me.Gudang.DefaultCellStyle = DataGridViewCellStyle18
+        DataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight
+        DataGridViewCellStyle2.Format = "N0"
+        DataGridViewCellStyle2.NullValue = Nothing
+        Me.Gudang.DefaultCellStyle = DataGridViewCellStyle2
         Me.Gudang.FillWeight = 40.0!
         Me.Gudang.HeaderText = "Gudang"
         Me.Gudang.Name = "Gudang"
@@ -825,6 +748,116 @@ Partial Class FormCetakLabel
         Me.Hapus.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic
         Me.Hapus.Text = "X"
         Me.Hapus.UseColumnTextForButtonValue = True
+        '
+        'BtnPreview
+        '
+        Me.BtnPreview.AutoSize = True
+        Me.BtnPreview.BackColor = System.Drawing.Color.White
+        Me.BtnPreview.Cursor = System.Windows.Forms.Cursors.Hand
+        Me.BtnPreview.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(CType(CType(100, Byte), Integer), CType(CType(116, Byte), Integer), CType(CType(139, Byte), Integer))
+        Me.BtnPreview.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(CType(CType(226, Byte), Integer), CType(CType(232, Byte), Integer), CType(CType(240, Byte), Integer))
+        Me.BtnPreview.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(CType(CType(241, Byte), Integer), CType(CType(245, Byte), Integer), CType(CType(249, Byte), Integer))
+        Me.BtnPreview.FlatStyle = System.Windows.Forms.FlatStyle.Flat
+        Me.BtnPreview.Font = New System.Drawing.Font("Segoe UI", 9.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.BtnPreview.ForeColor = System.Drawing.Color.Black
+        Me.BtnPreview.Image = CType(resources.GetObject("BtnPreview.Image"), System.Drawing.Image)
+        Me.BtnPreview.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft
+        Me.BtnPreview.Location = New System.Drawing.Point(424, 572)
+        Me.BtnPreview.Name = "BtnPreview"
+        Me.BtnPreview.Size = New System.Drawing.Size(88, 31)
+        Me.BtnPreview.TabIndex = 4
+        Me.BtnPreview.Text = "Preview"
+        Me.BtnPreview.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
+        Me.BtnPreview.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText
+        Me.BtnPreview.UseVisualStyleBackColor = False
+        '
+        'BtnCetak
+        '
+        Me.BtnCetak.AutoSize = True
+        Me.BtnCetak.BackColor = System.Drawing.Color.White
+        Me.BtnCetak.Cursor = System.Windows.Forms.Cursors.Hand
+        Me.BtnCetak.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(CType(CType(22, Byte), Integer), CType(CType(163, Byte), Integer), CType(CType(74, Byte), Integer))
+        Me.BtnCetak.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(CType(CType(187, Byte), Integer), CType(CType(247, Byte), Integer), CType(CType(208, Byte), Integer))
+        Me.BtnCetak.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(CType(CType(220, Byte), Integer), CType(CType(252, Byte), Integer), CType(CType(231, Byte), Integer))
+        Me.BtnCetak.FlatStyle = System.Windows.Forms.FlatStyle.Flat
+        Me.BtnCetak.Font = New System.Drawing.Font("Segoe UI", 9.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.BtnCetak.ForeColor = System.Drawing.Color.FromArgb(CType(CType(22, Byte), Integer), CType(CType(163, Byte), Integer), CType(CType(74, Byte), Integer))
+        Me.BtnCetak.Image = CType(resources.GetObject("BtnCetak.Image"), System.Drawing.Image)
+        Me.BtnCetak.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft
+        Me.BtnCetak.Location = New System.Drawing.Point(565, 572)
+        Me.BtnCetak.Name = "BtnCetak"
+        Me.BtnCetak.Size = New System.Drawing.Size(85, 31)
+        Me.BtnCetak.TabIndex = 5
+        Me.BtnCetak.Text = "Cetak"
+        Me.BtnCetak.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
+        Me.BtnCetak.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText
+        Me.BtnCetak.UseVisualStyleBackColor = False
+        '
+        'btnSimpanPerubahan
+        '
+        Me.btnSimpanPerubahan.AutoSize = True
+        Me.btnSimpanPerubahan.BackColor = System.Drawing.Color.White
+        Me.btnSimpanPerubahan.Cursor = System.Windows.Forms.Cursors.Hand
+        Me.btnSimpanPerubahan.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(CType(CType(22, Byte), Integer), CType(CType(163, Byte), Integer), CType(CType(74, Byte), Integer))
+        Me.btnSimpanPerubahan.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(CType(CType(187, Byte), Integer), CType(CType(247, Byte), Integer), CType(CType(208, Byte), Integer))
+        Me.btnSimpanPerubahan.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(CType(CType(220, Byte), Integer), CType(CType(252, Byte), Integer), CType(CType(231, Byte), Integer))
+        Me.btnSimpanPerubahan.FlatStyle = System.Windows.Forms.FlatStyle.Flat
+        Me.btnSimpanPerubahan.Font = New System.Drawing.Font("Segoe UI", 9.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.btnSimpanPerubahan.ForeColor = System.Drawing.Color.FromArgb(CType(CType(22, Byte), Integer), CType(CType(163, Byte), Integer), CType(CType(74, Byte), Integer))
+        Me.btnSimpanPerubahan.Image = CType(resources.GetObject("btnSimpanPerubahan.Image"), System.Drawing.Image)
+        Me.btnSimpanPerubahan.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft
+        Me.btnSimpanPerubahan.Location = New System.Drawing.Point(763, 572)
+        Me.btnSimpanPerubahan.Name = "btnSimpanPerubahan"
+        Me.btnSimpanPerubahan.Size = New System.Drawing.Size(156, 31)
+        Me.btnSimpanPerubahan.TabIndex = 6
+        Me.btnSimpanPerubahan.Text = "Simpan Perubahan"
+        Me.btnSimpanPerubahan.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
+        Me.btnSimpanPerubahan.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText
+        Me.btnSimpanPerubahan.UseVisualStyleBackColor = False
+        '
+        'BtnRestore
+        '
+        Me.BtnRestore.AutoSize = True
+        Me.BtnRestore.BackColor = System.Drawing.Color.White
+        Me.BtnRestore.Cursor = System.Windows.Forms.Cursors.Hand
+        Me.BtnRestore.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(CType(CType(100, Byte), Integer), CType(CType(116, Byte), Integer), CType(CType(139, Byte), Integer))
+        Me.BtnRestore.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(CType(CType(226, Byte), Integer), CType(CType(232, Byte), Integer), CType(CType(240, Byte), Integer))
+        Me.BtnRestore.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(CType(CType(241, Byte), Integer), CType(CType(245, Byte), Integer), CType(CType(249, Byte), Integer))
+        Me.BtnRestore.FlatStyle = System.Windows.Forms.FlatStyle.Flat
+        Me.BtnRestore.Font = New System.Drawing.Font("Segoe UI", 9.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.BtnRestore.ForeColor = System.Drawing.Color.Black
+        Me.BtnRestore.Image = CType(resources.GetObject("BtnRestore.Image"), System.Drawing.Image)
+        Me.BtnRestore.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft
+        Me.BtnRestore.Location = New System.Drawing.Point(939, 572)
+        Me.BtnRestore.Name = "BtnRestore"
+        Me.BtnRestore.Size = New System.Drawing.Size(136, 31)
+        Me.BtnRestore.TabIndex = 7
+        Me.BtnRestore.Text = "Restore Default"
+        Me.BtnRestore.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
+        Me.BtnRestore.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText
+        Me.BtnRestore.UseVisualStyleBackColor = False
+        '
+        'BtnClear
+        '
+        Me.BtnClear.AutoSize = True
+        Me.BtnClear.BackColor = System.Drawing.Color.White
+        Me.BtnClear.Cursor = System.Windows.Forms.Cursors.Hand
+        Me.BtnClear.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(CType(CType(220, Byte), Integer), CType(CType(38, Byte), Integer), CType(CType(38, Byte), Integer))
+        Me.BtnClear.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(CType(CType(252, Byte), Integer), CType(CType(165, Byte), Integer), CType(CType(165, Byte), Integer))
+        Me.BtnClear.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(CType(CType(254, Byte), Integer), CType(CType(226, Byte), Integer), CType(CType(226, Byte), Integer))
+        Me.BtnClear.FlatStyle = System.Windows.Forms.FlatStyle.Flat
+        Me.BtnClear.Font = New System.Drawing.Font("Segoe UI", 9.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.BtnClear.ForeColor = System.Drawing.Color.FromArgb(CType(CType(220, Byte), Integer), CType(CType(38, Byte), Integer), CType(CType(38, Byte), Integer))
+        Me.BtnClear.Image = CType(resources.GetObject("BtnClear.Image"), System.Drawing.Image)
+        Me.BtnClear.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft
+        Me.BtnClear.Location = New System.Drawing.Point(38, 572)
+        Me.BtnClear.Name = "BtnClear"
+        Me.BtnClear.Size = New System.Drawing.Size(104, 31)
+        Me.BtnClear.TabIndex = 41
+        Me.BtnClear.Text = "Clear Data"
+        Me.BtnClear.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
+        Me.BtnClear.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText
+        Me.BtnClear.UseVisualStyleBackColor = False
         '
         'FormCetakLabel
         '
@@ -842,6 +875,7 @@ Partial Class FormCetakLabel
         Me.Controls.Add(Me.Panel2)
         Me.Controls.Add(Me.PanelHeader)
         Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None
+        Me.KeyPreview = True
         Me.Name = "FormCetakLabel"
         Me.ShowIcon = False
         Me.ShowInTaskbar = False
@@ -860,7 +894,7 @@ Partial Class FormCetakLabel
     Friend WithEvents PanelHeader As Panel
     Friend WithEvents BtnMinimize As Button
     Friend WithEvents BtnClose As Button
-    Friend WithEvents LblUtama As Label
+    Friend WithEvents LblHeader As Label
     Friend WithEvents Panel2 As Panel
     Friend WithEvents PanelThermal As Panel
     Friend WithEvents Label2 As Label
@@ -921,3 +955,4 @@ Partial Class FormCetakLabel
     Friend WithEvents Gudang As DataGridViewTextBoxColumn
     Friend WithEvents Hapus As DataGridViewButtonColumn
 End Class
+

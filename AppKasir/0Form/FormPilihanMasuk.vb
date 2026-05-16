@@ -1,6 +1,7 @@
-﻿Public Class FormPilihanMasuk
+Public Class FormPilihanMasuk
 
     Private Sub FormPilihanMasuk_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+        ModuleTheme.TerapkanTheme(Me)
         ' Menambahkan pilihan jika belum ditambahkan
         If CmbMasuk.Items.Count = 0 Then
             CmbMasuk.Items.AddRange(New String() {"TOKO", "GUDANG", "SELALU TANYA"})

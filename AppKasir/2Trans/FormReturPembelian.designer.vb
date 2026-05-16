@@ -1,9 +1,9 @@
-﻿<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()> _
+<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()>
 Partial Class FormReturPembelian
     Inherits System.Windows.Forms.Form
 
     'Form overrides dispose to clean up the component list.
-    <System.Diagnostics.DebuggerNonUserCode()> _
+    <System.Diagnostics.DebuggerNonUserCode()>
     Protected Overrides Sub Dispose(ByVal disposing As Boolean)
         Try
             If disposing AndAlso components IsNot Nothing Then
@@ -20,12 +20,11 @@ Partial Class FormReturPembelian
     'NOTE: The following procedure is required by the Windows Form Designer
     'It can be modified using the Windows Form Designer.  
     'Do not modify it using the code editor.
-    <System.Diagnostics.DebuggerStepThrough()> _
+    <System.Diagnostics.DebuggerStepThrough()>
     Private Sub InitializeComponent()
         Me.components = New System.ComponentModel.Container()
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(FormReturPembelian))
-        Dim DataGridViewCellStyle1 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
-        Me.BtnClose = New System.Windows.Forms.Button()
+        Me.BtnKeluarForm = New System.Windows.Forms.Button()
         Me.Label8 = New System.Windows.Forms.Label()
         Me.PanelHeader = New System.Windows.Forms.Panel()
         Me.DGVReturPembelian = New System.Windows.Forms.DataGridView()
@@ -69,6 +68,7 @@ Partial Class FormReturPembelian
         Me.LblKontakSupplier = New System.Windows.Forms.Label()
         Me.PanelSimpan = New System.Windows.Forms.Panel()
         Me.LblStatusHutang = New System.Windows.Forms.Label()
+        Me.BtnSettingPrinter = New System.Windows.Forms.Button()
         Me.CmbRekening = New System.Windows.Forms.ComboBox()
         Me.LblKodeAkun = New System.Windows.Forms.Label()
         Me.Label4 = New System.Windows.Forms.Label()
@@ -116,39 +116,48 @@ Partial Class FormReturPembelian
         CType(Me.DGVPilihBarang, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
-        'BtnClose
+        'BtnKeluarForm
         '
-        Me.BtnClose.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.BtnClose.BackColor = System.Drawing.Color.Red
-        Me.BtnClose.FlatAppearance.BorderSize = 0
-        Me.BtnClose.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Gray
-        Me.BtnClose.FlatStyle = System.Windows.Forms.FlatStyle.Flat
-        Me.BtnClose.ForeColor = System.Drawing.Color.Black
-        Me.BtnClose.Image = CType(resources.GetObject("BtnClose.Image"), System.Drawing.Image)
-        Me.BtnClose.Location = New System.Drawing.Point(1180, 5)
-        Me.BtnClose.Margin = New System.Windows.Forms.Padding(4, 3, 4, 3)
-        Me.BtnClose.Name = "BtnClose"
-        Me.BtnClose.Size = New System.Drawing.Size(31, 28)
-        Me.BtnClose.TabIndex = 0
-        Me.BtnClose.UseVisualStyleBackColor = False
+        Me.BtnKeluarForm.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.BtnKeluarForm.AutoSize = True
+        Me.BtnKeluarForm.BackColor = System.Drawing.Color.White
+        Me.BtnKeluarForm.Cursor = System.Windows.Forms.Cursors.Hand
+        Me.BtnKeluarForm.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(CType(CType(220, Byte), Integer), CType(CType(38, Byte), Integer), CType(CType(38, Byte), Integer))
+        Me.BtnKeluarForm.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(CType(CType(252, Byte), Integer), CType(CType(165, Byte), Integer), CType(CType(165, Byte), Integer))
+        Me.BtnKeluarForm.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(CType(CType(254, Byte), Integer), CType(CType(226, Byte), Integer), CType(CType(226, Byte), Integer))
+        Me.BtnKeluarForm.FlatStyle = System.Windows.Forms.FlatStyle.Flat
+        Me.BtnKeluarForm.Font = New System.Drawing.Font("Segoe UI", 9.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.BtnKeluarForm.ForeColor = System.Drawing.Color.FromArgb(CType(CType(220, Byte), Integer), CType(CType(38, Byte), Integer), CType(CType(38, Byte), Integer))
+        Me.BtnKeluarForm.Image = CType(resources.GetObject("BtnKeluarForm.Image"), System.Drawing.Image)
+        Me.BtnKeluarForm.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft
+        Me.BtnKeluarForm.Location = New System.Drawing.Point(1099, 3)
+        Me.BtnKeluarForm.Margin = New System.Windows.Forms.Padding(4, 3, 4, 3)
+        Me.BtnKeluarForm.Name = "BtnKeluarForm"
+        Me.BtnKeluarForm.Size = New System.Drawing.Size(112, 31)
+        Me.BtnKeluarForm.TabIndex = 0
+        Me.BtnKeluarForm.Text = "Keluar (Esc)"
+        Me.BtnKeluarForm.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
+        Me.BtnKeluarForm.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText
+        Me.BtnKeluarForm.UseVisualStyleBackColor = False
         '
         'Label8
         '
-        Me.Label8.AutoSize = True
         Me.Label8.BackColor = System.Drawing.Color.Transparent
-        Me.Label8.Font = New System.Drawing.Font("Century Gothic", 14.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.Label8.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.Label8.Font = New System.Drawing.Font("Century Gothic", 21.75!, System.Drawing.FontStyle.Bold)
         Me.Label8.ForeColor = System.Drawing.Color.Black
-        Me.Label8.Location = New System.Drawing.Point(659, 7)
+        Me.Label8.Location = New System.Drawing.Point(0, 0)
         Me.Label8.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Me.Label8.Name = "Label8"
-        Me.Label8.Size = New System.Drawing.Size(168, 23)
+        Me.Label8.Size = New System.Drawing.Size(1214, 36)
         Me.Label8.TabIndex = 20
         Me.Label8.Text = "RETUR PEMBELIAN"
+        Me.Label8.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
         '
         'PanelHeader
         '
-        Me.PanelHeader.BackColor = System.Drawing.Color.SandyBrown
-        Me.PanelHeader.Controls.Add(Me.BtnClose)
+        Me.PanelHeader.BackColor = System.Drawing.Color.FromArgb(CType(CType(22, Byte), Integer), CType(CType(163, Byte), Integer), CType(CType(74, Byte), Integer))
+        Me.PanelHeader.Controls.Add(Me.BtnKeluarForm)
         Me.PanelHeader.Controls.Add(Me.Label8)
         Me.PanelHeader.Dock = System.Windows.Forms.DockStyle.Top
         Me.PanelHeader.Location = New System.Drawing.Point(0, 0)
@@ -164,17 +173,8 @@ Partial Class FormReturPembelian
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.DGVReturPembelian.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill
         Me.DGVReturPembelian.AutoSizeRowsMode = System.Windows.Forms.DataGridViewAutoSizeRowsMode.AllCells
-        Me.DGVReturPembelian.BackgroundColor = System.Drawing.Color.White
         Me.DGVReturPembelian.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
         Me.DGVReturPembelian.Columns.AddRange(New System.Windows.Forms.DataGridViewColumn() {Me.ID_BARANG, Me.NAMA_BARANG, Me.HARGA_BELI, Me.QTY, Me.SATUAN, Me.ISI_SATUAN, Me.HARGA_BELI_SATUAN, Me.QTY_SAT, Me.TOTAL})
-        DataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft
-        DataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Window
-        DataGridViewCellStyle1.Font = New System.Drawing.Font("Century Gothic", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        DataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.ControlText
-        DataGridViewCellStyle1.SelectionBackColor = System.Drawing.Color.Teal
-        DataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText
-        DataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.[False]
-        Me.DGVReturPembelian.DefaultCellStyle = DataGridViewCellStyle1
         Me.DGVReturPembelian.Location = New System.Drawing.Point(4, 208)
         Me.DGVReturPembelian.Margin = New System.Windows.Forms.Padding(4, 3, 4, 3)
         Me.DGVReturPembelian.Name = "DGVReturPembelian"
@@ -244,7 +244,7 @@ Partial Class FormReturPembelian
         '
         'Panel3
         '
-        Me.Panel3.BackColor = System.Drawing.Color.FromArgb(CType(CType(60, Byte), Integer), CType(CType(60, Byte), Integer), CType(CType(60, Byte), Integer))
+        Me.Panel3.BackColor = System.Drawing.Color.FromArgb(CType(CType(22, Byte), Integer), CType(CType(163, Byte), Integer), CType(CType(74, Byte), Integer))
         Me.Panel3.Dock = System.Windows.Forms.DockStyle.Left
         Me.Panel3.Location = New System.Drawing.Point(0, 36)
         Me.Panel3.Margin = New System.Windows.Forms.Padding(4, 3, 4, 3)
@@ -254,7 +254,7 @@ Partial Class FormReturPembelian
         '
         'Panel2
         '
-        Me.Panel2.BackColor = System.Drawing.Color.FromArgb(CType(CType(60, Byte), Integer), CType(CType(60, Byte), Integer), CType(CType(60, Byte), Integer))
+        Me.Panel2.BackColor = System.Drawing.Color.FromArgb(CType(CType(22, Byte), Integer), CType(CType(163, Byte), Integer), CType(CType(74, Byte), Integer))
         Me.Panel2.Dock = System.Windows.Forms.DockStyle.Right
         Me.Panel2.Location = New System.Drawing.Point(1211, 36)
         Me.Panel2.Margin = New System.Windows.Forms.Padding(4, 3, 4, 3)
@@ -264,7 +264,7 @@ Partial Class FormReturPembelian
         '
         'Panel1
         '
-        Me.Panel1.BackColor = System.Drawing.Color.FromArgb(CType(CType(60, Byte), Integer), CType(CType(60, Byte), Integer), CType(CType(60, Byte), Integer))
+        Me.Panel1.BackColor = System.Drawing.Color.FromArgb(CType(CType(22, Byte), Integer), CType(CType(163, Byte), Integer), CType(CType(74, Byte), Integer))
         Me.Panel1.Dock = System.Windows.Forms.DockStyle.Bottom
         Me.Panel1.Location = New System.Drawing.Point(0, 690)
         Me.Panel1.Margin = New System.Windows.Forms.Padding(4, 3, 4, 3)
@@ -309,7 +309,7 @@ Partial Class FormReturPembelian
         'RTBAlasanRetur
         '
         Me.RTBAlasanRetur.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.RTBAlasanRetur.BackColor = System.Drawing.Color.Ivory
+        Me.RTBAlasanRetur.BackColor = System.Drawing.Color.FromArgb(CType(CType(255, Byte), Integer), CType(CType(253, Byte), Integer), CType(CType(235, Byte), Integer))
         Me.RTBAlasanRetur.Location = New System.Drawing.Point(925, 95)
         Me.RTBAlasanRetur.Margin = New System.Windows.Forms.Padding(4, 3, 4, 3)
         Me.RTBAlasanRetur.Name = "RTBAlasanRetur"
@@ -419,7 +419,7 @@ Partial Class FormReturPembelian
         '
         'PanelNota
         '
-        Me.PanelNota.BackColor = System.Drawing.Color.Wheat
+        Me.PanelNota.BackColor = System.Drawing.Color.FromArgb(CType(CType(248, Byte), Integer), CType(CType(250, Byte), Integer), CType(CType(252, Byte), Integer))
         Me.PanelNota.Controls.Add(Me.Label14)
         Me.PanelNota.Controls.Add(Me.LblBayarBeli)
         Me.PanelNota.Controls.Add(Me.PBcariNotaBeli)
@@ -577,8 +577,9 @@ Partial Class FormReturPembelian
         '
         Me.PanelSimpan.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.PanelSimpan.BackColor = System.Drawing.Color.WhiteSmoke
+        Me.PanelSimpan.BackColor = System.Drawing.Color.FromArgb(CType(CType(248, Byte), Integer), CType(CType(250, Byte), Integer), CType(CType(252, Byte), Integer))
         Me.PanelSimpan.Controls.Add(Me.LblStatusHutang)
+        Me.PanelSimpan.Controls.Add(Me.BtnSettingPrinter)
         Me.PanelSimpan.Controls.Add(Me.CmbRekening)
         Me.PanelSimpan.Controls.Add(Me.LblKodeAkun)
         Me.PanelSimpan.Controls.Add(Me.Label4)
@@ -612,6 +613,27 @@ Partial Class FormReturPembelian
         Me.LblStatusHutang.TabIndex = 253
         Me.LblStatusHutang.Text = "Status "
         Me.LblStatusHutang.Visible = False
+        '
+        'BtnSettingPrinter
+        '
+        Me.BtnSettingPrinter.AutoSize = True
+        Me.BtnSettingPrinter.BackColor = System.Drawing.Color.White
+        Me.BtnSettingPrinter.Cursor = System.Windows.Forms.Cursors.Hand
+        Me.BtnSettingPrinter.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(CType(CType(226, Byte), Integer), CType(CType(232, Byte), Integer), CType(CType(240, Byte), Integer))
+        Me.BtnSettingPrinter.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(CType(CType(241, Byte), Integer), CType(CType(245, Byte), Integer), CType(CType(249, Byte), Integer))
+        Me.BtnSettingPrinter.FlatStyle = System.Windows.Forms.FlatStyle.Flat
+        Me.BtnSettingPrinter.Font = New System.Drawing.Font("Segoe UI", 9.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.BtnSettingPrinter.ForeColor = System.Drawing.Color.Black
+        Me.BtnSettingPrinter.Image = CType(resources.GetObject("BtnSettingPrinter.Image"), System.Drawing.Image)
+        Me.BtnSettingPrinter.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft
+        Me.BtnSettingPrinter.Location = New System.Drawing.Point(80, 395)
+        Me.BtnSettingPrinter.Name = "BtnSettingPrinter"
+        Me.BtnSettingPrinter.Size = New System.Drawing.Size(82, 29)
+        Me.BtnSettingPrinter.TabIndex = 259
+        Me.BtnSettingPrinter.Text = "Printer"
+        Me.BtnSettingPrinter.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
+        Me.BtnSettingPrinter.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText
+        Me.BtnSettingPrinter.UseVisualStyleBackColor = False
         '
         'CmbRekening
         '
@@ -773,13 +795,15 @@ Partial Class FormReturPembelian
         '
         'BtnSimpan
         '
-        Me.BtnSimpan.BackColor = System.Drawing.Color.FromArgb(CType(CType(36, Byte), Integer), CType(CType(91, Byte), Integer), CType(CType(32, Byte), Integer))
-        Me.BtnSimpan.FlatAppearance.BorderSize = 0
-        Me.BtnSimpan.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(CType(CType(128, Byte), Integer), CType(CType(255, Byte), Integer), CType(CType(128, Byte), Integer))
-        Me.BtnSimpan.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Green
+        Me.BtnSimpan.AutoSize = True
+        Me.BtnSimpan.BackColor = System.Drawing.Color.White
+        Me.BtnSimpan.Cursor = System.Windows.Forms.Cursors.Hand
+        Me.BtnSimpan.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(CType(CType(22, Byte), Integer), CType(CType(163, Byte), Integer), CType(CType(74, Byte), Integer))
+        Me.BtnSimpan.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(CType(CType(187, Byte), Integer), CType(CType(247, Byte), Integer), CType(CType(208, Byte), Integer))
+        Me.BtnSimpan.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(CType(CType(220, Byte), Integer), CType(CType(252, Byte), Integer), CType(CType(231, Byte), Integer))
         Me.BtnSimpan.FlatStyle = System.Windows.Forms.FlatStyle.Flat
-        Me.BtnSimpan.Font = New System.Drawing.Font("Century Gothic", 9.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.BtnSimpan.ForeColor = System.Drawing.Color.White
+        Me.BtnSimpan.Font = New System.Drawing.Font("Segoe UI", 9.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.BtnSimpan.ForeColor = System.Drawing.Color.FromArgb(CType(CType(22, Byte), Integer), CType(CType(163, Byte), Integer), CType(CType(74, Byte), Integer))
         Me.BtnSimpan.Image = CType(resources.GetObject("BtnSimpan.Image"), System.Drawing.Image)
         Me.BtnSimpan.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft
         Me.BtnSimpan.Location = New System.Drawing.Point(63, 318)
@@ -787,7 +811,8 @@ Partial Class FormReturPembelian
         Me.BtnSimpan.Name = "BtnSimpan"
         Me.BtnSimpan.Size = New System.Drawing.Size(148, 36)
         Me.BtnSimpan.TabIndex = 220
-        Me.BtnSimpan.Text = "   SIMPAN (F8)"
+        Me.BtnSimpan.Text = "Simpan (F8)"
+        Me.BtnSimpan.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
         Me.BtnSimpan.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText
         Me.BtnSimpan.UseVisualStyleBackColor = False
         '
@@ -817,7 +842,7 @@ Partial Class FormReturPembelian
         '
         Me.PanelDatagridview.Anchor = CType(((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.PanelDatagridview.BackColor = System.Drawing.Color.Chocolate
+        Me.PanelDatagridview.BackColor = System.Drawing.Color.FromArgb(CType(CType(248, Byte), Integer), CType(CType(250, Byte), Integer), CType(CType(252, Byte), Integer))
         Me.PanelDatagridview.Controls.Add(Me.BtnKeluarDaftar)
         Me.PanelDatagridview.Controls.Add(Me.DtpBelanja)
         Me.PanelDatagridview.Controls.Add(Me.Label18)
@@ -831,11 +856,12 @@ Partial Class FormReturPembelian
         'BtnKeluarDaftar
         '
         Me.BtnKeluarDaftar.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.BtnKeluarDaftar.BackColor = System.Drawing.Color.LightSeaGreen
+        Me.BtnKeluarDaftar.BackColor = System.Drawing.Color.White
+        Me.BtnKeluarDaftar.Cursor = System.Windows.Forms.Cursors.Hand
         Me.BtnKeluarDaftar.FlatAppearance.BorderSize = 0
-        Me.BtnKeluarDaftar.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Gray
+        Me.BtnKeluarDaftar.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(CType(CType(226, Byte), Integer), CType(CType(232, Byte), Integer), CType(CType(240, Byte), Integer))
+        Me.BtnKeluarDaftar.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(CType(CType(241, Byte), Integer), CType(CType(245, Byte), Integer), CType(CType(249, Byte), Integer))
         Me.BtnKeluarDaftar.FlatStyle = System.Windows.Forms.FlatStyle.Flat
-        Me.BtnKeluarDaftar.ForeColor = System.Drawing.Color.White
         Me.BtnKeluarDaftar.Image = CType(resources.GetObject("BtnKeluarDaftar.Image"), System.Drawing.Image)
         Me.BtnKeluarDaftar.Location = New System.Drawing.Point(772, 10)
         Me.BtnKeluarDaftar.Name = "BtnKeluarDaftar"
@@ -877,7 +903,6 @@ Partial Class FormReturPembelian
         Me.DGVPembelian.AllowUserToResizeRows = False
         Me.DGVPembelian.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill
         Me.DGVPembelian.AutoSizeRowsMode = System.Windows.Forms.DataGridViewAutoSizeRowsMode.AllCells
-        Me.DGVPembelian.BackgroundColor = System.Drawing.Color.White
         Me.DGVPembelian.CellBorderStyle = System.Windows.Forms.DataGridViewCellBorderStyle.Sunken
         Me.DGVPembelian.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
         Me.DGVPembelian.Dock = System.Windows.Forms.DockStyle.Bottom
@@ -928,7 +953,7 @@ Partial Class FormReturPembelian
         '
         Me.Panelcaribarang.Anchor = CType(((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.Panelcaribarang.BackColor = System.Drawing.SystemColors.ActiveCaption
+        Me.Panelcaribarang.BackColor = System.Drawing.Color.FromArgb(CType(CType(248, Byte), Integer), CType(CType(250, Byte), Integer), CType(CType(252, Byte), Integer))
         Me.Panelcaribarang.Controls.Add(Me.TxtCariRetur)
         Me.Panelcaribarang.Controls.Add(Me.PictureBox1)
         Me.Panelcaribarang.Controls.Add(Me.BtnKeluarBarang)
@@ -967,11 +992,12 @@ Partial Class FormReturPembelian
         'BtnKeluarBarang
         '
         Me.BtnKeluarBarang.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.BtnKeluarBarang.BackColor = System.Drawing.Color.Teal
+        Me.BtnKeluarBarang.BackColor = System.Drawing.Color.White
+        Me.BtnKeluarBarang.Cursor = System.Windows.Forms.Cursors.Hand
         Me.BtnKeluarBarang.FlatAppearance.BorderSize = 0
-        Me.BtnKeluarBarang.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Gray
+        Me.BtnKeluarBarang.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(CType(CType(226, Byte), Integer), CType(CType(232, Byte), Integer), CType(CType(240, Byte), Integer))
+        Me.BtnKeluarBarang.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(CType(CType(241, Byte), Integer), CType(CType(245, Byte), Integer), CType(CType(249, Byte), Integer))
         Me.BtnKeluarBarang.FlatStyle = System.Windows.Forms.FlatStyle.Flat
-        Me.BtnKeluarBarang.ForeColor = System.Drawing.Color.White
         Me.BtnKeluarBarang.Image = CType(resources.GetObject("BtnKeluarBarang.Image"), System.Drawing.Image)
         Me.BtnKeluarBarang.Location = New System.Drawing.Point(774, 3)
         Me.BtnKeluarBarang.Name = "BtnKeluarBarang"
@@ -997,7 +1023,6 @@ Partial Class FormReturPembelian
         '
         Me.DGVPilihBarang.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill
         Me.DGVPilihBarang.AutoSizeRowsMode = System.Windows.Forms.DataGridViewAutoSizeRowsMode.AllCells
-        Me.DGVPilihBarang.BackgroundColor = System.Drawing.Color.White
         Me.DGVPilihBarang.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
         Me.DGVPilihBarang.Dock = System.Windows.Forms.DockStyle.Bottom
         Me.DGVPilihBarang.Location = New System.Drawing.Point(0, 31)
@@ -1011,12 +1036,13 @@ Partial Class FormReturPembelian
         'BtnDaftarBarang
         '
         Me.BtnDaftarBarang.AutoSize = True
-        Me.BtnDaftarBarang.BackColor = System.Drawing.SystemColors.ActiveCaption
-        Me.BtnDaftarBarang.FlatAppearance.BorderColor = System.Drawing.Color.White
-        Me.BtnDaftarBarang.FlatAppearance.BorderSize = 0
-        Me.BtnDaftarBarang.FlatAppearance.MouseDownBackColor = System.Drawing.Color.LightSeaGreen
-        Me.BtnDaftarBarang.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Yellow
-        Me.BtnDaftarBarang.Font = New System.Drawing.Font("Bookman Old Style", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.BtnDaftarBarang.BackColor = System.Drawing.Color.White
+        Me.BtnDaftarBarang.Cursor = System.Windows.Forms.Cursors.Hand
+        Me.BtnDaftarBarang.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(CType(CType(100, Byte), Integer), CType(CType(116, Byte), Integer), CType(CType(139, Byte), Integer))
+        Me.BtnDaftarBarang.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(CType(CType(226, Byte), Integer), CType(CType(232, Byte), Integer), CType(CType(240, Byte), Integer))
+        Me.BtnDaftarBarang.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(CType(CType(241, Byte), Integer), CType(CType(245, Byte), Integer), CType(CType(249, Byte), Integer))
+        Me.BtnDaftarBarang.FlatStyle = System.Windows.Forms.FlatStyle.Flat
+        Me.BtnDaftarBarang.Font = New System.Drawing.Font("Segoe UI", 9.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.BtnDaftarBarang.ForeColor = System.Drawing.Color.Black
         Me.BtnDaftarBarang.Image = CType(resources.GetObject("BtnDaftarBarang.Image"), System.Drawing.Image)
         Me.BtnDaftarBarang.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft
@@ -1026,6 +1052,7 @@ Partial Class FormReturPembelian
         Me.BtnDaftarBarang.Size = New System.Drawing.Size(138, 38)
         Me.BtnDaftarBarang.TabIndex = 255
         Me.BtnDaftarBarang.Text = "Daftar barang"
+        Me.BtnDaftarBarang.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
         Me.BtnDaftarBarang.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText
         Me.BtnDaftarBarang.UseVisualStyleBackColor = False
         '
@@ -1100,7 +1127,7 @@ Partial Class FormReturPembelian
         Me.PerformLayout()
 
     End Sub
-    Friend WithEvents BtnClose As System.Windows.Forms.Button
+    Friend WithEvents BtnKeluarForm As System.Windows.Forms.Button
     Friend WithEvents Label8 As System.Windows.Forms.Label
     Friend WithEvents PanelHeader As System.Windows.Forms.Panel
     Friend WithEvents DGVReturPembelian As System.Windows.Forms.DataGridView
@@ -1178,4 +1205,8 @@ Partial Class FormReturPembelian
     Friend WithEvents LblLokasi As System.Windows.Forms.Label
     Friend WithEvents TxtCariRetur As TextBox
     Friend WithEvents PictureBox1 As PictureBox
+    Friend WithEvents BtnSettingPrinter As Button
 End Class
+
+
+

@@ -1,4 +1,4 @@
-﻿<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()> _
+<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()> _
 Partial Class FormBon
     Inherits System.Windows.Forms.Form
 
@@ -47,6 +47,9 @@ Partial Class FormBon
         Me.Label5 = New System.Windows.Forms.Label()
         Me.Label8 = New System.Windows.Forms.Label()
         Me.Panel1 = New System.Windows.Forms.Panel()
+        Me.BtnSettingPrinter = New System.Windows.Forms.Button()
+        Me.CmbProsesCetak = New System.Windows.Forms.ComboBox()
+        Me.CmbPilihCetak = New System.Windows.Forms.ComboBox()
         Me.Label3 = New System.Windows.Forms.Label()
         Me.TxtKeterangan = New System.Windows.Forms.TextBox()
         Me.BtnSimpann = New System.Windows.Forms.Button()
@@ -63,7 +66,7 @@ Partial Class FormBon
         '
         'PanelHeader
         '
-        Me.PanelHeader.BackColor = System.Drawing.Color.SandyBrown
+        Me.PanelHeader.BackColor = System.Drawing.SystemColors.Control
         Me.PanelHeader.Controls.Add(Me.LblJenis)
         Me.PanelHeader.Controls.Add(Me.BtnClose)
         Me.PanelHeader.Controls.Add(Me.LblUtama)
@@ -89,11 +92,12 @@ Partial Class FormBon
         'BtnClose
         '
         Me.BtnClose.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.BtnClose.BackColor = System.Drawing.Color.SandyBrown
+        Me.BtnClose.BackColor = System.Drawing.SystemColors.Control
+        Me.BtnClose.Cursor = System.Windows.Forms.Cursors.Hand
         Me.BtnClose.FlatAppearance.BorderSize = 0
-        Me.BtnClose.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Gray
+        Me.BtnClose.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(CType(CType(226, Byte), Integer), CType(CType(232, Byte), Integer), CType(CType(240, Byte), Integer))
+        Me.BtnClose.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(CType(CType(241, Byte), Integer), CType(CType(245, Byte), Integer), CType(CType(249, Byte), Integer))
         Me.BtnClose.FlatStyle = System.Windows.Forms.FlatStyle.Flat
-        Me.BtnClose.ForeColor = System.Drawing.Color.Black
         Me.BtnClose.Image = CType(resources.GetObject("BtnClose.Image"), System.Drawing.Image)
         Me.BtnClose.Location = New System.Drawing.Point(1111, 2)
         Me.BtnClose.Margin = New System.Windows.Forms.Padding(4, 3, 4, 3)
@@ -305,7 +309,10 @@ Partial Class FormBon
         '
         Me.Panel1.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.Panel1.BackColor = System.Drawing.Color.OldLace
+        Me.Panel1.BackColor = System.Drawing.SystemColors.Control
+        Me.Panel1.Controls.Add(Me.BtnSettingPrinter)
+        Me.Panel1.Controls.Add(Me.CmbProsesCetak)
+        Me.Panel1.Controls.Add(Me.CmbPilihCetak)
         Me.Panel1.Controls.Add(Me.Label3)
         Me.Panel1.Controls.Add(Me.TxtKeterangan)
         Me.Panel1.Controls.Add(Me.BtnSimpann)
@@ -332,6 +339,53 @@ Partial Class FormBon
         Me.Panel1.Size = New System.Drawing.Size(1142, 127)
         Me.Panel1.TabIndex = 306
         '
+        'BtnSettingPrinter
+        '
+        Me.BtnSettingPrinter.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.BtnSettingPrinter.AutoSize = True
+        Me.BtnSettingPrinter.BackColor = System.Drawing.SystemColors.Control
+        Me.BtnSettingPrinter.Cursor = System.Windows.Forms.Cursors.Hand
+        Me.BtnSettingPrinter.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(CType(CType(100, Byte), Integer), CType(CType(116, Byte), Integer), CType(CType(139, Byte), Integer))
+        Me.BtnSettingPrinter.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(CType(CType(226, Byte), Integer), CType(CType(232, Byte), Integer), CType(CType(240, Byte), Integer))
+        Me.BtnSettingPrinter.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(CType(CType(241, Byte), Integer), CType(CType(245, Byte), Integer), CType(CType(249, Byte), Integer))
+        Me.BtnSettingPrinter.FlatStyle = System.Windows.Forms.FlatStyle.Flat
+        Me.BtnSettingPrinter.Font = New System.Drawing.Font("Segoe UI", 9.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.BtnSettingPrinter.ForeColor = System.Drawing.Color.Black
+        Me.BtnSettingPrinter.Image = CType(resources.GetObject("BtnSettingPrinter.Image"), System.Drawing.Image)
+        Me.BtnSettingPrinter.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft
+        Me.BtnSettingPrinter.Location = New System.Drawing.Point(1015, 79)
+        Me.BtnSettingPrinter.Name = "BtnSettingPrinter"
+        Me.BtnSettingPrinter.Size = New System.Drawing.Size(118, 32)
+        Me.BtnSettingPrinter.TabIndex = 311
+        Me.BtnSettingPrinter.Text = "Printer"
+        Me.BtnSettingPrinter.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
+        Me.BtnSettingPrinter.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText
+        Me.BtnSettingPrinter.UseVisualStyleBackColor = False
+        '
+        'CmbProsesCetak
+        '
+        Me.CmbProsesCetak.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.CmbProsesCetak.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
+        Me.CmbProsesCetak.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.CmbProsesCetak.FormattingEnabled = True
+        Me.CmbProsesCetak.Items.AddRange(New Object() {"LANGSUNG CETAK", "TANYA PILIH PRINTER"})
+        Me.CmbProsesCetak.Location = New System.Drawing.Point(860, 90)
+        Me.CmbProsesCetak.Name = "CmbProsesCetak"
+        Me.CmbProsesCetak.Size = New System.Drawing.Size(149, 21)
+        Me.CmbProsesCetak.TabIndex = 310
+        '
+        'CmbPilihCetak
+        '
+        Me.CmbPilihCetak.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.CmbPilihCetak.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
+        Me.CmbPilihCetak.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.CmbPilihCetak.FormattingEnabled = True
+        Me.CmbPilihCetak.Items.AddRange(New Object() {"IYA", "SELALU TANYA", "TAMPILKAN DI MONITOR"})
+        Me.CmbPilihCetak.Location = New System.Drawing.Point(860, 62)
+        Me.CmbPilihCetak.Name = "CmbPilihCetak"
+        Me.CmbPilihCetak.Size = New System.Drawing.Size(149, 21)
+        Me.CmbPilihCetak.TabIndex = 309
+        '
         'Label3
         '
         Me.Label3.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
@@ -352,19 +406,24 @@ Partial Class FormBon
         '
         'BtnSimpann
         '
-        Me.BtnSimpann.BackColor = System.Drawing.Color.Khaki
-        Me.BtnSimpann.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Blue
-        Me.BtnSimpann.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Blue
+        Me.BtnSimpann.AutoSize = True
+        Me.BtnSimpann.BackColor = System.Drawing.SystemColors.Control
+        Me.BtnSimpann.Cursor = System.Windows.Forms.Cursors.Hand
+        Me.BtnSimpann.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(CType(CType(22, Byte), Integer), CType(CType(163, Byte), Integer), CType(CType(74, Byte), Integer))
+        Me.BtnSimpann.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(CType(CType(187, Byte), Integer), CType(CType(247, Byte), Integer), CType(CType(208, Byte), Integer))
+        Me.BtnSimpann.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(CType(CType(220, Byte), Integer), CType(CType(252, Byte), Integer), CType(CType(231, Byte), Integer))
         Me.BtnSimpann.FlatStyle = System.Windows.Forms.FlatStyle.Flat
-        Me.BtnSimpann.Font = New System.Drawing.Font("Bookman Old Style", 9.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.BtnSimpann.ForeColor = System.Drawing.Color.Black
+        Me.BtnSimpann.Font = New System.Drawing.Font("Segoe UI", 9.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.BtnSimpann.ForeColor = System.Drawing.Color.FromArgb(CType(CType(22, Byte), Integer), CType(CType(163, Byte), Integer), CType(CType(74, Byte), Integer))
+        Me.BtnSimpann.Image = CType(resources.GetObject("BtnSimpann.Image"), System.Drawing.Image)
         Me.BtnSimpann.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft
-        Me.BtnSimpann.Location = New System.Drawing.Point(923, 24)
+        Me.BtnSimpann.Location = New System.Drawing.Point(809, 37)
         Me.BtnSimpann.Name = "BtnSimpann"
         Me.BtnSimpann.Size = New System.Drawing.Size(135, 32)
         Me.BtnSimpann.TabIndex = 5
-        Me.BtnSimpann.Text = "SIMPAN (F8)"
-        Me.BtnSimpann.TextImageRelation = System.Windows.Forms.TextImageRelation.TextBeforeImage
+        Me.BtnSimpann.Text = "Simpan (F8)"
+        Me.BtnSimpann.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
+        Me.BtnSimpann.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText
         Me.BtnSimpann.UseVisualStyleBackColor = False
         '
         'PanelRinciKeuangan
@@ -397,13 +456,8 @@ Partial Class FormBon
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.DgvKeuangan.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill
         Me.DgvKeuangan.AutoSizeRowsMode = System.Windows.Forms.DataGridViewAutoSizeRowsMode.AllCells
-        Me.DgvKeuangan.BackgroundColor = System.Drawing.Color.White
         DataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter
-        DataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Control
         DataGridViewCellStyle1.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        DataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.WindowText
-        DataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight
-        DataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText
         DataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.[True]
         Me.DgvKeuangan.ColumnHeadersDefaultCellStyle = DataGridViewCellStyle1
         Me.DgvKeuangan.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
@@ -499,4 +553,10 @@ Partial Class FormBon
     Friend WithEvents HAPUSKEUANGAN As System.Windows.Forms.DataGridViewButtonColumn
     Friend WithEvents TxtKeterangan As System.Windows.Forms.TextBox
     Friend WithEvents Label3 As System.Windows.Forms.Label
+    Friend WithEvents BtnSettingPrinter As Button
+    Friend WithEvents CmbProsesCetak As ComboBox
+    Friend WithEvents CmbPilihCetak As ComboBox
 End Class
+
+
+

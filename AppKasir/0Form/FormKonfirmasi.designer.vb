@@ -1,4 +1,4 @@
-﻿<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()> _
+<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()> _
 Partial Class FormKonfirmasi
     Inherits System.Windows.Forms.Form
 
@@ -50,16 +50,18 @@ Partial Class FormKonfirmasi
         '
         'BtnClose
         '
+        Me.BtnClose.BackColor = System.Drawing.Color.White
+        Me.BtnClose.Cursor = System.Windows.Forms.Cursors.Hand
         Me.BtnClose.FlatAppearance.BorderSize = 0
-        Me.BtnClose.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Crimson
+        Me.BtnClose.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(CType(CType(226, Byte), Integer), CType(CType(232, Byte), Integer), CType(CType(240, Byte), Integer))
+        Me.BtnClose.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(CType(CType(241, Byte), Integer), CType(CType(245, Byte), Integer), CType(CType(249, Byte), Integer))
         Me.BtnClose.FlatStyle = System.Windows.Forms.FlatStyle.Flat
-        Me.BtnClose.ForeColor = System.Drawing.Color.White
         Me.BtnClose.Image = CType(resources.GetObject("BtnClose.Image"), System.Drawing.Image)
         Me.BtnClose.Location = New System.Drawing.Point(424, 2)
         Me.BtnClose.Name = "BtnClose"
         Me.BtnClose.Size = New System.Drawing.Size(23, 23)
         Me.BtnClose.TabIndex = 6
-        Me.BtnClose.UseVisualStyleBackColor = True
+        Me.BtnClose.UseVisualStyleBackColor = False
         '
         'Label1
         '
@@ -74,16 +76,25 @@ Partial Class FormKonfirmasi
         '
         'Button1
         '
-        Me.Button1.BackColor = System.Drawing.Color.PowderBlue
-        Me.Button1.FlatAppearance.BorderSize = 0
+        Me.Button1.AutoSize = True
+        Me.Button1.BackColor = System.Drawing.Color.White
+        Me.Button1.Cursor = System.Windows.Forms.Cursors.Hand
+        Me.Button1.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(CType(CType(100, Byte), Integer), CType(CType(116, Byte), Integer), CType(CType(139, Byte), Integer))
+        Me.Button1.FlatAppearance.BorderSize = 1
+        Me.Button1.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(CType(CType(226, Byte), Integer), CType(CType(232, Byte), Integer), CType(CType(240, Byte), Integer))
+        Me.Button1.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(CType(CType(241, Byte), Integer), CType(CType(245, Byte), Integer), CType(CType(249, Byte), Integer))
         Me.Button1.FlatStyle = System.Windows.Forms.FlatStyle.Flat
-        Me.Button1.Font = New System.Drawing.Font("Century Gothic", 9.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Button1.ForeColor = System.Drawing.Color.FromArgb(CType(CType(30, Byte), Integer), CType(CType(32, Byte), Integer), CType(CType(40, Byte), Integer))
+        Me.Button1.Font = New System.Drawing.Font("Segoe UI", 9.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.Button1.ForeColor = System.Drawing.Color.Black
+        Me.Button1.Image = CType(resources.GetObject("Button1.Image"), System.Drawing.Image)
+        Me.Button1.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft
         Me.Button1.Location = New System.Drawing.Point(161, 103)
         Me.Button1.Name = "Button1"
         Me.Button1.Size = New System.Drawing.Size(76, 27)
         Me.Button1.TabIndex = 119
         Me.Button1.Text = "Password"
+        Me.Button1.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
+        Me.Button1.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText
         Me.Button1.UseVisualStyleBackColor = False
         '
         'Panel5
@@ -106,12 +117,16 @@ Partial Class FormKonfirmasi
         '
         'BtnKonfirmasi
         '
-        Me.BtnKonfirmasi.BackColor = System.Drawing.Color.FromArgb(CType(CType(255, Byte), Integer), CType(CType(255, Byte), Integer), CType(CType(128, Byte), Integer))
-        Me.BtnKonfirmasi.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(CType(CType(192, Byte), Integer), CType(CType(255, Byte), Integer), CType(CType(192, Byte), Integer))
-        Me.BtnKonfirmasi.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Green
+        Me.BtnKonfirmasi.AutoSize = True
+        Me.BtnKonfirmasi.BackColor = System.Drawing.Color.White
+        Me.BtnKonfirmasi.Cursor = System.Windows.Forms.Cursors.Hand
+        Me.BtnKonfirmasi.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(CType(CType(22, Byte), Integer), CType(CType(163, Byte), Integer), CType(CType(74, Byte), Integer))
+        Me.BtnKonfirmasi.FlatAppearance.BorderSize = 1
+        Me.BtnKonfirmasi.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(CType(CType(187, Byte), Integer), CType(CType(247, Byte), Integer), CType(CType(208, Byte), Integer))
+        Me.BtnKonfirmasi.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(CType(CType(220, Byte), Integer), CType(CType(252, Byte), Integer), CType(CType(231, Byte), Integer))
         Me.BtnKonfirmasi.FlatStyle = System.Windows.Forms.FlatStyle.Flat
-        Me.BtnKonfirmasi.Font = New System.Drawing.Font("Century Gothic", 9.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.BtnKonfirmasi.ForeColor = System.Drawing.Color.Black
+        Me.BtnKonfirmasi.Font = New System.Drawing.Font("Segoe UI", 9.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.BtnKonfirmasi.ForeColor = System.Drawing.Color.FromArgb(CType(CType(22, Byte), Integer), CType(CType(163, Byte), Integer), CType(CType(74, Byte), Integer))
         Me.BtnKonfirmasi.Image = CType(resources.GetObject("BtnKonfirmasi.Image"), System.Drawing.Image)
         Me.BtnKonfirmasi.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft
         Me.BtnKonfirmasi.Location = New System.Drawing.Point(162, 143)
@@ -119,6 +134,8 @@ Partial Class FormKonfirmasi
         Me.BtnKonfirmasi.Size = New System.Drawing.Size(249, 38)
         Me.BtnKonfirmasi.TabIndex = 2
         Me.BtnKonfirmasi.Text = "Konfirmasi"
+        Me.BtnKonfirmasi.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
+        Me.BtnKonfirmasi.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText
         Me.BtnKonfirmasi.UseVisualStyleBackColor = False
         '
         'TextPass
@@ -158,6 +175,7 @@ Partial Class FormKonfirmasi
         '
         'FormKonfirmasi
         '
+        Me.KeyPreview = True
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 14.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.BackColor = System.Drawing.Color.FromArgb(CType(CType(30, Byte), Integer), CType(CType(32, Byte), Integer), CType(CType(40, Byte), Integer))
@@ -195,3 +213,4 @@ Partial Class FormKonfirmasi
     Friend WithEvents LblUser As System.Windows.Forms.Label
     Friend WithEvents TxtPassword As System.Windows.Forms.TextBox
 End Class
+

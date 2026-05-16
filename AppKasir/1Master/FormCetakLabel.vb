@@ -1,4 +1,4 @@
-﻿Imports System.Drawing.Printing
+Imports System.Drawing.Printing
 Imports System.Drawing.Text
 Imports System.IO
 Imports System.Text
@@ -11,6 +11,7 @@ Public Class FormCetakLabel
 
     ' 🔹 Load konfigurasi saat form pertama kali dibuka
     Private Sub FormCetakLabel_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+        ModuleTheme.TerapkanTheme(Me)
         DGVLabel.Rows.Clear()
         LoadFontSizes()
         LoadPrinterKeComboBox()
@@ -63,16 +64,16 @@ Public Class FormCetakLabel
 
                     If namaValue = rd("NAMA_BARANG").ToString() OrElse namaValue = rd("BARCODE_KECIL").ToString() Then
                         satuanTerpilih = rd("SATUAN_UMUM_KECIL")
-                        isi = Convert.ToInt32(rd("ISI_UMUM_KECIL"))
-                        harga = Convert.ToDecimal(rd("HARGA_JUAL_UMUM_KECIL"))
+                        isi = ModuleAngka.SafeGetValue(Of Integer)(rd, "ISI_UMUM_KECIL", 0)
+                        harga = ModuleAngka.ParseDecimal(rd("HARGA_JUAL_UMUM_KECIL"))
                     ElseIf namaValue = rd("BARCODE_SEDANG").ToString() Then
                         satuanTerpilih = rd("SATUAN_UMUM_SEDANG")
-                        isi = Convert.ToInt32(rd("ISI_UMUM_SEDANG"))
-                        harga = Convert.ToDecimal(rd("HARGA_JUAL_UMUM_SEDANG"))
+                        isi = ModuleAngka.SafeGetValue(Of Integer)(rd, "ISI_UMUM_SEDANG", 0)
+                        harga = ModuleAngka.ParseDecimal(rd("HARGA_JUAL_UMUM_SEDANG"))
                     ElseIf namaValue = rd("BARCODE_BESAR").ToString() Then
                         satuanTerpilih = rd("SATUAN_UMUM_BESAR")
-                        isi = Convert.ToInt32(rd("ISI_UMUM_BESAR"))
-                        harga = Convert.ToDecimal(rd("HARGA_JUAL_UMUM_BESAR"))
+                        isi = ModuleAngka.SafeGetValue(Of Integer)(rd, "ISI_UMUM_BESAR", 0)
+                        harga = ModuleAngka.ParseDecimal(rd("HARGA_JUAL_UMUM_BESAR"))
                     End If
 
                     row.Cells("Satuan").Value = satuanTerpilih
@@ -131,14 +132,14 @@ Public Class FormCetakLabel
                 If rd.Read() Then
                     Select Case comboBox.SelectedIndex
                         Case 0
-                            row.Cells("Isi").Value = Convert.ToInt32(rd("ISI_UMUM_KECIL"))
-                            row.Cells("Harga").Value = Convert.ToDecimal(rd("HARGA_JUAL_UMUM_KECIL"))
+                            row.Cells("Isi").Value = ModuleAngka.SafeGetValue(Of Integer)(rd, "ISI_UMUM_KECIL", 0)
+                            row.Cells("Harga").Value = ModuleAngka.ParseDecimal(rd("HARGA_JUAL_UMUM_KECIL"))
                         Case 1
-                            row.Cells("Isi").Value = Convert.ToInt32(rd("ISI_UMUM_SEDANG"))
-                            row.Cells("Harga").Value = Convert.ToDecimal(rd("HARGA_JUAL_UMUM_SEDANG"))
+                            row.Cells("Isi").Value = ModuleAngka.SafeGetValue(Of Integer)(rd, "ISI_UMUM_SEDANG", 0)
+                            row.Cells("Harga").Value = ModuleAngka.ParseDecimal(rd("HARGA_JUAL_UMUM_SEDANG"))
                         Case Else
-                            row.Cells("Isi").Value = Convert.ToInt32(rd("ISI_UMUM_BESAR"))
-                            row.Cells("Harga").Value = Convert.ToDecimal(rd("HARGA_JUAL_UMUM_BESAR"))
+                            row.Cells("Isi").Value = ModuleAngka.SafeGetValue(Of Integer)(rd, "ISI_UMUM_BESAR", 0)
+                            row.Cells("Harga").Value = ModuleAngka.ParseDecimal(rd("HARGA_JUAL_UMUM_BESAR"))
                     End Select
                 Else
                     MessageBox.Show("Satuan barang dan atau harga jual belum diinput!", "Peringatan", MessageBoxButtons.OK, MessageBoxIcon.Warning)
@@ -750,7 +751,7 @@ Public Class FormCetakLabel
 
                 ' 🔹 Cetak teks dengan wrapping
                 g.DrawString(data(0), fontNama, Brushes.Black, rectNama, sfWrap) ' Nama Barang
-                g.DrawString("Rp. " & FormatNumber(data(1), 0), fontHarga, Brushes.Black, rectHarga, sfWrap) ' Harga
+                g.DrawString("Rp. " & ModuleAngka.FormatRupiah(ModuleAngka.ParseDecimal(data(1))), fontHarga, Brushes.Black, rectHarga, sfWrap) ' Harga
                 g.DrawString(data(2), fontToko, Brushes.Black, rectToko, sfWrap) ' Satuan
 
             ElseIf CmbBentuklabel.SelectedIndex = 1 Then
@@ -771,7 +772,7 @@ Public Class FormCetakLabel
 
                 ' Gambar teks dengan wrapping
                 g.DrawString(data(0), fontNama, New SolidBrush(WarnaNama), rectNama, sfWrap) ' Nama barang
-                g.DrawString("Rp. " & FormatNumber(data(1), 0), fontHarga, New SolidBrush(WarnaHarga), rectHarga, sfWrap) ' Harga
+                g.DrawString("Rp. " & ModuleAngka.FormatRupiah(ModuleAngka.ParseDecimal(data(1))), fontHarga, New SolidBrush(WarnaHarga), rectHarga, sfWrap) ' Harga
                 g.DrawString(data(2), fontToko, New SolidBrush(WarnaSatuan), rectSatuan, sfWrap) ' Satuan (pcs, kg, dll.)
                 g.DrawString(NAMA_PERUSAHAAN, fontToko, New SolidBrush(WarnaToko), rectToko, sfWrap) ' Nama Toko
             Else
@@ -781,7 +782,7 @@ Public Class FormCetakLabel
                 Dim rectToko As New RectangleF(x, rectHarga.Bottom, lebarLabelPx, tinggiLabelPx * 0.3) ' Nama Toko
 
                 ' Cek apakah harga muat dalam area
-                Dim ukuranHarga As SizeF = g.MeasureString("Rp. " & FormatNumber(data(1), 0), fontHarga)
+                Dim ukuranHarga As SizeF = g.MeasureString("Rp. " & ModuleAngka.FormatRupiah(ModuleAngka.ParseDecimal(data(1))), fontHarga)
                 Dim tampilkanSatuan As Boolean = (ukuranHarga.Width + 30 < lebarLabelPx) ' Tambah 30 pixel buffer
 
                 Dim rectSatuan As RectangleF
@@ -805,7 +806,7 @@ Public Class FormCetakLabel
 
                 ' 🔹 Gambar teks dengan wrapping
                 g.DrawString(data(0), fontNama, New SolidBrush(WarnaNama), rectNama, sfWrap) ' Nama barang
-                g.DrawString("Rp. " & FormatNumber(data(1), 0), fontHarga, New SolidBrush(WarnaHarga), rectHarga, sfWrap) ' Harga
+                g.DrawString("Rp. " & ModuleAngka.FormatRupiah(ModuleAngka.ParseDecimal(data(1))), fontHarga, New SolidBrush(WarnaHarga), rectHarga, sfWrap) ' Harga
                 If tampilkanSatuan Then g.DrawString(data(2), fontToko, New SolidBrush(WarnaSatuan), rectSatuan, sfWrap) ' Satuan (jika cukup ruang)
                 g.DrawString(NAMA_PERUSAHAAN, fontToko, New SolidBrush(WarnaToko), rectToko, sfWrap) ' Nama Toko
 

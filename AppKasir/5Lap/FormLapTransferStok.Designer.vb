@@ -1,4 +1,4 @@
-﻿<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()> _
+<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()> _
 Partial Class FormLapTransferStok
     Inherits System.Windows.Forms.Form
 
@@ -83,13 +83,15 @@ Partial Class FormLapTransferStok
         '
         'BtnPreview
         '
-        Me.BtnPreview.BackColor = System.Drawing.Color.Yellow
-        Me.BtnPreview.FlatAppearance.BorderColor = System.Drawing.Color.White
-        Me.BtnPreview.FlatAppearance.BorderSize = 0
-        Me.BtnPreview.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(CType(CType(128, Byte), Integer), CType(CType(255, Byte), Integer), CType(CType(255, Byte), Integer))
-        Me.BtnPreview.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Yellow
-        Me.BtnPreview.FlatStyle = System.Windows.Forms.FlatStyle.Popup
-        Me.BtnPreview.Font = New System.Drawing.Font("Microsoft Sans Serif", 11.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.BtnPreview.AutoSize = True
+        Me.BtnPreview.BackColor = System.Drawing.SystemColors.Control
+        Me.BtnPreview.Cursor = System.Windows.Forms.Cursors.Hand
+        Me.BtnPreview.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(CType(CType(100, Byte), Integer), CType(CType(116, Byte), Integer), CType(CType(139, Byte), Integer))
+        Me.BtnPreview.FlatAppearance.BorderSize = 1
+        Me.BtnPreview.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(CType(CType(226, Byte), Integer), CType(CType(232, Byte), Integer), CType(CType(240, Byte), Integer))
+        Me.BtnPreview.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(CType(CType(241, Byte), Integer), CType(CType(245, Byte), Integer), CType(CType(249, Byte), Integer))
+        Me.BtnPreview.FlatStyle = System.Windows.Forms.FlatStyle.Flat
+        Me.BtnPreview.Font = New System.Drawing.Font("Segoe UI", 9.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.BtnPreview.ForeColor = System.Drawing.Color.Black
         Me.BtnPreview.Image = CType(resources.GetObject("BtnPreview.Image"), System.Drawing.Image)
         Me.BtnPreview.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft
@@ -97,7 +99,9 @@ Partial Class FormLapTransferStok
         Me.BtnPreview.Name = "BtnPreview"
         Me.BtnPreview.Size = New System.Drawing.Size(185, 28)
         Me.BtnPreview.TabIndex = 162
-        Me.BtnPreview.Text = "Preview"
+        Me.BtnPreview.Text = "Tampilkan (F5)"
+        Me.BtnPreview.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
+        Me.BtnPreview.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText
         Me.BtnPreview.UseVisualStyleBackColor = False
         '
         'TxtPerusahaan
@@ -115,11 +119,12 @@ Partial Class FormLapTransferStok
         'BtnHide
         '
         Me.BtnHide.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.BtnHide.BackColor = System.Drawing.Color.Tomato
+        Me.BtnHide.BackColor = System.Drawing.SystemColors.Control
+        Me.BtnHide.Cursor = System.Windows.Forms.Cursors.Hand
         Me.BtnHide.FlatAppearance.BorderSize = 0
-        Me.BtnHide.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Gray
+        Me.BtnHide.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(CType(CType(226, Byte), Integer), CType(CType(232, Byte), Integer), CType(CType(240, Byte), Integer))
+        Me.BtnHide.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(CType(CType(241, Byte), Integer), CType(CType(245, Byte), Integer), CType(CType(249, Byte), Integer))
         Me.BtnHide.FlatStyle = System.Windows.Forms.FlatStyle.Flat
-        Me.BtnHide.ForeColor = System.Drawing.Color.White
         Me.BtnHide.Image = CType(resources.GetObject("BtnHide.Image"), System.Drawing.Image)
         Me.BtnHide.Location = New System.Drawing.Point(1097, 6)
         Me.BtnHide.Margin = New System.Windows.Forms.Padding(4)
@@ -141,6 +146,7 @@ Partial Class FormLapTransferStok
         Me.Controls.Add(Me.DateTimePicker1)
         Me.Font = New System.Drawing.Font("Century Gothic", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None
+        Me.KeyPreview = True
         Me.Margin = New System.Windows.Forms.Padding(4)
         Me.Name = "FormLapTransferStok"
         Me.ShowInTaskbar = False

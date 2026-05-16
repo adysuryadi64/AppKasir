@@ -1,9 +1,10 @@
-﻿Imports System.IO
+Imports System.IO
 Imports iTextSharp.text
 
 
 Public Class FormPerbaikanDatabase
     Private Sub FormPerbaikanDatabase_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+        ModuleTheme.TerapkanTheme(Me)
         BtnCetak.Visible = False
         BtnSimpanPDF.Visible = False
 
@@ -23,15 +24,17 @@ Public Class FormPerbaikanDatabase
             transaction = conn.BeginTransaction()
 
             Dim operations As New List(Of String) From {
-                    "UPDATE tbl_Armada SET KODE = TRIM(KODE), NOPOL = TRIM(NOPOL)",
-                    "UPDATE tbl_barang SET NAMA_BARANG = TRIM(NAMA_BARANG), ID_BARANG = TRIM(ID_BARANG), BARCODE_KECIL = TRIM(BARCODE_KECIL), BARCODE_SEDANG = TRIM(BARCODE_SEDANG), BARCODE_BESAR = TRIM(BARCODE_BESAR)",
-                    "UPDATE tbl_datareferensi SET Kode_akun = TRIM(Kode_akun), Nama_Akun = TRIM(Nama_Akun)",
-                    "UPDATE tbl_karyawan SET Kode = TRIM(Kode), Nama = TRIM(Nama)",
-                    "UPDATE tbl_kategori SET kode = TRIM(kode), nama = TRIM(nama)",
-                    "UPDATE tbl_pelanggan SET KODE = TRIM(KODE), NAMA = TRIM(NAMA)",
+                    "UPDATE tbl_Armada SET KODE = TRIM(KODE), NOPOL = TRIM(NOPOL), JENIS = TRIM(JENIS)",
+                    "UPDATE tbl_barang SET NAMA_BARANG = TRIM(NAMA_BARANG), ID_BARANG = TRIM(ID_BARANG), BARCODE_KECIL = TRIM(BARCODE_KECIL), BARCODE_SEDANG = TRIM(BARCODE_SEDANG), BARCODE_BESAR = TRIM(BARCODE_BESAR), NAMA_KATEGORI = TRIM(NAMA_KATEGORI), KODE_KATEGORI = TRIM(KODE_KATEGORI), NAMA_MERK = TRIM(NAMA_MERK), KODE_MERK = TRIM(KODE_MERK), NAMA_SUPLIYER = TRIM(NAMA_SUPLIYER), KODE_SUPLIYER = TRIM(KODE_SUPLIYER), SATUAN_UMUM_KECIL = TRIM(SATUAN_UMUM_KECIL), SATUAN_UMUM_SEDANG = TRIM(SATUAN_UMUM_SEDANG), SATUAN_UMUM_BESAR = TRIM(SATUAN_UMUM_BESAR), SATUAN_PARTAI_KECIL = TRIM(SATUAN_PARTAI_KECIL), SATUAN_PARTAI_SEDANG = TRIM(SATUAN_PARTAI_SEDANG), SATUAN_PARTAI_BESAR = TRIM(SATUAN_PARTAI_BESAR), SATUAN_STOK = TRIM(SATUAN_STOK)",
+                    "UPDATE tbl_cabang SET kode_cabang = TRIM(kode_cabang), nama_cabang = TRIM(nama_cabang), alamat = TRIM(alamat), kota = TRIM(kota), hp = TRIM(hp), pemilik = TRIM(pemilik)",
+                    "UPDATE tbl_datareferensi SET Kode_akun = TRIM(Kode_akun), Nama_Akun = TRIM(Nama_Akun), TYPE_AKUN = TRIM(TYPE_AKUN), JENIS_AKUN = TRIM(JENIS_AKUN), SUB_AKUN = TRIM(SUB_AKUN), AKUN_DK = TRIM(AKUN_DK), AKUN_NRLR = TRIM(AKUN_NRLR)",
+                    "UPDATE tbl_karyawan SET Kode = TRIM(Kode), Nama = TRIM(Nama), Jabatan = TRIM(Jabatan)",
+                    "UPDATE tbl_kategori SET kode = TRIM(kode), nama = TRIM(nama), jenis = TRIM(jenis)",
+                    "UPDATE tbl_merk SET kode = TRIM(kode), nama = TRIM(nama), keterangan = TRIM(keterangan)",
+                    "UPDATE tbl_pelanggan SET KODE = TRIM(KODE), NAMA = TRIM(NAMA), ALAMAT = TRIM(ALAMAT), NO_TELP = TRIM(NO_TELP), JENIS = TRIM(JENIS)",
                     "UPDATE tbl_satuan SET kode = TRIM(kode), nama = TRIM(nama)",
-                    "UPDATE tbl_supliyer SET Nama = TRIM(Nama), ALamat = TRIM(ALamat)",
-                    "UPDATE tbl_user SET nama_user = TRIM(nama_user), user_name = TRIM(user_name)"
+                    "UPDATE tbl_supliyer SET Kode = TRIM(Kode), Nama = TRIM(Nama), ALamat = TRIM(ALamat), Hp = TRIM(Hp)",
+                    "UPDATE tbl_user SET kode_user = TRIM(kode_user), nama_user = TRIM(nama_user), user_name = TRIM(user_name), lvl = TRIM(lvl)"
                 }
 
             ' Jalankan operasi perbaruan
@@ -138,43 +141,53 @@ Public Class FormPerbaikanDatabase
 
 
 
+    ''' <summary>Ambil semua nama tabel BASE TABLE dari database aktif via INFORMATION_SCHEMA</summary>
+    Private Function GetSemuaTabel() As List(Of String)
+        Dim list As New List(Of String)
+        Dim query As String = "SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = DATABASE() AND TABLE_TYPE = 'BASE TABLE' ORDER BY TABLE_NAME"
+        Using cmd As New MySqlCommand(query, conn)
+            Using reader As MySqlDataReader = cmd.ExecuteReader()
+                While reader.Read()
+                    list.Add(reader("TABLE_NAME").ToString())
+                End While
+            End Using
+        End Using
+        Return list
+    End Function
+
     Private Sub BtnAnalyze_Click(sender As Object, e As EventArgs) Handles BtnAnalyze.Click
         BtnCetak.Visible = False
         BtnSimpanPDF.Visible = False
-
         Cursor = Cursors.WaitCursor
-        ' Daftar tabel yang akan dianalisis
-        Dim tables As String() = {
-            "bon_karyawan", "gaji_karyawan", "hakaksesuser", "history", "historybarang", "hutang", "hutang_detail", "jurnalumum",
-            "pembelian", "pembelian_detail", "pembelian_ditahan", "pembelian_ditahan_detail", "penjualan", "penjualan_detail",
-            "penjualan_ditahan", "penjualan_ditahan_detail", "piutang", "piutang_detail", "retur_pembelian", "retur_pembelian_detail",
-            "retur_penjualan", "retur_penjualan_detail", "stoktambahkurang", "stok_opname", "surat_jalan", "surat_jalan_detail",
-            "tbl_armada", "tbl_barang", "tbl_datareferensi", "tbl_gaji", "tbl_karyawan", "tbl_kategori", "tbl_merk", "tbl_pelanggan",
-            "tbl_perusahaan", "tbl_satuan", "tbl_supliyer", "tbl_user", "tempbukubesarpembantu", "tempjurnalumum", "temp_bon_karyawan",
-            "temp_datareferensi", "temp_jurnal", "temp_labarugi", "temp_loading", "temp_mutasi_barang", "temp_supliyerbayar",
-            "temp_supliyerhutang", "transfer_barang", "transfer_barang_detail", "transfer_stok", "tukarbarang"
-        }
+        ListBoxResults.Items.Clear()
+        ListBoxResults.Items.Add("⏳ Menjalankan ANALYZE TABLE... harap tunggu")
+        Application.DoEvents()
 
         Try
-            ListBoxResults.Items.Clear()
+            Dim analyzeConn As New MySqlConnection(_connectionString)
+            analyzeConn.Open()
+            Dim tables As List(Of String) = GetSemuaTabel()
+            If tables.Count = 0 Then
+                ListBoxResults.Items.Add("Tidak ada tabel ditemukan.")
+                Return
+            End If
 
-            For Each tableName As String In tables
-                Dim query As String = $"ANALYZE TABLE `{tableName}`;"
-                Using command As New MySqlCommand(query, conn)
-                    Using reader As MySqlDataReader = command.ExecuteReader()
-                        While reader.Read()
-                            Dim table As String = reader("Table").ToString()
-                            Dim operation As String = reader("Op").ToString()
-                            Dim messageType As String = reader("Msg_type").ToString()
-                            Dim messageText As String = reader("Msg_text").ToString()
+            ListBoxResults.Items(0) = $"⏳ ANALYZE {tables.Count} tabel... harap tunggu"
+            Application.DoEvents()
 
-                            ' Format hasil untuk ditampilkan di ListBox
-                            Dim result As String = $"{table}: {operation} - {messageType} - {messageText}"
-                            ListBoxResults.Items.Add(result)
-                        End While
-                    End Using
+            Dim tableList As String = String.Join(",", tables.Select(Function(t) $"`{t}`"))
+            Dim query As String = $"ANALYZE TABLE {tableList}"
+            Using cmd As New MySqlCommand(query, analyzeConn)
+                Using reader As MySqlDataReader = cmd.ExecuteReader()
+                    ListBoxResults.Items.Clear()
+                    While reader.Read()
+                        Dim result As String = $"{reader("Table")}: {reader("Op")} - {reader("Msg_type")} - {reader("Msg_text")}"
+                        ListBoxResults.Items.Add(result)
+                        ListBoxResults.TopIndex = ListBoxResults.Items.Count - 1
+                        Application.DoEvents()
+                    End While
                 End Using
-            Next
+            End Using
 
         Catch ex As Exception
             ListBoxResults.Items.Add($"Kesalahan: {ex.Message}")
@@ -186,43 +199,37 @@ Public Class FormPerbaikanDatabase
     Private Sub BtnCheckTables_Click(sender As Object, e As EventArgs) Handles BtnCheckTables.Click
         BtnCetak.Visible = False
         BtnSimpanPDF.Visible = False
-
-
         Cursor = Cursors.WaitCursor
         ListBoxResults.Items.Clear()
+        ListBoxResults.Items.Add("⏳ Menjalankan CHECK TABLE... harap tunggu")
+        Application.DoEvents()
 
         Try
+            Dim analyzeConn As New MySqlConnection(_connectionString)
+            analyzeConn.Open()
+            Dim tables As List(Of String) = GetSemuaTabel()
+            If tables.Count = 0 Then
+                ListBoxResults.Items.Add("Tidak ada tabel ditemukan.")
+                Return
+            End If
 
-            Dim tables As String() = {
-                    "bon_karyawan", "gaji_karyawan", "hakaksesuser", "history", "historybarang", "hutang", "hutang_detail",
-                    "jurnalumum", "pembelian", "pembelian_detail", "pembelian_ditahan", "pembelian_ditahan_detail",
-                    "penjualan", "penjualan_detail", "penjualan_ditahan", "penjualan_ditahan_detail", "piutang",
-                    "piutang_detail", "retur_pembelian", "retur_pembelian_detail", "retur_penjualan", "retur_penjualan_detail",
-                    "stoktambahkurang", "stok_opname", "surat_jalan", "surat_jalan_detail", "tbl_armada", "tbl_barang",
-                    "tbl_datareferensi", "tbl_gaji", "tbl_karyawan", "tbl_kategori", "tbl_merk", "tbl_pelanggan",
-                    "tbl_perusahaan", "tbl_satuan", "tbl_supliyer", "tbl_user", "tempbukubesarpembantu", "tempjurnalumum",
-                    "temp_bon_karyawan", "temp_datareferensi", "temp_jurnal", "temp_labarugi", "temp_loading",
-                    "temp_mutasi_barang", "temp_supliyerbayar", "temp_supliyerhutang", "transfer_barang", "transfer_barang_detail",
-                    "transfer_stok", "tukarbarang"
-                }
+            ListBoxResults.Items(0) = $"⏳ CHECK {tables.Count} tabel... harap tunggu"
+            Application.DoEvents()
 
-            For Each table As String In tables
-                Dim query As String = $"CHECK TABLE `{table}`"
-                Using cmd As New MySqlCommand(query, conn)
-                    Using reader As MySqlDataReader = cmd.ExecuteReader()
-                        While reader.Read()
-                            Dim tableName As String = reader("Table").ToString()
-                            Dim operation As String = reader("Op").ToString()
-                            Dim messageType As String = reader("Msg_type").ToString()
-                            Dim messageText As String = reader("Msg_text").ToString()
-
-                            Dim result As String = $"{tableName} | {operation} | {messageType} | {messageText}"
-                            ListBoxResults.Items.Add(result)
-                        End While
-                    End Using
+            Dim tableList As String = String.Join(",", tables.Select(Function(t) $"`{t}`"))
+            Dim query As String = $"CHECK TABLE {tableList}"
+            Using cmd As New MySqlCommand(query, analyzeConn)
+                cmd.CommandTimeout = 120
+                Using reader As MySqlDataReader = cmd.ExecuteReader()
+                    ListBoxResults.Items.Clear()
+                    While reader.Read()
+                        Dim result As String = $"{reader("Table")} | {reader("Op")} | {reader("Msg_type")} | {reader("Msg_text")}"
+                        ListBoxResults.Items.Add(result)
+                        ListBoxResults.TopIndex = ListBoxResults.Items.Count - 1
+                        Application.DoEvents()
+                    End While
                 End Using
-            Next
-
+            End Using
 
         Catch ex As Exception
             ListBoxResults.Items.Add($"Kesalahan: {ex.Message}")
@@ -234,45 +241,111 @@ Public Class FormPerbaikanDatabase
     Private Sub BtnChecksumTables_Click(sender As Object, e As EventArgs) Handles BtnChecksumTables.Click
         BtnCetak.Visible = False
         BtnSimpanPDF.Visible = False
-
-
         Cursor = Cursors.WaitCursor
         ListBoxResults.Items.Clear()
+        ListBoxResults.Items.Add("⏳ Menjalankan CHECKSUM TABLE... harap tunggu")
+        Application.DoEvents()
 
         Try
+            Dim analyzeConn As New MySqlConnection(_connectionString)
+            analyzeConn.Open()
+            Dim tables As List(Of String) = GetSemuaTabel()
+            If tables.Count = 0 Then
+                ListBoxResults.Items.Add("Tidak ada tabel ditemukan.")
+                Return
+            End If
 
-            Dim tables As String() = {
-                    "bon_karyawan", "gaji_karyawan", "hakaksesuser", "history", "historybarang", "hutang", "hutang_detail",
-                    "jurnalumum", "pembelian", "pembelian_detail", "pembelian_ditahan", "pembelian_ditahan_detail",
-                    "penjualan", "penjualan_detail", "penjualan_ditahan", "penjualan_ditahan_detail", "piutang",
-                    "piutang_detail", "retur_pembelian", "retur_pembelian_detail", "retur_penjualan", "retur_penjualan_detail",
-                    "stoktambahkurang", "stok_opname", "surat_jalan", "surat_jalan_detail", "tbl_armada", "tbl_barang",
-                    "tbl_datareferensi", "tbl_gaji", "tbl_karyawan", "tbl_kategori", "tbl_merk", "tbl_pelanggan",
-                    "tbl_perusahaan", "tbl_satuan", "tbl_supliyer", "tbl_user", "tempbukubesarpembantu", "tempjurnalumum",
-                    "temp_bon_karyawan", "temp_datareferensi", "temp_jurnal", "temp_labarugi", "temp_loading",
-                    "temp_mutasi_barang", "temp_supliyerbayar", "temp_supliyerhutang", "transfer_barang", "transfer_barang_detail",
-                    "transfer_stok", "tukarbarang"
-                }
+            ListBoxResults.Items(0) = $"⏳ CHECKSUM {tables.Count} tabel... harap tunggu"
+            Application.DoEvents()
 
-            For Each table As String In tables
-                Dim query As String = $"CHECKSUM TABLE `{table}`"
-                Using cmd As New MySqlCommand(query, conn)
-                    Using reader As MySqlDataReader = cmd.ExecuteReader()
-                        While reader.Read()
-                            Dim tableName As String = reader("Table").ToString()
-                            Dim checksum As String = reader("Checksum").ToString()
-
-                            Dim result As String = $"{tableName} | Checksum: {checksum}"
-                            ListBoxResults.Items.Add(result)
-                        End While
-                    End Using
+            Dim tableList As String = String.Join(",", tables.Select(Function(t) $"`{t}`"))
+            Dim query As String = $"CHECKSUM TABLE {tableList}"
+            Using cmd As New MySqlCommand(query, analyzeConn)
+                Using reader As MySqlDataReader = cmd.ExecuteReader()
+                    ListBoxResults.Items.Clear()
+                    While reader.Read()
+                        Dim result As String = $"{reader("Table")} | Checksum: {reader("Checksum")}"
+                        ListBoxResults.Items.Add(result)
+                        ListBoxResults.TopIndex = ListBoxResults.Items.Count - 1
+                        Application.DoEvents()
+                    End While
                 End Using
-            Next
-
+            End Using
 
         Catch ex As Exception
             ListBoxResults.Items.Add($"Kesalahan: {ex.Message}")
         Finally
+            Cursor = Cursors.Default
+        End Try
+    End Sub
+
+    Private Sub BtnConvertUtf8_Click(sender As Object, e As EventArgs) Handles BtnConvertUtf8.Click
+        BtnCetak.Visible = False
+        BtnSimpanPDF.Visible = False
+
+        Dim konfirmasi As DialogResult = MessageBox.Show(
+            "Operasi ini akan mengubah character set dan collation SEMUA tabel ke utf8mb4_unicode_ci." & Environment.NewLine &
+            "Proses ini tidak dapat dibatalkan. Lanjutkan?",
+            "Konfirmasi Convert utf8mb4",
+            MessageBoxButtons.YesNo, MessageBoxIcon.Warning)
+
+        If konfirmasi <> DialogResult.Yes Then Return
+
+        Cursor = Cursors.WaitCursor
+        ListBoxResults.Items.Clear()
+
+        Dim convertConn As MySqlConnection = Nothing
+        Try
+            convertConn = New MySqlConnection(_connectionString)
+            convertConn.Open()
+
+            ' Konversi database itu sendiri dulu
+            Dim dbQuery As String = "ALTER DATABASE CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci"
+            Using cmd As New MySqlCommand(dbQuery, convertConn)
+                cmd.ExecuteNonQuery()
+                ListBoxResults.Items.Add("DATABASE: ALTER CHARACTER SET utf8mb4 - OK")
+            End Using
+
+            ' Konversi tiap tabel
+            Dim tables As List(Of String) = GetSemuaTabel()
+            Dim berhasil As Integer = 0
+            Dim gagal As Integer = 0
+
+            For Each tbl As String In tables
+                Try
+                    Dim q As String = $"ALTER TABLE `{tbl}` CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci"
+                    ListBoxResults.Items.Add($"⏳ {tbl}: sedang diproses...")
+                    ListBoxResults.TopIndex = ListBoxResults.Items.Count - 1
+                    Application.DoEvents()
+
+                    Using cmd As New MySqlCommand(q, convertConn)
+                        cmd.ExecuteNonQuery()
+                    End Using
+
+                    ListBoxResults.Items(ListBoxResults.Items.Count - 1) = $"✓ {tbl}: OK"
+                    ListBoxResults.TopIndex = ListBoxResults.Items.Count - 1
+                    berhasil += 1
+                Catch exTbl As Exception
+                    If ListBoxResults.Items.Count > 0 AndAlso
+                       ListBoxResults.Items(ListBoxResults.Items.Count - 1).ToString().StartsWith("⏳") Then
+                        ListBoxResults.Items(ListBoxResults.Items.Count - 1) = $"✗ {tbl}: GAGAL — {exTbl.Message}"
+                    Else
+                        ListBoxResults.Items.Add($"✗ {tbl}: GAGAL — {exTbl.Message}")
+                    End If
+                    ListBoxResults.TopIndex = ListBoxResults.Items.Count - 1
+                    gagal += 1
+                End Try
+                Application.DoEvents()
+            Next
+
+            ListBoxResults.Items.Add("")
+            ListBoxResults.Items.Add($"Selesai: {berhasil} tabel berhasil, {gagal} gagal.")
+
+        Catch ex As Exception
+            ListBoxResults.Items.Add($"Kesalahan: {ex.Message}")
+        Finally
+            convertConn?.Close()
+            convertConn?.Dispose()
             Cursor = Cursors.Default
         End Try
     End Sub
@@ -374,3 +447,4 @@ Public Class FormPerbaikanDatabase
 
 
 End Class
+

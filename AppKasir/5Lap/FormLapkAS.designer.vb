@@ -1,4 +1,4 @@
-﻿<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()>
+<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()>
 Partial Class FormLapkAS
     Inherits System.Windows.Forms.Form
 
@@ -166,7 +166,7 @@ Partial Class FormLapkAS
         '
         'Label10
         '
-        Me.Label10.BackColor = System.Drawing.Color.Gold
+        Me.Label10.BackColor = System.Drawing.SystemColors.Control
         Me.Label10.Dock = System.Windows.Forms.DockStyle.Top
         Me.Label10.Font = New System.Drawing.Font("Bookman Old Style", 21.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.Label10.Location = New System.Drawing.Point(3, 16)
@@ -236,20 +236,25 @@ Partial Class FormLapkAS
         '
         'BtnHitung
         '
-        Me.BtnHitung.BackColor = System.Drawing.Color.MediumSeaGreen
-        Me.BtnHitung.FlatAppearance.BorderSize = 0
-        Me.BtnHitung.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(CType(CType(128, Byte), Integer), CType(CType(255, Byte), Integer), CType(CType(255, Byte), Integer))
-        Me.BtnHitung.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Yellow
+        Me.BtnHitung.AutoSize = True
+        Me.BtnHitung.BackColor = System.Drawing.SystemColors.Control
+        Me.BtnHitung.Cursor = System.Windows.Forms.Cursors.Hand
+        Me.BtnHitung.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(CType(CType(100, Byte), Integer), CType(CType(116, Byte), Integer), CType(CType(139, Byte), Integer))
+        Me.BtnHitung.FlatAppearance.BorderSize = 1
+        Me.BtnHitung.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(CType(CType(226, Byte), Integer), CType(CType(232, Byte), Integer), CType(CType(240, Byte), Integer))
+        Me.BtnHitung.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(CType(CType(241, Byte), Integer), CType(CType(245, Byte), Integer), CType(CType(249, Byte), Integer))
         Me.BtnHitung.FlatStyle = System.Windows.Forms.FlatStyle.Flat
-        Me.BtnHitung.Font = New System.Drawing.Font("Century Gothic", 12.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.BtnHitung.ForeColor = System.Drawing.Color.White
+        Me.BtnHitung.Font = New System.Drawing.Font("Segoe UI", 9.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.BtnHitung.ForeColor = System.Drawing.Color.Black
         Me.BtnHitung.Image = CType(resources.GetObject("BtnHitung.Image"), System.Drawing.Image)
         Me.BtnHitung.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft
         Me.BtnHitung.Location = New System.Drawing.Point(616, 82)
         Me.BtnHitung.Name = "BtnHitung"
         Me.BtnHitung.Size = New System.Drawing.Size(127, 30)
         Me.BtnHitung.TabIndex = 147
-        Me.BtnHitung.Text = "   HITUNG"
+        Me.BtnHitung.Text = "Tampilkan (F5)"
+        Me.BtnHitung.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
+        Me.BtnHitung.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText
         Me.BtnHitung.UseVisualStyleBackColor = False
         '
         'CbBulan
@@ -358,11 +363,12 @@ Partial Class FormLapkAS
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.BackColor = System.Drawing.Color.YellowGreen
+        Me.BackColor = System.Drawing.SystemColors.Control
         Me.ClientSize = New System.Drawing.Size(1159, 622)
         Me.Controls.Add(Me.ReportViewer1)
         Me.Controls.Add(Me.GroupBox2)
         Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None
+        Me.KeyPreview = True
         Me.Icon = CType(resources.GetObject("$this.Icon"), System.Drawing.Icon)
         Me.Name = "FormLapkAS"
         Me.ShowIcon = False

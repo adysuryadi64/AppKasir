@@ -51,7 +51,7 @@ Partial Class FormLapBon
         '
         'PanelHeader
         '
-        Me.PanelHeader.BackColor = System.Drawing.Color.SandyBrown
+        Me.PanelHeader.BackColor = System.Drawing.SystemColors.Control
         Me.PanelHeader.Controls.Add(Me.BtnClose)
         Me.PanelHeader.Controls.Add(Me.Label8)
         Me.PanelHeader.Dock = System.Windows.Forms.DockStyle.Top
@@ -64,11 +64,12 @@ Partial Class FormLapBon
         'BtnClose
         '
         Me.BtnClose.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.BtnClose.BackColor = System.Drawing.Color.SandyBrown
+        Me.BtnClose.BackColor = System.Drawing.SystemColors.Control
+        Me.BtnClose.Cursor = System.Windows.Forms.Cursors.Hand
         Me.BtnClose.FlatAppearance.BorderSize = 0
-        Me.BtnClose.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Gray
+        Me.BtnClose.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(CType(CType(226, Byte), Integer), CType(CType(232, Byte), Integer), CType(CType(240, Byte), Integer))
+        Me.BtnClose.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(CType(CType(241, Byte), Integer), CType(CType(245, Byte), Integer), CType(CType(249, Byte), Integer))
         Me.BtnClose.FlatStyle = System.Windows.Forms.FlatStyle.Flat
-        Me.BtnClose.ForeColor = System.Drawing.Color.Black
         Me.BtnClose.Image = CType(resources.GetObject("BtnClose.Image"), System.Drawing.Image)
         Me.BtnClose.Location = New System.Drawing.Point(1004, 2)
         Me.BtnClose.Margin = New System.Windows.Forms.Padding(4, 3, 4, 3)
@@ -92,7 +93,7 @@ Partial Class FormLapBon
         '
         'Panel2
         '
-        Me.Panel2.BackColor = System.Drawing.Color.OldLace
+        Me.Panel2.BackColor = System.Drawing.SystemColors.Control
         Me.Panel2.Controls.Add(Me.ReportViewer1)
         Me.Panel2.Dock = System.Windows.Forms.DockStyle.Fill
         Me.Panel2.Location = New System.Drawing.Point(0, 34)

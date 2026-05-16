@@ -1,4 +1,4 @@
-﻿<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()> _
+<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()> _
 Partial Class FormLapReturJual
     Inherits System.Windows.Forms.Form
 
@@ -28,15 +28,16 @@ Partial Class FormLapReturJual
         Dim ReportDataSource2 As Microsoft.Reporting.WinForms.ReportDataSource = New Microsoft.Reporting.WinForms.ReportDataSource()
         Dim ReportDataSource3 As Microsoft.Reporting.WinForms.ReportDataSource = New Microsoft.Reporting.WinForms.ReportDataSource()
         Me.retur_penjualanBindingSource = New System.Windows.Forms.BindingSource(Me.components)
-        'Me.PossDataSet = New AppKasir.PossDataSet
         Me.retur_penjualan_detailBindingSource = New System.Windows.Forms.BindingSource(Me.components)
         Me.retur_penjualan_barangBindingSource = New System.Windows.Forms.BindingSource(Me.components)
         Me.Panel1 = New System.Windows.Forms.Panel()
+        Me.Label6 = New System.Windows.Forms.Label()
+        Me.DTPAkhir = New System.Windows.Forms.DateTimePicker()
         Me.TxtRekening = New System.Windows.Forms.TextBox()
         Me.BtnClose = New System.Windows.Forms.Button()
         Me.DTPAwal = New System.Windows.Forms.DateTimePicker()
         Me.CbTanggal = New System.Windows.Forms.CheckBox()
-        Me.LabelJudul = New System.Windows.Forms.Label()
+        Me.LblHeaderForm = New System.Windows.Forms.Label()
         Me.Label5 = New System.Windows.Forms.Label()
         Me.CmbRekening = New System.Windows.Forms.ComboBox()
         Me.CmbKasir = New System.Windows.Forms.ComboBox()
@@ -51,13 +52,7 @@ Partial Class FormLapReturJual
         Me.ReportViewerReturJualDetail = New Microsoft.Reporting.WinForms.ReportViewer()
         Me.PanelReturBarang = New System.Windows.Forms.Panel()
         Me.ReportViewerReturBarang = New Microsoft.Reporting.WinForms.ReportViewer()
-        'Me.retur_penjualanTableAdapter = New AppKasir.PossDataSetLancarTableAdapters.retur_penjualanTableAdapter()
-        'Me.retur_penjualan_detailTableAdapter = New AppKasir.PossDataSetLancarTableAdapters.retur_penjualan_detailTableAdapter()
-        'Me.retur_penjualan_barangTableAdapter = New AppKasir.PossDataSetLancarTableAdapters.retur_penjualan_barangTableAdapter()
-        Me.Label6 = New System.Windows.Forms.Label()
-        Me.DTPAkhir = New System.Windows.Forms.DateTimePicker()
         CType(Me.retur_penjualanBindingSource, System.ComponentModel.ISupportInitialize).BeginInit()
-        'CType(Me.PossDataSet, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.retur_penjualan_detailBindingSource, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.retur_penjualan_barangBindingSource, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.Panel1.SuspendLayout()
@@ -69,22 +64,14 @@ Partial Class FormLapReturJual
         'retur_penjualanBindingSource
         '
         Me.retur_penjualanBindingSource.DataMember = "retur_penjualan"
-        'Me.retur_penjualanBindingSource.DataSource = Me.PossDataSet
-        '
-        'PossDataSet
-        '
-        'Me.PossDataSet.DataSetName = "PossDataSet"
-        'Me.PossDataSet.SchemaSerializationMode = System.Data.SchemaSerializationMode.IncludeSchema
         '
         'retur_penjualan_detailBindingSource
         '
         Me.retur_penjualan_detailBindingSource.DataMember = "retur_penjualan_detail"
-        'Me.retur_penjualan_detailBindingSource.DataSource = Me.PossDataSet
         '
         'retur_penjualan_barangBindingSource
         '
         Me.retur_penjualan_barangBindingSource.DataMember = "retur_penjualan_barang"
-        'Me.retur_penjualan_barangBindingSource.DataSource = Me.PossDataSet
         '
         'Panel1
         '
@@ -94,7 +81,7 @@ Partial Class FormLapReturJual
         Me.Panel1.Controls.Add(Me.BtnClose)
         Me.Panel1.Controls.Add(Me.DTPAwal)
         Me.Panel1.Controls.Add(Me.CbTanggal)
-        Me.Panel1.Controls.Add(Me.LabelJudul)
+        Me.Panel1.Controls.Add(Me.LblHeaderForm)
         Me.Panel1.Controls.Add(Me.Label5)
         Me.Panel1.Controls.Add(Me.CmbRekening)
         Me.Panel1.Controls.Add(Me.CmbKasir)
@@ -109,6 +96,28 @@ Partial Class FormLapReturJual
         Me.Panel1.Size = New System.Drawing.Size(1081, 99)
         Me.Panel1.TabIndex = 126
         '
+        'Label6
+        '
+        Me.Label6.AutoSize = True
+        Me.Label6.BackColor = System.Drawing.Color.Transparent
+        Me.Label6.Font = New System.Drawing.Font("Century Gothic", 9.75!)
+        Me.Label6.Location = New System.Drawing.Point(195, 42)
+        Me.Label6.Name = "Label6"
+        Me.Label6.Size = New System.Drawing.Size(28, 17)
+        Me.Label6.TabIndex = 207
+        Me.Label6.Text = "s/d"
+        Me.Label6.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
+        '
+        'DTPAkhir
+        '
+        Me.DTPAkhir.CustomFormat = "dd-MM-yyyy"
+        Me.DTPAkhir.Font = New System.Drawing.Font("Century Gothic", 9.75!)
+        Me.DTPAkhir.Format = System.Windows.Forms.DateTimePickerFormat.Custom
+        Me.DTPAkhir.Location = New System.Drawing.Point(227, 39)
+        Me.DTPAkhir.Name = "DTPAkhir"
+        Me.DTPAkhir.Size = New System.Drawing.Size(91, 23)
+        Me.DTPAkhir.TabIndex = 206
+        '
         'TxtRekening
         '
         Me.TxtRekening.Location = New System.Drawing.Point(879, 67)
@@ -120,19 +129,18 @@ Partial Class FormLapReturJual
         'BtnClose
         '
         Me.BtnClose.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.BtnClose.BackColor = System.Drawing.Color.Yellow
+        Me.BtnClose.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.BtnClose.BackColor = System.Drawing.SystemColors.Control
+        Me.BtnClose.Cursor = System.Windows.Forms.Cursors.Hand
         Me.BtnClose.FlatAppearance.BorderSize = 0
-        Me.BtnClose.FlatAppearance.MouseDownBackColor = System.Drawing.Color.GreenYellow
-        Me.BtnClose.FlatAppearance.MouseOverBackColor = System.Drawing.Color.GreenYellow
-        Me.BtnClose.Font = New System.Drawing.Font("Century Gothic", 12.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.BtnClose.ForeColor = System.Drawing.Color.Black
+        Me.BtnClose.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(CType(CType(226, Byte), Integer), CType(CType(232, Byte), Integer), CType(CType(240, Byte), Integer))
+        Me.BtnClose.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(CType(CType(241, Byte), Integer), CType(CType(245, Byte), Integer), CType(CType(249, Byte), Integer))
+        Me.BtnClose.FlatStyle = System.Windows.Forms.FlatStyle.Flat
         Me.BtnClose.Image = CType(resources.GetObject("BtnClose.Image"), System.Drawing.Image)
-        Me.BtnClose.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft
         Me.BtnClose.Location = New System.Drawing.Point(1047, 0)
         Me.BtnClose.Name = "BtnClose"
         Me.BtnClose.Size = New System.Drawing.Size(30, 30)
         Me.BtnClose.TabIndex = 202
-        Me.BtnClose.TextAlign = System.Drawing.ContentAlignment.MiddleRight
         Me.BtnClose.UseVisualStyleBackColor = False
         '
         'DTPAwal
@@ -156,17 +164,17 @@ Partial Class FormLapReturJual
         Me.CbTanggal.Text = "Tanggal"
         Me.CbTanggal.UseVisualStyleBackColor = True
         '
-        'LabelJudul
+        'LblHeaderForm
         '
-        Me.LabelJudul.BackColor = System.Drawing.Color.Gold
-        Me.LabelJudul.Dock = System.Windows.Forms.DockStyle.Top
-        Me.LabelJudul.Font = New System.Drawing.Font("Bookman Old Style", 21.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.LabelJudul.Location = New System.Drawing.Point(0, 0)
-        Me.LabelJudul.Name = "LabelJudul"
-        Me.LabelJudul.Size = New System.Drawing.Size(1081, 31)
-        Me.LabelJudul.TabIndex = 124
-        Me.LabelJudul.Text = "LAPORAN RETUR PENJUALAN"
-        Me.LabelJudul.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
+        Me.LblHeaderForm.BackColor = System.Drawing.SystemColors.Control
+        Me.LblHeaderForm.Dock = System.Windows.Forms.DockStyle.Top
+        Me.LblHeaderForm.Font = New System.Drawing.Font("Bookman Old Style", 21.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.LblHeaderForm.Location = New System.Drawing.Point(0, 0)
+        Me.LblHeaderForm.Name = "LblHeaderForm"
+        Me.LblHeaderForm.Size = New System.Drawing.Size(1081, 31)
+        Me.LblHeaderForm.TabIndex = 124
+        Me.LblHeaderForm.Text = "LAPORAN RETUR PENJUALAN"
+        Me.LblHeaderForm.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
         '
         'Label5
         '
@@ -245,12 +253,15 @@ Partial Class FormLapReturJual
         '
         'BtnTampilkan
         '
-        Me.BtnTampilkan.BackColor = System.Drawing.Color.Gold
-        Me.BtnTampilkan.FlatAppearance.BorderSize = 0
-        Me.BtnTampilkan.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(CType(CType(128, Byte), Integer), CType(CType(255, Byte), Integer), CType(CType(255, Byte), Integer))
-        Me.BtnTampilkan.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Yellow
+        Me.BtnTampilkan.AutoSize = True
+        Me.BtnTampilkan.BackColor = System.Drawing.SystemColors.Control
+        Me.BtnTampilkan.Cursor = System.Windows.Forms.Cursors.Hand
+        Me.BtnTampilkan.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(CType(CType(100, Byte), Integer), CType(CType(116, Byte), Integer), CType(CType(139, Byte), Integer))
+        Me.BtnTampilkan.FlatAppearance.BorderSize = 1
+        Me.BtnTampilkan.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(CType(CType(226, Byte), Integer), CType(CType(232, Byte), Integer), CType(CType(240, Byte), Integer))
+        Me.BtnTampilkan.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(CType(CType(241, Byte), Integer), CType(CType(245, Byte), Integer), CType(CType(249, Byte), Integer))
         Me.BtnTampilkan.FlatStyle = System.Windows.Forms.FlatStyle.Flat
-        Me.BtnTampilkan.Font = New System.Drawing.Font("Century Gothic", 12.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.BtnTampilkan.Font = New System.Drawing.Font("Segoe UI", 9.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.BtnTampilkan.ForeColor = System.Drawing.Color.Black
         Me.BtnTampilkan.Image = CType(resources.GetObject("BtnTampilkan.Image"), System.Drawing.Image)
         Me.BtnTampilkan.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft
@@ -258,7 +269,8 @@ Partial Class FormLapReturJual
         Me.BtnTampilkan.Name = "BtnTampilkan"
         Me.BtnTampilkan.Size = New System.Drawing.Size(156, 35)
         Me.BtnTampilkan.TabIndex = 147
-        Me.BtnTampilkan.Text = "    TAMPILKAN"
+        Me.BtnTampilkan.Text = "Tampilkan (F5)"
+        Me.BtnTampilkan.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
         Me.BtnTampilkan.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText
         Me.BtnTampilkan.UseVisualStyleBackColor = False
         '
@@ -271,6 +283,7 @@ Partial Class FormLapReturJual
         Me.ReportViewerReturJual.LocalReport.ReportEmbeddedResource = "KasirLancar.ReportReturPenjualan.rdlc"
         Me.ReportViewerReturJual.Location = New System.Drawing.Point(0, 0)
         Me.ReportViewerReturJual.Name = "ReportViewerReturJual"
+        Me.ReportViewerReturJual.ServerReport.BearerToken = Nothing
         Me.ReportViewerReturJual.Size = New System.Drawing.Size(1081, 431)
         Me.ReportViewerReturJual.TabIndex = 127
         '
@@ -301,6 +314,7 @@ Partial Class FormLapReturJual
         Me.ReportViewerReturJualDetail.LocalReport.ReportEmbeddedResource = "KasirLancar.ReportReturJualDetail.rdlc"
         Me.ReportViewerReturJualDetail.Location = New System.Drawing.Point(0, 0)
         Me.ReportViewerReturJualDetail.Name = "ReportViewerReturJualDetail"
+        Me.ReportViewerReturJualDetail.ServerReport.BearerToken = Nothing
         Me.ReportViewerReturJualDetail.Size = New System.Drawing.Size(1081, 431)
         Me.ReportViewerReturJualDetail.TabIndex = 131
         '
@@ -322,42 +336,9 @@ Partial Class FormLapReturJual
         Me.ReportViewerReturBarang.LocalReport.ReportEmbeddedResource = "KasirLancar.ReportReturJualBarang.rdlc"
         Me.ReportViewerReturBarang.Location = New System.Drawing.Point(0, 0)
         Me.ReportViewerReturBarang.Name = "ReportViewerReturBarang"
+        Me.ReportViewerReturBarang.ServerReport.BearerToken = Nothing
         Me.ReportViewerReturBarang.Size = New System.Drawing.Size(1081, 431)
         Me.ReportViewerReturBarang.TabIndex = 132
-        '
-        'retur_penjualanTableAdapter
-        '
-        'Me.retur_penjualanTableAdapter.ClearBeforeFill = True
-        '
-        'retur_penjualan_detailTableAdapter
-        '
-        'Me.retur_penjualan_detailTableAdapter.ClearBeforeFill = True
-        '
-        'retur_penjualan_barangTableAdapter
-        '
-        'Me.retur_penjualan_barangTableAdapter.ClearBeforeFill = True
-        '
-        'Label6
-        '
-        Me.Label6.AutoSize = True
-        Me.Label6.BackColor = System.Drawing.Color.Transparent
-        Me.Label6.Font = New System.Drawing.Font("Century Gothic", 9.75!)
-        Me.Label6.Location = New System.Drawing.Point(195, 42)
-        Me.Label6.Name = "Label6"
-        Me.Label6.Size = New System.Drawing.Size(28, 17)
-        Me.Label6.TabIndex = 207
-        Me.Label6.Text = "s/d"
-        Me.Label6.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
-        '
-        'DTPAkhir
-        '
-        Me.DTPAkhir.CustomFormat = "dd-MM-yyyy"
-        Me.DTPAkhir.Font = New System.Drawing.Font("Century Gothic", 9.75!)
-        Me.DTPAkhir.Format = System.Windows.Forms.DateTimePickerFormat.Custom
-        Me.DTPAkhir.Location = New System.Drawing.Point(227, 39)
-        Me.DTPAkhir.Name = "DTPAkhir"
-        Me.DTPAkhir.Size = New System.Drawing.Size(91, 23)
-        Me.DTPAkhir.TabIndex = 206
         '
         'FormLapReturJual
         '
@@ -369,11 +350,11 @@ Partial Class FormLapReturJual
         Me.Controls.Add(Me.PanelReturJual)
         Me.Controls.Add(Me.Panel1)
         Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None
+        Me.KeyPreview = True
         Me.Name = "FormLapReturJual"
         Me.ShowInTaskbar = False
         Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen
         CType(Me.retur_penjualanBindingSource, System.ComponentModel.ISupportInitialize).EndInit()
-        'CType(Me.PossDataSet, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.retur_penjualan_detailBindingSource, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.retur_penjualan_barangBindingSource, System.ComponentModel.ISupportInitialize).EndInit()
         Me.Panel1.ResumeLayout(False)
@@ -387,7 +368,7 @@ Partial Class FormLapReturJual
     Friend WithEvents Panel1 As System.Windows.Forms.Panel
     Friend WithEvents DTPAwal As System.Windows.Forms.DateTimePicker
     Friend WithEvents CbTanggal As System.Windows.Forms.CheckBox
-    Friend WithEvents LabelJudul As System.Windows.Forms.Label
+    Friend WithEvents LblHeaderForm As System.Windows.Forms.Label
     Friend WithEvents Label5 As System.Windows.Forms.Label
     Friend WithEvents CmbRekening As System.Windows.Forms.ComboBox
     Friend WithEvents CmbKasir As System.Windows.Forms.ComboBox

@@ -1,4 +1,4 @@
-﻿<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()> _
+<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()> _
 Partial Class FormLapPenjualanSales
     Inherits System.Windows.Forms.Form
 
@@ -114,19 +114,18 @@ Partial Class FormLapPenjualanSales
         'BtnClose
         '
         Me.BtnClose.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.BtnClose.BackColor = System.Drawing.Color.Yellow
+        Me.BtnClose.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.BtnClose.BackColor = System.Drawing.SystemColors.Control
+        Me.BtnClose.Cursor = System.Windows.Forms.Cursors.Hand
         Me.BtnClose.FlatAppearance.BorderSize = 0
-        Me.BtnClose.FlatAppearance.MouseDownBackColor = System.Drawing.Color.GreenYellow
-        Me.BtnClose.FlatAppearance.MouseOverBackColor = System.Drawing.Color.GreenYellow
-        Me.BtnClose.Font = New System.Drawing.Font("Century Gothic", 12.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.BtnClose.ForeColor = System.Drawing.Color.Black
+        Me.BtnClose.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(CType(CType(226, Byte), Integer), CType(CType(232, Byte), Integer), CType(CType(240, Byte), Integer))
+        Me.BtnClose.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(CType(CType(241, Byte), Integer), CType(CType(245, Byte), Integer), CType(CType(249, Byte), Integer))
+        Me.BtnClose.FlatStyle = System.Windows.Forms.FlatStyle.Flat
         Me.BtnClose.Image = CType(resources.GetObject("BtnClose.Image"), System.Drawing.Image)
-        Me.BtnClose.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft
         Me.BtnClose.Location = New System.Drawing.Point(1096, 0)
         Me.BtnClose.Name = "BtnClose"
         Me.BtnClose.Size = New System.Drawing.Size(30, 30)
         Me.BtnClose.TabIndex = 202
-        Me.BtnClose.TextAlign = System.Drawing.ContentAlignment.MiddleRight
         Me.BtnClose.UseVisualStyleBackColor = False
         '
         'DTPAwal
@@ -152,7 +151,7 @@ Partial Class FormLapPenjualanSales
         '
         'LabelJudul
         '
-        Me.LabelJudul.BackColor = System.Drawing.Color.Gold
+        Me.LabelJudul.BackColor = System.Drawing.SystemColors.Control
         Me.LabelJudul.Dock = System.Windows.Forms.DockStyle.Top
         Me.LabelJudul.Font = New System.Drawing.Font("Bookman Old Style", 21.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.LabelJudul.Location = New System.Drawing.Point(0, 0)
@@ -217,12 +216,15 @@ Partial Class FormLapPenjualanSales
         '
         'BtnTampilkan
         '
-        Me.BtnTampilkan.BackColor = System.Drawing.Color.Gold
-        Me.BtnTampilkan.FlatAppearance.BorderSize = 0
-        Me.BtnTampilkan.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(CType(CType(128, Byte), Integer), CType(CType(255, Byte), Integer), CType(CType(255, Byte), Integer))
-        Me.BtnTampilkan.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Yellow
+        Me.BtnTampilkan.AutoSize = True
+        Me.BtnTampilkan.BackColor = System.Drawing.SystemColors.Control
+        Me.BtnTampilkan.Cursor = System.Windows.Forms.Cursors.Hand
+        Me.BtnTampilkan.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(CType(CType(100, Byte), Integer), CType(CType(116, Byte), Integer), CType(CType(139, Byte), Integer))
+        Me.BtnTampilkan.FlatAppearance.BorderSize = 1
+        Me.BtnTampilkan.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(CType(CType(226, Byte), Integer), CType(CType(232, Byte), Integer), CType(CType(240, Byte), Integer))
+        Me.BtnTampilkan.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(CType(CType(241, Byte), Integer), CType(CType(245, Byte), Integer), CType(CType(249, Byte), Integer))
         Me.BtnTampilkan.FlatStyle = System.Windows.Forms.FlatStyle.Flat
-        Me.BtnTampilkan.Font = New System.Drawing.Font("Century Gothic", 12.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.BtnTampilkan.Font = New System.Drawing.Font("Segoe UI", 9.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.BtnTampilkan.ForeColor = System.Drawing.Color.Black
         Me.BtnTampilkan.Image = CType(resources.GetObject("BtnTampilkan.Image"), System.Drawing.Image)
         Me.BtnTampilkan.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft
@@ -230,7 +232,8 @@ Partial Class FormLapPenjualanSales
         Me.BtnTampilkan.Name = "BtnTampilkan"
         Me.BtnTampilkan.Size = New System.Drawing.Size(156, 35)
         Me.BtnTampilkan.TabIndex = 147
-        Me.BtnTampilkan.Text = "    TAMPILKAN"
+        Me.BtnTampilkan.Text = "Tampilkan (F5)"
+        Me.BtnTampilkan.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
         Me.BtnTampilkan.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText
         Me.BtnTampilkan.UseVisualStyleBackColor = False
         '

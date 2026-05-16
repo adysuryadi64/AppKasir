@@ -1,77 +1,80 @@
-﻿' Tambahkan impor ini di bagian paling atas file
-
 Public Class FormKeuangan
 
 #Region "Fields"
-    ' ================= CACHE =================
-    ' Perubahan: Mengubah Shared menjadi instance-specific.
-    ' Alasan: Cache yang bersifat Shared bisa menyebabkan masalah jika form ini dibuka lebih dari satu kali secara bersamaan,
-    ' karena semua instance akan berbagi cache yang sama. Instance-specific cache lebih aman.
-    Private _cacheAkun As New Dictionary(Of String, List(Of String))
-    Private _kodeAkunCache As New Dictionary(Of String, String)
-    Private _cacheLock As New Object()
-    Private _cacheLastUpdate As DateTime = DateTime.MinValue
-    Private ReadOnly _cacheDuration As TimeSpan = TimeSpan.FromMinutes(30)
-
     ' ================= DATA BINDING =================
     Private bsKeuangan As New BindingSource()
     Private dtKeuangan As New DataTable()
 
     ' ================= FLAGS =================
     Private _isLoading As Boolean = False
+    Private _currentFormState As FormState = FormState.Add
+    Private _hakSimpan As Boolean = False
+    Private _hakEdit As Boolean = False
+    Private _hakHapus As Boolean = False
 
-    ' ═══════════════════════════════════════════════════════════════
-    ' 🚀 PRIORITY 1 OPTIMIZATION: Performance Improvements
-    ' ═══════════════════════════════════════════════════════════════
+    Private _connLock As New Object() ' reserved
 
-    ' ✅ Debounce Timer untuk TextChanged events (reduce 100+ calls to 1)
-    Private _nominalDebounceTimer As New Timer With {.Interval = 300}
+    ' ================= SETTINGS =================
+    ' Setting dibaca langsung dari ModulHakAkses property
 
-    ' ✅ Cache untuk Combo Box Population (avoid 200-500ms rebuild on button click)
-    Private _cachedComboState As New Dictionary(Of String, (Debet As List(Of String), Kredit As List(Of String)))
-    Private _lastTransactionType As String = ""
-
-    ' ═══════════════════════════════════════════════════════════════
-    ' ✅ PRIORITY 2.1 FIX: Connection Lock untuk Thread Safety
-    ' MySqlConnection TIDAK thread-safe! Gunakan lock untuk prevent race condition
-    ' ═══════════════════════════════════════════════════════════════
-    Private _connLock As New Object()
-
+    ''' <summary>
+    ''' Jika True, form dibuka dari luar (misal FormLapMutasiKeuangan) khusus mode Setor ke Bos.
+    ''' Semua button jenis transaksi lain disembunyikan, BtnSetorBos langsung aktif.
+    ''' </summary>
+    Public Property ModeSetorBosOnly As Boolean = False
 #End Region
 
 #Region "Form Events"
     Private Sub FormKeuangan_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
-        ' Inisialisasi UI terlebih dahulu
+        ModuleTheme.TerapkanTheme(Me)
+        ' PanelInput = area input otomatis via nama PanelInput*
+        ' PanelInput sudah konsisten dengan tema otomatis
+        TerapkanWarnaToolbar()
         InitializeUI()
-
-        ' ✅ PRIORITY 1: Setup debounce timer untuk nominal input
-        AddHandler _nominalDebounceTimer.Tick, AddressOf NominalDebounceTimer_Tick
-
-        ' Load data cache secara asynchronous
-        LoadCacheDataAsync()
-
-        ' Setup DataGridView
+        ' Setting dibaca langsung dari ModulHakAkses property
         SetupDataGridViewBinding()
+        GenerateTransactionId()
+        LoadDataKeuangan()
+
+        ' Mode khusus: hanya tampilkan Setor ke Bos
+        If ModeSetorBosOnly Then
+            For Each btn As Button In {BtnPemasukan, BtnPengeluaran, BtnBiaya,
+                                       BtnPinjamSuplier, BtnPindahR, BtnPinjamPelanggan}
+                btn.Visible = False
+            Next
+            BtnSetorBos.PerformClick()
+        End If
     End Sub
 
-    ' Perubahan: Nama metode dan variabel diganti menjadi lebih deskriptif.
-    ' ✅ PRIORITY 1 OPTIMIZATION: Replace TextChanged logic dengan debounce
+    ''' <summary>
+    ''' Override warna PanelUtility dan button di dalamnya agar sama dengan
+    ''' pola toolbar FormUtama: panel = L_Toolbar/D_Toolbar, button = L_NavIdle/D_NavIdle.
+    ''' Dipanggil setelah TerapkanTheme supaya tidak di-override balik oleh TerapkanKontrol generik.
+    ''' </summary>
+    Private Sub TerapkanWarnaToolbar()
+        ' Panel toolbar — seamless dengan background form
+        PanelUtility.BackColor = ModuleTheme.C(ModuleTheme.L_Toolbar, ModuleTheme.D_Toolbar)
+
+        ' Button navigasi di toolbar — pakai SetNavButtonIdle dari ModuleTheme
+        Dim navBtns As Button() = {BtnPemasukan, BtnPengeluaran, BtnBiaya,
+                                   BtnSetorBos, BtnPinjamSuplier, BtnPindahR,
+                                   BtnPinjamPelanggan}
+        For Each btn As Button In navBtns
+            ModuleTheme.SetNavButtonIdle(btn)
+        Next
+
+        ' BTNKeluar di toolbar — solid merah, sama persis dengan FormUtama
+        BTNKeluar.BackColor = ModuleTheme.C(ModuleTheme.L_BtnSolidKeluar, ModuleTheme.D_BtnSolidKeluar)
+        BTNKeluar.ForeColor = Color.White
+        BTNKeluar.FlatAppearance.BorderColor = ModuleTheme.C(ModuleTheme.L_BtnBorder, ModuleTheme.D_BtnBorder)
+        BTNKeluar.FlatAppearance.MouseOverBackColor = ModuleTheme.C(ModuleTheme.L_BtnSolidKeluarHover, ModuleTheme.D_BtnSolidKeluarHover)
+        BTNKeluar.FlatAppearance.MouseDownBackColor = ModuleTheme.C(ModuleTheme.L_BtnSolidKeluarDown, ModuleTheme.D_BtnSolidKeluarDown)
+    End Sub
+
     Private Sub TxtNominalKeuangan_TextChanged(ByVal sender As Object, ByVal e As EventArgs) Handles TxtNominalKeuangan.TextChanged
-        ' ═══════════════════════════════════════════════════════════════
-        ' DEBOUNCE: Stop existing timer and restart
-        ' Result: 100+ calls → 1 call (95% reduction!)
-        ' ═══════════════════════════════════════════════════════════════
-        _nominalDebounceTimer.Stop()
-        _nominalDebounceTimer.Start()
-    End Sub
-
-    ' ✅ NEW METHOD: Actual label update (debounced)
-    Private Sub NominalDebounceTimer_Tick(sender As Object, e As EventArgs)
-        _nominalDebounceTimer.Stop()
         UpdateNominalDisplay()
     End Sub
 
-    ' ✅ NEW METHOD: Extract update logic untuk reusability
     Private Sub UpdateNominalDisplay()
         Dim nominalValue As Double
         If Double.TryParse(TxtNominalKeuangan.Text, nominalValue) Then
@@ -82,9 +85,8 @@ Public Class FormKeuangan
     End Sub
 
     Private Sub DTPTglKeuangan_ValueChanged(sender As Object, e As EventArgs) Handles DTPTglKeuangan.ValueChanged
-        ' ✅ PRIORITY 1 OPTIMIZATION: Make GenerateTransactionId async (non-blocking)
-        GenerateTransactionIdAsync()
-        LoadDataKeuangan() ' Mengganti DGVTAMPILDATAKEUANGAN()
+        GenerateTransactionId()
+        LoadDataKeuangan()
         TxtUraianKeuangan.Focus()
         TxtUraianKeuangan.Select()
     End Sub
@@ -95,44 +97,38 @@ Public Class FormKeuangan
 #End Region
 
 #Region "UI Initialization"
-    ' ================= INISIALISASI UI =================
     Private Sub InitializeUI()
         SetupTooltips()
 
-        ' Contoh: Asumsikan ModulHakAkses adalah modul yang sudah ada
         Dim JURNAL As Boolean() = ModulHakAkses.BacaHakAksesDariCache("JURNAL")
-        BtnSimpanKeuangan.Visible = JURNAL(1)
+        _hakSimpan = JURNAL(1)
+        _hakEdit = JURNAL(2)
+        _hakHapus = JURNAL(3)
+        BtnSimpanKeuangan.Visible = _hakSimpan
 
-        PanelPemasukan.Visible = False
+        PanelInput.Visible = False
         PanelRinciKeuangan.Visible = False
 
-        ' Setup form state awal
         SetInitialFormState()
     End Sub
 
     Private Sub SetInitialFormState()
-        ' Reset semua kontrol ke state awal
         LblIdBayar.Text = ""
         TxtNoNota.Text = ""
         TxtUraianKeuangan.Text = ""
         TxtNominalKeuangan.Text = ""
         LblNominalKeuangan.Text = "Rp. 0"
 
-        ' Clear combo boxes
         CmbDebetKeuangan.Items.Clear()
         CmbKreditKeuangan.Items.Clear()
         CmbBantuDKeuangan.Items.Clear()
         CmbBantuKKeuangan.Items.Clear()
 
-        ' Set format tanggal
         DTPTglKeuangan.Format = DateTimePickerFormat.Custom
         DTPTglKeuangan.CustomFormat = "dd/MM/yyyy"
-        DTPTglKeuangan.Value = DateTime.Now
+        ModulHakAkses.ResetDTPKeTanggalHariIni(DTPTglKeuangan)
 
-        ' Sembunyikan panel bantu
         HideHelperPanels()
-
-        ' Set tombol state
         SetButtonState(FormState.Add)
     End Sub
 
@@ -148,192 +144,92 @@ Public Class FormKeuangan
         TxtBantuKKeuangan.Visible = False
     End Sub
 
-    ' Enum untuk state tombol, membuat kode lebih mudah dibaca
     Private Enum FormState
         Add
         Edit
     End Enum
 
     Private Sub SetButtonState(state As FormState)
+        _currentFormState = state
         Select Case state
             Case FormState.Add
-                BtnSimpanKeuangan.Visible = True
-                BtnEditKeuangan.Visible = False
+                BtnSimpanKeuangan.Text = "Simpan (F2)"
                 BtnBatalKeuangan.Visible = False
             Case FormState.Edit
-                BtnSimpanKeuangan.Visible = False
-                BtnEditKeuangan.Visible = True
+                BtnSimpanKeuangan.Text = "Update (F2)"
                 BtnBatalKeuangan.Visible = True
         End Select
     End Sub
 #End Region
 
-#Region "Data Loading & Caching"
-    ' Perubahan: Mengganti nama metode agar lebih deskriptif.
-    ' LoadDataKeuangan sekarang menjadi titik masuk utama untuk memuat data.
+#Region "Data Loading"
     Private Sub LoadDataKeuangan()
         If _isLoading Then Return
-
         Try
             Dim dt As DataTable = GetKeuanganData()
-            UpdateDataGridView(dt)
-            UpdateTotalDisplay(dt)
+            bsKeuangan.DataSource = dt
+            Dim total As Decimal = dt.AsEnumerable().Sum(Function(r)
+                                                             Return If(IsDBNull(r("NOMINAL")), 0D, Convert.ToDecimal(r("NOMINAL")))
+                                                         End Function)
+            LblTotalNominal.Text = $"Total Nominal: Rp {total:N0}"
         Catch ex As Exception
             MessageBox.Show($"Error loading data: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
         End Try
     End Sub
-
-    ' Metode lama DGVTAMPILDATAKEUANGAN sudah tidak digunakan lagi dan bisa dihapus.
-    ' Logikanya telah dipindah dan dipisah menjadi metode-metode yang lebih kecil di bawah ini.
 
     Private Function GetKeuanganData() As DataTable
         Dim dt As New DataTable()
         Dim tanggalAwal As Date = DTPTglKeuangan.Value.Date
         Dim tanggalAkhir As Date = tanggalAwal.AddDays(1).AddTicks(-1)
 
-        Dim sql As String = "
-        SELECT NO_TRANSAKSI, TGL_TRANSAKSI, NO_NOTA, URAIAN, 
-               AKUN_D, NAMA_AKUN_D, NOMOR_AKUN_D, 
-               AKUN_K, NAMA_AKUN_K, NOMOR_AKUN_K, 
-               NAMA_BANTU_D, KODE_BANTU_D, 
-               NAMA_BANTU_K, KODE_BANTU_K, NOMINAL, ID_USER
-        FROM jurnalumum
-        WHERE TGL_TRANSAKSI BETWEEN @TANGGAL_AWAL AND @TANGGAL_AKHIR
-          AND JENIS_TRANSAKSI = @JENIS_TRANSAKSI"
+        Dim sql As String =
+            "SELECT NO_TRANSAKSI, TGL_TRANSAKSI, NO_NOTA, URAIAN, " &
+            "AKUN_D, NAMA_AKUN_D, NOMOR_AKUN_D, AKUN_K, NAMA_AKUN_K, NOMOR_AKUN_K, " &
+            "NAMA_BANTU_D, KODE_BANTU_D, NAMA_BANTU_K, KODE_BANTU_K, NOMINAL, ID_USER " &
+            "FROM jurnalumum " &
+            "WHERE TGL_TRANSAKSI BETWEEN @TANGGAL_AWAL AND @TANGGAL_AKHIR " &
+            "AND JENIS_TRANSAKSI = @JENIS_TRANSAKSI"
 
-        SyncLock _connLock
-            Using cmd As New MySqlCommand(sql, conn)
-                cmd.Parameters.AddWithValue("@TANGGAL_AWAL", tanggalAwal)
-                cmd.Parameters.AddWithValue("@TANGGAL_AKHIR", tanggalAkhir)
-                cmd.Parameters.AddWithValue("@JENIS_TRANSAKSI", LblNamaTransaksi.Text)
-
-                Using adapter As New MySqlDataAdapter(cmd)
-                    adapter.Fill(dt)
-                End Using
+        Using cmd As New MySqlCommand(sql, conn)
+            cmd.Parameters.AddWithValue("@TANGGAL_AWAL", tanggalAwal)
+            cmd.Parameters.AddWithValue("@TANGGAL_AKHIR", tanggalAkhir)
+            cmd.Parameters.AddWithValue("@JENIS_TRANSAKSI", LblNamaTransaksi.Text)
+            Using adapter As New MySqlDataAdapter(cmd)
+                adapter.Fill(dt)
             End Using
-        End SyncLock
+        End Using
 
         Return dt
     End Function
 
-    Private Sub UpdateDataGridView(dt As DataTable)
-        ' Pastikan update UI dilakukan di thread UI
-        If InvokeRequired Then
-            Invoke(Sub() UpdateDataGridView(dt))
-            Return
-        End If
-
-        bsKeuangan.DataSource = dt
-    End Sub
-
-    Private Sub UpdateTotalDisplay(dt As DataTable)
-        If InvokeRequired Then
-            Invoke(Sub() UpdateTotalDisplay(dt))
-            Return
-        End If
-
-        Dim total As Decimal = dt.AsEnumerable().Sum(Function(r)
-                                                         Return If(IsDBNull(r("NOMINAL")), 0D, Convert.ToDecimal(r("NOMINAL")))
-                                                     End Function)
-
-        LblTotalNominal.Text = $"Total Nominal: Rp {total:N0}"
-    End Sub
-
-    ' ================= LOAD DATA (BACKGROUND) =================
-    Private Async Sub LoadCacheDataAsync()
-        Try
-            _isLoading = True
-            ' Jalankan loading data di background thread
-            Await Task.Run(Sub() LoadAkunDataFromDatabase())
-
-            ' Setelah data siap, update UI di thread UI
-            Me.Invoke(Sub() UpdateUIAfterCacheLoaded())
-        Catch ex As Exception
-            MessageBox.Show($"Error loading cache: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
-        Finally
-            _isLoading = False
-        End Try
-    End Sub
-
-    Private Sub LoadAkunDataFromDatabase()
-        SyncLock _cacheLock
-            ' Cek apakah perlu reload cache
-            If _cacheAkun.Count > 0 AndAlso (DateTime.Now - _cacheLastUpdate) <= _cacheDuration Then
-                Return ' Cache masih valid, tidak perlu reload
-            End If
-
-            _cacheAkun.Clear()
-            _kodeAkunCache.Clear()
-
-            Try
-                Dim sql As String = "SELECT Type_Akun, Nama_Akun, Kode_Akun FROM tbl_datareferensi ORDER BY Kode_akun"
-
-                SyncLock _connLock
-                    Using cmd As New MySqlCommand(sql, conn)
-                        Using rd As MySqlDataReader = cmd.ExecuteReader()
-                            While rd.Read()
-                                Dim typeAkun = rd("Type_Akun").ToString().Trim()
-                                Dim namaAkun = rd("Nama_Akun").ToString().Trim()
-                                Dim kodeAkun = rd("Kode_Akun").ToString().Trim()
-
-                                If Not _cacheAkun.ContainsKey(typeAkun) Then
-                                    _cacheAkun(typeAkun) = New List(Of String)
-                                End If
-
-                                Dim displayText = $"{typeAkun} = {namaAkun}"
-                                _cacheAkun(typeAkun).Add(displayText)
-
-                                If Not _kodeAkunCache.ContainsKey(namaAkun) Then
-                                    _kodeAkunCache(namaAkun) = kodeAkun
-                                End If
-                            End While
-                        End Using
-                    End Using
-
-                    _cacheLastUpdate = DateTime.Now
-                End SyncLock
-
-            Catch ex As Exception
-                Console.WriteLine($"Error loading akun data: {ex.Message}")
-                Throw
-            End Try
-        End SyncLock
-    End Sub
-
-    ' Metode InitializeAkunCache yang lama sudah tidak diperlukan lagi karena logikanya sudah ada di LoadAkunDataFromDatabase.
-    ' Anda bisa menghapus metode InitializeAkunCache.
-
-    Private Sub UpdateUIAfterCacheLoaded()
-        ' ✅ Generate ID keuangan setelah cache siap (now async)
-        GenerateTransactionIdAsync()
-
-        ' Load data ke DataGridView
-        LoadDataKeuangan()
-    End Sub
+    ' Query langsung ke DB — tbl_datareferensi kecil (~50-100 baris), tidak perlu cache.
+    ' Multi-client safe: selalu dapat data terbaru.
+    Private Function GetAkunData() As DataTable
+        Dim dt As New DataTable()
+        Using cmd As New MySqlCommand(
+            "SELECT Type_Akun, Nama_Akun, Kode_Akun FROM tbl_datareferensi ORDER BY Kode_Akun", conn)
+            Using adapter As New MySqlDataAdapter(cmd)
+                adapter.Fill(dt)
+            End Using
+        End Using
+        Return dt
+    End Function
 #End Region
 
 #Region "DataGridView Setup"
-    ' ================= DATA GRIDVIEW SETUP =================
     Private Sub SetupDataGridViewBinding()
         DgvKeuangan.DataSource = bsKeuangan
         DgvKeuangan.AutoGenerateColumns = False
-
-        ' Setup kolom hanya sekali
         SetupDataGridViewColumns()
-
-        ' Enable double buffering untuk performa
-        EnableDoubleBuffering(DgvKeuangan)
+        ModuleTheme.ApplyThemeDataGridView(DgvKeuangan)
     End Sub
 
     Private Sub SetupDataGridViewColumns()
-        ' Clear existing columns
         DgvKeuangan.Columns.Clear()
 
-        ' Tambahkan kolom tombol
-        AddButtonColumn("EDIT", "Edit", 60)
-        AddButtonColumn("HAPUS", "Hapus", 60)
+        If _hakEdit Then AddButtonColumn("EDIT", "✏ Edit", 80)
+        If _hakHapus Then AddButtonColumn("HAPUS", "🗑 Hapus", 80)
 
-        ' Tambahkan kolom data dengan binding
         AddDataColumn("NO_TRANSAKSI", "No. Transaksi", 120)
         AddDataColumn("TGL_TRANSAKSI", "Tanggal", 100, "dd/MM/yyyy")
         AddDataColumn("URAIAN", "Uraian", 200)
@@ -342,7 +238,6 @@ Public Class FormKeuangan
         AddDataColumn("NOMINAL", "Nominal", 120, "N0")
         AddDataColumn("ID_USER", "User", 80)
 
-        ' Kolom tersembunyi untuk binding
         AddDataColumn("NO_NOTA", "No. Nota", 0, "", False)
         AddDataColumn("AKUN_D", "Kode Debet", 0, "", False)
         AddDataColumn("AKUN_K", "Kode Kredit", 0, "", False)
@@ -351,7 +246,6 @@ Public Class FormKeuangan
         AddDataColumn("NAMA_BANTU_K", "Bantu K", 0, "", False)
         AddDataColumn("KODE_BANTU_K", "Kode Bantu K", 0, "", False)
 
-        ' Set properti khusus untuk kolom NOMINAL
         If DgvKeuangan.Columns.Contains("NOMINAL") Then
             DgvKeuangan.Columns("NOMINAL").DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight
             DgvKeuangan.Columns("NOMINAL").DefaultCellStyle.Font = New Font(DgvKeuangan.Font, FontStyle.Bold)
@@ -361,39 +255,41 @@ Public Class FormKeuangan
     Private Sub AddButtonColumn(name As String, text As String, width As Integer)
         Dim buttonCol As New DataGridViewButtonColumn With {
             .Name = name,
-            .HeaderText = name,
+            .HeaderText = "",
             .Text = text,
             .UseColumnTextForButtonValue = True,
-            .FillWeight = width
+            .Width = width,
+            .AutoSizeMode = DataGridViewAutoSizeColumnMode.None,
+            .Resizable = DataGridViewTriState.False,
+            .DefaultCellStyle = New DataGridViewCellStyle With {
+                .Alignment = DataGridViewContentAlignment.MiddleCenter,
+                .Font = New Font(DgvKeuangan.Font.FontFamily, DgvKeuangan.Font.Size)
+            }
         }
         DgvKeuangan.Columns.Add(buttonCol)
     End Sub
 
     Private Sub AddDataColumn(name As String, headerText As String, width As Integer,
-                             Optional format As String = "", Optional visible As Boolean = True)
+                              Optional format As String = "", Optional visible As Boolean = True)
         Dim col As New DataGridViewTextBoxColumn With {
             .Name = name,
             .HeaderText = headerText,
             .Width = width,
             .Visible = visible,
-            .DataPropertyName = name ' Ini untuk binding
+            .DataPropertyName = name
         }
-
-        If Not String.IsNullOrEmpty(format) Then
-            col.DefaultCellStyle.Format = format
-        End If
-
+        If Not String.IsNullOrEmpty(format) Then col.DefaultCellStyle.Format = format
         DgvKeuangan.Columns.Add(col)
     End Sub
 
-    ' Perubahan: Memisahkan logika klik EDIT dan HAPUS.
     Private Sub DgvKeuangan_CellContentClick(ByVal sender As Object, ByVal e As DataGridViewCellEventArgs) Handles DgvKeuangan.CellContentClick
         If e.RowIndex < 0 Then Return
-
         Try
-            If e.ColumnIndex = DgvKeuangan.Columns("EDIT").Index Then
+            If _hakEdit AndAlso DgvKeuangan.Columns.Contains("EDIT") AndAlso
+               e.ColumnIndex = DgvKeuangan.Columns("EDIT").Index Then
                 HandleEditClick(e.RowIndex)
-            ElseIf e.ColumnIndex = DgvKeuangan.Columns("HAPUS").Index Then
+            ElseIf _hakHapus AndAlso DgvKeuangan.Columns.Contains("HAPUS") AndAlso
+                   e.ColumnIndex = DgvKeuangan.Columns("HAPUS").Index Then
                 HandleDeleteClick(e.RowIndex)
             End If
         Catch ex As Exception
@@ -422,20 +318,14 @@ Public Class FormKeuangan
         TxtNoNota.Text = GetCellValue(row, "NO_NOTA")
         TxtUraianKeuangan.Text = GetCellValue(row, "URAIAN")
 
-        ' Untuk combo box, lebih aman mencari berdasarkan teks
         SetComboBoxText(CmbDebetKeuangan, GetCellValue(row, "NAMA_AKUN_D"))
         SetComboBoxText(CmbKreditKeuangan, GetCellValue(row, "NAMA_AKUN_K"))
 
-        ' Isi helper jika ada
         If CmbBantuDKeuangan.Visible Then SetComboBoxText(CmbBantuDKeuangan, GetCellValue(row, "NAMA_BANTU_D"))
         If CmbBantuKKeuangan.Visible Then SetComboBoxText(CmbBantuKKeuangan, GetCellValue(row, "NAMA_BANTU_K"))
 
-        Dim nominal As Decimal
-        If Decimal.TryParse(GetCellValue(row, "NOMINAL"), nominal) Then
-            TxtNominalKeuangan.Text = nominal.ToString("N0")
-        Else
-            TxtNominalKeuangan.Text = "0"
-        End If
+        Dim nominal As Decimal = ModuleAngka.ParseDecimal(GetCellValue(row, "NOMINAL"))
+        TxtNominalKeuangan.Text = nominal.ToString()
     End Sub
 
     Private Function GetCellValue(row As DataGridViewRow, columnName As String) As String
@@ -446,58 +336,114 @@ Public Class FormKeuangan
         If combo.Items.Contains(text) Then
             combo.SelectedItem = text
         Else
-            ' Jika teks tidak ada di items, set text langsung (hanya jika.DropDownStyle=DropDown)
             combo.Text = text
         End If
     End Sub
 
     Private Sub DeleteTransaction(transactionId As String)
+        ' Baca snapshot sebelum hapus — untuk audit trail dan update HutangAwal pinjaman
+        Dim jenisTransaksi As String = ""
+        Dim nominalHapus As Decimal = 0D
+        Dim nomorAkunD As String = ""
+        Dim nomorAkunK As String = ""
+
+        Dim transaction As MySqlTransaction = Nothing
+
         Try
-            SyncLock _connLock
-                Using cmd As New MySqlCommand("DELETE FROM JurnalUmum WHERE NO_TRANSAKSI=@NO_TRANSAKSI", conn)
-                    cmd.Parameters.AddWithValue("@NO_TRANSAKSI", transactionId)
-                    cmd.ExecuteNonQuery()
+            ' Mulai transaksi
+            transaction = conn.BeginTransaction()
+
+            ' ========================================
+            ' START: Audit Trail - Hapus Jurnal Keuangan
+            ' ========================================
+            Dim sbSnapshot As New System.Text.StringBuilder()
+            Try
+                Using cmdSnap As New MySqlCommand(
+                    "SELECT NO_TRANSAKSI, TGL_TRANSAKSI, NO_NOTA, URAIAN, NAMA_AKUN_D, NOMOR_AKUN_D, NAMA_AKUN_K, NOMOR_AKUN_K, NOMINAL, JENIS_TRANSAKSI, NAMA_BANTU_D, KODE_BANTU_D, NAMA_BANTU_K, KODE_BANTU_K " &
+                    "FROM JurnalUmum WHERE NO_TRANSAKSI = @id LIMIT 1", conn, transaction)
+                    cmdSnap.Parameters.AddWithValue("@id", transactionId)
+                    Using rdSnap = cmdSnap.ExecuteReader()
+                        If rdSnap.Read() Then
+                            nominalHapus = ModuleAngka.ParseDecimal(rdSnap("NOMINAL"))
+                            jenisTransaksi = If(IsDBNull(rdSnap("JENIS_TRANSAKSI")), "", rdSnap("JENIS_TRANSAKSI").ToString())
+                            nomorAkunD = If(IsDBNull(rdSnap("NOMOR_AKUN_D")), "", rdSnap("NOMOR_AKUN_D").ToString())
+                            nomorAkunK = If(IsDBNull(rdSnap("NOMOR_AKUN_K")), "", rdSnap("NOMOR_AKUN_K").ToString())
+                            sbSnapshot.AppendLine($"No. Transaksi: {rdSnap("NO_TRANSAKSI")}")
+                            sbSnapshot.AppendLine($"Tanggal: {Convert.ToDateTime(rdSnap("TGL_TRANSAKSI")).ToString("dd/MM/yyyy HH:mm:ss")}")
+                            sbSnapshot.AppendLine($"No. Nota: {rdSnap("NO_NOTA")}")
+                            sbSnapshot.AppendLine($"Uraian: {rdSnap("URAIAN")}")
+                            sbSnapshot.AppendLine($"Jenis Transaksi: {rdSnap("JENIS_TRANSAKSI")}")
+                            sbSnapshot.AppendLine($"Akun Debet: {rdSnap("NAMA_AKUN_D")} [{rdSnap("NOMOR_AKUN_D")}]")
+                            sbSnapshot.AppendLine($"Akun Kredit: {rdSnap("NAMA_AKUN_K")} [{rdSnap("NOMOR_AKUN_K")}]")
+                            If Not IsDBNull(rdSnap("NAMA_BANTU_D")) AndAlso Not String.IsNullOrEmpty(rdSnap("NAMA_BANTU_D").ToString()) Then
+                                sbSnapshot.AppendLine($"Bantuan D: {rdSnap("NAMA_BANTU_D")} [{rdSnap("KODE_BANTU_D")}]")
+                            End If
+                            If Not IsDBNull(rdSnap("NAMA_BANTU_K")) AndAlso Not String.IsNullOrEmpty(rdSnap("NAMA_BANTU_K").ToString()) Then
+                                sbSnapshot.AppendLine($"Bantuan K: {rdSnap("NAMA_BANTU_K")} [{rdSnap("KODE_BANTU_K")}]")
+                            End If
+                            sbSnapshot.AppendLine($"Nominal: {ModuleAngka.FormatRupiah(nominalHapus)}")
+                        End If
+                    End Using
                 End Using
-            End SyncLock
+            Catch
+                sbSnapshot.AppendLine("Gagal baca data sebelum hapus")
+            End Try
+            ModuleAuditTrail.CatatAuditMaster("JRN:" & transactionId, "HAPUS", "Jurnal Keuangan", sbSnapshot.ToString(), trans:=transaction)
+            ' ========================================
+            ' END: Audit Trail - Hapus Jurnal Keuangan
+            ' ========================================
+
+            ' Hapus jurnal
+            Using cmdDel As New MySqlCommand("DELETE FROM JurnalUmum WHERE NO_TRANSAKSI = @id", conn, transaction)
+                cmdDel.Parameters.AddWithValue("@id", transactionId)
+                cmdDel.ExecuteNonQuery()
+            End Using
+
+            ' Update saldo kedua akun
+            If Not String.IsNullOrEmpty(nomorAkunD) Then
+                ModuleVariabel.UpdateSaldoAkun(nomorAkunD, transaction)
+            End If
+            If Not String.IsNullOrEmpty(nomorAkunK) Then
+                ModuleVariabel.UpdateSaldoAkun(nomorAkunK, transaction)
+            End If
+
+            ' Commit
+            transaction.Commit()
+
+            ' Balikkan HutangAwal supplier/pelanggan jika jenis pinjaman
+            If nominalHapus > 0 Then
+                UpdateHutangAwalPinjaman(jenisTransaksi, nominalHapus, -1)
+            End If
+
         Catch ex As Exception
-            MessageBox.Show("Gagal menghapus data: " & ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            transaction?.Rollback()
+            MessageBox.Show($"Gagal menghapus: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
         End Try
     End Sub
 #End Region
 
 #Region "Transaction Type Handlers"
-    ' Perubahan: Metode HandleButtonClick sudah sangat baik, tidak perlu banyak perubahan.
-    ' Saya hanya menambahkan komentar.
     Private Sub HandleButtonClick(clickedButton As Button, transactionName As String, detailText As String)
-        ' Reset semua warna tombol ke warna asli
         ResetButtonColors()
+        ModuleTheme.SetNavButtonActive(clickedButton)
 
-        ' Set warna tombol yang diklik
-        clickedButton.BackColor = Color.OrangeRed
-
-        ' Update visibility dan label
-        PanelPemasukan.Visible = True
+        PanelInput.Visible = True
         PanelRinciKeuangan.Visible = True
         LblNamaTransaksi.Text = transactionName
         LblRinciPengeluaran.Text = detailText
 
-        DTPTglKeuangan.Value = DateTime.Now
-
-        ' Reset form untuk transaksi baru
+        ModulHakAkses.ResetDTPKeTanggalHariIni(DTPTglKeuangan)
         ResetFormForNewTransaction()
     End Sub
 
     Private Sub ResetButtonColors()
-        Dim originalColor As Color = SystemColors.Control ' Warna default tombol
-        BtnPemasukan.BackColor = originalColor
-        BtnPengeluaran.BackColor = originalColor
-        BtnBiaya.BackColor = originalColor
-        BtnSetorBos.BackColor = originalColor
-        BtnBayarBon.BackColor = originalColor
-        BtnPindahR.BackColor = originalColor
+        For Each btn As Button In {BtnPemasukan, BtnPengeluaran, BtnBiaya,
+                                   BtnSetorBos, BtnPinjamSuplier, BtnPindahR,
+                                   BtnPinjamPelanggan}
+            ModuleTheme.SetNavButtonIdle(btn)
+        Next
     End Sub
 
-    ' Event handlers untuk tombol transaksi
     Private Sub BtnPemasukan_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles BtnPemasukan.Click
         HandleButtonClick(BtnPemasukan, "PEMASUKAN", "RINCIAN PEMASUKAN")
     End Sub
@@ -514,19 +460,22 @@ Public Class FormKeuangan
         HandleButtonClick(BtnSetorBos, "SETOR KE BOS", "RINCIAN SETOR KE BOS")
     End Sub
 
-    Private Sub BtnBayarBon_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles BtnBayarBon.Click
-        HandleButtonClick(BtnBayarBon, "BAYAR BON PRIBADI", "RINCIAN BAYAR BON PRIBADI")
+    Private Sub BtnPinjamSuplier_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles BtnPinjamSuplier.Click
+        HandleButtonClick(BtnPinjamSuplier, "PINJAMAN SUPPLIER", "RINCIAN PINJAMAN SUPPLIER")
+    End Sub
+
+    Private Sub BtnPinjamPelanggan_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles BtnPinjamPelanggan.Click
+        HandleButtonClick(BtnPinjamPelanggan, "PINJAMAN PELANGGAN", "RINCIAN PINJAMAN PELANGGAN")
     End Sub
 
     Private Sub BtnPindahR_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles BtnPindahR.Click
         HandleButtonClick(BtnPindahR, "PINDAH REKENING", "RINCIAN PINDAH REKENING")
     End Sub
 
-    ' Perubahan: Mengganti nama metode dan memisahkannya dari logika reset tombol.
     Private Sub ResetFormForNewTransaction()
         SetButtonState(FormState.Add)
-        SetInitialFormState() ' Gunakan metode yang sudah ada untuk reset kontrol
-        PopulateAccountComboBoxes() ' Isi combo box akun
+        SetInitialFormState()
+        PopulateAccountComboBoxes()
     End Sub
 
     Private Sub ResetFormAfterTransaction()
@@ -535,247 +484,364 @@ Public Class FormKeuangan
 #End Region
 
 #Region "Account Comboboxes"
-    ' Perubahan: Mengganti nama metode agar lebih deskriptif.
-    ' ✅ PRIORITY 1 OPTIMIZATION: Cache combo box population results
+    ' Query langsung ke DB setiap kali — tidak ada cache.
+    ' tbl_datareferensi kecil, query dengan index cepat, dan data selalu fresh (multi-client safe).
     Private Sub PopulateAccountComboBoxes()
-        If InvokeRequired Then
-            Invoke(Sub() PopulateAccountComboBoxes())
-            Return
-        End If
-
         Dim currentType = LblNamaTransaksi.Text
+        Dim dt As DataTable = GetAkunData()
 
-        ' ═══════════════════════════════════════════════════════════════
-        ' CACHE HIT: Jika cache ada untuk transaction type ini, gunakan langsung
-        ' Result: 200-500ms rebuild → 5-10ms restore (95% faster!)
-        ' ═══════════════════════════════════════════════════════════════
-        If _cachedComboState.ContainsKey(currentType) AndAlso currentType = _lastTransactionType Then
-            RestoreComboFromCache(currentType)
-            Return
-        End If
+        ' Bangun lookup: TypeAkun -> List(NamaAkun), NamaAkun -> KodeAkun
+        Dim byType As New Dictionary(Of String, List(Of String))()
+        Dim kodeByNama As New Dictionary(Of String, String)()
 
-        ' CACHE MISS: Rebuild dan simpan ke cache
-        CmbDebetKeuangan.Items.Clear()
-        CmbKreditKeuangan.Items.Clear()
+        For Each row As DataRow In dt.Rows
+            Dim typeAkun = row("Type_Akun").ToString().Trim()
+            Dim namaAkun = row("Nama_Akun").ToString().Trim()
+            Dim kodeAkun = row("Kode_Akun").ToString().Trim()
 
-        Dim debetItems As New List(Of String)
-        Dim kreditItems As New List(Of String)
+            If Not byType.ContainsKey(typeAkun) Then byType(typeAkun) = New List(Of String)()
+            byType(typeAkun).Add(namaAkun)
 
-        ' Populate berdasarkan transaction type
+            If Not kodeByNama.ContainsKey(namaAkun) Then kodeByNama(namaAkun) = kodeAkun
+        Next
+
+        Dim debetItems As New List(Of String)()
+        Dim kreditItems As New List(Of String)()
+
         Select Case currentType
             Case "PEMASUKAN"
-                AddAccountsToComboBoxList(debetItems, {"KAS", "BANK"})
-                AddAccountsToComboBoxList(kreditItems, _cacheAkun.Keys.ToArray(), {"KAS", "BANK", "LABA RUGI"})
+                AddFromTypes(debetItems, byType, {"KAS", "BANK"})
+                AddFromTypes(kreditItems, byType, byType.Keys.ToArray(), {"KAS", "BANK", "LABA RUGI"})
             Case "PENGELUARAN"
-                AddAccountsToComboBoxList(debetItems, _cacheAkun.Keys.ToArray(), {"KAS", "BANK", "LABA RUGI"})
-                AddAccountsToComboBoxList(kreditItems, {"KAS", "BANK"})
+                AddFromTypes(debetItems, byType, byType.Keys.ToArray(), {"KAS", "BANK", "LABA RUGI"})
+                AddFromTypes(kreditItems, byType, {"KAS", "BANK"})
             Case "BIAYA"
-                AddAccountsToComboBoxList(debetItems, {"BIAYA"})
-                AddAccountsToComboBoxList(kreditItems, {"KAS", "BANK"})
+                AddFromTypes(debetItems, byType, {"BIAYA"})
+                AddFromTypes(kreditItems, byType, {"KAS", "BANK"})
             Case "SETOR KE BOS"
-                AddAccountsToComboBoxList(debetItems, {"04.02.001"})
-                AddAccountsToComboBoxList(kreditItems, {"KAS"})
-            Case "BAYAR BON PRIBADI"
-                AddAccountsToComboBoxList(debetItems, {"KAS", "BANK"})
-                AddAccountsToComboBoxList(kreditItems, {"PIUTANG"})
+                ' Akun spesifik berdasarkan kode
+                Dim akunSetor = kodeByNama.Where(Function(kvp) kvp.Value = "04.02.001").Select(Function(kvp) kvp.Key).FirstOrDefault()
+                If Not String.IsNullOrEmpty(akunSetor) Then debetItems.Add(akunSetor)
+                AddFromTypes(kreditItems, byType, {"KAS"})
+            Case "PINJAMAN SUPPLIER"
+                ' Supplier beri pinjaman → D KAS/BANK, K HUTANG BELANJA
+                AddFromTypes(debetItems, byType, {"KAS", "BANK"})
+                AddFromTypes(kreditItems, byType, {"HUTANG"})
+            Case "PINJAMAN PELANGGAN"
+                ' Pelanggan pinjam dari toko → D PIUTANG, K KAS/BANK
+                AddFromTypes(debetItems, byType, {"PIUTANG"})
+                AddFromTypes(kreditItems, byType, {"KAS", "BANK"})
             Case "PINDAH REKENING"
-                AddAccountsToComboBoxList(debetItems, _cacheAkun.Keys.ToArray(), {"LABA RUGI"})
-                AddAccountsToComboBoxList(kreditItems, _cacheAkun.Keys.ToArray(), {"LABA RUGI"})
+                AddFromTypes(debetItems, byType, byType.Keys.ToArray(), {"LABA RUGI"})
+                AddFromTypes(kreditItems, byType, byType.Keys.ToArray(), {"LABA RUGI"})
         End Select
 
-        ' ✅ Cache hasil untuk pemakaian berikutnya
-        _cachedComboState(currentType) = (debetItems, kreditItems)
-        _lastTransactionType = currentType
-
-        ' Restore dari cache yang baru di-populate
-        RestoreComboFromCache(currentType)
-    End Sub
-
-    ' ✅ NEW METHOD: Restore combo dari cache (very fast, 5-10ms)
-    Private Sub RestoreComboFromCache(transactionType As String)
-        Dim cached = _cachedComboState(transactionType)
-
+        _isLoading = True
         CmbDebetKeuangan.Items.Clear()
         CmbKreditKeuangan.Items.Clear()
-
-        ' ✅ Add items langsung dari list (no dictionary enumeration)
-        CmbDebetKeuangan.Items.AddRange(cached.Debet.ToArray())
-        CmbKreditKeuangan.Items.AddRange(cached.Kredit.ToArray())
-
-        ' Set default selection
+        CmbDebetKeuangan.Items.AddRange(debetItems.ToArray())
+        CmbKreditKeuangan.Items.AddRange(kreditItems.ToArray())
         If CmbDebetKeuangan.Items.Count > 0 Then CmbDebetKeuangan.SelectedIndex = 0
         If CmbKreditKeuangan.Items.Count > 0 Then CmbKreditKeuangan.SelectedIndex = 0
+        _isLoading = False
+
+        ' Tampilkan panel bantu untuk pinjaman
+        Select Case LblNamaTransaksi.Text
+            Case "PINJAMAN SUPPLIER"
+                ' CmbBantuK = pilih supplier
+                LblBantuKKeuangan.Visible = True
+                LblBantuKKeuangan.Text = "Supplier :"
+                CmbBantuKKeuangan.Visible = True
+                TxtBantuKKeuanganNama.Visible = True
+                TxtBantuKKeuangan.Visible = True
+                IsiComboBoxSupplier(CmbBantuKKeuangan)
+            Case "PINJAMAN PELANGGAN"
+                ' CmbBantuD = pilih pelanggan
+                LblBantuDKeuangan.Visible = True
+                LblBantuDKeuangan.Text = "Pelanggan :"
+                CmbBantuDKeuangan.Visible = True
+                TxtBantuDKeuanganNama.Visible = True
+                TxtBantuDKeuangan.Visible = True
+                IsiComboBoxPelanggan(CmbBantuDKeuangan)
+        End Select
+
+        TxtUraianKeuangan.Focus()
     End Sub
 
-    ' ✅ NEW METHOD: Helper untuk populate list (tidak langsung ke combo)
-    Private Sub AddAccountsToComboBoxList(targetList As List(Of String), accountTypes() As String, Optional excludeTypes As String() = Nothing)
-        For Each accountType In accountTypes
-            If _kodeAkunCache.ContainsValue(accountType) Then
-                ' O(n) lookup, tapi hanya di cache, tidak di UI
-                Dim namaAkun = _kodeAkunCache.FirstOrDefault(Function(kvp) kvp.Value = accountType).Key
-                If Not String.IsNullOrEmpty(namaAkun) Then
-                    targetList.Add(namaAkun)
-                End If
-            ElseIf _cacheAkun.ContainsKey(accountType) AndAlso (excludeTypes Is Nothing OrElse Not excludeTypes.Contains(accountType)) Then
-                targetList.AddRange(_cacheAkun(accountType))
-            End If
+    Private Sub AddFromTypes(targetList As List(Of String), byType As Dictionary(Of String, List(Of String)),
+                             accountTypes As String(), Optional excludeTypes As String() = Nothing)
+        For Each t In accountTypes
+            If excludeTypes IsNot Nothing AndAlso excludeTypes.Contains(t) Then Continue For
+            If byType.ContainsKey(t) Then targetList.AddRange(byType(t))
         Next
     End Sub
 
-    ' Event handlers untuk combo box
     Private Sub CmbDebetKeuangan_SelectedIndexChanged(sender As Object, e As EventArgs) Handles CmbDebetKeuangan.SelectedIndexChanged
         SetAccountCodeFromCombo(CmbDebetKeuangan, TxtDebetKeuanganNama, TxtDebetKeuangan)
-        CmbKreditKeuangan.Focus()
+        If Not _isLoading Then CmbKreditKeuangan.Focus()
     End Sub
 
     Private Sub CmbKreditKeuangan_SelectedIndexChanged(sender As Object, e As EventArgs) Handles CmbKreditKeuangan.SelectedIndexChanged
         SetAccountCodeFromCombo(CmbKreditKeuangan, TxtKreditKeuanganNama, TxtKreditKeuangan)
-        If CmbBantuDKeuangan.Visible Then
-            CmbBantuDKeuangan.Focus()
-        ElseIf CmbBantuKKeuangan.Visible Then
-            CmbBantuKKeuangan.Focus()
-        Else
-            TxtNominalKeuangan.Focus()
+        If Not _isLoading Then
+            If CmbBantuDKeuangan.Visible Then
+                CmbBantuDKeuangan.Focus()
+            ElseIf CmbBantuKKeuangan.Visible Then
+                CmbBantuKKeuangan.Focus()
+            Else
+                TxtNominalKeuangan.Focus()
+            End If
         End If
     End Sub
 
+    ' Cari kode akun langsung dari DB berdasarkan nama yang dipilih.
     Private Sub SetAccountCodeFromCombo(combo As ComboBox, txtNama As TextBox, txtKode As TextBox)
         If combo.SelectedItem Is Nothing Then Return
 
-        ' Asumsikan combo diisi dengan nama akun
-        Dim selectedAccountName As String = combo.SelectedItem.ToString()
-        txtNama.Text = selectedAccountName
+        Dim selectedName As String = combo.SelectedItem.ToString()
+        txtNama.Text = selectedName
 
-        ' Cari kode akun berdasarkan nama
-        If _kodeAkunCache.ContainsKey(selectedAccountName) Then
-            txtKode.Text = _kodeAkunCache(selectedAccountName)
-        Else
-            ' Jika tidak ditemukan, mungkin item adalah "Type = Nama"
-            Dim parts() As String = selectedAccountName.Split("="c)
-            If parts.Length = 2 Then
-                Dim namaAkun = parts(1).Trim()
-                txtNama.Text = namaAkun
-                If _kodeAkunCache.ContainsKey(namaAkun) Then
-                    txtKode.Text = _kodeAkunCache(namaAkun)
-                End If
-            End If
-        End If
+        Using cmd As New MySqlCommand(
+            "SELECT Kode_Akun FROM tbl_datareferensi WHERE Nama_Akun = @nama LIMIT 1", conn)
+            cmd.Parameters.AddWithValue("@nama", selectedName)
+            Dim result = cmd.ExecuteScalar()
+            txtKode.Text = If(result IsNot Nothing AndAlso result IsNot DBNull.Value, result.ToString(), String.Empty)
+        End Using
     End Sub
 #End Region
 
 #Region "CRUD Operations"
-    ' Perubahan: Memisahkan logika penyimpanan dari event handler.
     Private Sub BtnSimpanKeuangan_Click(ByVal sender As Object, ByVal e As EventArgs) Handles BtnSimpanKeuangan.Click
-        If ValidateInput() Then
-            Try
+        If Not ValidateInput() Then Return
+        Try
+            If _currentFormState = FormState.Add Then
                 SaveNewTransaction()
-                ResetFormAfterTransaction()
-            Catch ex As Exception
-                MessageBox.Show("Terjadi kesalahan saat menyimpan data: " & ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
-            End Try
-        End If
+            Else
+                UpdateExistingTransaction()
+            End If
+            ResetFormAfterTransaction()
+        Catch ex As Exception
+            Dim action = If(_currentFormState = FormState.Add, "menyimpan", "mengedit")
+            MessageBox.Show($"Terjadi kesalahan saat {action} data: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
+        End Try
     End Sub
 
     Private Sub SaveNewTransaction()
-        ' Menggunakan multiline string untuk SQL agar lebih mudah dibaca
-        Dim sql As String = "
-            INSERT INTO JurnalUmum (NO_TRANSAKSI, TGL_TRANSAKSI, NO_NOTA, URAIAN, 
-                                   AKUN_D, NAMA_AKUN_D, NOMOR_AKUN_D, 
-                                   AKUN_K, NAMA_AKUN_K, NOMOR_AKUN_K, 
-                                   NAMA_BANTU_D, KODE_BANTU_D, 
-                                   NAMA_BANTU_K, KODE_BANTU_K, 
-                                   NOMINAL, JENIS_TRANSAKSI, LOKASI, ID_USER, ID_KOMPUTER) 
-            VALUES (@NO_TRANSAKSI, @TGL_TRANSAKSI, @NO_NOTA, @URAIAN, 
-                    @AKUN_D, @NAMA_AKUN_D, @NOMOR_AKUN_D, 
-                    @AKUN_K, @NAMA_AKUN_K, @NOMOR_AKUN_K, 
-                    @NAMA_BANTU_D, @KODE_BANTU_D, 
-                    @NAMA_BANTU_K, @KODE_BANTU_K, 
-                    @NOMINAL, @JENIS_TRANSAKSI, @LOKASI, @ID_USER, @ID_KOMPUTER)"
+        Dim nominal As Decimal = ModuleAngka.ParseDecimal(TxtNominalKeuangan.Text)
+        Dim izinkanBackdate As Integer = If(ModulHakAkses.SettingIzinkanTanggalLampau, 1, 0)
+        Dim noTransaksi As String = LblIdBayar.Text
+        Dim transaction As MySqlTransaction = Nothing
 
-        ExecuteNonQuery(sql, GetTransactionParameters())
-    End Sub
+        Try
+            ' Validasi backdate
+            If izinkanBackdate = 0 AndAlso DTPTglKeuangan.Value.Date < Today.Date Then
+                MessageBox.Show("Transaksi tanggal lampau tidak diizinkan.", "Validasi Gagal", MessageBoxButtons.OK, MessageBoxIcon.Warning)
+                Return
+            End If
 
-    ' Perubahan: Memisahkan logika update dari event handler.
-    Private Sub BtnEditKeuangan_Click(ByVal sender As Object, ByVal e As EventArgs) Handles BtnEditKeuangan.Click
-        If ValidateInput() Then
-            Try
-                UpdateExistingTransaction()
-                ResetFormAfterTransaction()
-            Catch ex As Exception
-                MessageBox.Show("Terjadi kesalahan saat mengedit data: " & ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
-            End Try
-        End If
+            ' Mulai transaksi
+            transaction = conn.BeginTransaction()
+
+            ' INSERT jurnal
+            Dim sqlInsert As String =
+                "INSERT INTO JurnalUmum (" &
+                "NO_TRANSAKSI, TGL_TRANSAKSI, NO_NOTA, URAIAN, " &
+                "AKUN_D, NAMA_AKUN_D, NOMOR_AKUN_D, " &
+                "AKUN_K, NAMA_AKUN_K, NOMOR_AKUN_K, " &
+                "NAMA_BANTU_D, KODE_BANTU_D, NAMA_BANTU_K, KODE_BANTU_K, " &
+                "NOMINAL, JENIS_TRANSAKSI, LOKASI, ID_USER, ID_KOMPUTER" &
+                ") VALUES (" &
+                "@no_transaksi, @tgl_transaksi, @no_nota, @uraian, " &
+                "@akun_d, @nama_akun_d, @nomor_akun_d, " &
+                "@akun_k, @nama_akun_k, @nomor_akun_k, " &
+                "@nama_bantu_d, @kode_bantu_d, @nama_bantu_k, @kode_bantu_k, " &
+                "@nominal, @jenis_transaksi, @lokasi, @id_user, @id_komputer" &
+                ")"
+
+            Using cmdInsert As New MySqlCommand(sqlInsert, conn, transaction)
+                cmdInsert.Parameters.AddWithValue("@no_transaksi", noTransaksi)
+                cmdInsert.Parameters.AddWithValue("@tgl_transaksi", DTPTglKeuangan.Value)
+                cmdInsert.Parameters.AddWithValue("@no_nota", TxtNoNota.Text)
+                cmdInsert.Parameters.AddWithValue("@uraian", TxtUraianKeuangan.Text)
+                cmdInsert.Parameters.AddWithValue("@akun_d", CmbDebetKeuangan.Text)
+                cmdInsert.Parameters.AddWithValue("@nama_akun_d", TxtDebetKeuanganNama.Text)
+                cmdInsert.Parameters.AddWithValue("@nomor_akun_d", TxtDebetKeuangan.Text)
+                cmdInsert.Parameters.AddWithValue("@akun_k", CmbKreditKeuangan.Text)
+                cmdInsert.Parameters.AddWithValue("@nama_akun_k", TxtKreditKeuanganNama.Text)
+                cmdInsert.Parameters.AddWithValue("@nomor_akun_k", TxtKreditKeuangan.Text)
+                cmdInsert.Parameters.AddWithValue("@nama_bantu_d", If(CmbBantuDKeuangan.Visible, CmbBantuDKeuangan.Text, String.Empty))
+                cmdInsert.Parameters.AddWithValue("@kode_bantu_d", If(CmbBantuDKeuangan.Visible, TxtBantuDKeuangan.Text, String.Empty))
+                cmdInsert.Parameters.AddWithValue("@nama_bantu_k", If(CmbBantuKKeuangan.Visible, CmbBantuKKeuangan.Text, String.Empty))
+                cmdInsert.Parameters.AddWithValue("@kode_bantu_k", If(CmbBantuKKeuangan.Visible, TxtBantuKKeuangan.Text, String.Empty))
+                cmdInsert.Parameters.AddWithValue("@nominal", nominal)
+                cmdInsert.Parameters.AddWithValue("@jenis_transaksi", LblNamaTransaksi.Text)
+                cmdInsert.Parameters.AddWithValue("@lokasi", FormUtama.StatusLokasi.Text)
+                cmdInsert.Parameters.AddWithValue("@id_user", FormUtama.StatusNamaUser.Text)
+                cmdInsert.Parameters.AddWithValue("@id_komputer", FormUtama.StatusNamaPC.Text)
+                cmdInsert.ExecuteNonQuery()
+            End Using
+
+            ' Update saldo kedua akun
+            ModuleVariabel.UpdateSaldoAkun(TxtDebetKeuangan.Text, transaction)
+            ModuleVariabel.UpdateSaldoAkun(TxtKreditKeuangan.Text, transaction)
+
+            ' Commit
+            transaction.Commit()
+
+            ' Audit jurnal keseimbangan
+            CatatJurnalTidakSeimbang(noTransaksi & "-" & TxtUraianKeuangan.Text, nominal, nominal, "Jurnal Keuangan", {"JurnalManual"})
+
+            ' Update HutangAwal supplier/pelanggan jika jenis pinjaman
+            UpdateHutangAwalPinjaman(LblNamaTransaksi.Text, nominal, +1)
+
+        Catch ex As Exception
+            transaction?.Rollback()
+            MessageBox.Show($"Gagal menyimpan: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
+        End Try
     End Sub
 
     Private Sub UpdateExistingTransaction()
-        Dim sql As String = "
-            UPDATE JurnalUmum 
-            SET TGL_TRANSAKSI = @TGL_TRANSAKSI, 
-                NO_NOTA = @NO_NOTA, 
-                URAIAN = @URAIAN, 
-                AKUN_D = @AKUN_D, 
-                NAMA_AKUN_D = @NAMA_AKUN_D, 
-                NOMOR_AKUN_D = @NOMOR_AKUN_D, 
-                AKUN_K = @AKUN_K, 
-                NAMA_AKUN_K = @NAMA_AKUN_K, 
-                NOMOR_AKUN_K = @NOMOR_AKUN_K, 
-                NAMA_BANTU_D = @NAMA_BANTU_D, 
-                KODE_BANTU_D = @KODE_BANTU_D, 
-                NAMA_BANTU_K = @NAMA_BANTU_K, 
-                KODE_BANTU_K = @KODE_BANTU_K, 
-                NOMINAL = @NOMINAL, 
-                JENIS_TRANSAKSI = @JENIS_TRANSAKSI, 
-                LOKASI = @LOKASI 
-            WHERE NO_TRANSAKSI = @NO_TRANSAKSI"
+        Dim noTransaksiLama As String = LblIdBayar.Text
+        Dim nominal As Decimal = ModuleAngka.ParseDecimal(TxtNominalKeuangan.Text)
+        Dim izinkanBackdate As Integer = If(ModulHakAkses.SettingIzinkanTanggalLampau, 1, 0)
+        Dim transaction As MySqlTransaction = Nothing
+        Dim nomorAkunDLama As String = ""
+        Dim nomorAkunKLama As String = ""
+        Dim nominalLama As Decimal = 0D
 
-        ExecuteNonQuery(sql, GetTransactionParameters())
-    End Sub
+        Try
+            ' Validasi backdate
+            If izinkanBackdate = 0 AndAlso DTPTglKeuangan.Value.Date < Today.Date Then
+                MessageBox.Show("Transaksi tanggal lampau tidak diizinkan.", "Validasi Gagal", MessageBoxButtons.OK, MessageBoxIcon.Warning)
+                Return
+            End If
 
-    ' Metode helper untuk mengumpulkan parameter, menghindari duplikasi kode
-    Private Function GetTransactionParameters() As MySqlParameter()
-        Dim nominal As Decimal
-        Decimal.TryParse(TxtNominalKeuangan.Text, nominal)
+            ' Mulai transaksi
+            transaction = conn.BeginTransaction()
 
-        Return {
-            New MySqlParameter("@NO_TRANSAKSI", LblIdBayar.Text),
-            New MySqlParameter("@TGL_TRANSAKSI", DTPTglKeuangan.Value),
-            New MySqlParameter("@NO_NOTA", TxtNoNota.Text),
-            New MySqlParameter("@URAIAN", TxtUraianKeuangan.Text),
-            New MySqlParameter("@AKUN_D", CmbDebetKeuangan.Text),
-            New MySqlParameter("@NAMA_AKUN_D", TxtDebetKeuanganNama.Text),
-            New MySqlParameter("@NOMOR_AKUN_D", TxtDebetKeuangan.Text),
-            New MySqlParameter("@AKUN_K", CmbKreditKeuangan.Text),
-            New MySqlParameter("@NAMA_AKUN_K", TxtKreditKeuanganNama.Text),
-            New MySqlParameter("@NOMOR_AKUN_K", TxtKreditKeuangan.Text),
-            New MySqlParameter("@NAMA_BANTU_D", If(CmbBantuDKeuangan.Visible, CmbBantuDKeuangan.Text, String.Empty)),
-            New MySqlParameter("@KODE_BANTU_D", If(CmbBantuDKeuangan.Visible, TxtBantuDKeuangan.Text, String.Empty)),
-            New MySqlParameter("@NAMA_BANTU_K", If(CmbBantuKKeuangan.Visible, CmbBantuKKeuangan.Text, String.Empty)),
-            New MySqlParameter("@KODE_BANTU_K", If(CmbBantuKKeuangan.Visible, TxtBantuKKeuangan.Text, String.Empty)),
-            New MySqlParameter("@NOMINAL", nominal),
-            New MySqlParameter("@JENIS_TRANSAKSI", LblNamaTransaksi.Text),
-            New MySqlParameter("@LOKASI", FormUtama.SLokasi.Text),
-            New MySqlParameter("@ID_USER", FormUtama.SLogin.Text),
-            New MySqlParameter("@ID_KOMPUTER", FormUtama.Comp.Text)
-        }
-    End Function
+            ' ========================================
+            ' START: Audit Trail - Edit Jurnal Keuangan
+            ' ========================================
+            Dim sbSnapshot As New System.Text.StringBuilder()
+            Try
+                Using cmdSnap As New MySqlCommand(
+                    "SELECT NO_TRANSAKSI, TGL_TRANSAKSI, NO_NOTA, URAIAN, NAMA_AKUN_D, NOMOR_AKUN_D, NAMA_AKUN_K, NOMOR_AKUN_K, NOMINAL, JENIS_TRANSAKSI, NAMA_BANTU_D, KODE_BANTU_D, NAMA_BANTU_K, KODE_BANTU_K " &
+                    "FROM JurnalUmum WHERE NO_TRANSAKSI = @id LIMIT 1", conn, transaction)
+                    cmdSnap.Parameters.AddWithValue("@id", noTransaksiLama)
+                    Using rdSnap = cmdSnap.ExecuteReader()
+                        If rdSnap.Read() Then
+                            nomorAkunDLama = If(IsDBNull(rdSnap("NOMOR_AKUN_D")), "", rdSnap("NOMOR_AKUN_D").ToString())
+                            nomorAkunKLama = If(IsDBNull(rdSnap("NOMOR_AKUN_K")), "", rdSnap("NOMOR_AKUN_K").ToString())
+                            nominalLama = ModuleAngka.ParseDecimal(rdSnap("NOMINAL"))
+                            sbSnapshot.AppendLine($"No. Transaksi: {rdSnap("NO_TRANSAKSI")}")
+                            sbSnapshot.AppendLine($"Tanggal: {Convert.ToDateTime(rdSnap("TGL_TRANSAKSI")).ToString("dd/MM/yyyy HH:mm:ss")}")
+                            sbSnapshot.AppendLine($"No. Nota: {rdSnap("NO_NOTA")}")
+                            sbSnapshot.AppendLine($"Uraian: {rdSnap("URAIAN")}")
+                            sbSnapshot.AppendLine($"Jenis Transaksi: {rdSnap("JENIS_TRANSAKSI")}")
+                            sbSnapshot.AppendLine($"Akun Debet: {rdSnap("NAMA_AKUN_D")} [{rdSnap("NOMOR_AKUN_D")}]")
+                            sbSnapshot.AppendLine($"Akun Kredit: {rdSnap("NAMA_AKUN_K")} [{rdSnap("NOMOR_AKUN_K")}]")
+                            If Not IsDBNull(rdSnap("NAMA_BANTU_D")) AndAlso Not String.IsNullOrEmpty(rdSnap("NAMA_BANTU_D").ToString()) Then
+                                sbSnapshot.AppendLine($"Bantuan D: {rdSnap("NAMA_BANTU_D")} [{rdSnap("KODE_BANTU_D")}]")
+                            End If
+                            If Not IsDBNull(rdSnap("NAMA_BANTU_K")) AndAlso Not String.IsNullOrEmpty(rdSnap("NAMA_BANTU_K").ToString()) Then
+                                sbSnapshot.AppendLine($"Bantuan K: {rdSnap("NAMA_BANTU_K")} [{rdSnap("KODE_BANTU_K")}]")
+                            End If
+                            sbSnapshot.AppendLine($"Nominal: {ModuleAngka.FormatRupiah(nominalLama)}")
+                        End If
+                    End Using
+                End Using
+            Catch
+                sbSnapshot.AppendLine("Gagal baca data sebelum edit")
+            End Try
+            ModuleAuditTrail.CatatAuditMaster("JRN:" & noTransaksiLama, "EDIT", "Jurnal Keuangan", sbSnapshot.ToString(), trans:=transaction)
+            ' ========================================
+            ' END: Audit Trail - Edit Jurnal Keuangan
+            ' ========================================
 
-    ' Metode helper untuk mengeksekusi non-query, menghindari duplikasi blok Using
-    Private Sub ExecuteNonQuery(sql As String, parameters As MySqlParameter())
-        SyncLock _connLock
-            Using cmd As New MySqlCommand(sql, conn)
-                cmd.Parameters.AddRange(parameters)
-                cmd.ExecuteNonQuery()
+            ' Step 1: Hapus jurnal lama
+            Using cmdDel As New MySqlCommand("DELETE FROM JurnalUmum WHERE NO_TRANSAKSI = @id", conn, transaction)
+                cmdDel.Parameters.AddWithValue("@id", noTransaksiLama)
+                cmdDel.ExecuteNonQuery()
             End Using
-        End SyncLock
+
+            ' Update saldo akun lama
+            If Not String.IsNullOrEmpty(nomorAkunDLama) Then
+                ModuleVariabel.UpdateSaldoAkun(nomorAkunDLama, transaction)
+            End If
+            If Not String.IsNullOrEmpty(nomorAkunKLama) Then
+                ModuleVariabel.UpdateSaldoAkun(nomorAkunKLama, transaction)
+            End If
+
+            ' Balikkan HutangAwal supplier/pelanggan untuk jurnal lama
+            If nominalLama > 0 Then
+                UpdateHutangAwalPinjaman(LblNamaTransaksi.Text, nominalLama, -1)
+            End If
+
+            ' Step 2: Insert jurnal baru dengan nomor yang sama
+            Dim sqlInsert As String =
+                "INSERT INTO JurnalUmum (" &
+                "NO_TRANSAKSI, TGL_TRANSAKSI, NO_NOTA, URAIAN, " &
+                "AKUN_D, NAMA_AKUN_D, NOMOR_AKUN_D, " &
+                "AKUN_K, NAMA_AKUN_K, NOMOR_AKUN_K, " &
+                "NAMA_BANTU_D, KODE_BANTU_D, NAMA_BANTU_K, KODE_BANTU_K, " &
+                "NOMINAL, JENIS_TRANSAKSI, LOKASI, ID_USER, ID_KOMPUTER" &
+                ") VALUES (" &
+                "@no_transaksi, @tgl_transaksi, @no_nota, @uraian, " &
+                "@akun_d, @nama_akun_d, @nomor_akun_d, " &
+                "@akun_k, @nama_akun_k, @nomor_akun_k, " &
+                "@nama_bantu_d, @kode_bantu_d, @nama_bantu_k, @kode_bantu_k, " &
+                "@nominal, @jenis_transaksi, @lokasi, @id_user, @id_komputer" &
+                ")"
+
+            Using cmdInsert As New MySqlCommand(sqlInsert, conn, transaction)
+                cmdInsert.Parameters.AddWithValue("@no_transaksi", noTransaksiLama)
+                cmdInsert.Parameters.AddWithValue("@tgl_transaksi", DTPTglKeuangan.Value)
+                cmdInsert.Parameters.AddWithValue("@no_nota", TxtNoNota.Text)
+                cmdInsert.Parameters.AddWithValue("@uraian", TxtUraianKeuangan.Text)
+                cmdInsert.Parameters.AddWithValue("@akun_d", CmbDebetKeuangan.Text)
+                cmdInsert.Parameters.AddWithValue("@nama_akun_d", TxtDebetKeuanganNama.Text)
+                cmdInsert.Parameters.AddWithValue("@nomor_akun_d", TxtDebetKeuangan.Text)
+                cmdInsert.Parameters.AddWithValue("@akun_k", CmbKreditKeuangan.Text)
+                cmdInsert.Parameters.AddWithValue("@nama_akun_k", TxtKreditKeuanganNama.Text)
+                cmdInsert.Parameters.AddWithValue("@nomor_akun_k", TxtKreditKeuangan.Text)
+                cmdInsert.Parameters.AddWithValue("@nama_bantu_d", If(CmbBantuDKeuangan.Visible, CmbBantuDKeuangan.Text, String.Empty))
+                cmdInsert.Parameters.AddWithValue("@kode_bantu_d", If(CmbBantuDKeuangan.Visible, TxtBantuDKeuangan.Text, String.Empty))
+                cmdInsert.Parameters.AddWithValue("@nama_bantu_k", If(CmbBantuKKeuangan.Visible, CmbBantuKKeuangan.Text, String.Empty))
+                cmdInsert.Parameters.AddWithValue("@kode_bantu_k", If(CmbBantuKKeuangan.Visible, TxtBantuKKeuangan.Text, String.Empty))
+                cmdInsert.Parameters.AddWithValue("@nominal", nominal)
+                cmdInsert.Parameters.AddWithValue("@jenis_transaksi", LblNamaTransaksi.Text)
+                cmdInsert.Parameters.AddWithValue("@lokasi", FormUtama.StatusLokasi.Text)
+                cmdInsert.Parameters.AddWithValue("@id_user", FormUtama.StatusNamaUser.Text)
+                cmdInsert.Parameters.AddWithValue("@id_komputer", FormUtama.StatusNamaPC.Text)
+                cmdInsert.ExecuteNonQuery()
+            End Using
+
+            ' Update saldo akun baru
+            ModuleVariabel.UpdateSaldoAkun(TxtDebetKeuangan.Text, transaction)
+            ModuleVariabel.UpdateSaldoAkun(TxtKreditKeuangan.Text, transaction)
+
+            ' Update HutangAwal supplier/pelanggan untuk jurnal baru
+            If nominal > 0 Then
+                UpdateHutangAwalPinjaman(LblNamaTransaksi.Text, nominal, +1)
+            End If
+
+            ' Commit
+            transaction.Commit()
+
+            ' Audit jurnal keseimbangan
+            CatatJurnalTidakSeimbang(noTransaksiLama & "-" & TxtUraianKeuangan.Text, nominal, nominal, "Jurnal Keuangan (Edit)", {"JurnalManual"})
+
+        Catch ex As Exception
+            transaction?.Rollback()
+            MessageBox.Show($"Gagal mengedit: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
+        End Try
     End Sub
 
     Private Sub BtnBatalKeuangan_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles BtnBatalKeuangan.Click
         ResetFormAfterTransaction()
     End Sub
 
-    ' Perubahan: Mengganti nama metode agar lebih deskriptif.
     Private Function ValidateInput() As Boolean
-        ' Menggunakan array of tuples untuk validasi yang lebih bersih
         Dim requiredFields As (Control As Control, ErrorMessage As String)() = {
             (TxtUraianKeuangan, "Uraian harus diisi."),
             (CmbDebetKeuangan, "Akun Debet harus dipilih."),
@@ -802,7 +868,7 @@ Public Class FormKeuangan
             Return False
         End If
 
-        If String.IsNullOrWhiteSpace(TxtNominalKeuangan.Text) OrElse Not Decimal.TryParse(TxtNominalKeuangan.Text, Nothing) Then
+        If ModuleAngka.ParseDecimal(TxtNominalKeuangan.Text) <= 0 Then
             MessageBox.Show("Nominal harus diisi dengan angka yang valid.", "Validasi Gagal", MessageBoxButtons.OK, MessageBoxIcon.Warning)
             TxtNominalKeuangan.Focus()
             Return False
@@ -813,83 +879,21 @@ Public Class FormKeuangan
 #End Region
 
 #Region "Helper Functions"
-    ' Perubahan: Mengganti nama metode agar lebih deskriptif.
-    ' ✅ PRIORITY 1 OPTIMIZATION: Async GenerateTransactionId (non-blocking UI)
-    Private Async Sub GenerateTransactionIdAsync()
-        ' ═══════════════════════════════════════════════════════════════
-        ' Show loading indicator
-        ' ═══════════════════════════════════════════════════════════════
-        LblIdBayar.Text = "Loading..."
+    Private Sub GenerateTransactionId()
+        Dim prefix As String = GetTransactionPrefix(LblNamaTransaksi.Text)
+        Dim tgl As Date = DTPTglKeuangan.Value.Date
 
-        Try
-            Await GenerateTransactionIdAsync_Internal()
-        Catch ex As Exception
-            Debug.WriteLine($"Error in GenerateTransactionIdAsync: {ex.Message}")
-            LblIdBayar.Text = ""
-        End Try
+        ' Pakai sp_hlp_faktur_generate — aman multi-user (FOR UPDATE), format konsisten
+        ' Format hasil: PREFIX-YYMMDDXXXX (contoh: MS-2604190001)
+        Using cmd As New MySqlCommand("CALL sp_hlp_faktur_generate(@prefix, @tgl, 'jurnalumum', 'NO_TRANSAKSI', @nomor)", conn)
+            cmd.Parameters.AddWithValue("@prefix", prefix)
+            cmd.Parameters.AddWithValue("@tgl", tgl)
+            Dim pNomor = cmd.Parameters.Add("@nomor", MySqlDbType.VarChar, 30)
+            pNomor.Direction = ParameterDirection.Output
+            cmd.ExecuteNonQuery()
+            LblIdBayar.Text = pNomor.Value?.ToString()
+        End Using
     End Sub
-
-    ' ✅ NEW METHOD: Async helper (runs on background thread)
-    ' ✅ PRIORITY 2.1 OPTIMIZATION: Use LEFT() instead of LIKE for index-friendly query
-    ' ✅ THREAD-SAFETY FIX: Added SyncLock to prevent connection race condition
-    Private Async Function GenerateTransactionIdAsync_Internal() As Task
-        ' Run di background thread agar tidak block UI
-        Dim result = Await Task.Run(Of String)(Function()
-                                                   Try
-                                                       Dim tanggal As String = DTPTglKeuangan.Value.ToString("yyMMdd")
-                                                       Dim prefix As String = GetTransactionPrefix(LblNamaTransaksi.Text)
-
-                                                       ' ═══════════════════════════════════════════════════════
-                                                       ' Format prefix untuk LEFT() match: "PREFIX-YYYYMM"
-                                                       ' Example: "MS-202501" untuk dicocokkan dengan LEFT(NO_TRANSAKSI, 8)
-                                                       ' NO_TRANSAKSI format: "MS-202501-0001"
-                                                       ' ═══════════════════════════════════════════════════════
-                                                       Dim prefixForMatch As String = $"{prefix}-{tanggal}"
-
-                                                       ' ✅ PRIORITY 2.1: Optimized query menggunakan LEFT() dan MAX(RIGHT())
-                                                       ' Keuntungan:
-                                                       ' ├─ LEFT() dengan exact match (=) bisa gunakan index
-                                                       ' ├─ Eliminates LIKE fullscan
-                                                       ' ├─ RIGHT() extract last 4 digits
-                                                       ' ├─ MAX() of numbers not strings
-                                                       ' └─ Result: O(log n) lookups instead of O(n) scans
-                                                       Dim sql As String = "SELECT COALESCE(MAX(CAST(RIGHT(NO_TRANSAKSI, 4) AS UNSIGNED)), 0) + 1 AS next_id " &
-                                                                          "FROM JurnalUmum WHERE LEFT(NO_TRANSAKSI, 8) = @prefix LIMIT 1"
-
-                                                       ' ═══════════════════════════════════════════════════════════════════════════════
-                                                       ' ✅ THREAD-SAFETY FIX: Lock pada connection
-                                                       ' MySqlConnection (from MySql.Data) TIDAK thread-safe!
-                                                       ' Jika GenerateTransactionIdAsync_Internal dipanggil concurrent:
-                                                       ' ├─ Thread 1: ExecuteScalar() 
-                                                       ' └─ Thread 2: ExecuteScalar() ← Race condition jika tanpa lock!
-                                                       ' 
-                                                       ' Solusi: Gunakan SyncLock untuk serialize access ke conn
-                                                       ' ═══════════════════════════════════════════════════════════════════════════════
-                                                       SyncLock _connLock
-                                                           Using cmd As New MySqlCommand(sql, conn)
-                                                               cmd.Parameters.AddWithValue("@prefix", prefixForMatch)
-                                                               Dim nextNumberObj = cmd.ExecuteScalar()
-
-                                                               ' ✅ Result sudah berupa angka, tinggal format
-                                                               Dim nextNumber As Integer = 0
-                                                               If nextNumberObj IsNot Nothing AndAlso Integer.TryParse(nextNumberObj.ToString(), nextNumber) Then
-                                                                   Return $"{prefixForMatch}-{nextNumber:0000}"
-                                                               Else
-                                                                   ' Fallback jika tidak ada data
-                                                                   Return $"{prefixForMatch}-0001"
-                                                               End If
-                                                           End Using
-                                                       End SyncLock
-
-                                                   Catch ex As Exception
-                                                       Debug.WriteLine($"Error in GenerateTransactionIdAsync_Internal: {ex.Message}")
-                                                       Return ""
-                                                   End Try
-                                               End Function)
-
-        ' Update UI di main thread (Invoke happens automatically dengan Async)
-        LblIdBayar.Text = If(String.IsNullOrEmpty(result), "", result)
-    End Function
 
     Private Function GetTransactionPrefix(transactionName As String) As String
         Select Case transactionName
@@ -897,15 +901,14 @@ Public Class FormKeuangan
             Case "PENGELUARAN" : Return "KL"
             Case "BIAYA" : Return "BY"
             Case "SETOR KE BOS" : Return "SB"
-            Case "BAYAR BON PRIBADI" : Return "BB"
             Case "PINDAH REKENING" : Return "PR"
+            Case "PINJAMAN SUPPLIER" : Return "PS"
+            Case "PINJAMAN PELANGGAN" : Return "PP"
             Case Else : Return "TR"
         End Select
     End Function
 
-    ' Perubahan: Memisahkan logika setup tooltip ke metode yang lebih kecil.
     Private Sub SetupTooltips()
-        ' Atur tampilan tooltip
         ToolTip1.IsBalloon = True
         ToolTip1.ToolTipIcon = ToolTipIcon.Info
         ToolTip1.ToolTipTitle = "Keterangan Menu"
@@ -918,44 +921,153 @@ Public Class FormKeuangan
         SetTooltip(BtnBiaya, "📑 JURNAL BIAYA USAHA", "Digunakan untuk mencatat biaya-biaya tetap atau rutin perusahaan. Contoh: gaji karyawan, sewa bulanan, biaya iklan.")
         SetTooltip(BtnPindahR, "🔁 PINDAH ANTAR REKENING / KAS", "Pindahkan dana antar akun, contoh: dari Kas ke Bank BCA atau antar bank.")
         SetTooltip(BtnSetorBos, "🏦 SETOR KAS KE BOS / PEMILIK", "Digunakan untuk mencatat setoran uang hasil usaha ke rekening pribadi pemilik. Tercatat sebagai pengurangan kas usaha dan pengambilan modal.")
+        SetTooltip(BtnPinjamSuplier, "🏢 PINJAMAN DARI SUPPLIER", "Catat pinjaman tunai yang diterima dari supplier. KAS bertambah, hutang ke supplier bertambah.")
+        SetTooltip(BtnPinjamPelanggan, "👤 PINJAMAN KE PELANGGAN", "Catat pinjaman tunai yang diberikan ke pelanggan. KAS berkurang, piutang ke pelanggan bertambah.")
     End Sub
 
     Private Sub SetTooltip(control As Control, title As String, text As String)
         ToolTip1.SetToolTip(control, $"{title}{Environment.NewLine}{Environment.NewLine}{text}")
     End Sub
 
-    ' Method untuk enable double buffering
-    Public Shared Sub EnableDoubleBuffering(ByVal dgv As DataGridView)
-        dgv.GetType().InvokeMember("DoubleBuffered", Reflection.BindingFlags.NonPublic Or Reflection.BindingFlags.Instance Or Reflection.BindingFlags.SetProperty, Nothing, dgv, New Object() {True})
+    Private Sub IsiComboBoxSupplier(cmb As ComboBox)
+        cmb.Items.Clear()
+        Using cmd As New MySqlCommand("SELECT KODE, NAMA FROM tbl_supliyer ORDER BY NAMA", conn)
+            Using rd As MySqlDataReader = cmd.ExecuteReader()
+                While rd.Read()
+                    cmb.Items.Add(rd("NAMA").ToString())
+                End While
+            End Using
+        End Using
     End Sub
+
+    Private Sub IsiComboBoxPelanggan(cmb As ComboBox)
+        cmb.Items.Clear()
+        Using cmd As New MySqlCommand("SELECT KODE, NAMA FROM tbl_pelanggan ORDER BY NAMA", conn)
+            Using rd As MySqlDataReader = cmd.ExecuteReader()
+                While rd.Read()
+                    cmb.Items.Add(rd("NAMA").ToString())
+                End While
+            End Using
+        End Using
+    End Sub
+
+    Private Sub CmbBantuKKeuangan_SelectedIndexChanged(sender As Object, e As EventArgs) Handles CmbBantuKKeuangan.SelectedIndexChanged
+        If CmbBantuKKeuangan.SelectedItem Is Nothing Then Return
+        If LblNamaTransaksi.Text = "PINJAMAN SUPPLIER" Then
+            Using cmd As New MySqlCommand("SELECT KODE FROM tbl_supliyer WHERE NAMA = @nama LIMIT 1", conn)
+                cmd.Parameters.AddWithValue("@nama", CmbBantuKKeuangan.SelectedItem.ToString())
+                Dim result = cmd.ExecuteScalar()
+                TxtBantuKKeuangan.Text = If(result IsNot Nothing AndAlso result IsNot DBNull.Value, result.ToString(), "")
+                TxtBantuKKeuanganNama.Text = CmbBantuKKeuangan.SelectedItem.ToString()
+            End Using
+        End If
+    End Sub
+
+    Private Sub CmbBantuDKeuangan_SelectedIndexChanged(sender As Object, e As EventArgs) Handles CmbBantuDKeuangan.SelectedIndexChanged
+        If CmbBantuDKeuangan.SelectedItem Is Nothing Then Return
+        If LblNamaTransaksi.Text = "PINJAMAN PELANGGAN" Then
+            Using cmd As New MySqlCommand("SELECT KODE FROM tbl_pelanggan WHERE NAMA = @nama LIMIT 1", conn)
+                cmd.Parameters.AddWithValue("@nama", CmbBantuDKeuangan.SelectedItem.ToString())
+                Dim result = cmd.ExecuteScalar()
+                TxtBantuDKeuangan.Text = If(result IsNot Nothing AndAlso result IsNot DBNull.Value, result.ToString(), "")
+                TxtBantuDKeuanganNama.Text = CmbBantuDKeuangan.SelectedItem.ToString()
+            End Using
+        End If
+    End Sub
+
+    ''' <summary>
+    ''' Update HutangAwal supplier atau pelanggan setelah simpan/hapus jurnal pinjaman.
+    ''' arah: +1 = tambah (simpan), -1 = kurangi (hapus)
+    ''' Dipanggil setelah SP jurnal berhasil COMMIT — pakai transaction baru.
+    ''' </summary>
+    Private Sub UpdateHutangAwalPinjaman(jenisTransaksi As String, nominal As Decimal, arah As Integer)
+        Dim kodeEntitas As String = ""
+
+        ' Ambil kode bantu dari combobox yang visible (supplier dari K, pelanggan dari D)
+        Select Case jenisTransaksi
+            Case "PINJAMAN SUPPLIER"
+                kodeEntitas = If(CmbBantuKKeuangan.Visible, TxtBantuKKeuangan.Text, "")
+            Case "PINJAMAN PELANGGAN"
+                kodeEntitas = If(CmbBantuDKeuangan.Visible, TxtBantuDKeuangan.Text, "")
+            Case Else
+                Return  ' Bukan jenis pinjaman, tidak perlu update
+        End Select
+
+        If String.IsNullOrEmpty(kodeEntitas) Then Return
+
+        Using transaction As MySqlTransaction = conn.BeginTransaction()
+            Try
+                Select Case jenisTransaksi
+                    Case "PINJAMAN SUPPLIER"
+                        Using cmd As New MySqlCommand(
+                            "UPDATE tbl_supliyer SET HutangAwal = HutangAwal + @delta WHERE Kode = @kode",
+                            conn, transaction)
+                            cmd.Parameters.AddWithValue("@delta", nominal * arah)
+                            cmd.Parameters.AddWithValue("@kode", kodeEntitas)
+                            cmd.ExecuteNonQuery()
+                        End Using
+                        UpdateHutangSupliyer(kodeEntitas, transaction)
+
+                    Case "PINJAMAN PELANGGAN"
+                        Using cmd As New MySqlCommand(
+                            "UPDATE tbl_pelanggan SET HutangAwal = HutangAwal + @delta WHERE Kode = @kode",
+                            conn, transaction)
+                            cmd.Parameters.AddWithValue("@delta", nominal * arah)
+                            cmd.Parameters.AddWithValue("@kode", kodeEntitas)
+                            cmd.ExecuteNonQuery()
+                        End Using
+                        UpdatePiutangPelanggan(kodeEntitas, transaction)
+                End Select
+
+                transaction.Commit()
+            Catch ex As Exception
+                transaction.Rollback()
+                MessageBox.Show($"Gagal update saldo pinjaman: {ex.Message}", "Peringatan",
+                    MessageBoxButtons.OK, MessageBoxIcon.Warning)
+            End Try
+        End Using
+    End Sub
+
 #End Region
 
 #Region "Keyboard Shortcuts"
-    ' Perubahan: Tidak ada perubahan signifikan, logikanya sudah bagus.
     Protected Overrides Function ProcessCmdKey(ByRef msg As Message, ByVal keyData As Keys) As Boolean
         Select Case keyData
             Case Keys.F2
+                BtnPemasukan.PerformClick()
+                Return True
+            Case Keys.F3
+                BtnPengeluaran.PerformClick()
+                Return True
+            Case Keys.F4
+                BtnBiaya.PerformClick()
+                Return True
+            Case Keys.F5
+                BtnPindahR.PerformClick()
+                Return True
+            Case Keys.F6
+                BtnSetorBos.PerformClick()
+                Return True
+            Case Keys.F7
+                BtnPinjamSuplier.PerformClick()
+                Return True
+            Case Keys.F10
+                BtnPinjamPelanggan.PerformClick()
+                Return True
+            Case Keys.F8
                 If BtnSimpanKeuangan.Visible AndAlso BtnSimpanKeuangan.Enabled Then
                     BtnSimpanKeuangan.PerformClick()
                     Return True
                 End If
-            Case Keys.F3
-                If BtnEditKeuangan.Visible AndAlso BtnEditKeuangan.Enabled Then
-                    BtnEditKeuangan.PerformClick()
-                    Return True
-                End If
-            Case Keys.F5
-                LoadDataKeuangan() ' Mengganti DGVTAMPILDATAKEUANGAN()
-                Return True
-            Case Keys.Escape
+            Case Keys.F9
                 If BtnBatalKeuangan.Visible Then
                     BtnBatalKeuangan.PerformClick()
-                Else
-                    BTNKeluar.PerformClick()
+                    Return True
                 End If
+            Case Keys.Escape
+                BTNKeluar.PerformClick()
                 Return True
             Case Keys.Enter
-                ' Handle Enter key untuk navigasi
                 If ActiveControl Is TxtUraianKeuangan Then
                     CmbDebetKeuangan.Focus()
                     Return True
@@ -972,10 +1084,8 @@ Public Class FormKeuangan
                     End If
                     Return True
                 ElseIf ActiveControl Is TxtNominalKeuangan Then
-                    If BtnSimpanKeuangan.Visible Then
+                    If BtnSimpanKeuangan.Visible AndAlso BtnSimpanKeuangan.Enabled Then
                         BtnSimpanKeuangan.PerformClick()
-                    ElseIf BtnEditKeuangan.Visible Then
-                        BtnEditKeuangan.PerformClick()
                     End If
                     Return True
                 End If

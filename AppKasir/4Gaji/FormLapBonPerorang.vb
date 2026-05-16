@@ -1,9 +1,10 @@
-﻿Imports System.Globalization
+Imports System.Globalization
 Imports Microsoft.Reporting.WinForms
 
 Public Class FormLapBonPerorang
 
     Private Sub FormLapBonPerorang_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
+        ModuleTheme.TerapkanTheme(Me)
         AmbilDataKaryawan()
 
 
@@ -18,7 +19,7 @@ Public Class FormLapBonPerorang
     Private Sub AmbilDataKaryawan()
         CmbNama.Items.Clear()
         ' Query untuk mengambil akun KAS atau BANK
-        Dim queryArmada As String = "SELECT Nama FROM tbl_Karyawan ORDER BY Nama ASC"
+        Dim queryArmada As String = "SELECT Nama FROM tbl_Karyawan WHERE Status = 'Aktif' ORDER BY Nama ASC"
         Using cmd As New MySqlCommand(queryArmada, conn)
             Using rd As MySqlDataReader = cmd.ExecuteReader()
                 If rd.HasRows Then
@@ -75,7 +76,7 @@ Public Class FormLapBonPerorang
             cmdDebet.Parameters.AddWithValue("@TANGGAL", tanggal.ToString("yyyy-MM-dd HH:mm:ss"))
             Using rdDebet As MySqlDataReader = cmdDebet.ExecuteReader()
                 If rdDebet.Read() Then
-                    NominalDebet = If(Not rdDebet.IsDBNull(rdDebet.GetOrdinal("NominalDebet")), Convert.ToDecimal(rdDebet("NominalDebet")), 0)
+                    NominalDebet = ModuleAngka.SafeGetValue(Of Decimal)(rdDebet, "NominalDebet", 0D)
                 End If
             End Using
         End Using
@@ -87,7 +88,7 @@ Public Class FormLapBonPerorang
             cmdKredit.Parameters.AddWithValue("@TANGGAL", tanggal.ToString("yyyy-MM-dd HH:mm:ss"))
             Using rdKredit As MySqlDataReader = cmdKredit.ExecuteReader()
                 If rdKredit.Read() Then
-                    NominalKredit = If(Not rdKredit.IsDBNull(rdKredit.GetOrdinal("NominalKredit")), Convert.ToDecimal(rdKredit("NominalKredit")), 0)
+                    NominalKredit = ModuleAngka.SafeGetValue(Of Decimal)(rdKredit, "NominalKredit", 0D)
                 End If
             End Using
         End Using
@@ -138,7 +139,7 @@ Public Class FormLapBonPerorang
                     {"TANGGAL", Convert.ToDateTime(rd("TANGGAL"))},
                     {"JENIS", rd("JENIS").ToString()},
                     {"KETERANGAN", rd("KETERANGAN").ToString()},
-                    {"NOMINAL", If(rd("NOMINAL") IsNot DBNull.Value AndAlso Convert.ToDecimal(rd("NOMINAL")) <> 0, Convert.ToDecimal(rd("NOMINAL")), 0D)}
+                    {"NOMINAL", ModuleAngka.SafeGetValue(Of Decimal)(rd, "NOMINAL", 0D)}
                 }
                     dataList.Add(data)
                 End While
@@ -193,8 +194,8 @@ Public Class FormLapBonPerorang
                     While rd.Read()
                         Dim data As New Dictionary(Of String, Object) From {
                         {"NO", rd("NO")},
-                        {"DEBET", If(Not rd.IsDBNull(rd.GetOrdinal("DEBET")), rd.GetDecimal(rd.GetOrdinal("DEBET")), 0D)},
-                        {"KREDIT", If(Not rd.IsDBNull(rd.GetOrdinal("KREDIT")), rd.GetDecimal(rd.GetOrdinal("KREDIT")), 0D)}
+                        {"DEBET", ModuleAngka.SafeGetValue(Of Decimal)(rd, "DEBET", 0D)},
+                        {"KREDIT", ModuleAngka.SafeGetValue(Of Decimal)(rd, "KREDIT", 0D)}
                     }
                         dataList.Add(data)
                     End While
@@ -221,7 +222,7 @@ Public Class FormLapBonPerorang
 
             ' Update saldo pada baris yang sesuai di Temp_Bon_Karyawan
             Dim updateQuery As String = "UPDATE Temp_Bon_Karyawan SET SALDO = @SALDO WHERE NO = @NO"
-            Using cmdUpdate As New MySqlCommand(updateQuery, conn, transaction)
+            Using cmdUpdate As New MySqlCommand(updateQuery, conn)
                 cmdUpdate.Parameters.AddWithValue("@SALDO", saldoSekarang)
                 cmdUpdate.Parameters.AddWithValue("@NO", no)
                 cmdUpdate.ExecuteNonQuery()
@@ -269,7 +270,7 @@ Public Class FormLapBonPerorang
         parameters.Add(New Microsoft.Reporting.WinForms.ReportParameter("NamaPerusahaan", NAMA_PERUSAHAAN))
         parameters.Add(New Microsoft.Reporting.WinForms.ReportParameter("Periode", String.Format("Periode {0} {1} {2} S/d {3} {4} {5}", tanggalawal, namaBulanawal, tahunawal, tanggal, namaBulan, tahun)))
         parameters.Add(New Microsoft.Reporting.WinForms.ReportParameter("NamaKaryawan", String.Format("{0} {1}", LblKode.Text, CmbNama.Text)))
-        parameters.Add(New Microsoft.Reporting.WinForms.ReportParameter("User", FormUtama.SLogin.Text))
+        parameters.Add(New Microsoft.Reporting.WinForms.ReportParameter("User", FormUtama.StatusNamaUser.Text))
 
         ' Set parameters ke ReportViewer
         ReportViewer1.LocalReport.SetParameters(parameters)
@@ -279,5 +280,11 @@ Public Class FormLapBonPerorang
 
     End Sub
 
+
+    Private Sub FormLapBonPerorang_KeyDown(sender As Object, e As KeyEventArgs) Handles MyBase.KeyDown
+        Select Case e.KeyCode
+            Case Keys.F5 : BtnTampilBB.PerformClick()
+        End Select
+    End Sub
 
 End Class

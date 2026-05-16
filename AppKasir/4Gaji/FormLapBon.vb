@@ -1,8 +1,9 @@
-﻿Imports Microsoft.Reporting.WinForms
+Imports Microsoft.Reporting.WinForms
 
 Public Class FormLapBon
 
     Private Sub FormLapBon_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
+        ModuleTheme.TerapkanTheme(Me)
         Me.ReportViewer1.RefreshReport()
         TampilkanDataBon()
     End Sub
@@ -12,7 +13,7 @@ Public Class FormLapBon
         Dim ds As New DataSet()
 
         ' Create the SQL query
-        Dim sql As String = "SELECT Nama, Jabatan, SaldoAkhir FROM tbl_karyawan WHERE SaldoAkhir <> 0"
+        Dim sql As String = "SELECT Nama, Jabatan, SaldoAkhir FROM tbl_karyawan WHERE SaldoAkhir <> 0 ORDER BY Nama"
 
         ' Using block to ensure the resources are disposed properly
         Using cmd As New MySqlCommand(sql, conn)
@@ -28,7 +29,7 @@ Public Class FormLapBon
         ' Create a list to hold the report parameters
         Dim reportParams As New List(Of ReportParameter) From {
             New ReportParameter("TOKO", NAMA_PERUSAHAAN),
-            New ReportParameter("USER", FormUtama.SLogin.Text)
+            New ReportParameter("USER", FormUtama.StatusNamaUser.Text)
         }
 
         ' Clear the existing DataSources

@@ -1,4 +1,4 @@
-﻿Imports System.Drawing
+Imports System.Drawing
 
 
 
@@ -194,6 +194,7 @@ Partial Class FormGrafikLaba
         '
         'FormGrafikLaba
         '
+        Me.KeyPreview = True
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.BackColor = System.Drawing.SystemColors.ActiveCaptionText
@@ -221,3 +222,4 @@ Partial Class FormGrafikLaba
     Friend WithEvents Panel1 As Panel
     Friend WithEvents Chart2 As DataVisualization.Charting.Chart
 End Class
+

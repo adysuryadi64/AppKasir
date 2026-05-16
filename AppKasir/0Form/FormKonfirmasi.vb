@@ -1,4 +1,4 @@
-﻿Public Class FormKonfirmasi
+Public Class FormKonfirmasi
 
     Public BtnCloseClicked As Boolean = False
 
@@ -14,6 +14,8 @@
 
 
     Private Sub Konfirmasi_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
-
+        ModuleTheme.TerapkanTheme(Me)
+        ' Panel1/5 = area input (otomatis biru muda via nama PanelInput*)
+        ' Rename Panel1/5 -> PanelInput untuk tema otomatis
     End Sub
 End Class

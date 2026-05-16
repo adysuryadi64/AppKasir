@@ -1,5 +1,6 @@
-﻿Public Class FormMasterGaji
+Public Class FormMasterGaji
     Private Sub FormMasterGaji_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
+        ModuleTheme.TerapkanTheme(Me)
         AmbildataMasterGaji()
     End Sub
 
@@ -57,6 +58,52 @@
 
             Using updateCmd As New MySqlCommand(updateQuery, conn)
                 AddParameters(updateCmd)
+
+                ' ========================================
+                ' START: Audit Trail - Edit Master Gaji
+                ' ========================================
+                Dim sbSnapshot As New System.Text.StringBuilder()
+                Using oldCmd As New MySqlCommand(
+                    "SELECT Kode, Hari_kerja, Prosentase_komisi, Bonus_Supir, Bonus_Helper, " &
+                    "Bonus_Transport, Bonus_makan, Bonus_Lembur, Potongan_Absen " &
+                    "FROM tbl_Gaji WHERE Kode = @Kode LIMIT 1", conn)
+                    oldCmd.Parameters.AddWithValue("@Kode", LblNomor.Text)
+                    Using oldRd As MySqlDataReader = oldCmd.ExecuteReader()
+                        If oldRd.Read() Then
+                            Dim newHari As Integer = ModuleAngka.ParseInteger(TxtHariKerja.Text)
+                            Dim newPros As Decimal = ModuleAngka.ParseDecimal(TxtProsentase.Text)
+                            Dim newSupir As Decimal = ModuleAngka.ParseDecimal(TxtSupir.Text)
+                            Dim newHelper As Decimal = ModuleAngka.ParseDecimal(TxtHelper.Text)
+                            Dim newTransport As Decimal = ModuleAngka.ParseDecimal(TxtTransport.Text)
+                            Dim newMakan As Decimal = ModuleAngka.ParseDecimal(TxtMakan.Text)
+                            Dim newLembur As Decimal = ModuleAngka.ParseDecimal(TxtLembur.Text)
+                            Dim newAbsen As Decimal = ModuleAngka.ParseDecimal(TxtAbsen.Text)
+
+                            sbSnapshot.AppendLine($"Kode Gaji: {oldRd("Kode")}")
+                            sbSnapshot.AppendLine($"Hari Kerja (sebelum): {oldRd("Hari_kerja")}")
+                            sbSnapshot.AppendLine($"Hari Kerja (sesudah): {newHari}")
+                            sbSnapshot.AppendLine($"Prosentase Komisi (sebelum): {ModuleAngka.FormatRupiah(ModuleAngka.ParseDecimal(oldRd("Prosentase_komisi")))}")
+                            sbSnapshot.AppendLine($"Prosentase Komisi (sesudah): {ModuleAngka.FormatRupiah(newPros)}")
+                            sbSnapshot.AppendLine($"Bonus Supir (sebelum): {ModuleAngka.FormatRupiah(ModuleAngka.ParseDecimal(oldRd("Bonus_Supir")))}")
+                            sbSnapshot.AppendLine($"Bonus Supir (sesudah): {ModuleAngka.FormatRupiah(newSupir)}")
+                            sbSnapshot.AppendLine($"Bonus Helper (sebelum): {ModuleAngka.FormatRupiah(ModuleAngka.ParseDecimal(oldRd("Bonus_Helper")))}")
+                            sbSnapshot.AppendLine($"Bonus Helper (sesudah): {ModuleAngka.FormatRupiah(newHelper)}")
+                            sbSnapshot.AppendLine($"Bonus Transport (sebelum): {ModuleAngka.FormatRupiah(ModuleAngka.ParseDecimal(oldRd("Bonus_Transport")))}")
+                            sbSnapshot.AppendLine($"Bonus Transport (sesudah): {ModuleAngka.FormatRupiah(newTransport)}")
+                            sbSnapshot.AppendLine($"Bonus Makan (sebelum): {ModuleAngka.FormatRupiah(ModuleAngka.ParseDecimal(oldRd("Bonus_makan")))}")
+                            sbSnapshot.AppendLine($"Bonus Makan (sesudah): {ModuleAngka.FormatRupiah(newMakan)}")
+                            sbSnapshot.AppendLine($"Bonus Lembur (sebelum): {ModuleAngka.FormatRupiah(ModuleAngka.ParseDecimal(oldRd("Bonus_Lembur")))}")
+                            sbSnapshot.AppendLine($"Bonus Lembur (sesudah): {ModuleAngka.FormatRupiah(newLembur)}")
+                            sbSnapshot.AppendLine($"Potongan Absen (sebelum): {ModuleAngka.FormatRupiah(ModuleAngka.ParseDecimal(oldRd("Potongan_Absen")))}")
+                            sbSnapshot.AppendLine($"Potongan Absen (sesudah): {ModuleAngka.FormatRupiah(newAbsen)}")
+                        End If
+                    End Using
+                End Using
+                ModuleAuditTrail.CatatAuditMaster("GAJI:" & LblNomor.Text, "EDIT", "Master Gaji", sbSnapshot.ToString())
+                ' ========================================
+                ' END: Audit Trail - Edit Master Gaji
+                ' ========================================
+
                 updateCmd.ExecuteNonQuery()
             End Using
 
@@ -77,20 +124,16 @@
 
     ' Metode tambahan untuk menambahkan parameter ke perintah SQL
     Private Sub AddParameters(ByRef cmd As MySqlCommand)
-        Dim hariKerja As Integer
-        Dim prosentaseKomisi, bonusSupir, bonusHelper, bonusTransport, bonusMakan, bonusLembur, potonganAbsen, potonganAbsenKhusus, potonganTerlambat As Decimal
-
-        ' Konversi nilai input
-        Integer.TryParse(TxtHariKerja.Text, hariKerja)
-        Decimal.TryParse(TxtProsentase.Text, prosentaseKomisi)
-        Decimal.TryParse(TxtSupir.Text, bonusSupir)
-        Decimal.TryParse(TxtHelper.Text, bonusHelper)
-        Decimal.TryParse(TxtTransport.Text, bonusTransport)
-        Decimal.TryParse(TxtMakan.Text, bonusMakan)
-        Decimal.TryParse(TxtLembur.Text, bonusLembur)
-        Decimal.TryParse(TxtAbsen.Text, potonganAbsen)
-        Decimal.TryParse(TxtAbsenKhusus.Text, potonganAbsenKhusus)
-        Decimal.TryParse(TxtTelat.Text, potonganTerlambat)
+        Dim hariKerja As Integer = ModuleAngka.ParseInteger(TxtHariKerja.Text)
+        Dim prosentaseKomisi As Decimal = ModuleAngka.ParseDecimal(TxtProsentase.Text)
+        Dim bonusSupir As Decimal = ModuleAngka.ParseDecimal(TxtSupir.Text)
+        Dim bonusHelper As Decimal = ModuleAngka.ParseDecimal(TxtHelper.Text)
+        Dim bonusTransport As Decimal = ModuleAngka.ParseDecimal(TxtTransport.Text)
+        Dim bonusMakan As Decimal = ModuleAngka.ParseDecimal(TxtMakan.Text)
+        Dim bonusLembur As Decimal = ModuleAngka.ParseDecimal(TxtLembur.Text)
+        Dim potonganAbsen As Decimal = ModuleAngka.ParseDecimal(TxtAbsen.Text)
+        Dim potonganAbsenKhusus As Decimal = ModuleAngka.ParseDecimal(TxtAbsenKhusus.Text)
+        Dim potonganTerlambat As Decimal = ModuleAngka.ParseDecimal(TxtTelat.Text)
 
         ' Tambahkan parameter
         cmd.Parameters.AddWithValue("@Kode", LblNomor.Text)

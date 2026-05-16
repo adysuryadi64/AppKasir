@@ -1,7 +1,10 @@
-﻿Public Class NotifikasiJatuhTempo
+Public Class NotifikasiJatuhTempo
     Private Const WM_NCLBUTTONDOWN As Integer = &HA1
     Private Const HTCAPTION As Integer = &H2
     Private Sub NotifikasiJatuhTempo_Load(ByVal sender As Object, ByVal e As EventArgs) Handles MyBase.Load
+        ModuleTheme.TerapkanTheme(Me)
+        ' Panel1-4 = border notifikasi biru (SteelBlue)
+        ModuleTheme.SetWarnaPanelNotifBiru(Panel1, Panel2, Panel3, Panel4)
         JumlahJatuhTempo()
     End Sub
 
@@ -12,7 +15,7 @@
 
         ' Mendapatkan tanggal dari form utama
         Dim tanggalJatuhTempo As DateTime = Now
-        If DateTime.TryParse(FormUtama.STanggal.Text, tanggalJatuhTempo) Then
+        If DateTime.TryParse(FormUtama.StatusTanggal.Text, tanggalJatuhTempo) Then
             ' Mengatur waktu menjadi akhir hari
             tanggalJatuhTempo = tanggalJatuhTempo.AddDays(1).AddTicks(-1)
 

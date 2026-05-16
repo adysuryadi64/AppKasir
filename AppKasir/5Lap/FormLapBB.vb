@@ -1,8 +1,9 @@
-﻿Imports System.Globalization
+Imports System.Globalization
 Imports Microsoft.Reporting.WinForms
 
 Public Class FormLapBB
     Private Sub FormLapBB_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
+        ModuleTheme.TerapkanTheme(Me)
         'ReportViewer3.LocalReport.DataSources.Clear()
         Rekening()
     End Sub
@@ -74,7 +75,7 @@ Public Class FormLapBB
                     ' Simpan data dari reader ke dalam dictionary
                     saldoAwalData.Add(New Dictionary(Of String, Object) From {
                     {"AkunDK", rd("Akun_DK").ToString()},
-                    {"SaldoAwal", If(rd("Saldo_Awal") IsNot DBNull.Value, Convert.ToDecimal(rd("Saldo_Awal")), 0)}
+                    {"SaldoAwal", ModuleAngka.SafeGetValue(Of Decimal)(rd, "Saldo_Awal", 0D)}
                 })
                 End While
             End Using
@@ -92,7 +93,7 @@ Public Class FormLapBB
 
             Using rdDebet As MySqlDataReader = cmdDebet.ExecuteReader()
                 If rdDebet.Read() Then
-                    NominalDebet = If(Not rdDebet.IsDBNull(rdDebet.GetOrdinal("NOMINAL_DEBET")), Convert.ToDecimal(rdDebet("NOMINAL_DEBET")), 0)
+                    NominalDebet = ModuleAngka.SafeGetValue(Of Decimal)(rdDebet, "NOMINAL_DEBET", 0D)
                 End If
             End Using
         End Using
@@ -106,7 +107,7 @@ Public Class FormLapBB
 
             Using rdKredit As MySqlDataReader = cmdKredit.ExecuteReader()
                 If rdKredit.Read() Then
-                    NominalKredit = If(Not rdKredit.IsDBNull(rdKredit.GetOrdinal("NOMINAL_KREDIT")), Convert.ToDecimal(rdKredit("NOMINAL_KREDIT")), 0)
+                    NominalKredit = ModuleAngka.SafeGetValue(Of Decimal)(rdKredit, "NOMINAL_KREDIT", 0D)
                 End If
             End Using
         End Using
@@ -161,7 +162,7 @@ Public Class FormLapBB
                     row("URAIAN") = rd("URAIAN")
                     row("NOMOR_AKUN_D") = rd("NOMOR_AKUN_D")
                     row("NOMOR_AKUN_K") = rd("NOMOR_AKUN_K")
-                    row("NOMINAL") = If(rd("NOMINAL") IsNot DBNull.Value, Convert.ToDecimal(rd("NOMINAL")), 0)
+                    row("NOMINAL") = ModuleAngka.SafeGetValue(Of Decimal)(rd, "NOMINAL", 0D)
 
                     ' Tambahkan row ke dalam list
                     dataList.Add(row)
@@ -223,19 +224,9 @@ Public Class FormLapBB
             Using rd As MySqlDataReader = cmdSelect.ExecuteReader()
                 While rd.Read()
                     Dim row As New Dictionary(Of String, Object)
-                    row("NOMOR") = Convert.ToInt32(rd("NOMOR"))
-
-                    If Not IsDBNull(rd("DEBET")) Then
-                        row("DEBET") = Convert.ToDecimal(rd("DEBET"))
-                    Else
-                        row("DEBET") = 0D
-                    End If
-
-                    If Not IsDBNull(rd("KREDIT")) Then
-                        row("KREDIT") = Convert.ToDecimal(rd("KREDIT"))
-                    Else
-                        row("KREDIT") = 0D
-                    End If
+                    row("NOMOR") = ModuleAngka.SafeGetValue(Of Integer)(rd, "NOMOR", 0)
+                    row("DEBET") = ModuleAngka.SafeGetValue(Of Decimal)(rd, "DEBET", 0D)
+                    row("KREDIT") = ModuleAngka.SafeGetValue(Of Decimal)(rd, "KREDIT", 0D)
 
                     ' Tambahkan row ke dalam list
                     dataList.Add(row)
@@ -328,5 +319,11 @@ Public Class FormLapBB
 
 
 
+
+    Private Sub FormLapBB_KeyDown(sender As Object, e As KeyEventArgs) Handles MyBase.KeyDown
+        Select Case e.KeyCode
+            Case Keys.F5 : BtnTampilBB.PerformClick()
+        End Select
+    End Sub
 
 End Class

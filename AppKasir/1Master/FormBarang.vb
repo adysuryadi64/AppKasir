@@ -1,14 +1,12 @@
-﻿Imports System.Globalization
 Imports System.IO
-Imports System.Reflection
 
 Public Class FormBarang
     Private dragging As Boolean
     Private offsetX As Integer
     Private offsetY As Integer
 
-    ' Event untuk menangani ketika mouse ditekan pada Label26
-    Private Sub Label26_MouseDown(sender As Object, e As MouseEventArgs) Handles Label26.MouseDown
+    ' Event untuk menangani ketika mouse ditekan pada LblHeaderDetailBarang
+    Private Sub Label26_MouseDown(sender As Object, e As MouseEventArgs) Handles LblHeaderDetailBarang.MouseDown
         If e.Button = MouseButtons.Left Then
             dragging = True
             offsetX = e.X
@@ -16,21 +14,21 @@ Public Class FormBarang
         End If
     End Sub
 
-    ' Event untuk menangani ketika mouse dilepas pada Label26
-    Private Sub Label26_MouseUp(sender As Object, e As MouseEventArgs) Handles Label26.MouseUp
+    ' Event untuk menangani ketika mouse dilepas pada LblHeaderDetailBarang
+    Private Sub Label26_MouseUp(sender As Object, e As MouseEventArgs) Handles LblHeaderDetailBarang.MouseUp
         dragging = False
     End Sub
 
-    ' Event untuk menangani ketika mouse digerakkan pada Label26
-    Private Sub Label26_MouseMove(sender As Object, e As MouseEventArgs) Handles Label26.MouseMove
+    ' Event untuk menangani ketika mouse digerakkan pada LblHeaderDetailBarang
+    Private Sub Label26_MouseMove(sender As Object, e As MouseEventArgs) Handles LblHeaderDetailBarang.MouseMove
         If dragging Then
             ' Memindahkan posisi PanelDetailBarang, bukan Form
-            PanelDetailBarang.Location = New Point(PanelDetailBarang.Location.X + e.X - offsetX, PanelDetailBarang.Location.Y + e.Y - offsetY)
+            PanelGrid.Location = New Point(PanelGrid.Location.X + e.X - offsetX, PanelGrid.Location.Y + e.Y - offsetY)
         End If
     End Sub
 
     ' Event untuk menangani ketika mouse ditekan pada PanelDetailBarang
-    Private Sub PanelDetailBarang_MouseDown(sender As Object, e As MouseEventArgs) Handles PanelDetailBarang.MouseDown
+    Private Sub PanelDetailBarang_MouseDown(sender As Object, e As MouseEventArgs) Handles PanelGrid.MouseDown
         If e.Button = MouseButtons.Left Then
             dragging = True
             offsetX = e.X
@@ -39,15 +37,15 @@ Public Class FormBarang
     End Sub
 
     ' Event untuk menangani ketika mouse dilepas pada PanelDetailBarang
-    Private Sub PanelDetailBarang_MouseUp(sender As Object, e As MouseEventArgs) Handles PanelDetailBarang.MouseUp
+    Private Sub PanelDetailBarang_MouseUp(sender As Object, e As MouseEventArgs) Handles PanelGrid.MouseUp
         dragging = False
     End Sub
 
     ' Event untuk menangani ketika mouse digerakkan pada PanelDetailBarang
-    Private Sub PanelDetailBarang_MouseMove(sender As Object, e As MouseEventArgs) Handles PanelDetailBarang.MouseMove
+    Private Sub PanelDetailBarang_MouseMove(sender As Object, e As MouseEventArgs) Handles PanelGrid.MouseMove
         If dragging Then
             ' Memindahkan posisi PanelDetailBarang, bukan Form
-            PanelDetailBarang.Location = New Point(PanelDetailBarang.Location.X + e.X - offsetX, PanelDetailBarang.Location.Y + e.Y - offsetY)
+            PanelGrid.Location = New Point(PanelGrid.Location.X + e.X - offsetX, PanelGrid.Location.Y + e.Y - offsetY)
         End If
     End Sub
 
@@ -55,20 +53,32 @@ Public Class FormBarang
 
     ' Handler untuk event GotFocus pada TextBox
     Private Sub TextCari_GotFocus(ByVal sender As Object, ByVal e As EventArgs) Handles TxtCari.GotFocus
-        ' Ubah warna latar belakang saat TextBox mendapatkan fokus
-        PanelCari.BackColor = Color.Yellow ' Ganti warna fokus sesuai kebutuhan
+        ' PanelCari fokus kuning
+        ModuleTheme.SetPanelCariFocus(PanelCari, True)
     End Sub
 
     ' Handler untuk event LostFocus pada TextBox
     Private Sub TextCari_LostFocus(ByVal sender As Object, ByVal e As EventArgs) Handles TxtCari.LostFocus
-        ' Kembalikan warna latar belakang ke warna asli saat TextBox kehilangan fokus
-        PanelCari.BackColor = Color.White
+        ' PanelCari kembali ke warna normal
+        ModuleTheme.SetPanelCariFocus(PanelCari, False)
     End Sub
 
     Private Sub Form_Barang_Load(ByVal sender As Object, ByVal e As EventArgs) Handles MyBase.Load
+        ModuleTheme.TerapkanTheme(Me)
+        ' Label peringatan stok (DarkRed)
+        ModuleTheme.SetWarnaLabelWarning(Label22, Label23, Label24)
+        ' Sub-header panel floating - rename ke LblHeader* untuk tema otomatis
+        ' LblJudulStok, LblHeaderDetailBarang -> LblHeaderStok, LblHeaderDetail
+        ' ContextMenuStrip tidak ada di Controls — terapkan manual
+        ContextMenuStrip1.BackColor = ModuleTheme.C(ModuleTheme.L_Surface, ModuleTheme.D_Surface)
+        ContextMenuStrip1.ForeColor = ModuleTheme.C(ModuleTheme.L_SurfaceFore, ModuleTheme.D_SurfaceFore)
+        For Each item As ToolStripItem In ContextMenuStrip1.Items
+            item.BackColor = ModuleTheme.C(ModuleTheme.L_Surface, ModuleTheme.D_Surface)
+            item.ForeColor = ModuleTheme.C(ModuleTheme.L_SurfaceFore, ModuleTheme.D_SurfaceFore)
+        Next
         Me.Cursor = Cursors.WaitCursor
-        PAnelTambahKurang.Visible = False
-        PanelDetailBarang.Visible = False
+        PanelInput.Visible = False
+        PanelGrid.Visible = False
 
         Dim HABarang As Boolean() = ModulHakAkses.BacaHakAksesDariCache("Barang")
         ' Terapkan nilai hak akses ke tombol-tombol
@@ -121,15 +131,15 @@ Public Class FormBarang
         DGBarang.Columns.Clear()
 
         Dim searchText As String = "%" & TxtCari.Text & "%"
-        Dim query As String = "SELECT ID_BARANG, NAMA_BARANG, NAMA_KATEGORI, NAMA_SUPLIYER, HARGA_BELI, HARGA_BELI_TERAKHIR, " &
+        Dim query As String = "SELECT ID_BARANG, NAMA_BARANG, NAMA_KATEGORI, NAMA_MERK, NAMA_SUPLIYER, HARGA_BELI, HARGA_BELI_TERAKHIR, " &
                        "SATUAN_UMUM_KECIL, SATUAN_UMUM_SEDANG, SATUAN_UMUM_BESAR, " &
                        "HARGA_JUAL_UMUM_KECIL, HARGA_JUAL_UMUM_SEDANG, HARGA_JUAL_UMUM_BESAR, " &
                        "SATUAN_PARTAI_KECIL, SATUAN_PARTAI_SEDANG, SATUAN_PARTAI_BESAR, " &
                        "HARGA_JUAL_PARTAI_KECIL, HARGA_JUAL_PARTAI_SEDANG, HARGA_JUAL_PARTAI_BESAR, STOK_TOKO, " &
-                       "STOK_GUDANG, SATUAN_STOK, SATUAN_ISI_STOK " &
+                       "STOK_GUDANG, SATUAN_STOK, SATUAN_ISI_STOK, STATUS " &
                        "FROM tbl_barang " &
                        "WHERE ID_BARANG LIKE @SearchText OR NAMA_BARANG LIKE @SearchText OR NAMA_KATEGORI LIKE @SearchText " &
-                       "OR NAMA_SUPLIYER LIKE @SearchText OR BARCODE_KECIL LIKE @SearchText OR BARCODE_SEDANG LIKE @SearchText " &
+                       "OR NAMA_MERK LIKE @SearchText OR NAMA_SUPLIYER LIKE @SearchText OR BARCODE_KECIL LIKE @SearchText OR BARCODE_SEDANG LIKE @SearchText " &
                        "OR BARCODE_BESAR LIKE @SearchText " &
                        "ORDER BY NAMA_BARANG ASC"
 
@@ -153,6 +163,7 @@ Public Class FormBarang
             .Columns("ID_BARANG").HeaderText = "KODE"
             .Columns("NAMA_BARANG").HeaderText = "NAMA BARANG"
             .Columns("NAMA_KATEGORI").HeaderText = "KATEGORI"
+            .Columns("NAMA_MERK").HeaderText = "MERK"
             .Columns("NAMA_SUPLIYER").HeaderText = "SUPLIYER"
             .Columns("HARGA_BELI").HeaderText = "HPP"
             .Columns("HARGA_BELI_TERAKHIR").HeaderText = "BELI TERAKHIR"
@@ -172,6 +183,7 @@ Public Class FormBarang
             .Columns("STOK_GUDANG").HeaderText = "STOK GUDANG"
             .Columns("SATUAN_STOK").HeaderText = "SATUAN"
             .Columns("SATUAN_ISI_STOK").HeaderText = "ISI"
+            .Columns("STATUS").HeaderText = "STATUS"
 
 
             ' Daftar nama kolom yang akan diatur format dan alignment 
@@ -188,30 +200,19 @@ Public Class FormBarang
             }
 
             ' Loop melalui kolom dan atur format serta alignment
-            For Each columnName As String In columnsToFormat
-                If .Columns.Contains(columnName) Then
-                    ' Gunakan format kustom untuk menampilkan angka di belakang koma jika bukan 0
-                    .Columns(columnName).DefaultCellStyle.Format = "#,0.##"
-                    .Columns(columnName).DefaultCellStyle.FormatProvider = CultureInfo.GetCultureInfo("id-ID")
-                    .Columns(columnName).DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight
-                End If
-            Next
+            ModuleAngka.TerapkanFormatKolomAngka(DGBarang, columnsToFormat)
 
             .Columns("ID_BARANG").Frozen = True
             .Columns("NAMA_BARANG").Frozen = True
 
-            .EnableHeadersVisualStyles = False
-            .ColumnHeadersDefaultCellStyle.BackColor = Color.Gray
-            ' Set alternating row style
-            .AlternatingRowsDefaultCellStyle.BackColor = Color.LightGray
+            .RowHeadersVisible = True
+            .RowHeadersWidth = 45
 
             ' Set visual style
             .BorderStyle = BorderStyle.FixedSingle
-            .GridColor = Color.Silver
-            .BackgroundColor = Color.White
 
             ' Enable double buffering to reduce flickering
-            DataGridViewExtension.EnableDoubleBuffering(DGBarang)
+            ModuleTheme.ApplyThemeDataGridView(DGBarang)
 
             Dim HargaBeli As Boolean() = ModulHakAkses.BacaHakAksesDariCache("Harga Beli")
             ' Terapkan nilai hak akses ke tombol-tombol
@@ -219,11 +220,21 @@ Public Class FormBarang
         End With
     End Sub
 
-    Public Class DataGridViewExtension
-        Public Shared Sub EnableDoubleBuffering(ByVal dataGridView As DataGridView)
-            dataGridView.GetType().InvokeMember("DoubleBuffered", BindingFlags.NonPublic Or BindingFlags.Instance Or BindingFlags.SetProperty, Nothing, dataGridView, New Object() {True})
-        End Sub
-    End Class
+    Private Sub DGBarang_RowPostPaint(ByVal sender As Object, ByVal e As DataGridViewRowPostPaintEventArgs) Handles DGBarang.RowPostPaint
+        ' Gambar nomor urut di RowHeader
+        Dim nomor As String = (e.RowIndex + 1).ToString()
+        Dim centerFormat As New StringFormat() With {
+            .Alignment = StringAlignment.Center,
+            .LineAlignment = StringAlignment.Center
+        }
+        Dim headerBounds As New Rectangle(
+            e.RowBounds.Left,
+            e.RowBounds.Top,
+            DGBarang.RowHeadersWidth,
+            e.RowBounds.Height)
+        e.Graphics.DrawString(nomor, DGBarang.DefaultCellStyle.Font,
+                              SystemBrushes.ControlText, headerBounds, centerFormat)
+    End Sub
 
     Private Sub DGBarang_CellClick(ByVal sender As Object, ByVal e As DataGridViewCellEventArgs) Handles DGBarang.CellClick
         Dim rowIndex As Integer = e.RowIndex
@@ -232,7 +243,7 @@ Public Class FormBarang
             Txtkodebarang.Text = DGBarang.Rows(rowIndex).Cells("ID_BARANG").Value.ToString()
             Txtnamabarang.Text = DGBarang.Rows(rowIndex).Cells("NAMA_BARANG").Value.ToString()
 
-            If PanelDetailBarang.Visible Then
+            If PanelGrid.Visible Then
                 Tampildetailbarang()
             End If
         End If
@@ -242,13 +253,21 @@ Public Class FormBarang
         If e.Button = MouseButtons.Right Then
             If e.RowIndex >= 0 AndAlso e.ColumnIndex >= 0 Then
 
-                If PanelDetailBarang.Visible = True Then
-                    PanelDetailBarang.Visible = False
+                If PanelGrid.Visible = True Then
+                    PanelGrid.Visible = False
                 End If
 
                 DGBarang.ClearSelection()
                 DGBarang.Rows(e.RowIndex).Selected = True
                 DGBarang.CurrentCell = DGBarang.Rows(e.RowIndex).Cells(e.ColumnIndex)
+
+                ' Ubah teks menu sesuai status barang
+                If DGBarang.Columns.Contains("STATUS") Then
+                    Dim statusBarang As String = If(DGBarang.Rows(e.RowIndex).Cells("STATUS").Value IsNot Nothing,
+                                                    DGBarang.Rows(e.RowIndex).Cells("STATUS").Value.ToString(), "Aktif")
+                    NonAktifBarangToolStripMenuItem.Text = If(statusBarang = "Non Aktif", "Aktifkan Barang", "Non-Aktif Barang")
+                End If
+
                 Dim cursorPosition As Point = System.Windows.Forms.Cursor.Position
                 ContextMenuStrip1.Show(DGBarang, DGBarang.PointToClient(cursorPosition))
             End If
@@ -256,9 +275,9 @@ Public Class FormBarang
     End Sub
 
     Private Sub Tampildetailbarang()
-        PanelDetailBarang.Location = New System.Drawing.Point((ClientSize.Width - PanelDetailBarang.Width) \ 2, (ClientSize.Height - PanelDetailBarang.Height) \ 2)
+        PanelGrid.Location = New System.Drawing.Point((ClientSize.Width - PanelGrid.Width) \ 2, (ClientSize.Height - PanelGrid.Height) \ 2)
 
-        Label26.Text = "DETAIL BARANG"
+        LblHeaderDetailBarang.Text = "DETAIL BARANG"
         Dim i As Integer
         i = DGBarang.CurrentRow.Index
         ' Ambil nilai ID_BARANG dari sel di baris saat ini
@@ -271,9 +290,11 @@ Public Class FormBarang
      "AWAL_TOKO, TAMBAH_TOKO, KURANG_TOKO, PEMBELIAN_TOKO, PENJUALAN_TOKO, " &
      "RETUR_BELI_TOKO, RETUR_JUAL_TOKO, OPNAME_TOKO, TRANSFER_STOK_MASUK_TOKO, TRANSFER_STOK_KELUAR_TOKO, " &
      "TRANSFER_BARANG_MASUK_TOKO, TRANSFER_BARANG_KELUAR_TOKO, " &
+     "TRANSFER_CABANG_MASUK_TOKO, TRANSFER_CABANG_KELUAR_TOKO, " &
      "AWAL_GUDANG, TAMBAH_GUDANG, KURANG_GUDANG, PEMBELIAN_GUDANG, PENJUALAN_GUDANG, " &
      "RETUR_BELI_GUDANG, RETUR_JUAL_GUDANG, OPNAME_GUDANG, TRANSFER_STOK_MASUK_GUDANG, TRANSFER_STOK_KELUAR_GUDANG, " &
-     "TRANSFER_BARANG_MASUK_GUDANG, TRANSFER_BARANG_KELUAR_GUDANG " &
+     "TRANSFER_BARANG_MASUK_GUDANG, TRANSFER_BARANG_KELUAR_GUDANG, " &
+     "TRANSFER_CABANG_MASUK_GUDANG, TRANSFER_CABANG_KELUAR_GUDANG " &
      "FROM tbl_barang WHERE ID_BARANG = @ID_BARANG"
 
 
@@ -281,54 +302,61 @@ Public Class FormBarang
             command.Parameters.AddWithValue("@ID_BARANG", idBarang)
             Using reader As MySqlDataReader = command.ExecuteReader()
                 If reader.Read() Then
-                    Label18.Text = idBarang
-                    Label17.Text = DGBarang.Item("NAMA_BARANG", i).Value
-                    Label11.Text = If(DGBarang.Item("NAMA_KATEGORI", i).Value Is Nothing, "", DGBarang.Item("NAMA_KATEGORI", i).Value.ToString())
-                    Label1.Text = If(DGBarang.Item("NAMA_SUPLIYER", i).Value IsNot DBNull.Value AndAlso Not String.IsNullOrEmpty(DGBarang.Item("NAMA_SUPLIYER", i).Value.ToString()), DGBarang.Item("NAMA_SUPLIYER", i).Value.ToString(), "")
-                    Label32.Text = "Rp. " & If(IsDBNull(DGBarang.Item("HARGA_BELI", i).Value), 0D, Convert.ToDecimal(DGBarang.Item("HARGA_BELI", i).Value)).ToString("#,0.##")
-                    Label96.Text = "Rp. " & If(IsDBNull(DGBarang.Item("HARGA_BELI_TERAKHIR", i).Value), 0D, Convert.ToDecimal(DGBarang.Item("HARGA_BELI_TERAKHIR", i).Value)).ToString("#,0.##")
-                    Label37.Text = reader("BARCODE_KECIL").ToString()
-                    Label36.Text = reader("BARCODE_SEDANG").ToString()
-                    Label34.Text = reader("BARCODE_BESAR").ToString()
-                    Label40.Text = DGBarang.Item("SATUAN_UMUM_KECIL", i).Value & " (" & reader("ISI_UMUM_KECIL").ToString() & ")"
-                    Label39.Text = DGBarang.Item("SATUAN_UMUM_SEDANG", i).Value & " (" & reader("ISI_UMUM_SEDANG").ToString() & ")"
-                    Label38.Text = DGBarang.Item("SATUAN_UMUM_BESAR", i).Value & " (" & reader("ISI_UMUM_BESAR").ToString() & ")"
-                    Label51.Text = If(IsDBNull(DGBarang.Item("HARGA_JUAL_UMUM_KECIL", i).Value), 0D, Convert.ToDecimal(DGBarang.Item("HARGA_JUAL_UMUM_KECIL", i).Value)).ToString("#,0.##")
-                    Label50.Text = If(IsDBNull(DGBarang.Item("HARGA_JUAL_UMUM_SEDANG", i).Value), 0D, Convert.ToDecimal(DGBarang.Item("HARGA_JUAL_UMUM_SEDANG", i).Value)).ToString("#,0.##")
-                    Label49.Text = If(IsDBNull(DGBarang.Item("HARGA_JUAL_UMUM_BESAR", i).Value), 0D, Convert.ToDecimal(DGBarang.Item("HARGA_JUAL_UMUM_BESAR", i).Value)).ToString("#,0.##")
-                    Label67.Text = DGBarang.Item("SATUAN_PARTAI_KECIL", i).Value & " (" & reader("ISI_PARTAI_KECIL").ToString() & ")"
-                    Label66.Text = DGBarang.Item("SATUAN_PARTAI_SEDANG", i).Value & " (" & reader("ISI_PARTAI_SEDANG").ToString() & ")"
-                    Label65.Text = DGBarang.Item("SATUAN_PARTAI_BESAR", i).Value & " (" & reader("ISI_PARTAI_BESAR").ToString() & ")"
-                    Label55.Text = If(IsDBNull(DGBarang.Item("HARGA_JUAL_PARTAI_KECIL", i).Value), 0D, Convert.ToDecimal(DGBarang.Item("HARGA_JUAL_PARTAI_KECIL", i).Value)).ToString("#,0.##")
-                    Label54.Text = If(IsDBNull(DGBarang.Item("HARGA_JUAL_PARTAI_SEDANG", i).Value), 0D, Convert.ToDecimal(DGBarang.Item("HARGA_JUAL_PARTAI_SEDANG", i).Value)).ToString("#,0.##")
-                    Label53.Text = If(IsDBNull(DGBarang.Item("HARGA_JUAL_PARTAI_BESAR", i).Value), 0D, Convert.ToDecimal(DGBarang.Item("HARGA_JUAL_PARTAI_BESAR", i).Value)).ToString("#,0.##")
-                    Label83.Text = If(reader("AWAL_TOKO") IsNot DBNull.Value AndAlso Not String.IsNullOrEmpty(reader("AWAL_TOKO").ToString()), Convert.ToDecimal(reader("AWAL_TOKO")).ToString("#,0.##"), "0")
-                    Label25.Text = If(reader("TAMBAH_TOKO") IsNot DBNull.Value AndAlso Not String.IsNullOrEmpty(reader("TAMBAH_TOKO").ToString()), Convert.ToDecimal(reader("TAMBAH_TOKO")).ToString("#,0.##"), "0")
-                    Label42.Text = If(reader("KURANG_TOKO") IsNot DBNull.Value AndAlso Not String.IsNullOrEmpty(reader("KURANG_TOKO").ToString()), Convert.ToDecimal(reader("KURANG_TOKO")).ToString("#,0.##"), "0")
-                    Label61.Text = If(reader("PEMBELIAN_TOKO") IsNot DBNull.Value AndAlso Not String.IsNullOrEmpty(reader("PEMBELIAN_TOKO").ToString()), Convert.ToDecimal(reader("PEMBELIAN_TOKO")).ToString("#,0.##"), "0")
-                    Label64.Text = If(reader("PENJUALAN_TOKO") IsNot DBNull.Value AndAlso Not String.IsNullOrEmpty(reader("PENJUALAN_TOKO").ToString()), Convert.ToDecimal(reader("PENJUALAN_TOKO")).ToString("#,0.##"), "0")
-                    Label71.Text = If(reader("RETUR_BELI_TOKO") IsNot DBNull.Value AndAlso Not String.IsNullOrEmpty(reader("RETUR_BELI_TOKO").ToString()), Convert.ToDecimal(reader("RETUR_BELI_TOKO")).ToString("#,0.##"), "0")
-                    Label72.Text = If(reader("RETUR_JUAL_TOKO") IsNot DBNull.Value AndAlso Not String.IsNullOrEmpty(reader("RETUR_JUAL_TOKO").ToString()), Convert.ToDecimal(reader("RETUR_JUAL_TOKO")).ToString("#,0.##"), "0")
-                    Label73.Text = If(reader("OPNAME_TOKO") IsNot DBNull.Value AndAlso Not String.IsNullOrEmpty(reader("OPNAME_TOKO").ToString()), Convert.ToDecimal(reader("OPNAME_TOKO")).ToString("#,0.##"), "0")
-                    Label74.Text = If(reader("TRANSFER_STOK_MASUK_TOKO") IsNot DBNull.Value AndAlso Not String.IsNullOrEmpty(reader("TRANSFER_STOK_MASUK_TOKO").ToString()), Convert.ToDecimal(reader("TRANSFER_STOK_MASUK_TOKO")).ToString("#,0.##"), "0")
-                    Label45.Text = If(reader("TRANSFER_STOK_KELUAR_TOKO") IsNot DBNull.Value AndAlso Not String.IsNullOrEmpty(reader("TRANSFER_STOK_KELUAR_TOKO").ToString()), Convert.ToDecimal(reader("TRANSFER_STOK_KELUAR_TOKO")).ToString("#,0.##"), "0")
-                    Label93.Text = If(reader("TRANSFER_BARANG_MASUK_TOKO") IsNot DBNull.Value AndAlso Not String.IsNullOrEmpty(reader("TRANSFER_BARANG_MASUK_TOKO").ToString()), Convert.ToDecimal(reader("TRANSFER_BARANG_MASUK_TOKO")).ToString("#,0.##"), "0")
-                    Label92.Text = If(reader("TRANSFER_BARANG_KELUAR_TOKO") IsNot DBNull.Value AndAlso Not String.IsNullOrEmpty(reader("TRANSFER_BARANG_KELUAR_TOKO").ToString()), Convert.ToDecimal(reader("TRANSFER_BARANG_KELUAR_TOKO")).ToString("#,0.##"), "0")
-                    Label89.Text = If(DGBarang.Item("STOK_TOKO", i).Value IsNot DBNull.Value AndAlso Not String.IsNullOrEmpty(DGBarang.Item("STOK_TOKO", i).Value.ToString()), Convert.ToDecimal(DGBarang.Item("STOK_TOKO", i).Value).ToString("#,0.##"), "0")
+                    LblValKode.Text = idBarang
+                    LblValNama.Text = DGBarang.Item("NAMA_BARANG", i).Value
+                    LblValKategori.Text = If(DGBarang.Item("NAMA_KATEGORI", i).Value Is Nothing, "", DGBarang.Item("NAMA_KATEGORI", i).Value.ToString())
+                    LblValSupliyer.Text = If(DGBarang.Item("NAMA_SUPLIYER", i).Value IsNot DBNull.Value AndAlso Not String.IsNullOrEmpty(DGBarang.Item("NAMA_SUPLIYER", i).Value.ToString()), DGBarang.Item("NAMA_SUPLIYER", i).Value.ToString(), "")
+                    LblValMerk.Text = If(DGBarang.Item("NAMA_MERK", i).Value Is Nothing, "", DGBarang.Item("NAMA_MERK", i).Value.ToString())
+                    LblValHargaPokok.Text = "Rp. " & If(IsDBNull(DGBarang.Item("HARGA_BELI", i).Value), 0D, Convert.ToDecimal(DGBarang.Item("HARGA_BELI", i).Value)).ToString("#,0.##")
+                    LblValHargaBeliTerakhir.Text = "Rp. " & If(IsDBNull(DGBarang.Item("HARGA_BELI_TERAKHIR", i).Value), 0D, Convert.ToDecimal(DGBarang.Item("HARGA_BELI_TERAKHIR", i).Value)).ToString("#,0.##")
+                    LblBarcodeKecil.Text = reader("BARCODE_KECIL").ToString()
+                    LblBarcodeSedang.Text = reader("BARCODE_SEDANG").ToString()
+                    LblBarcodeBesar.Text = reader("BARCODE_BESAR").ToString()
+                    LblSatuanUmumKecil.Text = DGBarang.Item("SATUAN_UMUM_KECIL", i).Value & " (" & reader("ISI_UMUM_KECIL").ToString() & ")"
+                    LblSatuanUmumSedang.Text = DGBarang.Item("SATUAN_UMUM_SEDANG", i).Value & " (" & reader("ISI_UMUM_SEDANG").ToString() & ")"
+                    LblSatuanUmumBesar.Text = DGBarang.Item("SATUAN_UMUM_BESAR", i).Value & " (" & reader("ISI_UMUM_BESAR").ToString() & ")"
+                    LblHargaJualUmumKecil.Text = If(IsDBNull(DGBarang.Item("HARGA_JUAL_UMUM_KECIL", i).Value), 0D, Convert.ToDecimal(DGBarang.Item("HARGA_JUAL_UMUM_KECIL", i).Value)).ToString("#,0.##")
+                    LblHargaJualUmumSedang.Text = If(IsDBNull(DGBarang.Item("HARGA_JUAL_UMUM_SEDANG", i).Value), 0D, Convert.ToDecimal(DGBarang.Item("HARGA_JUAL_UMUM_SEDANG", i).Value)).ToString("#,0.##")
+                    LblHargaJualUmumBesar.Text = If(IsDBNull(DGBarang.Item("HARGA_JUAL_UMUM_BESAR", i).Value), 0D, Convert.ToDecimal(DGBarang.Item("HARGA_JUAL_UMUM_BESAR", i).Value)).ToString("#,0.##")
+                    LblSatuanPartaiKecil.Text = DGBarang.Item("SATUAN_PARTAI_KECIL", i).Value & " (" & reader("ISI_PARTAI_KECIL").ToString() & ")"
+                    LblSatuanPartaiSedang.Text = DGBarang.Item("SATUAN_PARTAI_SEDANG", i).Value & " (" & reader("ISI_PARTAI_SEDANG").ToString() & ")"
+                    LblSatuanPartaiBesar.Text = DGBarang.Item("SATUAN_PARTAI_BESAR", i).Value & " (" & reader("ISI_PARTAI_BESAR").ToString() & ")"
+                    LblHargaJualPartaiKecil.Text = If(IsDBNull(DGBarang.Item("HARGA_JUAL_PARTAI_KECIL", i).Value), 0D, Convert.ToDecimal(DGBarang.Item("HARGA_JUAL_PARTAI_KECIL", i).Value)).ToString("#,0.##")
+                    LblHargaJualPartaiSedang.Text = If(IsDBNull(DGBarang.Item("HARGA_JUAL_PARTAI_SEDANG", i).Value), 0D, Convert.ToDecimal(DGBarang.Item("HARGA_JUAL_PARTAI_SEDANG", i).Value)).ToString("#,0.##")
+                    LblHargaJualPartaiBesar.Text = If(IsDBNull(DGBarang.Item("HARGA_JUAL_PARTAI_BESAR", i).Value), 0D, Convert.ToDecimal(DGBarang.Item("HARGA_JUAL_PARTAI_BESAR", i).Value)).ToString("#,0.##")
+                    LblAwalToko.Text = If(reader("AWAL_TOKO") IsNot DBNull.Value AndAlso Not String.IsNullOrEmpty(reader("AWAL_TOKO").ToString()), Convert.ToDecimal(reader("AWAL_TOKO")).ToString("#,0.##"), "0")
+                    LblTambahToko.Text = If(reader("TAMBAH_TOKO") IsNot DBNull.Value AndAlso Not String.IsNullOrEmpty(reader("TAMBAH_TOKO").ToString()), Convert.ToDecimal(reader("TAMBAH_TOKO")).ToString("#,0.##"), "0")
+                    LblKurangToko.Text = If(reader("KURANG_TOKO") IsNot DBNull.Value AndAlso Not String.IsNullOrEmpty(reader("KURANG_TOKO").ToString()), Convert.ToDecimal(reader("KURANG_TOKO")).ToString("#,0.##"), "0")
+                    LblPembelianToko.Text = If(reader("PEMBELIAN_TOKO") IsNot DBNull.Value AndAlso Not String.IsNullOrEmpty(reader("PEMBELIAN_TOKO").ToString()), Convert.ToDecimal(reader("PEMBELIAN_TOKO")).ToString("#,0.##"), "0")
+                    LblPenjualanToko.Text = If(reader("PENJUALAN_TOKO") IsNot DBNull.Value AndAlso Not String.IsNullOrEmpty(reader("PENJUALAN_TOKO").ToString()), Convert.ToDecimal(reader("PENJUALAN_TOKO")).ToString("#,0.##"), "0")
+                    LblReturBeliToko.Text = If(reader("RETUR_BELI_TOKO") IsNot DBNull.Value AndAlso Not String.IsNullOrEmpty(reader("RETUR_BELI_TOKO").ToString()), Convert.ToDecimal(reader("RETUR_BELI_TOKO")).ToString("#,0.##"), "0")
+                    LblReturJualToko.Text = If(reader("RETUR_JUAL_TOKO") IsNot DBNull.Value AndAlso Not String.IsNullOrEmpty(reader("RETUR_JUAL_TOKO").ToString()), Convert.ToDecimal(reader("RETUR_JUAL_TOKO")).ToString("#,0.##"), "0")
+                    LblOpnameToko.Text = If(reader("OPNAME_TOKO") IsNot DBNull.Value AndAlso Not String.IsNullOrEmpty(reader("OPNAME_TOKO").ToString()), Convert.ToDecimal(reader("OPNAME_TOKO")).ToString("#,0.##"), "0")
+                    LblTrStokMasukToko.Text = If(reader("TRANSFER_STOK_MASUK_TOKO") IsNot DBNull.Value AndAlso Not String.IsNullOrEmpty(reader("TRANSFER_STOK_MASUK_TOKO").ToString()), Convert.ToDecimal(reader("TRANSFER_STOK_MASUK_TOKO")).ToString("#,0.##"), "0")
+                    LblTrStokKeluarToko.Text = If(reader("TRANSFER_STOK_KELUAR_TOKO") IsNot DBNull.Value AndAlso Not String.IsNullOrEmpty(reader("TRANSFER_STOK_KELUAR_TOKO").ToString()), Convert.ToDecimal(reader("TRANSFER_STOK_KELUAR_TOKO")).ToString("#,0.##"), "0")
+                    LblTrBarangMasukToko.Text = If(reader("TRANSFER_BARANG_MASUK_TOKO") IsNot DBNull.Value AndAlso Not String.IsNullOrEmpty(reader("TRANSFER_BARANG_MASUK_TOKO").ToString()), Convert.ToDecimal(reader("TRANSFER_BARANG_MASUK_TOKO")).ToString("#,0.##"), "0")
+                    LblTrBarangKeluarToko.Text = If(reader("TRANSFER_BARANG_KELUAR_TOKO") IsNot DBNull.Value AndAlso Not String.IsNullOrEmpty(reader("TRANSFER_BARANG_KELUAR_TOKO").ToString()), Convert.ToDecimal(reader("TRANSFER_BARANG_KELUAR_TOKO")).ToString("#,0.##"), "0")
+                    ' Transfer Cabang TOKO
+                    LblTrCabangMasukToko.Text = If(reader("TRANSFER_CABANG_MASUK_TOKO") IsNot DBNull.Value, Convert.ToDecimal(reader("TRANSFER_CABANG_MASUK_TOKO")).ToString("#,0.##"), "0")
+                    LblTrCabangKeluarToko.Text = If(reader("TRANSFER_CABANG_KELUAR_TOKO") IsNot DBNull.Value, Convert.ToDecimal(reader("TRANSFER_CABANG_KELUAR_TOKO")).ToString("#,0.##"), "0")
+                    LblStokToko.Text = If(DGBarang.Item("STOK_TOKO", i).Value IsNot DBNull.Value AndAlso Not String.IsNullOrEmpty(DGBarang.Item("STOK_TOKO", i).Value.ToString()), Convert.ToDecimal(DGBarang.Item("STOK_TOKO", i).Value).ToString("#,0.##"), "0")
 
-                    Label79.Text = If(reader("AWAL_GUDANG") IsNot DBNull.Value AndAlso Not String.IsNullOrEmpty(reader("AWAL_GUDANG").ToString()), Convert.ToDecimal(reader("AWAL_GUDANG")).ToString("#,0.##"), "0")
-                    Label31.Text = If(reader("TAMBAH_GUDANG") IsNot DBNull.Value AndAlso Not String.IsNullOrEmpty(reader("TAMBAH_GUDANG").ToString()), Convert.ToDecimal(reader("TAMBAH_GUDANG")).ToString("#,0.##"), "0")
-                    Label43.Text = If(reader("KURANG_GUDANG") IsNot DBNull.Value AndAlso Not String.IsNullOrEmpty(reader("KURANG_GUDANG").ToString()), Convert.ToDecimal(reader("KURANG_GUDANG")).ToString("#,0.##"), "0")
-                    Label62.Text = If(reader("PEMBELIAN_GUDANG") IsNot DBNull.Value AndAlso Not String.IsNullOrEmpty(reader("PEMBELIAN_GUDANG").ToString()), Convert.ToDecimal(reader("PEMBELIAN_GUDANG")).ToString("#,0.##"), "0")
-                    Label69.Text = If(reader("PENJUALAN_GUDANG") IsNot DBNull.Value AndAlso Not String.IsNullOrEmpty(reader("PENJUALAN_GUDANG").ToString()), Convert.ToDecimal(reader("PENJUALAN_GUDANG")).ToString("#,0.##"), "0")
-                    Label75.Text = If(reader("RETUR_BELI_GUDANG") IsNot DBNull.Value AndAlso Not String.IsNullOrEmpty(reader("RETUR_BELI_GUDANG").ToString()), Convert.ToDecimal(reader("RETUR_BELI_GUDANG")).ToString("#,0.##"), "0")
-                    Label76.Text = If(reader("RETUR_JUAL_GUDANG") IsNot DBNull.Value AndAlso Not String.IsNullOrEmpty(reader("RETUR_JUAL_GUDANG").ToString()), Convert.ToDecimal(reader("RETUR_JUAL_GUDANG")).ToString("#,0.##"), "0")
-                    Label81.Text = If(reader("OPNAME_GUDANG") IsNot DBNull.Value AndAlso Not String.IsNullOrEmpty(reader("OPNAME_GUDANG").ToString()), Convert.ToDecimal(reader("OPNAME_GUDANG")).ToString("#,0.##"), "0")
-                    Label86.Text = If(reader("TRANSFER_STOK_MASUK_GUDANG") IsNot DBNull.Value AndAlso Not String.IsNullOrEmpty(reader("TRANSFER_STOK_MASUK_GUDANG").ToString()), Convert.ToDecimal(reader("TRANSFER_STOK_MASUK_GUDANG")).ToString("#,0.##"), "0")
-                    Label46.Text = If(reader("TRANSFER_STOK_KELUAR_GUDANG") IsNot DBNull.Value AndAlso Not String.IsNullOrEmpty(reader("TRANSFER_STOK_KELUAR_GUDANG").ToString()), Convert.ToDecimal(reader("TRANSFER_STOK_KELUAR_GUDANG")).ToString("#,0.##"), "0")
-                    Label82.Text = If(reader("TRANSFER_BARANG_MASUK_GUDANG") IsNot DBNull.Value AndAlso Not String.IsNullOrEmpty(reader("TRANSFER_BARANG_MASUK_GUDANG").ToString()), Convert.ToDecimal(reader("TRANSFER_BARANG_MASUK_GUDANG")).ToString("#,0.##"), "0")
-                    Label78.Text = If(reader("TRANSFER_BARANG_KELUAR_GUDANG") IsNot DBNull.Value AndAlso Not String.IsNullOrEmpty(reader("TRANSFER_BARANG_KELUAR_GUDANG").ToString()), Convert.ToDecimal(reader("TRANSFER_BARANG_KELUAR_GUDANG")).ToString("#,0.##"), "0")
-                    Label90.Text = If(DGBarang.Item("STOK_GUDANG", i).Value IsNot DBNull.Value AndAlso Not String.IsNullOrEmpty(DGBarang.Item("STOK_GUDANG", i).Value.ToString()), Convert.ToDecimal(DGBarang.Item("STOK_GUDANG", i).Value).ToString("#,0.##"), "0")
+                    LblAwalGudang.Text = If(reader("AWAL_GUDANG") IsNot DBNull.Value AndAlso Not String.IsNullOrEmpty(reader("AWAL_GUDANG").ToString()), Convert.ToDecimal(reader("AWAL_GUDANG")).ToString("#,0.##"), "0")
+                    LblTambahGudang.Text = If(reader("TAMBAH_GUDANG") IsNot DBNull.Value AndAlso Not String.IsNullOrEmpty(reader("TAMBAH_GUDANG").ToString()), Convert.ToDecimal(reader("TAMBAH_GUDANG")).ToString("#,0.##"), "0")
+                    LblKurangGudang.Text = If(reader("KURANG_GUDANG") IsNot DBNull.Value AndAlso Not String.IsNullOrEmpty(reader("KURANG_GUDANG").ToString()), Convert.ToDecimal(reader("KURANG_GUDANG")).ToString("#,0.##"), "0")
+                    LblPembelianGudang.Text = If(reader("PEMBELIAN_GUDANG") IsNot DBNull.Value AndAlso Not String.IsNullOrEmpty(reader("PEMBELIAN_GUDANG").ToString()), Convert.ToDecimal(reader("PEMBELIAN_GUDANG")).ToString("#,0.##"), "0")
+                    LblPenjualanGudang.Text = If(reader("PENJUALAN_GUDANG") IsNot DBNull.Value AndAlso Not String.IsNullOrEmpty(reader("PENJUALAN_GUDANG").ToString()), Convert.ToDecimal(reader("PENJUALAN_GUDANG")).ToString("#,0.##"), "0")
+                    LblReturBeliGudang.Text = If(reader("RETUR_BELI_GUDANG") IsNot DBNull.Value AndAlso Not String.IsNullOrEmpty(reader("RETUR_BELI_GUDANG").ToString()), Convert.ToDecimal(reader("RETUR_BELI_GUDANG")).ToString("#,0.##"), "0")
+                    LblReturJualGudang.Text = If(reader("RETUR_JUAL_GUDANG") IsNot DBNull.Value AndAlso Not String.IsNullOrEmpty(reader("RETUR_JUAL_GUDANG").ToString()), Convert.ToDecimal(reader("RETUR_JUAL_GUDANG")).ToString("#,0.##"), "0")
+                    LblOpnameGudang.Text = If(reader("OPNAME_GUDANG") IsNot DBNull.Value AndAlso Not String.IsNullOrEmpty(reader("OPNAME_GUDANG").ToString()), Convert.ToDecimal(reader("OPNAME_GUDANG")).ToString("#,0.##"), "0")
+                    LblTrStokMasukGudang.Text = If(reader("TRANSFER_STOK_MASUK_GUDANG") IsNot DBNull.Value AndAlso Not String.IsNullOrEmpty(reader("TRANSFER_STOK_MASUK_GUDANG").ToString()), Convert.ToDecimal(reader("TRANSFER_STOK_MASUK_GUDANG")).ToString("#,0.##"), "0")
+                    LblTrStokKeluarGudang.Text = If(reader("TRANSFER_STOK_KELUAR_GUDANG") IsNot DBNull.Value AndAlso Not String.IsNullOrEmpty(reader("TRANSFER_STOK_KELUAR_GUDANG").ToString()), Convert.ToDecimal(reader("TRANSFER_STOK_KELUAR_GUDANG")).ToString("#,0.##"), "0")
+                    LblTrBarangMasukGudang.Text = If(reader("TRANSFER_BARANG_MASUK_GUDANG") IsNot DBNull.Value AndAlso Not String.IsNullOrEmpty(reader("TRANSFER_BARANG_MASUK_GUDANG").ToString()), Convert.ToDecimal(reader("TRANSFER_BARANG_MASUK_GUDANG")).ToString("#,0.##"), "0")
+                    LblTrBarangKeluarGudang.Text = If(reader("TRANSFER_BARANG_KELUAR_GUDANG") IsNot DBNull.Value AndAlso Not String.IsNullOrEmpty(reader("TRANSFER_BARANG_KELUAR_GUDANG").ToString()), Convert.ToDecimal(reader("TRANSFER_BARANG_KELUAR_GUDANG")).ToString("#,0.##"), "0")
+                    ' Transfer Cabang GUDANG
+                    LblTrCabangMasukGudang.Text = If(reader("TRANSFER_CABANG_MASUK_GUDANG") IsNot DBNull.Value, Convert.ToDecimal(reader("TRANSFER_CABANG_MASUK_GUDANG")).ToString("#,0.##"), "0")
+                    LblTrCabangKeluarGudang.Text = If(reader("TRANSFER_CABANG_KELUAR_GUDANG") IsNot DBNull.Value, Convert.ToDecimal(reader("TRANSFER_CABANG_KELUAR_GUDANG")).ToString("#,0.##"), "0")
+                    LblStokGudang.Text = If(DGBarang.Item("STOK_GUDANG", i).Value IsNot DBNull.Value AndAlso Not String.IsNullOrEmpty(DGBarang.Item("STOK_GUDANG", i).Value.ToString()), Convert.ToDecimal(DGBarang.Item("STOK_GUDANG", i).Value).ToString("#,0.##"), "0")
 
                 End If
             End Using
@@ -336,24 +364,24 @@ Public Class FormBarang
 
         Dim HargaBeli As Boolean() = ModulHakAkses.BacaHakAksesDariCache("Harga Beli")
         ' Terapkan nilai hak akses ke tombol-tombol
-        Label32.Visible = HargaBeli(0) ' CanEdit 
+        LblValHargaPokok.Visible = HargaBeli(0) ' CanEdit 
 
-        PanelDetailBarang.Visible = True
+        PanelGrid.Visible = True
     End Sub
 
     Private Sub BtnSembunyi_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles BtnSembunyi.Click
-        PanelDetailBarang.Visible = False
+        PanelGrid.Visible = False
     End Sub
 
 
 
     Private Sub BtnTambah_Click(ByVal sender As Object, ByVal e As EventArgs) Handles BtnTambah.Click, TambahToolStripMenuItem.Click
-        If PanelDetailBarang.Visible = True Then
-            PanelDetailBarang.Visible = False
+        If PanelGrid.Visible = True Then
+            PanelGrid.Visible = False
         End If
 
         DGBarang.Enabled = False
-        PanelOperasi.Enabled = False
+        PanelFooter.Enabled = False
 
         Tambahbrg()
         TxtCari.Select()
@@ -362,23 +390,23 @@ Public Class FormBarang
 
     Private Sub Tambahbrg()
         Using f As New TambahBarang()
-            f.LblUtama.Text = "T A M B A H   B A R A N G"
+            f.LblHeaderForm.Text = "T A M B A H   B A R A N G"
             f.ShowDialog()
         End Using
 
         DGBarang.Enabled = True
-        PanelOperasi.Enabled = True
+        PanelFooter.Enabled = True
         CariData()
     End Sub
 
 
     Private Sub BtnUbah_Click(ByVal sender As Object, ByVal e As EventArgs) Handles BtnUbah.Click, EditToolStripMenuItem.Click
-        If PanelDetailBarang.Visible = True Then
-            PanelDetailBarang.Visible = False
+        If PanelGrid.Visible = True Then
+            PanelGrid.Visible = False
         End If
 
         DGBarang.Enabled = False
-        PanelOperasi.Enabled = False
+        PanelFooter.Enabled = False
 
         TambahBarang.Tampilkategori()
         TambahBarang.TampilSatuan()
@@ -389,7 +417,7 @@ Public Class FormBarang
     End Sub
 
     Private Sub UbahBarang()
-        TambahBarang.LblUtama.Text = "E D I T   B A R A N G"
+        TambahBarang.LblHeaderForm.Text = "E D I T   B A R A N G"
         Dim i As Integer = DGBarang.CurrentRow.Index
 
         Dim idBarang As String = String.Empty
@@ -420,9 +448,9 @@ Public Class FormBarang
             "ISI_UMUM_KECIL, ISI_UMUM_SEDANG, ISI_UMUM_BESAR, " &
             "ISI_PARTAI_KECIL, ISI_PARTAI_SEDANG, ISI_PARTAI_BESAR, " &
             "AWAL_TOKO, " &
-            "(TAMBAH_TOKO - KURANG_TOKO + PEMBELIAN_TOKO - PENJUALAN_TOKO - RETUR_BELI_TOKO + RETUR_JUAL_TOKO + OPNAME_TOKO + TRANSFER_STOK_MASUK_TOKO - TRANSFER_STOK_KELUAR_TOKO + TRANSFER_BARANG_MASUK_TOKO - TRANSFER_BARANG_KELUAR_TOKO) AS JUMLAHTRANSAKSITOKO, " &
+            "(TAMBAH_TOKO - KURANG_TOKO + PEMBELIAN_TOKO - PENJUALAN_TOKO - RETUR_BELI_TOKO + RETUR_JUAL_TOKO + OPNAME_TOKO + TRANSFER_STOK_MASUK_TOKO - TRANSFER_STOK_KELUAR_TOKO + TRANSFER_BARANG_MASUK_TOKO - TRANSFER_BARANG_KELUAR_TOKO + COALESCE(TRANSFER_CABANG_MASUK_TOKO,0) - COALESCE(TRANSFER_CABANG_KELUAR_TOKO,0)) AS JUMLAHTRANSAKSITOKO, " &
             "AWAL_GUDANG, " &
-            "(TAMBAH_GUDANG - KURANG_GUDANG + PEMBELIAN_GUDANG - PENJUALAN_GUDANG - RETUR_BELI_GUDANG + RETUR_JUAL_GUDANG + OPNAME_GUDANG + TRANSFER_STOK_MASUK_GUDANG - TRANSFER_STOK_KELUAR_GUDANG + TRANSFER_BARANG_MASUK_GUDANG - TRANSFER_BARANG_KELUAR_GUDANG) AS JUMLAHTRANSAKSIGUDANG, " &
+            "(TAMBAH_GUDANG - KURANG_GUDANG + PEMBELIAN_GUDANG - PENJUALAN_GUDANG - RETUR_BELI_GUDANG + RETUR_JUAL_GUDANG + OPNAME_GUDANG + TRANSFER_STOK_MASUK_GUDANG - TRANSFER_STOK_KELUAR_GUDANG + TRANSFER_BARANG_MASUK_GUDANG - TRANSFER_BARANG_KELUAR_GUDANG + COALESCE(TRANSFER_CABANG_MASUK_GUDANG,0) - COALESCE(TRANSFER_CABANG_KELUAR_GUDANG,0)) AS JUMLAHTRANSAKSIGUDANG, " &
             "SATUAN_STOK, SATUAN_ISI_STOK, SATUAN_STOK, SATUAN_ISI_STOK, " &
             "STOK_MIN, STOK_MAX, " &
             "LOKASI_RAK_TOKO, LOKASI_RAK_GUDANG, POINT_MEMBER, POINT_KARYAWAN, KOMISI_SALES_RP, KOMISI_SALES_PERSEN " &
@@ -465,6 +493,7 @@ Public Class FormBarang
             .TxtNama.Text = DGBarang.Item("NAMA_BARANG", i).Value.ToString()
             .CmbKategori.Text = DGBarang.Item("NAMA_KATEGORI", i).Value.ToString()
             .CmbSupliyer.Text = DGBarang.Item("NAMA_SUPLIYER", i).Value.ToString()
+            .CmbMerk.Text = DGBarang.Item("NAMA_MERK", i).Value.ToString()
 
             .TxtBarcodeUmumKecil.Text = barcodeKecil
             .TxtBarcodeUmumSedang.Text = barcodeSedang
@@ -486,25 +515,25 @@ Public Class FormBarang
             .TxtHArgaJualPartaiSedang.Text = Decimal.Parse(DGBarang.Item("HARGA_JUAL_PARTAI_SEDANG", i).Value.ToString()).ToString("0.##")
             .TxtHArgaJualPartaiBesar.Text = Decimal.Parse(DGBarang.Item("HARGA_JUAL_PARTAI_BESAR", i).Value.ToString()).ToString("0.##")
 
-            If FormUtama.SLokasi.Text = "GUDANG" Then
+            If FormUtama.StatusLokasi.Text = "GUDANG" Then
                 .TxtStokAwal.Text = stokAwalGudang.ToString("0.##")
-            ElseIf FormUtama.SLokasi.Text = "TOKO" Then
+            ElseIf FormUtama.StatusLokasi.Text = "TOKO" Then
                 .TxtStokAwal.Text = stokAwalToko.ToString("0.##")
             End If
 
             .TxtJmlhToko.Text = jumlahTransaksiToko.ToString("0.##")
             .TxtJmlhGudang.Text = jumlahTransaksiGudang.ToString("0.##")
 
-            If FormUtama.SLokasi.Text = "GUDANG" Then
+            If FormUtama.StatusLokasi.Text = "GUDANG" Then
                 .TxtStokAkhir.Text = If(DGBarang.Item("STOK_GUDANG", i).Value IsNot DBNull.Value AndAlso Not String.IsNullOrEmpty(DGBarang.Item("STOK_GUDANG", i).Value.ToString()), Convert.ToDecimal(DGBarang.Item("STOK_GUDANG", i).Value).ToString("#,0.##"), "0")
-                .LblStokUntukEdit.Text = If(DGBarang.Item("STOK_GUDANG", i).Value IsNot DBNull.Value AndAlso Not String.IsNullOrEmpty(DGBarang.Item("STOK_GUDANG", i).Value.ToString()), Convert.ToDecimal(DGBarang.Item("STOK_GUDANG", i).Value).ToString("#,0.##"), "0")
-            ElseIf FormUtama.SLokasi.Text = "TOKO" Then
+                .LblStokUntukEdit.Text = If(DGBarang.Item("STOK_GUDANG", i).Value IsNot DBNull.Value AndAlso Not String.IsNullOrEmpty(DGBarang.Item("STOK_GUDANG", i).Value.ToString()), Convert.ToDecimal(DGBarang.Item("STOK_GUDANG", i).Value).ToString(), "0")
+            ElseIf FormUtama.StatusLokasi.Text = "TOKO" Then
                 .TxtStokAkhir.Text = If(DGBarang.Item("STOK_TOKO", i).Value IsNot DBNull.Value AndAlso Not String.IsNullOrEmpty(DGBarang.Item("STOK_TOKO", i).Value.ToString()), Convert.ToDecimal(DGBarang.Item("STOK_TOKO", i).Value).ToString("#,0.##"), "0")
-                .LblStokUntukEdit.Text = If(DGBarang.Item("STOK_TOKO", i).Value IsNot DBNull.Value AndAlso Not String.IsNullOrEmpty(DGBarang.Item("STOK_TOKO", i).Value.ToString()), Convert.ToDecimal(DGBarang.Item("STOK_TOKO", i).Value).ToString("#,0.##"), "0")
+                .LblStokUntukEdit.Text = If(DGBarang.Item("STOK_TOKO", i).Value IsNot DBNull.Value AndAlso Not String.IsNullOrEmpty(DGBarang.Item("STOK_TOKO", i).Value.ToString()), Convert.ToDecimal(DGBarang.Item("STOK_TOKO", i).Value).ToString(), "0")
             End If
 
 
-            .TxtLokasiRak.Text = If(FormUtama.SLokasi.Text = "GUDANG", lokasiRakGudang, lokasiRakToko)
+            .TxtLokasiRak.Text = If(FormUtama.StatusLokasi.Text = "GUDANG", lokasiRakGudang, lokasiRakToko)
             .CmBstokAwal.Text = satuanStok
             .TxtIsiStokAwal.Text = satuanIsiStok
 
@@ -526,14 +555,14 @@ Public Class FormBarang
 
         ' Aktifkan kembali kontrol lainnya
         DGBarang.Enabled = True
-        PanelOperasi.Enabled = True
+        PanelFooter.Enabled = True
         CariData()
     End Sub
 
 
     Private Sub BtnHapus_Click(ByVal sender As Object, ByVal e As EventArgs) Handles BtnHapus.Click, HapusStokToolStripMenuItem.Click
-        If PanelDetailBarang.Visible = True Then
-            PanelDetailBarang.Visible = False
+        If PanelGrid.Visible = True Then
+            PanelGrid.Visible = False
         End If
         Hapusbarang()
         TxtCari.Select()
@@ -547,57 +576,109 @@ Public Class FormBarang
             Exit Sub
         End If
 
-        If MessageBox.Show("Apakah barang ini akan dihapus ...???" & Chr(13) & "Kode : " & Txtkodebarang.Text & Chr(13) & "Nama : " & Txtnamabarang.Text, "Peringatan...!!!", MessageBoxButtons.YesNo) = DialogResult.Yes Then
-            ' Mulai transaksi
+        Dim kode As String = Txtkodebarang.Text
+        Dim nama As String = Txtnamabarang.Text
+        Dim i As Integer = DGBarang.CurrentRow.Index
+
+        Dim stokToko As Decimal = If(IsDBNull(DGBarang.Item("STOK_TOKO", i).Value), 0D, Convert.ToDecimal(DGBarang.Item("STOK_TOKO", i).Value))
+        Dim stokGudang As Decimal = If(IsDBNull(DGBarang.Item("STOK_GUDANG", i).Value), 0D, Convert.ToDecimal(DGBarang.Item("STOK_GUDANG", i).Value))
+
+        ' Cek stok — jika masih ada stok berarti pernah dipakai transaksi atau belum di-nol-kan
+        If stokToko <> 0 OrElse stokGudang <> 0 Then
+            MessageBox.Show(
+                $"Barang '{nama}' tidak dapat dihapus." & Environment.NewLine & Environment.NewLine &
+                $"  Stok Toko   : {stokToko:#,0.##}" & Environment.NewLine &
+                $"  Stok Gudang : {stokGudang:#,0.##}" & Environment.NewLine & Environment.NewLine &
+                "Stok harus bernilai 0 sebelum barang dapat dihapus." & Environment.NewLine &
+                "Gunakan menu Non-Aktif jika barang sudah tidak digunakan.",
+                "Tidak Dapat Dihapus", MessageBoxButtons.OK, MessageBoxIcon.Warning)
+            Exit Sub
+        End If
+
+        ' Cek di HistoryBarang — satu tabel mencakup semua jenis transaksi
+        Dim adaTransaksi As Boolean = False
+        Dim jumlahHistory As Integer = 0
+        Using cmd As New MySqlCommand(
+            "SELECT COUNT(*) FROM HistoryBarang WHERE ID_BARANG = @kode", conn)
+            cmd.Parameters.AddWithValue("@kode", kode)
+            jumlahHistory = Convert.ToInt32(cmd.ExecuteScalar())
+            adaTransaksi = jumlahHistory > 0
+        End Using
+
+        If adaTransaksi Then
+            MessageBox.Show(
+                $"Barang '{nama}' tidak dapat dihapus karena tercatat dalam {jumlahHistory} riwayat transaksi." & Environment.NewLine & Environment.NewLine &
+                "Gunakan menu Non-Aktif untuk menonaktifkan barang ini.",
+                "Tidak Dapat Dihapus", MessageBoxButtons.OK, MessageBoxIcon.Warning)
+            Exit Sub
+        End If
+
+        If MessageBox.Show(
+            $"Hapus barang '{nama}'?" & Environment.NewLine & "Kode : " & kode,
+            "Konfirmasi Hapus", MessageBoxButtons.YesNo, MessageBoxIcon.Question) = DialogResult.Yes Then
+
             Using transaction As MySqlTransaction = conn.BeginTransaction()
                 Try
-                    Dim noTransaksi As String = DateTime.Now.ToString("yyyyMMddHHmmss") ' Format unik berdasarkan tanggal dan waktu saat ini
-
-                    ' Hitung dan tambahkan nominal sesuai dengan perhitungan Anda
-                    Dim stokToko As Decimal = If(IsDBNull(DGBarang.Item("STOK_TOKO", DGBarang.CurrentRow.Index).Value), 0D, Convert.ToDecimal(DGBarang.Item("STOK_TOKO", DGBarang.CurrentRow.Index).Value))
-                    Dim stokGudang As Decimal = If(IsDBNull(DGBarang.Item("STOK_GUDANG", DGBarang.CurrentRow.Index).Value), 0D, Convert.ToDecimal(DGBarang.Item("STOK_GUDANG", DGBarang.CurrentRow.Index).Value))
-                    Dim hargaBeli As Decimal = If(IsDBNull(DGBarang.Item("HARGA_BELI", DGBarang.CurrentRow.Index).Value), 0D, Convert.ToDecimal(DGBarang.Item("HARGA_BELI", DGBarang.CurrentRow.Index).Value))
-
-                    ' Menghitung nominal
+                    ' ========================================
+                    ' START: Audit Trail - Hapus Barang
+                    ' ========================================
+                    Dim sbSnapshot As New System.Text.StringBuilder()
+                    Using cmdSnap As New MySqlCommand(
+                        "SELECT ID_BARANG, NAMA_BARANG, HARGA_BELI, KODE_KATEGORI, KODE_MERK, KODE_SATUAN, STATUS FROM tbl_barang WHERE ID_BARANG = @kode LIMIT 1", conn, transaction)
+                        cmdSnap.Parameters.AddWithValue("@kode", kode)
+                        Using rdSnap = cmdSnap.ExecuteReader()
+                            If rdSnap.Read() Then
+                                sbSnapshot.AppendLine($"Kode Barang: {rdSnap("ID_BARANG")}")
+                                sbSnapshot.AppendLine($"Nama Barang: {rdSnap("NAMA_BARANG")}")
+                                sbSnapshot.AppendLine($"Harga Beli: {ModuleAngka.FormatRupiah(ModuleAngka.ParseDecimal(rdSnap("HARGA_BELI")))}")
+                                sbSnapshot.AppendLine($"Kode Kategori: {rdSnap("KODE_KATEGORI")}")
+                                sbSnapshot.AppendLine($"Kode Merk: {rdSnap("KODE_MERK")}")
+                                sbSnapshot.AppendLine($"Kode Satuan: {rdSnap("KODE_SATUAN")}")
+                                sbSnapshot.AppendLine($"Status: {rdSnap("STATUS")}")
+                            End If
+                        End Using
+                    End Using
+                    ModuleAuditTrail.CatatAuditMaster("BRG:" & kode, "HAPUS", "Master Barang", sbSnapshot.ToString(), trans:=transaction)
+                    ' ========================================
+                    ' END: Audit Trail - Hapus Barang
+                    ' ========================================
+                    Dim hargaBeli As Decimal = If(IsDBNull(DGBarang.Item("HARGA_BELI", i).Value), 0D, Convert.ToDecimal(DGBarang.Item("HARGA_BELI", i).Value))
                     Dim nominal As Decimal = (stokToko + stokGudang) * hargaBeli
 
                     If nominal <> 0 Then
-
-
-                        ' Menyimpan transaksi ke JurnalUmum
-                        Using cmdInsert As New MySqlCommand("INSERT INTO JurnalUmum (NO_TRANSAKSI, TGL_TRANSAKSI, URAIAN, NAMA_AKUN_D, NOMOR_AKUN_D, NAMA_AKUN_K, NOMOR_AKUN_K, NOMINAL, JENIS_TRANSAKSI, LOKASI, ID_USER, ID_KOMPUTER) " &
-                                                              "VALUES (@NO_TRANSAKSI, @TGL_TRANSAKSI, @URAIAN, @NAMA_AKUN_D, @NOMOR_AKUN_D, @NAMA_AKUN_K, @NOMOR_AKUN_K, @NOMINAL, @JENIS_TRANSAKSI, @LOKASI, @ID_USER, @ID_KOMPUTER)", conn, transaction)
-
-                            cmdInsert.Parameters.AddWithValue("@NO_TRANSAKSI", noTransaksi)
+                        Using cmdInsert As New MySqlCommand(
+                            "INSERT INTO JurnalUmum (NO_TRANSAKSI, TGL_TRANSAKSI, URAIAN, NAMA_AKUN_D, NOMOR_AKUN_D, NAMA_AKUN_K, NOMOR_AKUN_K, NOMINAL, JENIS_TRANSAKSI, LOKASI, ID_USER, ID_KOMPUTER) " &
+                            "VALUES (@NO_TRANSAKSI, @TGL_TRANSAKSI, @URAIAN, @NAMA_AKUN_D, @NOMOR_AKUN_D, @NAMA_AKUN_K, @NOMOR_AKUN_K, @NOMINAL, @JENIS_TRANSAKSI, @LOKASI, @ID_USER, @ID_KOMPUTER)", conn, transaction)
+                            cmdInsert.Parameters.AddWithValue("@NO_TRANSAKSI", DateTime.Now.ToString("yyyyMMddHHmmss"))
                             cmdInsert.Parameters.AddWithValue("@TGL_TRANSAKSI", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"))
-                            cmdInsert.Parameters.AddWithValue("@URAIAN", "Hapus barang " & Txtnamabarang.Text)
+                            cmdInsert.Parameters.AddWithValue("@URAIAN", "Hapus barang " & nama)
                             cmdInsert.Parameters.AddWithValue("@NAMA_AKUN_D", LAWAN_NAMA_REK_BARANG)
                             cmdInsert.Parameters.AddWithValue("@NOMOR_AKUN_D", LAWAN_KODE_REK_BARANG)
                             cmdInsert.Parameters.AddWithValue("@NAMA_AKUN_K", NAMA_REK_BARANG)
                             cmdInsert.Parameters.AddWithValue("@NOMOR_AKUN_K", KODE_REK_BARANG)
                             cmdInsert.Parameters.AddWithValue("@NOMINAL", nominal)
-                            cmdInsert.Parameters.AddWithValue("@JENIS_TRANSAKSI", "Hapus Barang")
-                            cmdInsert.Parameters.AddWithValue("@LOKASI", FormUtama.SLokasi.Text)
-                            cmdInsert.Parameters.AddWithValue("@ID_USER", FormUtama.SLogin.Text)
-                            cmdInsert.Parameters.AddWithValue("@ID_KOMPUTER", FormUtama.Comp.Text)
-
+                            cmdInsert.Parameters.AddWithValue("@JENIS_TRANSAKSI", "HAPUS BARANG")
+                            cmdInsert.Parameters.AddWithValue("@LOKASI", FormUtama.StatusLokasi.Text)
+                            cmdInsert.Parameters.AddWithValue("@ID_USER", FormUtama.StatusNamaUser.Text)
+                            cmdInsert.Parameters.AddWithValue("@ID_KOMPUTER", FormUtama.StatusNamaPC.Text)
                             cmdInsert.ExecuteNonQuery()
                         End Using
                     End If
 
-                    ' Hapus barang dari tabel
-                    Using cmdDelete As New MySqlCommand("DELETE FROM tbl_barang WHERE ID_BARANG = @KodeBarang", conn, transaction)
-                        cmdDelete.Parameters.AddWithValue("@KodeBarang", Txtkodebarang.Text)
+                    Using cmdDelete As New MySqlCommand("DELETE FROM tbl_barang WHERE ID_BARANG = @kode", conn, transaction)
+                        cmdDelete.Parameters.AddWithValue("@kode", kode)
                         cmdDelete.ExecuteNonQuery()
                     End Using
 
-                    ' Commit transaksi jika semua operasi berhasil
-                    transaction.Commit()
+                    ' Update saldo akun jurnal secara realtime (hanya jika ada nilai barang)
+                    If nominal <> 0 Then
+                        UpdateSaldoAkun(LAWAN_KODE_REK_BARANG, transaction)
+                        UpdateSaldoAkun(KODE_REK_BARANG, transaction)
+                    End If
 
-                    DatabaseModule.CatatanAksiHistory("Hapus barang " & Txtkodebarang.Text)
+                    transaction.Commit()
                     CariData()
                 Catch ex As Exception
-                    ' Rollback transaksi jika ada kesalahan
                     transaction.Rollback()
                     MessageBox.Show("Error: " & ex.Message, "Kesalahan", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 End Try
@@ -605,6 +686,36 @@ Public Class FormBarang
         End If
     End Sub
 
+    Private Sub NonAktifBarangToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles NonAktifBarangToolStripMenuItem.Click
+        If Txtkodebarang.Text = "" Then
+            MessageBox.Show("Mohon pilih data terlebih dahulu.", "Peringatan", MessageBoxButtons.OK, MessageBoxIcon.Warning)
+            Exit Sub
+        End If
+
+        Dim kode As String = Txtkodebarang.Text
+        Dim nama As String = Txtnamabarang.Text
+
+        ' Baca status saat ini
+        Dim statusSaatIni As String = ""
+        Using cmd As New MySqlCommand("SELECT STATUS FROM tbl_barang WHERE ID_BARANG = @kode LIMIT 1", conn)
+            cmd.Parameters.AddWithValue("@kode", kode)
+            Dim val = cmd.ExecuteScalar()
+            If val IsNot Nothing Then statusSaatIni = val.ToString()
+        End Using
+
+        Dim statusBaru As String = If(statusSaatIni = "Non Aktif", "Aktif", "Non Aktif")
+        Dim aksi As String = If(statusBaru = "Non Aktif", "menonaktifkan", "mengaktifkan kembali")
+
+        If MessageBox.Show($"Apakah Anda yakin ingin {aksi} barang '{nama}'?",
+                           "Konfirmasi", MessageBoxButtons.YesNo, MessageBoxIcon.Question) = DialogResult.Yes Then
+            Using cmd As New MySqlCommand("UPDATE tbl_barang SET STATUS = @status WHERE ID_BARANG = @kode", conn)
+                cmd.Parameters.AddWithValue("@status", statusBaru)
+                cmd.Parameters.AddWithValue("@kode", kode)
+                cmd.ExecuteNonQuery()
+            End Using
+            CariData()
+        End If
+    End Sub
 
     Private Sub BtnKeluar_Click(ByVal sender As Object, ByVal e As EventArgs) Handles BtnKeluar.Click
         Close()
@@ -612,34 +723,30 @@ Public Class FormBarang
 
 
     Private Sub DGBarang_CellFormatting(ByVal sender As Object, ByVal e As DataGridViewCellFormattingEventArgs) Handles DGBarang.CellFormatting
-        If DGBarang.Columns(e.ColumnIndex).Name = "STOK_TOKO" Then
-            Dim value As Object = If(Convert.IsDBNull(e.Value), 0, e.Value)
-            If (Convert.ToInt64(value) <= 1) Then
-                e.CellStyle.BackColor = Color.IndianRed
-                e.CellStyle.ForeColor = Color.LavenderBlush
-            ElseIf (Convert.ToInt64(value) <= 10) Then
-                e.CellStyle.BackColor = Color.LightSalmon
-                e.CellStyle.ForeColor = Color.DarkRed
-            Else
-                e.CellStyle.BackColor = Color.PaleGreen
-                e.CellStyle.ForeColor = Color.DarkGreen
-            End If
-        End If
+        If e.RowIndex < 0 Then Return
 
-        If DGBarang.Columns(e.ColumnIndex).Name = "STOK_GUDANG" Then
-            Dim value As Object = If(Convert.IsDBNull(e.Value), 0, e.Value)
-            If (Convert.ToInt64(value) <= 1) Then
-                e.CellStyle.BackColor = Color.IndianRed
-                e.CellStyle.ForeColor = Color.LavenderBlush
-            ElseIf (Convert.ToInt64(value) <= 10) Then
-                e.CellStyle.BackColor = Color.LightSalmon
-                e.CellStyle.ForeColor = Color.DarkRed
-            Else
-                e.CellStyle.BackColor = Color.PaleGreen
-                e.CellStyle.ForeColor = Color.DarkGreen
+        ' Warna sel stok — hanya untuk kolom STOK_TOKO dan STOK_GUDANG
+        Dim colName As String = DGBarang.Columns(e.ColumnIndex).Name
+        If colName = "STOK_TOKO" OrElse colName = "STOK_GUDANG" Then
+            ' Skip pewarnaan stok jika baris non-aktif (sudah abu-abu dari RowPrePaint)
+            Dim row As DataGridViewRow = DGBarang.Rows(e.RowIndex)
+            If DGBarang.Columns.Contains("STATUS") AndAlso
+               row.Cells("STATUS").Value IsNot Nothing AndAlso
+               row.Cells("STATUS").Value.ToString() = "Non Aktif" Then
+                Return
             End If
+            ModuleTheme.SetWarnaSelStok(e)
         End If
+    End Sub
 
+    Private Sub DGBarang_RowPrePaint(sender As Object, e As DataGridViewRowPrePaintEventArgs) Handles DGBarang.RowPrePaint
+        If e.RowIndex < 0 Then Return
+        If Not DGBarang.Columns.Contains("STATUS") Then Return
+
+        Dim row As DataGridViewRow = DGBarang.Rows(e.RowIndex)
+        Dim isNonAktif As Boolean = row.Cells("STATUS").Value IsNot Nothing AndAlso
+                                    row.Cells("STATUS").Value.ToString() = "Non Aktif"
+        ModuleTheme.SetWarnaBarisDgvNonaktif(row, isNonAktif)
     End Sub
 
 
@@ -651,17 +758,17 @@ Public Class FormBarang
     End Sub
 
     Private Sub HandleDataSorting(ByVal orderByClause As String)
-        Dim query As String = "SELECT ID_BARANG, NAMA_BARANG, NAMA_KATEGORI, NAMA_SUPLIYER, HARGA_BELI, HARGA_BELI_TERAKHIR, " &
+        Dim query As String = "SELECT ID_BARANG, NAMA_BARANG, NAMA_KATEGORI, NAMA_MERK, NAMA_SUPLIYER, HARGA_BELI, HARGA_BELI_TERAKHIR, " &
                        "SATUAN_UMUM_KECIL, SATUAN_UMUM_SEDANG, SATUAN_UMUM_BESAR, " &
                        "HARGA_JUAL_UMUM_KECIL, HARGA_JUAL_UMUM_SEDANG, HARGA_JUAL_UMUM_BESAR, " &
                        "SATUAN_PARTAI_KECIL, SATUAN_PARTAI_SEDANG, SATUAN_PARTAI_BESAR, " &
                        "HARGA_JUAL_PARTAI_KECIL, HARGA_JUAL_PARTAI_SEDANG, HARGA_JUAL_PARTAI_BESAR, STOK_TOKO, " &
-                       "STOK_GUDANG, SATUAN_STOK, SATUAN_ISI_STOK " &
+                       "STOK_GUDANG, SATUAN_STOK, SATUAN_ISI_STOK, STATUS " &
                        "FROM tbl_barang ORDER BY " & orderByClause
         DGBarang.Columns.Clear()
 
         Using da As New MySqlDataAdapter(query, conn)
-            ds = New DataSet
+            Dim ds As New DataSet
             da.Fill(ds)
             DGBarang.DataSource = ds.Tables(0)
             Aturdgvbarangsimpel()
@@ -763,9 +870,25 @@ Public Class FormBarang
     End Sub
 
 
-    Private Sub TambahKurangstok()
+    Private Function TambahKurangstok() As Boolean
+        ' Validasi: pastikan ada baris yang dipilih dan bukan baris kosong
+        If DGBarang.CurrentRow Is Nothing OrElse DGBarang.CurrentRow.IsNewRow Then
+            MessageBox.Show("Pilih baris barang terlebih dahulu.", "Peringatan",
+                            MessageBoxButtons.OK, MessageBoxIcon.Warning)
+            Return False
+        End If
+        Dim idBarangCek As Object = DGBarang("ID_BARANG", DGBarang.CurrentRow.Index).Value
+        If idBarangCek Is Nothing OrElse IsDBNull(idBarangCek) OrElse String.IsNullOrEmpty(idBarangCek.ToString().Trim()) Then
+            MessageBox.Show("Baris yang dipilih tidak memiliki data barang." & vbCrLf &
+                            "Klik baris yang berisi data barang.", "Peringatan",
+                            MessageBoxButtons.OK, MessageBoxIcon.Warning)
+            Return False
+        End If
+
         Dim query As String = "SELECT SATUAN_UMUM_KECIL, SATUAN_UMUM_SEDANG, SATUAN_UMUM_BESAR FROM tbl_barang WHERE ID_BARANG = ?"
-        Dim idBarang As String = DGBarang("ID_BARANG", DGBarang.CurrentRow.Index).Value
+        Dim idBarang As String = If(DGBarang("ID_BARANG", DGBarang.CurrentRow.Index).Value Is DBNull.Value OrElse
+                                    DGBarang("ID_BARANG", DGBarang.CurrentRow.Index).Value Is Nothing,
+                                    "", DGBarang("ID_BARANG", DGBarang.CurrentRow.Index).Value.ToString())
 
         Using cmd As New MySqlCommand(query, conn)
             cmd.Parameters.AddWithValue("@idBarang", idBarang)
@@ -775,9 +898,9 @@ Public Class FormBarang
 
             Using rd As MySqlDataReader = cmd.ExecuteReader()
                 If rd.Read() Then
-                    Dim satuanKecil As String = If(Not rd.IsDBNull(rd.GetOrdinal("SATUAN_UMUM_KECIL")), rd.GetString(rd.GetOrdinal("SATUAN_UMUM_KECIL")), "")
-                    Dim satuanSedang As String = If(Not rd.IsDBNull(rd.GetOrdinal("SATUAN_UMUM_SEDANG")), rd.GetString(rd.GetOrdinal("SATUAN_UMUM_SEDANG")), "")
-                    Dim satuanBesar As String = If(Not rd.IsDBNull(rd.GetOrdinal("SATUAN_UMUM_BESAR")), rd.GetString(rd.GetOrdinal("SATUAN_UMUM_BESAR")), "")
+                    Dim satuanKecil As String = ModuleAngka.SafeGetValue(Of String)(rd, "SATUAN_UMUM_KECIL", "")
+                    Dim satuanSedang As String = ModuleAngka.SafeGetValue(Of String)(rd, "SATUAN_UMUM_SEDANG", "")
+                    Dim satuanBesar As String = ModuleAngka.SafeGetValue(Of String)(rd, "SATUAN_UMUM_BESAR", "")
 
                     If Not String.IsNullOrEmpty(satuanKecil) Or Not String.IsNullOrEmpty(satuanSedang) Or Not String.IsNullOrEmpty(satuanBesar) Then
                         CmbIsiTokoT.Items.Clear()
@@ -820,14 +943,15 @@ Public Class FormBarang
         CmbIsiGUdangT.Text = If(DGBarang.Item("SATUAN_STOK", i).Value IsNot DBNull.Value, DGBarang.Item("SATUAN_STOK", i).Value.ToString(), "")
         TxtSatIsiToko.Text = If(DGBarang.Item("SATUAN_ISI_STOK", i).Value IsNot DBNull.Value, DGBarang.Item("SATUAN_ISI_STOK", i).Value.ToString(), "")
         TxtSatIsiGudang.Text = If(DGBarang.Item("SATUAN_ISI_STOK", i).Value IsNot DBNull.Value, DGBarang.Item("SATUAN_ISI_STOK", i).Value.ToString(), "")
-    End Sub
+        Return True
+    End Function
 
     Private Sub TambahStokToolStripMenuItem_Click(ByVal sender As Object, ByVal e As EventArgs) Handles TambahStokToolStripMenuItem.Click
 
-        PAnelTambahKurang.Left = (ClientSize.Width - PAnelTambahKurang.Width) \ 2
-        PAnelTambahKurang.Top = (ClientSize.Height - PAnelTambahKurang.Height) \ 2
+        PanelInput.Left = (ClientSize.Width - PanelInput.Width) \ 2
+        PanelInput.Top = (ClientSize.Height - PanelInput.Height) \ 2
 
-        If FormUtama.SLokasi.Text = "GUDANG" Then
+        If FormUtama.StatusLokasi.Text = "GUDANG" Then
             TxtIsiStokGudangT.Enabled = True
             CmbIsiGUdangT.Enabled = True
             TxtSatIsiGudangT.Enabled = True
@@ -837,7 +961,7 @@ Public Class FormBarang
             CmbIsiTokoT.Enabled = False
             TxtSatIsiTokoT.Enabled = False
             TxtStokTotalTokoT.Enabled = False
-        ElseIf FormUtama.SLokasi.Text = "TOKO" Then
+        ElseIf FormUtama.StatusLokasi.Text = "TOKO" Then
             TxtIsiStokGudangT.Enabled = False
             CmbIsiGUdangT.Enabled = False
             TxtSatIsiGudangT.Enabled = False
@@ -851,24 +975,24 @@ Public Class FormBarang
 
         LblJudulStok.Text = "TAMBAH STOK BARANG"
 
-        TambahKurangstok()
-        PAnelTambahKurang.Visible = True
+        If Not TambahKurangstok() Then Exit Sub
+        PanelInput.Visible = True
         DGBarang.Enabled = False
-        PanelOperasi.Enabled = False
+        PanelFooter.Enabled = False
 
-        If FormUtama.SLokasi.Text = "GUDANG" Then
+        If FormUtama.StatusLokasi.Text = "GUDANG" Then
             TxtIsiStokGudangT.Select()
-        ElseIf FormUtama.SLokasi.Text = "TOKO" Then
+        ElseIf FormUtama.StatusLokasi.Text = "TOKO" Then
             TxtIsiStokTokoT.Select()
         End If
 
     End Sub
 
     Private Sub KurangiStokToolStripMenuItem_Click(ByVal sender As Object, ByVal e As EventArgs) Handles KurangiStokToolStripMenuItem.Click
-        PAnelTambahKurang.Left = (ClientSize.Width - PAnelTambahKurang.Width) \ 2
-        PAnelTambahKurang.Top = (ClientSize.Height - PAnelTambahKurang.Height) \ 2
+        PanelInput.Left = (ClientSize.Width - PanelInput.Width) \ 2
+        PanelInput.Top = (ClientSize.Height - PanelInput.Height) \ 2
 
-        If FormUtama.SLokasi.Text = "GUDANG" Then
+        If FormUtama.StatusLokasi.Text = "GUDANG" Then
             TxtIsiStokGudangT.Enabled = True
             CmbIsiGUdangT.Enabled = True
             TxtSatIsiGudangT.Enabled = True
@@ -878,7 +1002,7 @@ Public Class FormBarang
             CmbIsiTokoT.Enabled = False
             TxtSatIsiTokoT.Enabled = False
             TxtStokTotalTokoT.Enabled = False
-        ElseIf FormUtama.SLokasi.Text = "TOKO" Then
+        ElseIf FormUtama.StatusLokasi.Text = "TOKO" Then
             TxtIsiStokGudangT.Enabled = False
             CmbIsiGUdangT.Enabled = False
             TxtSatIsiGudangT.Enabled = False
@@ -892,14 +1016,14 @@ Public Class FormBarang
 
         LblJudulStok.Text = "KURANGI STOK BARANG"
 
-        TambahKurangstok()
-        PAnelTambahKurang.Visible = True
+        If Not TambahKurangstok() Then Exit Sub
+        PanelInput.Visible = True
         DGBarang.Enabled = False
-        PanelOperasi.Enabled = False
+        PanelFooter.Enabled = False
 
-        If FormUtama.SLokasi.Text = "GUDANG" Then
+        If FormUtama.StatusLokasi.Text = "GUDANG" Then
             TxtIsiStokGudangT.Select()
-        ElseIf FormUtama.SLokasi.Text = "TOKO" Then
+        ElseIf FormUtama.StatusLokasi.Text = "TOKO" Then
             TxtIsiStokTokoT.Select()
         End If
     End Sub
@@ -1012,14 +1136,14 @@ Public Class FormBarang
 
 
         If LblJudulStok.Text = "KURANGI STOK BARANG" Then
-            If FormUtama.SLokasi.Text = "TOKO" Then
+            If FormUtama.StatusLokasi.Text = "TOKO" Then
                 If stoktokoawal <= 0 OrElse stokToko > stoktokoawal Then
                     MessageBox.Show("Stok toko tidak mencukupi untuk dikurangi", "Perhatian", MessageBoxButtons.OK, MessageBoxIcon.Information)
                     Exit Sub
                 End If
             End If
 
-            If FormUtama.SLokasi.Text = "GUDANG" Then
+            If FormUtama.StatusLokasi.Text = "GUDANG" Then
                 If stokgudangawal <= 0 OrElse stokGudang > stokgudangawal Then
                     MessageBox.Show("Stok gudang tidak mencukupi untuk dikurangi", "Perhatian", MessageBoxButtons.OK, MessageBoxIcon.Information)
                     Exit Sub
@@ -1032,19 +1156,55 @@ Public Class FormBarang
         Dim transaction As MySqlTransaction = conn.BeginTransaction()
         Try
             InsertHistory(transaction, noTransaksi, isiToko, isiGudang, stokToko, stokGudang, totalNominaltoko, totalNominalgudang, kodebarang)
-            InsertStokTambahKurang(transaction, noTransaksi, isiToko, isiGudang, stokToko, stokGudang, kodebarang, FormUtama.SLokasi.Text)
-            InsertJurnalUmum(transaction, noTransaksi, totalNominaltoko, totalNominalgudang, FormUtama.SLokasi.Text)
+            InsertStokTambahKurang(transaction, noTransaksi, isiToko, isiGudang, stokToko, stokGudang, kodebarang, FormUtama.StatusLokasi.Text)
+            InsertJurnalUmum(transaction, noTransaksi, totalNominaltoko, totalNominalgudang, FormUtama.StatusLokasi.Text)
 
-            UpdateStok(transaction, kodebarang, stokToko, stokGudang, FormUtama.SLokasi.Text)
+            ' Tentukan jenis aksi
+            Dim jenisAksiStok As String = If(LblJudulStok.Text = "TAMBAH STOK BARANG", "TAMBAH_STOK", "KURANG_STOK")
+
+            ' ========================================
+            ' START: Audit Trail - Stok Manual
+            ' ========================================
+            Dim sbSnapshot As New System.Text.StringBuilder()
+            Dim stokSebelum As Decimal = BacaStokSaatIni(kodebarang, FormUtama.StatusLokasi.Text, transaction)
+            Dim qtyTambahKurang As Decimal = If(FormUtama.StatusLokasi.Text = "TOKO", isiToko, isiGudang)
+            Dim satuanTambahKurang As String = If(FormUtama.StatusLokasi.Text = "TOKO", CmbIsiTokoT.Text, CmbIsiGUdangT.Text)
+            Dim isiSatuan As Decimal = If(FormUtama.StatusLokasi.Text = "TOKO", ModuleAngka.ParseDecimal(TxtSatIsiTokoT.Text), ModuleAngka.ParseDecimal(TxtSatIsiGudangT.Text))
+            Dim totalQty As Decimal = If(FormUtama.StatusLokasi.Text = "TOKO", stokToko, stokGudang)
+            Dim totalNominal As Decimal = If(FormUtama.StatusLokasi.Text = "TOKO", totalNominaltoko, totalNominalgudang)
+
+            sbSnapshot.AppendLine($"No Transaksi: {noTransaksi}")
+            sbSnapshot.AppendLine($"Kode Barang: {kodebarang}")
+            sbSnapshot.AppendLine($"Nama Barang: {TxtNama.Text}")
+            sbSnapshot.AppendLine($"Lokasi: {FormUtama.StatusLokasi.Text}")
+            sbSnapshot.AppendLine($"Jenis Aksi: {jenisAksiStok}")
+            sbSnapshot.AppendLine($"Qty: {qtyTambahKurang} {satuanTambahKurang}")
+            sbSnapshot.AppendLine($"Isi Satuan: {isiSatuan}")
+            sbSnapshot.AppendLine($"Total Qty: {totalQty}")
+            sbSnapshot.AppendLine($"Total Nominal: {ModuleAngka.FormatRupiah(totalNominal)}")
+            sbSnapshot.AppendLine($"Stok Sebelum: {stokSebelum}")
+
+            ModuleAuditTrail.CatatAuditMaster("STK:" & noTransaksi, jenisAksiStok, "Stok Manual", sbSnapshot.ToString(), trans:=transaction)
+            ' ========================================
+            ' END: Audit Trail - Stok Manual
+            ' ========================================
+
+            UpdateStok(transaction, kodebarang, stokToko, stokGudang, FormUtama.StatusLokasi.Text)
+            UpdateSaldoAkun(KODE_REK_BARANG, transaction)
+            UpdateSaldoAkun(LAWAN_KODE_REK_BARANG, transaction)
+
+            ' Recalculate stok barang
+            Dim stokSebelumTK As Decimal = BacaStokSaatIni(kodebarang, FormUtama.StatusLokasi.Text, transaction)
+            HitungStokPerubahan(kodebarang, transaction)
+            Dim stokSesudahTK As Decimal = BacaStokSaatIni(kodebarang, FormUtama.StatusLokasi.Text, transaction)
+            Dim auditTambahKurang As New Dictionary(Of String, Decimal)() From {{kodebarang, Math.Abs(stokSesudahTK - stokSebelumTK)}}
+            AuditStokTransaksi(noTransaksi, If(LblJudulStok.Text = "TAMBAH STOK BARANG", "Tambah Stok", "Kurang Stok"), Nothing, Nothing, Nothing, auditTambahKurang, transaction)
 
             transaction.Commit()
             If LblJudulStok.Text = "TAMBAH STOK BARANG" Then
-                DatabaseModule.CatatanAksiHistory("Tambah stok barang " & TxtKode.Text)
             Else
-                DatabaseModule.CatatanAksiHistory("Kurangi stok barang " & TxtKode.Text)
             End If
 
-            HitungByKode(kodebarang)
             ClearFieldsAndReloadData()
 
         Catch ex As Exception
@@ -1069,7 +1229,7 @@ Public Class FormBarang
                 cmdInsert.Parameters.AddWithValue("@JENIS", "KURANG")
             End If
 
-            cmdInsert.Parameters.AddWithValue("@LOKASI", FormUtama.SLokasi.Text)
+            cmdInsert.Parameters.AddWithValue("@LOKASI", FormUtama.StatusLokasi.Text)
             cmdInsert.Parameters.AddWithValue("@ID_BARANG", kodebarang)
             cmdInsert.Parameters.AddWithValue("@NAMA_BARANG", TxtNama.Text)
 
@@ -1079,7 +1239,7 @@ Public Class FormBarang
             Dim totalQty As Decimal = 0D
             Dim totalNominal As Decimal = 0D
 
-            Select Case FormUtama.SLokasi.Text
+            Select Case FormUtama.StatusLokasi.Text
                 Case "TOKO"
                     isi = isiToko
                     satuan = CmbIsiTokoT.Text
@@ -1103,8 +1263,8 @@ Public Class FormBarang
             cmdInsert.Parameters.AddWithValue("@TOTAL_QTY", totalQty)
             cmdInsert.Parameters.AddWithValue("@TOTAL_RUPIAH", totalNominal)
 
-            cmdInsert.Parameters.AddWithValue("@ID_USER", FormUtama.SLogin.Text)
-            cmdInsert.Parameters.AddWithValue("@ID_KOMPUTER", FormUtama.Comp.Text)
+            cmdInsert.Parameters.AddWithValue("@ID_USER", FormUtama.StatusNamaUser.Text)
+            cmdInsert.Parameters.AddWithValue("@ID_KOMPUTER", FormUtama.StatusNamaPC.Text)
 
             cmdInsert.ExecuteNonQuery()
         End Using
@@ -1134,7 +1294,7 @@ Public Class FormBarang
             Dim totalQty As Decimal = 0D
             'Dim totalNominal As Decimal = 0D
 
-            Select Case FormUtama.SLokasi.Text
+            Select Case FormUtama.StatusLokasi.Text
                 Case "TOKO"
                     isi = isiToko
                     satuan = CmbIsiTokoT.Text
@@ -1154,8 +1314,8 @@ Public Class FormBarang
             cmdInsert.Parameters.AddWithValue("@SATUAN", satuan)
             cmdInsert.Parameters.AddWithValue("@ISI_SATUAN", isiSatuan)
             cmdInsert.Parameters.AddWithValue("@TOTAL_QTY", totalQty)
-            cmdInsert.Parameters.AddWithValue("@ID_USER", FormUtama.SLogin.Text)
-            cmdInsert.Parameters.AddWithValue("@ID_KOMPUTER", FormUtama.Comp.Text)
+            cmdInsert.Parameters.AddWithValue("@ID_USER", FormUtama.StatusNamaUser.Text)
+            cmdInsert.Parameters.AddWithValue("@ID_KOMPUTER", FormUtama.StatusNamaPC.Text)
 
             cmdInsert.ExecuteNonQuery()
         End Using
@@ -1175,7 +1335,7 @@ Public Class FormBarang
 
             Dim nominal As Decimal = 0D
 
-            Select Case FormUtama.SLokasi.Text
+            Select Case FormUtama.StatusLokasi.Text
                 Case "TOKO"
                     nominal = totalNominaltoko
                 Case "GUDANG"
@@ -1190,10 +1350,10 @@ Public Class FormBarang
             cmd.Parameters.AddWithValue("@NAMA_AKUN_K", namaAkunK)
             cmd.Parameters.AddWithValue("@NOMOR_AKUN_K", nomorAkunK)
             cmd.Parameters.AddWithValue("@NOMINAL", nominal)
-            cmd.Parameters.AddWithValue("@JENIS_TRANSAKSI", uraian.ToLower())
-            cmd.Parameters.AddWithValue("@LOKASI", FormUtama.SLokasi.Text)
-            cmd.Parameters.AddWithValue("@ID_USER", FormUtama.SLogin.Text)
-            cmd.Parameters.AddWithValue("@ID_KOMPUTER", FormUtama.Comp.Text)
+            cmd.Parameters.AddWithValue("@JENIS_TRANSAKSI", If(LblJudulStok.Text = "TAMBAH STOK BARANG", "TAMBAH BARANG", "KURANG BARANG"))
+            cmd.Parameters.AddWithValue("@LOKASI", FormUtama.StatusLokasi.Text)
+            cmd.Parameters.AddWithValue("@ID_USER", FormUtama.StatusNamaUser.Text)
+            cmd.Parameters.AddWithValue("@ID_KOMPUTER", FormUtama.StatusNamaPC.Text)
             cmd.ExecuteNonQuery()
         End Using
     End Sub
@@ -1244,7 +1404,7 @@ Public Class FormBarang
 
 
     Private Sub ClearFieldsAndReloadData()
-        PAnelTambahKurang.Visible = False
+        PanelInput.Visible = False
         TxtIsiStokTokoT.Clear()
         CmbIsiTokoT.SelectedIndex = -1
         TxtSatIsiTokoT.Clear()
@@ -1254,7 +1414,7 @@ Public Class FormBarang
         TxtSatIsiGudangT.Clear()
         TxtStokTotalGudangT.Clear()
         DGBarang.Enabled = True
-        PanelOperasi.Enabled = True
+        PanelFooter.Enabled = True
         CariData()
     End Sub
 
@@ -1267,9 +1427,9 @@ Public Class FormBarang
         CmbIsiGUdangT.Text = ""
         TxtSatIsiGudangT.Text = ""
         TxtStokTotalGudangT.Text = ""
-        PAnelTambahKurang.Visible = False
+        PanelInput.Visible = False
         DGBarang.Enabled = True
-        PanelOperasi.Enabled = True
+        PanelFooter.Enabled = True
     End Sub
 
 
@@ -1413,13 +1573,25 @@ Public Class FormBarang
         ' Mulai transaksi
         Using transaction As MySqlTransaction = conn.BeginTransaction()
             Try
-                ' Update tbl_barang
                 Dim queryBrg As String = "UPDATE tbl_barang " &
                                         "SET NAMA_BARANG = TRIM(NAMA_BARANG), " &
                                         "ID_BARANG = TRIM(ID_BARANG), " &
                                         "BARCODE_KECIL = TRIM(BARCODE_KECIL), " &
                                         "BARCODE_SEDANG = TRIM(BARCODE_SEDANG), " &
-                                        "BARCODE_BESAR = TRIM(BARCODE_BESAR)"
+                                        "BARCODE_BESAR = TRIM(BARCODE_BESAR), " &
+                                        "NAMA_KATEGORI = TRIM(NAMA_KATEGORI), " &
+                                        "KODE_KATEGORI = TRIM(KODE_KATEGORI), " &
+                                        "NAMA_MERK = TRIM(NAMA_MERK), " &
+                                        "KODE_MERK = TRIM(KODE_MERK), " &
+                                        "NAMA_SUPLIYER = TRIM(NAMA_SUPLIYER), " &
+                                        "KODE_SUPLIYER = TRIM(KODE_SUPLIYER), " &
+                                        "SATUAN_UMUM_KECIL = TRIM(SATUAN_UMUM_KECIL), " &
+                                        "SATUAN_UMUM_SEDANG = TRIM(SATUAN_UMUM_SEDANG), " &
+                                        "SATUAN_UMUM_BESAR = TRIM(SATUAN_UMUM_BESAR), " &
+                                        "SATUAN_PARTAI_KECIL = TRIM(SATUAN_PARTAI_KECIL), " &
+                                        "SATUAN_PARTAI_SEDANG = TRIM(SATUAN_PARTAI_SEDANG), " &
+                                        "SATUAN_PARTAI_BESAR = TRIM(SATUAN_PARTAI_BESAR), " &
+                                        "SATUAN_STOK = TRIM(SATUAN_STOK)"
                 Using cmd As New MySqlCommand(queryBrg, conn, transaction)
                     cmd.ExecuteNonQuery()
                 End Using
@@ -1496,7 +1668,6 @@ Public Class FormBarang
 
                 ' Menampilkan pesan bahwa pembaruan berhasil
                 MessageBox.Show("Perbaikan database berhasil!", "Informasi", MessageBoxButtons.OK, MessageBoxIcon.Information)
-                DatabaseModule.CatatanAksiHistory("Perbaikan database " & "barang")
 
             Catch ex As Exception
                 ' Rollback transaksi jika ada kesalahan
@@ -1520,6 +1691,8 @@ Public Class FormBarang
             "TRANSFER_STOK_KELUAR_TOKO",
             "TRANSFER_BARANG_MASUK_TOKO",
             "TRANSFER_BARANG_KELUAR_TOKO",
+            "TRANSFER_CABANG_MASUK_TOKO",
+            "TRANSFER_CABANG_KELUAR_TOKO",
             "TAMBAH_GUDANG",
             "KURANG_GUDANG",
             "PEMBELIAN_GUDANG",
@@ -1531,6 +1704,8 @@ Public Class FormBarang
             "TRANSFER_STOK_KELUAR_GUDANG",
             "TRANSFER_BARANG_MASUK_GUDANG",
             "TRANSFER_BARANG_KELUAR_GUDANG",
+            "TRANSFER_CABANG_MASUK_GUDANG",
+            "TRANSFER_CABANG_KELUAR_GUDANG",
             "AWAL_TOKO",
             "AWAL_GUDANG",
             "POINT_MEMBER",
@@ -1584,9 +1759,9 @@ Public Class FormBarang
             Case Keys.F8
                 BtnSimpanStok.PerformClick()
             Case Keys.Escape
-                If PanelDetailBarang.Visible = True Then
+                If PanelGrid.Visible = True Then
                     BtnSembunyi.PerformClick()
-                ElseIf PAnelTambahKurang.Visible = True Then
+                ElseIf PanelInput.Visible = True Then
                     BtnKeluarStok.PerformClick()
                 Else
                     BtnKeluar.PerformClick()
@@ -1596,17 +1771,17 @@ Public Class FormBarang
 
 
     Private Sub HandleDataWhere(ByVal WhereClause As String)
-        Dim query As String = "SELECT ID_BARANG, NAMA_BARANG, NAMA_KATEGORI, NAMA_SUPLIYER, HARGA_BELI, HARGA_BELI_TERAKHIR, " &
+        Dim query As String = "SELECT ID_BARANG, NAMA_BARANG, NAMA_KATEGORI, NAMA_MERK, NAMA_SUPLIYER, HARGA_BELI, HARGA_BELI_TERAKHIR, " &
                        "SATUAN_UMUM_KECIL, SATUAN_UMUM_SEDANG, SATUAN_UMUM_BESAR, " &
                        "HARGA_JUAL_UMUM_KECIL, HARGA_JUAL_UMUM_SEDANG, HARGA_JUAL_UMUM_BESAR, " &
                        "SATUAN_PARTAI_KECIL, SATUAN_PARTAI_SEDANG, SATUAN_PARTAI_BESAR, " &
                        "HARGA_JUAL_PARTAI_KECIL, HARGA_JUAL_PARTAI_SEDANG, HARGA_JUAL_PARTAI_BESAR, STOK_TOKO, " &
-                       "STOK_GUDANG, SATUAN_STOK, SATUAN_ISI_STOK " &
+                       "STOK_GUDANG, SATUAN_STOK, SATUAN_ISI_STOK, STATUS " &
                        "FROM tbl_barang WHERE " & WhereClause & " ORDER BY NAMA_BARANG"
         DGBarang.Columns.Clear()
 
         Using da As New MySqlDataAdapter(query, conn)
-            ds = New DataSet
+            Dim ds As New DataSet
             da.Fill(ds)
             DGBarang.DataSource = ds.Tables(0)
             Aturdgvbarangsimpel()
@@ -1694,4 +1869,11 @@ Public Class FormBarang
     Private Sub BarcodeToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles BarcodeToolStripMenuItem.Click
 
     End Sub
+
+    Private Sub BtnClear_Click(sender As Object, e As EventArgs) Handles BtnClear.Click
+        If TxtCari.Text <> "" Then TxtCari.Clear()
+        CariData()
+    End Sub
+
+
 End Class

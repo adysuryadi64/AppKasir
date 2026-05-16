@@ -1,4 +1,4 @@
-﻿<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()> _
+<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()> _
 Partial Class FormGaji
     Inherits System.Windows.Forms.Form
 
@@ -98,17 +98,21 @@ Partial Class FormGaji
         Me.Label6 = New System.Windows.Forms.Label()
         Me.PanelData = New System.Windows.Forms.Panel()
         Me.DGVGaji = New System.Windows.Forms.DataGridView()
+        Me.CmbPilihCetak = New System.Windows.Forms.ComboBox()
         Me.LabelSupir = New System.Windows.Forms.Label()
         Me.Label18 = New System.Windows.Forms.Label()
-        Me.CmbBulan = New System.Windows.Forms.ComboBox()
+        Me.CmbBln = New System.Windows.Forms.ComboBox()
         Me.Panel1 = New System.Windows.Forms.Panel()
+        Me.BtnSettingPrinter = New System.Windows.Forms.Button()
+        Me.CmbProsesCetak = New System.Windows.Forms.ComboBox()
+        Me.ComboBox1 = New System.Windows.Forms.ComboBox()
         Me.TxtPotAbsen = New System.Windows.Forms.TextBox()
         Me.TxtPotBonUntukEdit = New System.Windows.Forms.TextBox()
         Me.Label5 = New System.Windows.Forms.Label()
         Me.CmbRekening = New System.Windows.Forms.ComboBox()
         Me.LblRekening = New System.Windows.Forms.Label()
         Me.TxtTanggal = New System.Windows.Forms.TextBox()
-        Me.CmbTahun = New System.Windows.Forms.ComboBox()
+        Me.CmbThn = New System.Windows.Forms.ComboBox()
         Me.DtpAkhir = New System.Windows.Forms.DateTimePicker()
         Me.Label1 = New System.Windows.Forms.Label()
         Me.Label3 = New System.Windows.Forms.Label()
@@ -137,7 +141,7 @@ Partial Class FormGaji
         'PanelHeader
         '
         Me.PanelHeader.AutoScroll = True
-        Me.PanelHeader.BackColor = System.Drawing.Color.SandyBrown
+        Me.PanelHeader.BackColor = System.Drawing.SystemColors.Control
         Me.PanelHeader.Controls.Add(Me.DtpTanggal)
         Me.PanelHeader.Controls.Add(Me.BtnClose)
         Me.PanelHeader.Controls.Add(Me.Label8)
@@ -163,11 +167,12 @@ Partial Class FormGaji
         'BtnClose
         '
         Me.BtnClose.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.BtnClose.BackColor = System.Drawing.Color.SandyBrown
+        Me.BtnClose.BackColor = System.Drawing.SystemColors.Control
+        Me.BtnClose.Cursor = System.Windows.Forms.Cursors.Hand
         Me.BtnClose.FlatAppearance.BorderSize = 0
-        Me.BtnClose.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Gray
+        Me.BtnClose.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(CType(CType(226, Byte), Integer), CType(CType(232, Byte), Integer), CType(CType(240, Byte), Integer))
+        Me.BtnClose.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(CType(CType(241, Byte), Integer), CType(CType(245, Byte), Integer), CType(CType(249, Byte), Integer))
         Me.BtnClose.FlatStyle = System.Windows.Forms.FlatStyle.Flat
-        Me.BtnClose.ForeColor = System.Drawing.Color.Black
         Me.BtnClose.Image = CType(resources.GetObject("BtnClose.Image"), System.Drawing.Image)
         Me.BtnClose.Location = New System.Drawing.Point(1160, 2)
         Me.BtnClose.Margin = New System.Windows.Forms.Padding(4, 3, 4, 3)
@@ -216,7 +221,7 @@ Partial Class FormGaji
         Me.PanelNota.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.PanelNota.AutoScroll = True
-        Me.PanelNota.BackColor = System.Drawing.Color.LightGray
+        Me.PanelNota.BackColor = System.Drawing.SystemColors.Control
         Me.PanelNota.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
         Me.PanelNota.Controls.Add(Me.Panel7)
         Me.PanelNota.Controls.Add(Me.Panel6)
@@ -233,7 +238,7 @@ Partial Class FormGaji
         '
         'Panel7
         '
-        Me.Panel7.BackColor = System.Drawing.Color.LightGray
+        Me.Panel7.BackColor = System.Drawing.SystemColors.Control
         Me.Panel7.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
         Me.Panel7.Controls.Add(Me.LblSisaBon)
         Me.Panel7.Controls.Add(Me.Label32)
@@ -350,7 +355,7 @@ Partial Class FormGaji
         '
         'Panel6
         '
-        Me.Panel6.BackColor = System.Drawing.Color.LightGray
+        Me.Panel6.BackColor = System.Drawing.SystemColors.Control
         Me.Panel6.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
         Me.Panel6.Controls.Add(Me.TxtPendapatan)
         Me.Panel6.Controls.Add(Me.Label24)
@@ -446,7 +451,7 @@ Partial Class FormGaji
         '
         'Panel5
         '
-        Me.Panel5.BackColor = System.Drawing.Color.LightGray
+        Me.Panel5.BackColor = System.Drawing.SystemColors.Control
         Me.Panel5.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
         Me.Panel5.Controls.Add(Me.Label20)
         Me.Panel5.Controls.Add(Me.LblTelat)
@@ -596,7 +601,7 @@ Partial Class FormGaji
         '
         'Panel4
         '
-        Me.Panel4.BackColor = System.Drawing.Color.LightGray
+        Me.Panel4.BackColor = System.Drawing.SystemColors.Control
         Me.Panel4.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
         Me.Panel4.Controls.Add(Me.Label31)
         Me.Panel4.Controls.Add(Me.TxtMakan)
@@ -724,22 +729,30 @@ Partial Class FormGaji
         '
         'Button2
         '
-        Me.Button2.BackColor = System.Drawing.Color.Wheat
-        Me.Button2.FlatAppearance.BorderSize = 0
-        Me.Button2.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Gray
+        Me.Button2.AutoSize = True
+        Me.Button2.BackColor = System.Drawing.SystemColors.Control
+        Me.Button2.Cursor = System.Windows.Forms.Cursors.Hand
+        Me.Button2.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(CType(CType(22, Byte), Integer), CType(CType(163, Byte), Integer), CType(CType(74, Byte), Integer))
+        Me.Button2.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(CType(CType(187, Byte), Integer), CType(CType(247, Byte), Integer), CType(CType(208, Byte), Integer))
+        Me.Button2.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(CType(CType(220, Byte), Integer), CType(CType(252, Byte), Integer), CType(CType(231, Byte), Integer))
         Me.Button2.FlatStyle = System.Windows.Forms.FlatStyle.Flat
-        Me.Button2.ForeColor = System.Drawing.Color.Black
+        Me.Button2.Font = New System.Drawing.Font("Segoe UI", 9.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.Button2.ForeColor = System.Drawing.Color.FromArgb(CType(CType(22, Byte), Integer), CType(CType(163, Byte), Integer), CType(CType(74, Byte), Integer))
         Me.Button2.Image = CType(resources.GetObject("Button2.Image"), System.Drawing.Image)
+        Me.Button2.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft
         Me.Button2.Location = New System.Drawing.Point(1132, 110)
         Me.Button2.Margin = New System.Windows.Forms.Padding(4, 3, 4, 3)
         Me.Button2.Name = "Button2"
-        Me.Button2.Size = New System.Drawing.Size(31, 31)
+        Me.Button2.Size = New System.Drawing.Size(68, 31)
         Me.Button2.TabIndex = 302
+        Me.Button2.Text = "Baru"
+        Me.Button2.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
+        Me.Button2.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText
         Me.Button2.UseVisualStyleBackColor = False
         '
         'Panel3
         '
-        Me.Panel3.BackColor = System.Drawing.Color.LightGray
+        Me.Panel3.BackColor = System.Drawing.SystemColors.Control
         Me.Panel3.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
         Me.Panel3.Controls.Add(Me.TxtOmsetJual)
         Me.Panel3.Controls.Add(Me.TxtKomisiJual)
@@ -881,26 +894,31 @@ Partial Class FormGaji
         '
         'BtnSimpann
         '
-        Me.BtnSimpann.BackColor = System.Drawing.Color.Khaki
-        Me.BtnSimpann.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Blue
-        Me.BtnSimpann.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Blue
+        Me.BtnSimpann.AutoSize = True
+        Me.BtnSimpann.BackColor = System.Drawing.SystemColors.Control
+        Me.BtnSimpann.Cursor = System.Windows.Forms.Cursors.Hand
+        Me.BtnSimpann.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(CType(CType(22, Byte), Integer), CType(CType(163, Byte), Integer), CType(CType(74, Byte), Integer))
+        Me.BtnSimpann.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(CType(CType(187, Byte), Integer), CType(CType(247, Byte), Integer), CType(CType(208, Byte), Integer))
+        Me.BtnSimpann.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(CType(CType(220, Byte), Integer), CType(CType(252, Byte), Integer), CType(CType(231, Byte), Integer))
         Me.BtnSimpann.FlatStyle = System.Windows.Forms.FlatStyle.Flat
-        Me.BtnSimpann.Font = New System.Drawing.Font("Bookman Old Style", 9.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.BtnSimpann.ForeColor = System.Drawing.Color.Black
+        Me.BtnSimpann.Font = New System.Drawing.Font("Segoe UI", 9.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.BtnSimpann.ForeColor = System.Drawing.Color.FromArgb(CType(CType(22, Byte), Integer), CType(CType(163, Byte), Integer), CType(CType(74, Byte), Integer))
+        Me.BtnSimpann.Image = CType(resources.GetObject("BtnSimpann.Image"), System.Drawing.Image)
         Me.BtnSimpann.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft
         Me.BtnSimpann.Location = New System.Drawing.Point(987, 110)
         Me.BtnSimpann.Name = "BtnSimpann"
-        Me.BtnSimpann.Size = New System.Drawing.Size(112, 32)
+        Me.BtnSimpann.Size = New System.Drawing.Size(114, 32)
         Me.BtnSimpann.TabIndex = 301
-        Me.BtnSimpann.Text = "SIMPAN (F8)"
-        Me.BtnSimpann.TextImageRelation = System.Windows.Forms.TextImageRelation.TextBeforeImage
+        Me.BtnSimpann.Text = "Simpan (F8)"
+        Me.BtnSimpann.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
+        Me.BtnSimpann.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText
         Me.BtnSimpann.UseVisualStyleBackColor = False
         '
         'LblHelper
         '
         Me.LblHelper.AutoSize = True
         Me.LblHelper.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.LblHelper.Location = New System.Drawing.Point(1087, 38)
+        Me.LblHelper.Location = New System.Drawing.Point(1155, 38)
         Me.LblHelper.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Me.LblHelper.Name = "LblHelper"
         Me.LblHelper.Size = New System.Drawing.Size(25, 13)
@@ -913,7 +931,7 @@ Partial Class FormGaji
         '
         Me.LblSupir.AutoSize = True
         Me.LblSupir.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.LblSupir.Location = New System.Drawing.Point(1087, 10)
+        Me.LblSupir.Location = New System.Drawing.Point(1155, 10)
         Me.LblSupir.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Me.LblSupir.Name = "LblSupir"
         Me.LblSupir.Size = New System.Drawing.Size(25, 13)
@@ -960,8 +978,9 @@ Partial Class FormGaji
         Me.PanelData.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
             Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.PanelData.BackColor = System.Drawing.Color.Gainsboro
+        Me.PanelData.BackColor = System.Drawing.SystemColors.Control
         Me.PanelData.Controls.Add(Me.DGVGaji)
+        Me.PanelData.Controls.Add(Me.CmbPilihCetak)
         Me.PanelData.Controls.Add(Me.LabelSupir)
         Me.PanelData.Location = New System.Drawing.Point(0, 260)
         Me.PanelData.Margin = New System.Windows.Forms.Padding(4, 3, 4, 3)
@@ -979,13 +998,8 @@ Partial Class FormGaji
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.DGVGaji.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill
         Me.DGVGaji.AutoSizeRowsMode = System.Windows.Forms.DataGridViewAutoSizeRowsMode.AllCells
-        Me.DGVGaji.BackgroundColor = System.Drawing.Color.White
         DataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter
-        DataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Control
         DataGridViewCellStyle1.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        DataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.WindowText
-        DataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight
-        DataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText
         DataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.[True]
         Me.DGVGaji.ColumnHeadersDefaultCellStyle = DataGridViewCellStyle1
         Me.DGVGaji.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
@@ -1004,6 +1018,17 @@ Partial Class FormGaji
         Me.DGVGaji.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect
         Me.DGVGaji.Size = New System.Drawing.Size(1194, 281)
         Me.DGVGaji.TabIndex = 2
+        '
+        'CmbPilihCetak
+        '
+        Me.CmbPilihCetak.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
+        Me.CmbPilihCetak.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.CmbPilihCetak.FormattingEnabled = True
+        Me.CmbPilihCetak.Items.AddRange(New Object() {"IYA", "SELALU TANYA", "TAMPILKAN DI MONITOR"})
+        Me.CmbPilihCetak.Location = New System.Drawing.Point(706, 135)
+        Me.CmbPilihCetak.Name = "CmbPilihCetak"
+        Me.CmbPilihCetak.Size = New System.Drawing.Size(149, 21)
+        Me.CmbPilihCetak.TabIndex = 309
         '
         'LabelSupir
         '
@@ -1033,35 +1058,38 @@ Partial Class FormGaji
         Me.Label18.TabIndex = 230
         Me.Label18.Text = "Bulan :"
         '
-        'CmbBulan
+        'CmbBln
         '
-        Me.CmbBulan.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
-        Me.CmbBulan.Font = New System.Drawing.Font("Century Gothic", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.CmbBulan.FormattingEnabled = True
-        Me.CmbBulan.Location = New System.Drawing.Point(89, 6)
-        Me.CmbBulan.Name = "CmbBulan"
-        Me.CmbBulan.Size = New System.Drawing.Size(106, 25)
-        Me.CmbBulan.TabIndex = 234
+        Me.CmbBln.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
+        Me.CmbBln.Font = New System.Drawing.Font("Century Gothic", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.CmbBln.FormattingEnabled = True
+        Me.CmbBln.Location = New System.Drawing.Point(89, 6)
+        Me.CmbBln.Name = "CmbBln"
+        Me.CmbBln.Size = New System.Drawing.Size(106, 25)
+        Me.CmbBln.TabIndex = 234
         '
         'Panel1
         '
         Me.Panel1.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.Panel1.AutoScroll = True
-        Me.Panel1.BackColor = System.Drawing.Color.OldLace
+        Me.Panel1.BackColor = System.Drawing.SystemColors.Control
         Me.Panel1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
+        Me.Panel1.Controls.Add(Me.BtnSettingPrinter)
+        Me.Panel1.Controls.Add(Me.CmbProsesCetak)
+        Me.Panel1.Controls.Add(Me.ComboBox1)
         Me.Panel1.Controls.Add(Me.TxtPotAbsen)
         Me.Panel1.Controls.Add(Me.TxtPotBonUntukEdit)
         Me.Panel1.Controls.Add(Me.Label5)
         Me.Panel1.Controls.Add(Me.CmbRekening)
         Me.Panel1.Controls.Add(Me.LblRekening)
         Me.Panel1.Controls.Add(Me.TxtTanggal)
-        Me.Panel1.Controls.Add(Me.CmbTahun)
+        Me.Panel1.Controls.Add(Me.CmbThn)
         Me.Panel1.Controls.Add(Me.LblSupir)
         Me.Panel1.Controls.Add(Me.DtpAkhir)
         Me.Panel1.Controls.Add(Me.Label1)
         Me.Panel1.Controls.Add(Me.LblHelper)
-        Me.Panel1.Controls.Add(Me.CmbBulan)
+        Me.Panel1.Controls.Add(Me.CmbBln)
         Me.Panel1.Controls.Add(Me.Label18)
         Me.Panel1.Controls.Add(Me.Label3)
         Me.Panel1.Controls.Add(Me.DtpAwal)
@@ -1074,6 +1102,53 @@ Partial Class FormGaji
         Me.Panel1.Size = New System.Drawing.Size(1191, 64)
         Me.Panel1.TabIndex = 4
         '
+        'BtnSettingPrinter
+        '
+        Me.BtnSettingPrinter.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.BtnSettingPrinter.AutoSize = True
+        Me.BtnSettingPrinter.BackColor = System.Drawing.SystemColors.Control
+        Me.BtnSettingPrinter.Cursor = System.Windows.Forms.Cursors.Hand
+        Me.BtnSettingPrinter.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(CType(CType(100, Byte), Integer), CType(CType(116, Byte), Integer), CType(CType(139, Byte), Integer))
+        Me.BtnSettingPrinter.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(CType(CType(226, Byte), Integer), CType(CType(232, Byte), Integer), CType(CType(240, Byte), Integer))
+        Me.BtnSettingPrinter.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(CType(CType(241, Byte), Integer), CType(CType(245, Byte), Integer), CType(CType(249, Byte), Integer))
+        Me.BtnSettingPrinter.FlatStyle = System.Windows.Forms.FlatStyle.Flat
+        Me.BtnSettingPrinter.Font = New System.Drawing.Font("Segoe UI", 9.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.BtnSettingPrinter.ForeColor = System.Drawing.Color.Black
+        Me.BtnSettingPrinter.Image = CType(resources.GetObject("BtnSettingPrinter.Image"), System.Drawing.Image)
+        Me.BtnSettingPrinter.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft
+        Me.BtnSettingPrinter.Location = New System.Drawing.Point(1062, 23)
+        Me.BtnSettingPrinter.Name = "BtnSettingPrinter"
+        Me.BtnSettingPrinter.Size = New System.Drawing.Size(118, 32)
+        Me.BtnSettingPrinter.TabIndex = 311
+        Me.BtnSettingPrinter.Text = "Printer"
+        Me.BtnSettingPrinter.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
+        Me.BtnSettingPrinter.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText
+        Me.BtnSettingPrinter.UseVisualStyleBackColor = False
+        '
+        'CmbProsesCetak
+        '
+        Me.CmbProsesCetak.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.CmbProsesCetak.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
+        Me.CmbProsesCetak.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.CmbProsesCetak.FormattingEnabled = True
+        Me.CmbProsesCetak.Items.AddRange(New Object() {"LANGSUNG CETAK", "TANYA PILIH PRINTER"})
+        Me.CmbProsesCetak.Location = New System.Drawing.Point(907, 34)
+        Me.CmbProsesCetak.Name = "CmbProsesCetak"
+        Me.CmbProsesCetak.Size = New System.Drawing.Size(149, 21)
+        Me.CmbProsesCetak.TabIndex = 310
+        '
+        'ComboBox1
+        '
+        Me.ComboBox1.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.ComboBox1.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
+        Me.ComboBox1.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.ComboBox1.FormattingEnabled = True
+        Me.ComboBox1.Items.AddRange(New Object() {"IYA", "SELALU TANYA", "TAMPILKAN DI MONITOR"})
+        Me.ComboBox1.Location = New System.Drawing.Point(907, 6)
+        Me.ComboBox1.Name = "ComboBox1"
+        Me.ComboBox1.Size = New System.Drawing.Size(149, 21)
+        Me.ComboBox1.TabIndex = 309
+        '
         'TxtPotAbsen
         '
         Me.TxtPotAbsen.Font = New System.Drawing.Font("Century Gothic", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
@@ -1081,7 +1156,7 @@ Partial Class FormGaji
         Me.TxtPotAbsen.Location = New System.Drawing.Point(933, 7)
         Me.TxtPotAbsen.Margin = New System.Windows.Forms.Padding(4, 3, 4, 3)
         Me.TxtPotAbsen.Name = "TxtPotAbsen"
-        Me.TxtPotAbsen.Size = New System.Drawing.Size(95, 23)
+        Me.TxtPotAbsen.Size = New System.Drawing.Size(45, 23)
         Me.TxtPotAbsen.TabIndex = 308
         Me.TxtPotAbsen.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
         Me.TxtPotAbsen.Visible = False
@@ -1093,7 +1168,7 @@ Partial Class FormGaji
         Me.TxtPotBonUntukEdit.Location = New System.Drawing.Point(879, 35)
         Me.TxtPotBonUntukEdit.Margin = New System.Windows.Forms.Padding(4, 3, 4, 3)
         Me.TxtPotBonUntukEdit.Name = "TxtPotBonUntukEdit"
-        Me.TxtPotBonUntukEdit.Size = New System.Drawing.Size(179, 23)
+        Me.TxtPotBonUntukEdit.Size = New System.Drawing.Size(99, 23)
         Me.TxtPotBonUntukEdit.TabIndex = 307
         Me.TxtPotBonUntukEdit.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
         Me.TxtPotBonUntukEdit.Visible = False
@@ -1142,15 +1217,15 @@ Partial Class FormGaji
         Me.TxtTanggal.TabIndex = 285
         Me.TxtTanggal.Visible = False
         '
-        'CmbTahun
+        'CmbThn
         '
-        Me.CmbTahun.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
-        Me.CmbTahun.Font = New System.Drawing.Font("Century Gothic", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.CmbTahun.FormattingEnabled = True
-        Me.CmbTahun.Location = New System.Drawing.Point(198, 6)
-        Me.CmbTahun.Name = "CmbTahun"
-        Me.CmbTahun.Size = New System.Drawing.Size(65, 25)
-        Me.CmbTahun.TabIndex = 266
+        Me.CmbThn.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
+        Me.CmbThn.Font = New System.Drawing.Font("Century Gothic", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.CmbThn.FormattingEnabled = True
+        Me.CmbThn.Location = New System.Drawing.Point(198, 6)
+        Me.CmbThn.Name = "CmbThn"
+        Me.CmbThn.Size = New System.Drawing.Size(65, 25)
+        Me.CmbThn.TabIndex = 266
         '
         'DtpAkhir
         '
@@ -1198,7 +1273,7 @@ Partial Class FormGaji
         '
         'Panel2
         '
-        Me.Panel2.BackColor = System.Drawing.Color.OldLace
+        Me.Panel2.BackColor = System.Drawing.SystemColors.Control
         Me.Panel2.Controls.Add(Me.Button1)
         Me.Panel2.Controls.Add(Me.ReportViewer1)
         Me.Panel2.Location = New System.Drawing.Point(98, 29)
@@ -1210,11 +1285,12 @@ Partial Class FormGaji
         'Button1
         '
         Me.Button1.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.Button1.BackColor = System.Drawing.Color.SandyBrown
+        Me.Button1.BackColor = System.Drawing.SystemColors.Control
+        Me.Button1.Cursor = System.Windows.Forms.Cursors.Hand
         Me.Button1.FlatAppearance.BorderSize = 0
-        Me.Button1.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Gray
+        Me.Button1.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(CType(CType(226, Byte), Integer), CType(CType(232, Byte), Integer), CType(CType(240, Byte), Integer))
+        Me.Button1.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(CType(CType(241, Byte), Integer), CType(CType(245, Byte), Integer), CType(CType(249, Byte), Integer))
         Me.Button1.FlatStyle = System.Windows.Forms.FlatStyle.Flat
-        Me.Button1.ForeColor = System.Drawing.Color.Black
         Me.Button1.Image = CType(resources.GetObject("Button1.Image"), System.Drawing.Image)
         Me.Button1.Location = New System.Drawing.Point(875, 3)
         Me.Button1.Margin = New System.Windows.Forms.Padding(4, 3, 4, 3)
@@ -1257,6 +1333,7 @@ Partial Class FormGaji
         Me.PanelHeader.ResumeLayout(False)
         Me.PanelHeader.PerformLayout()
         Me.PanelNota.ResumeLayout(False)
+        Me.PanelNota.PerformLayout()
         Me.Panel7.ResumeLayout(False)
         Me.Panel7.PerformLayout()
         Me.Panel6.ResumeLayout(False)
@@ -1286,7 +1363,7 @@ Partial Class FormGaji
     Friend WithEvents PanelData As System.Windows.Forms.Panel
     Friend WithEvents Label18 As System.Windows.Forms.Label
     Friend WithEvents DGVGaji As System.Windows.Forms.DataGridView
-    Friend WithEvents CmbBulan As System.Windows.Forms.ComboBox
+    Friend WithEvents CmbBln As System.Windows.Forms.ComboBox
     Friend WithEvents Panel1 As System.Windows.Forms.Panel
     Friend WithEvents Label3 As System.Windows.Forms.Label
     Friend WithEvents Label2 As System.Windows.Forms.Label
@@ -1327,7 +1404,7 @@ Partial Class FormGaji
     Friend WithEvents TxtPendapatan As System.Windows.Forms.TextBox
     Friend WithEvents Label24 As System.Windows.Forms.Label
     Friend WithEvents BtnSimpann As System.Windows.Forms.Button
-    Friend WithEvents CmbTahun As System.Windows.Forms.ComboBox
+    Friend WithEvents CmbThn As System.Windows.Forms.ComboBox
     Friend WithEvents TxtTanggal As System.Windows.Forms.TextBox
     Friend WithEvents LabelSupir As System.Windows.Forms.Label
     Friend WithEvents Label5 As System.Windows.Forms.Label
@@ -1367,4 +1444,11 @@ Partial Class FormGaji
     Friend WithEvents TxtAbsenKhususRp As System.Windows.Forms.TextBox
     Friend WithEvents TxtPotAbsen As System.Windows.Forms.TextBox
     Friend WithEvents DtpTanggal As System.Windows.Forms.DateTimePicker
+    Friend WithEvents CmbPilihCetak As ComboBox
+    Friend WithEvents BtnSettingPrinter As Button
+    Friend WithEvents CmbProsesCetak As ComboBox
+    Friend WithEvents ComboBox1 As ComboBox
 End Class
+
+
+

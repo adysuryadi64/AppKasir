@@ -1,13 +1,14 @@
-﻿Imports Microsoft.Reporting.WinForms
+Imports Microsoft.Reporting.WinForms
 
 Public Class FormLapReturJual
 
     Private Sub FormLapReturJual_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
+        ModuleTheme.TerapkanTheme(Me)
         Cursor = Cursors.WaitCursor
         CbTanggal.Checked = True
         DTPAwal.Value = tanggalAwalPeriodeKerja
         DTPAkhir.Value = tanggalAkhirPeriodeKerja
-        Select Case LabelJudul.Text
+        Select Case LblHeaderForm.Text
             Case "LAPORAN RETUR PENJUALAN"
                 PanelReturJual.Visible = True
                 PanelReturJualDetail.Visible = False
@@ -24,49 +25,11 @@ Public Class FormLapReturJual
         Cursor = Cursors.Default
     End Sub
 
-    Private bulanTerpilih As Integer
-    Private Sub KonversiBulanKeAngka()
-        Select Case CmbBln.Text
-            Case "Januari" : bulanTerpilih = 1
-            Case "Februari" : bulanTerpilih = 2
-            Case "Maret" : bulanTerpilih = 3
-            Case "April" : bulanTerpilih = 4
-            Case "Mei" : bulanTerpilih = 5
-            Case "Juni" : bulanTerpilih = 6
-            Case "Juli" : bulanTerpilih = 7
-            Case "Agustus" : bulanTerpilih = 8
-            Case "September" : bulanTerpilih = 9
-            Case "Oktober" : bulanTerpilih = 10
-            Case "November" : bulanTerpilih = 11
-            Case "Desember" : bulanTerpilih = 12
-        End Select
-    End Sub
-
-    Private Sub MuatComboBoxBulanTahun()
-        ' Bersihkan item sebelum menambahkannya kembali
-        CmbBln.Items.Clear()
-
-        ' Tambahkan tahun dari 2022 hingga tahun sekarang
-        For i As Integer = 2022 To Year(Now)
-            CmbThn.Items.Add(i)
-        Next
-
-        ' Bersihkan item sebelum menambahkannya kembali
-        CmbBln.Items.Clear()
-
-        ' Tambahkan daftar bulan
-        Dim daftarBulan As String() = {"Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"}
-        CmbBln.Items.AddRange(daftarBulan)
-
-        ' Set tahun sekarang sebagai tahun default
-        CmbThn.SelectedItem = Year(Now)
-    End Sub
-
     Private Sub PerbaruiTeksBulanTahunTerpilih()
         If Not String.IsNullOrEmpty(CmbBln.Text) Then
             Dim angkaBulan As String = (CmbBln.SelectedIndex + 1).ToString("D2")
             Dim teksBulanTahunTerpilih As String = angkaBulan & "/" & CmbThn.Text
-            TampilkanLaporan(LabelJudul.Text)
+            TampilkanLaporan(LblHeaderForm.Text)
         End If
     End Sub
 
@@ -78,11 +41,7 @@ Public Class FormLapReturJual
             tanggalAwal = DTPAwal.Value.Date
             tanggalAkhir = DTPAkhir.Value.Date.AddDays(1).AddTicks(-1)
         ElseIf CbBulan.Checked Then
-            KonversiBulanKeAngka()
-            Dim bulan As Integer = bulanTerpilih
-            Dim tahun As Integer = CmbThn.Text
-            tanggalAwal = New DateTime(tahun, bulan, 1)
-            tanggalAkhir = tanggalAwal.AddMonths(1).AddSeconds(-1)
+            If Not GetRentangBulan(CmbBln, CmbThn, tanggalAwal, tanggalAkhir) Then Exit Sub
         End If
 
         Select Case judul
@@ -166,7 +125,7 @@ Public Class FormLapReturJual
     End Sub
 
     Private Sub DTPTanggal_ValueChanged(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles DTPAwal.ValueChanged
-        TampilkanLaporan(LabelJudul.Text)
+        TampilkanLaporan(LblHeaderForm.Text)
     End Sub
 
     Private Sub CmbRekening_SelectedIndexChanged(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles CmbRekening.SelectedIndexChanged
@@ -189,16 +148,16 @@ Public Class FormLapReturJual
     Private Sub CbTanggal_CheckedChanged(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles CbTanggal.CheckedChanged
         If CbTanggal.Checked Then
             CbBulan.Checked = False
-            TampilkanLaporan(LabelJudul.Text)
+            TampilkanLaporan(LblHeaderForm.Text)
         End If
     End Sub
 
     Private Sub CbBulan_CheckedChanged(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles CbBulan.CheckedChanged
         If CbBulan.Checked Then
             CbTanggal.Checked = False
-            MuatComboBoxBulanTahun()
+            MuatComboBoxBulanTahun(CmbBln, CmbThn)
             If Not String.IsNullOrEmpty(CmbBln.Text) Then
-                TampilkanLaporan(LabelJudul.Text)
+                TampilkanLaporan(LblHeaderForm.Text)
             End If
         End If
     End Sub
@@ -223,14 +182,10 @@ Public Class FormLapReturJual
             tanggalAwal = DTPAwal.Value.Date
             tanggalAkhir = DTPAkhir.Value.Date.AddDays(1).AddTicks(-1)
         ElseIf CbBulan.Checked = True Then
-            KonversiBulanKeAngka()
-            Dim bulan As Integer = bulanTerpilih
-            Dim tahun As Integer = CmbThn.Text
-            tanggalAwal = New DateTime(tahun, bulan, 1)
-            tanggalAkhir = tanggalAwal.AddMonths(1).AddDays(-1).AddSeconds(86399)
+            If Not GetRentangBulan(CmbBln, CmbThn, tanggalAwal, tanggalAkhir) Then Exit Sub
         End If
 
-        Select Case LabelJudul.Text
+        Select Case LblHeaderForm.Text
             Case "LAPORAN RETUR PENJUALAN"
                 Dim rekeningatauPelanggan As String = If(CmbRekening.Text = "SEMUA" Or CmbRekening.SelectedIndex = 0, "", TxtRekening.Text)
                 ReturPenjualan(kasir, rekeningatauPelanggan, tanggalAwal, tanggalAkhir)
@@ -266,7 +221,7 @@ Public Class FormLapReturJual
 
                 Dim parametersRetur As New ReportParameterCollection From {
     New ReportParameter("Periode", "Periode : " & tanggalawal.ToString("dd/MM/yyyy") & " s/d " & tanggalakhir.ToString("dd/MM/yyyy") & keterangan),
-    New ReportParameter("Kasir", "Dicetak oleh : " & FormUtama.SLogin.Text),
+    New ReportParameter("Kasir", "Dicetak oleh : " & FormUtama.StatusNamaUser.Text),
     New ReportParameter("Perusahaan", NAMA_PERUSAHAAN)
 }
                 ' Menetapkan dataset dan parameter ke laporan RDLC
@@ -302,7 +257,7 @@ Public Class FormLapReturJual
 
                 Dim parameters As New ReportParameterCollection From {
                     New ReportParameter("Periode", "Periode : " & tanggalAwal.ToString("dd/MM/yyyy") & " s/d " & tanggalAkhir.ToString("dd/MM/yyyy") & keterangan),
-                    New ReportParameter("Kasir", "Dicetak oleh : " & FormUtama.SLogin.Text),
+                    New ReportParameter("Kasir", "Dicetak oleh : " & FormUtama.StatusNamaUser.Text),
                     New ReportParameter("Perusahaan", NAMA_PERUSAHAAN)
                 }
 
@@ -337,7 +292,7 @@ Public Class FormLapReturJual
 
                 Dim parameters As New ReportParameterCollection From {
                     New ReportParameter("Periode", "Periode : " & tanggalAwal.ToString("dd/MM/yyyy") & " s/d " & tanggalAkhir.ToString("dd/MM/yyyy") & keterangan),
-                    New ReportParameter("Kasir", "Dicetak oleh : " & FormUtama.SLogin.Text),
+                    New ReportParameter("Kasir", "Dicetak oleh : " & FormUtama.StatusNamaUser.Text),
                     New ReportParameter("Perusahaan", NAMA_PERUSAHAAN)
                 }
 
@@ -350,5 +305,11 @@ Public Class FormLapReturJual
     End Sub
 
 
+
+    Private Sub FormLapReturJual_KeyDown(sender As Object, e As KeyEventArgs) Handles MyBase.KeyDown
+        Select Case e.KeyCode
+        Case Keys.F5 : BtnTampilkan.PerformClick()
+    End Select
+    End Sub
 
 End Class

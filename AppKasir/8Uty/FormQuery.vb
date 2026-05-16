@@ -1,4 +1,4 @@
-﻿Imports System.IO
+Imports System.IO
 Imports System.Text.Json
 
 Public Class FormQuery
@@ -34,24 +34,27 @@ Public Class FormQuery
 
                 ' Jika pengguna memilih 'Yes', lanjutkan eksekusi query
                 If result = DialogResult.Yes Then
-                    ' Eksekusi query non-SELECT (INSERT, UPDATE, DELETE)
-                    Using cmd As New MySqlCommand(query, conn)
-                        Dim rowsAffected As Integer = cmd.ExecuteNonQuery()
+                    Using transaction As MySqlTransaction = conn.BeginTransaction()
+                        Try
+                            Using cmd As New MySqlCommand(query, conn, transaction)
+                                Dim rowsAffected As Integer = cmd.ExecuteNonQuery()
+                                transaction.Commit()
 
-                        ' Tampilkan informasi query yang dieksekusi di ListBox
-                        ListBoxHasil.Items.Add("Query executed: " & query)
+                                ListBoxHasil.Items.Add("Query executed: " & query)
+                                ListBoxHasil.Items.Add(rowsAffected.ToString() & " row(s) affected.")
 
-                        ' Tampilkan jumlah baris yang terpengaruh
-                        ListBoxHasil.Items.Add(rowsAffected.ToString() & " row(s) affected.")
-
-                        ' Tambahkan detail lebih lanjut, jika diperlukan (misalnya, jenis operasi)
-                        If query.Trim().ToUpper().StartsWith("INSERT") Then
-                            ListBoxHasil.Items.Add("Insert operation completed.")
-                        ElseIf query.Trim().ToUpper().StartsWith("UPDATE") Then
-                            ListBoxHasil.Items.Add("Update operation completed.")
-                        ElseIf query.Trim().ToUpper().StartsWith("DELETE") Then
-                            ListBoxHasil.Items.Add("Delete operation completed.")
-                        End If
+                                If query.Trim().ToUpper().StartsWith("INSERT") Then
+                                    ListBoxHasil.Items.Add("Insert operation completed.")
+                                ElseIf query.Trim().ToUpper().StartsWith("UPDATE") Then
+                                    ListBoxHasil.Items.Add("Update operation completed.")
+                                ElseIf query.Trim().ToUpper().StartsWith("DELETE") Then
+                                    ListBoxHasil.Items.Add("Delete operation completed.")
+                                End If
+                            End Using
+                        Catch ex As Exception
+                            transaction.Rollback()
+                            Throw
+                        End Try
                     End Using
                 Else
                     ' Batalkan eksekusi query
@@ -66,6 +69,7 @@ Public Class FormQuery
 
 
     Private Sub FormQuery_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
+        ModuleTheme.TerapkanTheme(Me)
         TampilTabel()
     End Sub
 

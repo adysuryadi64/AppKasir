@@ -1,128 +1,381 @@
-﻿Imports Microsoft.Reporting.WinForms
-
+Imports Microsoft.Reporting.WinForms
 
 Public Class FormLapMutasiBarang
 
-    Private Sub AmbilDanSimpanDataMutasiBarang()
-        ' Get the date range from DateTimePicker controls
-        Dim tanggalAwal As Date = DateTimePicker1.Value.Date
-        Dim tanggalAkhir As Date = DateTimePicker2.Value.Date.AddDays(1).AddTicks(-1)
+#Region "Konstanta & Variabel"
+    Private Const BARCODE_MIN_LENGTH As Integer = 6
+    Private Const BARCODE_TOTAL_TIME_MS As Double = 300
 
+    Private barcodeTimer As New System.Windows.Forms.Timer()
+    Private barcodeStartTime As DateTime
+    Private lastKeyTime As DateTime
+    Private barcodeChars As New List(Of Char)()
+    Private _sedangPilihListBox As Boolean = False
+    Private _kodeBarang As New Dictionary(Of String, String)() ' display text → kode
+#End Region
+
+#Region "Form Events"
+    Private Sub FormLapMutasiBarang_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+        ModuleTheme.TerapkanTheme(Me)
+        TxtNama.Clear()
+        TxtKode.Clear()
+        DateTimePicker1.Value = DateTime.Now
+        DateTimePicker2.Value = DateTime.Now
+        CbTanggal.Checked = True
+        CmbLokasi.SelectedIndex = 0
+        ReportViewer1.LocalReport.DataSources.Clear()
+
+        barcodeTimer.Interval = 120
+        AddHandler barcodeTimer.Tick, AddressOf BarcodeTimer_Tick
+
+        LstBarang.BringToFront()
+        LstBarang.DrawMode = DrawMode.OwnerDrawFixed
+        AddHandler LstBarang.DrawItem, AddressOf LstBarang_DrawItem
+        TxtNama.Focus()
+    End Sub
+
+    Private Sub FormLapMutasiBarang_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
+        TxtNama.Focus()
+        TxtNama.Select()
+    End Sub
+
+    Private Sub FormLapMutasiBarang_KeyDown(sender As Object, e As KeyEventArgs) Handles MyBase.KeyDown
+        Select Case e.KeyCode
+            Case Keys.F5 : BtnPreview.PerformClick()
+            Case Keys.Escape : Me.Close()
+        End Select
+    End Sub
+#End Region
+
+#Region "TxtNama & LstBarang"
+    Private Sub TxtNama_GotFocus(sender As Object, e As EventArgs) Handles TxtNama.GotFocus
+        PanelCari.BackColor = ModuleTheme.C(Color.Yellow, Color.FromArgb(255, 204, 0))
+    End Sub
+
+    Private Sub TxtNama_LostFocus(sender As Object, e As EventArgs) Handles TxtNama.LostFocus
+        PanelCari.BackColor = SystemColors.Control
+        If Not _sedangPilihListBox Then
+            LstBarang.Visible = False
+        End If
+    End Sub
+
+    Private Sub TxtNama_TextChanged(sender As Object, e As EventArgs) Handles TxtNama.TextChanged
+        Dim currentText As String = TxtNama.Text.Trim()
+
+        If String.IsNullOrEmpty(currentText) OrElse currentText.Length < 2 Then
+            LstBarang.Items.Clear()
+            LstBarang.Visible = False
+            If Not _sedangPilihListBox Then TxtKode.Text = ""
+            Return
+        End If
+
+        ' Input murni angka → kemungkinan barcode, jangan tampilkan listbox
+        If Not currentText.Any(AddressOf Char.IsLetter) Then Return
+
+        Using cmd As New MySqlCommand(
+            "SELECT ID_BARANG, NAMA_BARANG, STOK_TOKO, STOK_GUDANG FROM tbl_barang " &
+            "WHERE (NAMA_BARANG LIKE @s OR ID_BARANG LIKE @s) " &
+            "ORDER BY NAMA_BARANG LIMIT 50", conn)
+            cmd.Parameters.AddWithValue("@s", "%" & currentText & "%")
+            Using rd As MySqlDataReader = cmd.ExecuteReader()
+                LstBarang.Items.Clear()
+                _kodeBarang.Clear()
+                While rd.Read()
+                    Dim display As String = rd("NAMA_BARANG").ToString() & "  [T:" &
+                                           ModuleAngka.SafeGetValue(Of Decimal)(rd, "STOK_TOKO", 0D).ToString("N0") & " G:" &
+                                           ModuleAngka.SafeGetValue(Of Decimal)(rd, "STOK_GUDANG", 0D).ToString("N0") & "]"
+                    LstBarang.Items.Add(display)
+                    _kodeBarang(display) = rd("ID_BARANG").ToString()
+                End While
+            End Using
+        End Using
+
+        LstBarang.Visible = (LstBarang.Items.Count > 0)
+    End Sub
+
+    Private Sub TxtNama_KeyDown(sender As Object, e As KeyEventArgs) Handles TxtNama.KeyDown
+        lastKeyTime = DateTime.Now
+        If barcodeChars.Count = 0 Then barcodeStartTime = DateTime.Now
+        barcodeChars.Add(ChrW(e.KeyValue))
+        If Not barcodeTimer.Enabled Then barcodeTimer.Start()
+
+        Select Case e.KeyCode
+            Case Keys.Down
+                If LstBarang.Visible AndAlso LstBarang.Items.Count > 0 Then
+                    _sedangPilihListBox = True
+                    LstBarang.Focus()
+                    LstBarang.SelectedIndex = 0
+                    e.SuppressKeyPress = True
+                End If
+
+            Case Keys.Enter
+                barcodeTimer.Stop()
+                Dim inputText As String = TxtNama.Text.Trim()
+
+                If inputText.Length >= BARCODE_MIN_LENGTH AndAlso Not inputText.Any(AddressOf Char.IsLetter) Then
+                    If CariDenganBarcode(inputText) Then
+                        ResetBarcodeDetection()
+                        e.SuppressKeyPress = True
+                        Return
+                    End If
+                End If
+
+                If LstBarang.Visible AndAlso LstBarang.Items.Count > 0 Then
+                    AmbilDariListBox()
+                End If
+                ResetBarcodeDetection()
+                e.SuppressKeyPress = True
+
+            Case Keys.Escape
+                LstBarang.Items.Clear()
+                LstBarang.Visible = False
+                ResetBarcodeDetection()
+        End Select
+    End Sub
+
+    Private Sub LstBarang_MouseDown(sender As Object, e As MouseEventArgs) Handles LstBarang.MouseDown
+        _sedangPilihListBox = True
+    End Sub
+
+    Private Sub LstBarang_MouseClick(sender As Object, e As MouseEventArgs) Handles LstBarang.MouseClick
+        If LstBarang.SelectedItem IsNot Nothing Then
+            AmbilDariListBox()
+        End If
+        _sedangPilihListBox = False
+        TxtNama.Focus()
+    End Sub
+
+    Private Sub LstBarang_KeyDown(sender As Object, e As KeyEventArgs) Handles LstBarang.KeyDown
+        Select Case e.KeyCode
+            Case Keys.Enter
+                If LstBarang.SelectedItem IsNot Nothing Then
+                    AmbilDariListBox()
+                    _sedangPilihListBox = False
+                    TxtNama.Focus()
+                End If
+                e.SuppressKeyPress = True
+
+            Case Keys.Escape
+                LstBarang.Visible = False
+                _sedangPilihListBox = False
+                TxtNama.Focus()
+                e.SuppressKeyPress = True
+
+            Case Keys.Up
+                If LstBarang.SelectedIndex <= 0 Then
+                    LstBarang.SelectedIndex = -1
+                    LstBarang.Visible = False
+                    _sedangPilihListBox = False
+                    TxtNama.Focus()
+                    e.SuppressKeyPress = True
+                End If
+        End Select
+    End Sub
+
+    Private Sub LstBarang_DrawItem(sender As Object, e As DrawItemEventArgs)
+        If e.Index < 0 Then Return
+        e.DrawBackground()
+
+        Dim display As String = LstBarang.Items(e.Index).ToString()
+        Dim bracketIdx As Integer = display.LastIndexOf("  [")
+        Dim nama As String = If(bracketIdx > 0, display.Substring(0, bracketIdx), display)
+        Dim stok As String = If(bracketIdx > 0, display.Substring(bracketIdx).Trim(), "")
+
+        Dim fg As Color = If((e.State And DrawItemState.Selected) <> 0, SystemColors.HighlightText, e.ForeColor)
+        Using br As New SolidBrush(fg)
+            e.Graphics.DrawString(nama, e.Font, br, e.Bounds.Left + 2, e.Bounds.Top + 1)
+            If stok.Length > 0 Then
+                Dim stokSize As SizeF = e.Graphics.MeasureString(stok, e.Font)
+                e.Graphics.DrawString(stok, e.Font, br,
+                    e.Bounds.Right - stokSize.Width - 4, e.Bounds.Top + 1)
+            End If
+        End Using
+        e.DrawFocusRectangle()
+    End Sub
+
+    Private Sub AmbilDariListBox()
+        If LstBarang.Items.Count = 0 Then Return
+
+        Dim display As String = If(LstBarang.SelectedItem IsNot Nothing,
+                                   LstBarang.SelectedItem.ToString(),
+                                   LstBarang.Items(0).ToString())
+
+        Dim bracketIdx As Integer = display.LastIndexOf("  [")
+        Dim nama As String = If(bracketIdx > 0, display.Substring(0, bracketIdx).Trim(), display.Trim())
+
+        _sedangPilihListBox = True
+        TxtKode.Text = If(_kodeBarang.ContainsKey(display), _kodeBarang(display), "")
+        TxtNama.Text = nama
+        _sedangPilihListBox = False
+
+        LstBarang.Items.Clear()
+        LstBarang.Visible = False
+    End Sub
+#End Region
+
+#Region "Deteksi Barcode"
+    Private Sub BarcodeTimer_Tick(sender As Object, e As EventArgs)
+        If (DateTime.Now - lastKeyTime).TotalMilliseconds < 100 Then Return
+        barcodeTimer.Stop()
+
+        Dim inputText As String = TxtNama.Text.Trim()
+        If String.IsNullOrWhiteSpace(inputText) Then
+            ResetBarcodeDetection()
+            Return
+        End If
+
+        Dim totalMs As Double = (DateTime.Now - barcodeStartTime).TotalMilliseconds
+
+        If totalMs <= BARCODE_TOTAL_TIME_MS AndAlso
+           inputText.Length >= BARCODE_MIN_LENGTH AndAlso
+           Not inputText.Any(AddressOf Char.IsLetter) Then
+            CariDenganBarcode(inputText)
+        End If
+
+        ResetBarcodeDetection()
+    End Sub
+
+    Private Sub ResetBarcodeDetection()
+        barcodeTimer.Stop()
+        barcodeChars.Clear()
+    End Sub
+
+    Private Function CariDenganBarcode(barcodeText As String) As Boolean
         Try
-            ' Begin the transaction
-            transaction = conn.BeginTransaction()
+            Using cmd As New MySqlCommand(
+                "SELECT ID_BARANG, NAMA_BARANG FROM tbl_barang " &
+                "WHERE BARCODE_KECIL = @bc OR BARCODE_SEDANG = @bc OR BARCODE_BESAR = @bc LIMIT 1", conn)
+                cmd.Parameters.AddWithValue("@bc", barcodeText)
+                Using rd As MySqlDataReader = cmd.ExecuteReader()
+                    If rd.Read() Then
+                        _sedangPilihListBox = True
+                        TxtKode.Text = rd("ID_BARANG").ToString()
+                        TxtNama.Text = rd("NAMA_BARANG").ToString()
+                        _sedangPilihListBox = False
+                        LstBarang.Items.Clear()
+                        LstBarang.Visible = False
+                        Return True
+                    End If
+                End Using
+            End Using
+        Catch
+        End Try
+        Return False
+    End Function
+#End Region
 
-            ' Clear the Temp_Mutasi_Barang table
-            Dim clearTempTableQuery As String = "DELETE FROM Temp_Mutasi_Barang"
-            Using cmdClear As New MySqlCommand(clearTempTableQuery, conn, transaction)
+#Region "Filter Tanggal & Bulan"
+    Private Sub CbTanggal_CheckedChanged(sender As Object, e As EventArgs) Handles CbTanggal.CheckedChanged
+
+    End Sub
+
+    Private Sub CbBulan_CheckedChanged(sender As Object, e As EventArgs) Handles CbBulan.CheckedChanged
+
+    End Sub
+
+    Private Function GetRentangTanggal(ByRef tglAwal As DateTime, ByRef tglAkhir As DateTime) As Boolean
+        If CbTanggal.Checked Then
+            tglAwal = DateTimePicker1.Value.Date
+            tglAkhir = DateTimePicker2.Value.Date.AddDays(1).AddTicks(-1)
+            Return True
+        ElseIf CbBulan.Checked Then
+            Return GetRentangBulan(CmbBln, CmbThn, tglAwal, tglAkhir)
+        Else
+            MessageBox.Show("Harap pilih mode filter (Tanggal atau Bulan).", "Peringatan",
+                            MessageBoxButtons.OK, MessageBoxIcon.Warning)
+            Return False
+        End If
+    End Function
+#End Region
+
+#Region "Proses Data & Laporan"
+    Private Sub AmbilDanSimpanDataMutasiBarang()
+        Dim tanggalAwal As Date
+        Dim tanggalAkhir As Date
+        If Not GetRentangTanggal(tanggalAwal, tanggalAkhir) Then Return
+
+        Dim transaction As MySqlTransaction = conn.BeginTransaction()
+        Try
+            Using cmdClear As New MySqlCommand("DELETE FROM Temp_Mutasi_Barang", conn, transaction)
                 cmdClear.ExecuteNonQuery()
             End Using
 
-            ' Hitung saldo awal (saldo awal)
+            ' Hitung saldo awal dari tbl_barang
             Dim saldoAwal As Decimal = 0
-            Dim querySaldoAwalBarang As String = "SELECT AWAL_TOKO, AWAL_GUDANG " &
-                                                "FROM tbl_barang " &
-                                                "WHERE ID_BARANG = ?"
-            Using cmdSaldoAwal As New MySqlCommand(querySaldoAwalBarang, conn, transaction)
+            Using cmdSaldoAwal As New MySqlCommand(
+                "SELECT AWAL_TOKO, AWAL_GUDANG FROM tbl_barang WHERE ID_BARANG = ?", conn, transaction)
                 cmdSaldoAwal.Parameters.AddWithValue("?", TxtKode.Text)
-
                 Using reader As MySqlDataReader = cmdSaldoAwal.ExecuteReader()
                     While reader.Read()
-                        Dim lokasi As String = CmbLokasi.Text
-                        Select Case lokasi
-                            Case "TOKO"
-                                saldoAwal += Convert.ToDecimal(reader("AWAL_TOKO"))
-                            Case "GUDANG"
-                                saldoAwal += Convert.ToDecimal(reader("AWAL_GUDANG"))
+                        Select Case CmbLokasi.Text
+                            Case "TOKO" : saldoAwal += Convert.ToDecimal(reader("AWAL_TOKO"))
+                            Case "GUDANG" : saldoAwal += Convert.ToDecimal(reader("AWAL_GUDANG"))
                         End Select
                     End While
                 End Using
             End Using
 
-
-            Dim querySaldoAwal As String = "SELECT JENIS, SUM(TOTAL_QTY) AS TOTAL_QTY " &
-                                     "FROM historybarang " &
-                                     "WHERE TANGGAL < @TanggalAwal AND ID_BARANG = @IdBarang AND LOKASI = @Lokasi " &
-                                     "GROUP BY JENIS"
-
-            Using cmdSaldoAwal As New MySqlCommand(querySaldoAwal, conn, transaction)
-                cmdSaldoAwal.Parameters.AddWithValue("@TanggalAwal", tanggalAwal.ToString("yyyy-MM-dd HH:mm:ss"))
-                cmdSaldoAwal.Parameters.AddWithValue("@IdBarang", TxtKode.Text)
-                cmdSaldoAwal.Parameters.AddWithValue("@Lokasi", CmbLokasi.Text)
-
-                Using reader As MySqlDataReader = cmdSaldoAwal.ExecuteReader()
+            ' Akumulasi mutasi sebelum periode
+            Using cmdHist As New MySqlCommand(
+                "SELECT JENIS, SUM(TOTAL_QTY) AS TOTAL_QTY FROM historybarang " &
+                "WHERE TANGGAL < @TanggalAwal AND ID_BARANG = @IdBarang AND LOKASI = @Lokasi GROUP BY JENIS", conn, transaction)
+                cmdHist.Parameters.AddWithValue("@TanggalAwal", tanggalAwal.ToString("yyyy-MM-dd HH:mm:ss"))
+                cmdHist.Parameters.AddWithValue("@IdBarang", TxtKode.Text)
+                cmdHist.Parameters.AddWithValue("@Lokasi", CmbLokasi.Text)
+                Using reader As MySqlDataReader = cmdHist.ExecuteReader()
                     While reader.Read()
-                        Dim jenis As String = reader("JENIS").ToString()
-                        Dim totalQty As Decimal = Convert.ToDecimal(reader("TOTAL_QTY"))
-
-                        Select Case jenis
+                        Dim qty As Decimal = Convert.ToDecimal(reader("TOTAL_QTY"))
+                        Select Case reader("JENIS").ToString()
                             Case "TAMBAH", "PEMBELIAN", "RETUR JUAL", "OPNAME", "TRANSFER STOK MASUK", "TRANSFER BARANG MASUK"
-                                saldoAwal += totalQty
+                                saldoAwal += qty
                             Case "KURANG", "PENJUALAN", "RETUR BELI", "TRANSFER STOK KELUAR", "TRANSFER BARANG KELUAR"
-                                saldoAwal -= totalQty
+                                saldoAwal -= qty
                         End Select
                     End While
                 End Using
             End Using
 
-
-            ' Insert initial balance record
-            Dim insertSaldoAwalQuery As String = "INSERT INTO Temp_Mutasi_Barang (FAKTUR, TANGGAL, JENIS, LOKASI, QTY_MASUK, QTY_KELUAR, SALDO, ID_USER) " &
-                                      "VALUES ('SA-000000001', @Tanggal, 'SALDO AWAL', @Lokasi, 0, 0, @Saldo, @IdUser)"
-
-            Using cmdInsertSaldoAwal As New MySqlCommand(insertSaldoAwalQuery, conn, transaction)
-                cmdInsertSaldoAwal.Parameters.AddWithValue("@Tanggal", tanggalAwal.ToString("yyyy-MM-dd HH:mm:ss"))
-                cmdInsertSaldoAwal.Parameters.AddWithValue("@Lokasi", CmbLokasi.Text)
-                cmdInsertSaldoAwal.Parameters.AddWithValue("@Saldo", saldoAwal)
-                cmdInsertSaldoAwal.Parameters.AddWithValue("@IdUser", FormUtama.SLogin.Text)
-
-                cmdInsertSaldoAwal.ExecuteNonQuery()
+            ' Insert saldo awal
+            Using cmdInsertSA As New MySqlCommand(
+                "INSERT INTO Temp_Mutasi_Barang (FAKTUR, TANGGAL, JENIS, LOKASI, QTY_MASUK, QTY_KELUAR, SALDO, ID_USER) " &
+                "VALUES ('SA-000000001', @Tanggal, 'SALDO AWAL', @Lokasi, 0, 0, @Saldo, @IdUser)", conn, transaction)
+                cmdInsertSA.Parameters.AddWithValue("@Tanggal", tanggalAwal.ToString("yyyy-MM-dd HH:mm:ss"))
+                cmdInsertSA.Parameters.AddWithValue("@Lokasi", CmbLokasi.Text)
+                cmdInsertSA.Parameters.AddWithValue("@Saldo", saldoAwal)
+                cmdInsertSA.Parameters.AddWithValue("@IdUser", FormUtama.StatusNamaUser.Text)
+                cmdInsertSA.ExecuteNonQuery()
             End Using
 
-
+            ' Ambil transaksi dalam periode
             Dim records As New List(Of Dictionary(Of String, Object))
-
-            ' Query untuk mengambil data
-            Dim queryTanggalDitentukan As String = "SELECT FAKTUR, TANGGAL, JENIS, LOKASI, QTY, SATUAN, TOTAL_QTY, ID_USER " &
-                                            "FROM historybarang " &
-                                            "WHERE TANGGAL BETWEEN @TanggalAwal AND @TanggalAkhir AND ID_BARANG = @IdBarang AND LOKASI = @Lokasi ORDER BY TANGGAL"
-
-            ' Mengambil data dari database
-            Using cmdTanggalDitentukan As New MySqlCommand(queryTanggalDitentukan, conn, transaction)
-                cmdTanggalDitentukan.Parameters.AddWithValue("@TanggalAwal", tanggalAwal.ToString("yyyy-MM-dd HH:mm:ss"))
-                cmdTanggalDitentukan.Parameters.AddWithValue("@TanggalAkhir", tanggalAkhir.ToString("yyyy-MM-dd HH:mm:ss"))
-                cmdTanggalDitentukan.Parameters.AddWithValue("@IdBarang", TxtKode.Text)
-                cmdTanggalDitentukan.Parameters.AddWithValue("@Lokasi", CmbLokasi.Text)
-
-                Using reader As MySqlDataReader = cmdTanggalDitentukan.ExecuteReader()
+            Using cmdTrans As New MySqlCommand(
+                "SELECT FAKTUR, TANGGAL, JENIS, LOKASI, TOTAL_QTY, ID_USER FROM historybarang " &
+                "WHERE TANGGAL BETWEEN @TanggalAwal AND @TanggalAkhir AND ID_BARANG = @IdBarang AND LOKASI = @Lokasi ORDER BY TANGGAL", conn, transaction)
+                cmdTrans.Parameters.AddWithValue("@TanggalAwal", tanggalAwal.ToString("yyyy-MM-dd HH:mm:ss"))
+                cmdTrans.Parameters.AddWithValue("@TanggalAkhir", tanggalAkhir.ToString("yyyy-MM-dd HH:mm:ss"))
+                cmdTrans.Parameters.AddWithValue("@IdBarang", TxtKode.Text)
+                cmdTrans.Parameters.AddWithValue("@Lokasi", CmbLokasi.Text)
+                Using reader As MySqlDataReader = cmdTrans.ExecuteReader()
                     While reader.Read()
-                        ' Menyimpan setiap record dalam dictionary
-                        Dim record As New Dictionary(Of String, Object) From {
-                    {"FAKTUR", reader("FAKTUR").ToString()},
-                    {"TANGGAL", Convert.ToDateTime(reader("TANGGAL"))},
-                    {"JENIS", reader("JENIS").ToString()},
-                    {"LOKASI", reader("LOKASI").ToString()},
-                    {"TOTAL_QTY", Convert.ToDecimal(reader("TOTAL_QTY"))},
-                    {"ID_USER", reader("ID_USER").ToString()}
-                }
-                        records.Add(record)
+                        records.Add(New Dictionary(Of String, Object) From {
+                            {"FAKTUR", reader("FAKTUR").ToString()},
+                            {"TANGGAL", Convert.ToDateTime(reader("TANGGAL"))},
+                            {"JENIS", reader("JENIS").ToString()},
+                            {"LOKASI", reader("LOKASI").ToString()},
+                            {"TOTAL_QTY", Convert.ToDecimal(reader("TOTAL_QTY"))},
+                            {"ID_USER", reader("ID_USER").ToString()}
+                        })
                     End While
                 End Using
             End Using
 
-            ' Memproses data yang disimpan dalam dictionary list
+            ' Insert tiap transaksi ke temp table
             For Each record As Dictionary(Of String, Object) In records
-                Dim faktur As String = record("FAKTUR").ToString()
-                Dim tanggal As Date = CType(record("TANGGAL"), Date)
                 Dim jenis As String = record("JENIS").ToString()
-                Dim lokasi As String = record("LOKASI").ToString()
                 Dim totalQty As Decimal = CType(record("TOTAL_QTY"), Decimal)
-                Dim idUser As String = record("ID_USER").ToString()
-
                 Dim qtyMasuk As Decimal = 0
                 Dim qtyKeluar As Decimal = 0
 
-                ' Menghitung qty masuk dan keluar berdasarkan jenis transaksi
                 Select Case jenis
                     Case "TAMBAH", "PEMBELIAN", "RETUR JUAL", "OPNAME", "TRANSFER STOK MASUK", "TRANSFER BARANG MASUK"
                         qtyMasuk = totalQty
@@ -132,162 +385,59 @@ Public Class FormLapMutasiBarang
                         saldoAwal -= totalQty
                 End Select
 
-                ' Query untuk memasukkan data ke tabel sementara
-                Dim insertQuery As String = "INSERT INTO Temp_Mutasi_Barang (FAKTUR, TANGGAL, JENIS, LOKASI, QTY_MASUK, QTY_KELUAR, SALDO, ID_USER) " &
-                                     "VALUES (@Faktur, @Tanggal, @Jenis, @Lokasi, @QtyMasuk, @QtyKeluar, @Saldo, @IdUser)"
-
-                ' Menyimpan data ke tabel sementara
-                Using cmdInsert As New MySqlCommand(insertQuery, conn, transaction)
-                    cmdInsert.Parameters.AddWithValue("@Faktur", faktur)
-                    cmdInsert.Parameters.AddWithValue("@Tanggal", tanggal.ToString("yyyy-MM-dd HH:mm:ss"))
+                Using cmdInsert As New MySqlCommand(
+                    "INSERT INTO Temp_Mutasi_Barang (FAKTUR, TANGGAL, JENIS, LOKASI, QTY_MASUK, QTY_KELUAR, SALDO, ID_USER) " &
+                    "VALUES (@Faktur, @Tanggal, @Jenis, @Lokasi, @QtyMasuk, @QtyKeluar, @Saldo, @IdUser)", conn, transaction)
+                    cmdInsert.Parameters.AddWithValue("@Faktur", record("FAKTUR").ToString())
+                    cmdInsert.Parameters.AddWithValue("@Tanggal", CType(record("TANGGAL"), Date).ToString("yyyy-MM-dd HH:mm:ss"))
                     cmdInsert.Parameters.AddWithValue("@Jenis", jenis)
-                    cmdInsert.Parameters.AddWithValue("@Lokasi", lokasi)
+                    cmdInsert.Parameters.AddWithValue("@Lokasi", record("LOKASI").ToString())
                     cmdInsert.Parameters.AddWithValue("@QtyMasuk", qtyMasuk)
                     cmdInsert.Parameters.AddWithValue("@QtyKeluar", qtyKeluar)
                     cmdInsert.Parameters.AddWithValue("@Saldo", saldoAwal)
-                    cmdInsert.Parameters.AddWithValue("@IdUser", idUser)
-
+                    cmdInsert.Parameters.AddWithValue("@IdUser", record("ID_USER").ToString())
                     cmdInsert.ExecuteNonQuery()
                 End Using
             Next
 
-
-            ' Commit the transaction 
             transaction.Commit()
         Catch ex As Exception
-            ' Handle or log the exception as needed
-            MessageBox.Show("Terjadi kesalahan saat mengambil saldo awal: " & ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            transaction.Rollback()
+            MessageBox.Show("Terjadi kesalahan: " & ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
         End Try
     End Sub
 
-
-
-    ' Handler untuk event GotFocus pada TextBox
-    Private Sub TxtNama_GotFocus(ByVal sender As Object, ByVal e As EventArgs) Handles TxtNama.GotFocus
-        ' Ubah warna latar belakang saat TextBox mendapatkan fokus
-        PanelCariNama.BackColor = Color.Yellow ' Ganti warna fokus sesuai kebutuhan
-    End Sub
-
-    ' Handler untuk event LostFocus pada TextBox
-    Private Sub TxtNama_LostFocus(ByVal sender As Object, ByVal e As EventArgs) Handles TxtNama.LostFocus
-        ' Kembalikan warna latar belakang ke warna asli saat TextBox kehilangan fokus
-        PanelCariNama.BackColor = SystemColors.Control ' Ganti warna fokus sesuai kebutuhan
-    End Sub
-
-
-    Private Sub FormLapMutasiBarang_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
-        TxtNama.Clear()
-        TxtKode.Clear()
-        DateTimePicker1.Value = DateTime.Now
-        DateTimePicker2.Value = DateTime.Now
-
-        CmbLokasi.SelectedItem = FormUtama.SLokasi.Text
-
-        Tampil()
-        ReportViewer1.LocalReport.DataSources.Clear()
-        TxtNama.Select()
-    End Sub
-
-    Public Sub Tampil()
-        Dim searchTerm As String = TxtNama.Text.Trim()
-        Dim query As String = "SELECT NAMA_BARANG FROM tbl_barang WHERE NAMA_BARANG LIKE @searchTerm OR BARCODE_KECIL LIKE @searchTerm OR BARCODE_SEDANG LIKE @searchTerm OR BARCODE_BESAR LIKE @searchTerm"
-
-        Dim dt As New DataTable
-
-        Using cmd As New MySqlCommand(query, conn)
-            cmd.Parameters.AddWithValue("@searchTerm", "%" & searchTerm & "%")
-
-            Using da As New MySqlDataAdapter(cmd)
-                da.Fill(dt)
-            End Using
-        End Using
-
-        Dim a As New AutoCompleteStringCollection
-        For i As Integer = 0 To dt.Rows.Count - 1
-            a.Add(dt.Rows(i)("NAMA_BARANG").ToString())
-        Next
-
-        TxtNama.AutoCompleteSource = AutoCompleteSource.CustomSource
-        TxtNama.AutoCompleteCustomSource = a
-        TxtNama.AutoCompleteMode = AutoCompleteMode.Suggest
-
-        dt.Dispose() ' Pastikan Anda membebaskan objek DataTable setelah digunakan.
-    End Sub
-
-    Private Sub TxtNama_TextChanged(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles TxtNama.TextChanged
-        Dim sql As String = "SELECT ID_BARANG FROM tbl_barang WHERE NAMA_BARANG = @NAMA_BARANG"
-
-        Using cmd As New MySqlCommand(sql, conn)
-            cmd.Parameters.AddWithValue("@NAMA_BARANG", TxtNama.Text.Trim())
-
-            Using rd As MySqlDataReader = cmd.ExecuteReader()
-                If rd.Read() Then
-                    TxtKode.Text = rd("ID_BARANG").ToString()
-                Else
-                    TxtKode.Text = ""
-                End If
-            End Using
-        End Using
-    End Sub
-
-    Private Sub TxtNama_KeyDown(ByVal sender As System.Object, ByVal e As System.Windows.Forms.KeyEventArgs) Handles TxtNama.KeyDown
-        If e.KeyCode = Keys.Enter Then
-            Dim query As String = "SELECT NAMA_BARANG FROM tbl_barang WHERE NAMA_BARANG LIKE @searchTerm OR BARCODE_KECIL LIKE @searchTerm OR BARCODE_SEDANG LIKE @searchTerm OR BARCODE_BESAR LIKE @searchTerm"
-
-            Using cmd As New MySqlCommand(query, conn)
-                cmd.Parameters.AddWithValue("@searchTerm", TxtNama.Text.Trim())
-
-                Using rd As MySqlDataReader = cmd.ExecuteReader()
-                    If rd.Read() Then
-                        TxtNama.Text = rd("NAMA_BARANG").ToString()
-                    End If
-                End Using
-            End Using
-        End If
-    End Sub
-
     Private Sub AmbilData()
-        ' Ambil data MutasiBarang
-        Dim queryMutasiBarang As String = "SELECT FAKTUR, TANGGAL, JENIS, LOKASI, QTY_MASUK, QTY_KELUAR, SALDO, ID_USER FROM Temp_Mutasi_Barang"
-        Using cmdMutasiBarang As New MySqlCommand(queryMutasiBarang, conn)
-            Using rd As MySqlDataReader = cmdMutasiBarang.ExecuteReader()
-                Using datasetMutasiBarang As New DataSet() ' Menggunakan DataSet standar
-                    datasetMutasiBarang.Load(rd, LoadOption.OverwriteChanges, "Temp_Mutasi_Barang")
-                    If ReportViewer1.LocalReport.DataSources.Count > 0 Then
-                        ReportViewer1.LocalReport.DataSources.Clear() ' Bersihkan DataSources sebelumnya
-                    End If
-
-                    ' Menambahkan parameter ke laporan RDLC
-                    Dim parameters As New ReportParameterCollection From {
+        Using cmdMutasi As New MySqlCommand(
+            "SELECT FAKTUR, TANGGAL, JENIS, LOKASI, QTY_MASUK, QTY_KELUAR, SALDO, ID_USER FROM Temp_Mutasi_Barang", conn)
+            Using rd As MySqlDataReader = cmdMutasi.ExecuteReader()
+                Using ds As New DataSet()
+                    ds.Load(rd, LoadOption.OverwriteChanges, "Temp_Mutasi_Barang")
+                    ReportViewer1.LocalReport.DataSources.Clear()
+                    ReportViewer1.LocalReport.DataSources.Add(New ReportDataSource("DataSet1", ds.Tables("Temp_Mutasi_Barang")))
+                    ReportViewer1.LocalReport.SetParameters(New ReportParameterCollection From {
                         New ReportParameter("NAMATOKO", NAMA_PERUSAHAAN),
                         New ReportParameter("Kode", TxtKode.Text),
                         New ReportParameter("Nama_Barang", TxtNama.Text),
                         New ReportParameter("Tanggal", "Tanggal : " & DateTimePicker1.Value.ToShortDateString() & " s/d " & DateTimePicker2.Value.ToShortDateString())
-                    }
-
-                    ' Menetapkan dataset ke laporan RDLC
-                    ReportViewer1.LocalReport.DataSources.Add(New ReportDataSource("DataSet1", datasetMutasiBarang.Tables("Temp_Mutasi_Barang")))
-                    ReportViewer1.LocalReport.SetParameters(parameters)
-
-                    ' Menampilkan laporan RDLC
+                    })
                     ReportViewer1.RefreshReport()
                 End Using
             End Using
         End Using
     End Sub
 
-    Private Sub BtnPreview_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles BtnPreview.Click
+    Private Sub BtnPreview_Click(sender As Object, e As EventArgs) Handles BtnPreview.Click
+        If String.IsNullOrEmpty(TxtKode.Text) Then
+            MessageBox.Show("Harap pilih barang terlebih dahulu.", "Peringatan",
+                            MessageBoxButtons.OK, MessageBoxIcon.Warning)
+            TxtNama.Focus()
+            Return
+        End If
         ReportViewer1.LocalReport.DataSources.Clear()
         AmbilDanSimpanDataMutasiBarang()
         AmbilData()
     End Sub
+#End Region
 
-    Private Sub FormLapMutasiBarang_KeyDown(ByVal sender As Object, ByVal e As KeyEventArgs) Handles MyBase.KeyDown
-        Select Case e.KeyCode
-            Case Keys.F8
-                BtnPreview.PerformClick()
-            Case Keys.Escape
-                Me.Close()
-        End Select
-    End Sub
 End Class

@@ -1,4 +1,4 @@
-﻿Imports Microsoft.Reporting.WinForms
+Imports Microsoft.Reporting.WinForms
 Imports System.Drawing
 
 
@@ -105,7 +105,7 @@ Partial Class FormLapJurnal
         '
         'LabelJudul
         '
-        Me.LabelJudul.BackColor = System.Drawing.Color.Gold
+        Me.LabelJudul.BackColor = System.Drawing.SystemColors.Control
         Me.LabelJudul.Dock = System.Windows.Forms.DockStyle.Top
         Me.LabelJudul.Font = New System.Drawing.Font("Bookman Old Style", 21.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.LabelJudul.Location = New System.Drawing.Point(0, 0)
@@ -148,12 +148,15 @@ Partial Class FormLapJurnal
         '
         'BtnLunas
         '
-        Me.BtnLunas.BackColor = System.Drawing.Color.MediumSeaGreen
-        Me.BtnLunas.FlatAppearance.BorderSize = 0
-        Me.BtnLunas.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(CType(CType(128, Byte), Integer), CType(CType(255, Byte), Integer), CType(CType(255, Byte), Integer))
-        Me.BtnLunas.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Yellow
+        Me.BtnLunas.AutoSize = True
+        Me.BtnLunas.BackColor = System.Drawing.SystemColors.Control
+        Me.BtnLunas.Cursor = System.Windows.Forms.Cursors.Hand
+        Me.BtnLunas.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(CType(CType(100, Byte), Integer), CType(CType(116, Byte), Integer), CType(CType(139, Byte), Integer))
+        Me.BtnLunas.FlatAppearance.BorderSize = 1
+        Me.BtnLunas.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(CType(CType(226, Byte), Integer), CType(CType(232, Byte), Integer), CType(CType(240, Byte), Integer))
+        Me.BtnLunas.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(CType(CType(241, Byte), Integer), CType(CType(245, Byte), Integer), CType(CType(249, Byte), Integer))
         Me.BtnLunas.FlatStyle = System.Windows.Forms.FlatStyle.Flat
-        Me.BtnLunas.Font = New System.Drawing.Font("Century Gothic", 12.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.BtnLunas.Font = New System.Drawing.Font("Segoe UI", 9.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.BtnLunas.ForeColor = System.Drawing.Color.Black
         Me.BtnLunas.Image = CType(resources.GetObject("BtnLunas.Image"), System.Drawing.Image)
         Me.BtnLunas.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft
@@ -161,7 +164,8 @@ Partial Class FormLapJurnal
         Me.BtnLunas.Name = "BtnLunas"
         Me.BtnLunas.Size = New System.Drawing.Size(156, 35)
         Me.BtnLunas.TabIndex = 147
-        Me.BtnLunas.Text = "    TAMPILKAN"
+        Me.BtnLunas.Text = "Tampilkan (F5)"
+        Me.BtnLunas.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
         Me.BtnLunas.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText
         Me.BtnLunas.UseVisualStyleBackColor = False
         '

@@ -1,11 +1,21 @@
-﻿Public Class FormMasuk
+Public Class FormMasuk
     Private Sub FormMasuk_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
+        ModuleTheme.TerapkanTheme(Me)
         Select Case AppConfig.Instance.GetValue(Of String)("PilihanMasuk", "").ToUpper()
             Case "TOKO"
                 HandleButtonClick("Toko.jpg", "TOKO")
             Case "GUDANG"
                 HandleButtonClick("Gudang.jpg", "GUDANG")
         End Select
+    End Sub
+
+    ''' <summary>
+    ''' Dipanggil dari FormUtama saat PilihanMasuk sudah tersimpan di config.
+    ''' Langsung terapkan lokasi tanpa menampilkan form pilihan.
+    ''' </summary>
+    Public Sub TerapkanLokasiKeFormUtama(ByVal lokasi As String)
+        Dim bg As String = If(lokasi.ToUpper() = "GUDANG", "Gudang.jpg", "Toko.jpg")
+        HandleButtonClick(bg, lokasi.ToUpper())
     End Sub
 
     Private Sub BtnToko_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles BtnToko.Click
@@ -17,36 +27,21 @@
     End Sub
 
     Public Sub HandleButtonClick(ByVal backgroundImage As String, ByVal lokasi As String)
-        Dim fullPath As String = IO.Path.Combine(Application.StartupPath, backgroundImage)
+        ' Set lokasi dan judul form
+        FormUtama.Text = "KASIR LANCAR " & lokasi & " " & NAMA_PERUSAHAAN
+        FormUtama.StatusLokasi.Text = lokasi
 
-        Try
-            If IO.File.Exists(fullPath) Then
-                ' Baca semua byte dan langsung tutup file
-                Dim imageBytes As Byte() = IO.File.ReadAllBytes(fullPath)
+        ' Update icon StatusLokasi sesuai lokasi
+        Dim iconName As String = If(lokasi = "GUDANG", "gudang_20.png", "toko_20.png")
+        Dim iconPath As String = IO.Path.Combine(Application.StartupPath, "Resources", "Icons", iconName)
+        If IO.File.Exists(iconPath) Then
+            FormUtama.StatusLokasi.Image = Image.FromFile(iconPath)
+        End If
 
-                ' Buat gambar dari memory stream tanpa mengunci file
-                Using ms As New IO.MemoryStream(imageBytes)
-                    ' Buat salinan gambar untuk memastikan tidak tergantung stream
-                    Dim newImage As Image = Image.FromStream(ms)
-                    ' Hapus gambar lama jika ada
-                    If FormUtama.BackgroundImage IsNot Nothing Then
-                        FormUtama.BackgroundImage.Dispose()
-                    End If
-                    FormUtama.BackgroundImage = newImage.Clone() ' Buat salinan independen
-                End Using
-            Else
-                MessageBox.Show($"Gambar '{backgroundImage}' tidak ditemukan.", "Perhatian",
-                          MessageBoxButtons.OK, MessageBoxIcon.Warning)
-            End If
+        ' Tampilkan dashboard HTML sesuai lokasi (menggantikan BackgroundImage)
+        FormUtama.TampilDashboard()
 
-            FormUtama.Text = "KASIR LANCAR " & lokasi & " " & CompanyName
-            FormUtama.SLokasi.Text = lokasi
-            Close()
-
-        Catch ex As Exception
-            MessageBox.Show("Gagal memuat gambar: " & ex.Message, "Error",
-                       MessageBoxButtons.OK, MessageBoxIcon.Error)
-        End Try
+        Close()
     End Sub
 
 

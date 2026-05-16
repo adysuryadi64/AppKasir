@@ -1,22 +1,17 @@
-﻿Imports System.Globalization
-Imports System.Reflection
-
-
 Public Class FormStokOpname
 
-    Private TransaksiLampau As String
-
     Private Sub BarangStokOpnameForm_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
+        ModuleTheme.TerapkanTheme(Me)
 
         If LblUtama.Text <> "TAMBAH STOK OPNAME" Then
             AmbilDataUntukEdit()
-            PanelCariNama.Visible = False
+            PanelCari.Visible = False
             Label4.Visible = False
             lstBarang.Visible = False
             TxtNyata.Select()
         Else
-            TransaksiLampau = ModulHakAkses.BacaHakAksesSemua(FormGeneralSetting.LblTransaksiTanggalLampau.Text)
-            TxtLokasi.Text = FormUtama.SLokasi.Text
+            ' Setting dibaca langsung dari ModulHakAkses property
+            TxtLokasi.Text = FormUtama.StatusLokasi.Text
             TxtNama.Visible = True
             Label4.Visible = True
             Kondisiawaltambah()
@@ -29,13 +24,13 @@ Public Class FormStokOpname
     ' Handler untuk event GotFocus pada TextBox
     Private Sub TxtCari_GotFocus(ByVal sender As Object, ByVal e As EventArgs) Handles TxtNama.GotFocus
         ' Ubah warna latar belakang saat TextBox mendapatkan fokus
-        PanelCariNama.BackColor = Color.Yellow ' Ganti warna fokus sesuai kebutuhan
+        PanelCari.BackColor = Color.Yellow ' Ganti warna fokus sesuai kebutuhan
     End Sub
 
     ' Handler untuk event LostFocus pada TextBox
     Private Sub TxtCari_LostFocus(ByVal sender As Object, ByVal e As EventArgs) Handles TxtNama.LostFocus
         ' Kembalikan warna latar belakang ke warna asli saat TextBox kehilangan fokus
-        PanelCariNama.BackColor = BackColor
+        PanelCari.BackColor = BackColor
     End Sub
 
     Public Sub Kondisiawaltambah()
@@ -57,6 +52,7 @@ Public Class FormStokOpname
 
         DTPTgl.Format = DateTimePickerFormat.Custom
         DTPTgl.CustomFormat = "dd/MM/yyyy HH:mm:ss"
+        ModulHakAkses.ResetDTPKeTanggalHariIni(DTPTgl)
 
         ' Simpan kontrol yang sedang berfokus
         Dim currentActiveControl As Control = ActiveControl
@@ -70,33 +66,17 @@ Public Class FormStokOpname
     End Sub
 
     Private Sub GenerateNomorOpname()
-        Dim cekTanggal As String = DTPTgl.Value.ToString("yyMMdd")
-        Dim UrutKOde As String = ""
-        Dim cekNomor As String = "SO-" & cekTanggal
-
-        ' Query untuk mendapatkan nomor maksimum berdasarkan format
-        Using cmd As New MySqlCommand("SELECT MAX(ID_STOK_OPNAME) FROM Stok_Opname WHERE ID_STOK_OPNAME LIKE @ceknomor", conn)
-            cmd.Parameters.AddWithValue("@ceknomor", cekNomor & "%")
-
-            ' Gunakan ExecuteScalar untuk mendapatkan nilai maksimum
-            Dim maxKode As Object = cmd.ExecuteScalar()
-
-            If Not IsDBNull(maxKode) AndAlso maxKode IsNot Nothing Then
-                Dim MaxNilaiKode As String = maxKode.ToString()
-                If Microsoft.VisualBasic.Left(MaxNilaiKode, 9) = "SO-" & cekTanggal Then
-                    ' Hitung nomor berikutnya
-                    Dim Hitung As Integer = CInt(Microsoft.VisualBasic.Right(MaxNilaiKode, 4)) + 1
-                    UrutKOde = "SO-" & cekTanggal & Microsoft.VisualBasic.Right("0000" & Hitung.ToString(), 4)
-                End If
-            End If
+        Using cmd As New MySqlCommand(
+            "CALL sp_hlp_faktur_generate(@prefix, @tgl, @tabel, @kolom, @nomor)", conn)
+            cmd.Parameters.AddWithValue("@prefix", "SO")
+            cmd.Parameters.AddWithValue("@tgl", DTPTgl.Value.Date)
+            cmd.Parameters.AddWithValue("@tabel", "stok_opname")
+            cmd.Parameters.AddWithValue("@kolom", "ID_STOK_OPNAME")
+            Dim pNomor = cmd.Parameters.Add("@nomor", MySqlDbType.VarChar, 30)
+            pNomor.Direction = ParameterDirection.Output
+            cmd.ExecuteNonQuery()
+            TxtFaktur.Text = pNomor.Value?.ToString()
         End Using
-
-        ' Jika UrutKOde masih kosong, buat nomor pertama
-        If String.IsNullOrEmpty(UrutKOde) Then
-            UrutKOde = "SO-" & cekTanggal & "0001"
-        End If
-
-        TxtFaktur.Text = UrutKOde
     End Sub
 
     Private Sub AmbilDataUntukEdit()
@@ -188,7 +168,7 @@ Public Class FormStokOpname
         Using cmd As New MySqlCommand(query, conn)
             cmd.Parameters.AddWithValue("@tanggalAwal", tanggalAwal.ToString("yyyy-MM-dd HH:mm:ss"))
             cmd.Parameters.AddWithValue("@tanggalAkhir", tanggalAkhir.ToString("yyyy-MM-dd HH:mm:ss"))
-            cmd.Parameters.AddWithValue("@ID_USER", FormUtama.SLogin.Text)
+            cmd.Parameters.AddWithValue("@ID_USER", FormUtama.StatusNamaUser.Text)
 
             Using ds As New DataSet
                 Using da As New MySqlDataAdapter(cmd)
@@ -217,32 +197,19 @@ Public Class FormStokOpname
             Dim columnsToFormat As String() = {
                 "STOK_SYSTEM", "STOK_NYATA", "STOK_SELISIH", "TOTAL_HARGA"
             }
-
-            ' Loop melalui kolom dan atur format serta alignment
-            For Each columnName As String In columnsToFormat
-                If .Columns.Contains(columnName) Then
-                    ' Gunakan format kustom untuk menampilkan angka di belakang koma jika bukan 0
-                    .Columns(columnName).DefaultCellStyle.Format = "#,0.##"
-                    .Columns(columnName).DefaultCellStyle.FormatProvider = CultureInfo.GetCultureInfo("id-ID")
-                    .Columns(columnName).DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight
-                End If
-            Next
+            ModuleAngka.TerapkanFormatKolomAngka(DGVData, columnsToFormat)
 
             .Columns("NAMA_BARANG").Frozen = True
 
             .EnableHeadersVisualStyles = False
-            .ColumnHeadersDefaultCellStyle.BackColor = Color.Yellow
 
             ' Set alternating row style
-            .AlternatingRowsDefaultCellStyle.BackColor = Color.LightGray
 
             ' Set visual style
             .BorderStyle = BorderStyle.FixedSingle
-            .GridColor = Color.Silver
-            .BackgroundColor = Color.White
 
             ' Enable double buffering to reduce flickering
-            DataGridViewExtension.EnableDoubleBuffering(DGVData)
+            ModuleTheme.ApplyThemeDataGridView(DGVData)
         End With
 
         ' Pengaturan agar DataGridView selalu tampil dengan baris terakhir
@@ -252,13 +219,6 @@ Public Class FormStokOpname
         End If
 
     End Sub
-
-
-    Public Class DataGridViewExtension
-        Public Shared Sub EnableDoubleBuffering(ByVal dataGridView As DataGridView)
-            dataGridView.GetType().InvokeMember("DoubleBuffered", BindingFlags.NonPublic Or BindingFlags.Instance Or BindingFlags.SetProperty, Nothing, dataGridView, New Object() {True})
-        End Sub
-    End Class
 
 
     Dim lastKeyTime As DateTime = DateTime.Now
@@ -354,7 +314,7 @@ Public Class FormStokOpname
 
     Private Sub TampilkanDaftarBarang(ByVal searchKeyword As String)
         ' Mengambil data dari database
-        Dim query As String = "SELECT NAMA_BARANG, STOK_TOKO, STOK_GUDANG, BARCODE_KECIL, BARCODE_SEDANG, BARCODE_BESAR FROM tbl_barang WHERE TRIM(ID_BARANG) LIKE @Nama OR TRIM(NAMA_BARANG) LIKE @Nama OR TRIM(BARCODE_KECIL) LIKE @Nama OR TRIM(BARCODE_SEDANG) LIKE @Nama OR TRIM(BARCODE_BESAR) LIKE @Nama ORDER BY NAMA_BARANG"
+        Dim query As String = "SELECT NAMA_BARANG, STOK_TOKO, STOK_GUDANG, BARCODE_KECIL, BARCODE_SEDANG, BARCODE_BESAR FROM tbl_barang WHERE STATUS = 'Aktif' AND (TRIM(ID_BARANG) LIKE @Nama OR TRIM(NAMA_BARANG) LIKE @Nama OR TRIM(BARCODE_KECIL) LIKE @Nama OR TRIM(BARCODE_SEDANG) LIKE @Nama OR TRIM(BARCODE_BESAR) LIKE @Nama) ORDER BY NAMA_BARANG"
 
         Using cmd As New MySqlCommand(query, conn)
             cmd.Parameters.AddWithValue("@Nama", "%" & searchKeyword & "%")
@@ -368,11 +328,11 @@ Public Class FormStokOpname
                     Select Case TxtLokasi.Text
                         Case "TOKO"
                             ' Tambahkan stok toko setelah nama barang
-                            Dim stokToko As Decimal = If(IsDBNull(rd("STOK_TOKO")), 0D, ParseDecimal(rd("STOK_TOKO")))
+                            Dim stokToko As Decimal = ModuleAngka.ParseDecimal(rd("STOK_TOKO"))
                             itemText &= " => " & stokToko.ToString("N0") ' Format stok dengan dua desimal
                         Case "GUDANG"
                             ' Tambahkan stok gudang setelah nama barang
-                            Dim stokGudang As Decimal = If(IsDBNull(rd("STOK_GUDANG")), 0D, ParseDecimal(rd("STOK_GUDANG")))
+                            Dim stokGudang As Decimal = ModuleAngka.ParseDecimal(rd("STOK_GUDANG"))
                             itemText &= " => " & stokGudang.ToString("N0") ' Format stok dengan dua desimal
                     End Select
 
@@ -392,14 +352,7 @@ Public Class FormStokOpname
         End Using
     End Sub
 
-    Private Function ParseDecimal(ByVal value As Object) As Decimal
-        If value Is Nothing Then Return 0D
-
-        Dim s As String = value.ToString().Trim().Replace(",", ".") ' selalu ubah ke titik
-        Dim result As Decimal = 0
-        Decimal.TryParse(s, Globalization.NumberStyles.Any, Globalization.CultureInfo.InvariantCulture, result)
-        Return result
-    End Function
+    ' ParseDecimal lokal dihapus — gunakan ModuleAngka.ParseDecimal
 
 
     Private Sub LstBarang_KeyDown(ByVal sender As Object, ByVal e As KeyEventArgs) Handles lstBarang.KeyDown
@@ -467,13 +420,13 @@ Public Class FormStokOpname
             Using rd As MySqlDataReader = cmd.ExecuteReader()
                 If rd.Read() Then
                     ' Mengambil data dari reader dan menyimpannya ke variabel
-                    idBarang = If(Not IsDBNull(rd(0)), rd.GetString(0), String.Empty)
-                    kategori = If(Not IsDBNull(rd(1)), rd.GetString(1), String.Empty)
-                    hargaBeli = If(Not IsDBNull(rd(2)), rd.GetDecimal(2), 0)
-                    stokToko = If(Not IsDBNull(rd(3)), rd.GetDecimal(3), 0)
-                    stokGudang = If(Not IsDBNull(rd(4)), rd.GetDecimal(4), 0)
-                    satuanStok = If(Not IsDBNull(rd(5)), rd.GetString(5), String.Empty)
-                    satuanIsiStok = If(Not IsDBNull(rd(6)), rd.GetInt32(6), 0)
+                    idBarang = ModuleAngka.SafeGetValue(Of String)(rd, "ID_BARANG", String.Empty)
+                    kategori = ModuleAngka.SafeGetValue(Of String)(rd, "NAMA_KATEGORI", String.Empty)
+                    hargaBeli = ModuleAngka.ParseDecimal(rd("HARGA_BELI"))
+                    stokToko = ModuleAngka.ParseDecimal(rd("STOK_TOKO"))
+                    stokGudang = ModuleAngka.ParseDecimal(rd("STOK_GUDANG"))
+                    satuanStok = ModuleAngka.SafeGetValue(Of String)(rd, "SATUAN_STOK", String.Empty)
+                    satuanIsiStok = ModuleAngka.SafeGetValue(Of Integer)(rd, "SATUAN_ISI_STOK", 0)
                 End If
             End Using
         End Using
@@ -540,13 +493,14 @@ Public Class FormStokOpname
         Dim satIsi As Integer
         Dim harga As Decimal
 
-        ' Konversi tipe data dengan penanganan kesalahan
-        If Decimal.TryParse(TxtNyata.Text, nyata) AndAlso
-           Decimal.TryParse(TxtStokSystem.Text, stokSystem) AndAlso
-           Integer.TryParse(LblSatIsi.Text, satIsi) AndAlso
-           Decimal.TryParse(TxtHarga.Text, harga) Then
+        ' Konversi tipe data — pakai ParseDecimal agar aman dengan format ribuan (1.000 atau 1,000)
+        nyata = ModuleAngka.ParseDecimal(TxtNyata.Text)
+        harga = ModuleAngka.ParseDecimal(TxtHarga.Text)
 
-            ' Perhitungan dengan tipe data yang sesuai
+        stokSystem = ModuleAngka.ParseDecimal(TxtStokSystem.Text)
+        If Integer.TryParse(LblSatIsi.Text, satIsi) Then
+
+            ' Perhitungan selisih
             TxtSelisih.Text = (nyata - stokSystem).ToString()
             TxtSelisihQty.Text = (nyata - stokSystem) * satIsi
             TxtSelisihRp.Text = harga * (nyata - stokSystem) * satIsi
@@ -554,15 +508,8 @@ Public Class FormStokOpname
     End Sub
 
     Private Sub TxtSelisihRp_TextChanged(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles TxtSelisihRp.TextChanged
-        Dim selisihRp As Decimal
-
-        ' Konversi tipe data dengan penanganan kesalahan
-        If Decimal.TryParse(TxtSelisihRp.Text, selisihRp) Then
-            TxtTotalRupiah.Text = selisihRp.ToString("#,0.##")
-        Else
-            ' Jika konversi gagal, set nilai ke 0
-            TxtTotalRupiah.Text = "0"
-        End If
+        Dim selisihRp As Decimal = ModuleAngka.ParseDecimal(TxtSelisihRp.Text)
+        TxtTotalRupiah.Text = ModuleAngka.FormatRupiah(selisihRp)
     End Sub
 
     Private Sub BtnSimpan_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles BtnSimpan.Click
@@ -577,8 +524,8 @@ Public Class FormStokOpname
             Exit Sub
         End If
 
-        If LblUtama.Text = "TAMBAH STOK OPNAME" AndAlso TransaksiLampau = "Tidak" Then
-            DTPTgl.Value = DateTime.Now
+        If LblUtama.Text = "TAMBAH STOK OPNAME" AndAlso Not ModulHakAkses.SettingIzinkanTanggalLampau Then
+            ModulHakAkses.ResetDTPKeTanggalHariIni(DTPTgl)
             GenerateNomorOpname()
         End If
 
@@ -586,21 +533,123 @@ Public Class FormStokOpname
         ' Mulai transaksi
         Dim transaction As MySqlTransaction = conn.BeginTransaction()
         Try
+            Dim akunLama As New HashSet(Of String)(StringComparer.OrdinalIgnoreCase)
             If LblUtama.Text <> "TAMBAH STOK OPNAME" Then
+                Dim noOpname As String = TxtFaktur.Text
+                ' ========================================
+                ' STEP 1: SELECT daftar akun LAMA SEBELUM DELETE JurnalUmum
+                ' ========================================
+                Using cmdAkunLama As New MySqlCommand(
+                    "SELECT DISTINCT NOMOR_AKUN_D FROM JurnalUmum WHERE NO_TRANSAKSI = @fk AND NOMOR_AKUN_D <> '' " &
+                    "UNION " &
+                    "SELECT DISTINCT NOMOR_AKUN_K FROM JurnalUmum WHERE NO_TRANSAKSI = @fk AND NOMOR_AKUN_K <> ''",
+                    conn, transaction)
+                    cmdAkunLama.Parameters.AddWithValue("@fk", noOpname)
+                    Using rd = cmdAkunLama.ExecuteReader()
+                        While rd.Read()
+                            Dim kode As String = rd(0).ToString().Trim()
+                            If kode <> "" Then akunLama.Add(kode)
+                        End While
+                    End Using
+                End Using
+                ' ========================================
+                ' START: Audit Trail - Edit Stok Opname
+                ' ========================================
+                Dim sbSnapshot As New System.Text.StringBuilder()
+                Try
+                    Using snapCmd As New MySqlCommand(
+                        "SELECT ID_STOK_OPNAME, TANGGAL, LOKASI, ID_BARANG, NAMA_BARANG, " &
+                        "STOK_SYSTEM, STOK_NYATA, STOK_SELISIH, TOTAL_QTY, TOTAL_HARGA, KETERANGAN " &
+                        "FROM Stok_Opname WHERE ID_STOK_OPNAME = @id LIMIT 1", conn, transaction)
+                        snapCmd.Parameters.AddWithValue("@id", noOpname)
+                        Using snapRd As MySqlDataReader = snapCmd.ExecuteReader()
+                            If snapRd.Read() Then
+                                sbSnapshot.AppendLine($"ID Opname: {snapRd("ID_STOK_OPNAME")}")
+                                sbSnapshot.AppendLine($"Tanggal: {Convert.ToDateTime(snapRd("TANGGAL")).ToString("dd/MM/yyyy HH:mm:ss")}")
+                                sbSnapshot.AppendLine($"Lokasi: {snapRd("LOKASI")}")
+                                sbSnapshot.AppendLine($"Kode Barang: {snapRd("ID_BARANG")}")
+                                sbSnapshot.AppendLine($"Nama Barang: {snapRd("NAMA_BARANG")}")
+                                sbSnapshot.AppendLine($"Stok Sistem: {ModuleAngka.ParseDecimal(snapRd("STOK_SYSTEM"))} unit")
+                                sbSnapshot.AppendLine($"Stok Nyata: {ModuleAngka.ParseDecimal(snapRd("STOK_NYATA"))} unit")
+                                sbSnapshot.AppendLine($"Selisih Stok: {ModuleAngka.ParseDecimal(snapRd("STOK_SELISIH"))} unit")
+                                sbSnapshot.AppendLine($"Total Qty: {ModuleAngka.ParseDecimal(snapRd("TOTAL_QTY"))} unit")
+                                sbSnapshot.AppendLine($"Total Harga: {ModuleAngka.FormatRupiah(ModuleAngka.ParseDecimal(snapRd("TOTAL_HARGA")))}")
+                                sbSnapshot.AppendLine($"Keterangan: {snapRd("KETERANGAN")}")
+                            End If
+                        End Using
+                    End Using
+                Catch
+                    sbSnapshot.AppendLine("Gagal baca data sebelum edit")
+                End Try
+                ModuleAuditTrail.CatatAuditMaster("OPN:" & noOpname, "EDIT", "Stok Opname", sbSnapshot.ToString(), trans:=transaction)
+                ' ========================================
+                ' END: Audit Trail - Edit Stok Opname
+                ' ========================================
+
                 Hapusstokopname(transaction)
             End If
 
-            ' Panggil metode-metode Simpan dengan menggunakan transaksi yang sama
+            ' Audit: 1 barang — A=C=qty dari form, B=qty di HistoryBarang, D=delta stok
+            Dim qtyOpname As Decimal = ModuleAngka.ParseDecimal(TxtSelisihQty.Text)
+            Dim auditDGV As New Dictionary(Of String, Decimal)() From {{TxtKode.Text, qtyOpname}}
+            Dim auditDetail As New Dictionary(Of String, Decimal)() From {{TxtKode.Text, qtyOpname}}
+            Dim auditHistory As New Dictionary(Of String, Decimal)() From {{TxtKode.Text, qtyOpname}}
+
             SimpanMasukDetail(transaction)
             UpdateStokBarang(transaction)
             Simpanjurnal(transaction)
             HistoryBarang(transaction)
 
+            Dim nilaiSelisihOpname As Decimal = ModuleAngka.ParseDecimal(TxtSelisihRp.Text)
+
+            ' Recalculate stok + Audit D
+            Dim stokSebelum As Decimal = BacaStokSaatIni(TxtKode.Text, TxtLokasi.Text, transaction)
+            HitungStokPerubahan(TxtKode.Text, transaction)
+            Dim stokSesudah As Decimal = BacaStokSaatIni(TxtKode.Text, TxtLokasi.Text, transaction)
+            Dim auditStokDelta As New Dictionary(Of String, Decimal)() From {{TxtKode.Text, Math.Abs(stokSesudah - stokSebelum)}}
+
+            AuditStokTransaksi(TxtFaktur.Text, "Stok Opname", auditDGV, auditHistory, auditDetail, auditStokDelta, transaction)
+
+            ' ========================================
+            ' STEP 2: SELECT daftar akun BARU
+            ' ========================================
+            Dim akunBaru As New HashSet(Of String)(StringComparer.OrdinalIgnoreCase)
+            Using cmdAkunBaru As New MySqlCommand(
+                "SELECT DISTINCT NOMOR_AKUN_D FROM JurnalUmum WHERE NO_TRANSAKSI = @fk AND NOMOR_AKUN_D <> '' " &
+                "UNION " &
+                "SELECT DISTINCT NOMOR_AKUN_K FROM JurnalUmum WHERE NO_TRANSAKSI = @fk AND NOMOR_AKUN_K <> ''",
+                conn, transaction)
+                cmdAkunBaru.Parameters.AddWithValue("@fk", TxtFaktur.Text)
+                Using rd = cmdAkunBaru.ExecuteReader()
+                    While rd.Read()
+                        Dim kode As String = rd(0).ToString().Trim()
+                        If kode <> "" Then akunBaru.Add(kode)
+                    End While
+                End Using
+            End Using
+
+            ' ========================================
+            ' STEP 3: GABUNGKAN daftar akun LAMA + BARU
+            ' ========================================
+            Dim semuaAkunTerlibat As New HashSet(Of String)(akunLama, StringComparer.OrdinalIgnoreCase)
+            For Each akun In akunBaru
+                semuaAkunTerlibat.Add(akun)
+            Next
+
+            ' ========================================
+            ' STEP 4: UPDATE saldo untuk SEMUA akun yang terlibat
+            ' ========================================
+            For Each kodeAkun As String In semuaAkunTerlibat
+                UpdateSaldoAkun(kodeAkun, transaction)
+            Next
+
             ' Commit transaksi
             transaction.Commit()
-            DatabaseModule.CatatanAksiHistory("Simpan stok opname " & TxtFaktur.Text)
 
-            HitungByKode(TxtKode.Text)
+            If nilaiSelisihOpname <> 0 Then
+                CatatJurnalTidakSeimbang(TxtFaktur.Text, Math.Abs(nilaiSelisihOpname), Math.Abs(nilaiSelisihOpname), "Stok Opname",
+                    {"SelisihOpname"})
+            End If
 
             If LblUtama.Text = "TAMBAH STOK OPNAME" Then
                 Kondisiawaltambah()
@@ -641,19 +690,19 @@ Public Class FormStokOpname
             insertCmd.Parameters.AddWithValue("@ID_BARANG", TxtKode.Text)
             insertCmd.Parameters.AddWithValue("@NAMA_BARANG", TxtnamaHasil.Text)
             insertCmd.Parameters.AddWithValue("@KATEGORI", TxtKategori.Text)
-            insertCmd.Parameters.AddWithValue("@HARGA", If(String.IsNullOrEmpty(TxtHarga.Text), 0D, Convert.ToDecimal(TxtHarga.Text)))
-            insertCmd.Parameters.AddWithValue("@STOK_SYSTEM", If(String.IsNullOrEmpty(TxtStokSystem.Text), 0D, Convert.ToDecimal(TxtStokSystem.Text)))
-            insertCmd.Parameters.AddWithValue("@STOK_NYATA", If(String.IsNullOrEmpty(TxtNyata.Text), 0D, Convert.ToDecimal(TxtNyata.Text)))
-            insertCmd.Parameters.AddWithValue("@STOK_SELISIH", If(String.IsNullOrEmpty(TxtSelisih.Text), 0D, Convert.ToDecimal(TxtSelisih.Text)))
+            insertCmd.Parameters.AddWithValue("@HARGA", ModuleAngka.ParseDecimal(TxtHarga.Text))
+            insertCmd.Parameters.AddWithValue("@STOK_SYSTEM", ModuleAngka.ParseDecimal(TxtStokSystem.Text))
+            insertCmd.Parameters.AddWithValue("@STOK_NYATA", ModuleAngka.ParseDecimal(TxtNyata.Text))
+            insertCmd.Parameters.AddWithValue("@STOK_SELISIH", ModuleAngka.ParseDecimal(TxtSelisih.Text))
             insertCmd.Parameters.AddWithValue("@SATUAN", If(String.IsNullOrEmpty(LblSat.Text), String.Empty, LblSat.Text))
-            insertCmd.Parameters.AddWithValue("@ISI_SATUAN", If(String.IsNullOrEmpty(LblSatIsi.Text), 0, Convert.ToInt32(LblSatIsi.Text)))
-            insertCmd.Parameters.AddWithValue("@TOTAL_QTY", If(String.IsNullOrEmpty(TxtSelisihQty.Text), 0D, Convert.ToDecimal(TxtSelisihQty.Text)))
-            insertCmd.Parameters.AddWithValue("@TOTAL_HARGA", If(String.IsNullOrEmpty(TxtSelisihRp.Text), 0D, Convert.ToDecimal(TxtSelisihRp.Text)))
+            insertCmd.Parameters.AddWithValue("@ISI_SATUAN", ModuleAngka.ParseInteger(LblSatIsi.Text))
+            insertCmd.Parameters.AddWithValue("@TOTAL_QTY", ModuleAngka.ParseDecimal(TxtSelisihQty.Text))
+            insertCmd.Parameters.AddWithValue("@TOTAL_HARGA", ModuleAngka.ParseDecimal(TxtSelisihRp.Text))
 
             insertCmd.Parameters.AddWithValue("@KETERANGAN", TxtKeteranganToko.Text)
 
-            insertCmd.Parameters.AddWithValue("@ID_USER", If(LblUtama.Text = "TAMBAH STOK OPNAME", FormUtama.SLogin.Text, TxtIdUser.Text))
-            insertCmd.Parameters.AddWithValue("@ID_KOMPUTER", If(LblUtama.Text = "TAMBAH STOK OPNAME", FormUtama.Comp.Text, TxtKomputer.Text))
+            insertCmd.Parameters.AddWithValue("@ID_USER", If(LblUtama.Text = "TAMBAH STOK OPNAME", FormUtama.StatusNamaUser.Text, TxtIdUser.Text))
+            insertCmd.Parameters.AddWithValue("@ID_KOMPUTER", If(LblUtama.Text = "TAMBAH STOK OPNAME", FormUtama.StatusNamaPC.Text, TxtKomputer.Text))
             insertCmd.ExecuteNonQuery()
         End Using
     End Sub
@@ -672,7 +721,7 @@ Public Class FormStokOpname
         updateQuery = "UPDATE tbl_barang SET " & stokField & " = " & stokField & " + ? WHERE ID_BARANG = ?"
 
         Using cmd As New MySqlCommand(updateQuery, conn, transaction)
-            cmd.Parameters.AddWithValue("@STOK_OPNAME", If(String.IsNullOrEmpty(TxtSelisihQty.Text), 0D, Convert.ToDecimal(TxtSelisihQty.Text)))
+            cmd.Parameters.AddWithValue("@STOK_OPNAME", ModuleAngka.ParseDecimal(TxtSelisihQty.Text))
             cmd.Parameters.AddWithValue("@KODE_BANTU", TxtKode.Text)
             cmd.ExecuteNonQuery()
         End Using
@@ -682,7 +731,11 @@ Public Class FormStokOpname
 
     Private Sub Simpanjurnal(ByVal transaction As MySqlTransaction)
         ' Hitung nilai selisih toko
-        Dim nilaiSelisih As Decimal = If(String.IsNullOrEmpty(TxtSelisihRp.Text), 0D, Decimal.Parse(TxtSelisihRp.Text))
+        Dim nilaiSelisih As Decimal = ModuleAngka.ParseDecimal(TxtSelisihRp.Text)
+
+        ' Akun penyesuaian stok sesuai COA: 06.04.001 PENYESUAIAN STOK MINUS
+        Const KODE_PENYESUAIAN As String = "06.04.001"
+        Const NAMA_PENYESUAIAN As String = "PENYESUAIAN STOK MINUS"
 
         If nilaiSelisih <> 0 Then
             Using cmd As New MySqlCommand("INSERT INTO JurnalUmum (NO_TRANSAKSI, TGL_TRANSAKSI, NO_NOTA, URAIAN, NAMA_AKUN_D, NOMOR_AKUN_D, NAMA_AKUN_K, NOMOR_AKUN_K, NOMINAL, JENIS_TRANSAKSI, LOKASI, ID_USER, ID_KOMPUTER) " &
@@ -691,31 +744,46 @@ Public Class FormStokOpname
                 cmd.Parameters.AddWithValue("@NO_TRANSAKSI", TxtFaktur.Text)
                 cmd.Parameters.AddWithValue("@TGL_TRANSAKSI", DTPTgl.Value.ToString("yyyy-MM-dd HH:mm:ss"))
                 cmd.Parameters.AddWithValue("@NO_NOTA", TxtKode.Text)
-                cmd.Parameters.AddWithValue("@URAIAN", "Stok opnam stok " & TxtLokasi.Text & ", barang " & TxtnamaHasil.Text & " Jumlah Selisih " & Decimal.Parse(TxtSelisihQty.Text))
+                cmd.Parameters.AddWithValue("@URAIAN", "Stok opnam stok " & TxtLokasi.Text & ", barang " & TxtnamaHasil.Text & " Jumlah Selisih " & ModuleAngka.ParseDecimal(TxtSelisihQty.Text))
 
                 ' Tentukan akun berdasarkan nilai selisih
-                If nilaiSelisih <= 0 Then
-                    cmd.Parameters.AddWithValue("@NAMA_AKUN_D", NAMA_REK_BARANG)
-                    cmd.Parameters.AddWithValue("@NOMOR_AKUN_D", KODE_REK_BARANG)
-                    cmd.Parameters.AddWithValue("@NAMA_AKUN_K", LAWAN_NAMA_REK_BARANG)
-                    cmd.Parameters.AddWithValue("@NOMOR_AKUN_K", LAWAN_KODE_REK_BARANG)
-                Else
-                    cmd.Parameters.AddWithValue("@NAMA_AKUN_D", LAWAN_NAMA_REK_BARANG)
-                    cmd.Parameters.AddWithValue("@NOMOR_AKUN_D", LAWAN_KODE_REK_BARANG)
+                ' Stok minus (kurang): D PENYESUAIAN STOK MINUS, K PERSEDIAAN BARANG
+                ' Stok plus  (lebih) : D PERSEDIAAN BARANG,      K PENYESUAIAN STOK MINUS
+                If nilaiSelisih < 0 Then
+                    cmd.Parameters.AddWithValue("@NAMA_AKUN_D", NAMA_PENYESUAIAN)
+                    cmd.Parameters.AddWithValue("@NOMOR_AKUN_D", KODE_PENYESUAIAN)
                     cmd.Parameters.AddWithValue("@NAMA_AKUN_K", NAMA_REK_BARANG)
                     cmd.Parameters.AddWithValue("@NOMOR_AKUN_K", KODE_REK_BARANG)
+                Else
+                    cmd.Parameters.AddWithValue("@NAMA_AKUN_D", NAMA_REK_BARANG)
+                    cmd.Parameters.AddWithValue("@NOMOR_AKUN_D", KODE_REK_BARANG)
+                    cmd.Parameters.AddWithValue("@NAMA_AKUN_K", NAMA_PENYESUAIAN)
+                    cmd.Parameters.AddWithValue("@NOMOR_AKUN_K", KODE_PENYESUAIAN)
                 End If
 
                 cmd.Parameters.AddWithValue("@NOMINAL", Math.Abs(nilaiSelisih))
-                cmd.Parameters.AddWithValue("@JENIS_TRANSAKSI", "Stok Opnam")
+                cmd.Parameters.AddWithValue("@JENIS_TRANSAKSI", "STOK OPNAME")
                 cmd.Parameters.AddWithValue("@LOKASI", TxtLokasi.Text)
 
                 ' Penentuan IdUser dan IdKomputer berdasarkan status LblUtama
-                cmd.Parameters.AddWithValue("@ID_USER", If(LblUtama.Text = "TAMBAH STOK OPNAME", FormUtama.SLogin.Text, TxtIdUser.Text))
-                cmd.Parameters.AddWithValue("@ID_KOMPUTER", If(LblUtama.Text = "TAMBAH STOK OPNAME", FormUtama.Comp.Text, TxtKomputer.Text))
+                cmd.Parameters.AddWithValue("@ID_USER", If(LblUtama.Text = "TAMBAH STOK OPNAME", FormUtama.StatusNamaUser.Text, TxtIdUser.Text))
+                cmd.Parameters.AddWithValue("@ID_KOMPUTER", If(LblUtama.Text = "TAMBAH STOK OPNAME", FormUtama.StatusNamaPC.Text, TxtKomputer.Text))
 
                 cmd.ExecuteNonQuery()
             End Using
+
+            ' Debug jurnal stok opname
+            Debug.WriteLine("═══════════════════════════════════════════════════════")
+            Debug.WriteLine("DEBUG JURNAL STOK OPNAME - Faktur: " & TxtFaktur.Text & " | " & TxtnamaHasil.Text)
+            Debug.WriteLine("Selisih Rp: " & nilaiSelisih.ToString("N0") & " | Abs: " & Math.Abs(nilaiSelisih).ToString("N0"))
+            Debug.WriteLine("═══════════════════════════════════════════════════════")
+            If nilaiSelisih < 0 Then
+                Debug.WriteLine(String.Format("{0,-4} {1,-20} {2,-30} {3,-30} {4,12:N0} {5,12:N0}", "J1", "Selisih Kurang", NAMA_PENYESUAIAN & " [" & KODE_PENYESUAIAN & "]", NAMA_REK_BARANG, Math.Abs(nilaiSelisih), Math.Abs(nilaiSelisih)))
+            Else
+                Debug.WriteLine(String.Format("{0,-4} {1,-20} {2,-30} {3,-30} {4,12:N0} {5,12:N0}", "J1", "Selisih Lebih", NAMA_REK_BARANG, NAMA_PENYESUAIAN & " [" & KODE_PENYESUAIAN & "]", Math.Abs(nilaiSelisih), Math.Abs(nilaiSelisih)))
+            End If
+            Debug.WriteLine("✅ JURNAL SEIMBANG - D=K=" & Math.Abs(nilaiSelisih).ToString("N0"))
+            Debug.WriteLine("═══════════════════════════════════════════════════════")
         End If
 
     End Sub
@@ -732,13 +800,13 @@ Public Class FormStokOpname
             cmd.Parameters.AddWithValue("@LOKASI", TxtLokasi.Text)
             cmd.Parameters.AddWithValue("@ID_BARANG", TxtKode.Text)
             cmd.Parameters.AddWithValue("@NAMA_BARANG", TxtnamaHasil.Text)
-            cmd.Parameters.AddWithValue("@QTY", If(String.IsNullOrEmpty(TxtNyata.Text), 0D, Convert.ToDecimal(TxtNyata.Text)))
+            cmd.Parameters.AddWithValue("@QTY", ModuleAngka.ParseDecimal(TxtNyata.Text))
             cmd.Parameters.AddWithValue("@SATUAN", If(String.IsNullOrEmpty(LblSat.Text), String.Empty, LblSat.Text))
-            cmd.Parameters.AddWithValue("@ISI_SATUAN", If(String.IsNullOrEmpty(LblSatIsi.Text), 0D, Convert.ToDecimal(LblSatIsi.Text)))
-            cmd.Parameters.AddWithValue("@TOTAL_QTY", If(String.IsNullOrEmpty(TxtSelisihQty.Text), 0D, Convert.ToDecimal(TxtSelisihQty.Text)))
-            cmd.Parameters.AddWithValue("@TOTAL_RUPIAH", If(String.IsNullOrEmpty(TxtSelisihRp.Text), 0D, Convert.ToDecimal(TxtSelisihRp.Text)))
-            cmd.Parameters.AddWithValue("@ID_USER", If(LblUtama.Text = "TAMBAH STOK OPNAME", FormUtama.SLogin.Text, TxtIdUser.Text))
-            cmd.Parameters.AddWithValue("@ID_KOMPUTER", If(LblUtama.Text = "TAMBAH STOK OPNAME", FormUtama.Comp.Text, TxtKomputer.Text))
+            cmd.Parameters.AddWithValue("@ISI_SATUAN", ModuleAngka.ParseDecimal(LblSatIsi.Text))
+            cmd.Parameters.AddWithValue("@TOTAL_QTY", ModuleAngka.ParseDecimal(TxtSelisihQty.Text))
+            cmd.Parameters.AddWithValue("@TOTAL_RUPIAH", ModuleAngka.ParseDecimal(TxtSelisihRp.Text))
+            cmd.Parameters.AddWithValue("@ID_USER", If(LblUtama.Text = "TAMBAH STOK OPNAME", FormUtama.StatusNamaUser.Text, TxtIdUser.Text))
+            cmd.Parameters.AddWithValue("@ID_KOMPUTER", If(LblUtama.Text = "TAMBAH STOK OPNAME", FormUtama.StatusNamaPC.Text, TxtKomputer.Text))
             cmd.ExecuteNonQuery()
         End Using
     End Sub
@@ -758,11 +826,19 @@ Public Class FormStokOpname
         updateQuery = "UPDATE tbl_barang SET " & stokField & " = " & stokField & " - ? WHERE ID_BARANG = ?"
 
         Using cmd As New MySqlCommand(updateQuery, conn, transaction)
-            cmd.Parameters.AddWithValue("@STOK_OPNAME", If(String.IsNullOrEmpty(TxtQtyUntukEdit.Text), 0D, Convert.ToDecimal(TxtQtyUntukEdit.Text)))
+            cmd.Parameters.AddWithValue("@STOK_OPNAME", ModuleAngka.ParseDecimal(TxtQtyUntukEdit.Text))
             cmd.Parameters.AddWithValue("@ID_BARANG", TxtKode.Text)
             cmd.ExecuteNonQuery()
         End Using
+
+        ' Audit hapus lama (hanya saat edit, bukan hapus permanen)
+        Dim qtyLama As Decimal = ModuleAngka.ParseDecimal(TxtQtyUntukEdit.Text)
+        Dim sebelumHapus As Decimal = BacaStokSaatIni(TxtKode.Text, TxtLokasi.Text, transaction)
         HitungStokPerubahan(TxtKode.Text, transaction)
+        Dim sesudahHapus As Decimal = BacaStokSaatIni(TxtKode.Text, TxtLokasi.Text, transaction)
+        Dim auditDGVSO As New Dictionary(Of String, Decimal)() From {{TxtKode.Text, qtyLama}}
+        Dim auditDeltaSO As New Dictionary(Of String, Decimal)() From {{TxtKode.Text, Math.Abs(sesudahHapus - sebelumHapus)}}
+        AuditStokTransaksi(TxtFaktur.Text & " [HAPUS-EDIT]", "Edit Stok Opname (hapus lama)", auditDGVSO, Nothing, Nothing, auditDeltaSO, transaction)
 
         Dim deleteQueries As String() = {
                   "DELETE FROM Stok_Opname WHERE ID_STOK_OPNAME = @ID_STOK_OPNAME",
@@ -782,6 +858,9 @@ Public Class FormStokOpname
 
     Private Sub BarangStokOpnameForm_KeyDown(ByVal sender As System.Object, ByVal e As System.Windows.Forms.KeyEventArgs) Handles MyBase.KeyDown
         Select Case e.KeyCode
+            Case Keys.F1
+                e.SuppressKeyPress = True
+                TampilkanBantuan()
             Case Keys.F8
                 Simpandata()
             Case Keys.Escape
@@ -791,7 +870,7 @@ Public Class FormStokOpname
         End Select
     End Sub
 
-    Private Sub BtnKeluar_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles BtnKeluar.Click
+    Private Sub BtnKeluar_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles BtnKeluarForm.Click
         FormUtama.DataStokOpname()
         FormUtama.GBTransaksi.Visible = True
         Close()
@@ -806,11 +885,12 @@ Public Class FormStokOpname
 
             Using rd As MySqlDataReader = cmd.ExecuteReader()
                 If rd.Read() Then
-                    Dim tanggal As String = If(IsDBNull(rd("TANGGAL")), "Tidak ada data", Convert.ToDateTime(rd("TANGGAL")).ToString("dd-MM-yyyy"))
-                    Dim stokSystem As Decimal = If(IsDBNull(rd("STOK_SYSTEM")), 0D, Convert.ToDecimal(rd("STOK_SYSTEM")))
-                    Dim stokNyata As Decimal = If(IsDBNull(rd("STOK_NYATA")), 0D, Convert.ToDecimal(rd("STOK_NYATA")))
-                    Dim totalQty As Decimal = If(IsDBNull(rd("TOTAL_QTY")), 0D, Convert.ToDecimal(rd("TOTAL_QTY")))
-                    Dim totalHarga As Decimal = If(IsDBNull(rd("TOTAL_HARGA")), 0D, Convert.ToDecimal(rd("TOTAL_HARGA")))
+                    Dim tanggal As String = ModuleAngka.SafeGetValue(Of String)(rd, "TANGGAL", "Tidak ada data")
+                    If tanggal <> "Tidak ada data" Then tanggal = Convert.ToDateTime(tanggal).ToString("dd-MM-yyyy")
+                    Dim stokSystem As Decimal = ModuleAngka.SafeGetValue(Of Decimal)(rd, "STOK_SYSTEM", 0D)
+                    Dim stokNyata As Decimal = ModuleAngka.SafeGetValue(Of Decimal)(rd, "STOK_NYATA", 0D)
+                    Dim totalQty As Decimal = ModuleAngka.SafeGetValue(Of Decimal)(rd, "TOTAL_QTY", 0D)
+                    Dim totalHarga As Decimal = ModuleAngka.SafeGetValue(Of Decimal)(rd, "TOTAL_HARGA", 0D)
 
                     ' Update labels with the retrieved data
                     LblKetTerakhir.Text = "Nama barang: " & TxtnamaHasil.Text & " | Tanggal: " & tanggal
@@ -826,8 +906,24 @@ Public Class FormStokOpname
     End Sub
 
 
-
     Private Sub BtNCetak_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles BtNCetak.Click
-        FormStokOpnameBahan.ShowDialog()
+        If BacaPengaturanPrinter("StokOpname", "PilihPrinter", "LANGSUNG CETAK") = "TANYA PILIH PRINTER" Then
+            ModulePrinterStokOpname.TanyaPilihPrinterStokOpname(TxtFaktur.Text)
+        Else
+            ModulePrinterStokOpname.CetakStokOpname(TxtFaktur.Text)
+        End If
     End Sub
+
+    ' ============================================
+    ' FUNGSI: TAMPILKAN BANTUAN SHORTCUT
+    ' ============================================
+    Private Sub TampilkanBantuan()
+        Dim helpText As String = "SHORTCUT KEYBOARD:" & vbCrLf & vbCrLf &
+                           "F1      : Tampilkan bantuan ini" & vbCrLf &
+                           "F8      : Simpan stok opname" & vbCrLf &
+                           "ESC     : Keluar"
+        MessageBox.Show(helpText, "Bantuan - Shortcut Keyboard",
+                        MessageBoxButtons.OK, MessageBoxIcon.Information)
+    End Sub
+
 End Class

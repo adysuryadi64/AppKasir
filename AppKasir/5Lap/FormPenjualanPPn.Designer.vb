@@ -1,4 +1,4 @@
-﻿<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()> _
+<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()> _
 Partial Class FormPenjualanPPn
     Inherits System.Windows.Forms.Form
 
@@ -120,12 +120,13 @@ Partial Class FormPenjualanPPn
         'BtnTampilkan
         '
         Me.BtnTampilkan.AutoSize = True
-        Me.BtnTampilkan.BackColor = System.Drawing.Color.Gold
-        Me.BtnTampilkan.FlatAppearance.BorderSize = 0
-        Me.BtnTampilkan.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(CType(CType(128, Byte), Integer), CType(CType(255, Byte), Integer), CType(CType(255, Byte), Integer))
-        Me.BtnTampilkan.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Yellow
+        Me.BtnTampilkan.BackColor = System.Drawing.SystemColors.Control
+        Me.BtnTampilkan.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(100, 116, 139)
+        Me.BtnTampilkan.FlatAppearance.BorderSize = 1
+        Me.BtnTampilkan.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(226, 232, 240)
+        Me.BtnTampilkan.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(241, 245, 249)
         Me.BtnTampilkan.FlatStyle = System.Windows.Forms.FlatStyle.Flat
-        Me.BtnTampilkan.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.BtnTampilkan.Font = New System.Drawing.Font("Segoe UI", 9.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.BtnTampilkan.ForeColor = System.Drawing.Color.Black
         Me.BtnTampilkan.Image = CType(resources.GetObject("BtnTampilkan.Image"), System.Drawing.Image)
         Me.BtnTampilkan.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft
@@ -239,12 +240,13 @@ Partial Class FormPenjualanPPn
         'BtnFilter
         '
         Me.BtnFilter.AutoSize = True
-        Me.BtnFilter.BackColor = System.Drawing.Color.Gold
-        Me.BtnFilter.FlatAppearance.BorderSize = 0
-        Me.BtnFilter.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(CType(CType(128, Byte), Integer), CType(CType(255, Byte), Integer), CType(CType(255, Byte), Integer))
-        Me.BtnFilter.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Yellow
+        Me.BtnFilter.BackColor = System.Drawing.SystemColors.Control
+        Me.BtnFilter.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(100, 116, 139)
+        Me.BtnFilter.FlatAppearance.BorderSize = 1
+        Me.BtnFilter.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(226, 232, 240)
+        Me.BtnFilter.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(241, 245, 249)
         Me.BtnFilter.FlatStyle = System.Windows.Forms.FlatStyle.Flat
-        Me.BtnFilter.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.BtnFilter.Font = New System.Drawing.Font("Segoe UI", 9.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.BtnFilter.ForeColor = System.Drawing.Color.Black
         Me.BtnFilter.Image = CType(resources.GetObject("BtnFilter.Image"), System.Drawing.Image)
         Me.BtnFilter.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft
@@ -252,19 +254,20 @@ Partial Class FormPenjualanPPn
         Me.BtnFilter.Name = "BtnFilter"
         Me.BtnFilter.Size = New System.Drawing.Size(167, 30)
         Me.BtnFilter.TabIndex = 148
-        Me.BtnFilter.Text = "Export Excell Terfilter"
+        Me.BtnFilter.Text = "Export Excel Terfilter"
         Me.BtnFilter.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText
         Me.BtnFilter.UseVisualStyleBackColor = False
         '
         'BtnNonFilter
         '
         Me.BtnNonFilter.AutoSize = True
-        Me.BtnNonFilter.BackColor = System.Drawing.Color.Gold
-        Me.BtnNonFilter.FlatAppearance.BorderSize = 0
-        Me.BtnNonFilter.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(CType(CType(128, Byte), Integer), CType(CType(255, Byte), Integer), CType(CType(255, Byte), Integer))
-        Me.BtnNonFilter.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Yellow
+        Me.BtnNonFilter.BackColor = System.Drawing.SystemColors.Control
+        Me.BtnNonFilter.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(100, 116, 139)
+        Me.BtnNonFilter.FlatAppearance.BorderSize = 1
+        Me.BtnNonFilter.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(226, 232, 240)
+        Me.BtnNonFilter.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(241, 245, 249)
         Me.BtnNonFilter.FlatStyle = System.Windows.Forms.FlatStyle.Flat
-        Me.BtnNonFilter.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.BtnNonFilter.Font = New System.Drawing.Font("Segoe UI", 9.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.BtnNonFilter.ForeColor = System.Drawing.Color.Black
         Me.BtnNonFilter.Image = CType(resources.GetObject("BtnNonFilter.Image"), System.Drawing.Image)
         Me.BtnNonFilter.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft
@@ -272,17 +275,18 @@ Partial Class FormPenjualanPPn
         Me.BtnNonFilter.Name = "BtnNonFilter"
         Me.BtnNonFilter.Size = New System.Drawing.Size(179, 30)
         Me.BtnNonFilter.TabIndex = 149
-        Me.BtnNonFilter.Text = "Export Excell Non Filter"
+        Me.BtnNonFilter.Text = "Export Excel Non Filter"
         Me.BtnNonFilter.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText
         Me.BtnNonFilter.UseVisualStyleBackColor = False
         '
         'BtnClose
         '
         Me.BtnClose.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.BtnClose.BackColor = System.Drawing.Color.Yellow
+        Me.BtnClose.BackColor = System.Drawing.SystemColors.Control
         Me.BtnClose.FlatAppearance.BorderSize = 0
-        Me.BtnClose.FlatAppearance.MouseDownBackColor = System.Drawing.Color.GreenYellow
-        Me.BtnClose.FlatAppearance.MouseOverBackColor = System.Drawing.Color.GreenYellow
+        Me.BtnClose.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(226, 232, 240)
+        Me.BtnClose.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(241, 245, 249)
+        Me.BtnClose.FlatStyle = System.Windows.Forms.FlatStyle.Flat
         Me.BtnClose.Font = New System.Drawing.Font("Century Gothic", 12.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.BtnClose.ForeColor = System.Drawing.Color.Black
         Me.BtnClose.Image = CType(resources.GetObject("BtnClose.Image"), System.Drawing.Image)
@@ -296,7 +300,7 @@ Partial Class FormPenjualanPPn
         '
         'LabelJudul
         '
-        Me.LabelJudul.BackColor = System.Drawing.Color.Gold
+        Me.LabelJudul.BackColor = System.Drawing.SystemColors.Control
         Me.LabelJudul.Dock = System.Windows.Forms.DockStyle.Top
         Me.LabelJudul.Font = New System.Drawing.Font("Bookman Old Style", 21.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.LabelJudul.Location = New System.Drawing.Point(0, 0)
@@ -330,7 +334,6 @@ Partial Class FormPenjualanPPn
         'DGVFilter
         '
         Me.DGVFilter.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.AllCells
-        Me.DGVFilter.BackgroundColor = System.Drawing.Color.White
         Me.DGVFilter.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
         Me.DGVFilter.Dock = System.Windows.Forms.DockStyle.Fill
         Me.DGVFilter.Location = New System.Drawing.Point(0, 0)
@@ -341,12 +344,13 @@ Partial Class FormPenjualanPPn
         'BtnCekDataPpn
         '
         Me.BtnCekDataPpn.AutoSize = True
-        Me.BtnCekDataPpn.BackColor = System.Drawing.Color.Gold
-        Me.BtnCekDataPpn.FlatAppearance.BorderSize = 0
-        Me.BtnCekDataPpn.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(CType(CType(128, Byte), Integer), CType(CType(255, Byte), Integer), CType(CType(255, Byte), Integer))
-        Me.BtnCekDataPpn.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Yellow
+        Me.BtnCekDataPpn.BackColor = System.Drawing.SystemColors.Control
+        Me.BtnCekDataPpn.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(100, 116, 139)
+        Me.BtnCekDataPpn.FlatAppearance.BorderSize = 1
+        Me.BtnCekDataPpn.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(226, 232, 240)
+        Me.BtnCekDataPpn.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(241, 245, 249)
         Me.BtnCekDataPpn.FlatStyle = System.Windows.Forms.FlatStyle.Flat
-        Me.BtnCekDataPpn.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.BtnCekDataPpn.Font = New System.Drawing.Font("Segoe UI", 9.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.BtnCekDataPpn.ForeColor = System.Drawing.Color.Black
         Me.BtnCekDataPpn.Image = CType(resources.GetObject("BtnCekDataPpn.Image"), System.Drawing.Image)
         Me.BtnCekDataPpn.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft
@@ -354,7 +358,7 @@ Partial Class FormPenjualanPPn
         Me.BtnCekDataPpn.Name = "BtnCekDataPpn"
         Me.BtnCekDataPpn.Size = New System.Drawing.Size(157, 30)
         Me.BtnCekDataPpn.TabIndex = 203
-        Me.BtnCekDataPpn.Text = "cek data tanpa filter"
+        Me.BtnCekDataPpn.Text = "Cek Data Tanpa Filter"
         Me.BtnCekDataPpn.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText
         Me.BtnCekDataPpn.UseVisualStyleBackColor = False
         '
@@ -373,12 +377,13 @@ Partial Class FormPenjualanPPn
         'BtnCekDataNonPPn
         '
         Me.BtnCekDataNonPPn.AutoSize = True
-        Me.BtnCekDataNonPPn.BackColor = System.Drawing.Color.Gold
-        Me.BtnCekDataNonPPn.FlatAppearance.BorderSize = 0
-        Me.BtnCekDataNonPPn.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(CType(CType(128, Byte), Integer), CType(CType(255, Byte), Integer), CType(CType(255, Byte), Integer))
-        Me.BtnCekDataNonPPn.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Yellow
+        Me.BtnCekDataNonPPn.BackColor = System.Drawing.SystemColors.Control
+        Me.BtnCekDataNonPPn.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(100, 116, 139)
+        Me.BtnCekDataNonPPn.FlatAppearance.BorderSize = 1
+        Me.BtnCekDataNonPPn.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(226, 232, 240)
+        Me.BtnCekDataNonPPn.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(241, 245, 249)
         Me.BtnCekDataNonPPn.FlatStyle = System.Windows.Forms.FlatStyle.Flat
-        Me.BtnCekDataNonPPn.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.BtnCekDataNonPPn.Font = New System.Drawing.Font("Segoe UI", 9.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.BtnCekDataNonPPn.ForeColor = System.Drawing.Color.Black
         Me.BtnCekDataNonPPn.Image = CType(resources.GetObject("BtnCekDataNonPPn.Image"), System.Drawing.Image)
         Me.BtnCekDataNonPPn.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft
@@ -386,7 +391,7 @@ Partial Class FormPenjualanPPn
         Me.BtnCekDataNonPPn.Name = "BtnCekDataNonPPn"
         Me.BtnCekDataNonPPn.Size = New System.Drawing.Size(135, 30)
         Me.BtnCekDataNonPPn.TabIndex = 205
-        Me.BtnCekDataNonPPn.Text = "cek data terfilter"
+        Me.BtnCekDataNonPPn.Text = "Cek Data Terfilter"
         Me.BtnCekDataNonPPn.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText
         Me.BtnCekDataNonPPn.UseVisualStyleBackColor = False
         '
@@ -395,7 +400,6 @@ Partial Class FormPenjualanPPn
         Me.DgvData.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
             Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
         Me.DgvData.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.AllCells
-        Me.DgvData.BackgroundColor = System.Drawing.Color.White
         Me.DgvData.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
         Me.DgvData.Location = New System.Drawing.Point(0, 50)
         Me.DgvData.Name = "DgvData"

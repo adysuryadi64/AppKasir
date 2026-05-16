@@ -1,4 +1,4 @@
-﻿<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()> _
+<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()> _
 Partial Class ACTIVATION_FORM
     Inherits System.Windows.Forms.Form
 
@@ -111,13 +111,26 @@ Partial Class ACTIVATION_FORM
         '
         'BtnGenerate
         '
-        Me.BtnGenerate.Font = New System.Drawing.Font("Century", 11.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.BtnGenerate.AutoSize = True
+        Me.BtnGenerate.BackColor = System.Drawing.Color.White
+        Me.BtnGenerate.Cursor = System.Windows.Forms.Cursors.Hand
+        Me.BtnGenerate.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(CType(CType(100, Byte), Integer), CType(CType(116, Byte), Integer), CType(CType(139, Byte), Integer))
+        Me.BtnGenerate.FlatAppearance.BorderSize = 1
+        Me.BtnGenerate.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(CType(CType(226, Byte), Integer), CType(CType(232, Byte), Integer), CType(CType(240, Byte), Integer))
+        Me.BtnGenerate.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(CType(CType(241, Byte), Integer), CType(CType(245, Byte), Integer), CType(CType(249, Byte), Integer))
+        Me.BtnGenerate.FlatStyle = System.Windows.Forms.FlatStyle.Flat
+        Me.BtnGenerate.Font = New System.Drawing.Font("Segoe UI", 9.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.BtnGenerate.ForeColor = System.Drawing.Color.Black
+        Me.BtnGenerate.Image = CType(resources.GetObject("BtnGenerate.Image"), System.Drawing.Image)
+        Me.BtnGenerate.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft
         Me.BtnGenerate.Location = New System.Drawing.Point(106, 176)
         Me.BtnGenerate.Name = "BtnGenerate"
         Me.BtnGenerate.Size = New System.Drawing.Size(94, 31)
         Me.BtnGenerate.TabIndex = 18
         Me.BtnGenerate.Text = "Generate"
-        Me.BtnGenerate.UseVisualStyleBackColor = True
+        Me.BtnGenerate.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
+        Me.BtnGenerate.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText
+        Me.BtnGenerate.UseVisualStyleBackColor = False
         Me.BtnGenerate.Visible = False
         '
         'Label4
@@ -155,23 +168,49 @@ Partial Class ACTIVATION_FORM
         '
         'BtnClose
         '
-        Me.BtnClose.Font = New System.Drawing.Font("Century", 11.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.BtnClose.AutoSize = True
+        Me.BtnClose.BackColor = System.Drawing.Color.White
+        Me.BtnClose.Cursor = System.Windows.Forms.Cursors.Hand
+        Me.BtnClose.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(CType(CType(220, Byte), Integer), CType(CType(38, Byte), Integer), CType(CType(38, Byte), Integer))
+        Me.BtnClose.FlatAppearance.BorderSize = 1
+        Me.BtnClose.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(CType(CType(252, Byte), Integer), CType(CType(165, Byte), Integer), CType(CType(165, Byte), Integer))
+        Me.BtnClose.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(CType(CType(254, Byte), Integer), CType(CType(226, Byte), Integer), CType(CType(226, Byte), Integer))
+        Me.BtnClose.FlatStyle = System.Windows.Forms.FlatStyle.Flat
+        Me.BtnClose.Font = New System.Drawing.Font("Segoe UI", 9.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.BtnClose.ForeColor = System.Drawing.Color.FromArgb(CType(CType(220, Byte), Integer), CType(CType(38, Byte), Integer), CType(CType(38, Byte), Integer))
+        Me.BtnClose.Image = CType(resources.GetObject("BtnClose.Image"), System.Drawing.Image)
+        Me.BtnClose.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft
         Me.BtnClose.Location = New System.Drawing.Point(211, 141)
         Me.BtnClose.Name = "BtnClose"
         Me.BtnClose.Size = New System.Drawing.Size(186, 31)
         Me.BtnClose.TabIndex = 15
         Me.BtnClose.Text = "Close"
-        Me.BtnClose.UseVisualStyleBackColor = True
+        Me.BtnClose.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
+        Me.BtnClose.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText
+        Me.BtnClose.UseVisualStyleBackColor = False
         '
         'BtnAktivasi
         '
-        Me.BtnAktivasi.Font = New System.Drawing.Font("Century", 11.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.BtnAktivasi.AutoSize = True
+        Me.BtnAktivasi.BackColor = System.Drawing.Color.White
+        Me.BtnAktivasi.Cursor = System.Windows.Forms.Cursors.Hand
+        Me.BtnAktivasi.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(CType(CType(22, Byte), Integer), CType(CType(163, Byte), Integer), CType(CType(74, Byte), Integer))
+        Me.BtnAktivasi.FlatAppearance.BorderSize = 1
+        Me.BtnAktivasi.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(CType(CType(187, Byte), Integer), CType(CType(247, Byte), Integer), CType(CType(208, Byte), Integer))
+        Me.BtnAktivasi.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(CType(CType(220, Byte), Integer), CType(CType(252, Byte), Integer), CType(CType(231, Byte), Integer))
+        Me.BtnAktivasi.FlatStyle = System.Windows.Forms.FlatStyle.Flat
+        Me.BtnAktivasi.Font = New System.Drawing.Font("Segoe UI", 9.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.BtnAktivasi.ForeColor = System.Drawing.Color.FromArgb(CType(CType(22, Byte), Integer), CType(CType(163, Byte), Integer), CType(CType(74, Byte), Integer))
+        Me.BtnAktivasi.Image = CType(resources.GetObject("BtnAktivasi.Image"), System.Drawing.Image)
+        Me.BtnAktivasi.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft
         Me.BtnAktivasi.Location = New System.Drawing.Point(106, 141)
         Me.BtnAktivasi.Name = "BtnAktivasi"
         Me.BtnAktivasi.Size = New System.Drawing.Size(82, 31)
         Me.BtnAktivasi.TabIndex = 14
-        Me.BtnAktivasi.Text = "&Activate"
-        Me.BtnAktivasi.UseVisualStyleBackColor = True
+        Me.BtnAktivasi.Text = "&Aktivasi"
+        Me.BtnAktivasi.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
+        Me.BtnAktivasi.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText
+        Me.BtnAktivasi.UseVisualStyleBackColor = False
         '
         'activationKeyTextBox
         '
@@ -216,6 +255,7 @@ Partial Class ACTIVATION_FORM
         '
         'ACTIVATION_FORM
         '
+        Me.KeyPreview = True
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.BackColor = System.Drawing.Color.DeepSkyBlue
@@ -249,3 +289,4 @@ Partial Class ACTIVATION_FORM
     Friend WithEvents TxtDeviceName As System.Windows.Forms.TextBox
     Friend WithEvents Label6 As System.Windows.Forms.Label
 End Class
+

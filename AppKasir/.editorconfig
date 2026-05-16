@@ -1,0 +1,6 @@
+root = true
+
+[*.vb]
+# Izinkan prefix _ untuk semua identifier (konsisten dengan konvensi project)
+dotnet_naming_rule.private_members_with_underscore.severity = none
+dotnet_diagnostic.IDE1006.severity = none

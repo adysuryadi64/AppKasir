@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: Arial, sans-serif; font-size: 11px; color: #222; background: #fff; padding: 20px; }
+
+  /* ── Header ── */
+  .header { text-align: center; margin-bottom: 16px; border-bottom: 2px solid #333; padding-bottom: 10px; }
+  .header h1 { font-size: 16px; font-weight: bold; letter-spacing: 1px; }
+  .header h2 { font-size: 13px; font-weight: bold; margin-top: 2px; }
+  .header p  { font-size: 11px; color: #555; margin-top: 3px; }
+
+  /* ── Tabel utama ── */
+  table { width: 100%; border-collapse: collapse; }
+  th, td { padding: 4px 8px; }
+
+  /* ── Header kolom ── */
+  .col-header { background: #2c3e50; color: #fff; font-weight: bold; text-align: center; font-size: 10px; }
+  .col-header td { padding: 6px 8px; }
+
+  /* ── Section header (A. PENJUALAN, B. HPP, dll) ── */
+  .section-header td { background: #ecf0f1; font-weight: bold; font-size: 11px;
+                       padding: 6px 8px; border-top: 1px solid #bdc3c7; border-bottom: 1px solid #bdc3c7; }
+
+  /* ── Baris data akun ── */
+  .row-akun td { border-bottom: 1px solid #f0f0f0; }
+  .row-akun:hover td { background: #fafafa; }
+  .kode  { width: 90px; color: #666; font-size: 10px; }
+  .nama  { width: 280px; padding-left: 20px !important; }
+  .angka { text-align: right; width: 120px; }
+  .angka-negatif { text-align: right; width: 120px; color: #c0392b; }
+
+  /* ── Baris subtotal ── */
+  .row-subtotal td { border-top: 1px solid #bdc3c7; font-style: italic; font-size: 10px; color: #555; }
+  .row-subtotal .angka { font-weight: bold; color: #222; }
+
+  /* ── Baris total section (kanan) ── */
+  .row-total-section { }
+  .row-total-section td { padding: 5px 8px; }
+  .total-label { text-align: right; font-weight: bold; font-size: 11px; color: #2c3e50; }
+  .total-nilai { text-align: right; font-weight: bold; font-size: 12px;
+                 border-top: 1px solid #2c3e50; border-bottom: 3px double #2c3e50;
+                 color: #2c3e50; width: 130px; }
+  .total-nilai-negatif { text-align: right; font-weight: bold; font-size: 12px;
+                         border-top: 1px solid #c0392b; border-bottom: 3px double #c0392b;
+                         color: #c0392b; width: 130px; }
+
+  /* ── Baris laba kotor / laba bersih ── */
+  .row-laba { background: #eaf4fb; }
+  .row-laba td { padding: 6px 8px; font-weight: bold; font-size: 12px; border-top: 2px solid #2980b9; }
+  .row-laba .laba-label { text-align: right; color: #2980b9; }
+  .row-laba .laba-nilai { text-align: right; color: #27ae60; width: 130px; }
+  .row-laba .laba-nilai-rugi { text-align: right; color: #c0392b; width: 130px; }
+
+  /* ── Baris laba akhir ── */
+  .row-laba-akhir { background: #2c3e50; }
+  .row-laba-akhir td { padding: 8px 12px; font-weight: bold; font-size: 13px; color: #fff; }
+  .row-laba-akhir .laba-akhir-label { text-align: right; }
+  .row-laba-akhir .laba-akhir-nilai { text-align: right; width: 130px; }
+
+  /* ── Footer ── */
+  .footer { margin-top: 16px; font-size: 9px; color: #999; border-top: 1px solid #ddd; padding-top: 6px;
+            display: flex; justify-content: space-between; }
+
+  /* ── Print ── */
+  @media print {
+    body { padding: 10px; }
+    .no-print { display: none; }
+    .row-akun:hover td { background: transparent; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Tombol print — hilang saat print -->
+<div class="no-print" style="margin-bottom:12px;">
+  <button onclick="window.print()"
+    style="padding:6px 18px;background:#2c3e50;color:#fff;border:none;border-radius:4px;cursor:pointer;font-size:12px;">
+    🖨 Cetak
+  </button>
+</div>
+
+<!-- Header -->
+<div class="header">
+  <h1>LAPORAN LABA RUGI</h1>
+  <h2>{{NAMATOKO}}</h2>
+  <p>{{PERIODE}}</p>
+</div>
+
+<!-- Tabel -->
+<table>
+  <!-- Header kolom -->
+  <tr class="col-header">
+    <td class="kode">KODE</td>
+    <td class="nama">NAMA AKUN</td>
+    <td class="angka" style="text-align:right;">{{AWAL}}</td>
+    <td class="angka" style="text-align:right;">{{RUBAH}}</td>
+    <td class="angka" style="text-align:right;">SALDO AKHIR</td>
+    <td style="width:130px;"></td>
+  </tr>
+
+  {{BODY}}
+
+</table>
+
+<!-- Footer -->
+<div class="footer">
+  <span>{{USER}}</span>
+  <span>Dicetak: {{WAKTU}}</span>
+</div>
+
+</body>
+</html>

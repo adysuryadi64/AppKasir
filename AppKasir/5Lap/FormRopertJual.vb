@@ -1,34 +1,7 @@
-﻿Imports ClosedXML.Excel
+Imports ClosedXML.Excel
 
 Public Class FormRopertJual
 
-
-    Private BulanTerpilih As Integer
-
-    Private Sub KonversiBulanKeAngka()
-        Dim bulanDict As New Dictionary(Of String, Integer) From {
-        {"Januari", 1}, {"Februari", 2}, {"Maret", 3}, {"April", 4},
-        {"Mei", 5}, {"Juni", 6}, {"Juli", 7}, {"Agustus", 8},
-        {"September", 9}, {"Oktober", 10}, {"November", 11}, {"Desember", 12}
-    }
-        BulanTerpilih = If(bulanDict.ContainsKey(CmbBln.Text), bulanDict(CmbBln.Text), 0)
-    End Sub
-
-    Private Sub MuatComboBoxBulanTahun()
-        ' Isi ComboBox Bulan
-        CmbBln.Items.Clear()
-        CmbBln.Items.AddRange({"Januari", "Februari", "Maret", "April", "Mei", "Juni",
-                           "Juli", "Agustus", "September", "Oktober", "November", "Desember"})
-
-        ' Isi ComboBox Tahun
-        CmbThn.Items.Clear()
-        For i As Integer = 2022 To Year(Now)
-            CmbThn.Items.Add(i)
-        Next
-
-        ' Set tahun sekarang sebagai default
-        CmbThn.SelectedItem = Year(Now)
-    End Sub
 
     Private Sub CbBulan_CheckedChanged(sender As Object, e As EventArgs) Handles CBBulan.CheckedChanged
         If CBBulan.Checked Then
@@ -45,14 +18,12 @@ Public Class FormRopertJual
     End Sub
 
     Private Sub FormRopertJual_Load(sender As Object, e As EventArgs) Handles MyBase.Load
-        MuatComboBoxBulanTahun()
+        ModuleTheme.TerapkanTheme(Me)
+        MuatComboBoxBulanTahun(CmbBln, CmbThn)
         Tampilkankategori()
         CBBulan.Checked = True ' Set default ke filter tanggal
     End Sub
 
-    Private Sub BtnDatabase_Click(sender As Object, e As EventArgs) Handles BtnDatabase.Click
-        SettingDatabase.Show()
-    End Sub
 
     Private Sub Tampilkankategori()
         CmbKategori.Items.Clear()
@@ -103,13 +74,9 @@ Public Class FormRopertJual
             TanggalAwal = DTPAwal.Value.Date
             TanggalAkhir = DTPAkhir.Value.Date.AddDays(1).AddTicks(-1)
         ElseIf CBBulan.Checked Then
-            KonversiBulanKeAngka()
-            Dim Bulan = BulanTerpilih
-            Dim Tahun As Integer = Val(CmbThn.Text)
-            TanggalAwal = New DateTime(Tahun, Bulan, 1)
-            TanggalAkhir = TanggalAwal.AddMonths(1).AddSeconds(-1)
+            If Not GetRentangBulan(CmbBln, CmbThn, TanggalAwal, TanggalAkhir) Then Exit Sub
         Else
-            MsgBox("Pilih filter tanggal atau bulan!", MsgBoxStyle.Exclamation)
+            MessageBox.Show("Pilih filter tanggal atau bulan!", "Peringatan", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
             Exit Sub
         End If
     End Sub
@@ -168,9 +135,6 @@ Public Class FormRopertJual
 
                     .Columns("kode_kategori").Visible = False
 
-                    .Columns("qty").DefaultCellStyle.Format = "N0"
-                    .Columns("qty").DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight
-
                     .Columns("tanggal").DefaultCellStyle.Format = "dd-MM-yyyy"
                     .Columns("tanggal").DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter
 
@@ -184,10 +148,11 @@ Public Class FormRopertJual
                     .Columns("satuan").Width = 80
                     .Columns("nama_kategori").Width = 130
                 End With
+                ModuleAngka.TerapkanFormatKolomAngka(DgvData, "qty")
             End Using
 
         Catch ex As Exception
-            MsgBox("Terjadi kesalahan: " & ex.Message, MsgBoxStyle.Critical)
+            MessageBox.Show("Terjadi kesalahan: " & ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
 
         Finally
             Cursor = Cursors.Default
@@ -248,9 +213,6 @@ Public Class FormRopertJual
 
                     .Columns("kode_kategori").Visible = False
 
-                    .Columns("qty").DefaultCellStyle.Format = "N0"
-                    .Columns("qty").DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight
-
                     .Columns("BARCODE").Width = 100
                     .Columns("kode_barang").Width = 100
                     .Columns("nama_barang").Width = 300
@@ -258,10 +220,11 @@ Public Class FormRopertJual
                     .Columns("satuan").Width = 80
                     .Columns("nama_kategori").Width = 130
                 End With
+                ModuleAngka.TerapkanFormatKolomAngka(DgvData, "qty")
             End Using
 
         Catch ex As Exception
-            MsgBox("Terjadi kesalahan: " & ex.Message, MsgBoxStyle.Critical)
+            MessageBox.Show("Terjadi kesalahan: " & ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
 
         Finally
             Cursor = Cursors.Default
@@ -280,7 +243,7 @@ Public Class FormRopertJual
 
     Private Sub BtnExport_Click(sender As Object, e As EventArgs) Handles BtnExport.Click
         If DgvData.Rows.Count = 0 Then
-            MsgBox("Tidak ada data yang bisa diekspor.", MsgBoxStyle.Exclamation)
+            MessageBox.Show("Tidak ada data yang bisa diekspor.", "Peringatan", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
             Exit Sub
         End If
 
@@ -332,7 +295,7 @@ Public Class FormRopertJual
 
                 sheet.Cell(5, 1).Value = "No"
                 sheet.Cell(5, 1).Style.Font.Bold = True
-                sheet.Cell(5, 1).Style.Fill.BackgroundColor = XLColor.LightGray
+                sheet.Cell(5, 1).Style.Fill.BackgroundColor = XLColor.FromColor(ModuleTheme.C(Color.LightGray, Color.FromArgb(64, 64, 64)))
                 sheet.Cell(5, 1).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center
 
                 Dim colIndex As Integer = 2
@@ -340,7 +303,7 @@ Public Class FormRopertJual
                     If col.Visible Then
                         sheet.Cell(5, colIndex).Value = col.HeaderText
                         sheet.Cell(5, colIndex).Style.Font.Bold = True
-                        sheet.Cell(5, colIndex).Style.Fill.BackgroundColor = XLColor.LightGray
+                        sheet.Cell(5, colIndex).Style.Fill.BackgroundColor = XLColor.FromColor(ModuleTheme.C(Color.LightGray, Color.FromArgb(64, 64, 64)))
                         sheet.Cell(5, colIndex).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center
                         colIndex += 1
                     End If
@@ -408,9 +371,9 @@ Public Class FormRopertJual
             Cursor = Cursors.Default
 
             Dim folderPath As String = IO.Path.GetDirectoryName(filePath)
-            MsgBox("Ekspor data berhasil disimpan." & Environment.NewLine &
+            MessageBox.Show("Ekspor data berhasil disimpan." & Environment.NewLine &
                    "Folder penyimpanan akan dibuka dan file hasil ekspor akan dipilih untuk memudahkan akses Anda.",
-                   MsgBoxStyle.Information, "Sukses Ekspor")
+                   "Sukses Ekspor", MessageBoxButtons.OK, MessageBoxIcon.Information)
             Process.Start("explorer.exe", "/select,""" & filePath & """")
         End If
     End Sub

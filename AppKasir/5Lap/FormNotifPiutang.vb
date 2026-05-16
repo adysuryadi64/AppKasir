@@ -1,8 +1,9 @@
-﻿Imports Microsoft.Reporting.WinForms
+Imports Microsoft.Reporting.WinForms
 
 Public Class FormNotifPiutang
 
     Private Sub FormNotifPiutang_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
+        ModuleTheme.TerapkanTheme(Me)
 
         ReportViewer1.RefreshReport()
     End Sub
@@ -11,7 +12,7 @@ Public Class FormNotifPiutang
 
         ' Mendapatkan tanggal dari form utama
         Dim tanggalJatuhTempo As DateTime
-        If DateTime.TryParse(FormUtama.STanggal.Text, tanggalJatuhTempo) Then
+        If DateTime.TryParse(FormUtama.StatusTanggal.Text, tanggalJatuhTempo) Then
             tanggalJatuhTempo = tanggalJatuhTempo.AddDays(1).AddTicks(-1)
             ' Format tanggal ke yyyy-MM-dd
             Dim formattedDate As String = tanggalJatuhTempo.ToString("yyyy-MM-dd HH:mm:ss")
@@ -25,7 +26,7 @@ Public Class FormNotifPiutang
                         dataset.Load(rd, LoadOption.OverwriteChanges, "penjualan_Piutang")
 
                         Dim parameters As New ReportParameterCollection From {
-                New ReportParameter("Kasir", "Dicetak oleh : " & FormUtama.SLogin.Text),
+                New ReportParameter("Kasir", "Dicetak oleh : " & FormUtama.StatusNamaUser.Text),
         New ReportParameter("Perusahaan", NAMA_PERUSAHAAN)
     }
 

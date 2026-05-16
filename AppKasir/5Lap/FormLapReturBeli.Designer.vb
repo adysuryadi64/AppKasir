@@ -1,4 +1,4 @@
-﻿<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()> _
+<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()> _
 Partial Class FormLapReturBeli
     Inherits System.Windows.Forms.Form
 
@@ -24,11 +24,10 @@ Partial Class FormLapReturBeli
     Private Sub InitializeComponent()
         Me.components = New System.ComponentModel.Container()
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(FormLapReturBeli))
-        Dim ReportDataSource4 As Microsoft.Reporting.WinForms.ReportDataSource = New Microsoft.Reporting.WinForms.ReportDataSource()
-        Dim ReportDataSource5 As Microsoft.Reporting.WinForms.ReportDataSource = New Microsoft.Reporting.WinForms.ReportDataSource()
-        Dim ReportDataSource6 As Microsoft.Reporting.WinForms.ReportDataSource = New Microsoft.Reporting.WinForms.ReportDataSource()
+        Dim ReportDataSource1 As Microsoft.Reporting.WinForms.ReportDataSource = New Microsoft.Reporting.WinForms.ReportDataSource()
+        Dim ReportDataSource2 As Microsoft.Reporting.WinForms.ReportDataSource = New Microsoft.Reporting.WinForms.ReportDataSource()
+        Dim ReportDataSource3 As Microsoft.Reporting.WinForms.ReportDataSource = New Microsoft.Reporting.WinForms.ReportDataSource()
         Me.retur_pembelian_barangBindingSource = New System.Windows.Forms.BindingSource(Me.components)
-        'Me.PossDataSet = New AppKasir.PossDataSet
         Me.retur_pembelian_detailBindingSource = New System.Windows.Forms.BindingSource(Me.components)
         Me.retur_pembelianBindingSource = New System.Windows.Forms.BindingSource(Me.components)
         Me.Panel1 = New System.Windows.Forms.Panel()
@@ -38,7 +37,7 @@ Partial Class FormLapReturBeli
         Me.BtnClose = New System.Windows.Forms.Button()
         Me.DTPAwal = New System.Windows.Forms.DateTimePicker()
         Me.CbTanggal = New System.Windows.Forms.CheckBox()
-        Me.LabelJudul = New System.Windows.Forms.Label()
+        Me.LblHeaderForm = New System.Windows.Forms.Label()
         Me.Label5 = New System.Windows.Forms.Label()
         Me.CmbRekening = New System.Windows.Forms.ComboBox()
         Me.CmbKasir = New System.Windows.Forms.ComboBox()
@@ -53,11 +52,7 @@ Partial Class FormLapReturBeli
         Me.PanelReturBeliDetail = New System.Windows.Forms.Panel()
         Me.PanelReturBeli = New System.Windows.Forms.Panel()
         Me.ReportViewerReturBeli = New Microsoft.Reporting.WinForms.ReportViewer()
-        'Me.retur_pembelianTableAdapter = New AppKasir.PossDataSetLancarTableAdapters.retur_pembelianTableAdapter()
-        'Me.retur_pembelian_detailTableAdapter = New AppKasir.PossDataSetLancarTableAdapters.retur_pembelian_detailTableAdapter()
-        'Me.retur_pembelian_barangTableAdapter = New AppKasir.PossDataSetLancarTableAdapters.retur_pembelian_barangTableAdapter()
         CType(Me.retur_pembelian_barangBindingSource, System.ComponentModel.ISupportInitialize).BeginInit()
-        'CType(Me.PossDataSet, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.retur_pembelian_detailBindingSource, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.retur_pembelianBindingSource, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.Panel1.SuspendLayout()
@@ -69,22 +64,14 @@ Partial Class FormLapReturBeli
         'retur_pembelian_barangBindingSource
         '
         Me.retur_pembelian_barangBindingSource.DataMember = "retur_pembelian_barang"
-        'Me.retur_pembelian_barangBindingSource.DataSource = Me.PossDataSet
-        '
-        'PossDataSet
-        '
-        'Me.PossDataSet.DataSetName = "PossDataSet"
-        'Me.PossDataSet.SchemaSerializationMode = System.Data.SchemaSerializationMode.IncludeSchema
         '
         'retur_pembelian_detailBindingSource
         '
         Me.retur_pembelian_detailBindingSource.DataMember = "retur_pembelian_detail"
-        'Me.retur_pembelian_detailBindingSource.DataSource = Me.PossDataSet
         '
         'retur_pembelianBindingSource
         '
         Me.retur_pembelianBindingSource.DataMember = "retur_pembelian"
-        'Me.retur_pembelianBindingSource.DataSource = Me.PossDataSet
         '
         'Panel1
         '
@@ -94,7 +81,7 @@ Partial Class FormLapReturBeli
         Me.Panel1.Controls.Add(Me.BtnClose)
         Me.Panel1.Controls.Add(Me.DTPAwal)
         Me.Panel1.Controls.Add(Me.CbTanggal)
-        Me.Panel1.Controls.Add(Me.LabelJudul)
+        Me.Panel1.Controls.Add(Me.LblHeaderForm)
         Me.Panel1.Controls.Add(Me.Label5)
         Me.Panel1.Controls.Add(Me.CmbRekening)
         Me.Panel1.Controls.Add(Me.CmbKasir)
@@ -142,19 +129,18 @@ Partial Class FormLapReturBeli
         'BtnClose
         '
         Me.BtnClose.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.BtnClose.BackColor = System.Drawing.Color.Yellow
+        Me.BtnClose.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.BtnClose.BackColor = System.Drawing.SystemColors.Control
+        Me.BtnClose.Cursor = System.Windows.Forms.Cursors.Hand
         Me.BtnClose.FlatAppearance.BorderSize = 0
-        Me.BtnClose.FlatAppearance.MouseDownBackColor = System.Drawing.Color.GreenYellow
-        Me.BtnClose.FlatAppearance.MouseOverBackColor = System.Drawing.Color.GreenYellow
-        Me.BtnClose.Font = New System.Drawing.Font("Century Gothic", 12.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.BtnClose.ForeColor = System.Drawing.Color.Black
+        Me.BtnClose.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(CType(CType(226, Byte), Integer), CType(CType(232, Byte), Integer), CType(CType(240, Byte), Integer))
+        Me.BtnClose.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(CType(CType(241, Byte), Integer), CType(CType(245, Byte), Integer), CType(CType(249, Byte), Integer))
+        Me.BtnClose.FlatStyle = System.Windows.Forms.FlatStyle.Flat
         Me.BtnClose.Image = CType(resources.GetObject("BtnClose.Image"), System.Drawing.Image)
-        Me.BtnClose.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft
         Me.BtnClose.Location = New System.Drawing.Point(1059, 0)
         Me.BtnClose.Name = "BtnClose"
         Me.BtnClose.Size = New System.Drawing.Size(30, 30)
         Me.BtnClose.TabIndex = 202
-        Me.BtnClose.TextAlign = System.Drawing.ContentAlignment.MiddleRight
         Me.BtnClose.UseVisualStyleBackColor = False
         '
         'DTPAwal
@@ -178,17 +164,17 @@ Partial Class FormLapReturBeli
         Me.CbTanggal.Text = "Tanggal"
         Me.CbTanggal.UseVisualStyleBackColor = True
         '
-        'LabelJudul
+        'LblHeaderForm
         '
-        Me.LabelJudul.BackColor = System.Drawing.Color.Gold
-        Me.LabelJudul.Dock = System.Windows.Forms.DockStyle.Top
-        Me.LabelJudul.Font = New System.Drawing.Font("Bookman Old Style", 21.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.LabelJudul.Location = New System.Drawing.Point(0, 0)
-        Me.LabelJudul.Name = "LabelJudul"
-        Me.LabelJudul.Size = New System.Drawing.Size(1093, 31)
-        Me.LabelJudul.TabIndex = 124
-        Me.LabelJudul.Text = "LAPORAN RETUR PEMBELIAN"
-        Me.LabelJudul.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
+        Me.LblHeaderForm.BackColor = System.Drawing.SystemColors.Control
+        Me.LblHeaderForm.Dock = System.Windows.Forms.DockStyle.Top
+        Me.LblHeaderForm.Font = New System.Drawing.Font("Bookman Old Style", 21.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.LblHeaderForm.Location = New System.Drawing.Point(0, 0)
+        Me.LblHeaderForm.Name = "LblHeaderForm"
+        Me.LblHeaderForm.Size = New System.Drawing.Size(1093, 31)
+        Me.LblHeaderForm.TabIndex = 124
+        Me.LblHeaderForm.Text = "LAPORAN RETUR PEMBELIAN"
+        Me.LblHeaderForm.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
         '
         'Label5
         '
@@ -267,12 +253,15 @@ Partial Class FormLapReturBeli
         '
         'BtnTampilkan
         '
-        Me.BtnTampilkan.BackColor = System.Drawing.Color.Gold
-        Me.BtnTampilkan.FlatAppearance.BorderSize = 0
-        Me.BtnTampilkan.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(CType(CType(128, Byte), Integer), CType(CType(255, Byte), Integer), CType(CType(255, Byte), Integer))
-        Me.BtnTampilkan.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Yellow
+        Me.BtnTampilkan.AutoSize = True
+        Me.BtnTampilkan.BackColor = System.Drawing.SystemColors.Control
+        Me.BtnTampilkan.Cursor = System.Windows.Forms.Cursors.Hand
+        Me.BtnTampilkan.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(CType(CType(100, Byte), Integer), CType(CType(116, Byte), Integer), CType(CType(139, Byte), Integer))
+        Me.BtnTampilkan.FlatAppearance.BorderSize = 1
+        Me.BtnTampilkan.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(CType(CType(226, Byte), Integer), CType(CType(232, Byte), Integer), CType(CType(240, Byte), Integer))
+        Me.BtnTampilkan.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(CType(CType(241, Byte), Integer), CType(CType(245, Byte), Integer), CType(CType(249, Byte), Integer))
         Me.BtnTampilkan.FlatStyle = System.Windows.Forms.FlatStyle.Flat
-        Me.BtnTampilkan.Font = New System.Drawing.Font("Century Gothic", 12.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.BtnTampilkan.Font = New System.Drawing.Font("Segoe UI", 9.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.BtnTampilkan.ForeColor = System.Drawing.Color.Black
         Me.BtnTampilkan.Image = CType(resources.GetObject("BtnTampilkan.Image"), System.Drawing.Image)
         Me.BtnTampilkan.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft
@@ -280,27 +269,29 @@ Partial Class FormLapReturBeli
         Me.BtnTampilkan.Name = "BtnTampilkan"
         Me.BtnTampilkan.Size = New System.Drawing.Size(156, 35)
         Me.BtnTampilkan.TabIndex = 147
-        Me.BtnTampilkan.Text = "    TAMPILKAN"
+        Me.BtnTampilkan.Text = "Tampilkan (F5)"
+        Me.BtnTampilkan.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
         Me.BtnTampilkan.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText
         Me.BtnTampilkan.UseVisualStyleBackColor = False
         '
         'ReportViewerReturBarang
         '
         Me.ReportViewerReturBarang.Dock = System.Windows.Forms.DockStyle.Fill
-        ReportDataSource4.Name = "DataSet1"
-        ReportDataSource4.Value = Me.retur_pembelian_barangBindingSource
-        Me.ReportViewerReturBarang.LocalReport.DataSources.Add(ReportDataSource4)
+        ReportDataSource1.Name = "DataSet1"
+        ReportDataSource1.Value = Me.retur_pembelian_barangBindingSource
+        Me.ReportViewerReturBarang.LocalReport.DataSources.Add(ReportDataSource1)
         Me.ReportViewerReturBarang.LocalReport.ReportEmbeddedResource = "KasirLancar.ReportReturBeliBarang.rdlc"
         Me.ReportViewerReturBarang.Location = New System.Drawing.Point(0, 0)
         Me.ReportViewerReturBarang.Name = "ReportViewerReturBarang"
+        Me.ReportViewerReturBarang.ServerReport.BearerToken = Nothing
         Me.ReportViewerReturBarang.Size = New System.Drawing.Size(1093, 428)
         Me.ReportViewerReturBarang.TabIndex = 132
         '
         'PanelReturBarang
         '
         Me.PanelReturBarang.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
-                    Or System.Windows.Forms.AnchorStyles.Left) _
-                    Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+            Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.PanelReturBarang.Controls.Add(Me.ReportViewerReturBarang)
         Me.PanelReturBarang.Location = New System.Drawing.Point(0, 98)
         Me.PanelReturBarang.Name = "PanelReturBarang"
@@ -310,20 +301,21 @@ Partial Class FormLapReturBeli
         'ReportViewerReturBeliDetail
         '
         Me.ReportViewerReturBeliDetail.Dock = System.Windows.Forms.DockStyle.Fill
-        ReportDataSource5.Name = "DataSet1"
-        ReportDataSource5.Value = Me.retur_pembelian_detailBindingSource
-        Me.ReportViewerReturBeliDetail.LocalReport.DataSources.Add(ReportDataSource5)
+        ReportDataSource2.Name = "DataSet1"
+        ReportDataSource2.Value = Me.retur_pembelian_detailBindingSource
+        Me.ReportViewerReturBeliDetail.LocalReport.DataSources.Add(ReportDataSource2)
         Me.ReportViewerReturBeliDetail.LocalReport.ReportEmbeddedResource = "KasirLancar.ReportReturBeliDetail.rdlc"
         Me.ReportViewerReturBeliDetail.Location = New System.Drawing.Point(0, 0)
         Me.ReportViewerReturBeliDetail.Name = "ReportViewerReturBeliDetail"
+        Me.ReportViewerReturBeliDetail.ServerReport.BearerToken = Nothing
         Me.ReportViewerReturBeliDetail.Size = New System.Drawing.Size(1092, 428)
         Me.ReportViewerReturBeliDetail.TabIndex = 131
         '
         'PanelReturBeliDetail
         '
         Me.PanelReturBeliDetail.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
-                    Or System.Windows.Forms.AnchorStyles.Left) _
-                    Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+            Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.PanelReturBeliDetail.Controls.Add(Me.ReportViewerReturBeliDetail)
         Me.PanelReturBeliDetail.Location = New System.Drawing.Point(1, 98)
         Me.PanelReturBeliDetail.Name = "PanelReturBeliDetail"
@@ -333,8 +325,8 @@ Partial Class FormLapReturBeli
         'PanelReturBeli
         '
         Me.PanelReturBeli.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
-                    Or System.Windows.Forms.AnchorStyles.Left) _
-                    Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+            Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.PanelReturBeli.Controls.Add(Me.ReportViewerReturBeli)
         Me.PanelReturBeli.Location = New System.Drawing.Point(0, 98)
         Me.PanelReturBeli.Name = "PanelReturBeli"
@@ -344,26 +336,15 @@ Partial Class FormLapReturBeli
         'ReportViewerReturBeli
         '
         Me.ReportViewerReturBeli.Dock = System.Windows.Forms.DockStyle.Fill
-        ReportDataSource6.Name = "DataSet1"
-        ReportDataSource6.Value = Me.retur_pembelianBindingSource
-        Me.ReportViewerReturBeli.LocalReport.DataSources.Add(ReportDataSource6)
+        ReportDataSource3.Name = "DataSet1"
+        ReportDataSource3.Value = Me.retur_pembelianBindingSource
+        Me.ReportViewerReturBeli.LocalReport.DataSources.Add(ReportDataSource3)
         Me.ReportViewerReturBeli.LocalReport.ReportEmbeddedResource = "KasirLancar.ReportReturPembelian.rdlc"
         Me.ReportViewerReturBeli.Location = New System.Drawing.Point(0, 0)
         Me.ReportViewerReturBeli.Name = "ReportViewerReturBeli"
+        Me.ReportViewerReturBeli.ServerReport.BearerToken = Nothing
         Me.ReportViewerReturBeli.Size = New System.Drawing.Size(1093, 428)
         Me.ReportViewerReturBeli.TabIndex = 127
-        '
-        'retur_pembelianTableAdapter
-        '
-        'Me.retur_pembelianTableAdapter.ClearBeforeFill = True
-        '
-        'retur_pembelian_detailTableAdapter
-        '
-        'Me.retur_pembelian_detailTableAdapter.ClearBeforeFill = True
-        '
-        'retur_pembelian_barangTableAdapter
-        '
-        'Me.retur_pembelian_barangTableAdapter.ClearBeforeFill = True
         '
         'FormLapReturBeli
         '
@@ -375,11 +356,11 @@ Partial Class FormLapReturBeli
         Me.Controls.Add(Me.Panel1)
         Me.Controls.Add(Me.PanelReturBeli)
         Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None
+        Me.KeyPreview = True
         Me.Name = "FormLapReturBeli"
         Me.ShowInTaskbar = False
         Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen
         CType(Me.retur_pembelian_barangBindingSource, System.ComponentModel.ISupportInitialize).EndInit()
-        'CType(Me.PossDataSet, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.retur_pembelian_detailBindingSource, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.retur_pembelianBindingSource, System.ComponentModel.ISupportInitialize).EndInit()
         Me.Panel1.ResumeLayout(False)
@@ -395,7 +376,7 @@ Partial Class FormLapReturBeli
     Friend WithEvents BtnClose As System.Windows.Forms.Button
     Friend WithEvents DTPAwal As System.Windows.Forms.DateTimePicker
     Friend WithEvents CbTanggal As System.Windows.Forms.CheckBox
-    Friend WithEvents LabelJudul As System.Windows.Forms.Label
+    Friend WithEvents LblHeaderForm As System.Windows.Forms.Label
     Friend WithEvents Label5 As System.Windows.Forms.Label
     Friend WithEvents CmbRekening As System.Windows.Forms.ComboBox
     Friend WithEvents CmbKasir As System.Windows.Forms.ComboBox

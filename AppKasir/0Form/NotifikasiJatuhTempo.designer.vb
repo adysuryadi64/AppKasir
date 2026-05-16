@@ -1,4 +1,4 @@
-﻿<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()>
+<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()>
 Partial Class NotifikasiJatuhTempo
     Inherits System.Windows.Forms.Form
 
@@ -50,23 +50,24 @@ Partial Class NotifikasiJatuhTempo
         '
         'BtnClose
         '
+        Me.BtnClose.BackColor = System.Drawing.Color.White
         Me.BtnClose.Cursor = System.Windows.Forms.Cursors.Hand
         Me.BtnClose.FlatAppearance.BorderSize = 0
-        Me.BtnClose.FlatAppearance.MouseOverBackColor = System.Drawing.Color.WhiteSmoke
+        Me.BtnClose.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(CType(CType(226, Byte), Integer), CType(CType(232, Byte), Integer), CType(CType(240, Byte), Integer))
+        Me.BtnClose.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(CType(CType(241, Byte), Integer), CType(CType(245, Byte), Integer), CType(CType(249, Byte), Integer))
         Me.BtnClose.FlatStyle = System.Windows.Forms.FlatStyle.Flat
-        Me.BtnClose.ForeColor = System.Drawing.Color.White
         Me.BtnClose.Image = CType(resources.GetObject("BtnClose.Image"), System.Drawing.Image)
         Me.BtnClose.Location = New System.Drawing.Point(321, 4)
         Me.BtnClose.Name = "BtnClose"
         Me.BtnClose.Size = New System.Drawing.Size(23, 23)
         Me.BtnClose.TabIndex = 15
-        Me.BtnClose.UseVisualStyleBackColor = True
+        Me.BtnClose.UseVisualStyleBackColor = False
         '
         'Label2
         '
         Me.Label2.AutoSize = True
         Me.Label2.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label2.ForeColor = System.Drawing.Color.Black
+        Me.Label2.ForeColor = System.Drawing.SystemColors.ControlText
         Me.Label2.Location = New System.Drawing.Point(100, 33)
         Me.Label2.Name = "Label2"
         Me.Label2.Size = New System.Drawing.Size(170, 16)
@@ -96,7 +97,7 @@ Partial Class NotifikasiJatuhTempo
         '
         'Panel4
         '
-        Me.Panel4.BackColor = System.Drawing.Color.SteelBlue
+        Me.Panel4.BackColor = System.Drawing.SystemColors.ControlDark
         Me.Panel4.Dock = System.Windows.Forms.DockStyle.Left
         Me.Panel4.Location = New System.Drawing.Point(0, 3)
         Me.Panel4.Name = "Panel4"
@@ -105,7 +106,7 @@ Partial Class NotifikasiJatuhTempo
         '
         'Panel3
         '
-        Me.Panel3.BackColor = System.Drawing.Color.SteelBlue
+        Me.Panel3.BackColor = System.Drawing.SystemColors.ControlDark
         Me.Panel3.Dock = System.Windows.Forms.DockStyle.Right
         Me.Panel3.Location = New System.Drawing.Point(352, 3)
         Me.Panel3.Name = "Panel3"
@@ -114,7 +115,7 @@ Partial Class NotifikasiJatuhTempo
         '
         'Panel2
         '
-        Me.Panel2.BackColor = System.Drawing.Color.SteelBlue
+        Me.Panel2.BackColor = System.Drawing.SystemColors.ControlDark
         Me.Panel2.Dock = System.Windows.Forms.DockStyle.Bottom
         Me.Panel2.Location = New System.Drawing.Point(0, 106)
         Me.Panel2.Name = "Panel2"
@@ -123,7 +124,7 @@ Partial Class NotifikasiJatuhTempo
         '
         'Panel1
         '
-        Me.Panel1.BackColor = System.Drawing.Color.SteelBlue
+        Me.Panel1.BackColor = System.Drawing.SystemColors.ControlDark
         Me.Panel1.Dock = System.Windows.Forms.DockStyle.Top
         Me.Panel1.Location = New System.Drawing.Point(0, 0)
         Me.Panel1.Name = "Panel1"
@@ -145,7 +146,7 @@ Partial Class NotifikasiJatuhTempo
         '
         Me.LblHutang.AutoSize = True
         Me.LblHutang.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.LblHutang.ForeColor = System.Drawing.Color.Black
+        Me.LblHutang.ForeColor = System.Drawing.SystemColors.ControlText
         Me.LblHutang.Location = New System.Drawing.Point(102, 54)
         Me.LblHutang.Name = "LblHutang"
         Me.LblHutang.Size = New System.Drawing.Size(60, 16)
@@ -156,7 +157,7 @@ Partial Class NotifikasiJatuhTempo
         '
         Me.LblPiutang.AutoSize = True
         Me.LblPiutang.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.LblPiutang.ForeColor = System.Drawing.Color.Black
+        Me.LblPiutang.ForeColor = System.Drawing.SystemColors.ControlText
         Me.LblPiutang.Location = New System.Drawing.Point(102, 80)
         Me.LblPiutang.Name = "LblPiutang"
         Me.LblPiutang.Size = New System.Drawing.Size(62, 16)
@@ -165,6 +166,7 @@ Partial Class NotifikasiJatuhTempo
         '
         'NotifikasiJatuhTempo
         '
+        Me.KeyPreview = True
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(355, 109)
@@ -204,3 +206,4 @@ Partial Class NotifikasiJatuhTempo
     Friend WithEvents LblHutang As Label
     Friend WithEvents LblPiutang As Label
 End Class
+

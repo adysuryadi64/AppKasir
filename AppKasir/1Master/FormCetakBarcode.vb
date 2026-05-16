@@ -138,6 +138,7 @@ Public Class FormCetakBarcode
     ' ================================================================================
 
     Private Sub FormCetakBarcode_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+        ModuleTheme.TerapkanTheme(Me)
         Try
             isLoadingPreview = True
             LogMessage("Form Cetak Barcode dimuat (TSC Enhanced Mode v2.0)")
@@ -563,8 +564,8 @@ Public Class FormCetakBarcode
             ' ================================================================================
             ' 5. HARGA (FONT DINAMIS & POSISI DINAMIS)
             ' ================================================================================
-            Dim hargaValue As Decimal
-            If Decimal.TryParse(CleanCurrencyInput(data.HargaBarang), hargaValue) Then
+            Dim hargaValue As Decimal = ModuleAngka.ParseDecimal(data.HargaBarang)
+            If hargaValue > 0 Then
                 Dim hargaFormatted As String = FormatHargaForLabel(hargaValue, labelWidthMM)
                 Dim satuanText As String = "/" & data.SatuanBarang
                 Dim combinedText As String = hargaFormatted & satuanText
@@ -669,7 +670,6 @@ Public Class FormCetakBarcode
             Next
 
         Catch ex As Exception
-            Debug.WriteLine("Error updating preview: " & ex.Message)
         End Try
     End Sub
 
@@ -692,7 +692,6 @@ Public Class FormCetakBarcode
             End If
 
         Catch ex As Exception
-            Debug.WriteLine("Error generating preview for label " & labelIndex & ": " & ex.Message)
         End Try
     End Sub
 
@@ -802,13 +801,9 @@ Public Class FormCetakBarcode
             Dim hargaY As Integer = yPixel + marginTop
             Dim hargaAreaHeight As Integer = targetHeight - marginTop - marginBottom
 
-            Dim hargaValue As Decimal = 0
-            Dim hargaText As String = "Rp. 0"
+            Dim hargaValue As Decimal = ModuleAngka.ParseDecimal(data.HargaBarang)
+            Dim hargaText As String = If(hargaValue > 0, FormatHarga(hargaValue), "Rp. 0")
             Dim satuanText As String = "/" & data.SatuanBarang
-
-            If Decimal.TryParse(data.HargaBarang.Replace(".", "").Replace(",", ""), hargaValue) Then
-                hargaText = FormatHarga(hargaValue)
-            End If
 
             Dim oldState As Drawing2D.GraphicsState = g.Save()
             g.TranslateTransform(hargaX + hargaAreaWidth \ 2, hargaY + hargaAreaHeight \ 2)
@@ -1265,15 +1260,9 @@ Public Class FormCetakBarcode
             Return False
         End If
 
-        Dim harga As Decimal
-        If Not Decimal.TryParse(CleanCurrencyInput(TxtInputHargaBarang.Text), harga) Then
-            MessageBox.Show("❌ Harga barang harus berupa angka!", "Validasi", MessageBoxButtons.OK, MessageBoxIcon.Error)
-            TxtInputHargaBarang.Focus()
-            Return False
-        End If
-
+        Dim harga As Decimal = ModuleAngka.ParseDecimal(TxtInputHargaBarang.Text)
         If harga <= 0 Then
-            MessageBox.Show("❌ Harga barang harus lebih dari 0!", "Validasi", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            MessageBox.Show("❌ Harga barang harus berupa angka lebih dari 0!", "Validasi", MessageBoxButtons.OK, MessageBoxIcon.Error)
             TxtInputHargaBarang.Focus()
             Return False
         End If
@@ -1326,10 +1315,7 @@ Public Class FormCetakBarcode
 
     Private Function CreateBarcodeData() As DataLabelBarcode
         Try
-            Dim hargaBarang As Decimal = 0
-            If Not String.IsNullOrWhiteSpace(TxtInputHargaBarang.Text) Then
-                Decimal.TryParse(CleanCurrencyInput(TxtInputHargaBarang.Text), hargaBarang)
-            End If
+            Dim hargaBarang As Decimal = ModuleAngka.ParseDecimal(TxtInputHargaBarang.Text)
 
             Dim labelWidthMM As Single = GetDynamicLabelWidth()
             Dim labelHeightMM As Single = GetDynamicLabelHeight()
@@ -1391,9 +1377,7 @@ Public Class FormCetakBarcode
         Return text.Substring(0, maxLength - TRUNCATE_SUFFIX.Length) & TRUNCATE_SUFFIX
     End Function
 
-    Private Function CleanCurrencyInput(input As String) As String
-        Return input.Replace(".", "").Replace(",", "").Replace("Rp", "").Trim()
-    End Function
+    ' CleanCurrencyInput dihapus — gunakan ModuleAngka.ParseDecimal
 
     Private Function FormatHargaForLabel(harga As Decimal, labelWidth As Single) As String
         If IsTSCPrinterSelected() AndAlso labelWidth < LABEL_WIDTH_TSC_COMPACT_MM Then
@@ -1435,7 +1419,6 @@ Public Class FormCetakBarcode
                 Return 1 ' Default ke 1 jika parsing gagal
             End If
         Catch ex As Exception
-            Debug.WriteLine($"[ExtractNumColumns] Error: {ex.Message}")
             Return 1
         End Try
     End Function
@@ -1459,7 +1442,6 @@ Public Class FormCetakBarcode
             ' Log only to debug/terminal — do not write to file
             Dim logEntry As String = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") & " - " &
                                  If(isError, "[ERROR] ", "[INFO] ") & message
-            Debug.WriteLine(logEntry)
         Catch ex As Exception
             ' Swallow exceptions to avoid impacting printing flow
         End Try
@@ -1829,13 +1811,13 @@ Public Class FormCetakBarcode
         Dim satuan = CmbPilihSatuanBarang.SelectedItem.ToString()
 
         If satuan = DataBarang("SatuanKecil").ToString() Then
-            TxtInputHargaBarang.Text = Decimal.Parse(DataBarang("HargaKecil").ToString()).ToString("N0")
+            TxtInputHargaBarang.Text = ModuleAngka.ParseDecimal(DataBarang("HargaKecil")).ToString()
             TxtKodeBarcodeInput.Text = DataBarang("BarcodeKecil").ToString()
         ElseIf satuan = DataBarang("SatuanSedang").ToString() Then
-            TxtInputHargaBarang.Text = Decimal.Parse(DataBarang("HargaSedang").ToString()).ToString("N0")
+            TxtInputHargaBarang.Text = ModuleAngka.ParseDecimal(DataBarang("HargaSedang")).ToString()
             TxtKodeBarcodeInput.Text = DataBarang("BarcodeSedang").ToString()
         ElseIf satuan = DataBarang("SatuanBesar").ToString() Then
-            TxtInputHargaBarang.Text = Decimal.Parse(DataBarang("HargaBesar").ToString()).ToString("N0")
+            TxtInputHargaBarang.Text = ModuleAngka.ParseDecimal(DataBarang("HargaBesar")).ToString()
             TxtKodeBarcodeInput.Text = DataBarang("BarcodeBesar").ToString()
         End If
     End Sub

@@ -1,4 +1,35 @@
-﻿Public Class TambahBarang
+Public Class TambahBarang
+
+    ' Field level class — dipakai bersama oleh Ubahhargabeli dan UbahhargaJual
+    Private _namaBarang As String = String.Empty
+    Private _kodeKategori As String = String.Empty
+    Private _namaKategori As String = String.Empty
+    Private _kodeSupliyer As String = String.Empty
+    Private _namaSupliyer As String = String.Empty
+    Private _kodeMerk As String = String.Empty
+    Private _namaMerk As String = String.Empty
+    Private _hargaBeli As Decimal = 0D
+    Private _hargabeliterakhir As Decimal = 0D
+    Private _satuanUmumKecil As String = String.Empty
+    Private _satuanUmumSedang As String = String.Empty
+    Private _satuanUmumBesar As String = String.Empty
+    Private _isiUmumKecil As Integer = 0
+    Private _isiUmumSedang As Integer = 0
+    Private _isiUmumBesar As Integer = 0
+    Private _hargaJualUmumKecil As Decimal = 0D
+    Private _hargaJualUmumSedang As Decimal = 0D
+    Private _hargaJualUmumBesar As Decimal = 0D
+    Private _satuanPartaiKecil As String = String.Empty
+    Private _satuanPartaiSedang As String = String.Empty
+    Private _satuanPartaiBesar As String = String.Empty
+    Private _isiPartaiKecil As Integer = 0
+    Private _isiPartaiSedang As Integer = 0
+    Private _isiPartaiBesar As Integer = 0
+    Private _hargaJualPartaiKecil As Decimal = 0D
+    Private _hargaJualPartaiSedang As Decimal = 0D
+    Private _hargaJualPartaiBesar As Decimal = 0D
+    Private _stokTokoAwal As Decimal = 0D
+    Private _stokGudangAwal As Decimal = 0D
     Private dragging As Boolean
     Private offsetX As Integer
     Private offsetY As Integer
@@ -26,7 +57,7 @@
     End Sub
 
     ' Event untuk mengaktifkan mode drag saat mouse ditekan
-    Private Sub Lblutama_MouseDown(ByVal sender As Object, ByVal e As MouseEventArgs) Handles LblUtama.MouseDown
+    Private Sub Lblutama_MouseDown(ByVal sender As Object, ByVal e As MouseEventArgs) Handles LblHeaderForm.MouseDown
         If e.Button = MouseButtons.Left Then
             dragging = True
             offsetX = e.X
@@ -35,26 +66,40 @@
     End Sub
 
     ' Event untuk memindahkan form saat mouse digerakkan
-    Private Sub Lblutama_MouseMove(ByVal sender As Object, ByVal e As MouseEventArgs) Handles LblUtama.MouseMove
+    Private Sub Lblutama_MouseMove(ByVal sender As Object, ByVal e As MouseEventArgs) Handles LblHeaderForm.MouseMove
         If dragging Then
             Me.Location = New Point(Me.Location.X + e.X - offsetX, Me.Location.Y + e.Y - offsetY)
         End If
     End Sub
 
     ' Event untuk menghentikan mode drag saat mouse dilepas
-    Private Sub Lblutama_MouseUp(ByVal sender As Object, ByVal e As MouseEventArgs) Handles LblUtama.MouseUp
+    Private Sub Lblutama_MouseUp(ByVal sender As Object, ByVal e As MouseEventArgs) Handles LblHeaderForm.MouseUp
         dragging = False
     End Sub
 
 
     Private Sub TambahBarang_Load(ByVal sender As Object, ByVal e As EventArgs) Handles MyBase.Load
+        ModuleTheme.TerapkanTheme(Me)
+        TerapkanModeAutoLevelSatuan()
+        ' FormBorderStyle=None tidak punya shadow bawaan Windows, jadi perlu warna berbeda.
+        ' Light: putih bersih (#FFFFFF) | Dark: Slate-800 (#1E293B)
+        Me.BackColor = ModuleTheme.C(
+            Color.FromArgb(255, 255, 255),
+            Color.FromArgb(30, 41, 59))
+
+        ' Border tepi 6px — warna solid biru Master (#2563EB), sama di light & dark
+        ' Biru solid selalu kontras di atas background apapun
+        Dim borderColor As Color = Color.FromArgb(37, 99, 235)
+        PnlBatas1.BackColor = borderColor
+        PnlBatas3.BackColor = borderColor
+        PnlBatas2.BackColor = borderColor
         Me.Cursor = Cursors.WaitCursor
         CBSatuanSama.Checked = AppConfig.Instance.GetValue(Of Boolean)("CbSatuansama", False)
-        LblJudulStok.Text = "INFORMASI STOK " & FormUtama.SLokasi.Text
-        Label22.Text = "Lokasi Rak " & FormUtama.SLokasi.Text
+        LblJudulStok.Text = "INFORMASI STOK " & FormUtama.StatusLokasi.Text
+        Label22.Text = "Lokasi Rak " & FormUtama.StatusLokasi.Text
 
-        If LblUtama.Text = "T A M B A H   B A R A N G" Then
-            Me.Size = New Size(1143, 619)
+        If LblHeaderForm.Text = "T A M B A H   B A R A N G" Then
+            Me.Size = New Size(1150, 702)
             Label44.Visible = False
             TxtHargaBeliTerakhir.Visible = False
 
@@ -74,14 +119,15 @@
             Call Tampilkategori()
             Call TampilSatuan()
             Call Tampilsupliyer()
+            Call TampilMerk()
 
             Kondisiawal()
             ResetIsi()
             ' Fokus ke txtNama
             TxtNama.Focus()
 
-        ElseIf LblUtama.Text = "E D I T   B A R A N G" Then
-            Me.Size = New Size(1143, 619)
+        ElseIf LblHeaderForm.Text = "E D I T   B A R A N G" Then
+            Me.Size = New Size(1150, 702)
             Label44.Visible = True
             TxtHargaBeliTerakhir.Visible = True
             LblHargaBeliTerakhir.Visible = True
@@ -96,22 +142,19 @@
             TxtNama.Focus()
 
 
-        ElseIf LblUtama.Text = "EDIT HARGA JUAL DARI PEMBELIAN" Then
+        ElseIf LblHeaderForm.Text = "EDIT HARGA JUAL DARI PEMBELIAN" Then
             Label44.Visible = True
             TxtHargaBeliTerakhir.Visible = True
 
             Ubahhargabeli()
-            Dim hargaBeli As Decimal
-
-            If Decimal.TryParse(TxtHrgBeli.Text, hargaBeli) Then
-                LblHargaBeli.Text = "Rp. " & hargaBeli.ToString("N2")
-                SetHargaBeliUmum(hargaBeli)
-                SetHargaBeliPartai(hargaBeli)
-            End If
+            Dim _hargaBeli As Decimal = ModuleAngka.ParseDecimal(TxtHrgBeli.Text)
+            LblHargaBeli.Text = "Rp. " & ModuleAngka.FormatRupiah(_hargaBeli)
+            SetHargaBeliUmum(_hargaBeli)
+            SetHargaBeliPartai(_hargaBeli)
 
             Hitunghargasebelumedit()
             TxtHArgaJUalUmumKecil.Focus()
-        ElseIf LblUtama.Text = "EDIT HARGA JUAL DARI PENJUALAN" Then
+        ElseIf LblHeaderForm.Text = "EDIT HARGA JUAL DARI PENJUALAN" Then
             UbahhargaJual()
         End If
 
@@ -121,12 +164,6 @@
 
     Public Sub Kondisiawal()
         TxtKode.Enabled = False
-        'GBJualUmum.Enabled = False
-        'GBJualPartai.Enabled = False
-        'GBStok.Enabled = False
-        'GBBarcode.Enabled = False
-        'TxtStokAkhir.Enabled = False
-        'CmbStokAkhir.Enabled = False
 
         TxtNama.Clear()
         TxtKode.Clear()
@@ -157,27 +194,25 @@
         TxtKomisiSalesPersen.Clear()
     End Sub
 
-    Public Sub SetHargaBeliUmum(ByVal hargaBeli As Decimal)
-        Dim isiUmumKecil As Decimal = If(Decimal.TryParse(TxtIsiUmumKecil.Text, Nothing), Convert.ToDecimal(TxtIsiUmumKecil.Text), 0)
-        Dim isiUmumSedang As Decimal = If(Decimal.TryParse(TxtIsiUmumSedang.Text, Nothing), Convert.ToDecimal(TxtIsiUmumSedang.Text), 0)
-        Dim isiUmumBesar As Decimal = If(Decimal.TryParse(TxtIsiUmumBesar.Text, Nothing), Convert.ToDecimal(TxtIsiUmumBesar.Text), 0)
+    Public Sub SetHargaBeliUmum(ByVal _hargaBeli As Decimal)
+        Dim _isiUmumKecil As Decimal = ModuleAngka.ParseDecimal(TxtIsiUmumKecil.Text)
+        Dim _isiUmumSedang As Decimal = ModuleAngka.ParseDecimal(TxtIsiUmumSedang.Text)
+        Dim _isiUmumBesar As Decimal = ModuleAngka.ParseDecimal(TxtIsiUmumBesar.Text)
 
-        ' Menghitung harga beli dengan konversi string langsung di dalam operasi
-        TxtHargaBeliUmumKecil.Text = (hargaBeli * isiUmumKecil).ToString()
-        TxtHargaBeliUmumSedang.Text = (hargaBeli * isiUmumSedang).ToString()
-        TxtHargaBeliUmumBesar.Text = (hargaBeli * isiUmumBesar).ToString()
+        TxtHargaBeliUmumKecil.Text = (_hargaBeli * _isiUmumKecil).ToString()
+        TxtHargaBeliUmumSedang.Text = (_hargaBeli * _isiUmumSedang).ToString()
+        TxtHargaBeliUmumBesar.Text = (_hargaBeli * _isiUmumBesar).ToString()
     End Sub
 
 
-    Public Sub SetHargaBeliPartai(ByVal hargaBeli As Decimal)
-        Dim isiPartaiKecil As Decimal = If(Decimal.TryParse(TxtIsiPartaiKecil.Text, Nothing), Convert.ToDecimal(TxtIsiPartaiKecil.Text), 0)
-        Dim isiPartaiSedang As Decimal = If(Decimal.TryParse(TxtIsiPartaiSedang.Text, Nothing), Convert.ToDecimal(TxtIsiPartaiSedang.Text), 0)
-        Dim isiPartaiBesar As Decimal = If(Decimal.TryParse(TxtIsiPartaiBesar.Text, Nothing), Convert.ToDecimal(TxtIsiPartaiBesar.Text), 0)
+    Public Sub SetHargaBeliPartai(ByVal _hargaBeli As Decimal)
+        Dim _isiPartaiKecil As Decimal = ModuleAngka.ParseDecimal(TxtIsiPartaiKecil.Text)
+        Dim _isiPartaiSedang As Decimal = ModuleAngka.ParseDecimal(TxtIsiPartaiSedang.Text)
+        Dim _isiPartaiBesar As Decimal = ModuleAngka.ParseDecimal(TxtIsiPartaiBesar.Text)
 
-        ' Menghitung harga beli dan menampilkan hasilnya
-        TxtHargaBeliPartaiKecil.Text = (hargaBeli * isiPartaiKecil).ToString()
-        TxtHargaBeliPartaiSedang.Text = (hargaBeli * isiPartaiSedang).ToString()
-        TxtHargaBeliPartaiBesar.Text = (hargaBeli * isiPartaiBesar).ToString()
+        TxtHargaBeliPartaiKecil.Text = (_hargaBeli * _isiPartaiKecil).ToString()
+        TxtHargaBeliPartaiSedang.Text = (_hargaBeli * _isiPartaiSedang).ToString()
+        TxtHargaBeliPartaiBesar.Text = (_hargaBeli * _isiPartaiBesar).ToString()
     End Sub
 
 
@@ -247,38 +282,10 @@
     End Sub
 
     Public Sub Ubahhargabeli()
-        ' Deklarasikan variabel di luar Using
-        Dim namaBarang As String = String.Empty
-        Dim kodeKategori As String = String.Empty
-        Dim namaKategori As String = String.Empty
-        Dim kodeSupliyer As String = String.Empty
-        Dim namaSupliyer As String = String.Empty
-        Dim hargaBeli As Decimal = 0D
-        Dim hargabeliterakhir As Decimal = 0D
-        Dim satuanUmumKecil As String = String.Empty
-        Dim satuanUmumSedang As String = String.Empty
-        Dim satuanUmumBesar As String = String.Empty
-        Dim isiUmumKecil As Integer = 0
-        Dim isiUmumSedang As Integer = 0
-        Dim isiUmumBesar As Integer = 0
-        Dim hargaJualUmumKecil As Decimal = 0D
-        Dim hargaJualUmumSedang As Decimal = 0D
-        Dim hargaJualUmumBesar As Decimal = 0D
-        Dim satuanPartaiKecil As String = String.Empty
-        Dim satuanPartaiSedang As String = String.Empty
-        Dim satuanPartaiBesar As String = String.Empty
-        Dim isiPartaiKecil As Integer = 0
-        Dim isiPartaiSedang As Integer = 0
-        Dim isiPartaiBesar As Integer = 0
-        Dim hargaJualPartaiKecil As Decimal = 0D
-        Dim hargaJualPartaiSedang As Decimal = 0D
-        Dim hargaJualPartaiBesar As Decimal = 0D
-        Dim stokTokoAwal As Decimal = 0D
-        Dim stokGudangAwal As Decimal = 0D
 
         ' SQL Query
         Dim sql As String = "SELECT NAMA_BARANG, KODE_KATEGORI, NAMA_KATEGORI, KODE_SUPLIYER, " &
-                            "NAMA_SUPLIYER, HARGA_BELI, HARGA_BELI_TERAKHIR, SATUAN_UMUM_KECIL, SATUAN_UMUM_SEDANG, SATUAN_UMUM_BESAR, " &
+                            "NAMA_SUPLIYER, KODE_MERK, NAMA_MERK, HARGA_BELI, HARGA_BELI_TERAKHIR, SATUAN_UMUM_KECIL, SATUAN_UMUM_SEDANG, SATUAN_UMUM_BESAR, " &
                             "ISI_UMUM_KECIL, ISI_UMUM_SEDANG, ISI_UMUM_BESAR, HARGA_JUAL_UMUM_KECIL, " &
                             "HARGA_JUAL_UMUM_SEDANG, HARGA_JUAL_UMUM_BESAR, SATUAN_PARTAI_KECIL, " &
                             "SATUAN_PARTAI_SEDANG, SATUAN_PARTAI_BESAR, ISI_PARTAI_KECIL, ISI_PARTAI_SEDANG, " &
@@ -292,123 +299,115 @@
             Using rd As MySqlDataReader = cmd.ExecuteReader()
                 If rd.Read() Then
                     ' Assign values to variables
-                    namaBarang = rd("NAMA_BARANG").ToString()
-                    kodeKategori = rd("KODE_KATEGORI").ToString()
-                    namaKategori = rd("NAMA_KATEGORI").ToString()
-                    kodeSupliyer = rd("KODE_SUPLIYER").ToString()
-                    namaSupliyer = rd("NAMA_SUPLIYER").ToString()
-                    hargaBeli = If(rd("HARGA_BELI") IsNot DBNull.Value, Decimal.Parse(rd("HARGA_BELI").ToString()), 0D)
-                    hargabeliterakhir = If(rd("HARGA_BELI_TERAKHIR") IsNot DBNull.Value, Decimal.Parse(rd("HARGA_BELI_TERAKHIR").ToString()), 0D)
-                    satuanUmumKecil = rd("SATUAN_UMUM_KECIL").ToString()
-                    satuanUmumSedang = rd("SATUAN_UMUM_SEDANG").ToString()
-                    satuanUmumBesar = rd("SATUAN_UMUM_BESAR").ToString()
-                    isiUmumKecil = If(Integer.TryParse(rd("ISI_UMUM_KECIL").ToString(), isiUmumKecil), isiUmumKecil, 0)
-                    isiUmumSedang = If(Integer.TryParse(rd("ISI_UMUM_SEDANG").ToString(), isiUmumSedang), isiUmumSedang, 0)
-                    isiUmumBesar = If(Integer.TryParse(rd("ISI_UMUM_BESAR").ToString(), isiUmumBesar), isiUmumBesar, 0)
-                    hargaJualUmumKecil = If(rd("HARGA_JUAL_UMUM_KECIL") IsNot DBNull.Value, Decimal.Parse(rd("HARGA_JUAL_UMUM_KECIL").ToString()), 0D)
-                    hargaJualUmumSedang = If(rd("HARGA_JUAL_UMUM_SEDANG") IsNot DBNull.Value, Decimal.Parse(rd("HARGA_JUAL_UMUM_SEDANG").ToString()), 0D)
-                    hargaJualUmumBesar = If(rd("HARGA_JUAL_UMUM_BESAR") IsNot DBNull.Value, Decimal.Parse(rd("HARGA_JUAL_UMUM_BESAR").ToString()), 0D)
-                    satuanPartaiKecil = rd("SATUAN_PARTAI_KECIL").ToString()
-                    satuanPartaiSedang = rd("SATUAN_PARTAI_SEDANG").ToString()
-                    satuanPartaiBesar = rd("SATUAN_PARTAI_BESAR").ToString()
-                    isiPartaiKecil = If(Integer.TryParse(rd("ISI_PARTAI_KECIL").ToString(), isiPartaiKecil), isiPartaiKecil, 0)
-                    isiPartaiSedang = If(Integer.TryParse(rd("ISI_PARTAI_SEDANG").ToString(), isiPartaiSedang), isiPartaiSedang, 0)
-                    isiPartaiBesar = If(Integer.TryParse(rd("ISI_PARTAI_BESAR").ToString(), isiPartaiBesar), isiPartaiBesar, 0)
-                    hargaJualPartaiKecil = If(rd("HARGA_JUAL_PARTAI_KECIL") IsNot DBNull.Value, Decimal.Parse(rd("HARGA_JUAL_PARTAI_KECIL").ToString()), 0D)
-                    hargaJualPartaiSedang = If(rd("HARGA_JUAL_PARTAI_SEDANG") IsNot DBNull.Value, Decimal.Parse(rd("HARGA_JUAL_PARTAI_SEDANG").ToString()), 0D)
-                    hargaJualPartaiBesar = If(rd("HARGA_JUAL_PARTAI_BESAR") IsNot DBNull.Value, Decimal.Parse(rd("HARGA_JUAL_PARTAI_BESAR").ToString()), 0D)
-                    stokTokoAwal = If(rd("STOK_TOKO") IsNot DBNull.Value, Decimal.Parse(rd("STOK_TOKO").ToString()), 0D)
-                    stokGudangAwal = If(rd("STOK_GUDANG") IsNot DBNull.Value, Decimal.Parse(rd("STOK_GUDANG").ToString()), 0D)
+                    _namaBarang = rd("NAMA_BARANG").ToString()
+                    _kodeKategori = rd("KODE_KATEGORI").ToString()
+                    _namaKategori = rd("NAMA_KATEGORI").ToString()
+                    _kodeSupliyer = rd("KODE_SUPLIYER").ToString()
+                    _namaSupliyer = rd("NAMA_SUPLIYER").ToString()
+                    _kodeMerk = If(rd("KODE_MERK") IsNot DBNull.Value, rd("KODE_MERK").ToString(), "")
+                    _namaMerk = If(rd("NAMA_MERK") IsNot DBNull.Value, rd("NAMA_MERK").ToString(), "")
+                    _hargaBeli = If(rd("HARGA_BELI") IsNot DBNull.Value, Decimal.Parse(rd("HARGA_BELI").ToString()), 0D)
+                    _hargabeliterakhir = If(rd("HARGA_BELI_TERAKHIR") IsNot DBNull.Value, Decimal.Parse(rd("HARGA_BELI_TERAKHIR").ToString()), 0D)
+                    _satuanUmumKecil = rd("SATUAN_UMUM_KECIL").ToString()
+                    _satuanUmumSedang = rd("SATUAN_UMUM_SEDANG").ToString()
+                    _satuanUmumBesar = rd("SATUAN_UMUM_BESAR").ToString()
+                    _isiUmumKecil = If(Integer.TryParse(rd("ISI_UMUM_KECIL").ToString(), _isiUmumKecil), _isiUmumKecil, 0)
+                    _isiUmumSedang = If(Integer.TryParse(rd("ISI_UMUM_SEDANG").ToString(), _isiUmumSedang), _isiUmumSedang, 0)
+                    _isiUmumBesar = If(Integer.TryParse(rd("ISI_UMUM_BESAR").ToString(), _isiUmumBesar), _isiUmumBesar, 0)
+                    _hargaJualUmumKecil = If(rd("HARGA_JUAL_UMUM_KECIL") IsNot DBNull.Value, Decimal.Parse(rd("HARGA_JUAL_UMUM_KECIL").ToString()), 0D)
+                    _hargaJualUmumSedang = If(rd("HARGA_JUAL_UMUM_SEDANG") IsNot DBNull.Value, Decimal.Parse(rd("HARGA_JUAL_UMUM_SEDANG").ToString()), 0D)
+                    _hargaJualUmumBesar = If(rd("HARGA_JUAL_UMUM_BESAR") IsNot DBNull.Value, Decimal.Parse(rd("HARGA_JUAL_UMUM_BESAR").ToString()), 0D)
+                    _satuanPartaiKecil = rd("SATUAN_PARTAI_KECIL").ToString()
+                    _satuanPartaiSedang = rd("SATUAN_PARTAI_SEDANG").ToString()
+                    _satuanPartaiBesar = rd("SATUAN_PARTAI_BESAR").ToString()
+                    _isiPartaiKecil = If(Integer.TryParse(rd("ISI_PARTAI_KECIL").ToString(), _isiPartaiKecil), _isiPartaiKecil, 0)
+                    _isiPartaiSedang = If(Integer.TryParse(rd("ISI_PARTAI_SEDANG").ToString(), _isiPartaiSedang), _isiPartaiSedang, 0)
+                    _isiPartaiBesar = If(Integer.TryParse(rd("ISI_PARTAI_BESAR").ToString(), _isiPartaiBesar), _isiPartaiBesar, 0)
+                    _hargaJualPartaiKecil = If(rd("HARGA_JUAL_PARTAI_KECIL") IsNot DBNull.Value, Decimal.Parse(rd("HARGA_JUAL_PARTAI_KECIL").ToString()), 0D)
+                    _hargaJualPartaiSedang = If(rd("HARGA_JUAL_PARTAI_SEDANG") IsNot DBNull.Value, Decimal.Parse(rd("HARGA_JUAL_PARTAI_SEDANG").ToString()), 0D)
+                    _hargaJualPartaiBesar = If(rd("HARGA_JUAL_PARTAI_BESAR") IsNot DBNull.Value, Decimal.Parse(rd("HARGA_JUAL_PARTAI_BESAR").ToString()), 0D)
+                    _stokTokoAwal = If(rd("STOK_TOKO") IsNot DBNull.Value, Decimal.Parse(rd("STOK_TOKO").ToString()), 0D)
+                    _stokGudangAwal = If(rd("STOK_GUDANG") IsNot DBNull.Value, Decimal.Parse(rd("STOK_GUDANG").ToString()), 0D)
                 End If
             End Using
         End Using
 
         ' Setelah using selesai, Anda bisa memasukkan nilai ke textbox
-        TxtNama.Text = namaBarang
-        CmbKategori.Text = namaKategori
-        TxtKategori.Text = kodeKategori
-        CmbSupliyer.Text = namaSupliyer
-        TxtKodeSupliyer.Text = kodeSupliyer
-        TxtHrgBeli.Text = hargaBeli.ToString("0.##")
-        TxtHargaBeliTerakhir.Text = hargabeliterakhir.ToString("0.##")
-        CmbSatUmumKecil.Text = satuanUmumKecil
-        CmbSatUmumSedang.Text = satuanUmumSedang
-        CmbSatUmumBesar.Text = satuanUmumBesar
-        TxtIsiUmumKecil.Text = isiUmumKecil.ToString()
-        TxtIsiUmumSedang.Text = isiUmumSedang.ToString()
-        TxtIsiUmumBesar.Text = isiUmumBesar.ToString()
-        TxtHArgaJUalUmumKecil.Text = hargaJualUmumKecil.ToString("0.##")
-        TxtHArgaJUalUmumSedang.Text = hargaJualUmumSedang.ToString("0.##")
-        TxtHArgaJUalUmumBesar.Text = hargaJualUmumBesar.ToString("0.##")
-        CmbSatPartaiKecil.Text = satuanPartaiKecil
-        CmbSatPartaiSedang.Text = satuanPartaiSedang
-        CmbSatPartaiBesar.Text = satuanPartaiBesar
-        TxtIsiPartaiKecil.Text = isiPartaiKecil.ToString()
-        TxtIsiPartaiSedang.Text = isiPartaiSedang.ToString()
-        TxtIsiPartaiBesar.Text = isiPartaiBesar.ToString()
-        TxtHArgaJualPartaikecil.Text = hargaJualPartaiKecil.ToString("0.##")
-        TxtHArgaJualPartaiSedang.Text = hargaJualPartaiSedang.ToString("0.##")
-        TxtHArgaJualPartaiBesar.Text = hargaJualPartaiBesar.ToString("0.##")
+        TxtNama.Text = _namaBarang
+        CmbKategori.Text = _namaKategori
+        TxtKategori.Text = _kodeKategori
+        CmbSupliyer.Text = _namaSupliyer
+        TxtKodeSupliyer.Text = _kodeSupliyer
+        CmbMerk.Text = _namaMerk
+        TxtMerk.Text = _kodeMerk
+        TxtHrgBeli.Text = _hargaBeli.ToString("0.##")
+        TxtHargaBeliTerakhir.Text = _hargabeliterakhir.ToString("0.##")
+        CmbSatUmumKecil.Text = _satuanUmumKecil
+        CmbSatUmumSedang.Text = _satuanUmumSedang
+        CmbSatUmumBesar.Text = _satuanUmumBesar
+        TxtIsiUmumKecil.Text = _isiUmumKecil.ToString()
+        TxtIsiUmumSedang.Text = _isiUmumSedang.ToString()
+        TxtIsiUmumBesar.Text = _isiUmumBesar.ToString()
+        TxtHArgaJUalUmumKecil.Text = _hargaJualUmumKecil.ToString("0.##")
+        TxtHArgaJUalUmumSedang.Text = _hargaJualUmumSedang.ToString("0.##")
+        TxtHArgaJUalUmumBesar.Text = _hargaJualUmumBesar.ToString("0.##")
+        CmbSatPartaiKecil.Text = _satuanPartaiKecil
+        CmbSatPartaiSedang.Text = _satuanPartaiSedang
+        CmbSatPartaiBesar.Text = _satuanPartaiBesar
+        TxtIsiPartaiKecil.Text = _isiPartaiKecil.ToString()
+        TxtIsiPartaiSedang.Text = _isiPartaiSedang.ToString()
+        TxtIsiPartaiBesar.Text = _isiPartaiBesar.ToString()
+        TxtHArgaJualPartaikecil.Text = _hargaJualPartaiKecil.ToString("0.##")
+        TxtHArgaJualPartaiSedang.Text = _hargaJualPartaiSedang.ToString("0.##")
+        TxtHArgaJualPartaiBesar.Text = _hargaJualPartaiBesar.ToString("0.##")
 
-        LblStokToko.Text = stokTokoAwal.ToString("0.##")
-        LblStokGudang.Text = stokGudangAwal.ToString("0.##")
+        LblStokToko.Text = _stokTokoAwal.ToString("0.##")
+        LblStokGudang.Text = _stokGudangAwal.ToString("0.##")
 
         If LblMetode.Text = "Harga Terbaru" Then
-            TxtHrgBeli.Text = If(Not String.IsNullOrEmpty(LblRpBaru.Text) AndAlso Not LblRpBaru.Text = "0", Convert.ToDecimal(LblRpBaru.Text).ToString("N0"), "0")
-            LblRpJadi.Text = If(Not String.IsNullOrEmpty(LblRpBaru.Text) AndAlso Not LblRpBaru.Text = "0", Convert.ToDecimal(LblRpBaru.Text).ToString("N2"), "0")
+            Dim hargaBaru As Decimal = ModuleAngka.ParseDecimal(LblRpBaru.Text)
+            TxtHrgBeli.Text = If(hargaBaru > 0, hargaBaru.ToString(), "0")
+            LblRpJadi.Text = "Rp. " & ModuleAngka.FormatRupiah(hargaBaru)
 
-            Dim STOK_TOKO As Decimal = If(Not String.IsNullOrEmpty(LblStokToko.Text) AndAlso Not LblStokToko.Text = "0", Convert.ToDecimal(LblStokToko.Text), 0)
-            Dim STOK_GUDANG As Decimal = If(Not String.IsNullOrEmpty(LblStokGudang.Text) AndAlso Not LblStokGudang.Text = "0", Convert.ToDecimal(LblStokGudang.Text), 0)
+            Dim STOK_TOKO As Decimal = ModuleAngka.ParseDecimal(LblStokToko.Text)
+            Dim STOK_GUDANG As Decimal = ModuleAngka.ParseDecimal(LblStokGudang.Text)
 
             Dim totalstoklama As Decimal = If(LblJenis.Text = "Toko", STOK_TOKO, If(LblJenis.Text = "Gudang", STOK_GUDANG, STOK_TOKO + STOK_GUDANG))
             LblQtyLama.Text = Math.Max(totalstoklama, 0).ToString("N0")
 
         ElseIf LblMetode.Text = "Metode Average (Rata - Rata)" Then
-            ' Ambil harga lama dan stok
-            Dim hargaLama As Decimal = If(Not Decimal.TryParse(LblRpLama.Text, hargaLama), If(Decimal.TryParse(LblRpBaru.Text, hargaLama), hargaLama, 0), hargaLama)
-            Dim stokToko As Decimal = If(Not Decimal.TryParse(LblStokToko.Text, stokToko), 0, stokToko)
-            Dim stokGudang As Decimal = If(Not Decimal.TryParse(LblStokGudang.Text, stokGudang), 0, stokGudang)
+            Dim hargaLama As Decimal = ModuleAngka.ParseDecimal(LblRpLama.Text)
+            If hargaLama = 0 Then hargaLama = ModuleAngka.ParseDecimal(LblRpBaru.Text)
+            Dim stokToko As Decimal = ModuleAngka.ParseDecimal(LblStokToko.Text)
+            Dim stokGudang As Decimal = ModuleAngka.ParseDecimal(LblStokGudang.Text)
 
             Dim jenis As String = LblJenis.Text
 
-            ' Hitung total stok lama dan pastikan tidak kurang dari 0
             Dim totalStokLama As Decimal = If(jenis = "Toko", stokToko, If(jenis = "Gudang", stokGudang, stokToko + stokGudang))
-            If FormPembelian.TxtJenisTrans.Text = "EditPembelian" Then totalStokLama -= If(String.IsNullOrEmpty(LblQtySbl.Text), 0D, Convert.ToDecimal(LblQtySbl.Text))
+            If FormPembelian.TxtJenisTrans.Text = "EditPembelian" Then totalStokLama -= ModuleAngka.ParseDecimal(LblQtySbl.Text)
             totalStokLama = Math.Max(totalStokLama, 0)
             LblQtyLama.Text = totalStokLama.ToString("N0")
 
-            ' Hitung total harga lama dan pastikan tidak kurang dari 0
             Dim totalHargaLama As Decimal = Math.Max(hargaLama * totalStokLama, 0)
 
-            ' Ambil harga baru dan stok baru
-            Dim hargaBaru As Decimal = If(Not Decimal.TryParse(LblRpBaru.Text, hargaBaru), 0, hargaBaru)
-            Dim stokBaru As Decimal = If(Not Decimal.TryParse(LblQtyBaru.Text, stokBaru), 0, stokBaru)
+            Dim hargaBaru As Decimal = ModuleAngka.ParseDecimal(LblRpBaru.Text)
+            Dim stokBaru As Decimal = ModuleAngka.ParseDecimal(LblQtyBaru.Text)
 
-            ' Hitung total harga baru
             Dim totalHargaBaru As Decimal = hargaBaru * stokBaru
-
-            ' Hitung total stok setelah pembelian baru
             Dim totalStok As Decimal = totalStokLama + stokBaru
-
-            ' Hitung total harga setelah pembelian baru
             Dim totalHarga As Decimal = totalHargaLama + totalHargaBaru
-
-            ' Hitung harga jadi menggunakan metode average HPP
             Dim hargaJadi As Decimal = If(totalStok > 0, Math.Round(totalHarga / totalStok, 0), hargaBaru)
 
-            ' Tampilkan hasilnya
             TxtHrgBeli.Text = hargaJadi.ToString("0.##")
-            LblRpJadi.Text = hargaJadi.ToString("N2")
-
+            LblRpJadi.Text = "Rp. " & ModuleAngka.FormatRupiah(hargaJadi)
 
         ElseIf LblMetode.Text = "Tidak Ada" Then
-            Dim hargaLama As Decimal = 0D ' Inisialisasi hargaLama
+            Dim hargaLama As Decimal = ModuleAngka.ParseDecimal(LblRpLama.Text)
+            TxtHrgBeli.Text = hargaLama.ToString()
+            LblRpJadi.Text = "Rp. " & ModuleAngka.FormatRupiah(hargaLama)
 
-            TxtHrgBeli.Text = If(Decimal.TryParse(LblRpLama.Text, hargaLama), hargaLama.ToString(), "0")
-            LblRpJadi.Text = hargaLama.ToString("N2") ' Menggunakan hargaLama yang sudah terisi
-
-            Dim STOK_TOKO As Decimal = If(Not Decimal.TryParse(LblStokToko.Text, STOK_TOKO), 0D, STOK_TOKO)
-            Dim STOK_GUDANG As Decimal = If(Not Decimal.TryParse(LblStokGudang.Text, STOK_GUDANG), 0D, STOK_GUDANG)
+            Dim STOK_TOKO As Decimal = ModuleAngka.ParseDecimal(LblStokToko.Text)
+            Dim STOK_GUDANG As Decimal = ModuleAngka.ParseDecimal(LblStokGudang.Text)
 
             Dim totalstoklama As Decimal = If(LblJenis.Text = "Toko", STOK_TOKO, If(LblJenis.Text = "Gudang", STOK_GUDANG, STOK_TOKO + STOK_GUDANG))
             LblQtyLama.Text = Math.Max(totalstoklama, 0).ToString("N0")
@@ -419,38 +418,9 @@
 
 
     Public Sub UbahhargaJual()
-        ' Deklarasikan variabel di luar Using
-        Dim namaBarang As String = String.Empty
-        Dim kodeKategori As String = String.Empty
-        Dim namaKategori As String = String.Empty
-        Dim kodeSupliyer As String = String.Empty
-        Dim namaSupliyer As String = String.Empty
-        Dim hargaBeli As Decimal = 0D
-        Dim hargabeliterakhir As Decimal = 0D
-        Dim satuanUmumKecil As String = String.Empty
-        Dim satuanUmumSedang As String = String.Empty
-        Dim satuanUmumBesar As String = String.Empty
-        Dim isiUmumKecil As Integer = 0
-        Dim isiUmumSedang As Integer = 0
-        Dim isiUmumBesar As Integer = 0
-        Dim hargaJualUmumKecil As Decimal = 0D
-        Dim hargaJualUmumSedang As Decimal = 0D
-        Dim hargaJualUmumBesar As Decimal = 0D
-        Dim satuanPartaiKecil As String = String.Empty
-        Dim satuanPartaiSedang As String = String.Empty
-        Dim satuanPartaiBesar As String = String.Empty
-        Dim isiPartaiKecil As Integer = 0
-        Dim isiPartaiSedang As Integer = 0
-        Dim isiPartaiBesar As Integer = 0
-        Dim hargaJualPartaiKecil As Decimal = 0D
-        Dim hargaJualPartaiSedang As Decimal = 0D
-        Dim hargaJualPartaiBesar As Decimal = 0D
-        Dim stokTokoAwal As Decimal = 0D
-        Dim stokGudangAwal As Decimal = 0D
-
         ' SQL Query
         Dim sql As String = "SELECT NAMA_BARANG, KODE_KATEGORI, NAMA_KATEGORI, KODE_SUPLIYER, " &
-                            "NAMA_SUPLIYER, HARGA_BELI, HARGA_BELI_TERAKHIR, SATUAN_UMUM_KECIL, SATUAN_UMUM_SEDANG, SATUAN_UMUM_BESAR, " &
+                            "NAMA_SUPLIYER, KODE_MERK, NAMA_MERK, HARGA_BELI, HARGA_BELI_TERAKHIR, SATUAN_UMUM_KECIL, SATUAN_UMUM_SEDANG, SATUAN_UMUM_BESAR, " &
                             "ISI_UMUM_KECIL, ISI_UMUM_SEDANG, ISI_UMUM_BESAR, HARGA_JUAL_UMUM_KECIL, " &
                             "HARGA_JUAL_UMUM_SEDANG, HARGA_JUAL_UMUM_BESAR, SATUAN_PARTAI_KECIL, " &
                             "SATUAN_PARTAI_SEDANG, SATUAN_PARTAI_BESAR, ISI_PARTAI_KECIL, ISI_PARTAI_SEDANG, " &
@@ -464,66 +434,70 @@
             Using rd As MySqlDataReader = cmd.ExecuteReader()
                 If rd.Read() Then
                     ' Assign values to variables
-                    namaBarang = rd("NAMA_BARANG").ToString()
-                    kodeKategori = rd("KODE_KATEGORI").ToString()
-                    namaKategori = rd("NAMA_KATEGORI").ToString()
-                    kodeSupliyer = rd("KODE_SUPLIYER").ToString()
-                    namaSupliyer = rd("NAMA_SUPLIYER").ToString()
-                    hargaBeli = If(rd("HARGA_BELI") IsNot DBNull.Value, Decimal.Parse(rd("HARGA_BELI").ToString()), 0D)
-                    hargabeliterakhir = If(rd("HARGA_BELI_TERAKHIR") IsNot DBNull.Value, Decimal.Parse(rd("HARGA_BELI_TERAKHIR").ToString()), 0D)
-                    satuanUmumKecil = rd("SATUAN_UMUM_KECIL").ToString()
-                    satuanUmumSedang = rd("SATUAN_UMUM_SEDANG").ToString()
-                    satuanUmumBesar = rd("SATUAN_UMUM_BESAR").ToString()
-                    isiUmumKecil = If(Integer.TryParse(rd("ISI_UMUM_KECIL").ToString(), isiUmumKecil), isiUmumKecil, 0)
-                    isiUmumSedang = If(Integer.TryParse(rd("ISI_UMUM_SEDANG").ToString(), isiUmumSedang), isiUmumSedang, 0)
-                    isiUmumBesar = If(Integer.TryParse(rd("ISI_UMUM_BESAR").ToString(), isiUmumBesar), isiUmumBesar, 0)
-                    hargaJualUmumKecil = If(rd("HARGA_JUAL_UMUM_KECIL") IsNot DBNull.Value, Decimal.Parse(rd("HARGA_JUAL_UMUM_KECIL").ToString()), 0D)
-                    hargaJualUmumSedang = If(rd("HARGA_JUAL_UMUM_SEDANG") IsNot DBNull.Value, Decimal.Parse(rd("HARGA_JUAL_UMUM_SEDANG").ToString()), 0D)
-                    hargaJualUmumBesar = If(rd("HARGA_JUAL_UMUM_BESAR") IsNot DBNull.Value, Decimal.Parse(rd("HARGA_JUAL_UMUM_BESAR").ToString()), 0D)
-                    satuanPartaiKecil = rd("SATUAN_PARTAI_KECIL").ToString()
-                    satuanPartaiSedang = rd("SATUAN_PARTAI_SEDANG").ToString()
-                    satuanPartaiBesar = rd("SATUAN_PARTAI_BESAR").ToString()
-                    isiPartaiKecil = If(Integer.TryParse(rd("ISI_PARTAI_KECIL").ToString(), isiPartaiKecil), isiPartaiKecil, 0)
-                    isiPartaiSedang = If(Integer.TryParse(rd("ISI_PARTAI_SEDANG").ToString(), isiPartaiSedang), isiPartaiSedang, 0)
-                    isiPartaiBesar = If(Integer.TryParse(rd("ISI_PARTAI_BESAR").ToString(), isiPartaiBesar), isiPartaiBesar, 0)
-                    hargaJualPartaiKecil = If(rd("HARGA_JUAL_PARTAI_KECIL") IsNot DBNull.Value, Decimal.Parse(rd("HARGA_JUAL_PARTAI_KECIL").ToString()), 0D)
-                    hargaJualPartaiSedang = If(rd("HARGA_JUAL_PARTAI_SEDANG") IsNot DBNull.Value, Decimal.Parse(rd("HARGA_JUAL_PARTAI_SEDANG").ToString()), 0D)
-                    hargaJualPartaiBesar = If(rd("HARGA_JUAL_PARTAI_BESAR") IsNot DBNull.Value, Decimal.Parse(rd("HARGA_JUAL_PARTAI_BESAR").ToString()), 0D)
-                    stokTokoAwal = If(rd("STOK_TOKO") IsNot DBNull.Value, Decimal.Parse(rd("STOK_TOKO").ToString()), 0D)
-                    stokGudangAwal = If(rd("STOK_GUDANG") IsNot DBNull.Value, Decimal.Parse(rd("STOK_GUDANG").ToString()), 0D)
+                    _namaBarang = rd("NAMA_BARANG").ToString()
+                    _kodeKategori = rd("KODE_KATEGORI").ToString()
+                    _namaKategori = rd("NAMA_KATEGORI").ToString()
+                    _kodeSupliyer = rd("KODE_SUPLIYER").ToString()
+                    _namaSupliyer = rd("NAMA_SUPLIYER").ToString()
+                    _kodeMerk = If(rd("KODE_MERK") IsNot DBNull.Value, rd("KODE_MERK").ToString(), "")
+                    _namaMerk = If(rd("NAMA_MERK") IsNot DBNull.Value, rd("NAMA_MERK").ToString(), "")
+                    _hargaBeli = If(rd("HARGA_BELI") IsNot DBNull.Value, Decimal.Parse(rd("HARGA_BELI").ToString()), 0D)
+                    _hargabeliterakhir = If(rd("HARGA_BELI_TERAKHIR") IsNot DBNull.Value, Decimal.Parse(rd("HARGA_BELI_TERAKHIR").ToString()), 0D)
+                    _satuanUmumKecil = rd("SATUAN_UMUM_KECIL").ToString()
+                    _satuanUmumSedang = rd("SATUAN_UMUM_SEDANG").ToString()
+                    _satuanUmumBesar = rd("SATUAN_UMUM_BESAR").ToString()
+                    _isiUmumKecil = If(Integer.TryParse(rd("ISI_UMUM_KECIL").ToString(), _isiUmumKecil), _isiUmumKecil, 0)
+                    _isiUmumSedang = If(Integer.TryParse(rd("ISI_UMUM_SEDANG").ToString(), _isiUmumSedang), _isiUmumSedang, 0)
+                    _isiUmumBesar = If(Integer.TryParse(rd("ISI_UMUM_BESAR").ToString(), _isiUmumBesar), _isiUmumBesar, 0)
+                    _hargaJualUmumKecil = If(rd("HARGA_JUAL_UMUM_KECIL") IsNot DBNull.Value, Decimal.Parse(rd("HARGA_JUAL_UMUM_KECIL").ToString()), 0D)
+                    _hargaJualUmumSedang = If(rd("HARGA_JUAL_UMUM_SEDANG") IsNot DBNull.Value, Decimal.Parse(rd("HARGA_JUAL_UMUM_SEDANG").ToString()), 0D)
+                    _hargaJualUmumBesar = If(rd("HARGA_JUAL_UMUM_BESAR") IsNot DBNull.Value, Decimal.Parse(rd("HARGA_JUAL_UMUM_BESAR").ToString()), 0D)
+                    _satuanPartaiKecil = rd("SATUAN_PARTAI_KECIL").ToString()
+                    _satuanPartaiSedang = rd("SATUAN_PARTAI_SEDANG").ToString()
+                    _satuanPartaiBesar = rd("SATUAN_PARTAI_BESAR").ToString()
+                    _isiPartaiKecil = If(Integer.TryParse(rd("ISI_PARTAI_KECIL").ToString(), _isiPartaiKecil), _isiPartaiKecil, 0)
+                    _isiPartaiSedang = If(Integer.TryParse(rd("ISI_PARTAI_SEDANG").ToString(), _isiPartaiSedang), _isiPartaiSedang, 0)
+                    _isiPartaiBesar = If(Integer.TryParse(rd("ISI_PARTAI_BESAR").ToString(), _isiPartaiBesar), _isiPartaiBesar, 0)
+                    _hargaJualPartaiKecil = If(rd("HARGA_JUAL_PARTAI_KECIL") IsNot DBNull.Value, Decimal.Parse(rd("HARGA_JUAL_PARTAI_KECIL").ToString()), 0D)
+                    _hargaJualPartaiSedang = If(rd("HARGA_JUAL_PARTAI_SEDANG") IsNot DBNull.Value, Decimal.Parse(rd("HARGA_JUAL_PARTAI_SEDANG").ToString()), 0D)
+                    _hargaJualPartaiBesar = If(rd("HARGA_JUAL_PARTAI_BESAR") IsNot DBNull.Value, Decimal.Parse(rd("HARGA_JUAL_PARTAI_BESAR").ToString()), 0D)
+                    _stokTokoAwal = If(rd("STOK_TOKO") IsNot DBNull.Value, Decimal.Parse(rd("STOK_TOKO").ToString()), 0D)
+                    _stokGudangAwal = If(rd("STOK_GUDANG") IsNot DBNull.Value, Decimal.Parse(rd("STOK_GUDANG").ToString()), 0D)
                 End If
             End Using
         End Using
 
         ' Setelah using selesai, Anda bisa memasukkan nilai ke textbox
-        TxtNama.Text = namaBarang
-        CmbKategori.Text = namaKategori
-        TxtKategori.Text = kodeKategori
-        CmbSupliyer.Text = namaSupliyer
-        TxtKodeSupliyer.Text = kodeSupliyer
-        TxtHrgBeli.Text = hargaBeli.ToString("0.##")
-        TxtHargaBeliTerakhir.Text = hargabeliterakhir.ToString("0.##")
-        CmbSatUmumKecil.Text = satuanUmumKecil
-        CmbSatUmumSedang.Text = satuanUmumSedang
-        CmbSatUmumBesar.Text = satuanUmumBesar
-        TxtIsiUmumKecil.Text = isiUmumKecil.ToString()
-        TxtIsiUmumSedang.Text = isiUmumSedang.ToString()
-        TxtIsiUmumBesar.Text = isiUmumBesar.ToString()
-        TxtHArgaJUalUmumKecil.Text = hargaJualUmumKecil.ToString("0.##")
-        TxtHArgaJUalUmumSedang.Text = hargaJualUmumSedang.ToString("0.##")
-        TxtHArgaJUalUmumBesar.Text = hargaJualUmumBesar.ToString("0.##")
-        CmbSatPartaiKecil.Text = satuanPartaiKecil
-        CmbSatPartaiSedang.Text = satuanPartaiSedang
-        CmbSatPartaiBesar.Text = satuanPartaiBesar
-        TxtIsiPartaiKecil.Text = isiPartaiKecil.ToString()
-        TxtIsiPartaiSedang.Text = isiPartaiSedang.ToString()
-        TxtIsiPartaiBesar.Text = isiPartaiBesar.ToString()
-        TxtHArgaJualPartaikecil.Text = hargaJualPartaiKecil.ToString("0.##")
-        TxtHArgaJualPartaiSedang.Text = hargaJualPartaiSedang.ToString("0.##")
-        TxtHArgaJualPartaiBesar.Text = hargaJualPartaiBesar.ToString("0.##")
+        TxtNama.Text = _namaBarang
+        CmbKategori.Text = _namaKategori
+        TxtKategori.Text = _kodeKategori
+        CmbSupliyer.Text = _namaSupliyer
+        TxtKodeSupliyer.Text = _kodeSupliyer
+        CmbMerk.Text = _namaMerk
+        TxtMerk.Text = _kodeMerk
+        TxtHrgBeli.Text = _hargaBeli.ToString("0.##")
+        TxtHargaBeliTerakhir.Text = _hargabeliterakhir.ToString("0.##")
+        CmbSatUmumKecil.Text = _satuanUmumKecil
+        CmbSatUmumSedang.Text = _satuanUmumSedang
+        CmbSatUmumBesar.Text = _satuanUmumBesar
+        TxtIsiUmumKecil.Text = _isiUmumKecil.ToString()
+        TxtIsiUmumSedang.Text = _isiUmumSedang.ToString()
+        TxtIsiUmumBesar.Text = _isiUmumBesar.ToString()
+        TxtHArgaJUalUmumKecil.Text = _hargaJualUmumKecil.ToString("0.##")
+        TxtHArgaJUalUmumSedang.Text = _hargaJualUmumSedang.ToString("0.##")
+        TxtHArgaJUalUmumBesar.Text = _hargaJualUmumBesar.ToString("0.##")
+        CmbSatPartaiKecil.Text = _satuanPartaiKecil
+        CmbSatPartaiSedang.Text = _satuanPartaiSedang
+        CmbSatPartaiBesar.Text = _satuanPartaiBesar
+        TxtIsiPartaiKecil.Text = _isiPartaiKecil.ToString()
+        TxtIsiPartaiSedang.Text = _isiPartaiSedang.ToString()
+        TxtIsiPartaiBesar.Text = _isiPartaiBesar.ToString()
+        TxtHArgaJualPartaikecil.Text = _hargaJualPartaiKecil.ToString("0.##")
+        TxtHArgaJualPartaiSedang.Text = _hargaJualPartaiSedang.ToString("0.##")
+        TxtHArgaJualPartaiBesar.Text = _hargaJualPartaiBesar.ToString("0.##")
 
-        LblStokToko.Text = stokTokoAwal.ToString("0.##")
-        LblStokGudang.Text = stokGudangAwal.ToString("0.##")
+        LblStokToko.Text = _stokTokoAwal.ToString("0.##")
+        LblStokGudang.Text = _stokGudangAwal.ToString("0.##")
 
         Dim jenis As String = LblJenisDrJual.Text
         Dim satuan As String = LblsatuanDrJual.Text
@@ -554,10 +528,10 @@
         Using cmd As New MySqlCommand("SELECT nama FROM tbl_kategori ORDER BY nama ASC", conn)
             Using rd As MySqlDataReader = cmd.ExecuteReader()
                 While rd.Read()
-                    Dim namaKategori As String = rd("nama").ToString()
+                    Dim _namaKategori As String = rd("nama").ToString()
                     ' Tambahkan hanya jika belum ada di ComboBox
-                    If Not CmbKategori.Items.Contains(namaKategori) Then
-                        CmbKategori.Items.Add(namaKategori)
+                    If Not CmbKategori.Items.Contains(_namaKategori) Then
+                        CmbKategori.Items.Add(_namaKategori)
                     End If
                 End While
             End Using
@@ -630,16 +604,26 @@
 
 
     Public Sub Tampilsupliyer()
-        Using cmd As New MySqlCommand("SELECT Nama FROM tbl_supliyer ORDER BY Nama ASC", conn)
+        Using cmd As New MySqlCommand("SELECT Nama FROM tbl_supliyer WHERE Status = 'Aktif' ORDER BY Nama ASC", conn)
             Using rd As MySqlDataReader = cmd.ExecuteReader()
                 Do While rd.Read()
-                    Dim namaSupliyer As String = rd.Item("Nama").ToString()
-
-                    ' Tambahkan hanya jika item belum ada di ComboBox
-                    If Not CmbSupliyer.Items.Contains(namaSupliyer) Then
-                        CmbSupliyer.Items.Add(namaSupliyer)
+                    Dim _namaSupliyer As String = rd.Item("Nama").ToString()
+                    If Not CmbSupliyer.Items.Contains(_namaSupliyer) Then
+                        CmbSupliyer.Items.Add(_namaSupliyer)
                     End If
                 Loop
+            End Using
+        End Using
+    End Sub
+
+    Public Sub TampilMerk()
+        CmbMerk.Items.Clear()
+        CmbMerk.Items.Add("")
+        Using cmd As New MySqlCommand("SELECT kode, nama FROM tbl_merk ORDER BY nama ASC", conn)
+            Using rd As MySqlDataReader = cmd.ExecuteReader()
+                While rd.Read()
+                    CmbMerk.Items.Add(rd("nama").ToString())
+                End While
             End Using
         End Using
     End Sub
@@ -648,11 +632,11 @@
     Public Sub GenerateItemCodeAutomatically()
         Dim maxKode As String = ""
         Dim existingKode As New List(Of String)
-        Dim kodeKategori As String = TxtKategori.Text & "-"
+        Dim _kodeKategori As String = TxtKategori.Text & "-"
 
         ' Ambil kode yang sudah ada dari database
         Using cmd As New MySqlCommand("SELECT ID_BARANG FROM tbl_barang WHERE ID_BARANG LIKE @CekNomor ORDER BY ID_BARANG", conn)
-            cmd.Parameters.AddWithValue("@CekNomor", kodeKategori & "%")
+            cmd.Parameters.AddWithValue("@CekNomor", _kodeKategori & "%")
 
             Using rdGenerat As MySqlDataReader = cmd.ExecuteReader()
                 While rdGenerat.Read()
@@ -664,13 +648,13 @@
 
         ' Jika tidak ada kode yang sudah ada
         If existingKode.Count = 0 Then
-            TxtKode.Text = kodeKategori & "000001"
+            TxtKode.Text = _kodeKategori & "000001"
             Exit Sub
         End If
 
         ' Cari kode berikutnya yang belum terpakai
         For i As Integer = 1 To existingKode.Count
-            Dim expectedKode As String = kodeKategori & i.ToString("000000")
+            Dim expectedKode As String = _kodeKategori & i.ToString("000000")
             If Not existingKode.Contains(expectedKode) Then
                 maxKode = expectedKode
                 Exit For
@@ -683,7 +667,7 @@
             Dim Hitung As Integer
 
             If Integer.TryParse(lastKode.Substring(lastKode.Length - 6), Hitung) Then
-                maxKode = kodeKategori & (Hitung + 1).ToString("000000")
+                maxKode = _kodeKategori & (Hitung + 1).ToString("000000")
             End If
         End If
         TxtKode.Text = maxKode
@@ -732,6 +716,40 @@
         End If
     End Sub
 
+    ''' <summary>
+    ''' Navigasi Enter: TxtNama → CmbKategori → CmbSupliyer → CmbMerk → TxtHrgBeli → TxtHargaBeliTerakhir → CmbSatUmumKecil
+    ''' </summary>
+    Private Sub TxtNama_KeyDown(ByVal sender As Object, ByVal e As KeyEventArgs) Handles TxtNama.KeyDown
+        If e.KeyCode = Keys.Enter Then
+            CmbKategori.Focus()
+            CmbKategori.DroppedDown = True
+            e.SuppressKeyPress = True
+        End If
+    End Sub
+
+    Private Sub CmbMerk_KeyDown(sender As Object, e As KeyEventArgs) Handles CmbMerk.KeyDown
+        If e.KeyCode = Keys.Enter Or e.KeyCode = Keys.Tab Then
+            TxtHrgBeli.Focus()
+            TxtHrgBeli.SelectAll()
+            e.SuppressKeyPress = True
+        End If
+    End Sub
+
+    Private Sub TxtHrgBeli_KeyDown(ByVal sender As Object, ByVal e As KeyEventArgs) Handles TxtHrgBeli.KeyDown
+        If e.KeyCode = Keys.Enter Then
+            TxtHargaBeliTerakhir.Focus()
+            TxtHargaBeliTerakhir.SelectAll()
+            e.SuppressKeyPress = True
+        End If
+    End Sub
+
+    Private Sub TxtHargaBeliTerakhir_KeyDown(ByVal sender As Object, ByVal e As KeyEventArgs) Handles TxtHargaBeliTerakhir.KeyDown
+        If e.KeyCode = Keys.Enter Then
+            CmbSatUmumKecil.Focus()
+            CmbSatUmumKecil.DroppedDown = True
+            e.SuppressKeyPress = True
+        End If
+    End Sub
 
     Private Sub BtnGenUmumKecil_Click(ByVal sender As Object, ByVal e As EventArgs) Handles BtnGenUmumKecil.Click
         Using cmd As New MySqlCommand("SELECT BARCODE_KECIL,BARCODE_SEDANG,BARCODE_BESAR FROM tbl_barang WHERE BARCODE_KECIL = @barcode OR BARCODE_SEDANG = @barcode OR BARCODE_BESAR = @barcode", conn)
@@ -763,9 +781,9 @@
         Try
             For i As Integer = 1 To 12
                 If i Mod 2 = 0 Then
-                    X += Val(Barcode(j))
+                    X += Integer.Parse(Barcode(j))
                 Else
-                    Y += Val(Barcode(j))
+                    Y += Integer.Parse(Barcode(j))
                 End If
                 j -= 1
             Next
@@ -817,9 +835,9 @@
         Try
             For i As Integer = 1 To 12
                 If i Mod 2 = 0 Then
-                    X += Val(Barcode(j))
+                    X += Integer.Parse(Barcode(j))
                 Else
-                    Y += Val(Barcode(j))
+                    Y += Integer.Parse(Barcode(j))
                 End If
                 j -= 1
             Next
@@ -873,9 +891,9 @@
         Try
             For i As Integer = 1 To 12
                 If i Mod 2 = 0 Then
-                    X += Val(Barcode(j))
+                    X += Integer.Parse(Barcode(j))
                 Else
-                    Y += Val(Barcode(j))
+                    Y += Integer.Parse(Barcode(j))
                 End If
                 j -= 1
             Next
@@ -902,6 +920,23 @@
         Call TampilSatuan()
     End Sub
 
+    Private Sub BtnTambahMerk_Click(sender As Object, e As EventArgs) Handles BtnTambahMerk.Click
+        TambahMerk.ShowDialog()
+        Call TampilMerk()
+    End Sub
+
+    Private Sub CmbMerk_SelectedIndexChanged(sender As Object, e As EventArgs) Handles CmbMerk.SelectedIndexChanged
+        If String.IsNullOrEmpty(CmbMerk.Text) Then
+            TxtMerk.Clear()
+            Return
+        End If
+        Using cmd As New MySqlCommand("SELECT kode FROM tbl_merk WHERE nama = @nama LIMIT 1", conn)
+            cmd.Parameters.AddWithValue("@nama", CmbMerk.Text)
+            Dim val = cmd.ExecuteScalar()
+            TxtMerk.Text = If(val IsNot Nothing AndAlso val IsNot DBNull.Value, val.ToString(), "")
+        End Using
+    End Sub
+
     Private Sub CmbKategori_SelectedIndexChanged(ByVal sender As Object, ByVal e As EventArgs) Handles CmbKategori.SelectedIndexChanged
         Dim kode As String = ""
 
@@ -917,7 +952,7 @@
 
         TxtKategori.Text = kode
 
-        If LblUtama.Text = "T A M B A H   B A R A N G" Then
+        If LblHeaderForm.Text = "T A M B A H   B A R A N G" Then
             Call GenerateItemCodeAutomatically()
         End If
 
@@ -926,7 +961,7 @@
     Private Sub CmbKategori_KeyDown(ByVal sender As Object, ByVal e As KeyEventArgs) Handles CmbKategori.KeyDown
         If e.KeyCode = Keys.Enter Or e.KeyCode = Keys.Tab Then
             CmbSupliyer.Focus()
-            e.SuppressKeyPress = True ' Menghindari bunyi beep pada Enter
+            e.SuppressKeyPress = True
         End If
     End Sub
 
@@ -938,7 +973,7 @@
         End If
     End Sub
 
-    Private Sub BtnSupliyer_Click(ByVal sender As Object, ByVal e As EventArgs) Handles BtnSupliyer.Click
+    Private Sub BtnSupliyer_Click(ByVal sender As Object, ByVal e As EventArgs) Handles BtnTambahSupliyer.Click
         TambahSupliyer.ShowDialog()
         Call Tampilsupliyer()
     End Sub
@@ -952,83 +987,82 @@
                 End If
             End Using
         End Using
-
     End Sub
 
     Private Sub CmbSupliyer_KeyDown(ByVal sender As Object, ByVal e As KeyEventArgs) Handles CmbSupliyer.KeyDown
         If e.KeyCode = Keys.Enter Or e.KeyCode = Keys.Tab Then
-            TxtHrgBeli.Focus()
-            e.SuppressKeyPress = True ' Menghindari bunyi beep pada Enter
+            CmbMerk.Focus()
+            e.SuppressKeyPress = True
         End If
     End Sub
 
     Private Sub TxtHrgBeli_TextChanged(ByVal sender As Object, ByVal e As EventArgs) Handles TxtHrgBeli.TextChanged
-        Dim hargaBeli As Decimal
-
-        ' Mengambil nilai harga beli dan validasi
-        If Decimal.TryParse(TxtHrgBeli.Text, hargaBeli) AndAlso hargaBeli > 0 Then
-            ' Format dengan pemisah ribuan dan maksimal 2 angka desimal jika perlu
-            LblHargaBeli.Text = "Rp. " & hargaBeli.ToString("#,0.##", cultureIndonesia)
-        Else
-            LblHargaBeli.Text = "Rp. 0"
-            hargaBeli = 0D
-        End If
-
-        ' Menghitung harga beli untuk setiap jenis
-        UpdateHargaBeli(hargaBeli)
+        Dim _hargaBeli As Decimal = ModuleAngka.ParseDecimal(TxtHrgBeli.Text)
+        LblHargaBeli.Text = "Rp. " & If(_hargaBeli > 0, ModuleAngka.FormatRupiah(_hargaBeli), "0")
+        UpdateHargaBeli(_hargaBeli)
     End Sub
 
+    ''' <summary>
+    ''' Saat TxtHrgBeli kehilangan fokus, isi TxtHargaBeliTerakhir secara otomatis
+    ''' jika masih kosong atau 0. Jika sudah terisi, biarkan saja.
+    ''' </summary>
+    Private Sub TxtHrgBeli_Leave(ByVal sender As Object, ByVal e As EventArgs) Handles TxtHrgBeli.Leave
+        Dim hargaBeli As Decimal = ModuleAngka.ParseDecimal(TxtHrgBeli.Text)
+        Dim hargaBeliTerakhir As Decimal = ModuleAngka.ParseDecimal(TxtHargaBeliTerakhir.Text)
+        If hargaBeliTerakhir = 0D AndAlso hargaBeli > 0D Then
+            TxtHargaBeliTerakhir.Text = hargaBeli.ToString()
+        End If
+    End Sub
 
+    Private Sub UpdateHargaBeli(ByVal _hargaBeli As Decimal)
+        Dim _isiUmumKecil As Decimal = ModuleAngka.ParseDecimal(TxtIsiUmumKecil.Text)
+        Dim _isiUmumSedang As Decimal = ModuleAngka.ParseDecimal(TxtIsiUmumSedang.Text)
+        Dim _isiUmumBesar As Decimal = ModuleAngka.ParseDecimal(TxtIsiUmumBesar.Text)
+        Dim _isiPartaiKecil As Decimal = ModuleAngka.ParseDecimal(TxtIsiPartaiKecil.Text)
+        Dim _isiPartaiSedang As Decimal = ModuleAngka.ParseDecimal(TxtIsiPartaiSedang.Text)
+        Dim _isiPartaiBesar As Decimal = ModuleAngka.ParseDecimal(TxtIsiPartaiBesar.Text)
 
-    'Private Sub DisableControls()
-    '    GBJualUmum.Enabled = False
-    '    GBJualPartai.Enabled = False
-    '    GBStok.Enabled = False
-    '    GBBarcode.Enabled = False
-    '    GBPoint.Enabled = False
-    'End Sub
-
-    'Private Sub EnableControls()
-    '    GBJualUmum.Enabled = True
-    '    GBJualPartai.Enabled = True
-    '    GBStok.Enabled = True
-    '    GBBarcode.Enabled = True
-    '    GBPoint.Enabled = True
-    'End Sub
-
-    Private Sub UpdateHargaBeli(ByVal hargaBeli As Decimal)
-        Dim isiUmumKecil, isiUmumSedang, isiUmumBesar, isiPartaiKecil, isiPartaiSedang, isiPartaiBesar As Decimal
-
-        ' Mengambil nilai isi untuk masing-masing jenis
-        Decimal.TryParse(TxtIsiUmumKecil.Text, isiUmumKecil)
-        Decimal.TryParse(TxtIsiUmumSedang.Text, isiUmumSedang)
-        Decimal.TryParse(TxtIsiUmumBesar.Text, isiUmumBesar)
-        Decimal.TryParse(TxtIsiPartaiKecil.Text, isiPartaiKecil)
-        Decimal.TryParse(TxtIsiPartaiSedang.Text, isiPartaiSedang)
-        Decimal.TryParse(TxtIsiPartaiBesar.Text, isiPartaiBesar)
-
-        ' Menghitung dan menetapkan nilai ke TextBox masing-masing jenis
-        TxtHargaBeliUmumKecil.Text = (hargaBeli * isiUmumKecil).ToString()
-        TxtHargaBeliUmumSedang.Text = (hargaBeli * isiUmumSedang).ToString()
-        TxtHargaBeliUmumBesar.Text = (hargaBeli * isiUmumBesar).ToString()
-        TxtHargaBeliPartaiKecil.Text = (hargaBeli * isiPartaiKecil).ToString()
-        TxtHargaBeliPartaiSedang.Text = (hargaBeli * isiPartaiSedang).ToString()
-        TxtHargaBeliPartaiBesar.Text = (hargaBeli * isiPartaiBesar).ToString()
+        TxtHargaBeliUmumKecil.Text = (_hargaBeli * _isiUmumKecil).ToString()
+        TxtHargaBeliUmumSedang.Text = (_hargaBeli * _isiUmumSedang).ToString()
+        TxtHargaBeliUmumBesar.Text = (_hargaBeli * _isiUmumBesar).ToString()
+        TxtHargaBeliPartaiKecil.Text = (_hargaBeli * _isiPartaiKecil).ToString()
+        TxtHargaBeliPartaiSedang.Text = (_hargaBeli * _isiPartaiSedang).ToString()
+        TxtHargaBeliPartaiBesar.Text = (_hargaBeli * _isiPartaiBesar).ToString()
     End Sub
 
 
     Private Sub TxtHargaBeliTerakhir_TextChanged(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles TxtHargaBeliTerakhir.TextChanged
-        Dim hargaBeliterakhir As Decimal
-
-        ' Mengambil nilai harga beli
-        If Not Decimal.TryParse(TxtHargaBeliTerakhir.Text, hargaBeliterakhir) OrElse hargaBeliterakhir <= 0 Then
-            hargaBeliterakhir = 0D
-        End If
-
-        ' Format dengan maksimal 2 angka di belakang koma (tanpa 0 tambahan)
-        LblHargaBeliTerakhir.Text = "Rp. " & hargaBeliterakhir.ToString("#,0.##", cultureIndonesia)
+        Dim hargaBeliterakhir As Decimal = ModuleAngka.ParseDecimal(TxtHargaBeliTerakhir.Text)
+        LblHargaBeliTerakhir.Text = "Rp. " & ModuleAngka.FormatRupiah(hargaBeliterakhir)
     End Sub
 
+
+    ''' <summary>
+    ''' Jika SettingAutoLevelSatuan aktif: semua TxtIsi* di-set ke "1" dan ReadOnly.
+    ''' Dipanggil saat Load dan setiap kali satuan dipilih dari ComboBox.
+    ''' Tujuan: memastikan isi satuan selalu 1 agar kalkulasi qty di transaksi
+    ''' selaras dengan logika auto level (kecil/sedang/besar berdasarkan qty).
+    ''' </summary>
+    Private Sub TerapkanModeAutoLevelSatuan()
+        If Not ModulHakAkses.SettingAutoLevelSatuan Then
+            ' Fitur nonaktif — pastikan semua TxtIsi bisa diedit normal
+            TxtIsiUmumKecil.ReadOnly = False
+            TxtIsiUmumSedang.ReadOnly = False
+            TxtIsiUmumBesar.ReadOnly = False
+            TxtIsiPartaiKecil.ReadOnly = False
+            TxtIsiPartaiSedang.ReadOnly = False
+            TxtIsiPartaiBesar.ReadOnly = False
+            Return
+        End If
+
+        ' Fitur aktif — paksa isi = 1 dan readonly
+        TxtIsiUmumKecil.Text = "1" : TxtIsiUmumKecil.ReadOnly = True
+        TxtIsiUmumSedang.Text = "1" : TxtIsiUmumSedang.ReadOnly = True
+        TxtIsiUmumBesar.Text = "1" : TxtIsiUmumBesar.ReadOnly = True
+        TxtIsiPartaiKecil.Text = "1" : TxtIsiPartaiKecil.ReadOnly = True
+        TxtIsiPartaiSedang.Text = "1" : TxtIsiPartaiSedang.ReadOnly = True
+        TxtIsiPartaiBesar.Text = "1" : TxtIsiPartaiBesar.ReadOnly = True
+    End Sub
 
     Private Sub CmbSatUmumKecil_SelectedIndexChanged(ByVal sender As Object, ByVal e As EventArgs) Handles CmbSatUmumKecil.SelectedIndexChanged
         If Not String.IsNullOrEmpty(CmbSatUmumKecil.Text) Then
@@ -1041,12 +1075,13 @@
                     End If
                 End Using
             End Using
-
-            CmBstokAwal.Text = CmbSatUmumKecil.Text
             CmbStokAkhir.Text = CmbSatUmumKecil.Text
 
+            ' Jika auto level aktif, override isi ke 1
+            If ModulHakAkses.SettingAutoLevelSatuan Then TxtIsiUmumKecil.Text = "1"
+
             If CBSatuanSama.Checked Then
-                If LblUtama.Text = "T A M B A H   B A R A N G" Then
+                If LblHeaderForm.Text = "T A M B A H   B A R A N G" Then
                     CmbSatPartaiKecil.Text = CmbSatUmumKecil.Text
                 Else
                     If CmbSatPartaiKecil.SelectedIndex = 0 Then
@@ -1061,10 +1096,13 @@
     End Sub
 
     Private Sub CmbSatUmumKecil_KeyDown(ByVal sender As Object, ByVal e As KeyEventArgs) Handles CmbSatUmumKecil.KeyDown
-        If e.KeyCode = Keys.Enter Or e.KeyCode = Keys.Tab Then
-            TxtHArgaJUalUmumKecil.Focus()
-            e.SuppressKeyPress = True ' Menghindari bunyi beep pada Enter
-        End If
+        Select Case e.KeyCode
+            Case Keys.Enter, Keys.Down
+                CmbSatUmumSedang.Focus()
+                e.SuppressKeyPress = True
+            Case Keys.Up
+                ' Tidak ada di atas — biarkan default
+        End Select
     End Sub
 
     Private Sub CmbSatUmumSedang_SelectedIndexChanged(ByVal sender As Object, ByVal e As EventArgs) Handles CmbSatUmumSedang.SelectedIndexChanged
@@ -1079,8 +1117,11 @@
                 End Using
             End Using
 
+            ' Jika auto level aktif, override isi ke 1
+            If ModulHakAkses.SettingAutoLevelSatuan Then TxtIsiUmumSedang.Text = "1"
+
             If CBSatuanSama.Checked Then
-                If LblUtama.Text = "T A M B A H   B A R A N G" Then
+                If LblHeaderForm.Text = "T A M B A H   B A R A N G" Then
                     CmbSatPartaiSedang.Text = CmbSatUmumSedang.Text
                 Else
                     If CmbSatPartaiSedang.SelectedIndex = 0 Then
@@ -1088,17 +1129,20 @@
                     End If
                 End If
             End If
-
         Else
             TxtIsiUmumSedang.Text = "0"
         End If
     End Sub
 
     Private Sub CmbSatUmumSedang_KeyDown(ByVal sender As Object, ByVal e As KeyEventArgs) Handles CmbSatUmumSedang.KeyDown
-        If e.KeyCode = Keys.Enter Or e.KeyCode = Keys.Tab Then
-            TxtHArgaJUalUmumSedang.Focus()
-            e.SuppressKeyPress = True ' Menghindari bunyi beep pada Enter
-        End If
+        Select Case e.KeyCode
+            Case Keys.Enter, Keys.Down
+                CmbSatUmumBesar.Focus()
+                e.SuppressKeyPress = True
+            Case Keys.Up
+                CmbSatUmumKecil.Focus()
+                e.SuppressKeyPress = True
+        End Select
     End Sub
 
     Private Sub CmbSatUmumBesar_SelectedIndexChanged(ByVal sender As Object, ByVal e As EventArgs) Handles CmbSatUmumBesar.SelectedIndexChanged
@@ -1113,8 +1157,11 @@
                 End Using
             End Using
 
+            ' Jika auto level aktif, override isi ke 1
+            If ModulHakAkses.SettingAutoLevelSatuan Then TxtIsiUmumBesar.Text = "1"
+
             If CBSatuanSama.Checked Then
-                If LblUtama.Text = "T A M B A H   B A R A N G" Then
+                If LblHeaderForm.Text = "T A M B A H   B A R A N G" Then
                     CmbSatPartaiBesar.Text = CmbSatUmumBesar.Text
                 Else
                     If CmbSatPartaiBesar.SelectedIndex = 0 Then
@@ -1122,124 +1169,146 @@
                     End If
                 End If
             End If
-
-
         Else
             TxtIsiUmumBesar.Text = "0"
         End If
     End Sub
 
     Private Sub CmbSatUmumBesar_KeyDown(ByVal sender As Object, ByVal e As KeyEventArgs) Handles CmbSatUmumBesar.KeyDown
-        If e.KeyCode = Keys.Enter Or e.KeyCode = Keys.Tab Then
-            TxtHArgaJUalUmumBesar.Focus()
-            e.SuppressKeyPress = True ' Menghindari bunyi beep pada Enter
-        End If
+        Select Case e.KeyCode
+            Case Keys.Enter
+                TxtHArgaJUalUmumKecil.Focus()
+                TxtHArgaJUalUmumKecil.SelectAll()
+                e.SuppressKeyPress = True
+            Case Keys.Down
+                CmbSatPartaiKecil.Focus()
+                CmbSatPartaiKecil.DroppedDown = True
+                e.SuppressKeyPress = True
+            Case Keys.Up
+                CmbSatUmumSedang.Focus()
+                e.SuppressKeyPress = True
+        End Select
     End Sub
     Private Sub TxtKategori_TextChanged(ByVal sender As Object, ByVal e As EventArgs) Handles TxtKategori.TextChanged
-        If LblUtama.Text = "T A M B A H   B A R A N G" Then
+        If LblHeaderForm.Text = "T A M B A H   B A R A N G" Then
             Call GenerateItemCodeAutomatically()
         End If
 
     End Sub
     Private Sub TxtIsiUmumKecil_TextChanged(ByVal sender As Object, ByVal e As EventArgs) Handles TxtIsiUmumKecil.TextChanged
-        Dim hargaBeli As Decimal
-        Dim isiUmum As Integer
-
-        If Decimal.TryParse(TxtHrgBeli.Text, hargaBeli) AndAlso Integer.TryParse(TxtIsiUmumKecil.Text, isiUmum) Then
-            TxtHargaBeliUmumKecil.Text = (hargaBeli * isiUmum).ToString()
-        Else
-            TxtHargaBeliUmumKecil.Text = "0"
-        End If
+        Dim _hargaBeli As Decimal = ModuleAngka.ParseDecimal(TxtHrgBeli.Text)
+        Dim isiUmum As Decimal = ModuleAngka.ParseDecimal(TxtIsiUmumKecil.Text)
+        TxtHargaBeliUmumKecil.Text = (_hargaBeli * isiUmum).ToString()
     End Sub
 
     Private Sub TxtHArgaJUalUmumKecil_TextChanged(ByVal sender As Object, ByVal e As EventArgs) Handles TxtHArgaJUalUmumKecil.TextChanged, TxtHargaBeliUmumKecil.TextChanged
-        Dim hargaBeli As Decimal
-        Dim hargaJual As Decimal
-
-        If Decimal.TryParse(TxtHArgaJUalUmumKecil.Text, hargaJual) AndAlso Decimal.TryParse(TxtHargaBeliUmumKecil.Text, hargaBeli) Then
-            TxtLabaRpUmumKecil.Text = FormatNumber((hargaJual - hargaBeli).ToString(), 0)
-            If hargaJual <> 0 AndAlso hargaBeli <> 0 Then
-                TxtLabaPersenUmumKecil.Text = Math.Round(((hargaJual - hargaBeli) / hargaBeli) * 100, 2).ToString()
-            End If
-            LbljualUmumKecil.Text = "Rp. " + FormatNumber(hargaJual.ToString(), 0)
-        Else
-            TxtLabaRpUmumKecil.Text = "0"
-            TxtLabaPersenUmumKecil.Text = "0"
-            LbljualUmumKecil.Text = "Rp. 0"
-        End If
+        Dim hargaJual As Decimal = ModuleAngka.ParseDecimal(TxtHArgaJUalUmumKecil.Text)
+        Dim _hargaBeli As Decimal = ModuleAngka.ParseDecimal(TxtHargaBeliUmumKecil.Text)
+        Dim laba As Decimal = hargaJual - _hargaBeli
+        TxtLabaRpUmumKecil.Text = ModuleAngka.FormatAngka(laba)
+        TxtLabaPersenUmumKecil.Text = If(hargaJual <> 0 AndAlso _hargaBeli <> 0,
+                                         Math.Round((laba / _hargaBeli) * 100, 2).ToString(), "0")
+        LbljualUmumKecil.Text = "Rp. " & ModuleAngka.FormatAngka(hargaJual)
     End Sub
 
 
     Private Sub TxtIsiUmumSedang_TextChanged(ByVal sender As Object, ByVal e As EventArgs) Handles TxtIsiUmumSedang.TextChanged
-        Dim hargaBeli As Decimal
-        Dim isiUmum As Integer
-
-        If Decimal.TryParse(TxtHrgBeli.Text, hargaBeli) AndAlso Integer.TryParse(TxtIsiUmumSedang.Text, isiUmum) Then
-            TxtHargaBeliUmumSedang.Text = (hargaBeli * isiUmum).ToString()
-        Else
-            TxtHargaBeliUmumSedang.Text = "0"
-        End If
+        Dim _hargaBeli As Decimal = ModuleAngka.ParseDecimal(TxtHrgBeli.Text)
+        Dim isiUmum As Decimal = ModuleAngka.ParseDecimal(TxtIsiUmumSedang.Text)
+        TxtHargaBeliUmumSedang.Text = (_hargaBeli * isiUmum).ToString()
     End Sub
 
 
     Private Sub TxtHArgaJUalUmumSedang_TextChanged(ByVal sender As Object, ByVal e As EventArgs) Handles TxtHArgaJUalUmumSedang.TextChanged, TxtHargaBeliUmumSedang.TextChanged
-        Dim hargaBeli As Decimal
-        Dim hargaJual As Decimal
-
-        If Decimal.TryParse(TxtHArgaJUalUmumSedang.Text, hargaJual) AndAlso Decimal.TryParse(TxtHargaBeliUmumSedang.Text, hargaBeli) Then
-            TxtLabaRpUmumSedang.Text = FormatNumber((hargaJual - hargaBeli).ToString(), 0)
-            If hargaJual <> 0 AndAlso hargaBeli <> 0 Then
-                TxtLabaPersenUmumSedang.Text = Math.Round(((hargaJual - hargaBeli) / hargaBeli) * 100, 2).ToString()
-            End If
-            LbljualUmumSedang.Text = "Rp. " + FormatNumber(hargaJual.ToString(), 0)
-        Else
-            TxtLabaRpUmumSedang.Text = "0"
-            TxtLabaPersenUmumSedang.Text = "0"
-            LbljualUmumSedang.Text = "Rp. 0"
-        End If
+        Dim hargaJual As Decimal = ModuleAngka.ParseDecimal(TxtHArgaJUalUmumSedang.Text)
+        Dim _hargaBeli As Decimal = ModuleAngka.ParseDecimal(TxtHargaBeliUmumSedang.Text)
+        Dim laba As Decimal = hargaJual - _hargaBeli
+        TxtLabaRpUmumSedang.Text = ModuleAngka.FormatAngka(laba)
+        TxtLabaPersenUmumSedang.Text = If(hargaJual <> 0 AndAlso _hargaBeli <> 0,
+                                          Math.Round((laba / _hargaBeli) * 100, 2).ToString(), "0")
+        LbljualUmumSedang.Text = "Rp. " & ModuleAngka.FormatAngka(hargaJual)
     End Sub
 
 
     Private Sub TxtIsiUmumBesar_TextChanged(ByVal sender As Object, ByVal e As EventArgs) Handles TxtIsiUmumBesar.TextChanged
-        Dim hargaBeli As Decimal
-        Dim isiUmum As Integer
-
-        If Decimal.TryParse(TxtHrgBeli.Text, hargaBeli) AndAlso Integer.TryParse(TxtIsiUmumBesar.Text, isiUmum) Then
-            TxtHargaBeliUmumBesar.Text = (hargaBeli * isiUmum).ToString()
-        Else
-            TxtHargaBeliUmumBesar.Text = "0"
-        End If
+        Dim _hargaBeli As Decimal = ModuleAngka.ParseDecimal(TxtHrgBeli.Text)
+        Dim isiUmum As Decimal = ModuleAngka.ParseDecimal(TxtIsiUmumBesar.Text)
+        TxtHargaBeliUmumBesar.Text = (_hargaBeli * isiUmum).ToString()
     End Sub
 
 
     Private Sub TxtHArgaJUalUmumBesar_TextChanged(ByVal sender As Object, ByVal e As EventArgs) Handles TxtHArgaJUalUmumBesar.TextChanged, TxtHargaBeliUmumBesar.TextChanged
-        Dim hargaBeli As Decimal
-        Dim hargaJual As Decimal
-
-        If Decimal.TryParse(TxtHArgaJUalUmumBesar.Text, hargaJual) AndAlso Decimal.TryParse(TxtHargaBeliUmumBesar.Text, hargaBeli) Then
-            TxtLabaRpUmumBesar.Text = FormatNumber((hargaJual - hargaBeli).ToString(), 0)
-            If hargaJual <> 0 AndAlso hargaBeli <> 0 Then
-                TxtLabaPersenUmumBesar.Text = Math.Round(((hargaJual - hargaBeli) / hargaBeli) * 100, 2).ToString()
-            End If
-            LbljualUmumBesar.Text = "Rp. " + FormatNumber(hargaJual.ToString(), 0)
-        Else
-            TxtLabaRpUmumBesar.Text = "0"
-            TxtLabaPersenUmumBesar.Text = "0"
-            LbljualUmumBesar.Text = "Rp. 0"
-        End If
+        Dim hargaJual As Decimal = ModuleAngka.ParseDecimal(TxtHArgaJUalUmumBesar.Text)
+        Dim _hargaBeli As Decimal = ModuleAngka.ParseDecimal(TxtHargaBeliUmumBesar.Text)
+        Dim laba As Decimal = hargaJual - _hargaBeli
+        TxtLabaRpUmumBesar.Text = ModuleAngka.FormatAngka(laba)
+        TxtLabaPersenUmumBesar.Text = If(hargaJual <> 0 AndAlso _hargaBeli <> 0,
+                                         Math.Round((laba / _hargaBeli) * 100, 2).ToString(), "0")
+        LbljualUmumBesar.Text = "Rp. " & ModuleAngka.FormatAngka(hargaJual)
     End Sub
 
+    ''' <summary>
+    ''' Navigasi keyboard untuk TxtHArgaJUalUmum (Kecil → Sedang → Besar) dan TxtHArgaJualPartai.
+    ''' Enter/Panah Bawah: ke bawah | Panah Atas: ke atas
+    ''' </summary>
+    Private Sub TxtHArgaJUalUmum_KeyDown(sender As Object, e As KeyEventArgs) _
+            Handles TxtHArgaJUalUmumKecil.KeyDown, TxtHArgaJUalUmumSedang.KeyDown, TxtHArgaJUalUmumBesar.KeyDown
+        Select Case e.KeyCode
+            Case Keys.Enter, Keys.Down
+                If sender Is TxtHArgaJUalUmumKecil Then
+                    TxtHArgaJUalUmumSedang.Focus() : TxtHArgaJUalUmumSedang.SelectAll()
+                ElseIf sender Is TxtHArgaJUalUmumSedang Then
+                    TxtHArgaJUalUmumBesar.Focus() : TxtHArgaJUalUmumBesar.SelectAll()
+                ElseIf sender Is TxtHArgaJUalUmumBesar Then
+                    TxtHArgaJualPartaikecil.Focus() : TxtHArgaJualPartaikecil.SelectAll()
+                End If
+                e.SuppressKeyPress = True
+            Case Keys.Up
+                If sender Is TxtHArgaJUalUmumSedang Then
+                    TxtHArgaJUalUmumKecil.Focus() : TxtHArgaJUalUmumKecil.SelectAll()
+                ElseIf sender Is TxtHArgaJUalUmumBesar Then
+                    TxtHArgaJUalUmumSedang.Focus() : TxtHArgaJUalUmumSedang.SelectAll()
+                End If
+                e.SuppressKeyPress = True
+        End Select
+    End Sub
+
+    ''' <summary>
+    ''' Navigasi keyboard untuk TxtHArgaJualPartai (Kecil → Sedang → Besar).
+    ''' Enter/Panah Bawah: ke bawah | Panah Atas: ke atas
+    ''' </summary>
+    Private Sub TxtHArgaJUalPartai_KeyDown(sender As Object, e As KeyEventArgs) _
+            Handles TxtHArgaJualPartaikecil.KeyDown, TxtHArgaJualPartaiSedang.KeyDown, TxtHArgaJualPartaiBesar.KeyDown
+        Select Case e.KeyCode
+            Case Keys.Enter, Keys.Down
+                If sender Is TxtHArgaJualPartaikecil Then
+                    TxtHArgaJualPartaiSedang.Focus() : TxtHArgaJualPartaiSedang.SelectAll()
+                ElseIf sender Is TxtHArgaJualPartaiSedang Then
+                    TxtHArgaJualPartaiBesar.Focus() : TxtHArgaJualPartaiBesar.SelectAll()
+                End If
+                e.SuppressKeyPress = True
+            Case Keys.Up
+                If sender Is TxtHArgaJualPartaikecil Then
+                    TxtHArgaJUalUmumBesar.Focus() : TxtHArgaJUalUmumBesar.SelectAll()
+                ElseIf sender Is TxtHArgaJualPartaiSedang Then
+                    TxtHArgaJualPartaikecil.Focus() : TxtHArgaJualPartaikecil.SelectAll()
+                ElseIf sender Is TxtHArgaJualPartaiBesar Then
+                    TxtHArgaJualPartaiSedang.Focus() : TxtHArgaJualPartaiSedang.SelectAll()
+                End If
+                e.SuppressKeyPress = True
+        End Select
+    End Sub
 
     Private Sub TxtHargaBeliUmumKecil_TextChanged(ByVal sender As Object, ByVal e As EventArgs) Handles TxtHargaBeliUmumKecil.TextChanged
-        LblBeliUmumKecil.Text = FormatNumber(TxtHargaBeliUmumKecil.Text, 0)
+        LblBeliUmumKecil.Text = ModuleAngka.FormatAngka(ModuleAngka.ParseDecimal(TxtHargaBeliUmumKecil.Text))
     End Sub
 
     Private Sub TxtHargaBeliUmumSedang_TextChanged(ByVal sender As Object, ByVal e As EventArgs) Handles TxtHargaBeliUmumSedang.TextChanged
-        LblBeliUmumSedang.Text = FormatNumber(TxtHargaBeliUmumSedang.Text, 0)
+        LblBeliUmumSedang.Text = ModuleAngka.FormatAngka(ModuleAngka.ParseDecimal(TxtHargaBeliUmumSedang.Text))
     End Sub
 
     Private Sub TxtHargaBeliUmumBesar_TextChanged(ByVal sender As Object, ByVal e As EventArgs) Handles TxtHargaBeliUmumBesar.TextChanged
-        LblBeliUmumBesar.Text = FormatNumber(TxtHargaBeliUmumBesar.Text, 0)
+        LblBeliUmumBesar.Text = ModuleAngka.FormatAngka(ModuleAngka.ParseDecimal(TxtHargaBeliUmumBesar.Text))
     End Sub
 
     Private Sub CmbSatPartaiKecil_SelectedIndexChanged(ByVal sender As Object, ByVal e As EventArgs) Handles CmbSatPartaiKecil.SelectedIndexChanged
@@ -1253,18 +1322,22 @@
                     End If
                 End Using
             End Using
-
-
+            ' Jika auto level aktif, override isi ke 1
+            If ModulHakAkses.SettingAutoLevelSatuan Then TxtIsiPartaiKecil.Text = "1"
         Else
             TxtIsiPartaiKecil.Text = "0"
         End If
     End Sub
 
     Private Sub CmbSatPartaiKecil_KeyDown(ByVal sender As Object, ByVal e As KeyEventArgs) Handles CmbSatPartaiKecil.KeyDown
-        If e.KeyCode = Keys.Enter Or e.KeyCode = Keys.Tab Then
-            TxtHArgaJualPartaikecil.Focus()
-            e.SuppressKeyPress = True ' Menghindari bunyi beep pada Enter
-        End If
+        Select Case e.KeyCode
+            Case Keys.Enter, Keys.Down
+                CmbSatPartaiSedang.Focus()
+                e.SuppressKeyPress = True
+            Case Keys.Up
+                CmbSatUmumBesar.Focus()
+                e.SuppressKeyPress = True
+        End Select
     End Sub
 
     Private Sub CmbSatPartaiSedang_SelectedIndexChanged(ByVal sender As Object, ByVal e As EventArgs) Handles CmbSatPartaiSedang.SelectedIndexChanged
@@ -1278,18 +1351,22 @@
                     End If
                 End Using
             End Using
-
-
+            ' Jika auto level aktif, override isi ke 1
+            If ModulHakAkses.SettingAutoLevelSatuan Then TxtIsiPartaiSedang.Text = "1"
         Else
             TxtIsiPartaiSedang.Text = "0"
         End If
     End Sub
 
     Private Sub CmbSatPartaiSedang_KeyDown(ByVal sender As Object, ByVal e As KeyEventArgs) Handles CmbSatPartaiSedang.KeyDown
-        If e.KeyCode = Keys.Enter Or e.KeyCode = Keys.Tab Then
-            TxtHArgaJualPartaiSedang.Focus()
-            e.SuppressKeyPress = True ' Menghindari bunyi beep pada Enter
-        End If
+        Select Case e.KeyCode
+            Case Keys.Enter, Keys.Down
+                CmbSatPartaiBesar.Focus()
+                e.SuppressKeyPress = True
+            Case Keys.Up
+                CmbSatPartaiKecil.Focus()
+                e.SuppressKeyPress = True
+        End Select
     End Sub
 
     Private Sub CmbSatPartaiBesar_SelectedIndexChanged(ByVal sender As Object, ByVal e As EventArgs) Handles CmbSatPartaiBesar.SelectedIndexChanged
@@ -1303,18 +1380,25 @@
                     End If
                 End Using
             End Using
-
-
+            ' Jika auto level aktif, override isi ke 1
+            If ModulHakAkses.SettingAutoLevelSatuan Then TxtIsiPartaiBesar.Text = "1"
         Else
             TxtIsiPartaiBesar.Text = "0"
         End If
     End Sub
 
     Private Sub CmbSatPartaiBesar_KeyDown(ByVal sender As Object, ByVal e As KeyEventArgs) Handles CmbSatPartaiBesar.KeyDown
-        If e.KeyCode = Keys.Enter Or e.KeyCode = Keys.Tab Then
-            TxtHArgaJualPartaiBesar.Focus()
-            e.SuppressKeyPress = True ' Menghindari bunyi beep pada Enter
-        End If
+        Select Case e.KeyCode
+            Case Keys.Enter
+                TxtHArgaJualPartaikecil.Focus()
+                TxtHArgaJualPartaikecil.SelectAll()
+                e.SuppressKeyPress = True
+            Case Keys.Down
+                ' Tidak ada di bawah dalam grup ini
+            Case Keys.Up
+                CmbSatPartaiSedang.Focus()
+                e.SuppressKeyPress = True
+        End Select
     End Sub
 
     Private Sub TxtIsiPartaiKecil_TextChanged(ByVal sender As Object, ByVal e As EventArgs) Handles TxtIsiPartaiKecil.TextChanged
@@ -1342,123 +1426,64 @@
     End Sub
 
     Private Sub UpdateHargaBeliPartaiKecil()
-        Dim hargaBeli As Decimal = 0
-        Dim isiPartaiKecil As Integer = 0
-
-        If Decimal.TryParse(TxtHrgBeli.Text, hargaBeli) AndAlso Integer.TryParse(TxtIsiPartaiKecil.Text, isiPartaiKecil) Then
-            TxtHargaBeliPartaiKecil.Text = (hargaBeli * isiPartaiKecil).ToString()
-        Else
-            TxtHargaBeliPartaiKecil.Text = "0"
-        End If
+        Dim _hargaBeli As Decimal = ModuleAngka.ParseDecimal(TxtHrgBeli.Text)
+        Dim _isiPartaiKecil As Decimal = ModuleAngka.ParseDecimal(TxtIsiPartaiKecil.Text)
+        TxtHargaBeliPartaiKecil.Text = (_hargaBeli * _isiPartaiKecil).ToString()
     End Sub
 
     Private Sub UpdateLabaPartaiKecil()
-        Dim hargaJual As Decimal = 0
-        Dim hargaBeli As Decimal = 0
-
-        If Decimal.TryParse(TxtHArgaJualPartaikecil.Text, hargaJual) AndAlso Decimal.TryParse(TxtHargaBeliPartaiKecil.Text, hargaBeli) Then
-            TxtLabaRpPartaiKecil.Text = FormatNumber(hargaJual - hargaBeli, 0)
-
-            If hargaBeli <> 0 Then
-                TxtLabaPersenPartaiKecil.Text = Math.Round((hargaJual - hargaBeli) / hargaBeli * 100, 2)
-            Else
-                TxtLabaPersenPartaiKecil.Text = "0"
-            End If
-        Else
-            TxtLabaRpPartaiKecil.Text = "0"
-            TxtLabaPersenPartaiKecil.Text = "0"
-        End If
-
-        If Not String.IsNullOrEmpty(TxtHArgaJualPartaikecil.Text) AndAlso IsNumeric(TxtHArgaJualPartaikecil.Text) Then
-            LbljualPartaiKecil.Text = "Rp. " + FormatNumber(TxtHArgaJualPartaikecil.Text, 0)
-        Else
-            LbljualPartaiKecil.Text = "Rp. 0"
-        End If
+        Dim hargaJual As Decimal = ModuleAngka.ParseDecimal(TxtHArgaJualPartaikecil.Text)
+        Dim _hargaBeli As Decimal = ModuleAngka.ParseDecimal(TxtHargaBeliPartaiKecil.Text)
+        Dim laba As Decimal = hargaJual - _hargaBeli
+        TxtLabaRpPartaiKecil.Text = ModuleAngka.FormatAngka(laba)
+        TxtLabaPersenPartaiKecil.Text = If(_hargaBeli <> 0,
+                                           Math.Round(laba / _hargaBeli * 100, 2).ToString(), "0")
+        LbljualPartaiKecil.Text = "Rp. " & ModuleAngka.FormatAngka(hargaJual)
     End Sub
 
     Private Sub UpdateHargaBeliPartaiSedang()
-        Dim hargaBeli As Decimal = 0
-        Dim isiPartaiSedang As Integer = 0
-
-        If Decimal.TryParse(TxtHrgBeli.Text, hargaBeli) AndAlso Integer.TryParse(TxtIsiPartaiSedang.Text, isiPartaiSedang) Then
-            TxtHargaBeliPartaiSedang.Text = (hargaBeli * isiPartaiSedang).ToString()
-        Else
-            TxtHargaBeliPartaiSedang.Text = "0"
-        End If
+        Dim _hargaBeli As Decimal = ModuleAngka.ParseDecimal(TxtHrgBeli.Text)
+        Dim _isiPartaiSedang As Decimal = ModuleAngka.ParseDecimal(TxtIsiPartaiSedang.Text)
+        TxtHargaBeliPartaiSedang.Text = (_hargaBeli * _isiPartaiSedang).ToString()
     End Sub
-
 
     Private Sub UpdateLabaPartaiSedang()
-        Dim hargaJual As Decimal = 0
-        Dim hargaBeli As Decimal = 0
-
-        If Decimal.TryParse(TxtHArgaJualPartaiSedang.Text, hargaJual) AndAlso Decimal.TryParse(TxtHargaBeliPartaiSedang.Text, hargaBeli) Then
-            TxtLabaRpPartaiSedang.Text = FormatNumber(hargaJual - hargaBeli, 0)
-
-            If hargaBeli <> 0 Then
-                TxtLabaPersenPartaiSedang.Text = Math.Round((hargaJual - hargaBeli) / hargaBeli * 100, 2)
-            Else
-                TxtLabaPersenPartaiSedang.Text = "0"
-            End If
-        Else
-            TxtLabaRpPartaiSedang.Text = "0"
-            TxtLabaPersenPartaiSedang.Text = "0"
-        End If
-
-        If Not String.IsNullOrEmpty(TxtHArgaJualPartaiSedang.Text) AndAlso IsNumeric(TxtHArgaJualPartaiSedang.Text) Then
-            LbljualPartaiSedang.Text = "Rp. " + FormatNumber(TxtHArgaJualPartaiSedang.Text, 0)
-        Else
-            LbljualPartaiSedang.Text = "Rp. 0"
-        End If
+        Dim hargaJual As Decimal = ModuleAngka.ParseDecimal(TxtHArgaJualPartaiSedang.Text)
+        Dim _hargaBeli As Decimal = ModuleAngka.ParseDecimal(TxtHargaBeliPartaiSedang.Text)
+        Dim laba As Decimal = hargaJual - _hargaBeli
+        TxtLabaRpPartaiSedang.Text = ModuleAngka.FormatAngka(laba)
+        TxtLabaPersenPartaiSedang.Text = If(_hargaBeli <> 0,
+                                            Math.Round(laba / _hargaBeli * 100, 2).ToString(), "0")
+        LbljualPartaiSedang.Text = "Rp. " & ModuleAngka.FormatAngka(hargaJual)
     End Sub
 
-
     Private Sub UpdateHargaBeliPartaiBesar()
-        Dim hargaBeli As Decimal = 0
-        Dim isiPartaiBesar As Integer = 0
-
-        If Decimal.TryParse(TxtHrgBeli.Text, hargaBeli) AndAlso Integer.TryParse(TxtIsiPartaiBesar.Text, isiPartaiBesar) Then
-            TxtHargaBeliPartaiBesar.Text = (hargaBeli * isiPartaiBesar).ToString()
-        Else
-            TxtHargaBeliPartaiBesar.Text = "0"
-        End If
+        Dim _hargaBeli As Decimal = ModuleAngka.ParseDecimal(TxtHrgBeli.Text)
+        Dim _isiPartaiBesar As Decimal = ModuleAngka.ParseDecimal(TxtIsiPartaiBesar.Text)
+        TxtHargaBeliPartaiBesar.Text = (_hargaBeli * _isiPartaiBesar).ToString()
     End Sub
 
     Private Sub UpdateLabaPartaiBesar()
-        Dim hargaJual As Decimal = 0
-        Dim hargaBeli As Decimal = 0
-
-        If Decimal.TryParse(TxtHArgaJualPartaiBesar.Text, hargaJual) AndAlso Decimal.TryParse(TxtHargaBeliPartaiBesar.Text, hargaBeli) Then
-            TxtLabaRpPartaiBesar.Text = FormatNumber(hargaJual - hargaBeli, 0)
-
-            If hargaBeli <> 0 Then
-                TxtLabaPersenPartaiBesar.Text = Math.Round((hargaJual - hargaBeli) / hargaBeli * 100, 2)
-            Else
-                TxtLabaPersenPartaiBesar.Text = "0"
-            End If
-        Else
-            TxtLabaRpPartaiBesar.Text = "0"
-            TxtLabaPersenPartaiBesar.Text = "0"
-        End If
-
-        If Not String.IsNullOrEmpty(TxtHArgaJualPartaiBesar.Text) AndAlso IsNumeric(TxtHArgaJualPartaiBesar.Text) Then
-            LbljualPartaiBesar.Text = "Rp. " + FormatNumber(TxtHArgaJualPartaiBesar.Text, 0)
-        Else
-            LbljualPartaiBesar.Text = "Rp. 0"
-        End If
+        Dim hargaJual As Decimal = ModuleAngka.ParseDecimal(TxtHArgaJualPartaiBesar.Text)
+        Dim _hargaBeli As Decimal = ModuleAngka.ParseDecimal(TxtHargaBeliPartaiBesar.Text)
+        Dim laba As Decimal = hargaJual - _hargaBeli
+        TxtLabaRpPartaiBesar.Text = ModuleAngka.FormatAngka(laba)
+        TxtLabaPersenPartaiBesar.Text = If(_hargaBeli <> 0,
+                                           Math.Round(laba / _hargaBeli * 100, 2).ToString(), "0")
+        LbljualPartaiBesar.Text = "Rp. " & ModuleAngka.FormatAngka(hargaJual)
     End Sub
 
 
     Private Sub TxtHargaBeliPartaiKecil_TextChanged(ByVal sender As Object, ByVal e As EventArgs) Handles TxtHargaBeliPartaiKecil.TextChanged
-        LblBeliPartaiKecil.Text = FormatNumber(TxtHargaBeliPartaiKecil.Text, 0)
+        LblBeliPartaiKecil.Text = ModuleAngka.FormatAngka(ModuleAngka.ParseDecimal(TxtHargaBeliPartaiKecil.Text))
     End Sub
 
     Private Sub TxtHargaBeliPartaiSedang_TextChanged(ByVal sender As Object, ByVal e As EventArgs) Handles TxtHargaBeliPartaiSedang.TextChanged
-        LblBeliPartaiSedang.Text = FormatNumber(TxtHargaBeliPartaiSedang.Text, 0)
+        LblBeliPartaiSedang.Text = ModuleAngka.FormatAngka(ModuleAngka.ParseDecimal(TxtHargaBeliPartaiSedang.Text))
     End Sub
 
     Private Sub TxtHargaBeliPartaiBesar_TextChanged(ByVal sender As Object, ByVal e As EventArgs) Handles TxtHargaBeliPartaiBesar.TextChanged
-        LblBeliPartaiBesar.Text = FormatNumber(TxtHargaBeliPartaiBesar.Text, 0)
+        LblBeliPartaiBesar.Text = ModuleAngka.FormatAngka(ModuleAngka.ParseDecimal(TxtHargaBeliPartaiBesar.Text))
     End Sub
 
     Private Sub CmbIsiToko_SelectedIndexChanged(ByVal sender As Object, ByVal e As EventArgs) Handles CmbStokAkhir.SelectedIndexChanged, CmBstokAwal.SelectedIndexChanged
@@ -1471,18 +1496,15 @@
                 End If
             End Using
         End Using
-
     End Sub
 
     Private Sub TxtStokAwal_TextChanged(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles TxtStokAwal.TextChanged
-        Dim stokAwal, stokToko, stokGudang As Decimal
-
-        Decimal.TryParse(TxtStokAwal.Text, stokAwal)
-        Decimal.TryParse(TxtJmlhToko.Text, stokToko)
-        Decimal.TryParse(TxtJmlhGudang.Text, stokGudang)
-
-        ' Menghitung stok akhir berdasarkan lokasi
-        TxtStokAkhir.Text = If(FormUtama.SLokasi.Text = "TOKO", (stokAwal + stokToko).ToString(), (stokAwal + stokGudang).ToString())
+        Dim stokAwal As Decimal = ModuleAngka.ParseDecimal(TxtStokAwal.Text)
+        Dim stokToko As Decimal = ModuleAngka.ParseDecimal(TxtJmlhToko.Text)
+        Dim stokGudang As Decimal = ModuleAngka.ParseDecimal(TxtJmlhGudang.Text)
+        TxtStokAkhir.Text = If(FormUtama.StatusLokasi.Text = "TOKO",
+                               (stokAwal + stokToko).ToString(),
+                               (stokAwal + stokGudang).ToString())
     End Sub
 
 
@@ -1498,7 +1520,6 @@
     Private Sub TxtIsiStokGudang_KeyPress(ByVal sender As Object, ByVal e As KeyPressEventArgs)
         If Not ((e.KeyChar >= "0" And e.KeyChar <= "9") Or e.KeyChar = vbBack) Then e.Handled = True
     End Sub
-
 
     Private Sub IsiComboBoxStokAwal()
         Dim satuanKecil As String = CmbSatUmumKecil.Text
@@ -1531,7 +1552,6 @@
     End Sub
 
     Private nilaiBarang As Decimal = 0
-
     Public Sub Hitunghargasebelumedit()
         Dim sql As String = "SELECT HARGA_BELI, STOK_TOKO, STOK_GUDANG FROM tbl_barang WHERE ID_BARANG = ?"
         Using cmd As New MySqlCommand(sql, conn)
@@ -1539,19 +1559,17 @@
 
             Using rd As MySqlDataReader = cmd.ExecuteReader()
                 If rd.Read() Then
-                    Dim hargaBeli As Decimal = If(Not IsDBNull(rd("HARGA_BELI")), Convert.ToDecimal(rd("HARGA_BELI")), 0D)
-                    Dim stokToko As Decimal = If(Not IsDBNull(rd("STOK_TOKO")), Convert.ToDecimal(rd("STOK_TOKO")), 0D)
-                    Dim stokGudang As Decimal = If(Not IsDBNull(rd("STOK_GUDANG")), Convert.ToDecimal(rd("STOK_GUDANG")), 0D)
+                    Dim _hargaBeli As Decimal = ModuleAngka.ParseDecimal(rd("HARGA_BELI"))
+                    Dim stokToko As Decimal = ModuleAngka.ParseDecimal(rd("STOK_TOKO"))
+                    Dim stokGudang As Decimal = ModuleAngka.ParseDecimal(rd("STOK_GUDANG"))
 
-                    nilaiBarang = (stokToko + stokGudang) * hargaBeli
+                    nilaiBarang = (stokToko + stokGudang) * _hargaBeli
                 End If
             End Using
         End Using
     End Sub
-
-
     Private Function CekBarang() As Boolean
-        Dim sql As String = "SELECT ID_BARANG, NAMA_BARANG FROM tbl_barang"
+        Dim sql As String = "SELECT ID_BARANG, NAMA_BARANG FROM tbl_barang WHERE STATUS = 'Aktif'"
         'Dim barangDitemukan As Boolean = False
 
         Using command As New MySqlCommand(sql, conn)
@@ -1580,8 +1598,6 @@
 
         Return True
     End Function
-
-
     Private Function IsInputValid() As Boolean
         ' Reset validasi awal
         Dim isValid As Boolean = True
@@ -1614,50 +1630,47 @@
         Return isValid
     End Function
 
-
-
     Private Sub BtnSimpan_Click(ByVal sender As Object, ByVal e As EventArgs) Handles BtnSimpan.Click
         ' Panggil fungsi validasi
         If Not IsInputValid() Then
             Exit Sub ' Jika validasi gagal, keluar dari metode
         End If
 
-        Dim noTransaksi As String = DateTime.Now.ToString("yyyyMMddHHmmss") ' Format unik berdasarkan tanggal dan waktu saat ini
-        ' Hitung dan tambahkan nominal sesuai dengan perhitungan Anda
-        Dim NilaiBarang As Decimal = If(Decimal.TryParse(TxtStokAkhir.Text, NilaiBarang), NilaiBarang, 0)
-        Dim hargaBeli As Decimal = If(Decimal.TryParse(TxtHrgBeli.Text, hargaBeli), hargaBeli, 0)
-        Dim NilaiBarangAwal As Decimal = If(Decimal.TryParse(LblStokUntukEdit.Text, NilaiBarangAwal), NilaiBarangAwal, 0)
-        Dim hargaBeliAwal As Decimal = If(Decimal.TryParse(LblHargaUntukEdit.Text, hargaBeliAwal), hargaBeliAwal, 0)
+        Dim noTransaksi As String = DateTime.Now.ToString("yyyyMMddHHmmss")
+        Dim NilaiBarang As Decimal = ModuleAngka.ParseDecimal(TxtStokAkhir.Text)
+        Dim _hargaBeli As Decimal = ModuleAngka.ParseDecimal(TxtHrgBeli.Text)
+        Dim NilaiBarangAwal As Decimal = ModuleAngka.ParseDecimal(LblStokUntukEdit.Text)
+        Dim hargaBeliAwal As Decimal = ModuleAngka.ParseDecimal(LblHargaUntukEdit.Text)
 
-        Dim TotalNilaiBarang As Decimal = NilaiBarang * hargaBeli
+        Dim TotalNilaiBarang As Decimal = NilaiBarang * _hargaBeli
         Dim TotalNilaiBarangAwal As Decimal = NilaiBarangAwal * hargaBeliAwal
         Dim SelisihNilaiBarang As Decimal = TotalNilaiBarang - TotalNilaiBarangAwal
 
 
-        If LblUtama.Text = "T A M B A H   B A R A N G" Then
+        If LblHeaderForm.Text = "T A M B A H   B A R A N G" Then
             If CekBarang() Then
                 Dim transaction As MySqlTransaction = conn.BeginTransaction()
                 Try
                     Dim query As String = "INSERT INTO tbl_barang (" &
- "ID_BARANG, NAMA_BARANG, KODE_KATEGORI, NAMA_KATEGORI, KODE_SUPLIYER, NAMA_SUPLIYER, HARGA_BELI, HARGA_BELI_TERAKHIR, " &
+ "ID_BARANG, NAMA_BARANG, KODE_KATEGORI, NAMA_KATEGORI, KODE_SUPLIYER, NAMA_SUPLIYER, KODE_MERK, NAMA_MERK, HARGA_BELI, HARGA_BELI_TERAKHIR, " &
  "BARCODE_KECIL, BARCODE_SEDANG, BARCODE_BESAR, SATUAN_UMUM_KECIL, SATUAN_UMUM_SEDANG, SATUAN_UMUM_BESAR, " &
  "ISI_UMUM_KECIL, ISI_UMUM_SEDANG, ISI_UMUM_BESAR, " &
  "HARGA_JUAL_UMUM_KECIL, HARGA_JUAL_UMUM_SEDANG, HARGA_JUAL_UMUM_BESAR, SATUAN_PARTAI_KECIL, SATUAN_PARTAI_SEDANG, " &
  "SATUAN_PARTAI_BESAR, ISI_PARTAI_KECIL, ISI_PARTAI_SEDANG, ISI_PARTAI_BESAR, " &
  "HARGA_JUAL_PARTAI_KECIL, HARGA_JUAL_PARTAI_SEDANG, " &
  "HARGA_JUAL_PARTAI_BESAR, AWAL_TOKO, TAMBAH_TOKO, KURANG_TOKO, PEMBELIAN_TOKO, PENJUALAN_TOKO, RETUR_BELI_TOKO, " &
- "RETUR_JUAL_TOKO, OPNAME_TOKO, TRANSFER_STOK_MASUK_TOKO, TRANSFER_STOK_KELUAR_TOKO, TRANSFER_BARANG_MASUK_TOKO, TRANSFER_BARANG_KELUAR_TOKO, AWAL_GUDANG, TAMBAH_GUDANG, KURANG_GUDANG, " &
+ "RETUR_JUAL_TOKO, OPNAME_TOKO, TRANSFER_STOK_MASUK_TOKO, TRANSFER_STOK_KELUAR_TOKO, TRANSFER_BARANG_MASUK_TOKO, TRANSFER_BARANG_KELUAR_TOKO, TRANSFER_CABANG_MASUK_TOKO, TRANSFER_CABANG_KELUAR_TOKO, AWAL_GUDANG, TAMBAH_GUDANG, KURANG_GUDANG, " &
  "PEMBELIAN_GUDANG, PENJUALAN_GUDANG, RETUR_BELI_GUDANG, RETUR_JUAL_GUDANG, OPNAME_GUDANG, TRANSFER_STOK_MASUK_GUDANG, TRANSFER_STOK_KELUAR_GUDANG, " &
- "TRANSFER_BARANG_MASUK_GUDANG, TRANSFER_BARANG_KELUAR_GUDANG, SATUAN_STOK, SATUAN_ISI_STOK, STOK_MIN, STOK_MAX, LOKASI_RAK_TOKO, LOKASI_RAK_GUDANG, " &
+ "TRANSFER_BARANG_MASUK_GUDANG, TRANSFER_BARANG_KELUAR_GUDANG, TRANSFER_CABANG_MASUK_GUDANG, TRANSFER_CABANG_KELUAR_GUDANG, SATUAN_STOK, SATUAN_ISI_STOK, STOK_MIN, STOK_MAX, LOKASI_RAK_TOKO, LOKASI_RAK_GUDANG, " &
  "POINT_MEMBER, POINT_KARYAWAN, KOMISI_SALES_RP, KOMISI_SALES_PERSEN) " &
  "VALUES (" &
- "@ID_BARANG, @NAMA_BARANG, @KODE_KATEGORI, @NAMA_KATEGORI, @KODE_SUPLIYER, @NAMA_SUPLIYER, @HARGA_BELI, @HARGA_BELI_TERAKHIR, " &
+ "@ID_BARANG, @NAMA_BARANG, @KODE_KATEGORI, @NAMA_KATEGORI, @KODE_SUPLIYER, @NAMA_SUPLIYER, @KODE_MERK, @NAMA_MERK, @HARGA_BELI, @HARGA_BELI_TERAKHIR, " &
  "@BARCODE_KECIL, @BARCODE_SEDANG, @BARCODE_BESAR, @SATUAN_UMUM_KECIL, @SATUAN_UMUM_SEDANG, @SATUAN_UMUM_BESAR, " &
  "@ISI_UMUM_KECIL, @ISI_UMUM_SEDANG, @ISI_UMUM_BESAR, " &
  "@HARGA_JUAL_UMUM_KECIL, @HARGA_JUAL_UMUM_SEDANG, @HARGA_JUAL_UMUM_BESAR, @SATUAN_PARTAI_KECIL, @SATUAN_PARTAI_SEDANG, " &
  "@SATUAN_PARTAI_BESAR, @ISI_PARTAI_KECIL, @ISI_PARTAI_SEDANG, @ISI_PARTAI_BESAR, " &
  "@HARGA_JUAL_PARTAI_KECIL, @HARGA_JUAL_PARTAI_SEDANG, " &
- "@HARGA_JUAL_PARTAI_BESAR, @AWAL_TOKO, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, @AWAL_GUDANG, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, " &
+ "@HARGA_JUAL_PARTAI_BESAR, @AWAL_TOKO, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, @AWAL_GUDANG, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, " &
  "@SATUAN_STOK, @SATUAN_ISI_STOK, @STOK_MIN, @STOK_MAX, @LOKASI_RAK_TOKO, @LOKASI_RAK_GUDANG, " &
  "@POINT_MEMBER, @POINT_KARYAWAN, @KOMISI_SALES_RP, @KOMISI_SALES_PERSEN)"
 
@@ -1670,10 +1683,11 @@
                         cmd.Parameters.AddWithValue("@NAMA_KATEGORI", CmbKategori.Text.Trim())
                         cmd.Parameters.AddWithValue("@KODE_SUPLIYER", TxtKodeSupliyer.Text.Trim())
                         cmd.Parameters.AddWithValue("@NAMA_SUPLIYER", CmbSupliyer.Text.Trim())
+                        cmd.Parameters.AddWithValue("@KODE_MERK", TxtMerk.Text.Trim())
+                        cmd.Parameters.AddWithValue("@NAMA_MERK", CmbMerk.Text.Trim())
 
-                        ' Bersihkan dan parse harga beli
-                        cmd.Parameters.AddWithValue("@HARGA_BELI", If(String.IsNullOrWhiteSpace(TxtHrgBeli.Text.Trim()), 0D, Decimal.Parse(BersihkanFormatAngka(TxtHrgBeli.Text.Trim()))))
-                        cmd.Parameters.AddWithValue("@HARGA_BELI_TERAKHIR", If(String.IsNullOrWhiteSpace(TxtHrgBeli.Text.Trim()), 0D, Decimal.Parse(BersihkanFormatAngka(TxtHrgBeli.Text.Trim()))))
+                        cmd.Parameters.AddWithValue("@HARGA_BELI", ModuleAngka.ParseDecimal(TxtHrgBeli.Text))
+                        cmd.Parameters.AddWithValue("@HARGA_BELI_TERAKHIR", ModuleAngka.ParseDecimal(TxtHrgBeli.Text))
 
                         cmd.Parameters.AddWithValue("@BARCODE_KECIL", TxtBarcodeUmumKecil.Text.Trim())
                         cmd.Parameters.AddWithValue("@BARCODE_SEDANG", TxtBarcodeUmumSedang.Text.Trim())
@@ -1682,87 +1696,97 @@
                         cmd.Parameters.AddWithValue("@SATUAN_UMUM_SEDANG", CmbSatUmumSedang.Text)
                         cmd.Parameters.AddWithValue("@SATUAN_UMUM_BESAR", CmbSatUmumBesar.Text)
 
-                        ' Bersihkan dan parse isi umum
-                        cmd.Parameters.AddWithValue("@ISI_UMUM_KECIL", If(String.IsNullOrWhiteSpace(TxtIsiUmumKecil.Text.Trim()), 0, Integer.Parse(BersihkanFormatAngka(TxtIsiUmumKecil.Text.Trim()))))
-                        cmd.Parameters.AddWithValue("@ISI_UMUM_SEDANG", If(String.IsNullOrWhiteSpace(TxtIsiUmumSedang.Text.Trim()), 0, Integer.Parse(BersihkanFormatAngka(TxtIsiUmumSedang.Text.Trim()))))
-                        cmd.Parameters.AddWithValue("@ISI_UMUM_BESAR", If(String.IsNullOrWhiteSpace(TxtIsiUmumBesar.Text.Trim()), 0, Integer.Parse(BersihkanFormatAngka(TxtIsiUmumBesar.Text.Trim()))))
+                        cmd.Parameters.AddWithValue("@ISI_UMUM_KECIL", ModuleAngka.ParseInteger(TxtIsiUmumKecil.Text))
+                        cmd.Parameters.AddWithValue("@ISI_UMUM_SEDANG", ModuleAngka.ParseInteger(TxtIsiUmumSedang.Text))
+                        cmd.Parameters.AddWithValue("@ISI_UMUM_BESAR", ModuleAngka.ParseInteger(TxtIsiUmumBesar.Text))
 
-                        ' Bersihkan dan parse harga jual umum
-                        cmd.Parameters.AddWithValue("@HARGA_JUAL_UMUM_KECIL", If(String.IsNullOrWhiteSpace(TxtHArgaJUalUmumKecil.Text.Trim()), 0D, Decimal.Parse(BersihkanFormatAngka(TxtHArgaJUalUmumKecil.Text.Trim()))))
-                        cmd.Parameters.AddWithValue("@HARGA_JUAL_UMUM_SEDANG", If(String.IsNullOrWhiteSpace(TxtHArgaJUalUmumSedang.Text.Trim()), 0D, Decimal.Parse(BersihkanFormatAngka(TxtHArgaJUalUmumSedang.Text.Trim()))))
-                        cmd.Parameters.AddWithValue("@HARGA_JUAL_UMUM_BESAR", If(String.IsNullOrWhiteSpace(TxtHArgaJUalUmumBesar.Text.Trim()), 0D, Decimal.Parse(BersihkanFormatAngka(TxtHArgaJUalUmumBesar.Text.Trim()))))
+                        cmd.Parameters.AddWithValue("@HARGA_JUAL_UMUM_KECIL", ModuleAngka.ParseDecimal(TxtHArgaJUalUmumKecil.Text))
+                        cmd.Parameters.AddWithValue("@HARGA_JUAL_UMUM_SEDANG", ModuleAngka.ParseDecimal(TxtHArgaJUalUmumSedang.Text))
+                        cmd.Parameters.AddWithValue("@HARGA_JUAL_UMUM_BESAR", ModuleAngka.ParseDecimal(TxtHArgaJUalUmumBesar.Text))
 
                         cmd.Parameters.AddWithValue("@SATUAN_PARTAI_KECIL", CmbSatPartaiKecil.Text)
                         cmd.Parameters.AddWithValue("@SATUAN_PARTAI_SEDANG", CmbSatPartaiSedang.Text)
                         cmd.Parameters.AddWithValue("@SATUAN_PARTAI_BESAR", CmbSatPartaiBesar.Text)
 
-                        ' Bersihkan dan parse isi partai
-                        cmd.Parameters.AddWithValue("@ISI_PARTAI_KECIL", If(String.IsNullOrWhiteSpace(TxtIsiPartaiKecil.Text.Trim()), 0, Integer.Parse(BersihkanFormatAngka(TxtIsiPartaiKecil.Text.Trim()))))
-                        cmd.Parameters.AddWithValue("@ISI_PARTAI_SEDANG", If(String.IsNullOrWhiteSpace(TxtIsiPartaiSedang.Text.Trim()), 0, Integer.Parse(BersihkanFormatAngka(TxtIsiPartaiSedang.Text.Trim()))))
-                        cmd.Parameters.AddWithValue("@ISI_PARTAI_BESAR", If(String.IsNullOrWhiteSpace(TxtIsiPartaiBesar.Text.Trim()), 0, Integer.Parse(BersihkanFormatAngka(TxtIsiPartaiBesar.Text.Trim()))))
+                        cmd.Parameters.AddWithValue("@ISI_PARTAI_KECIL", ModuleAngka.ParseInteger(TxtIsiPartaiKecil.Text))
+                        cmd.Parameters.AddWithValue("@ISI_PARTAI_SEDANG", ModuleAngka.ParseInteger(TxtIsiPartaiSedang.Text))
+                        cmd.Parameters.AddWithValue("@ISI_PARTAI_BESAR", ModuleAngka.ParseInteger(TxtIsiPartaiBesar.Text))
 
-                        ' Bersihkan dan parse harga jual partai
-                        cmd.Parameters.AddWithValue("@HARGA_JUAL_PARTAI_KECIL", If(String.IsNullOrWhiteSpace(TxtHArgaJualPartaikecil.Text.Trim()), 0D, Decimal.Parse(BersihkanFormatAngka(TxtHArgaJualPartaikecil.Text.Trim()))))
-                        cmd.Parameters.AddWithValue("@HARGA_JUAL_PARTAI_SEDANG", If(String.IsNullOrWhiteSpace(TxtHArgaJualPartaiSedang.Text.Trim()), 0D, Decimal.Parse(BersihkanFormatAngka(TxtHArgaJualPartaiSedang.Text.Trim()))))
-                        cmd.Parameters.AddWithValue("@HARGA_JUAL_PARTAI_BESAR", If(String.IsNullOrWhiteSpace(TxtHArgaJualPartaiBesar.Text.Trim()), 0D, Decimal.Parse(BersihkanFormatAngka(TxtHArgaJualPartaiBesar.Text.Trim()))))
+                        cmd.Parameters.AddWithValue("@HARGA_JUAL_PARTAI_KECIL", ModuleAngka.ParseDecimal(TxtHArgaJualPartaikecil.Text))
+                        cmd.Parameters.AddWithValue("@HARGA_JUAL_PARTAI_SEDANG", ModuleAngka.ParseDecimal(TxtHArgaJualPartaiSedang.Text))
+                        cmd.Parameters.AddWithValue("@HARGA_JUAL_PARTAI_BESAR", ModuleAngka.ParseDecimal(TxtHArgaJualPartaiBesar.Text))
 
-                        ' Bersihkan dan parse stok awal dan max
-                        If FormUtama.SLokasi.Text = "TOKO" Then
-                            cmd.Parameters.AddWithValue("@AWAL_TOKO", If(String.IsNullOrWhiteSpace(TxtStokAwal.Text.Trim()), 0D, Decimal.Parse(BersihkanFormatAngka(TxtStokAwal.Text.Trim()))))
+                        If FormUtama.StatusLokasi.Text = "TOKO" Then
+                            cmd.Parameters.AddWithValue("@AWAL_TOKO", ModuleAngka.ParseDecimal(TxtStokAwal.Text))
                             cmd.Parameters.AddWithValue("@AWAL_GUDANG", 0)
-                        ElseIf FormUtama.SLokasi.Text = "GUDANG" Then
+                        ElseIf FormUtama.StatusLokasi.Text = "GUDANG" Then
                             cmd.Parameters.AddWithValue("@AWAL_TOKO", 0)
-                            cmd.Parameters.AddWithValue("@AWAL_GUDANG", If(String.IsNullOrWhiteSpace(TxtStokAwal.Text.Trim()), 0D, Decimal.Parse(BersihkanFormatAngka(TxtStokAwal.Text.Trim()))))
+                            cmd.Parameters.AddWithValue("@AWAL_GUDANG", ModuleAngka.ParseDecimal(TxtStokAwal.Text))
                         End If
 
                         cmd.Parameters.AddWithValue("@SATUAN_STOK", CmbSatUmumKecil.Text)
-                        cmd.Parameters.AddWithValue("@SATUAN_ISI_STOK", If(String.IsNullOrWhiteSpace(TxtIsiUmumKecil.Text.Trim()), 0, Integer.Parse(BersihkanFormatAngka(TxtIsiUmumKecil.Text.Trim()))))
-                        cmd.Parameters.AddWithValue("@STOK_MIN", If(String.IsNullOrWhiteSpace(TextMin.Text.Trim()), 0, Decimal.Parse(BersihkanFormatAngka(TextMin.Text.Trim()))))
-                        cmd.Parameters.AddWithValue("@STOK_MAX", If(String.IsNullOrWhiteSpace(TxtStokMAx.Text.Trim()), 0, Decimal.Parse(BersihkanFormatAngka(TxtStokMAx.Text.Trim()))))
+                        cmd.Parameters.AddWithValue("@SATUAN_ISI_STOK", ModuleAngka.ParseInteger(TxtIsiUmumKecil.Text))
+                        cmd.Parameters.AddWithValue("@STOK_MIN", ModuleAngka.ParseDecimal(TextMin.Text))
+                        cmd.Parameters.AddWithValue("@STOK_MAX", ModuleAngka.ParseDecimal(TxtStokMAx.Text))
 
-                        If FormUtama.SLokasi.Text = "TOKO" Then
+                        If FormUtama.StatusLokasi.Text = "TOKO" Then
                             cmd.Parameters.AddWithValue("@LOKASI_RAK_TOKO", TxtLokasiRak.Text)
                             cmd.Parameters.AddWithValue("@LOKASI_RAK_GUDANG", "")
-                        ElseIf FormUtama.SLokasi.Text = "GUDANG" Then
+                        ElseIf FormUtama.StatusLokasi.Text = "GUDANG" Then
                             cmd.Parameters.AddWithValue("@LOKASI_RAK_TOKO", "")
                             cmd.Parameters.AddWithValue("@LOKASI_RAK_GUDANG", TxtLokasiRak.Text)
                         End If
 
-                        cmd.Parameters.AddWithValue("@POINT_MEMBER", If(String.IsNullOrWhiteSpace(TxtPointMember.Text.Trim()), 0D, Decimal.Parse(BersihkanFormatAngka(TxtPointMember.Text.Trim()))))
-                        cmd.Parameters.AddWithValue("@POINT_KARYAWAN", If(String.IsNullOrWhiteSpace(TxtPointKaryawan.Text.Trim()), 0D, Decimal.Parse(BersihkanFormatAngka(TxtPointKaryawan.Text.Trim()))))
-                        cmd.Parameters.AddWithValue("@KOMISI_SALES_RP", If(String.IsNullOrWhiteSpace(TxtKomisiSalesRp.Text.Trim()), 0D, Decimal.Parse(BersihkanFormatAngka(TxtKomisiSalesRp.Text.Trim()))))
-                        cmd.Parameters.AddWithValue("@KOMISI_SALES_PERSEN", If(String.IsNullOrWhiteSpace(TxtKomisiSalesPersen.Text.Trim()), 0D, Decimal.Parse(BersihkanFormatAngka(TxtKomisiSalesPersen.Text.Trim()))))
+                        cmd.Parameters.AddWithValue("@POINT_MEMBER", ModuleAngka.ParseDecimal(TxtPointMember.Text))
+                        cmd.Parameters.AddWithValue("@POINT_KARYAWAN", ModuleAngka.ParseDecimal(TxtPointKaryawan.Text))
+                        cmd.Parameters.AddWithValue("@KOMISI_SALES_RP", ModuleAngka.ParseDecimal(TxtKomisiSalesRp.Text))
+                        cmd.Parameters.AddWithValue("@KOMISI_SALES_PERSEN", ModuleAngka.ParseDecimal(TxtKomisiSalesPersen.Text))
 
                         cmd.ExecuteNonQuery()
                     End Using
 
                     If TotalNilaiBarang <> 0 Then
-                        Using cmd As New MySqlCommand("INSERT INTO JurnalUmum (NO_TRANSAKSI, TGL_TRANSAKSI, URAIAN, NAMA_AKUN_D, NOMOR_AKUN_D, NAMA_AKUN_K, NOMOR_AKUN_K, NOMINAL, JENIS_TRANSAKSI, LOKASI, ID_USER, ID_KOMPUTER) " &
-                            "VALUES (@NO_TRANSAKSI, @TGL_TRANSAKSI, @URAIAN, @NAMA_AKUN_D, @NOMOR_AKUN_D, @NAMA_AKUN_K, @NOMOR_AKUN_K, @NOMINAL, @JENIS_TRANSAKSI, @LOKASI, @ID_USER, @ID_KOMPUTER)", conn, transaction)
-
-                            cmd.Parameters.AddWithValue("@NO_TRANSAKSI", noTransaksi)
-                            cmd.Parameters.AddWithValue("@TGL_TRANSAKSI", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"))
-                            cmd.Parameters.AddWithValue("@URAIAN", "Tambah barang " & TxtNama.Text)
-                            cmd.Parameters.AddWithValue("@NAMA_AKUN_D", NAMA_REK_BARANG)
-                            cmd.Parameters.AddWithValue("@NOMOR_AKUN_D", KODE_REK_BARANG)
-                            cmd.Parameters.AddWithValue("@NAMA_AKUN_K", LAWAN_NAMA_REK_BARANG)
-                            cmd.Parameters.AddWithValue("@NOMOR_AKUN_K", LAWAN_KODE_REK_BARANG)
-                            cmd.Parameters.AddWithValue("@NOMINAL", TotalNilaiBarang)
-                            cmd.Parameters.AddWithValue("@JENIS_TRANSAKSI", "Tambah Barang")
-                            cmd.Parameters.AddWithValue("@LOKASI", FormUtama.SLokasi.Text)
-                            cmd.Parameters.AddWithValue("@ID_USER", FormUtama.SLogin.Text)
-                            cmd.Parameters.AddWithValue("@ID_KOMPUTER", FormUtama.Comp.Text)
-
+                        Using cmd As New MySqlCommand(
+                            "INSERT INTO JurnalUmum (NO_TRANSAKSI, TGL_TRANSAKSI, NO_NOTA, URAIAN, " &
+                            "NAMA_AKUN_D, NOMOR_AKUN_D, NAMA_AKUN_K, NOMOR_AKUN_K, " &
+                            "NOMINAL, JENIS_TRANSAKSI, LOKASI, ID_USER, ID_KOMPUTER) " &
+                            "VALUES (@no_trx, @tgl, @no_nota, @uraian, " &
+                            "@nama_akun_d, @nomor_akun_d, @nama_akun_k, @nomor_akun_k, " &
+                            "@nominal, @jenis, @lokasi, @user, @komputer)", conn, transaction)
+                            cmd.Parameters.AddWithValue("@no_trx", noTransaksi)
+                            cmd.Parameters.AddWithValue("@tgl", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"))
+                            cmd.Parameters.AddWithValue("@no_nota", TxtKode.Text)
+                            cmd.Parameters.AddWithValue("@uraian", "Tambah barang " & TxtNama.Text)
+                            cmd.Parameters.AddWithValue("@nama_akun_d", NAMA_REK_BARANG)
+                            cmd.Parameters.AddWithValue("@nomor_akun_d", KODE_REK_BARANG)
+                            cmd.Parameters.AddWithValue("@nama_akun_k", LAWAN_NAMA_REK_BARANG)
+                            cmd.Parameters.AddWithValue("@nomor_akun_k", LAWAN_KODE_REK_BARANG)
+                            cmd.Parameters.AddWithValue("@nominal", TotalNilaiBarang)
+                            cmd.Parameters.AddWithValue("@jenis", "TAMBAH BARANG")
+                            cmd.Parameters.AddWithValue("@lokasi", FormUtama.StatusLokasi.Text)
+                            cmd.Parameters.AddWithValue("@user", FormUtama.StatusNamaUser.Text)
+                            cmd.Parameters.AddWithValue("@komputer", FormUtama.StatusNamaPC.Text)
                             cmd.ExecuteNonQuery()
                         End Using
-
                     End If
 
 
+                    ' Update saldo akun jurnal secara realtime (hanya jika ada nilai barang)
+                    If TotalNilaiBarang <> 0 Then
+                        UpdateSaldoAkun(KODE_REK_BARANG, transaction)
+                        UpdateSaldoAkun(LAWAN_KODE_REK_BARANG, transaction)
+                    End If
+
+                    ' Recalculate stok barang
+                    Dim stokSebelumTambah As Decimal = BacaStokSaatIni(TxtKode.Text, FormUtama.StatusLokasi.Text, transaction)
+                    HitungStokPerubahan(TxtKode.Text, transaction)
+                    Dim stokSesudahTambah As Decimal = BacaStokSaatIni(TxtKode.Text, FormUtama.StatusLokasi.Text, transaction)
+                    Dim auditTambahBarang As New Dictionary(Of String, Decimal)() From {{TxtKode.Text, stokSesudahTambah - stokSebelumTambah}}
+                    AuditStokTransaksi(TxtKode.Text, "Tambah Barang Baru", Nothing, Nothing, Nothing, auditTambahBarang, transaction)
+
                     transaction.Commit()
 
-                    DatabaseModule.CatatanAksiHistory("Tambah barang " & TxtNama.Text)
-                    HitungByKode(TxtKode.Text)
+                    SyncTrigger.BarangBerubah(TxtKode.Text, "INSERT", ModuleVariabel.NamaUser)
                     Call Kondisiawal()
                     GenerateItemCodeAutomatically()
                     TxtNama.Focus()
@@ -1773,15 +1797,94 @@
 
             End If
 
-        ElseIf LblUtama.Text = "E D I T   B A R A N G" Then
+        ElseIf LblHeaderForm.Text = "E D I T   B A R A N G" Then
             Dim transaction As MySqlTransaction = conn.BeginTransaction()
             Try
+                ' ========================================
+                ' START: Audit Trail - Edit Barang
+                ' ========================================
+                Dim kodeBarang As String = TxtKode.Text
+                Dim sbSnapshot As New System.Text.StringBuilder()
+                Try
+                    Dim sqlLama As String = "SELECT NAMA_BARANG, KODE_KATEGORI, NAMA_KATEGORI, " &
+                        "KODE_SUPLIYER, NAMA_SUPLIYER, KODE_MERK, NAMA_MERK, " &
+                        "HARGA_BELI, HARGA_BELI_TERAKHIR, " &
+                        "BARCODE_KECIL, BARCODE_SEDANG, BARCODE_BESAR, " &
+                        "SATUAN_UMUM_KECIL, SATUAN_UMUM_SEDANG, SATUAN_UMUM_BESAR, " &
+                        "ISI_UMUM_KECIL, ISI_UMUM_SEDANG, ISI_UMUM_BESAR, " &
+                        "HARGA_JUAL_UMUM_KECIL, HARGA_JUAL_UMUM_SEDANG, HARGA_JUAL_UMUM_BESAR, " &
+                        "SATUAN_PARTAI_KECIL, SATUAN_PARTAI_SEDANG, SATUAN_PARTAI_BESAR, " &
+                        "ISI_PARTAI_KECIL, ISI_PARTAI_SEDANG, ISI_PARTAI_BESAR, " &
+                        "HARGA_JUAL_PARTAI_KECIL, HARGA_JUAL_PARTAI_SEDANG, HARGA_JUAL_PARTAI_BESAR, " &
+                        "AWAL_TOKO, AWAL_GUDANG, STOK_MIN, STOK_MAX, " &
+                        "LOKASI_RAK_TOKO, LOKASI_RAK_GUDANG, " &
+                        "POINT_MEMBER, POINT_KARYAWAN, KOMISI_SALES_RP, KOMISI_SALES_PERSEN " &
+                        "FROM tbl_barang WHERE ID_BARANG = @id LIMIT 1"
+                    Using cmdLama As New MySqlCommand(sqlLama, conn, transaction)
+                        cmdLama.Parameters.AddWithValue("@id", kodeBarang)
+                        Using rdLama As MySqlDataReader = cmdLama.ExecuteReader()
+                            If rdLama.Read() Then
+                                Dim namaBaru As String = StrConv(TxtNama.Text.Trim(), vbProperCase)
+                                Dim hargaBeliBaru As Decimal = ModuleAngka.ParseDecimal(TxtHrgBeli.Text)
+                                Dim hargaBeliTerakhirBaru As Decimal = ModuleAngka.ParseDecimal(TxtHargaBeliTerakhir.Text)
+                                Dim awallStokBaru As Decimal = ModuleAngka.ParseDecimal(TxtStokAwal.Text)
+                                Dim stokMinBaru As Decimal = ModuleAngka.ParseDecimal(TextMin.Text)
+                                Dim stokMaxBaru As Decimal = ModuleAngka.ParseDecimal(TxtStokMAx.Text)
+                                Dim rakBaru As String = If(FormUtama.StatusLokasi.Text = "TOKO", TxtLokasiRak.Text, TxtLokasiRak.Text)
+                                Dim pointMemberBaru As Decimal = ModuleAngka.ParseDecimal(TxtPointMember.Text)
+                                Dim pointKaryawanBaru As Decimal = ModuleAngka.ParseDecimal(TxtPointKaryawan.Text)
+                                Dim komisiSalesRpBaru As Decimal = ModuleAngka.ParseDecimal(TxtKomisiSalesRp.Text)
+                                Dim komisiSalesPersenBaru As Decimal = ModuleAngka.ParseDecimal(TxtKomisiSalesPersen.Text)
+
+                                sbSnapshot.AppendLine($"Kode Barang: {kodeBarang}")
+                                sbSnapshot.AppendLine($"Nama: {rdLama("NAMA_BARANG")} → {namaBaru}")
+                                sbSnapshot.AppendLine($"Kategori: {rdLama("KODE_KATEGORI")} - {rdLama("NAMA_KATEGORI")} → {TxtKategori.Text.Trim()} - {CmbKategori.Text.Trim()}")
+                                sbSnapshot.AppendLine($"Supplier: {rdLama("KODE_SUPLIYER")} - {rdLama("NAMA_SUPLIYER")} → {TxtKodeSupliyer.Text.Trim()} - {CmbSupliyer.Text.Trim()}")
+                                sbSnapshot.AppendLine($"Merk: {rdLama("KODE_MERK")} - {rdLama("NAMA_MERK")} → {TxtMerk.Text.Trim()} - {CmbMerk.Text.Trim()}")
+                                sbSnapshot.AppendLine($"Harga Beli: {ModuleAngka.FormatRupiah(ModuleAngka.ParseDecimal(rdLama("HARGA_BELI")))} → {ModuleAngka.FormatRupiah(hargaBeliBaru)}")
+                                sbSnapshot.AppendLine($"Harga Beli Terakhir: {ModuleAngka.FormatRupiah(ModuleAngka.ParseDecimal(rdLama("HARGA_BELI_TERAKHIR")))} → {ModuleAngka.FormatRupiah(hargaBeliTerakhirBaru)}")
+                                sbSnapshot.AppendLine($"Barcode Kecil: {rdLama("BARCODE_KECIL")} → {TxtBarcodeUmumKecil.Text.Trim()}")
+                                sbSnapshot.AppendLine($"Barcode Sedang: {rdLama("BARCODE_SEDANG")} → {TxtBarcodeUmumSedang.Text.Trim()}")
+                                sbSnapshot.AppendLine($"Barcode Besar: {rdLama("BARCODE_BESAR")} → {TxtBarcodeUmumBesar.Text.Trim()}")
+                                sbSnapshot.AppendLine($"Satuan Umum Kecil: {rdLama("SATUAN_UMUM_KECIL")} (isi: {rdLama("ISI_UMUM_KECIL")}) → {CmbSatUmumKecil.Text} (isi: {TxtIsiUmumKecil.Text})")
+                                sbSnapshot.AppendLine($"Satuan Umum Sedang: {rdLama("SATUAN_UMUM_SEDANG")} (isi: {rdLama("ISI_UMUM_SEDANG")}) → {CmbSatUmumSedang.Text} (isi: {TxtIsiUmumSedang.Text})")
+                                sbSnapshot.AppendLine($"Satuan Umum Besar: {rdLama("SATUAN_UMUM_BESAR")} (isi: {rdLama("ISI_UMUM_BESAR")}) → {CmbSatUmumBesar.Text} (isi: {TxtIsiUmumBesar.Text})")
+                                sbSnapshot.AppendLine($"Harga Jual Umum Kecil: {ModuleAngka.FormatRupiah(ModuleAngka.ParseDecimal(rdLama("HARGA_JUAL_UMUM_KECIL")))} → {ModuleAngka.FormatRupiah(ModuleAngka.ParseDecimal(TxtHArgaJUalUmumKecil.Text))}")
+                                sbSnapshot.AppendLine($"Harga Jual Umum Sedang: {ModuleAngka.FormatRupiah(ModuleAngka.ParseDecimal(rdLama("HARGA_JUAL_UMUM_SEDANG")))} → {ModuleAngka.FormatRupiah(ModuleAngka.ParseDecimal(TxtHArgaJUalUmumSedang.Text))}")
+                                sbSnapshot.AppendLine($"Harga Jual Umum Besar: {ModuleAngka.FormatRupiah(ModuleAngka.ParseDecimal(rdLama("HARGA_JUAL_UMUM_BESAR")))} → {ModuleAngka.FormatRupiah(ModuleAngka.ParseDecimal(TxtHArgaJUalUmumBesar.Text))}")
+                                sbSnapshot.AppendLine($"Satuan Partai Kecil: {rdLama("SATUAN_PARTAI_KECIL")} (isi: {rdLama("ISI_PARTAI_KECIL")}) → {CmbSatPartaiKecil.Text} (isi: {TxtIsiPartaiKecil.Text})")
+                                sbSnapshot.AppendLine($"Satuan Partai Sedang: {rdLama("SATUAN_PARTAI_SEDANG")} (isi: {rdLama("ISI_PARTAI_SEDANG")}) → {CmbSatPartaiSedang.Text} (isi: {TxtIsiPartaiSedang.Text})")
+                                sbSnapshot.AppendLine($"Satuan Partai Besar: {rdLama("SATUAN_PARTAI_BESAR")} (isi: {rdLama("ISI_PARTAI_BESAR")}) → {CmbSatPartaiBesar.Text} (isi: {TxtIsiPartaiBesar.Text})")
+                                sbSnapshot.AppendLine($"Harga Jual Partai Kecil: {ModuleAngka.FormatRupiah(ModuleAngka.ParseDecimal(rdLama("HARGA_JUAL_PARTAI_KECIL")))} → {ModuleAngka.FormatRupiah(ModuleAngka.ParseDecimal(TxtHArgaJualPartaikecil.Text))}")
+                                sbSnapshot.AppendLine($"Harga Jual Partai Sedang: {ModuleAngka.FormatRupiah(ModuleAngka.ParseDecimal(rdLama("HARGA_JUAL_PARTAI_SEDANG")))} → {ModuleAngka.FormatRupiah(ModuleAngka.ParseDecimal(TxtHArgaJualPartaiSedang.Text))}")
+                                sbSnapshot.AppendLine($"Harga Jual Partai Besar: {ModuleAngka.FormatRupiah(ModuleAngka.ParseDecimal(rdLama("HARGA_JUAL_PARTAI_BESAR")))} → {ModuleAngka.FormatRupiah(ModuleAngka.ParseDecimal(TxtHArgaJualPartaiBesar.Text))}")
+                                sbSnapshot.AppendLine($"Awal Stok: {ModuleAngka.FormatRupiah(ModuleAngka.ParseDecimal(rdLama("AWAL_TOKO")))} (Toko) / {ModuleAngka.FormatRupiah(ModuleAngka.ParseDecimal(rdLama("AWAL_GUDANG")))} (Gudang) → {ModuleAngka.FormatRupiah(awallStokBaru)}")
+                                sbSnapshot.AppendLine($"Stok Min: {ModuleAngka.FormatRupiah(ModuleAngka.ParseDecimal(rdLama("STOK_MIN")))} → {ModuleAngka.FormatRupiah(stokMinBaru)}")
+                                sbSnapshot.AppendLine($"Stok Max: {ModuleAngka.FormatRupiah(ModuleAngka.ParseDecimal(rdLama("STOK_MAX")))} → {ModuleAngka.FormatRupiah(stokMaxBaru)}")
+                                sbSnapshot.AppendLine($"Lokasi Rak: {If(FormUtama.StatusLokasi.Text = "TOKO", rdLama("LOKASI_RAK_TOKO"), rdLama("LOKASI_RAK_GUDANG"))} → {rakBaru}")
+                                sbSnapshot.AppendLine($"Point Member: {ModuleAngka.FormatRupiah(ModuleAngka.ParseDecimal(rdLama("POINT_MEMBER")))} → {ModuleAngka.FormatRupiah(pointMemberBaru)}")
+                                sbSnapshot.AppendLine($"Point Karyawan: {ModuleAngka.FormatRupiah(ModuleAngka.ParseDecimal(rdLama("POINT_KARYAWAN")))} → {ModuleAngka.FormatRupiah(pointKaryawanBaru)}")
+                                sbSnapshot.AppendLine($"Komisi Sales (Rp): {ModuleAngka.FormatRupiah(ModuleAngka.ParseDecimal(rdLama("KOMISI_SALES_RP")))} → {ModuleAngka.FormatRupiah(komisiSalesRpBaru)}")
+                                sbSnapshot.AppendLine($"Komisi Sales (%): {ModuleAngka.FormatRupiah(ModuleAngka.ParseDecimal(rdLama("KOMISI_SALES_PERSEN")))} → {ModuleAngka.FormatRupiah(komisiSalesPersenBaru)}")
+                            End If
+                        End Using
+                    End Using
+                Catch exDiff As Exception
+                    sbSnapshot.AppendLine($"Gagal baca data sebelum edit: {exDiff.Message}")
+                End Try
+                ModuleAuditTrail.CatatAuditMaster("BRG:" & kodeBarang, "EDIT", "Master Barang", sbSnapshot.ToString(), trans:=transaction)
+                ' ========================================
+                ' END: Audit Trail - Edit Barang
+                ' ========================================
+
                 Dim query As String = "UPDATE tbl_barang SET " &
                          "NAMA_BARANG = @NAMA_BARANG, " &
                          "KODE_KATEGORI = @KODE_KATEGORI, " &
                          "NAMA_KATEGORI = @NAMA_KATEGORI, " &
                          "KODE_SUPLIYER = @KODE_SUPLIYER, " &
                          "NAMA_SUPLIYER = @NAMA_SUPLIYER, " &
+                         "KODE_MERK = @KODE_MERK, " &
+                         "NAMA_MERK = @NAMA_MERK, " &
                          "HARGA_BELI = @HARGA_BELI, " &
                          "HARGA_BELI_TERAKHIR = @HARGA_BELI_TERAKHIR, " &
                          "BARCODE_KECIL = @BARCODE_KECIL, " &
@@ -1806,7 +1909,7 @@
                          "HARGA_JUAL_PARTAI_SEDANG = @HARGA_JUAL_PARTAI_SEDANG, " &
                          "HARGA_JUAL_PARTAI_BESAR = @HARGA_JUAL_PARTAI_BESAR, "
 
-                If FormUtama.SLokasi.Text = "TOKO" Then
+                If FormUtama.StatusLokasi.Text = "TOKO" Then
                     query &= "AWAL_TOKO = @AWAL_STOK, " &
                               "SATUAN_STOK = @SATUAN_STOK, " &
                               "SATUAN_ISI_STOK = @SATUAN_ISI_STOK, " &
@@ -1838,90 +1941,138 @@
                     cmd.Parameters.AddWithValue("@NAMA_KATEGORI", CmbKategori.Text.Trim())
                     cmd.Parameters.AddWithValue("@KODE_SUPLIYER", TxtKodeSupliyer.Text.Trim())
                     cmd.Parameters.AddWithValue("@NAMA_SUPLIYER", CmbSupliyer.Text.Trim())
-                    cmd.Parameters.AddWithValue("@HARGA_BELI", If(String.IsNullOrWhiteSpace(TxtHrgBeli.Text.Trim()), 0D, Decimal.Parse(BersihkanFormatAngka(TxtHrgBeli.Text.Trim()))))
-                    cmd.Parameters.AddWithValue("@HARGA_BELI_TERAKHIR", If(String.IsNullOrWhiteSpace(TxtHargaBeliTerakhir.Text.Trim()), 0D, Decimal.Parse(BersihkanFormatAngka(TxtHargaBeliTerakhir.Text.Trim()))))
+                    cmd.Parameters.AddWithValue("@KODE_MERK", TxtMerk.Text.Trim())
+                    cmd.Parameters.AddWithValue("@NAMA_MERK", CmbMerk.Text.Trim())
+                    cmd.Parameters.AddWithValue("@HARGA_BELI", ModuleAngka.ParseDecimal(TxtHrgBeli.Text))
+                    cmd.Parameters.AddWithValue("@HARGA_BELI_TERAKHIR", ModuleAngka.ParseDecimal(TxtHargaBeliTerakhir.Text))
                     cmd.Parameters.AddWithValue("@BARCODE_KECIL", TxtBarcodeUmumKecil.Text.Trim())
                     cmd.Parameters.AddWithValue("@BARCODE_SEDANG", TxtBarcodeUmumSedang.Text.Trim())
                     cmd.Parameters.AddWithValue("@BARCODE_BESAR", TxtBarcodeUmumBesar.Text.Trim())
                     cmd.Parameters.AddWithValue("@SATUAN_UMUM_KECIL", CmbSatUmumKecil.Text)
                     cmd.Parameters.AddWithValue("@SATUAN_UMUM_SEDANG", CmbSatUmumSedang.Text)
                     cmd.Parameters.AddWithValue("@SATUAN_UMUM_BESAR", CmbSatUmumBesar.Text)
-                    cmd.Parameters.AddWithValue("@ISI_UMUM_KECIL", If(String.IsNullOrWhiteSpace(TxtIsiUmumKecil.Text.Trim()), 0, Integer.Parse(BersihkanFormatAngka(TxtIsiUmumKecil.Text.Trim()))))
-                    cmd.Parameters.AddWithValue("@ISI_UMUM_SEDANG", If(String.IsNullOrWhiteSpace(TxtIsiUmumSedang.Text.Trim()), 0, Integer.Parse(BersihkanFormatAngka(TxtIsiUmumSedang.Text.Trim()))))
-                    cmd.Parameters.AddWithValue("@ISI_UMUM_BESAR", If(String.IsNullOrWhiteSpace(TxtIsiUmumBesar.Text.Trim()), 0, Integer.Parse(BersihkanFormatAngka(TxtIsiUmumBesar.Text.Trim()))))
-                    cmd.Parameters.AddWithValue("@HARGA_JUAL_UMUM_KECIL", If(String.IsNullOrWhiteSpace(TxtHArgaJUalUmumKecil.Text.Trim()), 0D, Decimal.Parse(BersihkanFormatAngka(TxtHArgaJUalUmumKecil.Text.Trim()))))
-                    cmd.Parameters.AddWithValue("@HARGA_JUAL_UMUM_SEDANG", If(String.IsNullOrWhiteSpace(TxtHArgaJUalUmumSedang.Text.Trim()), 0D, Decimal.Parse(BersihkanFormatAngka(TxtHArgaJUalUmumSedang.Text.Trim()))))
-                    cmd.Parameters.AddWithValue("@HARGA_JUAL_UMUM_BESAR", If(String.IsNullOrWhiteSpace(TxtHArgaJUalUmumBesar.Text.Trim()), 0D, Decimal.Parse(BersihkanFormatAngka(TxtHArgaJUalUmumBesar.Text.Trim()))))
+                    cmd.Parameters.AddWithValue("@ISI_UMUM_KECIL", ModuleAngka.ParseInteger(TxtIsiUmumKecil.Text))
+                    cmd.Parameters.AddWithValue("@ISI_UMUM_SEDANG", ModuleAngka.ParseInteger(TxtIsiUmumSedang.Text))
+                    cmd.Parameters.AddWithValue("@ISI_UMUM_BESAR", ModuleAngka.ParseInteger(TxtIsiUmumBesar.Text))
+                    cmd.Parameters.AddWithValue("@HARGA_JUAL_UMUM_KECIL", ModuleAngka.ParseDecimal(TxtHArgaJUalUmumKecil.Text))
+                    cmd.Parameters.AddWithValue("@HARGA_JUAL_UMUM_SEDANG", ModuleAngka.ParseDecimal(TxtHArgaJUalUmumSedang.Text))
+                    cmd.Parameters.AddWithValue("@HARGA_JUAL_UMUM_BESAR", ModuleAngka.ParseDecimal(TxtHArgaJUalUmumBesar.Text))
                     cmd.Parameters.AddWithValue("@SATUAN_PARTAI_KECIL", CmbSatPartaiKecil.Text)
                     cmd.Parameters.AddWithValue("@SATUAN_PARTAI_SEDANG", CmbSatPartaiSedang.Text)
                     cmd.Parameters.AddWithValue("@SATUAN_PARTAI_BESAR", CmbSatPartaiBesar.Text)
-                    cmd.Parameters.AddWithValue("@ISI_PARTAI_KECIL", If(String.IsNullOrWhiteSpace(TxtIsiPartaiKecil.Text.Trim()), 0, Integer.Parse(BersihkanFormatAngka(TxtIsiPartaiKecil.Text.Trim()))))
-                    cmd.Parameters.AddWithValue("@ISI_PARTAI_SEDANG", If(String.IsNullOrWhiteSpace(TxtIsiPartaiSedang.Text.Trim()), 0, Integer.Parse(BersihkanFormatAngka(TxtIsiPartaiSedang.Text.Trim()))))
-                    cmd.Parameters.AddWithValue("@ISI_PARTAI_BESAR", If(String.IsNullOrWhiteSpace(TxtIsiPartaiBesar.Text.Trim()), 0, Integer.Parse(BersihkanFormatAngka(TxtIsiPartaiBesar.Text.Trim()))))
-                    cmd.Parameters.AddWithValue("@HARGA_JUAL_PARTAI_KECIL", If(String.IsNullOrWhiteSpace(TxtHArgaJualPartaikecil.Text.Trim()), 0D, Decimal.Parse(BersihkanFormatAngka(TxtHArgaJualPartaikecil.Text.Trim()))))
-                    cmd.Parameters.AddWithValue("@HARGA_JUAL_PARTAI_SEDANG", If(String.IsNullOrWhiteSpace(TxtHArgaJualPartaiSedang.Text.Trim()), 0D, Decimal.Parse(BersihkanFormatAngka(TxtHArgaJualPartaiSedang.Text.Trim()))))
-                    cmd.Parameters.AddWithValue("@HARGA_JUAL_PARTAI_BESAR", If(String.IsNullOrWhiteSpace(TxtHArgaJualPartaiBesar.Text.Trim()), 0D, Decimal.Parse(BersihkanFormatAngka(TxtHArgaJualPartaiBesar.Text.Trim()))))
-                    cmd.Parameters.AddWithValue("@AWAL_STOK", If(String.IsNullOrWhiteSpace(TxtStokAwal.Text.Trim()), 0D, Decimal.Parse(BersihkanFormatAngka(TxtStokAwal.Text.Trim()))))
-                    cmd.Parameters.AddWithValue("@STOK_MIN", If(String.IsNullOrWhiteSpace(TextMin.Text.Trim()), 0, Integer.Parse(BersihkanFormatAngka(TextMin.Text.Trim()))))
+                    cmd.Parameters.AddWithValue("@ISI_PARTAI_KECIL", ModuleAngka.ParseInteger(TxtIsiPartaiKecil.Text))
+                    cmd.Parameters.AddWithValue("@ISI_PARTAI_SEDANG", ModuleAngka.ParseInteger(TxtIsiPartaiSedang.Text))
+                    cmd.Parameters.AddWithValue("@ISI_PARTAI_BESAR", ModuleAngka.ParseInteger(TxtIsiPartaiBesar.Text))
+                    cmd.Parameters.AddWithValue("@HARGA_JUAL_PARTAI_KECIL", ModuleAngka.ParseDecimal(TxtHArgaJualPartaikecil.Text))
+                    cmd.Parameters.AddWithValue("@HARGA_JUAL_PARTAI_SEDANG", ModuleAngka.ParseDecimal(TxtHArgaJualPartaiSedang.Text))
+                    cmd.Parameters.AddWithValue("@HARGA_JUAL_PARTAI_BESAR", ModuleAngka.ParseDecimal(TxtHArgaJualPartaiBesar.Text))
+                    cmd.Parameters.AddWithValue("@AWAL_STOK", ModuleAngka.ParseDecimal(TxtStokAwal.Text))
+                    cmd.Parameters.AddWithValue("@STOK_MIN", ModuleAngka.ParseDecimal(TextMin.Text))
                     cmd.Parameters.AddWithValue("@SATUAN_STOK", CmbSatUmumKecil.Text)
-                    cmd.Parameters.AddWithValue("@SATUAN_ISI_STOK", If(String.IsNullOrWhiteSpace(TxtIsiUmumKecil.Text.Trim()), 0, Integer.Parse(TxtIsiUmumKecil.Text.Trim())))
-                    cmd.Parameters.AddWithValue("@STOK_MAX", If(String.IsNullOrWhiteSpace(TxtStokMAx.Text.Trim()), 0, Integer.Parse(BersihkanFormatAngka(TxtStokMAx.Text.Trim()))))
+                    cmd.Parameters.AddWithValue("@SATUAN_ISI_STOK", ModuleAngka.ParseInteger(TxtIsiUmumKecil.Text))
+                    cmd.Parameters.AddWithValue("@STOK_MAX", ModuleAngka.ParseDecimal(TxtStokMAx.Text))
                     cmd.Parameters.AddWithValue("@LOKASI_RAK", TxtLokasiRak.Text)
-                    cmd.Parameters.AddWithValue("@POINT_MEMBER", If(String.IsNullOrWhiteSpace(TxtPointMember.Text.Trim()), 0D, Decimal.Parse(BersihkanFormatAngka(TxtPointMember.Text.Trim()))))
-                    cmd.Parameters.AddWithValue("@POINT_KARYAWAN", If(String.IsNullOrWhiteSpace(TxtPointKaryawan.Text.Trim()), 0D, Decimal.Parse(BersihkanFormatAngka(TxtPointKaryawan.Text.Trim()))))
-                    cmd.Parameters.AddWithValue("@KOMISI_SALES_RP", If(String.IsNullOrWhiteSpace(TxtKomisiSalesRp.Text.Trim()), 0D, Decimal.Parse(BersihkanFormatAngka(TxtKomisiSalesRp.Text.Trim()))))
-                    cmd.Parameters.AddWithValue("@KOMISI_SALES_PERSEN", If(String.IsNullOrWhiteSpace(TxtKomisiSalesPersen.Text.Trim()), 0D, Decimal.Parse(BersihkanFormatAngka(TxtKomisiSalesPersen.Text.Trim()))))
+                    cmd.Parameters.AddWithValue("@POINT_MEMBER", ModuleAngka.ParseDecimal(TxtPointMember.Text))
+                    cmd.Parameters.AddWithValue("@POINT_KARYAWAN", ModuleAngka.ParseDecimal(TxtPointKaryawan.Text))
+                    cmd.Parameters.AddWithValue("@KOMISI_SALES_RP", ModuleAngka.ParseDecimal(TxtKomisiSalesRp.Text))
+                    cmd.Parameters.AddWithValue("@KOMISI_SALES_PERSEN", ModuleAngka.ParseDecimal(TxtKomisiSalesPersen.Text))
                     cmd.Parameters.AddWithValue("@ID_BARANG", TxtKode.Text)
 
                     cmd.ExecuteNonQuery()
                 End Using
 
-
-
                 If SelisihNilaiBarang <> 0 Then
-                    Using cmd As New MySqlCommand("INSERT INTO JurnalUmum (NO_TRANSAKSI, TGL_TRANSAKSI, URAIAN, NAMA_AKUN_D, NOMOR_AKUN_D, NAMA_AKUN_K, NOMOR_AKUN_K, NOMINAL, JENIS_TRANSAKSI, LOKASI, ID_USER, ID_KOMPUTER) " &
-                           "VALUES (@NO_TRANSAKSI, @TGL_TRANSAKSI, @URAIAN, @NAMA_AKUN_D, @NOMOR_AKUN_D, @NAMA_AKUN_K, @NOMOR_AKUN_K, @NOMINAL, @JENIS_TRANSAKSI, @LOKASI, @ID_USER, @ID_KOMPUTER)", conn, transaction)
+                    Dim namaAkunD As String = If(SelisihNilaiBarang > 0, NAMA_REK_BARANG, LAWAN_NAMA_REK_BARANG)
+                    Dim nomorAkunD As String = If(SelisihNilaiBarang > 0, KODE_REK_BARANG, LAWAN_KODE_REK_BARANG)
+                    Dim namaAkunK As String = If(SelisihNilaiBarang > 0, LAWAN_NAMA_REK_BARANG, NAMA_REK_BARANG)
+                    Dim nomorAkunK As String = If(SelisihNilaiBarang > 0, LAWAN_KODE_REK_BARANG, KODE_REK_BARANG)
 
-                        cmd.Parameters.AddWithValue("@NO_TRANSAKSI", noTransaksi)
-                        cmd.Parameters.AddWithValue("@TGL_TRANSAKSI", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"))
-                        cmd.Parameters.AddWithValue("@URAIAN", "Edit barang " & TxtNama.Text)
-
-                        If SelisihNilaiBarang > 0 Then
-                            cmd.Parameters.AddWithValue("@NAMA_AKUN_D", NAMA_REK_BARANG)
-                            cmd.Parameters.AddWithValue("@NOMOR_AKUN_D", KODE_REK_BARANG)
-                            cmd.Parameters.AddWithValue("@NAMA_AKUN_K", LAWAN_NAMA_REK_BARANG)
-                            cmd.Parameters.AddWithValue("@NOMOR_AKUN_K", LAWAN_KODE_REK_BARANG)
-                        Else
-                            cmd.Parameters.AddWithValue("@NAMA_AKUN_D", LAWAN_NAMA_REK_BARANG)
-                            cmd.Parameters.AddWithValue("@NOMOR_AKUN_D", LAWAN_KODE_REK_BARANG)
-                            cmd.Parameters.AddWithValue("@NAMA_AKUN_K", NAMA_REK_BARANG)
-                            cmd.Parameters.AddWithValue("@NOMOR_AKUN_K", KODE_REK_BARANG)
-                        End If
-
-                        cmd.Parameters.AddWithValue("@NOMINAL", Math.Abs(SelisihNilaiBarang))
-                        cmd.Parameters.AddWithValue("@JENIS_TRANSAKSI", "Edit Barang")
-                        cmd.Parameters.AddWithValue("@LOKASI", FormUtama.SLokasi.Text)
-                        cmd.Parameters.AddWithValue("@ID_USER", FormUtama.SLogin.Text)
-                        cmd.Parameters.AddWithValue("@ID_KOMPUTER", FormUtama.Comp.Text)
-
+                    Using cmd As New MySqlCommand(
+                        "INSERT INTO JurnalUmum (NO_TRANSAKSI, TGL_TRANSAKSI, NO_NOTA, URAIAN, " &
+                        "NAMA_AKUN_D, NOMOR_AKUN_D, NAMA_AKUN_K, NOMOR_AKUN_K, " &
+                        "NOMINAL, JENIS_TRANSAKSI, LOKASI, ID_USER, ID_KOMPUTER) " &
+                        "VALUES (@no_trx, @tgl, @no_nota, @uraian, " &
+                        "@nama_akun_d, @nomor_akun_d, @nama_akun_k, @nomor_akun_k, " &
+                        "@nominal, @jenis, @lokasi, @user, @komputer)", conn, transaction)
+                        cmd.Parameters.AddWithValue("@no_trx", noTransaksi)
+                        cmd.Parameters.AddWithValue("@tgl", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"))
+                        cmd.Parameters.AddWithValue("@no_nota", TxtKode.Text)
+                        cmd.Parameters.AddWithValue("@uraian", "Edit barang " & TxtNama.Text)
+                        cmd.Parameters.AddWithValue("@nama_akun_d", namaAkunD)
+                        cmd.Parameters.AddWithValue("@nomor_akun_d", nomorAkunD)
+                        cmd.Parameters.AddWithValue("@nama_akun_k", namaAkunK)
+                        cmd.Parameters.AddWithValue("@nomor_akun_k", nomorAkunK)
+                        cmd.Parameters.AddWithValue("@nominal", Math.Abs(SelisihNilaiBarang))
+                        cmd.Parameters.AddWithValue("@jenis", "EDIT BARANG")
+                        cmd.Parameters.AddWithValue("@lokasi", FormUtama.StatusLokasi.Text)
+                        cmd.Parameters.AddWithValue("@user", FormUtama.StatusNamaUser.Text)
+                        cmd.Parameters.AddWithValue("@komputer", FormUtama.StatusNamaPC.Text)
                         cmd.ExecuteNonQuery()
                     End Using
-
                 End If
+
+                ' Update saldo akun jurnal secara realtime (hanya jika ada selisih nilai)
+                If SelisihNilaiBarang <> 0 Then
+                    UpdateSaldoAkun(KODE_REK_BARANG, transaction)
+                    UpdateSaldoAkun(LAWAN_KODE_REK_BARANG, transaction)
+                End If
+
+                ' Recalculate stok barang
+                Dim stokSebelumEdit As Decimal = BacaStokSaatIni(TxtKode.Text, FormUtama.StatusLokasi.Text, transaction)
+                HitungStokPerubahan(TxtKode.Text, transaction)
+                Dim stokSesudahEdit As Decimal = BacaStokSaatIni(TxtKode.Text, FormUtama.StatusLokasi.Text, transaction)
+                Dim auditEditBarang As New Dictionary(Of String, Decimal)() From {{TxtKode.Text, Math.Abs(stokSesudahEdit - stokSebelumEdit)}}
+                AuditStokTransaksi(TxtKode.Text, "Edit Barang", Nothing, Nothing, Nothing, auditEditBarang, transaction)
 
                 transaction.Commit()
 
-                DatabaseModule.CatatanAksiHistory("Edit barang " & TxtNama.Text)
-                HitungByKode(TxtKode.Text)
+                SyncTrigger.BarangBerubah(TxtKode.Text, "UPDATE", ModuleVariabel.NamaUser)
                 Close()
             Catch ex As Exception
                 transaction.Rollback()
                 MessageBox.Show("Terjadi kesalahan: " & ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
             End Try
 
-        ElseIf LblUtama.Text = "EDIT HARGA JUAL DARI PEMBELIAN" Or LblUtama.Text = "EDIT HARGA JUAL DARI PENJUALAN" Then
+        ElseIf LblHeaderForm.Text = "EDIT HARGA JUAL DARI PEMBELIAN" Or LblHeaderForm.Text = "EDIT HARGA JUAL DARI PENJUALAN" Then
             Dim transaction As MySqlTransaction = conn.BeginTransaction()
             Try
+                ' ========================================
+                ' START: Audit Trail - Edit Harga Jual
+                ' ========================================
+                Dim kodeBarang As String = TxtKode.Text
+                Dim sbSnapshot As New System.Text.StringBuilder()
+                Try
+                    Dim sqlLama As String = "SELECT NAMA_BARANG, " &
+                        "SATUAN_UMUM_KECIL, SATUAN_UMUM_SEDANG, SATUAN_UMUM_BESAR, " &
+                        "ISI_UMUM_KECIL, ISI_UMUM_SEDANG, ISI_UMUM_BESAR, " &
+                        "HARGA_JUAL_UMUM_KECIL, HARGA_JUAL_UMUM_SEDANG, HARGA_JUAL_UMUM_BESAR, " &
+                        "SATUAN_PARTAI_KECIL, SATUAN_PARTAI_SEDANG, SATUAN_PARTAI_BESAR, " &
+                        "ISI_PARTAI_KECIL, ISI_PARTAI_SEDANG, ISI_PARTAI_BESAR, " &
+                        "HARGA_JUAL_PARTAI_KECIL, HARGA_JUAL_PARTAI_SEDANG, HARGA_JUAL_PARTAI_BESAR " &
+                        "FROM tbl_barang WHERE ID_BARANG = @id LIMIT 1"
+                    Using cmdLama As New MySqlCommand(sqlLama, conn, transaction)
+                        cmdLama.Parameters.AddWithValue("@id", kodeBarang)
+                        Using rdLama As MySqlDataReader = cmdLama.ExecuteReader()
+                            If rdLama.Read() Then
+                                sbSnapshot.AppendLine($"Kode Barang: {kodeBarang}")
+                                sbSnapshot.AppendLine($"Nama Barang: {rdLama("NAMA_BARANG")}")
+                                sbSnapshot.AppendLine($"Harga Jual Umum Kecil: {ModuleAngka.FormatRupiah(ModuleAngka.ParseDecimal(rdLama("HARGA_JUAL_UMUM_KECIL")))} → {ModuleAngka.FormatRupiah(ModuleAngka.ParseDecimal(TxtHArgaJUalUmumKecil.Text))}")
+                                sbSnapshot.AppendLine($"Harga Jual Umum Sedang: {ModuleAngka.FormatRupiah(ModuleAngka.ParseDecimal(rdLama("HARGA_JUAL_UMUM_SEDANG")))} → {ModuleAngka.FormatRupiah(ModuleAngka.ParseDecimal(TxtHArgaJUalUmumSedang.Text))}")
+                                sbSnapshot.AppendLine($"Harga Jual Umum Besar: {ModuleAngka.FormatRupiah(ModuleAngka.ParseDecimal(rdLama("HARGA_JUAL_UMUM_BESAR")))} → {ModuleAngka.FormatRupiah(ModuleAngka.ParseDecimal(TxtHArgaJUalUmumBesar.Text))}")
+                                sbSnapshot.AppendLine($"Harga Jual Partai Kecil: {ModuleAngka.FormatRupiah(ModuleAngka.ParseDecimal(rdLama("HARGA_JUAL_PARTAI_KECIL")))} → {ModuleAngka.FormatRupiah(ModuleAngka.ParseDecimal(TxtHArgaJualPartaikecil.Text))}")
+                                sbSnapshot.AppendLine($"Harga Jual Partai Sedang: {ModuleAngka.FormatRupiah(ModuleAngka.ParseDecimal(rdLama("HARGA_JUAL_PARTAI_SEDANG")))} → {ModuleAngka.FormatRupiah(ModuleAngka.ParseDecimal(TxtHArgaJualPartaiSedang.Text))}")
+                                sbSnapshot.AppendLine($"Harga Jual Partai Besar: {ModuleAngka.FormatRupiah(ModuleAngka.ParseDecimal(rdLama("HARGA_JUAL_PARTAI_BESAR")))} → {ModuleAngka.FormatRupiah(ModuleAngka.ParseDecimal(TxtHArgaJualPartaiBesar.Text))}")
+                            End If
+                        End Using
+                    End Using
+                Catch exDiff As Exception
+                    sbSnapshot.AppendLine($"Gagal baca data sebelum edit: {exDiff.Message}")
+                End Try
+                ModuleAuditTrail.CatatAuditMaster("BRG:" & kodeBarang, "EDIT", "Edit Harga Jual", sbSnapshot.ToString(), trans:=transaction)
+                ' ========================================
+                ' END: Audit Trail - Edit Harga Jual
+                ' ========================================
+
                 Dim sql As String = "UPDATE tbl_barang SET " &
     "SATUAN_UMUM_KECIL=@SATUAN_UMUM_KECIL, SATUAN_UMUM_SEDANG=@SATUAN_UMUM_SEDANG, SATUAN_UMUM_BESAR=@SATUAN_UMUM_BESAR, " &
     "ISI_UMUM_KECIL=@ISI_UMUM_KECIL, ISI_UMUM_SEDANG=@ISI_UMUM_SEDANG, ISI_UMUM_BESAR=@ISI_UMUM_BESAR, " &
@@ -1937,67 +2088,56 @@
                     cmd.Parameters.AddWithValue("@SATUAN_UMUM_SEDANG", CmbSatUmumSedang.Text)
                     cmd.Parameters.AddWithValue("@SATUAN_UMUM_BESAR", CmbSatUmumBesar.Text)
 
-                    ' Bersihkan format angka sebelum parsing
-                    cmd.Parameters.AddWithValue("@ISI_UMUM_KECIL", If(String.IsNullOrWhiteSpace(TxtIsiUmumKecil.Text.Trim()), 0, Integer.Parse(BersihkanFormatAngka(TxtIsiUmumKecil.Text.Trim()))))
-                    cmd.Parameters.AddWithValue("@ISI_UMUM_SEDANG", If(String.IsNullOrWhiteSpace(TxtIsiUmumSedang.Text.Trim()), 0, Integer.Parse(BersihkanFormatAngka(TxtIsiUmumSedang.Text.Trim()))))
-                    cmd.Parameters.AddWithValue("@ISI_UMUM_BESAR", If(String.IsNullOrWhiteSpace(TxtIsiUmumBesar.Text.Trim()), 0, Integer.Parse(BersihkanFormatAngka(TxtIsiUmumBesar.Text.Trim()))))
+                    cmd.Parameters.AddWithValue("@ISI_UMUM_KECIL", ModuleAngka.ParseInteger(TxtIsiUmumKecil.Text))
+                    cmd.Parameters.AddWithValue("@ISI_UMUM_SEDANG", ModuleAngka.ParseInteger(TxtIsiUmumSedang.Text))
+                    cmd.Parameters.AddWithValue("@ISI_UMUM_BESAR", ModuleAngka.ParseInteger(TxtIsiUmumBesar.Text))
 
-                    ' Bersihkan format angka sebelum parsing
-                    cmd.Parameters.AddWithValue("@HARGA_JUAL_UMUM_KECIL", If(String.IsNullOrWhiteSpace(TxtHArgaJUalUmumKecil.Text.Trim()), 0D, Decimal.Parse(BersihkanFormatAngka(TxtHArgaJUalUmumKecil.Text.Trim()))))
-                    cmd.Parameters.AddWithValue("@HARGA_JUAL_UMUM_SEDANG", If(String.IsNullOrWhiteSpace(TxtHArgaJUalUmumSedang.Text.Trim()), 0D, Decimal.Parse(BersihkanFormatAngka(TxtHArgaJUalUmumSedang.Text.Trim()))))
-                    cmd.Parameters.AddWithValue("@HARGA_JUAL_UMUM_BESAR", If(String.IsNullOrWhiteSpace(TxtHArgaJUalUmumBesar.Text.Trim()), 0D, Decimal.Parse(BersihkanFormatAngka(TxtHArgaJUalUmumBesar.Text.Trim()))))
+                    cmd.Parameters.AddWithValue("@HARGA_JUAL_UMUM_KECIL", ModuleAngka.ParseDecimal(TxtHArgaJUalUmumKecil.Text))
+                    cmd.Parameters.AddWithValue("@HARGA_JUAL_UMUM_SEDANG", ModuleAngka.ParseDecimal(TxtHArgaJUalUmumSedang.Text))
+                    cmd.Parameters.AddWithValue("@HARGA_JUAL_UMUM_BESAR", ModuleAngka.ParseDecimal(TxtHArgaJUalUmumBesar.Text))
 
                     cmd.Parameters.AddWithValue("@SATUAN_PARTAI_KECIL", CmbSatPartaiKecil.Text)
                     cmd.Parameters.AddWithValue("@SATUAN_PARTAI_SEDANG", CmbSatPartaiSedang.Text)
                     cmd.Parameters.AddWithValue("@SATUAN_PARTAI_BESAR", CmbSatPartaiBesar.Text)
 
-                    ' Bersihkan format angka sebelum parsing
-                    cmd.Parameters.AddWithValue("@ISI_PARTAI_KECIL", If(String.IsNullOrWhiteSpace(TxtIsiPartaiKecil.Text.Trim()), 0, Integer.Parse(BersihkanFormatAngka(TxtIsiPartaiKecil.Text.Trim()))))
-                    cmd.Parameters.AddWithValue("@ISI_PARTAI_SEDANG", If(String.IsNullOrWhiteSpace(TxtIsiPartaiSedang.Text.Trim()), 0, Integer.Parse(BersihkanFormatAngka(TxtIsiPartaiSedang.Text.Trim()))))
-                    cmd.Parameters.AddWithValue("@ISI_PARTAI_BESAR", If(String.IsNullOrWhiteSpace(TxtIsiPartaiBesar.Text.Trim()), 0, Integer.Parse(BersihkanFormatAngka(TxtIsiPartaiBesar.Text.Trim()))))
+                    cmd.Parameters.AddWithValue("@ISI_PARTAI_KECIL", ModuleAngka.ParseInteger(TxtIsiPartaiKecil.Text))
+                    cmd.Parameters.AddWithValue("@ISI_PARTAI_SEDANG", ModuleAngka.ParseInteger(TxtIsiPartaiSedang.Text))
+                    cmd.Parameters.AddWithValue("@ISI_PARTAI_BESAR", ModuleAngka.ParseInteger(TxtIsiPartaiBesar.Text))
 
-                    ' Bersihkan format angka sebelum parsing
-                    cmd.Parameters.AddWithValue("@HARGA_JUAL_PARTAI_KECIL", If(String.IsNullOrWhiteSpace(TxtHArgaJualPartaikecil.Text.Trim()), 0D, Decimal.Parse(BersihkanFormatAngka(TxtHArgaJualPartaikecil.Text.Trim()))))
-                    cmd.Parameters.AddWithValue("@HARGA_JUAL_PARTAI_SEDANG", If(String.IsNullOrWhiteSpace(TxtHArgaJualPartaiSedang.Text.Trim()), 0D, Decimal.Parse(BersihkanFormatAngka(TxtHArgaJualPartaiSedang.Text.Trim()))))
-                    cmd.Parameters.AddWithValue("@HARGA_JUAL_PARTAI_BESAR", If(String.IsNullOrWhiteSpace(TxtHArgaJualPartaiBesar.Text.Trim()), 0D, Decimal.Parse(BersihkanFormatAngka(TxtHArgaJualPartaiBesar.Text.Trim()))))
+                    cmd.Parameters.AddWithValue("@HARGA_JUAL_PARTAI_KECIL", ModuleAngka.ParseDecimal(TxtHArgaJualPartaikecil.Text))
+                    cmd.Parameters.AddWithValue("@HARGA_JUAL_PARTAI_SEDANG", ModuleAngka.ParseDecimal(TxtHArgaJualPartaiSedang.Text))
+                    cmd.Parameters.AddWithValue("@HARGA_JUAL_PARTAI_BESAR", ModuleAngka.ParseDecimal(TxtHArgaJualPartaiBesar.Text))
 
                     cmd.Parameters.AddWithValue("@ID_BARANG", TxtKode.Text)
                     cmd.ExecuteNonQuery()
                 End Using
 
-
-
                 transaction.Commit()
 
-                DatabaseModule.CatatanAksiHistory("Rubah harga " & TxtNama.Text)
+                SyncTrigger.BarangBerubah(TxtKode.Text, "UPDATE", ModuleVariabel.NamaUser)
 
-                GBBarcode.Visible = True
-                GBStok.Visible = True
-                GBBarang.Enabled = True
-                GBPoint.Visible = True
+                GBInput1.Visible = True
+                GBInput4.Visible = True
+                GBInput.Enabled = True
+                GBInput5.Visible = True
                 BtnTambahKategori.Visible = True
-                BtnSupliyer.Visible = True
+                BtnTambahSupliyer.Visible = True
                 BtnTambahSatuan.Visible = True
                 CBManual.Visible = True
                 BtnBaru.Visible = True
                 'BackColor = Color.DarkCyan
-                Size = New Size(1143, 590)
+                Size = New Size(1150, 702)
                 Close()
             Catch ex As Exception
                 transaction.Rollback()
                 MessageBox.Show("Terjadi kesalahan: " & ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
             End Try
-
-
         End If
 
     End Sub
 
 
-    Private Function BersihkanFormatAngka(input As String) As String
-        If String.IsNullOrWhiteSpace(input) Then Return String.Empty
-        Return input.Replace(".", "").Replace(",", ".")
-    End Function
+    ' BersihkanFormatAngka dihapus — gunakan ModuleAngka.ParseDecimal / ModuleAngka.ParseInteger
 
     Private Sub BtnBaru_Click(ByVal sender As Object, ByVal e As EventArgs) Handles BtnBaru.Click
         Kondisiawal()
@@ -2005,10 +2145,6 @@
         TxtKategori.Clear()
         CmbSupliyer.Items.Clear()
         TxtKodeSupliyer.Clear()
-    End Sub
-
-    Private Sub BtnMinimize_Click(ByVal sender As Object, ByVal e As EventArgs) Handles BtnMinimize.Click
-        WindowState = FormWindowState.Minimized
     End Sub
 
 
@@ -2031,18 +2167,18 @@
     End Sub
 
     Private Sub BtnClose_Click(ByVal sender As Object, ByVal e As EventArgs) Handles BtnClose.Click
-        If LblUtama.Text = "EDIT HARGA JUAL DARI PEMBELIAN" Or LblUtama.Text = "EDIT HARGA JUAL DARI PENJUALAN" Then
-            GBBarcode.Visible = True
-            GBStok.Visible = True
-            GBBarang.Enabled = True
-            GBPoint.Visible = True
+        If LblHeaderForm.Text = "EDIT HARGA JUAL DARI PEMBELIAN" Or LblHeaderForm.Text = "EDIT HARGA JUAL DARI PENJUALAN" Then
+            GBInput1.Visible = True
+            GBInput4.Visible = True
+            GBInput.Enabled = True
+            GBInput5.Visible = True
             BtnTambahKategori.Visible = True
-            BtnSupliyer.Visible = True
+            BtnTambahSupliyer.Visible = True
             BtnTambahSatuan.Visible = True
             CBManual.Visible = True
             BtnBaru.Visible = True
             'BackColor = Color.DarkCyan
-            Size = New Size(1143, 590)
+            Size = New Size(1150, 702)
         End If
         Close()
     End Sub
@@ -2056,15 +2192,14 @@
             Case Keys.F5
                 BtnTambahKategori.PerformClick()
             Case Keys.F6
-                BtnSupliyer.PerformClick()
+                BtnTambahSupliyer.PerformClick()
             Case Keys.F7
                 BtnTambahSatuan.PerformClick()
             Case Keys.Escape
                 BtnClose.PerformClick()
         End Select
     End Sub
-
-
-
-
 End Class
+
+
+

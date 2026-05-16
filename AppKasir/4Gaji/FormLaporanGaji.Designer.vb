@@ -26,19 +26,16 @@ Partial Class FormLaporanGaji
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(FormLaporanGaji))
         Dim ReportDataSource1 As Microsoft.Reporting.WinForms.ReportDataSource = New Microsoft.Reporting.WinForms.ReportDataSource()
         Me.Laporan_Gaji_karyawanBindingSource = New System.Windows.Forms.BindingSource(Me.components)
-        'Me.PossDataSet = New AppKasir.DataSetKL()
         Me.Panel1 = New System.Windows.Forms.Panel()
-        Me.CmbTahun = New System.Windows.Forms.ComboBox()
-        Me.CmbBulan = New System.Windows.Forms.ComboBox()
+        Me.CmbThn = New System.Windows.Forms.ComboBox()
+        Me.CmbBln = New System.Windows.Forms.ComboBox()
         Me.Label18 = New System.Windows.Forms.Label()
         Me.PanelHeader = New System.Windows.Forms.Panel()
         Me.BtnClose = New System.Windows.Forms.Button()
         Me.Label8 = New System.Windows.Forms.Label()
         Me.Panel2 = New System.Windows.Forms.Panel()
         Me.ReportViewer1 = New Microsoft.Reporting.WinForms.ReportViewer()
-        'Me.Laporan_Gaji_karyawanTableAdapter = New AppKasir.PossDataSetLancarTableAdapters.Laporan_Gaji_KaryawanTableAdapter()
         CType(Me.Laporan_Gaji_karyawanBindingSource, System.ComponentModel.ISupportInitialize).BeginInit()
-        'CType(Me.PossDataSet, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.Panel1.SuspendLayout()
         Me.PanelHeader.SuspendLayout()
         Me.Panel2.SuspendLayout()
@@ -47,20 +44,14 @@ Partial Class FormLaporanGaji
         'Laporan_Gaji_karyawanBindingSource
         '
         Me.Laporan_Gaji_karyawanBindingSource.DataMember = "Laporan_Gaji_karyawan"
-        'Me.Laporan_Gaji_karyawanBindingSource.DataSource = Me.PossDataSet
-        '
-        'PossDataSet
-        '
-        'Me.PossDataSet.DataSetName = "PossDataSet"
-        'Me.PossDataSet.SchemaSerializationMode = System.Data.SchemaSerializationMode.IncludeSchema
         '
         'Panel1
         '
         Me.Panel1.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
-                    Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.Panel1.BackColor = System.Drawing.Color.OldLace
-        Me.Panel1.Controls.Add(Me.CmbTahun)
-        Me.Panel1.Controls.Add(Me.CmbBulan)
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.Panel1.BackColor = System.Drawing.SystemColors.Control
+        Me.Panel1.Controls.Add(Me.CmbThn)
+        Me.Panel1.Controls.Add(Me.CmbBln)
         Me.Panel1.Controls.Add(Me.Label18)
         Me.Panel1.Location = New System.Drawing.Point(0, 35)
         Me.Panel1.Margin = New System.Windows.Forms.Padding(4, 3, 4, 3)
@@ -68,43 +59,43 @@ Partial Class FormLaporanGaji
         Me.Panel1.Size = New System.Drawing.Size(1135, 38)
         Me.Panel1.TabIndex = 6
         '
-        'CmbTahun
+        'CmbThn
         '
-        Me.CmbTahun.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
-        Me.CmbTahun.Font = New System.Drawing.Font("Century Gothic", 9.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.CmbTahun.FormattingEnabled = True
-        Me.CmbTahun.Location = New System.Drawing.Point(198, 6)
-        Me.CmbTahun.Name = "CmbTahun"
-        Me.CmbTahun.Size = New System.Drawing.Size(65, 24)
-        Me.CmbTahun.TabIndex = 266
+        Me.CmbThn.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
+        Me.CmbThn.Font = New System.Drawing.Font("Century Gothic", 9.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.CmbThn.FormattingEnabled = True
+        Me.CmbThn.Location = New System.Drawing.Point(198, 6)
+        Me.CmbThn.Name = "CmbThn"
+        Me.CmbThn.Size = New System.Drawing.Size(65, 24)
+        Me.CmbThn.TabIndex = 266
         '
-        'CmbBulan
+        'CmbBln
         '
-        Me.CmbBulan.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
-        Me.CmbBulan.Font = New System.Drawing.Font("Century Gothic", 9.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.CmbBulan.FormattingEnabled = True
-        Me.CmbBulan.Location = New System.Drawing.Point(89, 6)
-        Me.CmbBulan.Name = "CmbBulan"
-        Me.CmbBulan.Size = New System.Drawing.Size(106, 24)
-        Me.CmbBulan.TabIndex = 234
+        Me.CmbBln.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
+        Me.CmbBln.Font = New System.Drawing.Font("Century Gothic", 9.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.CmbBln.FormattingEnabled = True
+        Me.CmbBln.Location = New System.Drawing.Point(89, 6)
+        Me.CmbBln.Name = "CmbBln"
+        Me.CmbBln.Size = New System.Drawing.Size(106, 24)
+        Me.CmbBln.TabIndex = 234
         '
         'Label18
         '
         Me.Label18.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
-                    Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.Label18.AutoSize = True
         Me.Label18.Font = New System.Drawing.Font("Century Gothic", 9.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.Label18.ForeColor = System.Drawing.Color.Black
         Me.Label18.Location = New System.Drawing.Point(33, 10)
         Me.Label18.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Me.Label18.Name = "Label18"
-        Me.Label18.Size = New System.Drawing.Size(53, 16)
+        Me.Label18.Size = New System.Drawing.Size(52, 16)
         Me.Label18.TabIndex = 230
         Me.Label18.Text = "Bulan :"
         '
         'PanelHeader
         '
-        Me.PanelHeader.BackColor = System.Drawing.Color.SandyBrown
+        Me.PanelHeader.BackColor = System.Drawing.SystemColors.Control
         Me.PanelHeader.Controls.Add(Me.BtnClose)
         Me.PanelHeader.Controls.Add(Me.Label8)
         Me.PanelHeader.Dock = System.Windows.Forms.DockStyle.Top
@@ -117,11 +108,12 @@ Partial Class FormLaporanGaji
         'BtnClose
         '
         Me.BtnClose.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.BtnClose.BackColor = System.Drawing.Color.SandyBrown
+        Me.BtnClose.BackColor = System.Drawing.SystemColors.Control
+        Me.BtnClose.Cursor = System.Windows.Forms.Cursors.Hand
         Me.BtnClose.FlatAppearance.BorderSize = 0
-        Me.BtnClose.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Gray
+        Me.BtnClose.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(CType(CType(226, Byte), Integer), CType(CType(232, Byte), Integer), CType(CType(240, Byte), Integer))
+        Me.BtnClose.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(CType(CType(241, Byte), Integer), CType(CType(245, Byte), Integer), CType(CType(249, Byte), Integer))
         Me.BtnClose.FlatStyle = System.Windows.Forms.FlatStyle.Flat
-        Me.BtnClose.ForeColor = System.Drawing.Color.Black
         Me.BtnClose.Image = CType(resources.GetObject("BtnClose.Image"), System.Drawing.Image)
         Me.BtnClose.Location = New System.Drawing.Point(1101, 2)
         Me.BtnClose.Margin = New System.Windows.Forms.Padding(4, 3, 4, 3)
@@ -146,9 +138,9 @@ Partial Class FormLaporanGaji
         'Panel2
         '
         Me.Panel2.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
-                    Or System.Windows.Forms.AnchorStyles.Left) _
-                    Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.Panel2.BackColor = System.Drawing.Color.OldLace
+            Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.Panel2.BackColor = System.Drawing.SystemColors.Control
         Me.Panel2.Controls.Add(Me.ReportViewer1)
         Me.Panel2.Location = New System.Drawing.Point(0, 79)
         Me.Panel2.Margin = New System.Windows.Forms.Padding(4, 3, 4, 3)
@@ -165,12 +157,9 @@ Partial Class FormLaporanGaji
         Me.ReportViewer1.LocalReport.ReportEmbeddedResource = "KasirLancar.ReportLapGaji.rdlc"
         Me.ReportViewer1.Location = New System.Drawing.Point(0, 0)
         Me.ReportViewer1.Name = "ReportViewer1"
+        Me.ReportViewer1.ServerReport.BearerToken = Nothing
         Me.ReportViewer1.Size = New System.Drawing.Size(1135, 423)
         Me.ReportViewer1.TabIndex = 0
-        '
-        'Laporan_Gaji_karyawanTableAdapter
-        '
-        'Me.Laporan_Gaji_karyawanTableAdapter.ClearBeforeFill = True
         '
         'FormLaporanGaji
         '
@@ -188,7 +177,6 @@ Partial Class FormLaporanGaji
         Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen
         Me.Text = "FormLaporanGaji"
         CType(Me.Laporan_Gaji_karyawanBindingSource, System.ComponentModel.ISupportInitialize).EndInit()
-        'CType(Me.PossDataSet, System.ComponentModel.ISupportInitialize).EndInit()
         Me.Panel1.ResumeLayout(False)
         Me.Panel1.PerformLayout()
         Me.PanelHeader.ResumeLayout(False)
@@ -198,8 +186,8 @@ Partial Class FormLaporanGaji
 
     End Sub
     Friend WithEvents Panel1 As System.Windows.Forms.Panel
-    Friend WithEvents CmbTahun As System.Windows.Forms.ComboBox
-    Friend WithEvents CmbBulan As System.Windows.Forms.ComboBox
+    Friend WithEvents CmbThn As System.Windows.Forms.ComboBox
+    Friend WithEvents CmbBln As System.Windows.Forms.ComboBox
     Friend WithEvents Label18 As System.Windows.Forms.Label
     Friend WithEvents PanelHeader As System.Windows.Forms.Panel
     Friend WithEvents BtnClose As System.Windows.Forms.Button

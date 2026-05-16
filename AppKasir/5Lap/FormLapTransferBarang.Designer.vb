@@ -1,4 +1,4 @@
-﻿Imports System.Drawing
+Imports System.Drawing
 Imports Microsoft.Reporting.WinForms
 
 
@@ -26,7 +26,7 @@ Partial Class FormLapTransferBarang
     'Do not modify it using the code editor.
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
-        Dim ReportDataSource2 As Microsoft.Reporting.WinForms.ReportDataSource = New Microsoft.Reporting.WinForms.ReportDataSource()
+        Dim ReportDataSource1 As Microsoft.Reporting.WinForms.ReportDataSource = New Microsoft.Reporting.WinForms.ReportDataSource()
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(FormLapTransferBarang))
         Me.ReportViewerReturBarang = New Microsoft.Reporting.WinForms.ReportViewer()
         Me.ReportViewerTF = New Microsoft.Reporting.WinForms.ReportViewer()
@@ -38,7 +38,7 @@ Partial Class FormLapTransferBarang
         Me.DTPAkhir = New System.Windows.Forms.DateTimePicker()
         Me.TxtRekening = New System.Windows.Forms.TextBox()
         Me.DTPAwal = New System.Windows.Forms.DateTimePicker()
-        Me.LabelJudul = New System.Windows.Forms.Label()
+        Me.LblHeaderForm = New System.Windows.Forms.Label()
         Me.PanelReturBarang = New System.Windows.Forms.Panel()
         Me.Panel1 = New System.Windows.Forms.Panel()
         Me.Label1 = New System.Windows.Forms.Label()
@@ -54,13 +54,13 @@ Partial Class FormLapTransferBarang
         'ReportViewerReturBarang
         '
         Me.ReportViewerReturBarang.Dock = System.Windows.Forms.DockStyle.Fill
-        ReportDataSource2.Name = "DataSet1"
-        ReportDataSource2.Value = Nothing
-        Me.ReportViewerReturBarang.LocalReport.DataSources.Add(ReportDataSource2)
+        ReportDataSource1.Name = "DataSet1"
+        ReportDataSource1.Value = Nothing
+        Me.ReportViewerReturBarang.LocalReport.DataSources.Add(ReportDataSource1)
         Me.ReportViewerReturBarang.LocalReport.ReportEmbeddedResource = "KasirLancar.ReportReturJualBarang.rdlc"
         Me.ReportViewerReturBarang.Location = New System.Drawing.Point(0, 0)
         Me.ReportViewerReturBarang.Name = "ReportViewerReturBarang"
-        'Me.ReportViewerReturBarang.ServerReport.BearerToken = Nothing
+        Me.ReportViewerReturBarang.ServerReport.BearerToken = Nothing
         Me.ReportViewerReturBarang.Size = New System.Drawing.Size(1093, 399)
         Me.ReportViewerReturBarang.TabIndex = 132
         '
@@ -70,7 +70,7 @@ Partial Class FormLapTransferBarang
         Me.ReportViewerTF.LocalReport.ReportEmbeddedResource = "KasirLancar.ReportTFBarang.rdlc"
         Me.ReportViewerTF.Location = New System.Drawing.Point(0, 0)
         Me.ReportViewerTF.Name = "ReportViewerTF"
-        'Me.ReportViewerTF.ServerReport.BearerToken = Nothing
+        Me.ReportViewerTF.ServerReport.BearerToken = Nothing
         Me.ReportViewerTF.Size = New System.Drawing.Size(1093, 399)
         Me.ReportViewerTF.TabIndex = 131
         '
@@ -107,7 +107,7 @@ Partial Class FormLapTransferBarang
         Me.ReportViewerTFDetail.LocalReport.ReportEmbeddedResource = "KasirLancar.ReportTFBarangDetail.rdlc"
         Me.ReportViewerTFDetail.Location = New System.Drawing.Point(0, 0)
         Me.ReportViewerTFDetail.Name = "ReportViewerTFDetail"
-        'Me.ReportViewerTFDetail.ServerReport.BearerToken = Nothing
+        Me.ReportViewerTFDetail.ServerReport.BearerToken = Nothing
         Me.ReportViewerTFDetail.Size = New System.Drawing.Size(1093, 399)
         Me.ReportViewerTFDetail.TabIndex = 131
         '
@@ -151,17 +151,17 @@ Partial Class FormLapTransferBarang
         Me.DTPAwal.Size = New System.Drawing.Size(91, 23)
         Me.DTPAwal.TabIndex = 201
         '
-        'LabelJudul
+        'LblHeaderForm
         '
-        Me.LabelJudul.BackColor = System.Drawing.Color.Gold
-        Me.LabelJudul.Dock = System.Windows.Forms.DockStyle.Top
-        Me.LabelJudul.Font = New System.Drawing.Font("Bookman Old Style", 21.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.LabelJudul.Location = New System.Drawing.Point(0, 0)
-        Me.LabelJudul.Name = "LabelJudul"
-        Me.LabelJudul.Size = New System.Drawing.Size(1093, 31)
-        Me.LabelJudul.TabIndex = 124
-        Me.LabelJudul.Text = "LAPORAN TRANSFER BARANG"
-        Me.LabelJudul.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
+        Me.LblHeaderForm.BackColor = System.Drawing.SystemColors.Control
+        Me.LblHeaderForm.Dock = System.Windows.Forms.DockStyle.Top
+        Me.LblHeaderForm.Font = New System.Drawing.Font("Bookman Old Style", 21.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.LblHeaderForm.Location = New System.Drawing.Point(0, 0)
+        Me.LblHeaderForm.Name = "LblHeaderForm"
+        Me.LblHeaderForm.Size = New System.Drawing.Size(1093, 31)
+        Me.LblHeaderForm.TabIndex = 124
+        Me.LblHeaderForm.Text = "LAPORAN TRANSFER BARANG"
+        Me.LblHeaderForm.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
         '
         'PanelReturBarang
         '
@@ -180,7 +180,7 @@ Partial Class FormLapTransferBarang
         Me.Panel1.Controls.Add(Me.TxtRekening)
         Me.Panel1.Controls.Add(Me.BtnClose)
         Me.Panel1.Controls.Add(Me.DTPAwal)
-        Me.Panel1.Controls.Add(Me.LabelJudul)
+        Me.Panel1.Controls.Add(Me.LblHeaderForm)
         Me.Panel1.Controls.Add(Me.BtnTampilkan)
         Me.Panel1.Dock = System.Windows.Forms.DockStyle.Top
         Me.Panel1.Location = New System.Drawing.Point(0, 0)
@@ -203,29 +203,31 @@ Partial Class FormLapTransferBarang
         'BtnClose
         '
         Me.BtnClose.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.BtnClose.BackColor = System.Drawing.Color.Yellow
+        Me.BtnClose.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.BtnClose.BackColor = System.Drawing.SystemColors.Control
+        Me.BtnClose.Cursor = System.Windows.Forms.Cursors.Hand
         Me.BtnClose.FlatAppearance.BorderSize = 0
-        Me.BtnClose.FlatAppearance.MouseDownBackColor = System.Drawing.Color.GreenYellow
-        Me.BtnClose.FlatAppearance.MouseOverBackColor = System.Drawing.Color.GreenYellow
-        Me.BtnClose.Font = New System.Drawing.Font("Century Gothic", 12.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.BtnClose.ForeColor = System.Drawing.Color.Black
+        Me.BtnClose.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(CType(CType(226, Byte), Integer), CType(CType(232, Byte), Integer), CType(CType(240, Byte), Integer))
+        Me.BtnClose.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(CType(CType(241, Byte), Integer), CType(CType(245, Byte), Integer), CType(CType(249, Byte), Integer))
+        Me.BtnClose.FlatStyle = System.Windows.Forms.FlatStyle.Flat
         Me.BtnClose.Image = CType(resources.GetObject("BtnClose.Image"), System.Drawing.Image)
-        Me.BtnClose.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft
         Me.BtnClose.Location = New System.Drawing.Point(1059, 0)
         Me.BtnClose.Name = "BtnClose"
         Me.BtnClose.Size = New System.Drawing.Size(30, 30)
         Me.BtnClose.TabIndex = 202
-        Me.BtnClose.TextAlign = System.Drawing.ContentAlignment.MiddleRight
         Me.BtnClose.UseVisualStyleBackColor = False
         '
         'BtnTampilkan
         '
-        Me.BtnTampilkan.BackColor = System.Drawing.Color.Gold
-        Me.BtnTampilkan.FlatAppearance.BorderSize = 0
-        Me.BtnTampilkan.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(CType(CType(128, Byte), Integer), CType(CType(255, Byte), Integer), CType(CType(255, Byte), Integer))
-        Me.BtnTampilkan.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Yellow
+        Me.BtnTampilkan.AutoSize = True
+        Me.BtnTampilkan.BackColor = System.Drawing.SystemColors.Control
+        Me.BtnTampilkan.Cursor = System.Windows.Forms.Cursors.Hand
+        Me.BtnTampilkan.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(CType(CType(100, Byte), Integer), CType(CType(116, Byte), Integer), CType(CType(139, Byte), Integer))
+        Me.BtnTampilkan.FlatAppearance.BorderSize = 1
+        Me.BtnTampilkan.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(CType(CType(226, Byte), Integer), CType(CType(232, Byte), Integer), CType(CType(240, Byte), Integer))
+        Me.BtnTampilkan.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(CType(CType(241, Byte), Integer), CType(CType(245, Byte), Integer), CType(CType(249, Byte), Integer))
         Me.BtnTampilkan.FlatStyle = System.Windows.Forms.FlatStyle.Flat
-        Me.BtnTampilkan.Font = New System.Drawing.Font("Century Gothic", 12.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.BtnTampilkan.Font = New System.Drawing.Font("Segoe UI", 9.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.BtnTampilkan.ForeColor = System.Drawing.Color.Black
         Me.BtnTampilkan.Image = CType(resources.GetObject("BtnTampilkan.Image"), System.Drawing.Image)
         Me.BtnTampilkan.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft
@@ -233,7 +235,8 @@ Partial Class FormLapTransferBarang
         Me.BtnTampilkan.Name = "BtnTampilkan"
         Me.BtnTampilkan.Size = New System.Drawing.Size(156, 35)
         Me.BtnTampilkan.TabIndex = 147
-        Me.BtnTampilkan.Text = "    TAMPILKAN"
+        Me.BtnTampilkan.Text = "Tampilkan (F5)"
+        Me.BtnTampilkan.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
         Me.BtnTampilkan.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText
         Me.BtnTampilkan.UseVisualStyleBackColor = False
         '
@@ -247,6 +250,7 @@ Partial Class FormLapTransferBarang
         Me.Controls.Add(Me.PanelReturBarang)
         Me.Controls.Add(Me.Panel1)
         Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None
+        Me.KeyPreview = True
         Me.Name = "FormLapTransferBarang"
         Me.ShowIcon = False
         Me.ShowInTaskbar = False
@@ -270,7 +274,7 @@ Partial Class FormLapTransferBarang
     Friend WithEvents TxtRekening As TextBox
     Friend WithEvents BtnClose As Button
     Friend WithEvents DTPAwal As DateTimePicker
-    Friend WithEvents LabelJudul As Label
+    Friend WithEvents LblHeaderForm As Label
     Friend WithEvents BtnTampilkan As Button
     Friend WithEvents PanelReturBarang As Panel
     Friend WithEvents Panel1 As Panel

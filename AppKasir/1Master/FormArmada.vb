@@ -1,75 +1,134 @@
-﻿Imports System.Reflection
-
 Public Class FormArmada
 
-    Private Sub FormArmada_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
-        Me.Cursor = Cursors.WaitCursor
-        Dim Armada As Boolean() = ModulHakAkses.BacaHakAksesDariCache("Armada")
-        ' Terapkan nilai hak akses ke tombol-tombol
-        BTNSimpan.Visible = Armada(1) ' CanAdd 
-        'BTNSimpan.Visible = Armada(2) ' CanEdit 
-        BTNHapus.Visible = Armada(3) ' CanDelete 
+    ' ── TODO: AUDIT TRAIL ────────────────────────────────────────────────────
+    ' Saat fitur hapus/edit FormArmada ditambahkan, panggil:
+    '   ModuleAuditTrail.CatatAuditMaster("ARMADA:" & kode, "HAPUS"/"EDIT",
+    '       "Master armada", snapshotJson, "[KRITIS] Hapus/Edit data armada", trans)
+    ' Snapshot: baca data lama dari tbl_Armada sebelum DELETE/UPDATE
+    ' ─────────────────────────────────────────────────────────────────────────
 
+    Private _isLoading As Boolean = False
+    Private _isEditMode As Boolean = False
+    Private _canAdd As Boolean = True
+    Private _canEdit As Boolean = True
+    Private _canDelete As Boolean = True
+
+#Region "Form Load"
+    Private Sub FormArmada_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
+        ModuleTheme.TerapkanTheme(Me)
+        Me.Cursor = Cursors.WaitCursor
+        Dim hakAkses As Boolean() = ModulHakAkses.BacaHakAksesDariCache("Armada")
+        _canAdd = hakAkses(1)
+        _canEdit = hakAkses(2)
+        _canDelete = hakAkses(3)
+
+        BTNSimpan.Visible = _canAdd
 
         Kondisiawal()
-
         Me.Cursor = Cursors.Default
     End Sub
+#End Region
 
+#Region "Kondisi Awal"
     Public Sub Kondisiawal()
+        _isEditMode = False
+        PanelHeader.Text = "TAMBAH ARMADA"
+        BTNSimpan.Text = "SIMPAN (F2)"
         TxtKode.Clear()
         TxtNopol.Clear()
         TxtJenis.Clear()
-        TampilArmada()
         KodeArmada()
-
+        TampilArmada()
         TxtNopol.Focus()
     End Sub
+#End Region
 
+#Region "DataGridView"
     Public Sub TampilArmada()
-        Dim dt As New DataTable()
+        _isLoading = True
 
-        Using cmd As New MySqlCommand("SELECT KODE, NOPOL, JENIS FROM tbl_Armada ORDER BY KODE", conn)
-            Using rd As New MySqlDataAdapter(cmd)
-                rd.Fill(dt)
-            End Using
+        Dim dt As New DataTable()
+        Using cmd As New MySqlCommand("SELECT KODE, NOPOL, JENIS FROM tbl_Armada ORDER BY NOPOL", conn),
+              da As New MySqlDataAdapter(cmd)
+            da.Fill(dt)
         End Using
 
-        Dgvdata.DataSource = dt
-        With Dgvdata
-            .AllowUserToAddRows = False
-            .AllowUserToDeleteRows = False
-            .AllowUserToOrderColumns = False
-            .AllowUserToResizeColumns = False
-            .AllowUserToResizeRows = False
+        Dgvdata.DataSource = Nothing
+        Dgvdata.Rows.Clear()
+        Dgvdata.Columns.Clear()
 
+        Dgvdata.Columns.Add(New DataGridViewTextBoxColumn() With {.Name = "ColKode", .HeaderText = "Kode", .FillWeight = 80, .ReadOnly = True})
+        Dgvdata.Columns.Add(New DataGridViewTextBoxColumn() With {.Name = "ColNopol", .HeaderText = "No. Polisi", .FillWeight = 160, .ReadOnly = True})
+        Dgvdata.Columns.Add(New DataGridViewTextBoxColumn() With {.Name = "ColJenis", .HeaderText = "Jenis", .FillWeight = 160, .ReadOnly = True})
 
-            .EnableHeadersVisualStyles = False
-            .ColumnHeadersDefaultCellStyle.BackColor = Color.Gray
-            ' Set alternating row style
-            .AlternatingRowsDefaultCellStyle.BackColor = Color.LightGray
+        If _canEdit Then
+            Dim colEdit As New DataGridViewButtonColumn() With {
+                .Name = "ColEdit", .HeaderText = "Edit",
+                .Text = "✎ Edit", .UseColumnTextForButtonValue = True,
+                .Width = 70, .FlatStyle = FlatStyle.Flat,
+                .AutoSizeMode = DataGridViewAutoSizeColumnMode.None
+            }
+            ' Font diatur oleh tema - Calibri 9.75 Bold
+            Dgvdata.Columns.Add(colEdit)
+        End If
 
-            ' Set visual style
-            .BorderStyle = BorderStyle.FixedSingle
-            .GridColor = Color.Silver
-            .BackgroundColor = Color.White
+        If _canDelete Then
+            Dim colHapus As New DataGridViewButtonColumn() With {
+                .Name = "ColHapus", .HeaderText = "Hapus",
+                .Text = "✖ Hapus", .UseColumnTextForButtonValue = True,
+                .Width = 75, .FlatStyle = FlatStyle.Flat,
+                .AutoSizeMode = DataGridViewAutoSizeColumnMode.None
+            }
+            ' Font diatur oleh tema - Calibri 9.75 Bold
+            Dgvdata.Columns.Add(colHapus)
+        End If
 
-            ' Enable double buffering to reduce flickering
-            DataGridViewExtension.EnableDoubleBuffering(Dgvdata)
-        End With
+        For Each row As DataRow In dt.Rows
+            Dim rowIdx As Integer = Dgvdata.Rows.Add(row("KODE"), row("NOPOL"), row("JENIS"))
+
+            If _canEdit Then
+                ModuleTheme.SetWarnaDgvBtnEdit(Dgvdata.Rows(rowIdx).Cells("ColEdit"), True)
+            End If
+            If _canDelete Then
+                ModuleTheme.SetWarnaDgvBtnHapus(Dgvdata.Rows(rowIdx).Cells("ColHapus"), True)
+            End If
+        Next
+
+        ' Pengaturan standar dan tema DGV
+        ModuleTheme.ApplyStandardDataGridViewSettings(Dgvdata)
+        ModuleTheme.ApplyThemeDataGridView(Dgvdata)
+
+        Dgvdata.ClearSelection()
+        _isLoading = False
     End Sub
 
-    Public Class DataGridViewExtension
-        Public Shared Sub EnableDoubleBuffering(ByVal dataGridView As DataGridView)
-            dataGridView.GetType().InvokeMember("DoubleBuffered", BindingFlags.NonPublic Or BindingFlags.Instance Or BindingFlags.SetProperty, Nothing, dataGridView, New Object() {True})
-        End Sub
-    End Class
+    Private Sub Dgvdata_CellContentClick(ByVal sender As Object, ByVal e As DataGridViewCellEventArgs) Handles Dgvdata.CellContentClick
+        If _isLoading OrElse e.RowIndex < 0 Then Exit Sub
 
+        Dim row As DataGridViewRow = Dgvdata.Rows(e.RowIndex)
+        Dim kode As String = If(row.Cells("ColKode").Value IsNot Nothing, row.Cells("ColKode").Value.ToString(), "")
+        Dim nopol As String = If(row.Cells("ColNopol").Value IsNot Nothing, row.Cells("ColNopol").Value.ToString(), "")
+
+        Select Case Dgvdata.Columns(e.ColumnIndex).Name
+            Case "ColEdit"
+                _isEditMode = True
+                PanelHeader.Text = "EDIT ARMADA"
+                BTNSimpan.Text = "UPDATE (F2)"
+                TxtKode.Text = kode
+                TxtNopol.Text = nopol
+                TxtJenis.Text = If(row.Cells("ColJenis").Value IsNot Nothing, row.Cells("ColJenis").Value.ToString(), "")
+                TxtNopol.Focus()
+
+            Case "ColHapus"
+                HapusArmada(kode, nopol)
+        End Select
+    End Sub
+
+#End Region
+
+#Region "Auto Kode"
     Public Sub KodeArmada()
-        Dim maxKode As String = ""
         Dim existingKodes As New List(Of String)
-
-        ' Mengambil semua kode yang sudah ada dari database
         Using cmd As New MySqlCommand("SELECT KODE FROM tbl_Armada ORDER BY KODE", conn)
             Using rd As MySqlDataReader = cmd.ExecuteReader()
                 While rd.Read()
@@ -78,13 +137,12 @@ Public Class FormArmada
             End Using
         End Using
 
-        ' Jika tidak ada kode yang ada, gunakan SPL-0001
         If existingKodes.Count = 0 Then
             TxtKode.Text = "ARM-0001"
             Exit Sub
         End If
 
-        ' Mencari nomor berikutnya yang belum terpakai
+        Dim maxKode As String = ""
         For i As Integer = 1 To existingKodes.Count
             Dim expectedKode As String = "ARM-" & i.ToString("0000")
             If Not existingKodes.Contains(expectedKode) Then
@@ -93,130 +151,107 @@ Public Class FormArmada
             End If
         Next
 
-        ' Jika tidak ada nomor berikutnya yang tersedia, gunakan nomor setelah kode terakhir
         If String.IsNullOrEmpty(maxKode) Then
             Dim lastKode As String = existingKodes(existingKodes.Count - 1)
-            Dim Hitung As Integer = Integer.Parse(lastKode.Substring(lastKode.Length - 4)) + 1
-            maxKode = "ARM-" & Hitung.ToString("0000")
+            Dim hitung As Integer = Integer.Parse(lastKode.Substring(lastKode.Length - 4)) + 1
+            maxKode = "ARM-" & hitung.ToString("0000")
         End If
 
         TxtKode.Text = maxKode
     End Sub
+#End Region
 
-    Private Sub Dgvdata_CellClick(ByVal sender As System.Object, ByVal e As System.Windows.Forms.DataGridViewCellEventArgs) Handles Dgvdata.CellClick
-        If Dgvdata.Rows.Count >= 1 AndAlso Dgvdata.CurrentRow IsNot Nothing Then
-            TxtKode.Text = If(Convert.IsDBNull(Dgvdata.Item(0, Dgvdata.CurrentRow.Index).Value), "", Dgvdata.Item(0, Dgvdata.CurrentRow.Index).Value.ToString())
-            TxtNopol.Text = If(Convert.IsDBNull(Dgvdata.Item(1, Dgvdata.CurrentRow.Index).Value), "", Dgvdata.Item(1, Dgvdata.CurrentRow.Index).Value.ToString())
-            TxtJenis.Text = If(Convert.IsDBNull(Dgvdata.Item(2, Dgvdata.CurrentRow.Index).Value), "", Dgvdata.Item(2, Dgvdata.CurrentRow.Index).Value.ToString())
-        End If
-
-        TxtNopol.Focus()
-    End Sub
-
-
-
-
-    Private Sub BtnTambah_Click(ByVal sender As Object, ByVal e As EventArgs)
-        Call Kondisiawal()
-    End Sub
-
-    Private Sub BtnHapus_Click(ByVal sender As Object, ByVal e As EventArgs) Handles BTNHapus.Click
-        If String.IsNullOrEmpty(TxtKode.Text) Or String.IsNullOrEmpty(TxtNopol.Text) Then
-            MessageBox.Show("Pilih data yang akan dihapus", "Peringatan", MessageBoxButtons.OK, MessageBoxIcon.Warning)
-            Exit Sub
-        End If
-
-        If MessageBox.Show("Apakah data ini akan dihapus ...???", "Konfirmasi", MessageBoxButtons.YesNo, MessageBoxIcon.Question) = DialogResult.Yes Then
-            Try
-                Using cmd As New MySqlCommand("DELETE FROM tbl_Armada WHERE kode = @Kode", conn)
-                    cmd.Parameters.AddWithValue("@Kode", TxtKode.Text)
-                    cmd.ExecuteNonQuery()
-                End Using
-                Call Kondisiawal()
-            Catch ex As Exception
-                MessageBox.Show("Terjadi kesalahan: " & ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
-            End Try
-        End If
-    End Sub
-
-
+#Region "Simpan"
     Private Sub BtnSimpan_Click(ByVal sender As Object, ByVal e As EventArgs) Handles BTNSimpan.Click
-        ' Validasi input
-        If String.IsNullOrWhiteSpace(TxtKode.Text) OrElse String.IsNullOrWhiteSpace(TxtNopol.Text) OrElse String.IsNullOrWhiteSpace(TxtJenis.Text) Then
+        If String.IsNullOrWhiteSpace(TxtNopol.Text) OrElse String.IsNullOrWhiteSpace(TxtJenis.Text) Then
             MessageBox.Show("Data harus diisi dengan lengkap !!!", "Peringatan", MessageBoxButtons.OK, MessageBoxIcon.Warning)
             Exit Sub
         End If
 
-        Dim transaction As MySqlTransaction = Nothing
+        If _isEditMode Then
+            UpdateArmada()
+        Else
+            InsertArmada()
+        End If
+    End Sub
 
+    Private Sub InsertArmada()
+        Dim transaction As MySqlTransaction = conn.BeginTransaction()
         Try
-            ' Mulai transaksi
-            transaction = conn.BeginTransaction()
-
-            Using cmd As New MySqlCommand("SELECT kode FROM tbl_Armada WHERE kode = @Kode", conn, transaction)
-                cmd.Parameters.AddWithValue("@Kode", TxtKode.Text)
-                Using rd As MySqlDataReader = cmd.ExecuteReader()
-                    If rd.HasRows Then
-                        rd.Close() ' Explicitly close the reader
-
-                        If MessageBox.Show("Kode Armada sudah ada, Apakah lanjut edit data ...!!!", "Peringatan", MessageBoxButtons.YesNo, MessageBoxIcon.Question) = DialogResult.Yes Then
-                            Using cmdUpdate As New MySqlCommand("UPDATE tbl_Armada SET NOPOL = @NOPOL, JENIS = @JENIS WHERE Kode = @Kode", conn, transaction)
-                                cmdUpdate.Parameters.AddWithValue("@NOPOL", StrConv(TxtNopol.Text, vbUpperCase))
-                                cmdUpdate.Parameters.AddWithValue("@JENIS", StrConv(TxtJenis.Text, vbProperCase))
-                                cmdUpdate.Parameters.AddWithValue("@Kode", TxtKode.Text)
-                                cmdUpdate.ExecuteNonQuery()
-                            End Using
-                        End If
-                    Else
-                        rd.Close() ' Explicitly close the reader
-
-                        Using cmdInsert As New MySqlCommand("INSERT INTO tbl_Armada (KODE, NOPOL, JENIS) VALUES (@KODE, @NOPOL, @JENIS)", conn, transaction)
-                            cmdInsert.Parameters.AddWithValue("@KODE", TxtKode.Text)
-                            cmdInsert.Parameters.AddWithValue("@NOPOL", StrConv(TxtNopol.Text, vbUpperCase))
-                            cmdInsert.Parameters.AddWithValue("@JENIS", StrConv(TxtJenis.Text, vbProperCase))
-                            cmdInsert.ExecuteNonQuery()
-                        End Using
-                    End If
-                End Using
+            Using cmd As New MySqlCommand("INSERT INTO tbl_Armada (KODE, NOPOL, JENIS) VALUES (@KODE, @NOPOL, @JENIS)", conn, transaction)
+                cmd.Parameters.AddWithValue("@KODE", TxtKode.Text)
+                cmd.Parameters.AddWithValue("@NOPOL", StrConv(TxtNopol.Text, vbUpperCase))
+                cmd.Parameters.AddWithValue("@JENIS", StrConv(TxtJenis.Text, vbProperCase))
+                cmd.ExecuteNonQuery()
             End Using
-
-            ' Commit transaksi
             transaction.Commit()
-
-            DatabaseModule.CatatanAksiHistory("Tambah/edit Armada " & TxtKode.Text)
-
-            Call Kondisiawal()
-
-            'MessageBox.Show("Data berhasil disimpan!", "Informasi", MessageBoxButtons.OK, MessageBoxIcon.Information)
-
+            SyncTrigger.MasterBerubah("tbl_armada", TxtKode.Text, "INSERT", ModuleVariabel.NamaUser)
+            Kondisiawal()
         Catch ex As Exception
-            ' Rollback transaksi jika terjadi kesalahan
-            If transaction IsNot Nothing Then
-                transaction.Rollback()
-            End If
+            transaction.Rollback()
             MessageBox.Show("Terjadi kesalahan: " & ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
         End Try
+    End Sub
+
+    Private Sub UpdateArmada()
+        Dim transaction As MySqlTransaction = conn.BeginTransaction()
+        Try
+            Using cmd As New MySqlCommand("UPDATE tbl_Armada SET NOPOL = @NOPOL, JENIS = @JENIS WHERE KODE = @KODE", conn, transaction)
+                cmd.Parameters.AddWithValue("@NOPOL", StrConv(TxtNopol.Text, vbUpperCase))
+                cmd.Parameters.AddWithValue("@JENIS", StrConv(TxtJenis.Text, vbProperCase))
+                cmd.Parameters.AddWithValue("@KODE", TxtKode.Text)
+                cmd.ExecuteNonQuery()
+            End Using
+            transaction.Commit()
+            SyncTrigger.MasterBerubah("tbl_armada", TxtKode.Text, "UPDATE", ModuleVariabel.NamaUser)
+            Kondisiawal()
+        Catch ex As Exception
+            transaction.Rollback()
+            MessageBox.Show("Terjadi kesalahan: " & ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
+        End Try
+    End Sub
+#End Region
+
+#Region "Hapus"
+    Private Sub HapusArmada(kode As String, nopol As String)
+        If MessageBox.Show($"Hapus armada '{nopol}'?", "Konfirmasi Hapus",
+                           MessageBoxButtons.YesNo, MessageBoxIcon.Question) = DialogResult.Yes Then
+            Dim transaction As MySqlTransaction = conn.BeginTransaction()
+            Try
+                Using cmd As New MySqlCommand("DELETE FROM tbl_Armada WHERE KODE = @KODE", conn, transaction)
+                    cmd.Parameters.AddWithValue("@KODE", kode)
+                    cmd.ExecuteNonQuery()
+                End Using
+                transaction.Commit()
+                Kondisiawal()
+            Catch ex As Exception
+                transaction.Rollback()
+                MessageBox.Show("Gagal menghapus data: " & ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            End Try
+        End If
+    End Sub
+#End Region
+
+#Region "Tombol & Keyboard"
+    Private Sub BtnTambah_Click(ByVal sender As Object, ByVal e As EventArgs) Handles BtnTambah.Click
+        Kondisiawal()
     End Sub
 
     Private Sub BtnClose_Click(ByVal sender As Object, ByVal e As EventArgs) Handles BtnClose.Click
         Close()
     End Sub
 
-    Private Sub TambahSupliyer_KeyDown(ByVal sender As System.Object, ByVal e As System.Windows.Forms.KeyEventArgs) Handles MyBase.KeyDown
+    Private Sub FormArmada_KeyDown(ByVal sender As System.Object, ByVal e As System.Windows.Forms.KeyEventArgs) Handles MyBase.KeyDown
         Select Case e.KeyCode
-            Case Keys.F2
-                BTNSimpan.PerformClick()
-            Case Keys.F3
-                BTNHapus.PerformClick()
-            Case Keys.F4
-                BtnTambah.PerformClick()
-            Case Keys.Escape
-                BtnClose.PerformClick()
+            Case Keys.F2 : BTNSimpan.PerformClick()
+            Case Keys.F4 : BtnTambah.PerformClick()
+            Case Keys.Escape : BtnClose.PerformClick()
         End Select
-
     End Sub
 
 
 
+#End Region
 
 End Class
+

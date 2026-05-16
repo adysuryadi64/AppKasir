@@ -1,9 +1,12 @@
-﻿Imports Microsoft.Reporting.WinForms
+Imports Microsoft.Reporting.WinForms
 
 
 Public Class FormLapkAS
 
     Private Sub FormLapBarangMasuk_Load(ByVal sender As Object, ByVal e As EventArgs) Handles MyBase.Load
+        ModuleTheme.TerapkanTheme(Me)
+        ' Nilai keuangan otomatis via nama TxtGrandtotal
+        ' Rename TxtDiterima/TxtGrantotal/TxtPiutang -> TxtGrandtotal untuk tema otomatis
 
         Dim fontPath As String = System.IO.Path.Combine(Application.StartupPath, "Font Digital\DS-DIGI.TTF") ' Ganti "YourFont.ttf" dengan nama file font yang sesuai
         'Using pfc As New PrivateFontCollection()
@@ -30,59 +33,6 @@ Public Class FormLapkAS
         CbTanggal.Checked = True
     End Sub
 
-    Private angkabulan As Integer
-
-    Private Sub Convertbulansetor()
-        Select Case CmbBln.Text
-            Case "Januari"
-                angkabulan = 1
-            Case "Februari"
-                angkabulan = 2
-            Case "Maret"
-                angkabulan = 3
-            Case "April"
-                angkabulan = 4
-            Case "Mei"
-                angkabulan = 5
-            Case "Juni"
-                angkabulan = 6
-            Case "Juli"
-                angkabulan = 7
-            Case "Agustus"
-                angkabulan = 8
-            Case "September"
-                angkabulan = 9
-            Case "Oktober"
-                angkabulan = 10
-            Case "November"
-                angkabulan = 11
-            Case "Desember"
-                angkabulan = 12
-        End Select
-    End Sub
-
-    Public Sub Tampildatablnthn()
-        CmbBln.Items.Clear()
-        CmbThn.Items.Clear()
-        Dim i As Integer
-        For i = 2022 To Year(Now)
-            CmbThn.Items.Add(i)
-        Next
-        CmbBln.Items.Add("")
-        CmbBln.Items.Add("Januari")
-        CmbBln.Items.Add("Februari")
-        CmbBln.Items.Add("Maret")
-        CmbBln.Items.Add("April")
-        CmbBln.Items.Add("Mei")
-        CmbBln.Items.Add("Juni")
-        CmbBln.Items.Add("Juli")
-        CmbBln.Items.Add("Agustus")
-        CmbBln.Items.Add("September")
-        CmbBln.Items.Add("Oktober")
-        CmbBln.Items.Add("November")
-        CmbBln.Items.Add("Desember")
-    End Sub
-
     Private Sub CBTanggal_CheckedChanged(ByVal sender As Object, ByVal e As EventArgs) Handles CbTanggal.CheckedChanged
         If CbTanggal.Checked = True Then
             DtpTanggal.Enabled = True
@@ -96,12 +46,10 @@ Public Class FormLapkAS
     End Sub
     Private Sub CBBulan_CheckedChanged(ByVal sender As Object, ByVal e As EventArgs) Handles CbBulan.CheckedChanged
         If CbBulan.Checked = True Then
-            Tampildatablnthn()
+            MuatComboBoxBulanTahun(CmbBln, CmbThn)
             CmbBln.Enabled = True
             CmbThn.Enabled = True
-            CmbThn.Text = Now.ToString("yyyy")
             CbTanggal.Checked = False
-            'CmbKasir.SelectedIndex = 0
             DtpTanggal.Enabled = False
         Else
             CmbBln.Enabled = False
@@ -147,17 +95,16 @@ Public Class FormLapkAS
 
     Public Sub TampilVoucherbulan()
         CmbKasir.Items.Clear()
-        CmbKasir.Items.Add("Semua") ' Tambahkan opsi "Semua"
-        Convertbulansetor()
-        Dim bulan As Integer = angkabulan
-        Dim tahun As Integer = CmbThn.Text
+        CmbKasir.Items.Add("Semua")
 
-        Dim AwalBulan As New Date(tahun, bulan, 1)
-        Dim AkhirBulan As Date = AwalBulan.AddMonths(1).AddDays(-1).AddSeconds(86399)
+        Dim tglAwal As DateTime
+        Dim tglAkhir As DateTime
+        If Not GetRentangBulan(CmbBln, CmbThn, tglAwal, tglAkhir) Then Return
+
         Dim query As String = "SELECT DISTINCT ID_USER FROM penjualan WHERE TGL_TRANSAKSI >= @AwalBulan AND TGL_TRANSAKSI <= @AkhirBulan ORDER BY ID_USER"
         Using cmd As New MySqlCommand(query, conn)
-            cmd.Parameters.AddWithValue("@AwalBulan", AwalBulan.ToString("yyyy-MM-dd HH:mm:ss"))
-            cmd.Parameters.AddWithValue("@AkhirBulan", AkhirBulan.ToString("yyyy-MM-dd HH:mm:ss"))
+            cmd.Parameters.AddWithValue("@AwalBulan", tglAwal.ToString("yyyy-MM-dd HH:mm:ss"))
+            cmd.Parameters.AddWithValue("@AkhirBulan", tglAkhir.ToString("yyyy-MM-dd HH:mm:ss"))
             Using rd As MySqlDataReader = cmd.ExecuteReader()
                 While rd.Read()
                     CmbKasir.Items.Add(rd("ID_USER").ToString())
@@ -203,10 +150,10 @@ Public Class FormLapkAS
                         rd.Read()
 
                         If rd.HasRows Then
-                            Dim totalHarga As Decimal = If(Not rd.IsDBNull(rd.GetOrdinal("TotalHarga")), rd("TotalHarga"), 0)
-                            Dim bayar As Decimal = If(Not rd.IsDBNull(rd.GetOrdinal("bayar")), rd("bayar"), 0)
-                            Dim kembali As Decimal = If(Not rd.IsDBNull(rd.GetOrdinal("kembali")), rd("kembali"), 0)
-                            Dim hutang As Decimal = If(Not rd.IsDBNull(rd.GetOrdinal("hutang")), rd("hutang"), 0)
+                            Dim totalHarga As Decimal = ModuleAngka.SafeGetValue(Of Decimal)(rd, "TotalHarga", 0D)
+                            Dim bayar As Decimal = ModuleAngka.SafeGetValue(Of Decimal)(rd, "bayar", 0D)
+                            Dim kembali As Decimal = ModuleAngka.SafeGetValue(Of Decimal)(rd, "kembali", 0D)
+                            Dim hutang As Decimal = ModuleAngka.SafeGetValue(Of Decimal)(rd, "hutang", 0D)
 
                             TxtGrantotal.Text = totalHarga.ToString("N0")
                             TxtDiterima.Text = bayar - kembali.ToString("N0")
@@ -235,11 +182,14 @@ Public Class FormLapkAS
                 End Using
 
             ElseIf CbBulan.Checked = True And CmbKasir.SelectedIndex = 0 Then
-                Convertbulansetor()
-                Dim bulan As Integer = angkabulan
-                Dim tahun As Integer = CmbThn.Text
-                Dim AwalBulan As New Date(tahun, bulan, 1)
-                Dim AkhirBulan As Date = AwalBulan.AddMonths(1).AddDays(-1).AddSeconds(86399)
+                Dim tglAwal1 As DateTime
+                Dim tglAkhir1 As DateTime
+                If Not GetRentangBulan(CmbBln, CmbThn, tglAwal1, tglAkhir1) Then
+                    Cursor = Cursors.Default
+                    Return
+                End If
+                Dim AwalBulan As Date = tglAwal1
+                Dim AkhirBulan As Date = tglAkhir1
 
                 If RbtTunai.Checked Then
                     query = "SELECT ID_PENJUALAN, NAMA_PELANGGAN, TGL_TRANSAKSI, JENIS_PEMBAYARAN, DISKON_TOTAL_RP, GRAND_TOTAL_STL_PAJAK, PAJAK_RP, BAYAR, KEMBALI, SISA_TAGIHAN, JATUH_TEMPO, STATUS_TRANSAKSI, ID_USER, ID_KOMPUTER FROM penjualan WHERE TGL_TRANSAKSI >= @AwalBulan AND TGL_TRANSAKSI <= @AkhirBulan AND TYPE_AKUN = 'TUNAI'"
@@ -262,10 +212,10 @@ Public Class FormLapkAS
                         rd.Read()
 
                         If rd.HasRows Then
-                            Dim totalHarga As Decimal = If(Not rd.IsDBNull(rd.GetOrdinal("TotalHarga")), rd("TotalHarga"), 0)
-                            Dim bayar As Decimal = If(Not rd.IsDBNull(rd.GetOrdinal("bayar")), rd("bayar"), 0)
-                            Dim kembali As Decimal = If(Not rd.IsDBNull(rd.GetOrdinal("kembali")), rd("kembali"), 0)
-                            Dim hutang As Decimal = If(Not rd.IsDBNull(rd.GetOrdinal("hutang")), rd("hutang"), 0)
+                            Dim totalHarga As Decimal = ModuleAngka.SafeGetValue(Of Decimal)(rd, "TotalHarga", 0D)
+                            Dim bayar As Decimal = ModuleAngka.SafeGetValue(Of Decimal)(rd, "bayar", 0D)
+                            Dim kembali As Decimal = ModuleAngka.SafeGetValue(Of Decimal)(rd, "kembali", 0D)
+                            Dim hutang As Decimal = ModuleAngka.SafeGetValue(Of Decimal)(rd, "hutang", 0D)
 
                             TxtGrantotal.Text = totalHarga.ToString("N0")
                             TxtDiterima.Text = bayar - kembali.ToString("N0")
@@ -320,10 +270,10 @@ Public Class FormLapkAS
                     Using rd As MySqlDataReader = cmdHitung.ExecuteReader()
                         rd.Read()
                         If rd.HasRows Then
-                            Dim totalHarga As Decimal = If(Not rd.IsDBNull(rd.GetOrdinal("TotalHarga")), rd("TotalHarga"), 0)
-                            Dim bayar As Decimal = If(Not rd.IsDBNull(rd.GetOrdinal("bayar")), rd("bayar"), 0)
-                            Dim kembali As Decimal = If(Not rd.IsDBNull(rd.GetOrdinal("kembali")), rd("kembali"), 0)
-                            Dim hutang As Decimal = If(Not rd.IsDBNull(rd.GetOrdinal("hutang")), rd("hutang"), 0)
+                            Dim totalHarga As Decimal = ModuleAngka.SafeGetValue(Of Decimal)(rd, "TotalHarga", 0D)
+                            Dim bayar As Decimal = ModuleAngka.SafeGetValue(Of Decimal)(rd, "bayar", 0D)
+                            Dim kembali As Decimal = ModuleAngka.SafeGetValue(Of Decimal)(rd, "kembali", 0D)
+                            Dim hutang As Decimal = ModuleAngka.SafeGetValue(Of Decimal)(rd, "hutang", 0D)
 
                             TxtGrantotal.Text = totalHarga.ToString("N0")
                             TxtDiterima.Text = bayar - kembali.ToString("N0")
@@ -350,11 +300,14 @@ Public Class FormLapkAS
                     End Using
                 End Using
             ElseIf CbBulan.Checked = True And CmbKasir.SelectedIndex <> 0 Then
-                Convertbulansetor()
-                Dim bulan As Integer = angkabulan
-                Dim tahun As Integer = CmbThn.Text
-                Dim AwalBulan As New Date(tahun, bulan, 1)
-                Dim AkhirBulan As Date = AwalBulan.AddMonths(1).AddDays(-1).AddSeconds(86399)
+                Dim tglAwal2 As DateTime
+                Dim tglAkhir2 As DateTime
+                If Not GetRentangBulan(CmbBln, CmbThn, tglAwal2, tglAkhir2) Then
+                    Cursor = Cursors.Default
+                    Return
+                End If
+                Dim AwalBulan As Date = tglAwal2
+                Dim AkhirBulan As Date = tglAkhir2
 
                 If RbtTunai.Checked Then
                     query = "SELECT ID_PENJUALAN, NAMA_PELANGGAN, TGL_TRANSAKSI, JENIS_PEMBAYARAN, DISKON_TOTAL_RP, GRAND_TOTAL_STL_PAJAK, PAJAK_RP, BAYAR, KEMBALI, SISA_TAGIHAN, JATUH_TEMPO, STATUS_TRANSAKSI, ID_USER, ID_KOMPUTER FROM penjualan WHERE TGL_TRANSAKSI >= @AwalBulan AND TGL_TRANSAKSI <= @AkhirBulan AND ID_USER LIKE @voucher AND TYPE_AKUN = 'TUNAI'"
@@ -379,10 +332,10 @@ Public Class FormLapkAS
                         rd.Read()
 
                         If rd.HasRows Then
-                            Dim totalHarga As Decimal = If(Not rd.IsDBNull(rd.GetOrdinal("TotalHarga")), rd("TotalHarga"), 0)
-                            Dim bayar As Decimal = If(Not rd.IsDBNull(rd.GetOrdinal("bayar")), rd("bayar"), 0)
-                            Dim kembali As Decimal = If(Not rd.IsDBNull(rd.GetOrdinal("kembali")), rd("kembali"), 0)
-                            Dim hutang As Decimal = If(Not rd.IsDBNull(rd.GetOrdinal("hutang")), rd("hutang"), 0)
+                            Dim totalHarga As Decimal = ModuleAngka.SafeGetValue(Of Decimal)(rd, "TotalHarga", 0D)
+                            Dim bayar As Decimal = ModuleAngka.SafeGetValue(Of Decimal)(rd, "bayar", 0D)
+                            Dim kembali As Decimal = ModuleAngka.SafeGetValue(Of Decimal)(rd, "kembali", 0D)
+                            Dim hutang As Decimal = ModuleAngka.SafeGetValue(Of Decimal)(rd, "hutang", 0D)
 
                             TxtGrantotal.Text = totalHarga.ToString("N0")
                             TxtDiterima.Text = bayar - kembali.ToString("N0")
@@ -430,5 +383,11 @@ Public Class FormLapkAS
         Close()
     End Sub
 
+
+    Private Sub FormLapkAS_KeyDown(sender As Object, e As KeyEventArgs) Handles MyBase.KeyDown
+        Select Case e.KeyCode
+            Case Keys.F5 : BtnHitung.PerformClick()
+        End Select
+    End Sub
 
 End Class

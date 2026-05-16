@@ -1,10 +1,10 @@
-﻿Imports Microsoft.Reporting.WinForms
+Imports Microsoft.Reporting.WinForms
 
 Public Class FormNotifHutang
 
     Public Sub IsiComboBoxSuplier()
         Dim tanggalJatuhTempo As DateTime
-        If DateTime.TryParse(FormUtama.STanggal.Text, tanggalJatuhTempo) Then
+        If DateTime.TryParse(FormUtama.StatusTanggal.Text, tanggalJatuhTempo) Then
             ' Mengatur waktu menjadi akhir hari
             tanggalJatuhTempo = tanggalJatuhTempo.AddDays(1).AddTicks(-1)
 
@@ -63,7 +63,7 @@ Public Class FormNotifHutang
     ' Method untuk mengatur parameter laporan
     Private Function GetReportParameters() As ReportParameterCollection
         Return New ReportParameterCollection From {
-            New ReportParameter("Kasir", "Dicetak oleh : " & FormUtama.SLogin.Text),
+            New ReportParameter("Kasir", "Dicetak oleh : " & FormUtama.StatusNamaUser.Text),
             New ReportParameter("Perusahaan", NAMA_PERUSAHAAN)
         }
     End Function
@@ -71,7 +71,7 @@ Public Class FormNotifHutang
     ' Method untuk menampilkan laporan hutang
     Public Sub TampilHutang()
         Dim tanggalJatuhTempo As DateTime
-        If DateTime.TryParse(FormUtama.STanggal.Text, tanggalJatuhTempo) Then
+        If DateTime.TryParse(FormUtama.StatusTanggal.Text, tanggalJatuhTempo) Then
             tanggalJatuhTempo = tanggalJatuhTempo.AddDays(1).AddTicks(-1)
 
             ' Ambil data hutang
@@ -94,6 +94,7 @@ Public Class FormNotifHutang
 
 
     Private Sub FormNotifHutang_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
+        ModuleTheme.TerapkanTheme(Me)
         ReportViewer1.RefreshReport()
     End Sub
 

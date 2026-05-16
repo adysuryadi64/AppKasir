@@ -1,4 +1,4 @@
-﻿<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()>
+<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()>
 Partial Class FormUpdateTabelDb
     Inherits System.Windows.Forms.Form
 
@@ -34,6 +34,7 @@ Partial Class FormUpdateTabelDb
         Me.ListBoxHasil = New System.Windows.Forms.ListBox()
         Me.BtnDebug = New System.Windows.Forms.Button()
         Me.BtnHasil = New System.Windows.Forms.Button()
+        Me.BtnBuatMigrasi = New System.Windows.Forms.Button()
         Me.Panel4.SuspendLayout()
         Me.SuspendLayout()
         '
@@ -53,19 +54,17 @@ Partial Class FormUpdateTabelDb
         'BtnClose
         '
         Me.BtnClose.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.BtnClose.BackColor = System.Drawing.Color.Yellow
+        Me.BtnClose.BackColor = System.Drawing.Color.White
+        Me.BtnClose.Cursor = System.Windows.Forms.Cursors.Hand
         Me.BtnClose.FlatAppearance.BorderSize = 0
-        Me.BtnClose.FlatAppearance.MouseDownBackColor = System.Drawing.Color.GreenYellow
-        Me.BtnClose.FlatAppearance.MouseOverBackColor = System.Drawing.Color.GreenYellow
-        Me.BtnClose.Font = New System.Drawing.Font("Century Gothic", 12.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.BtnClose.ForeColor = System.Drawing.Color.Black
+        Me.BtnClose.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(CType(CType(226, Byte), Integer), CType(CType(232, Byte), Integer), CType(CType(240, Byte), Integer))
+        Me.BtnClose.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(CType(CType(241, Byte), Integer), CType(CType(245, Byte), Integer), CType(CType(249, Byte), Integer))
+        Me.BtnClose.FlatStyle = System.Windows.Forms.FlatStyle.Flat
         Me.BtnClose.Image = CType(resources.GetObject("BtnClose.Image"), System.Drawing.Image)
-        Me.BtnClose.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft
         Me.BtnClose.Location = New System.Drawing.Point(757, 1)
         Me.BtnClose.Name = "BtnClose"
         Me.BtnClose.Size = New System.Drawing.Size(33, 36)
         Me.BtnClose.TabIndex = 204
-        Me.BtnClose.TextAlign = System.Drawing.ContentAlignment.MiddleRight
         Me.BtnClose.UseVisualStyleBackColor = False
         '
         'Label7
@@ -105,20 +104,23 @@ Partial Class FormUpdateTabelDb
         '
         'BtnCari
         '
-        Me.BtnCari.BackColor = System.Drawing.Color.Silver
-        Me.BtnCari.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom
-        Me.BtnCari.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(CType(CType(224, Byte), Integer), CType(CType(224, Byte), Integer), CType(CType(224, Byte), Integer))
-        Me.BtnCari.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(CType(CType(224, Byte), Integer), CType(CType(224, Byte), Integer), CType(CType(224, Byte), Integer))
-        Me.BtnCari.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Yellow
-        Me.BtnCari.FlatStyle = System.Windows.Forms.FlatStyle.Popup
-        Me.BtnCari.Font = New System.Drawing.Font("Century Gothic", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.BtnCari.AutoSize = True
+        Me.BtnCari.BackColor = System.Drawing.Color.White
+        Me.BtnCari.Cursor = System.Windows.Forms.Cursors.Hand
+        Me.BtnCari.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(CType(CType(100, Byte), Integer), CType(CType(116, Byte), Integer), CType(CType(139, Byte), Integer))
+        Me.BtnCari.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(CType(CType(226, Byte), Integer), CType(CType(232, Byte), Integer), CType(CType(240, Byte), Integer))
+        Me.BtnCari.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(CType(CType(241, Byte), Integer), CType(CType(245, Byte), Integer), CType(CType(249, Byte), Integer))
+        Me.BtnCari.FlatStyle = System.Windows.Forms.FlatStyle.Flat
+        Me.BtnCari.Font = New System.Drawing.Font("Segoe UI", 9.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.BtnCari.ForeColor = System.Drawing.Color.Black
+        Me.BtnCari.Image = CType(resources.GetObject("BtnCari.Image"), System.Drawing.Image)
         Me.BtnCari.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft
-        Me.BtnCari.Location = New System.Drawing.Point(659, 66)
+        Me.BtnCari.Location = New System.Drawing.Point(659, 60)
         Me.BtnCari.Name = "BtnCari"
-        Me.BtnCari.Size = New System.Drawing.Size(46, 23)
+        Me.BtnCari.Size = New System.Drawing.Size(120, 32)
         Me.BtnCari.TabIndex = 173
-        Me.BtnCari.Text = "..."
+        Me.BtnCari.Text = "Cari File"
+        Me.BtnCari.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
         Me.BtnCari.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText
         Me.BtnCari.UseVisualStyleBackColor = False
         '
@@ -136,12 +138,25 @@ Partial Class FormUpdateTabelDb
         '
         'BtnCek
         '
+        Me.BtnCek.AutoSize = True
+        Me.BtnCek.BackColor = System.Drawing.Color.White
+        Me.BtnCek.Cursor = System.Windows.Forms.Cursors.Hand
+        Me.BtnCek.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(CType(CType(100, Byte), Integer), CType(CType(116, Byte), Integer), CType(CType(139, Byte), Integer))
+        Me.BtnCek.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(CType(CType(226, Byte), Integer), CType(CType(232, Byte), Integer), CType(CType(240, Byte), Integer))
+        Me.BtnCek.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(CType(CType(241, Byte), Integer), CType(CType(245, Byte), Integer), CType(CType(249, Byte), Integer))
+        Me.BtnCek.FlatStyle = System.Windows.Forms.FlatStyle.Flat
+        Me.BtnCek.Font = New System.Drawing.Font("Segoe UI", 9.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.BtnCek.ForeColor = System.Drawing.Color.Black
+        Me.BtnCek.Image = CType(resources.GetObject("BtnCek.Image"), System.Drawing.Image)
+        Me.BtnCek.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft
         Me.BtnCek.Location = New System.Drawing.Point(583, 102)
         Me.BtnCek.Name = "BtnCek"
-        Me.BtnCek.Size = New System.Drawing.Size(122, 33)
+        Me.BtnCek.Size = New System.Drawing.Size(160, 32)
         Me.BtnCek.TabIndex = 176
-        Me.BtnCek.Text = "Cek database"
-        Me.BtnCek.UseVisualStyleBackColor = True
+        Me.BtnCek.Text = "Cek Database"
+        Me.BtnCek.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
+        Me.BtnCek.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText
+        Me.BtnCek.UseVisualStyleBackColor = False
         '
         'ListBoxHasil
         '
@@ -158,27 +173,76 @@ Partial Class FormUpdateTabelDb
         '
         'BtnDebug
         '
+        Me.BtnDebug.AutoSize = True
+        Me.BtnDebug.BackColor = System.Drawing.Color.White
+        Me.BtnDebug.Cursor = System.Windows.Forms.Cursors.Hand
+        Me.BtnDebug.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(CType(CType(100, Byte), Integer), CType(CType(116, Byte), Integer), CType(CType(139, Byte), Integer))
+        Me.BtnDebug.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(CType(CType(226, Byte), Integer), CType(CType(232, Byte), Integer), CType(CType(240, Byte), Integer))
+        Me.BtnDebug.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(CType(CType(241, Byte), Integer), CType(CType(245, Byte), Integer), CType(CType(249, Byte), Integer))
+        Me.BtnDebug.FlatStyle = System.Windows.Forms.FlatStyle.Flat
+        Me.BtnDebug.Font = New System.Drawing.Font("Segoe UI", 9.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.BtnDebug.ForeColor = System.Drawing.Color.Black
+        Me.BtnDebug.Image = CType(resources.GetObject("BtnDebug.Image"), System.Drawing.Image)
+        Me.BtnDebug.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft
         Me.BtnDebug.Location = New System.Drawing.Point(624, 637)
         Me.BtnDebug.Name = "BtnDebug"
-        Me.BtnDebug.Size = New System.Drawing.Size(75, 23)
+        Me.BtnDebug.Size = New System.Drawing.Size(120, 32)
         Me.BtnDebug.TabIndex = 178
         Me.BtnDebug.Text = "Debug"
-        Me.BtnDebug.UseVisualStyleBackColor = True
+        Me.BtnDebug.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
+        Me.BtnDebug.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText
+        Me.BtnDebug.UseVisualStyleBackColor = False
         '
         'BtnHasil
         '
+        Me.BtnHasil.AutoSize = True
+        Me.BtnHasil.BackColor = System.Drawing.Color.White
+        Me.BtnHasil.Cursor = System.Windows.Forms.Cursors.Hand
+        Me.BtnHasil.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(CType(CType(100, Byte), Integer), CType(CType(116, Byte), Integer), CType(CType(139, Byte), Integer))
+        Me.BtnHasil.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(CType(CType(226, Byte), Integer), CType(CType(232, Byte), Integer), CType(CType(240, Byte), Integer))
+        Me.BtnHasil.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(CType(CType(241, Byte), Integer), CType(CType(245, Byte), Integer), CType(CType(249, Byte), Integer))
+        Me.BtnHasil.FlatStyle = System.Windows.Forms.FlatStyle.Flat
+        Me.BtnHasil.Font = New System.Drawing.Font("Segoe UI", 9.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.BtnHasil.ForeColor = System.Drawing.Color.Black
+        Me.BtnHasil.Image = CType(resources.GetObject("BtnHasil.Image"), System.Drawing.Image)
+        Me.BtnHasil.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft
         Me.BtnHasil.Location = New System.Drawing.Point(705, 637)
         Me.BtnHasil.Name = "BtnHasil"
-        Me.BtnHasil.Size = New System.Drawing.Size(75, 23)
+        Me.BtnHasil.Size = New System.Drawing.Size(120, 32)
         Me.BtnHasil.TabIndex = 179
-        Me.BtnHasil.Text = "Hasil"
-        Me.BtnHasil.UseVisualStyleBackColor = True
+        Me.BtnHasil.Text = "Lihat Hasil"
+        Me.BtnHasil.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
+        Me.BtnHasil.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText
+        Me.BtnHasil.UseVisualStyleBackColor = False
+        '
+        'BtnBuatMigrasi
+        '
+        Me.BtnBuatMigrasi.AutoSize = True
+        Me.BtnBuatMigrasi.BackColor = System.Drawing.Color.White
+        Me.BtnBuatMigrasi.Cursor = System.Windows.Forms.Cursors.Hand
+        Me.BtnBuatMigrasi.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(CType(CType(22, Byte), Integer), CType(CType(163, Byte), Integer), CType(CType(74, Byte), Integer))
+        Me.BtnBuatMigrasi.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(CType(CType(187, Byte), Integer), CType(CType(247, Byte), Integer), CType(CType(208, Byte), Integer))
+        Me.BtnBuatMigrasi.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(CType(CType(220, Byte), Integer), CType(CType(252, Byte), Integer), CType(CType(231, Byte), Integer))
+        Me.BtnBuatMigrasi.FlatStyle = System.Windows.Forms.FlatStyle.Flat
+        Me.BtnBuatMigrasi.Font = New System.Drawing.Font("Segoe UI", 9.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.BtnBuatMigrasi.ForeColor = System.Drawing.Color.FromArgb(CType(CType(22, Byte), Integer), CType(CType(163, Byte), Integer), CType(CType(74, Byte), Integer))
+        Me.BtnBuatMigrasi.Image = CType(resources.GetObject("BtnBuatMigrasi.Image"), System.Drawing.Image)
+        Me.BtnBuatMigrasi.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft
+        Me.BtnBuatMigrasi.Location = New System.Drawing.Point(288, 637)
+        Me.BtnBuatMigrasi.Name = "BtnBuatMigrasi"
+        Me.BtnBuatMigrasi.Size = New System.Drawing.Size(160, 32)
+        Me.BtnBuatMigrasi.TabIndex = 180
+        Me.BtnBuatMigrasi.Text = "Buat Migrasi"
+        Me.BtnBuatMigrasi.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
+        Me.BtnBuatMigrasi.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText
+        Me.BtnBuatMigrasi.UseVisualStyleBackColor = False
         '
         'FormUpdateTabelDb
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(800, 672)
+        Me.Controls.Add(Me.BtnBuatMigrasi)
         Me.Controls.Add(Me.BtnHasil)
         Me.Controls.Add(Me.BtnDebug)
         Me.Controls.Add(Me.ListBoxHasil)
@@ -212,4 +276,5 @@ Partial Class FormUpdateTabelDb
     Friend WithEvents ListBoxHasil As ListBox
     Friend WithEvents BtnDebug As Button
     Friend WithEvents BtnHasil As Button
+    Friend WithEvents BtnBuatMigrasi As Button
 End Class

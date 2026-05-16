@@ -1,4 +1,4 @@
-﻿Imports System.Globalization
+Imports System.Globalization
 Imports Microsoft.Reporting.WinForms
 
 
@@ -6,48 +6,6 @@ Public Class FormLapJurnal
     Private Sub ReportViewer1_Load(sender As Object, e As EventArgs) Handles ReportViewer1.Load
         CbTanggal.Checked = True
         ReportViewer1.LocalReport.DataSources.Clear()
-    End Sub
-
-    Private bulanTerpilih As Integer
-
-    Private Sub KonversiBulanKeAngka()
-        Select Case CmbBln.Text
-            Case "Januari" : bulanTerpilih = 1
-            Case "Februari" : bulanTerpilih = 2
-            Case "Maret" : bulanTerpilih = 3
-            Case "April" : bulanTerpilih = 4
-            Case "Mei" : bulanTerpilih = 5
-            Case "Juni" : bulanTerpilih = 6
-            Case "Juli" : bulanTerpilih = 7
-            Case "Agustus" : bulanTerpilih = 8
-            Case "September" : bulanTerpilih = 9
-            Case "Oktober" : bulanTerpilih = 10
-            Case "November" : bulanTerpilih = 11
-            Case "Desember" : bulanTerpilih = 12
-        End Select
-    End Sub
-
-    Private Sub MuatComboBoxBulanTahun()
-        ' Bersihkan item sebelum menambahkannya kembali
-        CmbThn.Items.Clear()
-
-        ' Tambahkan tahun dari 2022 hingga tahun sekarang
-        For i As Integer = 2022 To Year(Now)
-            CmbThn.Items.Add(i)
-        Next
-
-        ' Bersihkan item sebelum menambahkannya kembali
-        CmbBln.Items.Clear()
-
-        ' Tambahkan daftar bulan
-        Dim daftarBulan As String() = {"Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"}
-        CmbBln.Items.AddRange(daftarBulan)
-
-        ' Set tahun sekarang sebagai tahun default
-        CmbThn.SelectedItem = Year(Now)
-
-        ' Set bulan sekarang sebagai bulan default
-        CmbBln.SelectedIndex = Month(Now) - 1
     End Sub
 
     Private Sub CmbBln_SelectedIndexChanged(ByVal sender As Object, ByVal e As EventArgs) Handles CmbBln.SelectedIndexChanged
@@ -75,7 +33,7 @@ Public Class FormLapJurnal
     Private Sub CBBulan_CheckedChanged(ByVal sender As Object, ByVal e As EventArgs) Handles CbBulan.CheckedChanged
         If CbBulan.Checked = True Then
             CbTanggal.Checked = False
-            MuatComboBoxBulanTahun()
+            MuatComboBoxBulanTahun(CmbBln, CmbThn)
             CmbBln.Enabled = True
             CmbThn.Enabled = True
         Else
@@ -105,20 +63,11 @@ Public Class FormLapJurnal
                 AwalBulan = DTPAwal.Value.Date.ToString("yyyy-MM-dd HH:mm:ss")
                 AkhirBulan = DTPAkhir.Value.Date.AddDays(1).AddTicks(-1).ToString("yyyy-MM-dd HH:mm:ss")
             ElseIf CbBulan.Checked Then
-                ' Cek apakah ComboBox belum dipilih
-                If CmbBln.SelectedIndex = -1 Then
-                    ' Tampilkan pesan peringatan
-                    MessageBox.Show("Harap pilih bulan terlebih dahulu.", "Peringatan", MessageBoxButtons.OK, MessageBoxIcon.Warning)
-                    CmbBln.DroppedDown = True
-                    Exit Sub
-                End If
-
-                ' Tetapkan AwalBulan dan AkhirBulan berdasarkan bulan dan tahun yang dipilih
-                KonversiBulanKeAngka() ' (Jika diperlukan)
-                Dim bulan As Integer = bulanTerpilih
-                Dim tahun As Integer = CmbThn.Text
-                AwalBulan = New DateTime(tahun, bulan, 1).ToString("yyyy-MM-dd HH:mm:ss")
-                AkhirBulan = AwalBulan.AddMonths(1).AddDays(-1).AddSeconds(86399).ToString("yyyy-MM-dd HH:mm:ss")
+                Dim tglAwal As DateTime
+                Dim tglAkhir As DateTime
+                If Not GetRentangBulan(CmbBln, CmbThn, tglAwal, tglAkhir) Then Exit Sub
+                AwalBulan = tglAwal.ToString("yyyy-MM-dd HH:mm:ss")
+                AkhirBulan = tglAkhir.ToString("yyyy-MM-dd HH:mm:ss")
             End If
 
             Cursor = Cursors.WaitCursor
@@ -141,7 +90,7 @@ Public Class FormLapJurnal
 
                         Dim parameters As New ReportParameterCollection From {
                         New ReportParameter("PERIODE", Periode),
-                        New ReportParameter("Kasir", "Dicetak oleh : " & FormUtama.SLogin.Text),
+                        New ReportParameter("Kasir", "Dicetak oleh : " & FormUtama.StatusNamaUser.Text),
                         New ReportParameter("NAMATOKO", NAMA_PERUSAHAAN)
                     }
 
@@ -164,6 +113,13 @@ Public Class FormLapJurnal
     End Sub
 
     Private Sub FormLapJurnal_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+        ModuleTheme.TerapkanTheme(Me)
 
     End Sub
+    Private Sub FormLapJurnal_KeyDown(sender As Object, e As KeyEventArgs) Handles MyBase.KeyDown
+        Select Case e.KeyCode
+            Case Keys.F5 : BtnLunas.PerformClick()
+        End Select
+    End Sub
+
 End Class

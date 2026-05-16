@@ -1,4 +1,4 @@
-﻿<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()> _
+<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()> _
 Partial Class FormLoading
 	Inherits System.Windows.Forms.Form
 
@@ -35,7 +35,6 @@ Partial Class FormLoading
         '
         Me.LabelProgress.BackColor = System.Drawing.Color.Transparent
         Me.LabelProgress.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.LabelProgress.ForeColor = System.Drawing.Color.Yellow
         Me.LabelProgress.Location = New System.Drawing.Point(8, 112)
         Me.LabelProgress.Name = "LabelProgress"
         Me.LabelProgress.Size = New System.Drawing.Size(711, 15)
@@ -55,7 +54,6 @@ Partial Class FormLoading
         Me.Label1.AutoSize = True
         Me.Label1.BackColor = System.Drawing.Color.Transparent
         Me.Label1.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label1.ForeColor = System.Drawing.Color.White
         Me.Label1.Location = New System.Drawing.Point(92, 86)
         Me.Label1.Name = "Label1"
         Me.Label1.Size = New System.Drawing.Size(542, 16)
@@ -69,7 +67,6 @@ Partial Class FormLoading
         Me.Label2.AutoSize = True
         Me.Label2.BackColor = System.Drawing.Color.Transparent
         Me.Label2.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label2.ForeColor = System.Drawing.Color.Gold
         Me.Label2.Location = New System.Drawing.Point(143, 161)
         Me.Label2.Name = "Label2"
         Me.Label2.Size = New System.Drawing.Size(440, 16)
@@ -91,7 +88,6 @@ Partial Class FormLoading
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.BackColor = System.Drawing.Color.SaddleBrown
         Me.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch
         Me.ClientSize = New System.Drawing.Size(735, 191)
         Me.Controls.Add(Me.PictureBox1)
@@ -102,6 +98,7 @@ Partial Class FormLoading
         Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None
         Me.Icon = CType(resources.GetObject("$this.Icon"), System.Drawing.Icon)
         Me.Name = "FormLoading"
+        Me.KeyPreview = True
         Me.ShowIcon = False
         Me.ShowInTaskbar = False
         Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen
@@ -117,3 +114,4 @@ Partial Class FormLoading
     Friend WithEvents Label2 As System.Windows.Forms.Label
     Friend WithEvents PictureBox1 As PictureBox
 End Class
+

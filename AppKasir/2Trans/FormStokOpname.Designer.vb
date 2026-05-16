@@ -1,9 +1,9 @@
-﻿<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()> _
+<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()>
 Partial Class FormStokOpname
     Inherits System.Windows.Forms.Form
 
     'Form overrides dispose to clean up the component list.
-    <System.Diagnostics.DebuggerNonUserCode()> _
+    <System.Diagnostics.DebuggerNonUserCode()>
     Protected Overrides Sub Dispose(ByVal disposing As Boolean)
         Try
             If disposing AndAlso components IsNot Nothing Then
@@ -20,12 +20,12 @@ Partial Class FormStokOpname
     'NOTE: The following procedure is required by the Windows Form Designer
     'It can be modified using the Windows Form Designer.  
     'Do not modify it using the code editor.
-    <System.Diagnostics.DebuggerStepThrough()> _
+    <System.Diagnostics.DebuggerStepThrough()>
     Private Sub InitializeComponent()
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(FormStokOpname))
         Me.Panel4 = New System.Windows.Forms.Panel()
         Me.BtNCetak = New System.Windows.Forms.Button()
-        Me.BtnKeluar = New System.Windows.Forms.Button()
+        Me.BtnKeluarForm = New System.Windows.Forms.Button()
         Me.LblUtama = New System.Windows.Forms.Label()
         Me.lstBarang = New System.Windows.Forms.ListBox()
         Me.TxtFaktur = New System.Windows.Forms.TextBox()
@@ -64,7 +64,7 @@ Partial Class FormStokOpname
         Me.Label9 = New System.Windows.Forms.Label()
         Me.LblToko = New System.Windows.Forms.Label()
         Me.LblKetTerakhir = New System.Windows.Forms.Label()
-        Me.PanelCariNama = New System.Windows.Forms.Panel()
+        Me.PanelCari = New System.Windows.Forms.Panel()
         Me.BtnCari = New System.Windows.Forms.Button()
         Me.Panel3 = New System.Windows.Forms.Panel()
         Me.Label5 = New System.Windows.Forms.Label()
@@ -76,7 +76,7 @@ Partial Class FormStokOpname
         Me.Panel4.SuspendLayout()
         Me.Panel1.SuspendLayout()
         Me.Panel2.SuspendLayout()
-        Me.PanelCariNama.SuspendLayout()
+        Me.PanelCari.SuspendLayout()
         Me.Panel3.SuspendLayout()
         CType(Me.DGVData, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
@@ -85,8 +85,7 @@ Partial Class FormStokOpname
         '
         Me.Panel4.BackColor = System.Drawing.Color.Yellow
         Me.Panel4.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D
-        Me.Panel4.Controls.Add(Me.BtNCetak)
-        Me.Panel4.Controls.Add(Me.BtnKeluar)
+        Me.Panel4.Controls.Add(Me.BtnKeluarForm)
         Me.Panel4.Controls.Add(Me.LblUtama)
         Me.Panel4.Dock = System.Windows.Forms.DockStyle.Top
         Me.Panel4.Location = New System.Drawing.Point(0, 0)
@@ -96,56 +95,60 @@ Partial Class FormStokOpname
         '
         'BtNCetak
         '
-        Me.BtNCetak.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.BtNCetak.BackColor = System.Drawing.Color.FromArgb(CType(CType(36, Byte), Integer), CType(CType(91, Byte), Integer), CType(CType(32, Byte), Integer))
-        Me.BtNCetak.FlatAppearance.BorderSize = 0
-        Me.BtNCetak.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(CType(CType(128, Byte), Integer), CType(CType(255, Byte), Integer), CType(CType(128, Byte), Integer))
-        Me.BtNCetak.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Green
+        Me.BtNCetak.AutoSize = True
+        Me.BtNCetak.BackColor = System.Drawing.Color.White
+        Me.BtNCetak.Cursor = System.Windows.Forms.Cursors.Hand
+        Me.BtNCetak.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(CType(CType(100, Byte), Integer), CType(CType(116, Byte), Integer), CType(CType(139, Byte), Integer))
+        Me.BtNCetak.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(CType(CType(226, Byte), Integer), CType(CType(232, Byte), Integer), CType(CType(240, Byte), Integer))
+        Me.BtNCetak.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(CType(CType(241, Byte), Integer), CType(CType(245, Byte), Integer), CType(CType(249, Byte), Integer))
         Me.BtNCetak.FlatStyle = System.Windows.Forms.FlatStyle.Flat
-        Me.BtNCetak.Font = New System.Drawing.Font("Century Gothic", 11.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.BtNCetak.ForeColor = System.Drawing.Color.White
+        Me.BtNCetak.Font = New System.Drawing.Font("Segoe UI", 9.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.BtNCetak.ForeColor = System.Drawing.Color.Black
         Me.BtNCetak.Image = CType(resources.GetObject("BtNCetak.Image"), System.Drawing.Image)
         Me.BtNCetak.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft
-        Me.BtNCetak.Location = New System.Drawing.Point(672, 4)
+        Me.BtNCetak.Location = New System.Drawing.Point(382, 88)
         Me.BtNCetak.Name = "BtNCetak"
-        Me.BtNCetak.Size = New System.Drawing.Size(236, 36)
+        Me.BtNCetak.Size = New System.Drawing.Size(196, 36)
         Me.BtNCetak.TabIndex = 79
         Me.BtNCetak.Text = "Cetak bahan stokopname"
+        Me.BtNCetak.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
         Me.BtNCetak.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText
         Me.BtNCetak.UseVisualStyleBackColor = False
         '
-        'BtnKeluar
+        'BtnKeluarForm
         '
-        Me.BtnKeluar.AllowDrop = True
-        Me.BtnKeluar.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.BtnKeluar.BackColor = System.Drawing.Color.DarkOrange
-        Me.BtnKeluar.Cursor = System.Windows.Forms.Cursors.Hand
-        Me.BtnKeluar.FlatAppearance.BorderSize = 0
-        Me.BtnKeluar.FlatAppearance.MouseDownBackColor = System.Drawing.Color.HotPink
-        Me.BtnKeluar.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Crimson
-        Me.BtnKeluar.FlatStyle = System.Windows.Forms.FlatStyle.Flat
-        Me.BtnKeluar.Font = New System.Drawing.Font("Century Gothic", 12.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.BtnKeluar.ForeColor = System.Drawing.Color.Black
-        Me.BtnKeluar.Image = CType(resources.GetObject("BtnKeluar.Image"), System.Drawing.Image)
-        Me.BtnKeluar.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft
-        Me.BtnKeluar.Location = New System.Drawing.Point(967, 6)
-        Me.BtnKeluar.Name = "BtnKeluar"
-        Me.BtnKeluar.Size = New System.Drawing.Size(138, 32)
-        Me.BtnKeluar.TabIndex = 78
-        Me.BtnKeluar.Text = "Keluar (Esc)"
-        Me.BtnKeluar.TextAlign = System.Drawing.ContentAlignment.MiddleRight
-        Me.BtnKeluar.UseVisualStyleBackColor = False
+        Me.BtnKeluarForm.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.BtnKeluarForm.AutoSize = True
+        Me.BtnKeluarForm.BackColor = System.Drawing.Color.White
+        Me.BtnKeluarForm.Cursor = System.Windows.Forms.Cursors.Hand
+        Me.BtnKeluarForm.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(CType(CType(220, Byte), Integer), CType(CType(38, Byte), Integer), CType(CType(38, Byte), Integer))
+        Me.BtnKeluarForm.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(CType(CType(252, Byte), Integer), CType(CType(165, Byte), Integer), CType(CType(165, Byte), Integer))
+        Me.BtnKeluarForm.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(CType(CType(254, Byte), Integer), CType(CType(226, Byte), Integer), CType(CType(226, Byte), Integer))
+        Me.BtnKeluarForm.FlatStyle = System.Windows.Forms.FlatStyle.Flat
+        Me.BtnKeluarForm.Font = New System.Drawing.Font("Segoe UI", 9.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.BtnKeluarForm.ForeColor = System.Drawing.Color.FromArgb(CType(CType(220, Byte), Integer), CType(CType(38, Byte), Integer), CType(CType(38, Byte), Integer))
+        Me.BtnKeluarForm.Image = CType(resources.GetObject("BtnKeluarForm.Image"), System.Drawing.Image)
+        Me.BtnKeluarForm.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft
+        Me.BtnKeluarForm.Location = New System.Drawing.Point(989, 4)
+        Me.BtnKeluarForm.Name = "BtnKeluarForm"
+        Me.BtnKeluarForm.Size = New System.Drawing.Size(112, 31)
+        Me.BtnKeluarForm.TabIndex = 78
+        Me.BtnKeluarForm.Text = "Keluar (Esc)"
+        Me.BtnKeluarForm.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
+        Me.BtnKeluarForm.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText
+        Me.BtnKeluarForm.UseVisualStyleBackColor = False
         '
         'LblUtama
         '
-        Me.LblUtama.AutoSize = True
-        Me.LblUtama.Font = New System.Drawing.Font("Microsoft Sans Serif", 26.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.LblUtama.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.LblUtama.Font = New System.Drawing.Font("Century Gothic", 21.75!, System.Drawing.FontStyle.Bold)
         Me.LblUtama.ForeColor = System.Drawing.SystemColors.ActiveCaptionText
-        Me.LblUtama.Location = New System.Drawing.Point(17, 1)
+        Me.LblUtama.Location = New System.Drawing.Point(0, 0)
         Me.LblUtama.Name = "LblUtama"
-        Me.LblUtama.Size = New System.Drawing.Size(299, 39)
+        Me.LblUtama.Size = New System.Drawing.Size(1108, 41)
         Me.LblUtama.TabIndex = 1
         Me.LblUtama.Text = "Add Stok Opname"
+        Me.LblUtama.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
         '
         'lstBarang
         '
@@ -213,13 +216,15 @@ Partial Class FormStokOpname
         '
         'BtnSimpan
         '
-        Me.BtnSimpan.BackColor = System.Drawing.Color.Aquamarine
-        Me.BtnSimpan.FlatAppearance.BorderSize = 0
-        Me.BtnSimpan.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(CType(CType(128, Byte), Integer), CType(CType(255, Byte), Integer), CType(CType(128, Byte), Integer))
-        Me.BtnSimpan.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Green
+        Me.BtnSimpan.AutoSize = True
+        Me.BtnSimpan.BackColor = System.Drawing.Color.White
+        Me.BtnSimpan.Cursor = System.Windows.Forms.Cursors.Hand
+        Me.BtnSimpan.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(CType(CType(22, Byte), Integer), CType(CType(163, Byte), Integer), CType(CType(74, Byte), Integer))
+        Me.BtnSimpan.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(CType(CType(187, Byte), Integer), CType(CType(247, Byte), Integer), CType(CType(208, Byte), Integer))
+        Me.BtnSimpan.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(CType(CType(220, Byte), Integer), CType(CType(252, Byte), Integer), CType(CType(231, Byte), Integer))
         Me.BtnSimpan.FlatStyle = System.Windows.Forms.FlatStyle.Flat
-        Me.BtnSimpan.Font = New System.Drawing.Font("Century Gothic", 11.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.BtnSimpan.ForeColor = System.Drawing.Color.Black
+        Me.BtnSimpan.Font = New System.Drawing.Font("Segoe UI", 9.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.BtnSimpan.ForeColor = System.Drawing.Color.FromArgb(CType(CType(22, Byte), Integer), CType(CType(163, Byte), Integer), CType(CType(74, Byte), Integer))
         Me.BtnSimpan.Image = CType(resources.GetObject("BtnSimpan.Image"), System.Drawing.Image)
         Me.BtnSimpan.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft
         Me.BtnSimpan.Location = New System.Drawing.Point(437, 497)
@@ -227,7 +232,8 @@ Partial Class FormStokOpname
         Me.BtnSimpan.Size = New System.Drawing.Size(138, 34)
         Me.BtnSimpan.TabIndex = 139
         Me.BtnSimpan.Text = "Simpan (F8)"
-        Me.BtnSimpan.TextAlign = System.Drawing.ContentAlignment.MiddleRight
+        Me.BtnSimpan.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
+        Me.BtnSimpan.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText
         Me.BtnSimpan.UseVisualStyleBackColor = False
         '
         'Label20
@@ -571,23 +577,36 @@ Partial Class FormStokOpname
         '
         'PanelCariNama
         '
-        Me.PanelCariNama.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom
-        Me.PanelCariNama.Controls.Add(Me.BtnCari)
-        Me.PanelCariNama.Controls.Add(Me.TxtNama)
-        Me.PanelCariNama.Font = New System.Drawing.Font("Century Gothic", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.PanelCariNama.Location = New System.Drawing.Point(12, 130)
-        Me.PanelCariNama.Name = "PanelCariNama"
-        Me.PanelCariNama.Size = New System.Drawing.Size(566, 36)
-        Me.PanelCariNama.TabIndex = 154
+        Me.PanelCari.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom
+        Me.PanelCari.Controls.Add(Me.BtnCari)
+        Me.PanelCari.Controls.Add(Me.TxtNama)
+        Me.PanelCari.Font = New System.Drawing.Font("Century Gothic", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.PanelCari.Location = New System.Drawing.Point(12, 130)
+        Me.PanelCari.Name = "PanelCari"
+        Me.PanelCari.Size = New System.Drawing.Size(566, 36)
+        Me.PanelCari.TabIndex = 154
         '
         'BtnCari
         '
+        Me.BtnCari.AutoSize = True
+        Me.BtnCari.BackColor = System.Drawing.Color.White
+        Me.BtnCari.Cursor = System.Windows.Forms.Cursors.Hand
+        Me.BtnCari.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(CType(CType(100, Byte), Integer), CType(CType(116, Byte), Integer), CType(CType(139, Byte), Integer))
+        Me.BtnCari.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(CType(CType(226, Byte), Integer), CType(CType(232, Byte), Integer), CType(CType(240, Byte), Integer))
+        Me.BtnCari.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(CType(CType(241, Byte), Integer), CType(CType(245, Byte), Integer), CType(CType(249, Byte), Integer))
+        Me.BtnCari.FlatStyle = System.Windows.Forms.FlatStyle.Flat
+        Me.BtnCari.Font = New System.Drawing.Font("Segoe UI", 9.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.BtnCari.ForeColor = System.Drawing.Color.Black
         Me.BtnCari.Image = CType(resources.GetObject("BtnCari.Image"), System.Drawing.Image)
+        Me.BtnCari.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft
         Me.BtnCari.Location = New System.Drawing.Point(538, 5)
         Me.BtnCari.Name = "BtnCari"
-        Me.BtnCari.Size = New System.Drawing.Size(26, 26)
+        Me.BtnCari.Size = New System.Drawing.Size(60, 29)
         Me.BtnCari.TabIndex = 2
-        Me.BtnCari.UseVisualStyleBackColor = True
+        Me.BtnCari.Text = "Cari"
+        Me.BtnCari.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
+        Me.BtnCari.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText
+        Me.BtnCari.UseVisualStyleBackColor = False
         '
         'Panel3
         '
@@ -646,7 +665,6 @@ Partial Class FormStokOpname
             Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.DGVData.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.DisplayedCells
-        Me.DGVData.BackgroundColor = System.Drawing.Color.White
         Me.DGVData.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
         Me.DGVData.Location = New System.Drawing.Point(596, 80)
         Me.DGVData.Name = "DGVData"
@@ -683,6 +701,7 @@ Partial Class FormStokOpname
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.BackColor = System.Drawing.SystemColors.ActiveCaption
         Me.ClientSize = New System.Drawing.Size(1112, 546)
+        Me.Controls.Add(Me.BtNCetak)
         Me.Controls.Add(Me.TxtQtyUntukEdit)
         Me.Controls.Add(Me.Label8)
         Me.Controls.Add(Me.DGVData)
@@ -690,7 +709,7 @@ Partial Class FormStokOpname
         Me.Controls.Add(Me.Label6)
         Me.Controls.Add(Me.Label5)
         Me.Controls.Add(Me.lstBarang)
-        Me.Controls.Add(Me.PanelCariNama)
+        Me.Controls.Add(Me.PanelCari)
         Me.Controls.Add(Me.Panel2)
         Me.Controls.Add(Me.TxtLokasi)
         Me.Controls.Add(Me.Label4)
@@ -717,8 +736,8 @@ Partial Class FormStokOpname
         Me.Panel1.PerformLayout()
         Me.Panel2.ResumeLayout(False)
         Me.Panel2.PerformLayout()
-        Me.PanelCariNama.ResumeLayout(False)
-        Me.PanelCariNama.PerformLayout()
+        Me.PanelCari.ResumeLayout(False)
+        Me.PanelCari.PerformLayout()
         Me.Panel3.ResumeLayout(False)
         Me.Panel3.PerformLayout()
         CType(Me.DGVData, System.ComponentModel.ISupportInitialize).EndInit()
@@ -728,7 +747,7 @@ Partial Class FormStokOpname
     End Sub
     Friend WithEvents Panel4 As System.Windows.Forms.Panel
     Friend WithEvents LblUtama As System.Windows.Forms.Label
-    Friend WithEvents BtnKeluar As System.Windows.Forms.Button
+    Friend WithEvents BtnKeluarForm As System.Windows.Forms.Button
     Friend WithEvents lstBarang As System.Windows.Forms.ListBox
     Friend WithEvents TxtFaktur As System.Windows.Forms.TextBox
     Friend WithEvents TxtNama As System.Windows.Forms.TextBox
@@ -765,7 +784,7 @@ Partial Class FormStokOpname
     Friend WithEvents Panel2 As System.Windows.Forms.Panel
     Friend WithEvents LblToko As System.Windows.Forms.Label
     Friend WithEvents LblKetTerakhir As System.Windows.Forms.Label
-    Friend WithEvents PanelCariNama As System.Windows.Forms.Panel
+    Friend WithEvents PanelCari As System.Windows.Forms.Panel
     Friend WithEvents BtnCari As System.Windows.Forms.Button
     Friend WithEvents Panel3 As System.Windows.Forms.Panel
     Friend WithEvents Label5 As System.Windows.Forms.Label

@@ -1,4 +1,4 @@
-﻿Imports System.Drawing.Printing
+Imports System.Drawing.Printing
 Imports System.IO
 Imports System.Runtime.InteropServices
 Imports System.Text
@@ -66,7 +66,6 @@ Public Class CetakLabelBarcodeTSPL
                 Next
             Catch ex As Exception
                 ' Log error ke debug window agar developer tahu
-                Debug.WriteLine("INI Read Error: " & ex.Message)
             End Try
             ' Jika tidak ketemu atau error, kembalikan default
             Return defaultVal
@@ -121,7 +120,6 @@ Public Class CetakLabelBarcodeTSPL
                 File.WriteAllLines(_filePath, lines, Encoding.UTF8)
 
             Catch ex As Exception
-                Debug.WriteLine("INI Write Error: " & ex.Message)
                 MessageBox.Show("Gagal menyimpan config: " & ex.Message)
             End Try
         End Sub
@@ -218,8 +216,8 @@ Public Class CetakLabelBarcodeTSPL
     ''' Mengambil nilai Decimal (Angka) dari Dictionary Produk
     ''' </summary>
     Private Function GetDictDecimal(key As String) As Decimal
-        If dicProductDetail.ContainsKey(key) AndAlso IsNumeric(dicProductDetail(key)) Then
-            Return Convert.ToDecimal(dicProductDetail(key))
+        If dicProductDetail.ContainsKey(key) Then
+            Return ModuleAngka.ParseDecimal(dicProductDetail(key))
         End If
         Return 0D
     End Function
@@ -416,7 +414,6 @@ Public Class CetakLabelBarcodeTSPL
             RTLog.ScrollToCaret()
 
         Catch ex As Exception
-            Debug.WriteLine("Error Logging: " & ex.Message)
         End Try
     End Sub
 #End Region
@@ -552,6 +549,7 @@ Public Class CetakLabelBarcodeTSPL
 
 #Region "FORM EVENT & LOGIC SETUP"
     Private Sub Form_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+        ModuleTheme.TerapkanTheme(Me)
         Try
             ' 1. KUNCI EVENT (Mencegah penyimpanan otomatis yang tidak diinginkan)
             bolSuppressEvents = True
@@ -1474,6 +1472,10 @@ Public Class CetakLabelBarcodeTSPL
         sb.AppendLine("CLS")
 
         SendRawData(cmbSelectPrinter.Text, sb.ToString())
+    End Sub
+
+    Private Sub BtnKeluar_Click(sender As Object, e As EventArgs) Handles BtnKeluar.Click
+        Me.Close()
     End Sub
 
 #End Region

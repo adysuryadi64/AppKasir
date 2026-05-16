@@ -40,7 +40,7 @@ Partial Class FormLogin
         Me.Label2.Font = New System.Drawing.Font("Century Gothic", 9.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.Label2.Location = New System.Drawing.Point(75, 124)
         Me.Label2.Name = "Label2"
-        Me.Label2.Size = New System.Drawing.Size(76, 16)
+        Me.Label2.Size = New System.Drawing.Size(75, 16)
         Me.Label2.TabIndex = 7
         Me.Label2.Text = "Password :"
         '
@@ -51,37 +51,51 @@ Partial Class FormLogin
         Me.Label1.Font = New System.Drawing.Font("Century Gothic", 9.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.Label1.Location = New System.Drawing.Point(71, 93)
         Me.Label1.Name = "Label1"
-        Me.Label1.Size = New System.Drawing.Size(80, 16)
+        Me.Label1.Size = New System.Drawing.Size(79, 16)
         Me.Label1.TabIndex = 8
         Me.Label1.Text = "Username :"
         '
         'BtnKeluar
         '
-        Me.BtnKeluar.BackColor = System.Drawing.Color.Orange
+        Me.BtnKeluar.AutoSize = True
+        Me.BtnKeluar.BackColor = System.Drawing.Color.White
+        Me.BtnKeluar.Cursor = System.Windows.Forms.Cursors.Hand
+        Me.BtnKeluar.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(CType(CType(220, Byte), Integer), CType(CType(38, Byte), Integer), CType(CType(38, Byte), Integer))
+        Me.BtnKeluar.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(CType(CType(252, Byte), Integer), CType(CType(165, Byte), Integer), CType(CType(165, Byte), Integer))
+        Me.BtnKeluar.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(CType(CType(254, Byte), Integer), CType(CType(226, Byte), Integer), CType(CType(226, Byte), Integer))
         Me.BtnKeluar.FlatStyle = System.Windows.Forms.FlatStyle.Flat
-        Me.BtnKeluar.Font = New System.Drawing.Font("Microsoft Sans Serif", 14.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.BtnKeluar.ForeColor = System.Drawing.Color.White
+        Me.BtnKeluar.Font = New System.Drawing.Font("Segoe UI", 9.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.BtnKeluar.ForeColor = System.Drawing.Color.FromArgb(CType(CType(220, Byte), Integer), CType(CType(38, Byte), Integer), CType(CType(38, Byte), Integer))
         Me.BtnKeluar.Image = CType(resources.GetObject("BtnKeluar.Image"), System.Drawing.Image)
-        Me.BtnKeluar.Location = New System.Drawing.Point(192, 177)
+        Me.BtnKeluar.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft
+        Me.BtnKeluar.Location = New System.Drawing.Point(228, 177)
         Me.BtnKeluar.Name = "BtnKeluar"
         Me.BtnKeluar.Size = New System.Drawing.Size(111, 40)
         Me.BtnKeluar.TabIndex = 5
-        Me.BtnKeluar.Text = "Batal"
+        Me.BtnKeluar.Text = "Batal (Esc)"
+        Me.BtnKeluar.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
         Me.BtnKeluar.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText
         Me.BtnKeluar.UseVisualStyleBackColor = False
         '
         'BtnLogin
         '
-        Me.BtnLogin.BackColor = System.Drawing.Color.Orange
+        Me.BtnLogin.AutoSize = True
+        Me.BtnLogin.BackColor = System.Drawing.Color.White
+        Me.BtnLogin.Cursor = System.Windows.Forms.Cursors.Hand
+        Me.BtnLogin.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(CType(CType(22, Byte), Integer), CType(CType(163, Byte), Integer), CType(CType(74, Byte), Integer))
+        Me.BtnLogin.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(CType(CType(187, Byte), Integer), CType(CType(247, Byte), Integer), CType(CType(208, Byte), Integer))
+        Me.BtnLogin.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(CType(CType(220, Byte), Integer), CType(CType(252, Byte), Integer), CType(CType(231, Byte), Integer))
         Me.BtnLogin.FlatStyle = System.Windows.Forms.FlatStyle.Flat
-        Me.BtnLogin.Font = New System.Drawing.Font("Microsoft Sans Serif", 14.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.BtnLogin.ForeColor = System.Drawing.Color.White
+        Me.BtnLogin.Font = New System.Drawing.Font("Segoe UI", 9.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.BtnLogin.ForeColor = System.Drawing.Color.FromArgb(CType(CType(22, Byte), Integer), CType(CType(163, Byte), Integer), CType(CType(74, Byte), Integer))
         Me.BtnLogin.Image = CType(resources.GetObject("BtnLogin.Image"), System.Drawing.Image)
+        Me.BtnLogin.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft
         Me.BtnLogin.Location = New System.Drawing.Point(70, 177)
         Me.BtnLogin.Name = "BtnLogin"
-        Me.BtnLogin.Size = New System.Drawing.Size(111, 40)
+        Me.BtnLogin.Size = New System.Drawing.Size(121, 40)
         Me.BtnLogin.TabIndex = 4
-        Me.BtnLogin.Text = "Login"
+        Me.BtnLogin.Text = "Login (Enter)"
+        Me.BtnLogin.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
         Me.BtnLogin.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText
         Me.BtnLogin.UseVisualStyleBackColor = False
         '
@@ -146,6 +160,7 @@ Partial Class FormLogin
         Me.Controls.Add(Me.Label1)
         Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None
         Me.Icon = CType(resources.GetObject("$this.Icon"), System.Drawing.Icon)
+        Me.KeyPreview = True
         Me.Name = "FormLogin"
         Me.ShowIcon = False
         Me.ShowInTaskbar = False

@@ -1,4 +1,4 @@
-﻿<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()> _
+<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()> _
 Partial Class Notifikasi
     Inherits System.Windows.Forms.Form
 
@@ -49,7 +49,7 @@ Partial Class Notifikasi
         '
         Me.LinkLabel1.AutoSize = True
         Me.LinkLabel1.Font = New System.Drawing.Font("Calibri", 12.0!, CType((System.Drawing.FontStyle.Bold Or System.Drawing.FontStyle.Italic), System.Drawing.FontStyle), System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.LinkLabel1.LinkColor = System.Drawing.Color.Blue
+        Me.LinkLabel1.LinkColor = System.Drawing.Color.FromArgb(0, 120, 215)
         Me.LinkLabel1.Location = New System.Drawing.Point(80, 51)
         Me.LinkLabel1.Name = "LinkLabel1"
         Me.LinkLabel1.Size = New System.Drawing.Size(176, 19)
@@ -71,7 +71,7 @@ Partial Class Notifikasi
         '
         Me.Label2.AutoSize = True
         Me.Label2.Font = New System.Drawing.Font("Calibri", 11.25!, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label2.ForeColor = System.Drawing.Color.Black
+        Me.Label2.ForeColor = System.Drawing.SystemColors.ControlText
         Me.Label2.Location = New System.Drawing.Point(81, 33)
         Me.Label2.Name = "Label2"
         Me.Label2.Size = New System.Drawing.Size(279, 18)
@@ -80,7 +80,7 @@ Partial Class Notifikasi
         '
         'Panel1
         '
-        Me.Panel1.BackColor = System.Drawing.Color.LightCoral
+        Me.Panel1.BackColor = System.Drawing.SystemColors.ControlDark
         Me.Panel1.Dock = System.Windows.Forms.DockStyle.Top
         Me.Panel1.Location = New System.Drawing.Point(0, 0)
         Me.Panel1.Name = "Panel1"
@@ -89,7 +89,7 @@ Partial Class Notifikasi
         '
         'Panel2
         '
-        Me.Panel2.BackColor = System.Drawing.Color.LightCoral
+        Me.Panel2.BackColor = System.Drawing.SystemColors.ControlDark
         Me.Panel2.Dock = System.Windows.Forms.DockStyle.Bottom
         Me.Panel2.Location = New System.Drawing.Point(0, 76)
         Me.Panel2.Name = "Panel2"
@@ -98,7 +98,7 @@ Partial Class Notifikasi
         '
         'Panel3
         '
-        Me.Panel3.BackColor = System.Drawing.Color.LightCoral
+        Me.Panel3.BackColor = System.Drawing.SystemColors.ControlDark
         Me.Panel3.Dock = System.Windows.Forms.DockStyle.Right
         Me.Panel3.Location = New System.Drawing.Point(451, 3)
         Me.Panel3.Name = "Panel3"
@@ -107,7 +107,7 @@ Partial Class Notifikasi
         '
         'Panel4
         '
-        Me.Panel4.BackColor = System.Drawing.Color.LightCoral
+        Me.Panel4.BackColor = System.Drawing.SystemColors.ControlDark
         Me.Panel4.Dock = System.Windows.Forms.DockStyle.Left
         Me.Panel4.Location = New System.Drawing.Point(0, 3)
         Me.Panel4.Name = "Panel4"
@@ -116,23 +116,25 @@ Partial Class Notifikasi
         '
         'BtnClose
         '
+        Me.BtnClose.BackColor = System.Drawing.Color.White
         Me.BtnClose.Cursor = System.Windows.Forms.Cursors.Hand
         Me.BtnClose.FlatAppearance.BorderSize = 0
-        Me.BtnClose.FlatAppearance.MouseOverBackColor = System.Drawing.Color.WhiteSmoke
+        Me.BtnClose.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(CType(CType(226, Byte), Integer), CType(CType(232, Byte), Integer), CType(CType(240, Byte), Integer))
+        Me.BtnClose.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(CType(CType(241, Byte), Integer), CType(CType(245, Byte), Integer), CType(CType(249, Byte), Integer))
         Me.BtnClose.FlatStyle = System.Windows.Forms.FlatStyle.Flat
-        Me.BtnClose.ForeColor = System.Drawing.Color.White
         Me.BtnClose.Image = CType(resources.GetObject("BtnClose.Image"), System.Drawing.Image)
         Me.BtnClose.Location = New System.Drawing.Point(428, 3)
         Me.BtnClose.Name = "BtnClose"
         Me.BtnClose.Size = New System.Drawing.Size(23, 23)
         Me.BtnClose.TabIndex = 11
-        Me.BtnClose.UseVisualStyleBackColor = True
+        Me.BtnClose.UseVisualStyleBackColor = False
         '
         'Notifikasi
         '
+        Me.KeyPreview = True
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.BackColor = System.Drawing.Color.FromArgb(CType(CType(255, Byte), Integer), CType(CType(192, Byte), Integer), CType(CType(192, Byte), Integer))
+        Me.BackColor = System.Drawing.SystemColors.Window
         Me.ClientSize = New System.Drawing.Size(454, 79)
         Me.Controls.Add(Me.BtnClose)
         Me.Controls.Add(Me.Panel4)
@@ -164,3 +166,4 @@ Partial Class Notifikasi
     Friend WithEvents Panel4 As System.Windows.Forms.Panel
     Friend WithEvents BtnClose As System.Windows.Forms.Button
 End Class
+

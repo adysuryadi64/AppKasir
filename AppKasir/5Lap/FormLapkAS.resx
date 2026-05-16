@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -17,15 +17,6 @@
     <resheader name="version">2.0</resheader>
     <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
     <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
-    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
-    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
-    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
-        <value>[base64 mime encoded serialized .NET Framework object]</value>
-    </data>
-    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
-        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
-        <comment>This is a comment</comment>
-    </data>
                 
     There are any number of "resheader" rows that contain simple 
     name/value pairs.
@@ -126,29 +117,16 @@
   <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
   <data name="BtnHitung.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
-        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
+        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
+        rkJggg==
 </value>
   </data>
   <metadata name="$this.TrayHeight" type="System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
@@ -1285,5 +1263,8 @@
         ////////////////////////////////////////////////////////////////////////////////
         //////////////////////////////////8=
 </value>
+  </data>
+  <data name="BtnHitung.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAACXBIWXMAABibAAAYmwFJdYOUAAABrElEQVR4nLVUvUoEQQzO5MRCEa38fQEbrf15AEsra63s1MK7ZPeaxc4HsPANxLWzOzfZRTgRxQdQQa21sBML5ZTMCirH3e6BBj4IyTffMDPfBODfYyWuAOlCJdCVboAgmffcrrHdGESWcyR5Q5LnArwhy5mt6aiHpCGS3sF2Y7T7zgAQyhiy3mMg3JHjWA8c634unm4i6wWSXP2C1Vg3vvj7tqazIGnsSPegfjqBLC1HuoNBuv4TvsbSgmo2blxHGhcLhtk0sn5AXabaSHWZ8r0wmy4vGMX9yHqLpC/tj2E1vTFOeUELToYrnC63WYbTZesZpTfBElFesNYcMvs4lkOAD4ekl/a6ljvWI2+tWnOovOBWNoIkT46kAVGEdmfIcu0FSRNkfTROb0eO4n4Ty/Osz8PnEfpeT0eOInSku0jJqtWRtWbIc1mz3hdnr5yg95q0cnvYkeXV4HOzkxm7djJZLMjfX69C6RJwMuMbYbpoE8jnVZn1vTJfD1kD/4KhjEFRVLNxJHlAEupMysfXGbK+F46vnNOE6Hig+842NINkvnDAUjZXPGD/ID4BIsZdFC0y61oAAAAASUVORK5CYII=</value>
   </data>
 </root>

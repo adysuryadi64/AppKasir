@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hei, mau ngapain?</title>
+<style>
+:root{--bg:#0f1117;--surface:#1a1d27;--border:#2a2d3a;--accent:#6366f1;--text:#e2e8f0;--muted:#64748b;--danger:#ef4444}
+*{margin:0;padding:0;box-sizing:border-box}
+body{
+  background:var(--bg);color:var(--text);
+  font-family:'Inter',system-ui,sans-serif;
+  min-height:100vh;display:flex;align-items:center;justify-content:center;
+  padding:24px;overflow:hidden;
+}
+canvas{position:fixed;inset:0;z-index:0;pointer-events:none}
+.card{
+  position:relative;z-index:1;
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:20px;
+  padding:48px 40px;
+  max-width:480px;width:100%;
+  text-align:center;
+}
+.icon{
+  font-size:64px;margin-bottom:20px;
+  display:block;
+  animation:shake 2s ease-in-out infinite;
+}
+@keyframes shake{
+  0%,100%{transform:rotate(0deg)}
+  10%{transform:rotate(-8deg)}
+  20%{transform:rotate(8deg)}
+  30%{transform:rotate(-5deg)}
+  40%{transform:rotate(5deg)}
+  50%{transform:rotate(0deg)}
+}
+.code{
+  font-size:72px;font-weight:900;
+  background:linear-gradient(135deg,var(--danger),#f97316);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  background-clip:text;
+  line-height:1;margin-bottom:8px;
+}
+h1{font-size:22px;font-weight:700;margin-bottom:12px;color:var(--text)}
+.sub{
+  font-size:14px;color:var(--muted);line-height:1.7;margin-bottom:28px;
+}
+.sub strong{color:#f87171}
+.tag{
+  display:inline-flex;align-items:center;gap:6px;
+  background:rgba(239,68,68,.1);
+  border:1px solid rgba(239,68,68,.25);
+  color:#f87171;
+  font-size:12px;font-weight:600;
+  padding:6px 14px;border-radius:20px;
+  margin-bottom:28px;
+}
+.tag svg{width:13px;height:13px;fill:#f87171}
+.divider{height:1px;background:var(--border);margin:24px 0}
+.hint{
+  font-size:12px;color:var(--muted);line-height:1.6;
+}
+.hint a{
+  color:var(--accent);text-decoration:none;font-weight:600;
+}
+.hint a:hover{text-decoration:underline}
+.footer{
+  margin-top:28px;
+  font-size:11px;color:#334155;
+}
+</style>
+</head>
+<body>
+<canvas id="bg"></canvas>
+<div class="card">
+  <span class="icon">🕵️</span>
+  <div class="code">403</div>
+  <h1>Hei, mau ngapain?</h1>
+  <div class="tag">
+    <svg viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 4l5 2.18V11c0 3.5-2.33 6.79-5 7.93-2.67-1.14-5-4.43-5-7.93V7.18L12 5z"/></svg>
+    Akses Ditolak
+  </div>
+  <p class="sub">
+    Halaman ini <strong>bukan untuk umum</strong>.<br>
+    Ini adalah endpoint internal aplikasi <strong>Kasir Lancar</strong>
+    yang hanya bisa diakses oleh aplikasi mobile — bukan browser iseng. 😏
+  </p>
+  <div class="divider"></div>
+  <p class="hint">
+    Kalau kamu bukan siapa-siapa di sini — selamat jalan. 👋
+  </p>
+  <p class="footer">Kasir Lancar &copy; 2026 &nbsp;·&nbsp; All rights reserved</p>
+</div>
+
+<script>
+(function(){
+  const c=document.getElementById('bg'),x=c.getContext('2d');
+  let W,H,particles=[],bolts=[],boltTimer=0;
+
+  function resize(){W=c.width=window.innerWidth;H=c.height=window.innerHeight}
+
+  // ── Partikel api/bara ─────────────────────────────────────────
+  function Particle(){
+    this.reset=function(){
+      this.x=Math.random()*W;
+      this.y=H+10;
+      this.vx=(Math.random()-.5)*2.5;
+      this.vy=-(Math.random()*4+2);
+      this.life=1;
+      this.decay=Math.random()*.018+.008;
+      this.r=Math.random()*4+2;
+      this.hue=Math.random()*30; // merah-oranye
+    };
+    this.reset();
+    this.y=Math.random()*H; // scatter awal
+  }
+
+  // ── Kilat ─────────────────────────────────────────────────────
+  function Bolt(){
+    this.active=false;
+    this.alpha=0;
+    this.segments=[];
+  }
+  Bolt.prototype.spawn=function(){
+    this.active=true;
+    this.alpha=1;
+    this.segments=[];
+    let sx=Math.random()*W, sy=0, ex=sx+(Math.random()-.5)*200, ey=H*.6;
+    let steps=Math.floor(Math.random()*6+5);
+    let px=sx,py=sy;
+    for(let i=0;i<steps;i++){
+      let nx=px+(Math.random()-.5)*120;
+      let ny=py+(ey-sy)/steps*(1+Math.random()*.5);
+      this.segments.push({x1:px,y1:py,x2:nx,y2:ny});
+      // branch
+      if(Math.random()>.6){
+        let bx=nx+(Math.random()-.5)*80, by=ny+Math.random()*60;
+        this.segments.push({x1:nx,y1:ny,x2:bx,y2:by,branch:true});
+      }
+      px=nx;py=ny;
+    }
+  };
+  Bolt.prototype.draw=function(){
+    if(!this.active)return;
+    this.alpha-=.06;
+    if(this.alpha<=0){this.active=false;return;}
+    this.segments.forEach(s=>{
+      x.beginPath();
+      x.moveTo(s.x1,s.y1);x.lineTo(s.x2,s.y2);
+      x.strokeStyle=`rgba(255,${s.branch?80:200},${s.branch?0:80},${this.alpha*(s.branch?.5:1)})`;
+      x.lineWidth=s.branch?1:2.5;
+      x.shadowColor='rgba(255,50,0,.8)';
+      x.shadowBlur=s.branch?4:12;
+      x.stroke();
+      x.shadowBlur=0;
+    });
+  };
+
+  // ── Shockwave ring ────────────────────────────────────────────
+  let rings=[];
+  function Ring(cx,cy){this.x=cx;this.y=cy;this.r=0;this.alpha=.7}
+  Ring.prototype.draw=function(){
+    this.r+=6;this.alpha-=.025;
+    if(this.alpha<=0)return false;
+    x.beginPath();x.arc(this.x,this.y,this.r,0,Math.PI*2);
+    x.strokeStyle=`rgba(255,60,0,${this.alpha})`;
+    x.lineWidth=2;x.stroke();
+    return true;
+  };
+
+  function init(){
+    resize();
+    particles=Array.from({length:120},()=>new Particle());
+    bolts=Array.from({length:5},()=>new Bolt());
+  }
+
+  function draw(){
+    // Fade background — efek jejak api
+    x.fillStyle='rgba(15,17,23,.18)';
+    x.fillRect(0,0,W,H);
+
+    // Partikel api
+    particles.forEach(p=>{
+      p.x+=p.vx+(Math.random()-.5)*.5;
+      p.y+=p.vy;
+      p.vy+=.04; // gravity ringan
+      p.life-=p.decay;
+      if(p.life<=0)p.reset();
+
+      const g=x.createRadialGradient(p.x,p.y,0,p.x,p.y,p.r);
+      g.addColorStop(0,`hsla(${p.hue},100%,80%,${p.life})`);
+      g.addColorStop(.5,`hsla(${p.hue+10},100%,50%,${p.life*.7})`);
+      g.addColorStop(1,`hsla(${p.hue+20},100%,30%,0)`);
+      x.beginPath();x.arc(p.x,p.y,p.r,0,Math.PI*2);
+      x.fillStyle=g;x.fill();
+    });
+
+    // Kilat
+    boltTimer++;
+    if(boltTimer>18){
+      boltTimer=0;
+      const idle=bolts.find(b=>!b.active);
+      if(idle){
+        idle.spawn();
+        // Shockwave di titik awal kilat
+        rings.push(new Ring(idle.segments[0].x1,0));
+      }
+    }
+    bolts.forEach(b=>b.draw());
+
+    // Rings
+    rings=rings.filter(r=>r.draw());
+
+    // Vignette merah di tepi
+    const vg=x.createRadialGradient(W/2,H/2,H*.3,W/2,H/2,H*.9);
+    vg.addColorStop(0,'rgba(0,0,0,0)');
+    vg.addColorStop(1,'rgba(180,0,0,.35)');
+    x.fillStyle=vg;x.fillRect(0,0,W,H);
+
+    requestAnimationFrame(draw);
+  }
+
+  window.addEventListener('resize',resize);
+  init();draw();
+})();
+</script>
+</body>
+</html>

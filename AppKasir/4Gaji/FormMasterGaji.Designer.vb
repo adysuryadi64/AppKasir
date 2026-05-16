@@ -46,6 +46,7 @@ Partial Class FormMasterGaji
         Me.LblNomor = New System.Windows.Forms.Label()
         Me.Label6 = New System.Windows.Forms.Label()
         Me.Panel1 = New System.Windows.Forms.Panel()
+        Me.BtnSimpann = New System.Windows.Forms.Button()
         Me.Label11 = New System.Windows.Forms.Label()
         Me.CmbAbsen = New System.Windows.Forms.ComboBox()
         Me.TxtTelat = New System.Windows.Forms.TextBox()
@@ -54,7 +55,6 @@ Partial Class FormMasterGaji
         Me.Label15 = New System.Windows.Forms.Label()
         Me.TxtAbsen = New System.Windows.Forms.TextBox()
         Me.Label19 = New System.Windows.Forms.Label()
-        Me.BtnSimpann = New System.Windows.Forms.Button()
         Me.Panel3.SuspendLayout()
         Me.PanelHeader.SuspendLayout()
         Me.Panel1.SuspendLayout()
@@ -101,7 +101,7 @@ Partial Class FormMasterGaji
         Me.Label9.Location = New System.Drawing.Point(60, 18)
         Me.Label9.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Me.Label9.Name = "Label9"
-        Me.Label9.Size = New System.Drawing.Size(102, 16)
+        Me.Label9.Size = New System.Drawing.Size(101, 16)
         Me.Label9.TabIndex = 226
         Me.Label9.Text = "PENDAPATAN :"
         '
@@ -260,7 +260,7 @@ Partial Class FormMasterGaji
         '
         'PanelHeader
         '
-        Me.PanelHeader.BackColor = System.Drawing.Color.SandyBrown
+        Me.PanelHeader.BackColor = System.Drawing.SystemColors.Control
         Me.PanelHeader.Controls.Add(Me.BtnClose)
         Me.PanelHeader.Controls.Add(Me.Label8)
         Me.PanelHeader.Controls.Add(Me.LblNomor)
@@ -269,19 +269,20 @@ Partial Class FormMasterGaji
         Me.PanelHeader.Location = New System.Drawing.Point(0, 0)
         Me.PanelHeader.Margin = New System.Windows.Forms.Padding(4, 3, 4, 3)
         Me.PanelHeader.Name = "PanelHeader"
-        Me.PanelHeader.Size = New System.Drawing.Size(879, 34)
+        Me.PanelHeader.Size = New System.Drawing.Size(1085, 34)
         Me.PanelHeader.TabIndex = 3
         '
         'BtnClose
         '
         Me.BtnClose.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.BtnClose.BackColor = System.Drawing.Color.SandyBrown
+        Me.BtnClose.BackColor = System.Drawing.SystemColors.Control
+        Me.BtnClose.Cursor = System.Windows.Forms.Cursors.Hand
         Me.BtnClose.FlatAppearance.BorderSize = 0
-        Me.BtnClose.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Gray
+        Me.BtnClose.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(CType(CType(226, Byte), Integer), CType(CType(232, Byte), Integer), CType(CType(240, Byte), Integer))
+        Me.BtnClose.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(CType(CType(241, Byte), Integer), CType(CType(245, Byte), Integer), CType(CType(249, Byte), Integer))
         Me.BtnClose.FlatStyle = System.Windows.Forms.FlatStyle.Flat
-        Me.BtnClose.ForeColor = System.Drawing.Color.Black
         Me.BtnClose.Image = CType(resources.GetObject("BtnClose.Image"), System.Drawing.Image)
-        Me.BtnClose.Location = New System.Drawing.Point(845, 2)
+        Me.BtnClose.Location = New System.Drawing.Point(1051, 2)
         Me.BtnClose.Margin = New System.Windows.Forms.Padding(4, 3, 4, 3)
         Me.BtnClose.Name = "BtnClose"
         Me.BtnClose.Size = New System.Drawing.Size(31, 31)
@@ -310,7 +311,7 @@ Partial Class FormMasterGaji
         Me.LblNomor.Location = New System.Drawing.Point(89, 9)
         Me.LblNomor.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Me.LblNomor.Name = "LblNomor"
-        Me.LblNomor.Size = New System.Drawing.Size(36, 16)
+        Me.LblNomor.Size = New System.Drawing.Size(35, 16)
         Me.LblNomor.TabIndex = 237
         Me.LblNomor.Text = "0001"
         '
@@ -321,7 +322,7 @@ Partial Class FormMasterGaji
         Me.Label6.Location = New System.Drawing.Point(27, 9)
         Me.Label6.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Me.Label6.Name = "Label6"
-        Me.Label6.Size = New System.Drawing.Size(59, 16)
+        Me.Label6.Size = New System.Drawing.Size(58, 16)
         Me.Label6.TabIndex = 226
         Me.Label6.Text = "Nomor :"
         '
@@ -329,7 +330,6 @@ Partial Class FormMasterGaji
         '
         Me.Panel1.AutoScroll = True
         Me.Panel1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
-        Me.Panel1.Controls.Add(Me.BtnSimpann)
         Me.Panel1.Controls.Add(Me.Label11)
         Me.Panel1.Controls.Add(Me.CmbAbsen)
         Me.Panel1.Controls.Add(Me.TxtTelat)
@@ -340,8 +340,30 @@ Partial Class FormMasterGaji
         Me.Panel1.Controls.Add(Me.Label19)
         Me.Panel1.Location = New System.Drawing.Point(405, 96)
         Me.Panel1.Name = "Panel1"
-        Me.Panel1.Size = New System.Drawing.Size(456, 222)
+        Me.Panel1.Size = New System.Drawing.Size(481, 222)
         Me.Panel1.TabIndex = 2
+        '
+        'BtnSimpann
+        '
+        Me.BtnSimpann.AutoSize = True
+        Me.BtnSimpann.BackColor = System.Drawing.SystemColors.Control
+        Me.BtnSimpann.Cursor = System.Windows.Forms.Cursors.Hand
+        Me.BtnSimpann.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(CType(CType(22, Byte), Integer), CType(CType(163, Byte), Integer), CType(CType(74, Byte), Integer))
+        Me.BtnSimpann.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(CType(CType(187, Byte), Integer), CType(CType(247, Byte), Integer), CType(CType(208, Byte), Integer))
+        Me.BtnSimpann.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(CType(CType(220, Byte), Integer), CType(CType(252, Byte), Integer), CType(CType(231, Byte), Integer))
+        Me.BtnSimpann.FlatStyle = System.Windows.Forms.FlatStyle.Flat
+        Me.BtnSimpann.Font = New System.Drawing.Font("Segoe UI", 9.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.BtnSimpann.ForeColor = System.Drawing.Color.FromArgb(CType(CType(22, Byte), Integer), CType(CType(163, Byte), Integer), CType(CType(74, Byte), Integer))
+        Me.BtnSimpann.Image = CType(resources.GetObject("BtnSimpann.Image"), System.Drawing.Image)
+        Me.BtnSimpann.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft
+        Me.BtnSimpann.Location = New System.Drawing.Point(772, 333)
+        Me.BtnSimpann.Name = "BtnSimpann"
+        Me.BtnSimpann.Size = New System.Drawing.Size(114, 29)
+        Me.BtnSimpann.TabIndex = 5
+        Me.BtnSimpann.Text = "Simpan (F8)"
+        Me.BtnSimpann.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
+        Me.BtnSimpann.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText
+        Me.BtnSimpann.UseVisualStyleBackColor = False
         '
         'Label11
         '
@@ -350,7 +372,7 @@ Partial Class FormMasterGaji
         Me.Label11.Location = New System.Drawing.Point(34, 18)
         Me.Label11.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Me.Label11.Name = "Label11"
-        Me.Label11.Size = New System.Drawing.Size(84, 16)
+        Me.Label11.Size = New System.Drawing.Size(83, 16)
         Me.Label11.TabIndex = 227
         Me.Label11.Text = "POTONGAN"
         '
@@ -361,7 +383,7 @@ Partial Class FormMasterGaji
         Me.CmbAbsen.Items.AddRange(New Object() {"Hari kerja", "Manual"})
         Me.CmbAbsen.Location = New System.Drawing.Point(292, 43)
         Me.CmbAbsen.Name = "CmbAbsen"
-        Me.CmbAbsen.Size = New System.Drawing.Size(65, 21)
+        Me.CmbAbsen.Size = New System.Drawing.Size(83, 21)
         Me.CmbAbsen.TabIndex = 1
         '
         'TxtTelat
@@ -412,9 +434,9 @@ Partial Class FormMasterGaji
         '
         Me.TxtAbsen.BackColor = System.Drawing.SystemColors.Window
         Me.TxtAbsen.Font = New System.Drawing.Font("Century Gothic", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.TxtAbsen.Location = New System.Drawing.Point(359, 41)
+        Me.TxtAbsen.Location = New System.Drawing.Point(381, 41)
         Me.TxtAbsen.Name = "TxtAbsen"
-        Me.TxtAbsen.Size = New System.Drawing.Size(75, 23)
+        Me.TxtAbsen.Size = New System.Drawing.Size(53, 23)
         Me.TxtAbsen.TabIndex = 2
         Me.TxtAbsen.Text = "50000"
         Me.TxtAbsen.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
@@ -430,28 +452,12 @@ Partial Class FormMasterGaji
         Me.Label19.Text = "Potongan sekali absen dari gaji pokok :"
         Me.Label19.TextAlign = System.Drawing.ContentAlignment.MiddleRight
         '
-        'BtnSimpann
-        '
-        Me.BtnSimpann.BackColor = System.Drawing.Color.Khaki
-        Me.BtnSimpann.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Blue
-        Me.BtnSimpann.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Blue
-        Me.BtnSimpann.FlatStyle = System.Windows.Forms.FlatStyle.Flat
-        Me.BtnSimpann.Font = New System.Drawing.Font("Bookman Old Style", 9.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.BtnSimpann.ForeColor = System.Drawing.Color.Black
-        Me.BtnSimpann.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft
-        Me.BtnSimpann.Location = New System.Drawing.Point(339, 191)
-        Me.BtnSimpann.Name = "BtnSimpann"
-        Me.BtnSimpann.Size = New System.Drawing.Size(112, 26)
-        Me.BtnSimpann.TabIndex = 5
-        Me.BtnSimpann.Text = "SIMPAN (F8)"
-        Me.BtnSimpann.TextImageRelation = System.Windows.Forms.TextImageRelation.TextBeforeImage
-        Me.BtnSimpann.UseVisualStyleBackColor = False
-        '
         'FormMasterGaji
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(879, 336)
+        Me.ClientSize = New System.Drawing.Size(1085, 573)
+        Me.Controls.Add(Me.BtnSimpann)
         Me.Controls.Add(Me.Panel1)
         Me.Controls.Add(Me.PanelHeader)
         Me.Controls.Add(Me.Panel3)

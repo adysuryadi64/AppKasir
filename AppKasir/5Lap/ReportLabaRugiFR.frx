@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Report ScriptLanguage="CSharp" ReportInfo.Created="04/25/2026" ReportInfo.Modified="04/25/2026" ReportInfo.CreatorVersion="2026.2.0.0">
+  <Dictionary>
+    <TableDataSource Name="LabaRugi" ReferenceName="LabaRugi" DataType="System.Int32" Enabled="true">
+      <Column Name="JENIS_AKUN"       DataType="System.String"/>
+      <Column Name="URUTAN"           DataType="System.Int32"/>
+      <Column Name="KODE_AKUN"        DataType="System.String"/>
+      <Column Name="NAMA_AKUN"        DataType="System.String"/>
+      <Column Name="SALDO_SEBELUMNYA" DataType="System.Decimal"/>
+      <Column Name="Perubahan"        DataType="System.Decimal"/>
+      <Column Name="SALDO_AKHIR"      DataType="System.Decimal"/>
+    </TableDataSource>
+    <Parameter Name="NAMATOKO"  DataType="System.String"/>
+    <Parameter Name="PERIODE"   DataType="System.String"/>
+    <Parameter Name="AWAL"      DataType="System.String"/>
+    <Parameter Name="RUBAH"     DataType="System.String"/>
+    <Parameter Name="USER"      DataType="System.String"/>
+  </Dictionary>
+
+  <ReportPage Name="Page1" Landscape="false" PaperWidth="210" PaperHeight="297"
+              TopMargin="15" BottomMargin="15" LeftMargin="15" RightMargin="15">
+
+    <!-- ══ JUDUL LAPORAN ══════════════════════════════════════════════ -->
+    <ReportTitleBand Name="ReportTitle1" Width="756.85" Height="85">
+      <TextObject Name="txtJudul1" Left="0" Top="0" Width="756.85" Height="25"
+                  Text="LAPORAN LABA RUGI"
+                  HorzAlign="Center" Font="Arial, 14, Bold"/>
+      <TextObject Name="txtNamaToko" Left="0" Top="25" Width="756.85" Height="22"
+                  Text="[NAMATOKO]"
+                  HorzAlign="Center" Font="Arial, 11, Bold"/>
+      <TextObject Name="txtPeriode" Left="0" Top="47" Width="756.85" Height="18"
+                  Text="[PERIODE]"
+                  HorzAlign="Center" Font="Arial, 9"/>
+      <LineObject Name="lineJudul" Left="0" Top="72" Width="756.85" Height="1"
+                  Border.Color="Black" Border.Width="1.5"/>
+    </ReportTitleBand>
+
+    <!-- ══ HEADER KOLOM ═══════════════════════════════════════════════ -->
+    <PageHeaderBand Name="PageHeader1" Width="756.85" Height="20">
+      <TextObject Name="hdrNama"  Left="0"     Top="0" Width="400" Height="20"
+                  Text="KETERANGAN"
+                  Font="Arial, 8, Bold" HorzAlign="Left"
+                  Border.Lines="Bottom" Border.Color="Gray"/>
+      <TextObject Name="hdrAwal"  Left="400"   Top="0" Width="110" Height="20"
+                  Text="[AWAL]"
+                  Font="Arial, 8, Bold" HorzAlign="Right"
+                  Border.Lines="Bottom" Border.Color="Gray"/>
+      <TextObject Name="hdrRubah" Left="510"   Top="0" Width="110" Height="20"
+                  Text="[RUBAH]"
+                  Font="Arial, 8, Bold" HorzAlign="Right"
+                  Border.Lines="Bottom" Border.Color="Gray"/>
+      <TextObject Name="hdrAkhir" Left="620"   Top="0" Width="136.85" Height="20"
+                  Text="SALDO AKHIR"
+                  Font="Arial, 8, Bold" HorzAlign="Right"
+                  Border.Lines="Bottom" Border.Color="Gray"/>
+    </PageHeaderBand>
+
+    <!-- ══ GROUP HEADER — JENIS_AKUN ══════════════════════════════════ -->
+    <GroupHeaderBand Name="GroupHeader1" Width="756.85" Height="22"
+                     Condition="[LabaRugi.URUTAN]"
+                     SortOrder="Ascending"
+                     DataSource="LabaRugi">
+
+      <!-- Label section misal "A. PENJUALAN" -->
+      <TextObject Name="txtSection" Left="0" Top="2" Width="756.85" Height="18"
+                  Text="[LabaRugi.JENIS_AKUN]"
+                  Font="Arial, 9, Bold"
+                  FillColor="230, 230, 230"
+                  Border.Lines="Bottom" Border.Color="Silver"/>
+
+      <!-- ── DATA BAND — baris per akun ─────────────────────────────── -->
+      <DataBand Name="Data1" Width="756.85" Height="17" DataSource="LabaRugi">
+        <TextObject Name="dNama"  Left="15"   Top="0" Width="385" Height="17"
+                    Text="[LabaRugi.NAMA_AKUN]"
+                    Font="Arial, 8"/>
+        <TextObject Name="dAwal"  Left="400"  Top="0" Width="110" Height="17"
+                    Text="[LabaRugi.SALDO_SEBELUMNYA]"
+                    Format="Number" Format.DecimalDigits="0" Format.UseLocale="true"
+                    HorzAlign="Right" Font="Arial, 8"/>
+        <TextObject Name="dRubah" Left="510"  Top="0" Width="110" Height="17"
+                    Text="[LabaRugi.Perubahan]"
+                    Format="Number" Format.DecimalDigits="0" Format.UseLocale="true"
+                    HorzAlign="Right" Font="Arial, 8"/>
+        <TextObject Name="dAkhir" Left="620"  Top="0" Width="136.85" Height="17"
+                    Text="[LabaRugi.SALDO_AKHIR]"
+                    Format="Number" Format.DecimalDigits="0" Format.UseLocale="true"
+                    HorzAlign="Right" Font="Arial, 8"/>
+      </DataBand>
+
+      <!-- ── GROUP FOOTER — subtotal per section ────────────────────── -->
+      <GroupFooterBand Name="GroupFooter1" Width="756.85" Height="40">
+        <!-- Garis atas subtotal -->
+        <LineObject Name="lineSubtotal" Left="400" Top="1" Width="356.85" Height="1"
+                    Border.Color="Gray"/>
+        <!-- Label subtotal -->
+        <TextObject Name="gfLabel" Left="0" Top="3" Width="400" Height="17"
+                    Text="Jumlah [LabaRugi.JENIS_AKUN]"
+                    Font="Arial, 8, Italic" HorzAlign="Right"/>
+        <TextObject Name="gfAwal"  Left="400" Top="3" Width="110" Height="17"
+                    Text="[Sum([LabaRugi.SALDO_SEBELUMNYA])]"
+                    Format="Number" Format.DecimalDigits="0" Format.UseLocale="true"
+                    HorzAlign="Right" Font="Arial, 8"/>
+        <TextObject Name="gfRubah" Left="510" Top="3" Width="110" Height="17"
+                    Text="[Sum([LabaRugi.Perubahan])]"
+                    Format="Number" Format.DecimalDigits="0" Format.UseLocale="true"
+                    HorzAlign="Right" Font="Arial, 8"/>
+        <TextObject Name="gfAkhir" Left="620" Top="3" Width="136.85" Height="17"
+                    Text="[Sum([LabaRugi.SALDO_AKHIR])]"
+                    Format="Number" Format.DecimalDigits="0" Format.UseLocale="true"
+                    HorzAlign="Right" Font="Arial, 8, Bold"/>
+        <!-- Garis bawah subtotal -->
+        <LineObject Name="lineSubtotalBot" Left="400" Top="21" Width="356.85" Height="1"
+                    Border.Color="Gray"/>
+      </GroupFooterBand>
+
+    </GroupHeaderBand>
+
+    <!-- ══ REPORT SUMMARY — LABA BERSIH AKHIR ════════════════════════ -->
+    <ReportSummaryBand Name="ReportSummary1" Width="756.85" Height="60">
+      <LineObject Name="lineSummaryTop" Left="0" Top="5" Width="756.85" Height="1"
+                  Border.Color="Black" Border.Width="1"/>
+      <TextObject Name="sumLabel" Left="0" Top="10" Width="620" Height="22"
+                  Text="LABA / RUGI BERSIH PERIODE INI"
+                  Font="Arial, 10, Bold" HorzAlign="Right"/>
+      <TextObject Name="sumNilai" Left="620" Top="10" Width="136.85" Height="22"
+                  Text="[Sum([LabaRugi.Perubahan])]"
+                  Format="Number" Format.DecimalDigits="0" Format.UseLocale="true"
+                  HorzAlign="Right" Font="Arial, 10, Bold"/>
+      <LineObject Name="lineSummaryBot1" Left="620" Top="33" Width="136.85" Height="1"
+                  Border.Color="Black"/>
+      <LineObject Name="lineSummaryBot2" Left="620" Top="36" Width="136.85" Height="1"
+                  Border.Color="Black" Border.Width="1.5"/>
+    </ReportSummaryBand>
+
+    <!-- ══ PAGE FOOTER ════════════════════════════════════════════════ -->
+    <PageFooterBand Name="PageFooter1" Width="756.85" Height="18">
+      <TextObject Name="ftUser" Left="0" Top="0" Width="500" Height="18"
+                  Text="[USER]" Font="Arial, 7" TextColor="Gray"/>
+      <TextObject Name="ftPage" Left="500" Top="0" Width="256.85" Height="18"
+                  Text="Halaman [Page#] dari [TotalPages#]"
+                  HorzAlign="Right" Font="Arial, 7" TextColor="Gray"/>
+    </PageFooterBand>
+
+  </ReportPage>
+</Report>

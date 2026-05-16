@@ -1,0 +1,440 @@
+﻿<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<title>Dashboard KasirLancar</title>
+
+
+<script src="chart.min.js"></script>
+
+<style>
+/* ── Reset & Layout — semua nilai hardcode, nol placeholder, nol error linter ── */
+*{margin:0;padding:0;box-sizing:border-box;-webkit-font-smoothing:antialiased}
+body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;padding:20px 24px;line-height:1.5;overflow-x:hidden;max-width:1600px;margin:0 auto}
+.header{display:-ms-flexbox;display:flex;-ms-flex-pack:justify;justify-content:space-between;-ms-flex-align:end;align-items:flex-end;margin-bottom:20px}
+.breadcrumb{font-size:11px;text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px;display:-ms-flexbox;display:flex;-ms-flex-align:center;align-items:center}
+.breadcrumb i{font-size:10px;margin-right:6px}
+h1{font-size:22px;font-weight:700;letter-spacing:-.01em}
+.header-right{display:-ms-flexbox;display:flex;-ms-flex-align:center;align-items:center}
+.header-right .badge{margin-left:10px}
+.header-right .badge:first-child{margin-left:0}
+.badge{padding:7px 14px;border-radius:6px;font-size:12px;font-weight:600;display:-ms-inline-flexbox;display:inline-flex;-ms-flex-align:center;align-items:center}
+.badge i{margin-right:7px}
+.badge-primary{color:#fff;box-shadow:0 4px 16px rgba(0,0,0,.25)}
+.lokasi-badge{
+    padding:10px 22px;border-radius:10px;
+    font-size:16px;font-weight:800;letter-spacing:.04em;
+    display:-ms-inline-flexbox;display:inline-flex;
+    -ms-flex-align:center;align-items:center;
+    box-shadow:0 4px 20px rgba(0,0,0,.30);
+    border:2px solid rgba(255,255,255,.18);
+    text-transform:uppercase;
+}
+.lokasi-badge i{font-size:18px;margin-right:10px}
+.kpi-grid{display:-ms-flexbox;display:flex;margin-bottom:20px;margin-left:-8px;margin-right:-8px}
+.kpi-grid .kpi-card{-ms-flex:1 1 0%;flex:1 1 0%;min-width:0;margin-left:8px;margin-right:8px}
+.kpi-card{border-radius:12px;padding:20px 22px;color:#fff;display:-ms-flexbox;display:flex;-ms-flex-direction:row;flex-direction:row;-ms-flex-align:center;align-items:center;position:relative;overflow:hidden;transition:transform .2s ease,box-shadow .2s ease;min-height:110px}
+.kpi-card:hover{transform:translateY(-3px);box-shadow:0 12px 28px rgba(0,0,0,.22)}
+.kpi-card::after{content:'';position:absolute;top:-20px;right:-20px;width:90px;height:90px;border-radius:50%;background:rgba(255,255,255,.12);pointer-events:none}
+.kpi-card::before{content:'';position:absolute;bottom:-30px;right:30px;width:60px;height:60px;border-radius:50%;background:rgba(255,255,255,.08);pointer-events:none}
+.kpi-card.revenue{background:#2563eb;background:-ms-linear-gradient(135deg,#2563eb 0%,#1d4ed8 100%);background:linear-gradient(135deg,#2563eb 0%,#1d4ed8 100%);box-shadow:0 4px 16px rgba(37,99,235,.4)}
+.kpi-card.transactions{background:#0d9488;background:-ms-linear-gradient(135deg,#0d9488 0%,#0f766e 100%);background:linear-gradient(135deg,#0d9488 0%,#0f766e 100%);box-shadow:0 4px 16px rgba(13,148,136,.4)}
+.kpi-card.purchases{background:#16a34a;background:-ms-linear-gradient(135deg,#16a34a 0%,#15803d 100%);background:linear-gradient(135deg,#16a34a 0%,#15803d 100%);box-shadow:0 4px 16px rgba(22,163,74,.4)}
+.kpi-card.stock{background:#7c3aed;background:-ms-linear-gradient(135deg,#7c3aed 0%,#6d28d9 100%);background:linear-gradient(135deg,#7c3aed 0%,#6d28d9 100%);box-shadow:0 4px 16px rgba(124,58,237,.4)}
+.kpi-icon{-ms-flex-negative:0;flex-shrink:0;width:52px;height:52px;border-radius:12px;background:rgba(255,255,255,.2);display:-ms-flexbox;display:flex;-ms-flex-align:center;align-items:center;-ms-flex-pack:center;justify-content:center;font-size:22px;position:relative;z-index:1;margin-right:16px}
+.kpi-body{-ms-flex:1;flex:1;position:relative;z-index:1}
+.kpi-label{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;opacity:.85;margin-bottom:4px}
+.kpi-value{font-size:26px;font-weight:800;letter-spacing:-.03em;line-height:1.1;margin-bottom:4px}
+.kpi-sub{font-size:11px;font-weight:500;opacity:.85;display:-ms-flexbox;display:flex;-ms-flex-align:center;align-items:center}
+.kpi-sub i{margin-right:5px}
+.kpi-spark{width:90px;height:48px;-ms-flex-negative:0;flex-shrink:0;position:relative;z-index:1;margin-left:12px}
+.kpi-spark canvas{width:100%!important;height:100%!important}
+.content-grid{display:-ms-flexbox;display:flex;margin-bottom:16px;margin-left:-8px;margin-right:-8px}
+.card-main{-ms-flex:1 1 auto;flex:1 1 auto;min-width:0;margin-left:8px;margin-right:8px}
+.card-side{-ms-flex:0 0 300px;flex:0 0 300px;width:300px;margin-left:8px;margin-right:8px}
+.card{border-radius:12px;border:1px solid transparent;box-shadow:0 2px 8px rgba(0,0,0,.08);overflow:hidden}
+.card-header{padding:16px 20px;border-bottom:1px solid transparent;display:-ms-flexbox;display:flex;-ms-flex-pack:justify;justify-content:space-between;-ms-flex-align:center;align-items:center}
+.card-title{font-size:13px;font-weight:600;display:-ms-flexbox;display:flex;-ms-flex-align:center;align-items:center}
+.card-title i{font-size:14px;margin-right:8px}
+.card-body{padding:20px}
+.chart-meta{display:-ms-flexbox;display:flex;margin-bottom:16px}
+.meta-item{display:-ms-flexbox;display:flex;-ms-flex-direction:column;flex-direction:column;margin-right:32px}
+.meta-item:last-child{margin-right:0}
+.meta-label{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;margin-bottom:3px;display:-ms-flexbox;display:flex;-ms-flex-align:center;align-items:center}
+.meta-label .dot{width:8px;height:8px;border-radius:50%;display:inline-block;margin-right:6px}
+.meta-val{font-size:24px;font-weight:800;letter-spacing:-.03em}
+.chart-wrap{height:280px;position:relative}
+.pie-wrap{height:180px;position:relative;display:-ms-flexbox;display:flex;-ms-flex-align:center;align-items:center;-ms-flex-pack:center;justify-content:center}
+.leg-list{margin-top:16px}
+.leg-item{margin-bottom:12px}
+.leg-item:last-child{margin-bottom:0}
+.leg-row{display:-ms-flexbox;display:flex;-ms-flex-pack:justify;justify-content:space-between;-ms-flex-align:center;align-items:center;margin-bottom:5px}
+.leg-label{display:-ms-flexbox;display:flex;-ms-flex-align:center;align-items:center;font-size:12px;font-weight:600}
+.leg-dot{width:10px;height:10px;border-radius:50%;-ms-flex-negative:0;flex-shrink:0;margin-right:8px}
+.leg-pct{font-size:12px;font-weight:700}
+.leg-bar-bg{height:5px;border-radius:4px;overflow:hidden}
+.leg-bar-fill{height:100%;border-radius:4px;transition:width .7s ease}
+.alerts-wrap{margin-top:16px;padding-top:16px;border-top:1px solid transparent}
+.alert-box{padding:10px 14px;border-radius:8px;font-size:12px;font-weight:500;display:-ms-flexbox;display:flex;-ms-flex-align:center;align-items:center;margin-bottom:8px}
+.alert-box:last-child{margin-bottom:0}
+.alert-box i{font-size:13px;margin-right:10px}
+.alert-box strong{font-weight:700}
+.alert-box.danger{background:rgba(220,38,38,.10);border:1px solid rgba(220,38,38,.25)}
+.alert-box.warning{background:rgba(217,119,6,.10);border:1px solid rgba(217,119,6,.25)}
+.footer{margin-top:20px;padding:12px 20px;font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:.06em;border-top:1px solid transparent;display:-ms-flexbox;display:flex;-ms-flex-pack:justify;justify-content:space-between;-ms-flex-align:center;align-items:center}
+.footer-left{display:-ms-flexbox;display:flex;-ms-flex-align:center;align-items:center}
+.footer-sep{margin:0 10px;opacity:.3}
+.footer-right{opacity:.6}
+.leg-dot-aman{background:#16a34a}
+.leg-dot-kritis{background:#d97706}
+.leg-dot-habis{background:#dc2626}
+@media(max-width:1100px){.kpi-grid{-ms-flex-wrap:wrap;flex-wrap:wrap}.kpi-grid .kpi-card{-ms-flex:1 1 45%;flex:1 1 45%}}
+@media(max-width:860px){.content-grid{-ms-flex-direction:column;flex-direction:column}.card-side{-ms-flex:1 1 auto;flex:1 1 auto;width:auto}}
+@media(max-width:600px){body{padding:12px}.kpi-grid .kpi-card{-ms-flex:1 1 100%;flex:1 1 100%}.header{-ms-flex-direction:column;flex-direction:column}}
+</style>
+
+<!-- Warna tema dari VB.NET — di dalam script tag, bukan style, sehingga linter CSS tidak komplain -->
+<script>
+var _T = {
+  bg      : "{{C_BG}}",
+  surface : "{{C_SURFACE}}",
+  text    : "{{C_TEXT}}",
+  muted   : "{{C_MUTED}}",
+  border  : "{{C_BORDER}}",
+  subtle  : "{{C_SUBTLE}}",
+  primary : "{{C_PRIMARY}}",
+  success : "{{C_SUCCESS}}",
+  warning : "{{C_WARNING}}",
+  danger  : "{{C_DANGER}}"
+};
+</script>
+</head>
+<body>
+
+<!-- Header -->
+<div class="header">
+  <div class="header-left">
+    <div class="breadcrumb"><i class="fas fa-home"></i>Dashboard &rsaquo; Ringkasan</div>
+    <h1>{{TGL_STR}}</h1>
+  </div>
+  <div class="header-right">
+    <div class="lokasi-badge badge-primary"><i class="fas fa-store"></i><span>{{LOKASI}}</span></div>
+  </div>
+</div>
+
+<!-- 4 KPI Cards -->
+<div class="kpi-grid">
+  <div class="kpi-card revenue">
+    <div class="kpi-icon"><i class="fas fa-chart-line"></i></div>
+    <div class="kpi-body">
+      <div class="kpi-label">Omset Hari Ini</div>
+      <div class="kpi-value">{{OMSET_STR}}</div>
+      <div class="kpi-sub"><i class="fas {{TUMBUH_ICON}}"></i><span>{{TUMBUH_STR}} vs bulan lalu</span></div>
+    </div>
+    <div class="kpi-spark"><canvas id="spkOmset"></canvas></div>
+  </div>
+  <div class="kpi-card transactions">
+    <div class="kpi-icon"><i class="fas fa-receipt"></i></div>
+    <div class="kpi-body">
+      <div class="kpi-label">Transaksi</div>
+      <div class="kpi-value">{{JML_TRANSAKSI}}</div>
+      <div class="kpi-sub"><i class="fas fa-circle" style="font-size:7px"></i><span>Total hari ini</span></div>
+    </div>
+    <div class="kpi-spark"><canvas id="spkTrx"></canvas></div>
+  </div>
+  <div class="kpi-card purchases">
+    <div class="kpi-icon"><i class="fas fa-shopping-bag"></i></div>
+    <div class="kpi-body">
+      <div class="kpi-label">Pembelian</div>
+      <div class="kpi-value">{{BELI_STR}}</div>
+      <div class="kpi-sub"><i class="fas fa-calendar-check"></i><span>Bulan ini</span></div>
+    </div>
+    <div class="kpi-spark"><canvas id="spkBeli"></canvas></div>
+  </div>
+  <div class="kpi-card stock">
+    <div class="kpi-icon"><i class="fas fa-exclamation-triangle"></i></div>
+    <div class="kpi-body">
+      <div class="kpi-label">Peringatan Stok</div>
+      <div class="kpi-value">{{STOK_TOTAL}}</div>
+      <div class="kpi-sub"><i class="fas fa-arrow-down"></i><span>Perlu perhatian</span></div>
+    </div>
+    <div class="kpi-spark"><canvas id="spkStok"></canvas></div>
+  </div>
+</div>
+
+<!-- Content Grid -->
+<div class="content-grid">
+  <div class="card card-main">
+    <div class="card-header">
+      <h2 class="card-title"><i class="fas fa-chart-area"></i>Analitik Penjualan Real-time</h2>
+      <div id="legendHeader" style="display:-ms-flexbox;display:flex;-ms-flex-align:center;align-items:center;font-size:11px;font-weight:600"></div>
+    </div>
+    <div class="card-body">
+      <div class="chart-meta">
+        <div class="meta-item">
+          <div class="meta-label"><span class="dot" id="dotRevLbl"></span>Revenue</div>
+          <div class="meta-val">{{OMSET_STR}}</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label"><span class="dot" style="background:#0d9488"></span>Transaksi</div>
+          <div class="meta-val">{{JML_TRANSAKSI}}</div>
+        </div>
+      </div>
+      <div class="chart-wrap"><canvas id="mainChart"></canvas></div>
+    </div>
+  </div>
+  <div class="card card-side">
+    <div class="card-header">
+      <h2 class="card-title"><i class="fas fa-boxes"></i>Status Stok</h2>
+    </div>
+    <div class="card-body">
+      <div class="pie-wrap"><canvas id="pieChart"></canvas></div>
+      <div class="leg-list">
+        <div class="leg-item">
+          <div class="leg-row">
+            <span class="leg-label"><span class="leg-dot leg-dot-aman"></span>Tersedia</span>
+            <span class="leg-pct">{{STOK_AMAN}}%</span>
+          </div>
+          <div class="leg-bar-bg"><div class="leg-bar-fill leg-dot-aman" data-w="{{STOK_AMAN}}"></div></div>
+        </div>
+        <div class="leg-item">
+          <div class="leg-row">
+            <span class="leg-label"><span class="leg-dot leg-dot-kritis"></span>Kritis</span>
+            <span class="leg-pct">{{STOK_KRITIS}}%</span>
+          </div>
+          <div class="leg-bar-bg"><div class="leg-bar-fill leg-dot-kritis" data-w="{{STOK_KRITIS}}"></div></div>
+        </div>
+        <div class="leg-item">
+          <div class="leg-row">
+            <span class="leg-label"><span class="leg-dot leg-dot-habis"></span>Habis</span>
+            <span class="leg-pct">{{STOK_HABIS}}%</span>
+          </div>
+          <div class="leg-bar-bg"><div class="leg-bar-fill leg-dot-habis" data-w="{{STOK_HABIS}}"></div></div>
+        </div>
+      </div>
+      <div class="alerts-wrap" id="alertsWrap">{{ALERTS_HTML}}</div>
+    </div>
+  </div>
+</div>
+
+<div class="footer">
+  <div class="footer-left">
+    <span><i class="fas fa-building" style="margin-right:6px"></i>{{NAMA_PERUSAHAAN}}</span>
+    <span class="footer-sep">&bull;</span>
+    <span><i class="fas fa-user" style="margin-right:6px"></i>{{FOOTER_USER}}</span>
+    <span class="footer-sep">&bull;</span>
+    <span><i class="fas fa-shield-alt" style="margin-right:6px"></i>{{FOOTER_LEVEL}}</span>
+  </div>
+  <div class="footer-right">
+    <span>{{FOOTER_VERSI}}</span>
+    <span class="footer-sep">&bull;</span>
+    <span>{{FOOTER_TAHUN}}</span>
+  </div>
+</div>
+
+<script>
+// ── Terapkan warna tema ke elemen via JS (bukan CSS inline dengan placeholder) ──
+(function() {
+  var s = document.body.style;
+  s.background = _T.bg;
+  s.color      = _T.text;
+
+  // Inject CSS tema ke <style> dinamis — satu kali, efisien
+  var css =
+    'body{background:' + _T.bg + ';color:' + _T.text + '}' +
+    '.breadcrumb{color:' + _T.muted + '}' +
+    '.breadcrumb i{color:' + _T.primary + '}' +
+    'h1{color:' + _T.text + '}' +
+    '.badge-primary{background:' + _T.primary + '}' +
+    '.lokasi-badge{background:' + _T.primary + '}' +
+    '.card{background:' + _T.surface + ';border-color:' + _T.border + '}' +
+    '.card-header{border-bottom-color:' + _T.border + '}' +
+    '.card-title{color:' + _T.text + '}' +
+    '.card-title i{color:' + _T.primary + '}' +
+    '.meta-label{color:' + _T.muted + '}' +
+    '.meta-val{color:' + _T.text + '}' +
+    '.leg-label{color:' + _T.text + '}' +
+    '.leg-pct{color:' + _T.text + '}' +
+    '.leg-bar-bg{background:' + _T.subtle + '}' +
+    '.alerts-wrap{border-top-color:' + _T.border + '}' +
+    '.alert-box.danger{color:' + _T.danger + '}' +
+    '.alert-box.warning{color:' + _T.warning + '}' +
+    '.footer{color:' + _T.muted + ';border-top-color:' + _T.border + '}';
+
+  var el = document.createElement('style');
+  el.textContent = css;
+  document.head.appendChild(el);
+
+  // Dot warna di legend header
+  var lh = document.getElementById('legendHeader');
+  if (lh) {
+    lh.innerHTML =
+      '<span style="width:8px;height:8px;border-radius:50%;background:' + _T.primary + ';display:inline-block;margin-right:5px"></span>' +
+      '<span style="margin-right:14px;opacity:.7">Revenue</span>' +
+      '<span style="width:8px;height:8px;border-radius:50%;background:#0d9488;display:inline-block;margin-right:5px"></span>' +
+      '<span style="opacity:.7">Transaksi</span>';
+  }
+
+  // Dot warna revenue di meta label
+  var dr = document.getElementById('dotRevLbl');
+  if (dr) dr.style.background = _T.primary;
+
+  // Progress bar width
+  var fills = document.getElementsByClassName('leg-bar-fill');
+  for (var i = 0; i < fills.length; i++) {
+    fills[i].style.width = (fills[i].getAttribute('data-w') || '0') + '%';
+  }
+})();
+
+// ── Helper hex ke rgba ────────────────────────────────────────────────
+function hr(hex, a) {
+  var h = hex.replace('#','');
+  return 'rgba('+parseInt(h.slice(0,2),16)+','+parseInt(h.slice(2,4),16)+','+parseInt(h.slice(4,6),16)+','+a+')';
+}
+
+// ── Chart.js defaults ─────────────────────────────────────────────────
+Chart.defaults.global.defaultFontFamily = "'Inter',-apple-system,BlinkMacSystemFont,sans-serif";
+Chart.defaults.global.defaultFontColor = _T.muted;
+
+// ── Sparkline ─────────────────────────────────────────────────────────
+function spark(id, data) {
+  var el = document.getElementById(id);
+  if (!el) return;
+  new Chart(el.getContext('2d'), {
+    type: 'line',
+    data: {
+      labels: data.map(function(_,i){return i;}),
+      datasets: [{
+        data: data,
+        borderColor: 'rgba(255,255,255,.85)',
+        borderWidth: 2,
+        fill: true,
+        backgroundColor: 'rgba(255,255,255,.15)',
+        pointRadius: 0,
+        tension: 0.45
+      }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      animation: { duration: 800, easing: 'easeInOutQuart' },
+      legend: { display: false },
+      tooltips: { enabled: false },
+      scales: { xAxes: [{ display: false }], yAxes: [{ display: false }] }
+    }
+  });
+}
+
+spark('spkOmset', '{{OMSET_JS}}'.split(',').map(Number));
+spark('spkTrx',   '{{TRX_JS}}'.split(',').map(Number));
+spark('spkBeli',  '{{BELI_JS}}'.split(',').map(Number));
+spark('spkStok',  '{{STOK_JS}}'.split(',').map(Number));
+
+// ── Grafik Utama ──────────────────────────────────────────────────────
+(function() {
+  var ctx = document.getElementById('mainChart').getContext('2d');
+  var gP = ctx.createLinearGradient(0,0,0,260);
+  gP.addColorStop(0,   hr(_T.primary, 0.35));
+  gP.addColorStop(0.6, hr(_T.primary, 0.10));
+  gP.addColorStop(1,   hr(_T.primary, 0));
+  var gT = ctx.createLinearGradient(0,0,0,260);
+  gT.addColorStop(0,   'rgba(13,148,136,.30)');
+  gT.addColorStop(0.6, 'rgba(13,148,136,.08)');
+  gT.addColorStop(1,   'rgba(13,148,136,0)');
+  new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: '{{LABELS_JS}}'.split(','),
+      datasets: [
+        {
+          label: 'Revenue (Rp)',
+          data: '{{OMSET_JS}}'.split(',').map(Number),
+          borderColor: _T.primary, backgroundColor: gP,
+          borderWidth: 2.5,
+          pointBackgroundColor: _T.surface, pointBorderColor: _T.primary,
+          pointBorderWidth: 2, pointRadius: 4, pointHoverRadius: 7,
+          fill: true, tension: 0.4, yAxisID: 'y'
+        },
+        {
+          label: 'Transaksi',
+          data: '{{TRX_JS}}'.split(',').map(Number),
+          borderColor: '#0d9488', backgroundColor: gT,
+          borderWidth: 2,
+          pointBackgroundColor: _T.surface, pointBorderColor: '#0d9488',
+          pointBorderWidth: 2, pointRadius: 3, pointHoverRadius: 6,
+          fill: true, tension: 0.4, yAxisID: 'y1'
+        }
+      ]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      animation: { duration: 1000, easing: 'easeInOutQuart' },
+      hover: { mode: 'index', intersect: false },
+      legend: { display: false },
+      tooltips: {
+        backgroundColor: _T.surface, titleFontColor: _T.text,
+        bodyFontColor: _T.text, borderColor: _T.border,
+        borderWidth: 1, cornerRadius: 10, xPadding: 14, yPadding: 14,
+        callbacks: {
+          label: function(item, data) {
+            var l = data.datasets[item.datasetIndex].label + ': ';
+            return item.datasetIndex === 0
+              ? l + 'Rp ' + Number(item.yLabel).toLocaleString('id-ID')
+              : l + item.yLabel;
+          }
+        }
+      },
+      scales: {
+        xAxes: [{ gridLines: { display: false, drawBorder: false }, ticks: { fontSize: 11 } }],
+        yAxes: [
+          {
+            id: 'y', position: 'left',
+            gridLines: { color: _T.subtle, drawBorder: false },
+            ticks: {
+              fontSize: 11,
+              callback: function(v) {
+                if (v >= 1000000) { return (v / 1000000).toFixed(1) + 'M'; }
+                if (v >= 1000)    { return (v / 1000).toFixed(0) + 'K'; }
+                return v;
+              }
+            }
+          },
+          {
+            id: 'y1', position: 'right',
+            gridLines: { drawOnChartArea: false },
+            ticks: { fontSize: 11 }
+          }
+        ]
+      }
+    }
+  });
+})();
+
+// ── Donut Stok ────────────────────────────────────────────────────────
+(function() {
+  var ctx = document.getElementById('pieChart').getContext('2d');
+  var a = parseInt('{{STOK_AMAN}}')   || 80;
+  var k = parseInt('{{STOK_KRITIS}}') || 12;
+  var h = parseInt('{{STOK_HABIS}}')  || 8;
+  new Chart(ctx, {
+    type: 'doughnut',
+    data: {
+      labels: ['Tersedia','Kritis','Habis'],
+      datasets: [{ data: [a,k,h], backgroundColor: [_T.success,_T.warning,_T.danger], borderColor: _T.surface, borderWidth: 3, hoverOffset: 6 }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false, cutoutPercentage: 65,
+      animation: { duration: 900, easing: 'easeInOutQuart' },
+      legend: { display: false },
+      tooltips: {
+        backgroundColor: _T.surface, titleFontColor: _T.text,
+        bodyFontColor: _T.text, borderColor: _T.border,
+        borderWidth: 1, cornerRadius: 8,
+        callbacks: { label: function(item, data) { return ' ' + data.labels[item.index] + ': ' + data.datasets[0].data[item.index] + '%'; } }
+      }
+    }
+  });
+})();
+</script>
+</body>
+</html>

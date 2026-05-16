@@ -1,4 +1,4 @@
-﻿Imports System.IO
+Imports System.IO
 Imports System.Text
 Imports System.Text.Json
 Imports System.Text.RegularExpressions
@@ -25,6 +25,7 @@ Public Class FormUpdateTabelDb
     End Class
 
     Private Sub FormUpdateTabelDb_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+        ModuleTheme.TerapkanTheme(Me)
         LoadConfiguration()
     End Sub
 
@@ -736,4 +737,245 @@ Public Class FormUpdateTabelDb
             ' Ignore
         End Try
     End Sub
+
+    ' ── Kumpulkan discrepancies dari ListBox ────────────────────────
+    Private Function GetDiscrepanciesFromListBox() As List(Of String)
+        Dim result As New List(Of String)
+        For Each item As Object In ListBoxHasil.Items
+            Dim s As String = item.ToString()
+            If s.Contains("❌") OrElse s.Contains("⚠️") Then
+                result.Add(s)
+            End If
+        Next
+        Return result
+    End Function
+
+    ' ── Generate file migrasi SQL dari hasil perbandingan ───────────
+    Private Sub BtnBuatMigrasi_Click(sender As Object, e As EventArgs) Handles BtnBuatMigrasi.Click
+        Dim discrepancies As List(Of String) = GetDiscrepanciesFromListBox()
+
+        If discrepancies.Count = 0 Then
+            MessageBox.Show("Tidak ada perbedaan untuk digenerate." & vbCrLf &
+                            "Jalankan 'Cek database' terlebih dahulu.", "Peringatan",
+                            MessageBoxButtons.OK, MessageBoxIcon.Warning)
+            Return
+        End If
+
+        Using sfd As New SaveFileDialog()
+            sfd.Filter = "SQL Files (*.sql)|*.sql"
+            sfd.Title = "Simpan File Migrasi"
+            sfd.FileName = $"migrasi_kolom_{DateTime.Now:yyyyMMdd_HHmm}.sql"
+            If sfd.ShowDialog() <> DialogResult.OK Then Return
+
+            Try
+                Dim sql As New StringBuilder()
+                sql.AppendLine("-- ============================================================")
+                sql.AppendLine($"-- File migrasi dibuat otomatis: {DateTime.Now:yyyy-MM-dd HH:mm:ss}")
+                sql.AppendLine($"-- Database referensi: {database}")
+                sql.AppendLine("-- ============================================================")
+                sql.AppendLine()
+
+                ' ── 1. Tabel yang ada di master tapi tidak di database → CREATE TABLE ──
+                Dim tabelBaru As New List(Of String)
+                For Each item As String In discrepancies
+                    If item.Contains("❌") AndAlso item.Contains("ada di master tapi tidak di database") Then
+                        Dim m As Match = Regex.Match(item, "Tabel '([^']+)' ada di master")
+                        If m.Success Then tabelBaru.Add(m.Groups(1).Value)
+                    End If
+                Next
+
+                If tabelBaru.Count > 0 Then
+                    sql.AppendLine("-- ============================================================")
+                    sql.AppendLine("-- TABEL BARU: ada di master tapi belum ada di database")
+                    sql.AppendLine("-- ============================================================")
+                    sql.AppendLine()
+                    For Each tbl As String In tabelBaru
+                        Dim createSql As String = GetCreateTableFromMaster(tbl)
+                        If String.IsNullOrEmpty(createSql) Then
+                            sql.AppendLine($"-- ⚠ Tidak bisa ekstrak CREATE TABLE untuk '{tbl}' dari file master")
+                        Else
+                            sql.AppendLine($"-- Tabel: {tbl}")
+                            sql.AppendLine(createSql)
+                        End If
+                        sql.AppendLine()
+                    Next
+                End If
+
+                ' ── 2. Kolom baru per tabel → ALTER TABLE ADD COLUMN ──
+                Dim perTabel As New Dictionary(Of String, List(Of String))(StringComparer.OrdinalIgnoreCase)
+                For Each item As String In discrepancies
+                    If Not item.Contains("❌") OrElse Not item.Contains("tidak ditemukan di database") Then
+                        Continue For
+                    End If
+                    Dim mTabel As Match = Regex.Match(item, "Tabel '([^']+)': Kolom '([^']+)' tidak ditemukan")
+                    If Not mTabel.Success Then Continue For
+                    Dim tabelName As String = mTabel.Groups(1).Value
+                    Dim kolomName As String = mTabel.Groups(2).Value
+                    If Not perTabel.ContainsKey(tabelName) Then perTabel(tabelName) = New List(Of String)()
+                    perTabel(tabelName).Add(kolomName)
+                Next
+
+                If perTabel.Count > 0 Then
+                    sql.AppendLine("-- ============================================================")
+                    sql.AppendLine("-- KOLOM BARU: ada di master tapi belum ada di database")
+                    sql.AppendLine("-- ============================================================")
+                    sql.AppendLine()
+                    For Each kvp In perTabel
+                        sql.AppendLine($"-- Tabel: {kvp.Key} ({kvp.Value.Count} kolom baru)")
+                        For Each kolom As String In kvp.Value
+                            Dim definisi As String = GetColumnDefinitionFromMaster(kvp.Key, kolom)
+                            sql.AppendLine($"ALTER TABLE `{kvp.Key}`")
+                            If String.IsNullOrEmpty(definisi) Then
+                                sql.AppendLine($"    ADD COLUMN `{kolom}` VARCHAR(100) DEFAULT NULL; -- ⚠ cek tipe manual")
+                            Else
+                                sql.AppendLine($"    ADD COLUMN {definisi};")
+                            End If
+                        Next
+                        sql.AppendLine()
+                    Next
+                End If
+
+                ' ── 3. Perbedaan tipe/panjang/nullable → komentar manual ──
+                Dim adaPerbedaanLain As Boolean = False
+                For Each item As String In discrepancies
+                    If item.Contains("⚠️") AndAlso (item.Contains("Tipe berbeda") OrElse
+                                                     item.Contains("Panjang berbeda") OrElse
+                                                     item.Contains("NULLABLE berbeda")) Then
+                        If Not adaPerbedaanLain Then
+                            sql.AppendLine("-- ============================================================")
+                            sql.AppendLine("-- PERBEDAAN TIPE/PANJANG/NULLABLE — perlu dicek manual:")
+                            sql.AppendLine("-- ============================================================")
+                            adaPerbedaanLain = True
+                        End If
+                        sql.AppendLine($"-- {item.Replace("⚠️ ", "")}")
+                    End If
+                Next
+
+                ' ── 4. Tabel di database tapi tidak di master → komentar info ──
+                Dim tabelExtra As New List(Of String)
+                For Each item As String In discrepancies
+                    If item.Contains("⚠️") AndAlso item.Contains("ada di database tapi tidak di master") Then
+                        Dim m As Match = Regex.Match(item, "Tabel '([^']+)' ada di database")
+                        If m.Success Then tabelExtra.Add(m.Groups(1).Value)
+                    End If
+                Next
+
+                If tabelExtra.Count > 0 Then
+                    sql.AppendLine()
+                    sql.AppendLine("-- ============================================================")
+                    sql.AppendLine("-- TABEL EXTRA: ada di database tapi tidak di master (tidak dihapus otomatis):")
+                    sql.AppendLine("-- ============================================================")
+                    For Each tbl As String In tabelExtra
+                        sql.AppendLine($"-- {tbl}")
+                    Next
+                End If
+
+                If tabelBaru.Count = 0 AndAlso perTabel.Count = 0 Then
+                    MessageBox.Show("Tidak ada tabel/kolom baru yang perlu ditambahkan." & vbCrLf &
+                                    "Perbedaan yang ada hanya tipe data atau nullable.",
+                                    "Info", MessageBoxButtons.OK, MessageBoxIcon.Information)
+                    Return
+                End If
+
+                File.WriteAllText(sfd.FileName, sql.ToString(), Encoding.UTF8)
+                ListBoxHasil.Items.Add("")
+                ListBoxHasil.Items.Add($"✓ File migrasi disimpan: {sfd.FileName}")
+                ListBoxHasil.TopIndex = ListBoxHasil.Items.Count - 1
+
+                If MessageBox.Show("File migrasi berhasil dibuat." & vbCrLf & "Buka file sekarang?",
+                                   "Sukses", MessageBoxButtons.YesNo, MessageBoxIcon.Information) = DialogResult.Yes Then
+                    Process.Start("notepad.exe", sfd.FileName)
+                End If
+
+            Catch ex As Exception
+                MessageBox.Show("Gagal membuat file migrasi: " & ex.Message, "Error",
+                                MessageBoxButtons.OK, MessageBoxIcon.Error)
+            End Try
+        End Using
+    End Sub
+
+    ' ── Ambil CREATE TABLE lengkap dari file master SQL ─────────────
+    Private Function GetCreateTableFromMaster(tabelName As String) As String
+        Try
+            If String.IsNullOrEmpty(TxtFilePath.Text) OrElse Not File.Exists(TxtFilePath.Text) Then Return ""
+
+            Dim sqlContent As String = File.ReadAllText(TxtFilePath.Text)
+            sqlContent = RemoveComments(sqlContent)
+
+            Dim pattern As String = $"CREATE\s+TABLE\s+(?:IF\s+NOT\s+EXISTS\s+)?`?{Regex.Escape(tabelName)}`?\s*\("
+            Dim mTable As Match = Regex.Match(sqlContent, pattern,
+                RegexOptions.IgnoreCase Or RegexOptions.Singleline)
+            If Not mTable.Success Then Return ""
+
+            Dim openParen As Integer = sqlContent.IndexOf("("c, mTable.Index + mTable.Length - 1)
+            If openParen = -1 Then Return ""
+
+            Dim closeParen As Integer = FindMatchingParenthesis(sqlContent, openParen)
+            If closeParen = -1 Then Return ""
+
+            ' Ambil dari awal CREATE TABLE sampai penutup kurung + ENGINE jika ada
+            Dim endPos As Integer = closeParen + 1
+            ' Cari ENGINE=... di akhir jika ada
+            Dim afterClose As String = sqlContent.Substring(endPos)
+            Dim engineMatch As Match = Regex.Match(afterClose, "^\s*ENGINE\s*=\s*\w+[^;]*", RegexOptions.IgnoreCase)
+            If engineMatch.Success Then endPos += engineMatch.Index + engineMatch.Length
+
+            Dim createSql As String = sqlContent.Substring(mTable.Index, endPos - mTable.Index).Trim()
+            ' Pastikan diakhiri titik koma
+            If Not createSql.EndsWith(";") Then createSql &= ";"
+            Return createSql
+
+        Catch
+            Return ""
+        End Try
+    End Function
+
+    ' ── Ambil definisi kolom dari file master SQL ───────────────────
+    Private Function GetColumnDefinitionFromMaster(tabelName As String, kolomName As String) As String
+        Try
+            If String.IsNullOrEmpty(TxtFilePath.Text) OrElse Not File.Exists(TxtFilePath.Text) Then
+                Return ""
+            End If
+
+            Dim sqlContent As String = File.ReadAllText(TxtFilePath.Text)
+            sqlContent = RemoveComments(sqlContent)
+
+            ' Cari blok CREATE TABLE untuk tabel ini
+            Dim pattern As String = $"CREATE\s+TABLE\s+(?:IF\s+NOT\s+EXISTS\s+)?`?{Regex.Escape(tabelName)}`?\s*\("
+            Dim mTable As Match =
+                Regex.Match(sqlContent, pattern,
+                    RegexOptions.IgnoreCase Or RegexOptions.Singleline)
+
+            If Not mTable.Success Then Return ""
+
+            Dim openParen As Integer = sqlContent.IndexOf("("c, mTable.Index + mTable.Length - 1)
+            If openParen = -1 Then Return ""
+
+            Dim closeParen As Integer = FindMatchingParenthesis(sqlContent, openParen)
+            If closeParen = -1 Then Return ""
+
+            Dim columnBlock As String = sqlContent.Substring(openParen + 1, closeParen - openParen - 1)
+            Dim lines As List(Of String) = SplitColumnsSafe(columnBlock)
+
+            For Each line As String In lines
+                Dim trimmed As String = line.Trim()
+                If String.IsNullOrEmpty(trimmed) OrElse IsConstraintLine(trimmed) Then Continue For
+
+                ' Cek apakah baris ini adalah kolom yang dicari
+                Dim colMatch As Match =
+                    Regex.Match(trimmed, "^`?(\w+)`?\s+",
+                        RegexOptions.IgnoreCase)
+
+                If colMatch.Success AndAlso
+                   String.Equals(colMatch.Groups(1).Value, kolomName, StringComparison.OrdinalIgnoreCase) Then
+                    Return trimmed
+                End If
+            Next
+
+        Catch
+            ' Abaikan error parsing
+        End Try
+
+        Return ""
+    End Function
 End Class

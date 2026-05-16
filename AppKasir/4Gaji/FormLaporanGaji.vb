@@ -1,48 +1,25 @@
-﻿Imports Microsoft.Reporting.WinForms
+Imports Microsoft.Reporting.WinForms
 
 Public Class FormLaporanGaji
     Dim teksBulanTahunTerpilih As String
 
     Private Sub FormLaporanGaji_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
+        ModuleTheme.TerapkanTheme(Me)
         Me.ReportViewer1.RefreshReport()
-        MuatComboBoxBulanTahun()
+        MuatComboBoxBulanTahun(CmbBln, CmbThn)
     End Sub
 
-    Private Sub MuatComboBoxBulanTahun()
-        ' Bersihkan item sebelum menambahkannya kembali
-        CmbTahun.Items.Clear()
-
-        ' Tambahkan tahun dari 2022 hingga tahun sekarang
-        For i As Integer = 2022 To Year(Now)
-            CmbTahun.Items.Add(i)
-        Next
-
-        ' Set tahun sekarang sebagai tahun default
-        CmbTahun.SelectedItem = Year(Now)
-
-        ' Bersihkan item sebelum menambahkannya kembali
-        CmbBulan.Items.Clear()
-
-        ' Tambahkan daftar bulan
-        Dim daftarBulan As String() = {"Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"}
-        CmbBulan.Items.AddRange(daftarBulan)
-
-        ' Set bulan sekarang sebagai bulan default
-        CmbBulan.SelectedIndex = Month(Now) - 1 ' Index bulan dimulai dari 0, jadi dikurangi 1
-    End Sub
-
-
-    Private Sub CmbBulan_SelectedIndexChanged(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles CmbBulan.SelectedIndexChanged
+    Private Sub CmbBulan_SelectedIndexChanged(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles CmbBln.SelectedIndexChanged
         PerbaruiTeksBulanTahunTerpilih()
     End Sub
 
-    Private Sub CmbTahun_SelectedIndexChanged(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles CmbTahun.SelectedIndexChanged
+    Private Sub CmbTahun_SelectedIndexChanged(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles CmbThn.SelectedIndexChanged
         PerbaruiTeksBulanTahunTerpilih()
     End Sub
 
     Private Sub PerbaruiTeksBulanTahunTerpilih()
-        If Not String.IsNullOrEmpty(CmbBulan.Text) Then
-            teksBulanTahunTerpilih = CmbBulan.Text & "/" & CmbTahun.Text
+        If Not String.IsNullOrEmpty(CmbBln.Text) Then
+            teksBulanTahunTerpilih = CmbBln.Text & "/" & CmbThn.Text
             TampilkanDataGaji(teksBulanTahunTerpilih)
         End If
     End Sub
@@ -73,7 +50,7 @@ Public Class FormLaporanGaji
         ' Create a list to hold the report parameters
         Dim reportParams As New List(Of ReportParameter) From {
             New ReportParameter("TOKO", teksBulanTahunTerpilih & "                     " & NAMA_PERUSAHAAN),
-            New ReportParameter("USER", FormUtama.SLogin.Text)
+            New ReportParameter("USER", FormUtama.StatusNamaUser.Text)
                    }
 
 

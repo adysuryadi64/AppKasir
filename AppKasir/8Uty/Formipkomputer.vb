@@ -1,8 +1,9 @@
-﻿Imports System.Net
+Imports System.Net
 
 Public Class Formipkomputer
 
     Private Sub Formipkomputer_Load(ByVal sender As Object, ByVal e As EventArgs) Handles MyBase.Load
+        ModuleTheme.TerapkanTheme(Me)
         Dim HostName As String
         'Dim strIPAddress As String
         HostName = System.Net.Dns.GetHostName()

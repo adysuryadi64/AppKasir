@@ -1,39 +1,13 @@
-﻿Imports System.IO
+Imports System.IO
 Imports System.Runtime.InteropServices
 Imports Excel = Microsoft.Office.Interop.Excel
 
 Public Class FormPenjualanPPn
 
 
-    Private BulanTerpilih As Integer
-
-    Private Sub KonversiBulanKeAngka()
-        Dim bulanDict As New Dictionary(Of String, Integer) From {
-        {"Januari", 1}, {"Februari", 2}, {"Maret", 3}, {"April", 4},
-        {"Mei", 5}, {"Juni", 6}, {"Juli", 7}, {"Agustus", 8},
-        {"September", 9}, {"Oktober", 10}, {"November", 11}, {"Desember", 12}
-    }
-        BulanTerpilih = If(bulanDict.ContainsKey(CmbBln.Text), bulanDict(CmbBln.Text), 0)
-    End Sub
-
-    Private Sub MuatComboBoxBulanTahun()
-        ' Isi ComboBox Bulan
-        CmbBln.Items.Clear()
-        CmbBln.Items.AddRange({"Januari", "Februari", "Maret", "April", "Mei", "Juni",
-                           "Juli", "Agustus", "September", "Oktober", "November", "Desember"})
-
-        ' Isi ComboBox Tahun
-        CmbThn.Items.Clear()
-        For i As Integer = 2022 To Year(Now)
-            CmbThn.Items.Add(i)
-        Next
-
-        ' Set tahun sekarang sebagai default
-        CmbThn.SelectedItem = Year(Now)
-    End Sub
-
     Private Sub FormPenjualanPPn_Load(sender As Object, e As EventArgs) Handles MyBase.Load
-        MuatComboBoxBulanTahun()
+        ModuleTheme.TerapkanTheme(Me)
+        MuatComboBoxBulanTahun(CmbBln, CmbThn)
     End Sub
 
     Private Sub CbBulan_CheckedChanged(sender As Object, e As EventArgs) Handles CbBulan.CheckedChanged
@@ -165,19 +139,15 @@ Public Class FormPenjualanPPn
                 TanggalAwal = DTPAwal.Value.Date
                 TanggalAkhir = DTPAkhir.Value.Date.AddDays(1).AddTicks(-1)
             ElseIf CbBulan.Checked Then
-                KonversiBulanKeAngka()
-                Dim Bulan As Integer = BulanTerpilih
-                Dim Tahun As Integer = CInt(CmbThn.Text)
-                TanggalAwal = New DateTime(Tahun, Bulan, 1)
-                TanggalAkhir = TanggalAwal.AddMonths(1).AddSeconds(-1)
+                If Not GetRentangBulan(CmbBln, CmbThn, TanggalAwal, TanggalAkhir) Then Exit Sub
             Else
-                MsgBox("Pilih filter tanggal atau bulan!", MsgBoxStyle.Exclamation)
+                MessageBox.Show("Pilih filter tanggal atau bulan!", "Peringatan", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
                 Exit Sub
             End If
 
             ' ================= VALIDASI =================
             If DGVFilter.Rows.Count = 0 Then
-                MsgBox("Data belum tersedia!", MsgBoxStyle.Exclamation)
+                MessageBox.Show("Data belum tersedia!", "Peringatan", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
                 Exit Sub
             End If
 
@@ -216,7 +186,7 @@ Public Class FormPenjualanPPn
             End Using
 
             If dt.Rows.Count = 0 Then
-                MsgBox("Tidak ada data!", MsgBoxStyle.Information)
+                MessageBox.Show("Tidak ada data!", "Informasi", MessageBoxButtons.OK, MessageBoxIcon.Information)
                 Exit Sub
             End If
 
@@ -226,7 +196,7 @@ Public Class FormPenjualanPPn
                 sfd.FileName = If(JENIS = "NonPPn", "Laporan_Non_PPN.xlsx", "Laporan_PPN.xlsx")
                 If sfd.ShowDialog <> DialogResult.OK Then Exit Sub
                 If IsFileOpen(sfd.FileName) Then
-                    MsgBox("File Excel sedang terbuka!", MsgBoxStyle.Exclamation)
+                    MessageBox.Show("File Excel sedang terbuka!", "Peringatan", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
                     Exit Sub
                 End If
 
@@ -268,7 +238,7 @@ Public Class FormPenjualanPPn
                 New Object() {"NO", "TANGGAL", "FAKTUR", "PELANGGAN", "TOTAL"}
                 worksheet.Range("A5:E5").Font.Bold = True
                 worksheet.Range("A5:E5").Interior.Color =
-                ColorTranslator.ToOle(Color.LightGray)
+                ColorTranslator.ToOle(ModuleTheme.C(Color.LightGray, Color.FromArgb(64, 64, 64)))
 
                 ' ================= PROGRESS SETUP =================
                 Dim rowCount As Integer = dt.Rows.Count
@@ -320,11 +290,11 @@ Public Class FormPenjualanPPn
                     LabelProgress.Text = "Export selesai"
                 End If
 
-                MsgBox("Export Excel selesai dengan progress realtime!", MsgBoxStyle.Information)
+                MessageBox.Show("Export Excel selesai dengan progress realtime!", "Informasi", MessageBoxButtons.OK, MessageBoxIcon.Information)
             End Using
 
         Catch ex As Exception
-            MsgBox("Error: " & ex.Message, MsgBoxStyle.Critical)
+            MessageBox.Show("Error: " & ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
 
         Finally
             If worksheet IsNot Nothing Then Marshal.ReleaseComObject(worksheet)
@@ -364,19 +334,15 @@ Public Class FormPenjualanPPn
                 TanggalAwal = DTPAwal.Value.Date
                 TanggalAkhir = DTPAkhir.Value.Date.AddDays(1).AddTicks(-1)
             ElseIf CbBulan.Checked Then
-                KonversiBulanKeAngka()
-                Dim Bulan As Integer = BulanTerpilih
-                Dim Tahun As Integer = CInt(CmbThn.Text)
-                TanggalAwal = New DateTime(Tahun, Bulan, 1)
-                TanggalAkhir = TanggalAwal.AddMonths(1).AddSeconds(-1)
+                If Not GetRentangBulan(CmbBln, CmbThn, TanggalAwal, TanggalAkhir) Then Exit Sub
             Else
-                MsgBox("Pilih filter tanggal atau bulan!", MsgBoxStyle.Exclamation)
+                MessageBox.Show("Pilih filter tanggal atau bulan!", "Peringatan", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
                 Exit Sub
             End If
 
             ' ================= VALIDASI =================
             If DGVFilter.Rows.Count = 0 Then
-                MsgBox("Daftar barang masih kosong!", MsgBoxStyle.Exclamation)
+                MessageBox.Show("Daftar barang masih kosong!", "Peringatan", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
                 Exit Sub
             End If
 
@@ -427,17 +393,16 @@ Public Class FormPenjualanPPn
             ' ================= FORMAT GRID =================
             With DgvData
                 .Columns("TANGGAL_JUAL").DefaultCellStyle.Format = "dd/MM/yyyy HH:mm:ss"
-                .Columns("TOTAL_HARGA").DefaultCellStyle.Format = "N0"
-                .Columns("TOTAL_HARGA").DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight
                 .AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill
             End With
+            ModuleAngka.TerapkanFormatKolomAngka(DgvData, "TOTAL_HARGA")
 
             If dt.Rows.Count = 0 Then
-                MsgBox("Tidak ada data untuk ditampilkan.", MsgBoxStyle.Information)
+                MessageBox.Show("Tidak ada data untuk ditampilkan.", "Informasi", MessageBoxButtons.OK, MessageBoxIcon.Information)
             End If
 
         Catch ex As Exception
-            MsgBox("Gagal menampilkan data: " & ex.Message, MsgBoxStyle.Critical)
+            MessageBox.Show("Gagal menampilkan data: " & ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
 
         Finally
             Me.Cursor = Cursors.Default

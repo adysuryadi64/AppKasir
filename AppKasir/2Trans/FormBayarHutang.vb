@@ -1,49 +1,32 @@
-﻿Imports System.Globalization
+Imports System.Globalization
 
 Public Class FormBayarHutang
-    Private TransaksiLampau As String = "Tidak"
-
 
     Private Sub FormBayarHutang_Load(sender As Object, e As EventArgs) Handles MyBase.Load
-        TransaksiLampau = ModulHakAkses.BacaHakAksesSemua(FormGeneralSetting.LblTransaksiTanggalLampau.Text)
+        ModuleTheme.TerapkanTheme(Me)
+        ' Setting dibaca langsung dari ModulHakAkses property
         Kondisiawal()
     End Sub
 
 
+
     Private Sub GenerateNomorBayarHutang()
-        Dim cekTanggal As String = DtpTanggal.Value.ToString("yyMMdd")
-        Dim UrutKOde As String = ""
-        Dim cekNomor As String = "BH-" & cekTanggal
-
-        ' Query untuk mendapatkan nomor maksimum berdasarkan format
-        Using cmd As New MySqlCommand("SELECT MAX(NOBAYARHUTANG) FROM hutang WHERE NOBAYARHUTANG LIKE @ceknomor", conn)
-            cmd.Parameters.AddWithValue("@ceknomor", cekNomor & "%")
-
-            ' Gunakan ExecuteScalar untuk mendapatkan nilai maksimum
-            Dim maxKode As Object = cmd.ExecuteScalar()
-
-            If Not IsDBNull(maxKode) AndAlso maxKode IsNot Nothing Then
-                Dim MaxNilaiKode As String = maxKode.ToString()
-                If Microsoft.VisualBasic.Left(MaxNilaiKode, 9) = "BH-" & cekTanggal Then
-                    ' Hitung nomor berikutnya
-                    Dim Hitung As Integer = CInt(Microsoft.VisualBasic.Right(MaxNilaiKode, 4)) + 1
-                    UrutKOde = "BH-" & cekTanggal & Microsoft.VisualBasic.Right("0000" & Hitung.ToString(), 4)
-                End If
-            End If
+        Using cmd As New MySqlCommand(
+            "CALL sp_hlp_faktur_generate(@prefix, @tgl, @tabel, @kolom, @nomor)", conn)
+            cmd.Parameters.AddWithValue("@prefix", "BH")
+            cmd.Parameters.AddWithValue("@tgl", DtpTanggal.Value.Date)
+            cmd.Parameters.AddWithValue("@tabel", "hutang")
+            cmd.Parameters.AddWithValue("@kolom", "NOBAYARHUTANG")
+            Dim pNomor = cmd.Parameters.Add("@nomor", MySqlDbType.VarChar, 30)
+            pNomor.Direction = ParameterDirection.Output
+            cmd.ExecuteNonQuery()
+            LblNomorBayar.Text = pNomor.Value?.ToString()
         End Using
-
-        ' Jika UrutKOde masih kosong, buat nomor pertama
-        If String.IsNullOrEmpty(UrutKOde) Then
-            UrutKOde = "BH-" & cekTanggal & "0001"
-        End If
-
-        ' Tampilkan nomor pada label
-        LblNomorBayar.Text = UrutKOde
     End Sub
 
 
     Private Sub Kondisiawal()
-        PanelView.Visible = False
+        PanelDatagridview.Visible = False
         TxtTotalHutang.Text = 0
         TxtTotalBayar.Text = 0
         TxtSisaHutang.Text = 0
@@ -56,8 +39,11 @@ Public Class FormBayarHutang
 
 
         IsiComboBoxAkun(CmbRekening, "KAS", "BANK", "EKUITAS")
+        CmbRekening.SelectedItem = nama_rek_Bayar_Hutang
 
-
+        ModulHakAkses.ResetDTPKeTanggalHariIni(DtpTanggal)
+        DtpTanggal.Format = DateTimePickerFormat.Custom
+        DtpTanggal.CustomFormat = "dd/MM/yyyy HH:mm:ss"
         GenerateNomorBayarHutang()
         SelectNamaSupliyer()
     End Sub
@@ -95,16 +81,9 @@ Public Class FormBayarHutang
 
         With DgvData
             .Columns("TGL_BELI").DefaultCellStyle.Format = "dd/MM/yyyy"
-            .Columns("GRAND_TOTAL_BELI").DefaultCellStyle.Format = "###,###"
-            .Columns("GRAND_TOTAL_BELI").DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight
-            .Columns("PEMBAYARAN").DefaultCellStyle.Format = "###,###"
-            .Columns("PEMBAYARAN").DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight
-            .Columns("RETUR").DefaultCellStyle.Format = "###,###"
-            .Columns("RETUR").DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight
-            .Columns("TAGIHAN").DefaultCellStyle.Format = "###,###"
-            .Columns("TAGIHAN").DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight
             .Columns("JATUH_TEMPO").DefaultCellStyle.Format = "dd/MM/yyyy"
         End With
+        ModuleAngka.TerapkanFormatKolomAngka(DgvData, "GRAND_TOTAL_BELI", "PEMBAYARAN", "RETUR", "TAGIHAN")
 
 
         ' Misalkan DgvData memiliki 10 kolom
@@ -116,7 +95,7 @@ Public Class FormBayarHutang
 
         DgvData.ClearSelection()
 
-        PanelView.Visible = False
+        PanelDatagridview.Visible = False
         Totalhutang()
     End Sub
 
@@ -150,16 +129,6 @@ Public Class FormBayarHutang
             }
 
             With DgvDetail
-                ' Loop through columns and set format and alignment
-                For Each columnName As String In columnsToFormat
-                    If .Columns.Contains(columnName) Then
-                        ' Use custom format to display numbers with commas and up to two decimal places if not zero
-                        .Columns(columnName).DefaultCellStyle.Format = "#,0.##"
-                        .Columns(columnName).DefaultCellStyle.FormatProvider = CultureInfo.GetCultureInfo("id-ID")
-                        .Columns(columnName).DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight
-                    End If
-                Next
-
                 ' Rename columns
                 For Each column As DataGridViewColumn In .Columns
                     If columnNames.ContainsKey(column.Name) Then
@@ -167,33 +136,21 @@ Public Class FormBayarHutang
                     End If
                 Next
 
-                ' Set header style
-                .ColumnHeadersDefaultCellStyle.BackColor = Color.Yellow
-
-                ' Set alternating row style
-                .AlternatingRowsDefaultCellStyle.BackColor = Color.LightGray
-
                 ' Set visual style
                 .BorderStyle = BorderStyle.FixedSingle
-                .GridColor = Color.Silver
-                .BackgroundColor = Color.White
 
                 ' Enable double buffering to reduce flickering
-                EnableDoubleBuffering(DgvDetail)
+                ModuleTheme.ApplyThemeDataGridView(DgvDetail)
 
                 ' Set FillWeight for NAMA_BARANG column
                 If .Columns.Contains("NAMA_BARANG") Then
                     .Columns("NAMA_BARANG").FillWeight = 200
                 End If
             End With
+            ModuleAngka.TerapkanFormatKolomAngka(DgvDetail, columnsToFormat)
             DgvDetail.ClearSelection()
-            PanelView.Visible = True
+            PanelDatagridview.Visible = True
         End If
-    End Sub
-
-    ' Method to enable double buffering
-    Public Shared Sub EnableDoubleBuffering(ByVal dgv As DataGridView)
-        dgv.GetType().InvokeMember("DoubleBuffered", Reflection.BindingFlags.NonPublic Or Reflection.BindingFlags.Instance Or Reflection.BindingFlags.SetProperty, Nothing, dgv, New Object() {True})
     End Sub
 
     Public Sub SelectNamaSupliyer()
@@ -230,12 +187,7 @@ Public Class FormBayarHutang
             If Not row.IsNewRow Then
                 If DgvData.Columns.Contains("TAGIHAN") Then
                     Dim cellVal = row.Cells("TAGIHAN").Value
-                    If cellVal IsNot Nothing AndAlso Not IsDBNull(cellVal) Then
-                        Dim parsed As Decimal = 0D
-                        If Decimal.TryParse(Convert.ToString(cellVal), parsed) Then
-                            totalKolom8 += parsed
-                        End If
-                    End If
+                    totalKolom8 += ModuleAngka.ParseDecimal(cellVal)
                 End If
             End If
         Next
@@ -309,12 +261,7 @@ Public Class FormBayarHutang
             If isChecked Then
                 If DgvData.Columns.Contains("Bayar") Then
                     Dim cellVal = row.Cells("Bayar").Value
-                    If cellVal IsNot Nothing AndAlso Not IsDBNull(cellVal) Then
-                        Dim parsed As Decimal = 0D
-                        If Decimal.TryParse(Convert.ToString(cellVal), parsed) Then
-                            totalBayar += parsed
-                        End If
-                    End If
+                    totalBayar += ModuleAngka.ParseDecimal(cellVal)
                 End If
             End If
         Next
@@ -330,21 +277,11 @@ Public Class FormBayarHutang
 
     Private Sub HitungSisaHutang()
         ' Pastikan TxtTotalHutang dan TxtTotalBayar berisi nilai numerik
-        Dim totalHutang As Decimal
-        Dim totalBayar As Decimal
-
-        If Decimal.TryParse(TxtTotalHutang.Text, totalHutang) AndAlso Decimal.TryParse(TxtTotalBayar.Text, totalBayar) Then
-            ' Hitung sisa hutang
-            Dim sisaHutang As Decimal = totalHutang - totalBayar
-
-            ' Tampilkan hasilnya pada TxtSisaHutang
-            TxtSisaHutang.Text = sisaHutang.ToString()
-            LblSisaHutang.Text = sisaHutang.ToString("N0")
-        Else
-            ' Jika entri tidak valid, atur TxtSisaHutang ke nilai default atau pesan kesalahan
-            TxtSisaHutang.Text = 0
-            LblSisaHutang.Text = "0"
-        End If
+        Dim totalHutang As Decimal = ModuleAngka.ParseDecimal(TxtTotalHutang.Text)
+        Dim totalBayar As Decimal = ModuleAngka.ParseDecimal(TxtTotalBayar.Text)
+        Dim sisaHutang As Decimal = totalHutang - totalBayar
+        TxtSisaHutang.Text = sisaHutang.ToString()
+        LblSisaHutang.Text = ModuleAngka.FormatRupiah(sisaHutang)
     End Sub
     Private Function IsFormValid() As Boolean
         If CmbSupliyer.SelectedIndex = -1 Then
@@ -354,14 +291,12 @@ Public Class FormBayarHutang
         End If
 
 
-        Dim totalHutang As Decimal
-        If Decimal.TryParse(TxtTotalHutang.Text, totalHutang) AndAlso totalHutang = 0 Then
+        If ModuleAngka.ParseDecimal(TxtTotalHutang.Text) = 0 Then
             MessageBox.Show("Tidak ada hutang yang harus di bayar.", "Peringatan", MessageBoxButtons.OK, MessageBoxIcon.Warning)
             Return False
         End If
 
-        Dim totalBayar As Decimal
-        If Decimal.TryParse(TxtTotalBayar.Text, totalBayar) AndAlso totalBayar = 0 Then
+        If ModuleAngka.ParseDecimal(TxtTotalBayar.Text) = 0 Then
             MessageBox.Show("Silahkan Centang hutang yang mau di bayar.", "Peringatan", MessageBoxButtons.OK, MessageBoxIcon.Warning)
             Return False
         End If
@@ -380,8 +315,8 @@ Public Class FormBayarHutang
         End If
         Cursor = Cursors.WaitCursor
 
-        If TransaksiLampau = "Tidak" Then
-            DtpTanggal.Value = Now
+        If Not ModulHakAkses.SettingIzinkanTanggalLampau Then
+            ModulHakAkses.ResetDTPKeTanggalHariIni(DtpTanggal)
             GenerateNomorBayarHutang()
         End If
 
@@ -391,6 +326,7 @@ Public Class FormBayarHutang
         Try
             transaction = conn.BeginTransaction()
 
+            Dim totalNominalBayarHutang As Decimal = 0D
             For baris As Integer = 0 To DgvData.Rows.Count - 1
                 If DgvData.Rows(baris).IsNewRow Then
                     Continue For
@@ -402,8 +338,8 @@ Public Class FormBayarHutang
                 End If
 
                 Dim Status As String
-                Dim hutang As Decimal = If(IsDBNull(DgvData.Rows(baris).Cells(8).Value) OrElse DgvData.Rows(baris).Cells(8).Value Is Nothing, 0D, Convert.ToDecimal(DgvData.Rows(baris).Cells(8).Value))
-                Dim bayar As Decimal = If(IsDBNull(DgvData.Rows(baris).Cells(10).Value) OrElse DgvData.Rows(baris).Cells(10).Value Is Nothing, 0D, Convert.ToDecimal(DgvData.Rows(baris).Cells(10).Value))
+                Dim hutang As Decimal = If(IsDBNull(DgvData.Rows(baris).Cells(8).Value) OrElse DgvData.Rows(baris).Cells(8).Value Is Nothing, 0D, ModuleAngka.ParseDecimal(DgvData.Rows(baris).Cells(8).Value))
+                Dim bayar As Decimal = If(IsDBNull(DgvData.Rows(baris).Cells(10).Value) OrElse DgvData.Rows(baris).Cells(10).Value Is Nothing, 0D, ModuleAngka.ParseDecimal(DgvData.Rows(baris).Cells(10).Value))
 
                 ' Memeriksa apakah nilai hutang sama dengan nilai bayar
                 Status = If(hutang = bayar, "Lunas", "Belum Lunas")
@@ -433,21 +369,21 @@ Public Class FormBayarHutang
                     cmd.Parameters.AddWithValue("@NAMA_BANTU_D", CmbSupliyer.Text)
                     cmd.Parameters.AddWithValue("@KODE_BANTU_D", LblKodeSupliyer.Text)
                     cmd.Parameters.AddWithValue("@NOMINAL", bayar)
-                    cmd.Parameters.AddWithValue("@JENIS_TRANSAKSI", "Bayar hutang")
-                    cmd.Parameters.AddWithValue("@LOKASI", FormUtama.SLokasi.Text)
-                    cmd.Parameters.AddWithValue("@ID_USER", FormUtama.SLogin.Text)
-                    cmd.Parameters.AddWithValue("@ID_KOMPUTER", FormUtama.Comp.Text)
+                    cmd.Parameters.AddWithValue("@JENIS_TRANSAKSI", "BAYAR HUTANG")
+                    cmd.Parameters.AddWithValue("@LOKASI", FormUtama.StatusLokasi.Text)
+                    cmd.Parameters.AddWithValue("@ID_USER", FormUtama.StatusNamaUser.Text)
+                    cmd.Parameters.AddWithValue("@ID_KOMPUTER", FormUtama.StatusNamaPC.Text)
 
                     cmd.ExecuteNonQuery()
                 End Using
 
-                Using cmdHutangDetail As New MySqlCommand("INSERT INTO Hutang_Detail (ID_BAYAR, TANGGAL_BAYAR, LOKASI, ID_BELI, KODE, NAMA, TANGGAL_BELI, TOTAL_HUTANG, DIBAYAR, RETUR, HUTANG, JATUH_TEMPO, PEMBAYARAN, STATUS, ID_USER, ID_KOMPUTER) " &
-                            "VALUES (@ID_BAYAR, @TANGGAL_BAYAR, @LOKASI, @ID_BELI, @KODE, @NAMA, @TANGGAL_BELI, @TOTAL_HUTANG, @DIBAYAR, @RETUR, @HUTANG, @JATUH_TEMPO, @PEMBAYARAN, @STATUS, @ID_USER, @ID_KOMPUTER)", conn, transaction)
+                Using cmdHutangDetail As New MySqlCommand("INSERT INTO Hutang_Detail (ID_BAYAR, TANGGAL_BAYAR, LOKASI, ID_BELI, KODE, NAMA, JENIS, TANGGAL_BELI, TOTAL_HUTANG, DIBAYAR, RETUR, HUTANG, JATUH_TEMPO, PEMBAYARAN, STATUS, ID_USER, ID_KOMPUTER) " &
+                            "VALUES (@ID_BAYAR, @TANGGAL_BAYAR, @LOKASI, @ID_BELI, @KODE, @NAMA, 'BAYAR', @TANGGAL_BELI, @TOTAL_HUTANG, @DIBAYAR, @RETUR, @HUTANG, @JATUH_TEMPO, @PEMBAYARAN, @STATUS, @ID_USER, @ID_KOMPUTER)", conn, transaction)
 
                     ' Set nilai untuk parameter
                     cmdHutangDetail.Parameters.AddWithValue("@ID_BAYAR", LblNomorBayar.Text)
                     cmdHutangDetail.Parameters.AddWithValue("@TANGGAL_BAYAR", DtpTanggal.Value.ToString("yyyy-MM-dd HH:mm:ss"))
-                    cmdHutangDetail.Parameters.AddWithValue("@LOKASI", FormUtama.SLokasi.Text)
+                    cmdHutangDetail.Parameters.AddWithValue("@LOKASI", FormUtama.StatusLokasi.Text)
                     cmdHutangDetail.Parameters.AddWithValue("@ID_BELI", DgvData.Rows(baris).Cells(1).Value)
                     cmdHutangDetail.Parameters.AddWithValue("@KODE", DgvData.Rows(baris).Cells(2).Value)
                     cmdHutangDetail.Parameters.AddWithValue("@NAMA", DgvData.Rows(baris).Cells(3).Value)
@@ -461,9 +397,9 @@ Public Class FormBayarHutang
                         cmdHutangDetail.Parameters.AddWithValue("@TANGGAL_BELI", DBNull.Value)
                     End If
 
-                    cmdHutangDetail.Parameters.AddWithValue("@TOTAL_HUTANG", If(IsDBNull(DgvData.Rows(baris).Cells(5).Value) OrElse DgvData.Rows(baris).Cells(5).Value Is Nothing, 0D, Convert.ToDecimal(DgvData.Rows(baris).Cells(5).Value)))
-                    cmdHutangDetail.Parameters.AddWithValue("@DIBAYAR", If(IsDBNull(DgvData.Rows(baris).Cells(6).Value) OrElse DgvData.Rows(baris).Cells(6).Value Is Nothing, 0D, Convert.ToDecimal(DgvData.Rows(baris).Cells(6).Value)))
-                    cmdHutangDetail.Parameters.AddWithValue("@RETUR", If(IsDBNull(DgvData.Rows(baris).Cells(7).Value) OrElse DgvData.Rows(baris).Cells(7).Value Is Nothing, 0D, Convert.ToDecimal(DgvData.Rows(baris).Cells(7).Value)))
+                    cmdHutangDetail.Parameters.AddWithValue("@TOTAL_HUTANG", ModuleAngka.ParseDecimal(DgvData.Rows(baris).Cells(5).Value))
+                    cmdHutangDetail.Parameters.AddWithValue("@DIBAYAR", ModuleAngka.ParseDecimal(DgvData.Rows(baris).Cells(6).Value))
+                    cmdHutangDetail.Parameters.AddWithValue("@RETUR", ModuleAngka.ParseDecimal(DgvData.Rows(baris).Cells(7).Value))
                     cmdHutangDetail.Parameters.AddWithValue("@HUTANG", hutang)
 
                     ' Jika nilai JATUH_TEMPO adalah DateTime, format nilainya. Jika tidak, gunakan nilai default
@@ -477,12 +413,27 @@ Public Class FormBayarHutang
 
                     cmdHutangDetail.Parameters.AddWithValue("@PEMBAYARAN", bayar)
                     cmdHutangDetail.Parameters.AddWithValue("@STATUS", Status)
-                    cmdHutangDetail.Parameters.AddWithValue("@ID_USER", FormUtama.SLogin.Text)
-                    cmdHutangDetail.Parameters.AddWithValue("@ID_KOMPUTER", FormUtama.Comp.Text)
+                    cmdHutangDetail.Parameters.AddWithValue("@ID_USER", FormUtama.StatusNamaUser.Text)
+                    cmdHutangDetail.Parameters.AddWithValue("@ID_KOMPUTER", FormUtama.StatusNamaPC.Text)
 
                     ' Eksekusi query
                     cmdHutangDetail.ExecuteNonQuery()
                 End Using
+
+                ' Perbarui baris BELI di hutang_detail — kurangi sisa hutang
+                Using cmdUpdateTimbul As New MySqlCommand(
+                    "UPDATE hutang_detail SET " &
+                    "HUTANG = HUTANG - @BAYAR, " &
+                    "DIBAYAR = DIBAYAR + @BAYAR, " &
+                    "STATUS = CASE WHEN (HUTANG - @BAYAR) <= 0 THEN 'Lunas' ELSE 'Belum Lunas' END " &
+                    "WHERE ID_BELI = @ID_BELI AND JENIS = 'BELI'", conn, transaction)
+                    cmdUpdateTimbul.Parameters.AddWithValue("@BAYAR", bayar)
+                    cmdUpdateTimbul.Parameters.AddWithValue("@ID_BELI", DgvData.Rows(baris).Cells("ID_PEMBELIAN").Value)
+                    cmdUpdateTimbul.ExecuteNonQuery()
+                    ' Jika baris BELI tidak ditemukan (faktur lama sebelum migrasi), tidak error — lanjutkan
+                End Using
+
+                totalNominalBayarHutang += bayar
 
             Next
 
@@ -494,21 +445,64 @@ Public Class FormBayarHutang
                 cmd.Parameters.AddWithValue("@KODESUPLIYER", LblKodeSupliyer.Text)
                 cmd.Parameters.AddWithValue("@NAMASUPLIYER", CmbSupliyer.Text)
                 cmd.Parameters.AddWithValue("@TGLPEMBAYARAN", DtpTanggal.Value.ToString("yyyy-MM-dd HH:mm:ss"))
-                cmd.Parameters.AddWithValue("@LOKASI", FormUtama.SLokasi.Text)
-                cmd.Parameters.AddWithValue("@TOTALHUTANG", If(String.IsNullOrEmpty(TxtTotalHutang.Text), 0D, Convert.ToDecimal(TxtTotalHutang.Text)))
-                cmd.Parameters.AddWithValue("@NOMINALBAYAR", If(String.IsNullOrEmpty(TxtTotalBayar.Text), 0D, Convert.ToDecimal(TxtTotalBayar.Text)))
-                cmd.Parameters.AddWithValue("@SISAHUTANG", If(String.IsNullOrEmpty(TxtSisaHutang.Text), 0D, Convert.ToDecimal(TxtSisaHutang.Text)))
-                cmd.Parameters.AddWithValue("@IDUser", FormUtama.SLogin.Text)
-                cmd.Parameters.AddWithValue("@IDKomputer", FormUtama.Comp.Text)
+                cmd.Parameters.AddWithValue("@LOKASI", FormUtama.StatusLokasi.Text)
+                cmd.Parameters.AddWithValue("@TOTALHUTANG", ModuleAngka.ParseDecimal(TxtTotalHutang.Text))
+                cmd.Parameters.AddWithValue("@NOMINALBAYAR", ModuleAngka.ParseDecimal(TxtTotalBayar.Text))
+                cmd.Parameters.AddWithValue("@SISAHUTANG", ModuleAngka.ParseDecimal(TxtSisaHutang.Text))
+                cmd.Parameters.AddWithValue("@IDUser", FormUtama.StatusNamaUser.Text)
+                cmd.Parameters.AddWithValue("@IDKomputer", FormUtama.StatusNamaPC.Text)
 
                 ' Eksekusi query
                 cmd.ExecuteNonQuery()
             End Using
 
+            ' Update hutang supplier secara realtime
+            UpdateHutangSupliyer(LblKodeSupliyer.Text, transaction)
+
+
+            Dim akunTerlibat As New HashSet(Of String)(StringComparer.OrdinalIgnoreCase)
+            Using cmdAkun As New MySqlCommand(
+                "SELECT DISTINCT NOMOR_AKUN_D FROM JurnalUmum WHERE NO_TRANSAKSI = @fk AND NOMOR_AKUN_D <> '' " &
+                "UNION " &
+                "SELECT DISTINCT NOMOR_AKUN_K FROM JurnalUmum WHERE NO_TRANSAKSI = @fk AND NOMOR_AKUN_K <> ''",
+                conn, transaction)
+                cmdAkun.Parameters.AddWithValue("@fk", LblNomorBayar.Text)
+                Using rd = cmdAkun.ExecuteReader()
+                    While rd.Read()
+                        Dim kode As String = rd(0).ToString().Trim()
+                        If kode <> "" Then akunTerlibat.Add(kode)
+                    End While
+                End Using
+            End Using
+            For Each kodeAkun As String In akunTerlibat
+                UpdateSaldoAkun(kodeAkun, transaction)
+            Next
+
             ' Commit transaksi jika semua berhasil
             transaction.Commit()
-            DatabaseModule.CatatanAksiHistory("Bayar hutang " & LblNomorBayar.Text)
+
+            ' Audit jurnal keseimbangan
+            CatatJurnalTidakSeimbang(LblNomorBayar.Text, totalNominalBayarHutang, totalNominalBayarHutang, "Bayar Hutang",
+                {"BayarHutang"})
+
+            Dim noBayar As String = LblNomorBayar.Text
             Kondisiawal()
+
+            ' Cetak setelah simpan
+            Try
+                Select Case BacaPengaturanPrinter("BayarHutang", "CetakOtomatis", "IYA").Trim().ToUpper()
+                    Case "IYA"
+                        LakukanCetakBayarHutang(noBayar)
+                    Case "SELALU TANYA"
+                        If MessageBox.Show("Apakah Anda ingin mencetak bukti bayar hutang?",
+                                           "Konfirmasi Cetak", MessageBoxButtons.YesNo, MessageBoxIcon.Question) = DialogResult.Yes Then
+                            LakukanCetakBayarHutang(noBayar)
+                        End If
+                End Select
+            Catch ex As Exception
+                MessageBox.Show("Gagal mencetak bukti bayar hutang." & vbCrLf & "Detail: " & ex.Message,
+                                "Peringatan", MessageBoxButtons.OK, MessageBoxIcon.Warning)
+            End Try
 
         Catch ex As Exception
             If transaction IsNot Nothing Then
@@ -525,7 +519,15 @@ Public Class FormBayarHutang
         End Try
     End Sub
 
-    Private Sub BtnKeluar_Click(ByVal sender As Object, ByVal e As EventArgs) Handles BtnKeluar.Click
+    Private Sub LakukanCetakBayarHutang(noBayar As String)
+        If BacaPengaturanPrinter("BayarHutang", "PilihPrinter", "LANGSUNG CETAK") = "TANYA PILIH PRINTER" Then
+            ModulePrinterBayarHutang.TanyaPilihPrinterBayarHutang(noBayar)
+        Else
+            ModulePrinterBayarHutang.CetakBayarHutang(noBayar)
+        End If
+    End Sub
+
+    Private Sub BtnKeluar_Click(ByVal sender As Object, ByVal e As EventArgs) Handles BtnKeluarForm.Click
         Close()
         FormUtama.GBTransaksi.Visible = True
         FormUtama.Refresdatagridview()
@@ -547,19 +549,41 @@ Public Class FormBayarHutang
 
     Private Sub FormBayarHutang_KeyDown(ByVal sender As System.Object, ByVal e As System.Windows.Forms.KeyEventArgs) Handles MyBase.KeyDown
         Select Case e.KeyCode
+            Case Keys.F1
+                e.SuppressKeyPress = True
+                TampilkanBantuan()
             Case Keys.F8
                 BtnBayar.PerformClick()
             Case Keys.Escape
-                If PanelView.Visible = True Then
-                    PanelView.Visible = False
+                If PanelDatagridview.Visible = True Then
+                    PanelDatagridview.Visible = False
                 Else
-                    BtnKeluar.PerformClick()
+                    BtnKeluarForm.PerformClick()
                 End If
 
         End Select
     End Sub
 
-    Private Sub BBtnHide_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles BtnHide.Click
-        PanelView.Visible = False
+    Private Sub BtnHide_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles BtnHide.Click
+        PanelDatagridview.Visible = False
     End Sub
+    Private Sub BtnSettingPrinter_Click(sender As Object, e As EventArgs) Handles BtnSettingPrinter.Click
+        Using frm As New FormPengaturanPrinter() With {.FilterTab = "BayarHutang"}
+            frm.ShowDialog()
+        End Using
+        MuatSemuaPengaturan()
+    End Sub
+
+    ' ============================================
+    ' FUNGSI: TAMPILKAN BANTUAN SHORTCUT
+    ' ============================================
+    Private Sub TampilkanBantuan()
+        Dim helpText As String = "SHORTCUT KEYBOARD:" & vbCrLf & vbCrLf &
+                           "F1      : Tampilkan bantuan ini" & vbCrLf &
+                           "F8      : Bayar hutang" & vbCrLf &
+                           "ESC     : Tutup panel detail / Keluar"
+        MessageBox.Show(helpText, "Bantuan - Shortcut Keyboard",
+                        MessageBoxButtons.OK, MessageBoxIcon.Information)
+    End Sub
+
 End Class

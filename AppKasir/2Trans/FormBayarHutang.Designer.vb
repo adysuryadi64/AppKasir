@@ -1,9 +1,9 @@
-﻿<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()> _
+<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()>
 Partial Class FormBayarHutang
     Inherits System.Windows.Forms.Form
 
     'Form overrides dispose to clean up the component list.
-    <System.Diagnostics.DebuggerNonUserCode()> _
+    <System.Diagnostics.DebuggerNonUserCode()>
     Protected Overrides Sub Dispose(ByVal disposing As Boolean)
         Try
             If disposing AndAlso components IsNot Nothing Then
@@ -20,7 +20,7 @@ Partial Class FormBayarHutang
     'NOTE: The following procedure is required by the Windows Form Designer
     'It can be modified using the Windows Form Designer.  
     'Do not modify it using the code editor.
-    <System.Diagnostics.DebuggerStepThrough()> _
+    <System.Diagnostics.DebuggerStepThrough()>
     Private Sub InitializeComponent()
         Dim DataGridViewCellStyle1 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(FormBayarHutang))
@@ -44,7 +44,7 @@ Partial Class FormBayarHutang
         Me.CmbSupliyer = New System.Windows.Forms.ComboBox()
         Me.LblKodeSupliyer = New System.Windows.Forms.Label()
         Me.DtpTanggal = New System.Windows.Forms.DateTimePicker()
-        Me.BtnKeluar = New System.Windows.Forms.Button()
+        Me.BtnKeluarForm = New System.Windows.Forms.Button()
         Me.BtnBayar = New System.Windows.Forms.Button()
         Me.LblTotalHutang = New System.Windows.Forms.Label()
         Me.LblTotalBayar = New System.Windows.Forms.Label()
@@ -60,19 +60,20 @@ Partial Class FormBayarHutang
         Me.TxtRekening = New System.Windows.Forms.Label()
         Me.CmbRekening = New System.Windows.Forms.ComboBox()
         Me.Label2 = New System.Windows.Forms.Label()
-        Me.PanelView = New System.Windows.Forms.Panel()
+        Me.PanelDatagridview = New System.Windows.Forms.Panel()
         Me.LblDetail = New System.Windows.Forms.Label()
         Me.BtnHide = New System.Windows.Forms.Button()
         Me.DgvDetail = New System.Windows.Forms.DataGridView()
         Me.Label1 = New System.Windows.Forms.Label()
+        Me.BtnSettingPrinter = New System.Windows.Forms.Button()
         CType(Me.DgvData, System.ComponentModel.ISupportInitialize).BeginInit()
-        Me.PanelView.SuspendLayout()
+        Me.PanelDatagridview.SuspendLayout()
         CType(Me.DgvDetail, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
         'LblUtama
         '
-        Me.LblUtama.BackColor = System.Drawing.Color.Sienna
+        Me.LblUtama.BackColor = System.Drawing.Color.FromArgb(CType(CType(22, Byte), Integer), CType(CType(163, Byte), Integer), CType(CType(74, Byte), Integer))
         Me.LblUtama.Dock = System.Windows.Forms.DockStyle.Top
         Me.LblUtama.Font = New System.Drawing.Font("Century Gothic", 21.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.LblUtama.ForeColor = System.Drawing.Color.PaleGreen
@@ -92,13 +93,8 @@ Partial Class FormBayarHutang
             Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.DgvData.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill
-        Me.DgvData.BackgroundColor = System.Drawing.SystemColors.Control
         DataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter
-        DataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Control
         DataGridViewCellStyle1.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        DataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.WindowText
-        DataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Control
-        DataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText
         DataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.[True]
         Me.DgvData.ColumnHeadersDefaultCellStyle = DataGridViewCellStyle1
         Me.DgvData.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
@@ -228,41 +224,49 @@ Partial Class FormBayarHutang
         Me.DtpTanggal.Size = New System.Drawing.Size(121, 22)
         Me.DtpTanggal.TabIndex = 86
         '
-        'BtnKeluar
+        'BtnKeluarForm
         '
-        Me.BtnKeluar.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.BtnKeluar.BackColor = System.Drawing.Color.Red
-        Me.BtnKeluar.Cursor = System.Windows.Forms.Cursors.Hand
-        Me.BtnKeluar.FlatAppearance.BorderSize = 0
-        Me.BtnKeluar.FlatAppearance.MouseDownBackColor = System.Drawing.Color.HotPink
-        Me.BtnKeluar.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Crimson
-        Me.BtnKeluar.FlatStyle = System.Windows.Forms.FlatStyle.Flat
-        Me.BtnKeluar.Font = New System.Drawing.Font("Century Gothic", 12.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.BtnKeluar.ForeColor = System.Drawing.Color.White
-        Me.BtnKeluar.Image = CType(resources.GetObject("BtnKeluar.Image"), System.Drawing.Image)
-        Me.BtnKeluar.Location = New System.Drawing.Point(1097, 2)
-        Me.BtnKeluar.Name = "BtnKeluar"
-        Me.BtnKeluar.Size = New System.Drawing.Size(32, 32)
-        Me.BtnKeluar.TabIndex = 89
-        Me.BtnKeluar.TextImageRelation = System.Windows.Forms.TextImageRelation.TextAboveImage
-        Me.BtnKeluar.UseVisualStyleBackColor = False
+        Me.BtnKeluarForm.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.BtnKeluarForm.AutoSize = True
+        Me.BtnKeluarForm.BackColor = System.Drawing.Color.White
+        Me.BtnKeluarForm.Cursor = System.Windows.Forms.Cursors.Hand
+        Me.BtnKeluarForm.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(CType(CType(220, Byte), Integer), CType(CType(38, Byte), Integer), CType(CType(38, Byte), Integer))
+        Me.BtnKeluarForm.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(CType(CType(252, Byte), Integer), CType(CType(165, Byte), Integer), CType(CType(165, Byte), Integer))
+        Me.BtnKeluarForm.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(CType(CType(254, Byte), Integer), CType(CType(226, Byte), Integer), CType(CType(226, Byte), Integer))
+        Me.BtnKeluarForm.FlatStyle = System.Windows.Forms.FlatStyle.Flat
+        Me.BtnKeluarForm.Font = New System.Drawing.Font("Segoe UI", 9.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.BtnKeluarForm.ForeColor = System.Drawing.Color.FromArgb(CType(CType(220, Byte), Integer), CType(CType(38, Byte), Integer), CType(CType(38, Byte), Integer))
+        Me.BtnKeluarForm.Image = CType(resources.GetObject("BtnKeluarForm.Image"), System.Drawing.Image)
+        Me.BtnKeluarForm.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft
+        Me.BtnKeluarForm.Location = New System.Drawing.Point(1014, 2)
+        Me.BtnKeluarForm.Name = "BtnKeluarForm"
+        Me.BtnKeluarForm.Size = New System.Drawing.Size(112, 31)
+        Me.BtnKeluarForm.TabIndex = 89
+        Me.BtnKeluarForm.Text = "Keluar (Esc)"
+        Me.BtnKeluarForm.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
+        Me.BtnKeluarForm.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText
+        Me.BtnKeluarForm.UseVisualStyleBackColor = False
         '
         'BtnBayar
         '
-        Me.BtnBayar.BackColor = System.Drawing.Color.GreenYellow
-        Me.BtnBayar.FlatAppearance.BorderSize = 0
-        Me.BtnBayar.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(CType(CType(128, Byte), Integer), CType(CType(128, Byte), Integer), CType(CType(255, Byte), Integer))
-        Me.BtnBayar.FlatAppearance.MouseOverBackColor = System.Drawing.Color.MidnightBlue
+        Me.BtnBayar.AutoSize = True
+        Me.BtnBayar.BackColor = System.Drawing.Color.White
+        Me.BtnBayar.Cursor = System.Windows.Forms.Cursors.Hand
+        Me.BtnBayar.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(CType(CType(22, Byte), Integer), CType(CType(163, Byte), Integer), CType(CType(74, Byte), Integer))
+        Me.BtnBayar.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(CType(CType(187, Byte), Integer), CType(CType(247, Byte), Integer), CType(CType(208, Byte), Integer))
+        Me.BtnBayar.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(CType(CType(220, Byte), Integer), CType(CType(252, Byte), Integer), CType(CType(231, Byte), Integer))
         Me.BtnBayar.FlatStyle = System.Windows.Forms.FlatStyle.Flat
-        Me.BtnBayar.Font = New System.Drawing.Font("Century Gothic", 12.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.BtnBayar.ForeColor = System.Drawing.Color.Black
+        Me.BtnBayar.Font = New System.Drawing.Font("Segoe UI", 9.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.BtnBayar.ForeColor = System.Drawing.Color.FromArgb(CType(CType(22, Byte), Integer), CType(CType(163, Byte), Integer), CType(CType(74, Byte), Integer))
         Me.BtnBayar.Image = CType(resources.GetObject("BtnBayar.Image"), System.Drawing.Image)
         Me.BtnBayar.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft
         Me.BtnBayar.Location = New System.Drawing.Point(776, 105)
         Me.BtnBayar.Name = "BtnBayar"
-        Me.BtnBayar.Size = New System.Drawing.Size(149, 35)
+        Me.BtnBayar.Size = New System.Drawing.Size(160, 32)
         Me.BtnBayar.TabIndex = 88
-        Me.BtnBayar.Text = "       Simpan (F8)"
+        Me.BtnBayar.Text = "Bayar (F8)"
+        Me.BtnBayar.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
+        Me.BtnBayar.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText
         Me.BtnBayar.UseVisualStyleBackColor = False
         '
         'LblTotalHutang
@@ -419,17 +423,17 @@ Partial Class FormBayarHutang
         Me.Label2.TabIndex = 108
         Me.Label2.Text = "Sumber dana :"
         '
-        'PanelView
+        'PanelDatagridview
         '
-        Me.PanelView.Anchor = System.Windows.Forms.AnchorStyles.Top
-        Me.PanelView.BackColor = System.Drawing.Color.Orange
-        Me.PanelView.Controls.Add(Me.LblDetail)
-        Me.PanelView.Controls.Add(Me.BtnHide)
-        Me.PanelView.Controls.Add(Me.DgvDetail)
-        Me.PanelView.Location = New System.Drawing.Point(191, 189)
-        Me.PanelView.Name = "PanelView"
-        Me.PanelView.Size = New System.Drawing.Size(753, 361)
-        Me.PanelView.TabIndex = 109
+        Me.PanelDatagridview.Anchor = System.Windows.Forms.AnchorStyles.Top
+        Me.PanelDatagridview.BackColor = System.Drawing.Color.FromArgb(CType(CType(248, Byte), Integer), CType(CType(250, Byte), Integer), CType(CType(252, Byte), Integer))
+        Me.PanelDatagridview.Controls.Add(Me.LblDetail)
+        Me.PanelDatagridview.Controls.Add(Me.BtnHide)
+        Me.PanelDatagridview.Controls.Add(Me.DgvDetail)
+        Me.PanelDatagridview.Location = New System.Drawing.Point(191, 189)
+        Me.PanelDatagridview.Name = "PanelDatagridview"
+        Me.PanelDatagridview.Size = New System.Drawing.Size(753, 361)
+        Me.PanelDatagridview.TabIndex = 109
         '
         'LblDetail
         '
@@ -437,7 +441,7 @@ Partial Class FormBayarHutang
         Me.LblDetail.AutoSize = True
         Me.LblDetail.BackColor = System.Drawing.Color.Transparent
         Me.LblDetail.Font = New System.Drawing.Font("Century Gothic", 9.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.LblDetail.Location = New System.Drawing.Point(3, 6)
+        Me.LblDetail.Location = New System.Drawing.Point(3, 12)
         Me.LblDetail.Name = "LblDetail"
         Me.LblDetail.Size = New System.Drawing.Size(103, 16)
         Me.LblDetail.TabIndex = 234
@@ -447,14 +451,15 @@ Partial Class FormBayarHutang
         '
         Me.BtnHide.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.BtnHide.BackColor = System.Drawing.Color.Red
+        Me.BtnHide.Cursor = System.Windows.Forms.Cursors.Hand
         Me.BtnHide.FlatAppearance.BorderSize = 0
-        Me.BtnHide.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Gray
+        Me.BtnHide.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(CType(CType(226, Byte), Integer), CType(CType(232, Byte), Integer), CType(CType(240, Byte), Integer))
+        Me.BtnHide.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(CType(CType(241, Byte), Integer), CType(CType(245, Byte), Integer), CType(CType(249, Byte), Integer))
         Me.BtnHide.FlatStyle = System.Windows.Forms.FlatStyle.Flat
-        Me.BtnHide.ForeColor = System.Drawing.Color.White
         Me.BtnHide.Image = CType(resources.GetObject("BtnHide.Image"), System.Drawing.Image)
-        Me.BtnHide.Location = New System.Drawing.Point(727, 3)
+        Me.BtnHide.Location = New System.Drawing.Point(718, 3)
         Me.BtnHide.Name = "BtnHide"
-        Me.BtnHide.Size = New System.Drawing.Size(23, 23)
+        Me.BtnHide.Size = New System.Drawing.Size(30, 30)
         Me.BtnHide.TabIndex = 233
         Me.BtnHide.UseVisualStyleBackColor = False
         '
@@ -466,13 +471,8 @@ Partial Class FormBayarHutang
             Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.DgvDetail.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill
-        Me.DgvDetail.BackgroundColor = System.Drawing.Color.White
         DataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter
-        DataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Control
         DataGridViewCellStyle2.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        DataGridViewCellStyle2.ForeColor = System.Drawing.SystemColors.WindowText
-        DataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Highlight
-        DataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HighlightText
         DataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.[True]
         Me.DgvDetail.ColumnHeadersDefaultCellStyle = DataGridViewCellStyle2
         Me.DgvDetail.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
@@ -484,11 +484,11 @@ Partial Class FormBayarHutang
         DataGridViewCellStyle3.SelectionForeColor = System.Drawing.SystemColors.HighlightText
         DataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.[False]
         Me.DgvDetail.DefaultCellStyle = DataGridViewCellStyle3
-        Me.DgvDetail.Location = New System.Drawing.Point(3, 27)
+        Me.DgvDetail.Location = New System.Drawing.Point(3, 39)
         Me.DgvDetail.Name = "DgvDetail"
         Me.DgvDetail.RowHeadersVisible = False
         Me.DgvDetail.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect
-        Me.DgvDetail.Size = New System.Drawing.Size(747, 331)
+        Me.DgvDetail.Size = New System.Drawing.Size(747, 319)
         Me.DgvDetail.TabIndex = 0
         '
         'Label1
@@ -502,13 +502,35 @@ Partial Class FormBayarHutang
         Me.Label1.TabIndex = 110
         Me.Label1.Text = "Tanggal :"
         '
+        'BtnSettingPrinter
+        '
+        Me.BtnSettingPrinter.AutoSize = True
+        Me.BtnSettingPrinter.BackColor = System.Drawing.Color.White
+        Me.BtnSettingPrinter.Cursor = System.Windows.Forms.Cursors.Hand
+        Me.BtnSettingPrinter.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(CType(CType(226, Byte), Integer), CType(CType(232, Byte), Integer), CType(CType(240, Byte), Integer))
+        Me.BtnSettingPrinter.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(CType(CType(241, Byte), Integer), CType(CType(245, Byte), Integer), CType(CType(249, Byte), Integer))
+        Me.BtnSettingPrinter.FlatStyle = System.Windows.Forms.FlatStyle.Flat
+        Me.BtnSettingPrinter.Font = New System.Drawing.Font("Segoe UI", 9.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.BtnSettingPrinter.ForeColor = System.Drawing.Color.Black
+        Me.BtnSettingPrinter.Image = CType(resources.GetObject("BtnSettingPrinter.Image"), System.Drawing.Image)
+        Me.BtnSettingPrinter.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft
+        Me.BtnSettingPrinter.Location = New System.Drawing.Point(1033, 105)
+        Me.BtnSettingPrinter.Name = "BtnSettingPrinter"
+        Me.BtnSettingPrinter.Size = New System.Drawing.Size(78, 29)
+        Me.BtnSettingPrinter.TabIndex = 219
+        Me.BtnSettingPrinter.Text = "Printer"
+        Me.BtnSettingPrinter.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
+        Me.BtnSettingPrinter.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText
+        Me.BtnSettingPrinter.UseVisualStyleBackColor = False
+        '
         'FormBayarHutang
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(1135, 562)
+        Me.Controls.Add(Me.BtnSettingPrinter)
         Me.Controls.Add(Me.Label1)
-        Me.Controls.Add(Me.PanelView)
+        Me.Controls.Add(Me.PanelDatagridview)
         Me.Controls.Add(Me.Label2)
         Me.Controls.Add(Me.TxtRekening)
         Me.Controls.Add(Me.CmbRekening)
@@ -523,7 +545,7 @@ Partial Class FormBayarHutang
         Me.Controls.Add(Me.TxtTotalHutang)
         Me.Controls.Add(Me.Label19)
         Me.Controls.Add(Me.TxtTotalBayar)
-        Me.Controls.Add(Me.BtnKeluar)
+        Me.Controls.Add(Me.BtnKeluarForm)
         Me.Controls.Add(Me.BtnBayar)
         Me.Controls.Add(Me.DtpTanggal)
         Me.Controls.Add(Me.LblKodeSupliyer)
@@ -539,8 +561,8 @@ Partial Class FormBayarHutang
         Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen
         Me.Text = "FormBayarHutang"
         CType(Me.DgvData, System.ComponentModel.ISupportInitialize).EndInit()
-        Me.PanelView.ResumeLayout(False)
-        Me.PanelView.PerformLayout()
+        Me.PanelDatagridview.ResumeLayout(False)
+        Me.PanelDatagridview.PerformLayout()
         CType(Me.DgvDetail, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ResumeLayout(False)
         Me.PerformLayout()
@@ -553,7 +575,7 @@ Partial Class FormBayarHutang
     Friend WithEvents CmbSupliyer As ComboBox
     Friend WithEvents LblKodeSupliyer As Label
     Friend WithEvents DtpTanggal As DateTimePicker
-    Friend WithEvents BtnKeluar As Button
+    Friend WithEvents BtnKeluarForm As Button
     Friend WithEvents BtnBayar As Button
     Friend WithEvents LblTotalHutang As Label
     Friend WithEvents LblTotalBayar As Label
@@ -569,7 +591,7 @@ Partial Class FormBayarHutang
     Friend WithEvents TxtRekening As System.Windows.Forms.Label
     Friend WithEvents CmbRekening As System.Windows.Forms.ComboBox
     Friend WithEvents Label2 As System.Windows.Forms.Label
-    Friend WithEvents PanelView As System.Windows.Forms.Panel
+    Friend WithEvents PanelDatagridview As System.Windows.Forms.Panel
     Friend WithEvents DgvDetail As System.Windows.Forms.DataGridView
     Friend WithEvents LblDetail As System.Windows.Forms.Label
     Friend WithEvents BtnHide As System.Windows.Forms.Button
@@ -586,4 +608,8 @@ Partial Class FormBayarHutang
     Friend WithEvents JATUH_TEMPO As System.Windows.Forms.DataGridViewTextBoxColumn
     Friend WithEvents Bayar As System.Windows.Forms.DataGridViewTextBoxColumn
     Friend WithEvents View As System.Windows.Forms.DataGridViewButtonColumn
+    Friend WithEvents BtnSettingPrinter As Button
 End Class
+
+
+

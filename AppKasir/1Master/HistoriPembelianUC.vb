@@ -116,19 +116,7 @@ Public Class HistoriPembelianUC
         ' Format kolom numeric dengan format kustom (tanpa .00)
         Dim numericColumns As String() = {"Harga/Unit", "Harga/Satuan", "Total Harga", "Qty", "Total Qty"}
 
-        For Each colName As String In numericColumns
-            If DGVHistori.Columns.Contains(colName) Then
-                With DGVHistori.Columns(colName)
-                    .DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight
-                    .DefaultCellStyle.Format = "N0" ' Tanpa desimal
-
-                    ' Format khusus untuk kolom Qty (2 desimal jika perlu)
-                    If colName = "Qty" OrElse colName = "Total Qty" Then
-                        .DefaultCellStyle.Format = "#,##0.##" ' Tampilkan desimal hanya jika bukan 0
-                    End If
-                End With
-            End If
-        Next
+        ModuleAngka.TerapkanFormatKolomAngka(DGVHistori, numericColumns)
 
         ' Format kolom tanggal agar rata kiri
         If DGVHistori.Columns.Contains("Tanggal") Then
@@ -151,7 +139,7 @@ Public Class HistoriPembelianUC
         DGVHistori.EnableHeadersVisualStyles = False
         DGVHistori.ColumnHeadersDefaultCellStyle.BackColor = Color.FromArgb(70, 130, 180) ' Steel Blue
         DGVHistori.ColumnHeadersDefaultCellStyle.ForeColor = Color.White
-        DGVHistori.ColumnHeadersDefaultCellStyle.Font = New Font(DGVHistori.Font, FontStyle.Bold)
+        ' Font diatur oleh tema - Font header DGV
 
         ' Alternating row colors
         DGVHistori.AlternatingRowsDefaultCellStyle.BackColor = Color.FromArgb(240, 240, 240)

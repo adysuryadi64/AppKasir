@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -17,15 +17,6 @@
     <resheader name="version">2.0</resheader>
     <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
     <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
-    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
-    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
-    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
-        <value>[base64 mime encoded serialized .NET Framework object]</value>
-    </data>
-    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
-        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
-        <comment>This is a comment</comment>
-    </data>
                 
     There are any number of "resheader" rows that contain simple 
     name/value pairs.
@@ -152,25 +143,7 @@
   </metadata>
   <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
   <data name="BtnTampilNeraca.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
-    <value>
-        iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAABGdBTUEAALGPC/xhBQAAABl0RVh0U29m
-        dHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAOMSURBVFhHxZa7SxxRFMb9E/InpAspJCYhDxIIW9n6
-        qCwUtAhiJyIkRcQtUogWW6yoGHAVmzWFqSPiEsTCRhEEG2ERRHzgA0QRQU7O7+49m9nJzO4azfrB5zhn
-        zpzv3O+emZ06EXlQRgZrychgLVmCxsbGhDKpzCnXlVKB5GWUvcpHvsztoDciSpFTpfT09MjIyIjMzs7K
-        xsZGkefn57K9vV08X1lZcTnJZFJaW1tpJuVLxkJzaPSHZ6cFpb+/XxYWFpzIv4BGtA4LiHSBuBK35Oub
-        d5J++Vo+fkgUmtY/+fn5eV8qHjc3N3JxceF4dXXlowXQuHeh12sWobEGNJqammRiYkK+PX8lv57Uy8+n
-        z8gXEnJYHgQCJycnsru7K/l8XnZ2dhyPjo4c9/b23DnXyAPUQMjrOuh5JyJdXV2ytrYmW1tbks1k5Hv9
-        C9eENZBk3w2IInB2dibX19c+Gg1csZz9/X1XUNmsxPIMdZmVyclJJ25Mf/osX96+LzTsb3BFgjDLgysO
-        8+DgoGRuGEitxdOzjiNcY7bY4pmZGSe+uLgobW1t5DEzCdsjN+EAUayFJhDec4M1aODpoJYNNMOJM8Sn
-        p6cllUq560qafOx3qvAkcBPAUlYfBxtEGGwMwfHxcbcQaIPNkQaIxT6uGszRbRA0QVFWiN02jLgSHEbi
-        y8vLTtwsZ9/NAY40oRpY3uwlS0FXvAsMuGBbwErLOWJ7bIJmucUCc/HH8jD0Yi/23Bas2uw1y2nIYh0d
-        HdGWh6FJvI5d99WAPKacI3YHLSfmLa9O3MANdF4JrMz2GyHOzQFiNojDw8M0UPJiKgtNXg8PYhi2p6zY
-        BG3oEB0dHZXj42M3N8yQdyF68MLQxB+Dg4NlBw5RLEY0aDnnc3NzJY8o7Ovro4GclygPTUy2t7cXb768
-        vHTPuZG3GA0A22eOY2Njsrq6WiJsJO5daPAy8dAkN4hRhQ4PD6W7u7u4cizn1To0NOSuRd1jZFFaN+Nl
-        4qFJ/IBEriabzbqV0AT/b25uujj7vLS0JFNTU64ZLA/TNwArfzFp0ikC4QagNYZgOp0OFoa8aPjK4XMu
-        ilyrPIyalKN4WJyVEm9paQkKUjjhb70fUBTbTJhVDwwMmGheyTdd/Cv1rtDi7guGPaYR/lfyLVfds3xX
-        qJD7NggI36/F1UBF+dn86+Pyv0HfKw/KyGAtGRmsJSODtaPU/QZmIBz788ikDwAAAABJRU5ErkJggg==
-</value>
+    <value>iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAACXBIWXMAABibAAAYmwFJdYOUAAABNElEQVR4nL2TTU7DQAyFPZML0K56BlJuAKxYFC6DKoE9WYUVhTUrDlKpIray6FkIP1tYUIFU5AhBwkzLBFEsWYom1jf2ex6Af408t5CVw8TJkaZ+12edYzzrG5QLS3xnSZatRK4M8QTcvBcHI9m3yI8eyM8HOOW9CJgsImAf3cpiNXQ860d25nfqAuMbksuAXq+G5MYiP62DGtW0FXluQwYYkqv6/0k5MMjXluQtPDpXbfep2AnfLGeti1FSgzwN1QJK+lmXuGIUBfyqP7Akz83axBWjzQEhK4d/OjKoKcjVr00huQVYmm9rw5Pw2jBHrM25L4yb93RJOy82yj0cl1shrUGfUaenR/ICVOyGYU1oTKfa2Y+wxvi1pgGj1IBas5Vjrgt9TihpgnyoCRlve25uOt4BbFzaJZsDiXEAAAAASUVORK5CYII=</value>
   </data>
   <metadata name="BukuBesarBindingSource.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>758, 95</value>
@@ -208,4 +181,7 @@
   <metadata name="$this.TrayHeight" type="System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>42</value>
   </metadata>
+  <data name="BtnTampilNeraca.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAACXBIWXMAABibAAAYmwFJdYOUAAABNElEQVR4nL2TTU7DQAyFPZML0K56BlJuAKxYFC6DKoE9WYUVhTUrDlKpIray6FkIP1tYUIFU5AhBwkzLBFEsWYom1jf2ex6Af408t5CVw8TJkaZ+12edYzzrG5QLS3xnSZatRK4M8QTcvBcHI9m3yI8eyM8HOOW9CJgsImAf3cpiNXQ860d25nfqAuMbksuAXq+G5MYiP62DGtW0FXluQwYYkqv6/0k5MMjXluQtPDpXbfep2AnfLGeti1FSgzwN1QJK+lmXuGIUBfyqP7Akz83axBWjzQEhK4d/OjKoKcjVr00huQVYmm9rw5Pw2jBHrM25L4yb93RJOy82yj0cl1shrUGfUaenR/ICVOyGYU1oTKfa2Y+wxvi1pgGj1IBas5Vjrgt9TihpgnyoCRlve25uOt4BbFzaJZsDiXEAAAAASUVORK5CYII=</value>
+  </data>
 </root>

@@ -1,4 +1,4 @@
-﻿Public Class FormCekUpdate
+Public Class FormCekUpdate
 
     ' URL untuk mengakses file version.txt di Google Drive
     Private Const urlVersiOnline As String = "https://drive.google.com/uc?export=download&id=1tbxflnu2Jh5t3PvS2Akw_4sTI3RjivUT" ' Link ini adalah link untuk mendownload file version.txt
@@ -7,6 +7,7 @@
     Private ReadOnly versiLokal As String = Application.ProductVersion
 
     Private Sub FormCekUpdate_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+        ModuleTheme.TerapkanTheme(Me)
         ' Saat form pertama kali dimuat, kita siapkan progres bar dan label status
         ProgressBar.Visible = False
         lblStatus.Text = "Siap untuk cek update."

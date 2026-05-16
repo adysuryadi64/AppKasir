@@ -1,8 +1,9 @@
-﻿Imports Microsoft.Reporting.WinForms
+Imports Microsoft.Reporting.WinForms
 
 Public Class FormLapTransferStok
 
     Private Sub NotaStokOpname_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
+        ModuleTheme.TerapkanTheme(Me)
         ReportViewer1.LocalReport.DataSources.Clear()
     End Sub
 
@@ -27,7 +28,7 @@ Public Class FormLapTransferStok
         ' Menambahkan parameter ke laporan RDLC
         Dim parameters As New ReportParameterCollection From {
             New ReportParameter("Periode", "PERIODE TANGGAL : " & tanggalAwal.ToString("dd/MM/yyyy")),
-            New ReportParameter("Kasir", "Dicetak oleh : " & FormUtama.SLogin.Text),
+            New ReportParameter("Kasir", "Dicetak oleh : " & FormUtama.StatusNamaUser.Text),
             New ReportParameter("Perusahaan", NAMA_PERUSAHAAN)
         }
 
@@ -39,4 +40,10 @@ Public Class FormLapTransferStok
     Private Sub BtnHide_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles BtnHide.Click
         Me.Close()
     End Sub
+    Private Sub FormLapTransferStok_KeyDown(sender As Object, e As KeyEventArgs) Handles MyBase.KeyDown
+        Select Case e.KeyCode
+        Case Keys.F5 : BtnPreview.PerformClick()
+    End Select
+    End Sub
+
 End Class

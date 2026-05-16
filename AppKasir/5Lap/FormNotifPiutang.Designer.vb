@@ -51,7 +51,7 @@ Partial Class FormNotifPiutang
         '
         'LabelJudul
         '
-        Me.LabelJudul.BackColor = System.Drawing.Color.Gold
+        Me.LabelJudul.BackColor = System.Drawing.SystemColors.Control
         Me.LabelJudul.Dock = System.Windows.Forms.DockStyle.Top
         Me.LabelJudul.Font = New System.Drawing.Font("Bookman Old Style", 21.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.LabelJudul.Location = New System.Drawing.Point(0, 0)

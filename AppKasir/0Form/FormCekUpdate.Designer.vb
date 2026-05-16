@@ -1,4 +1,4 @@
-﻿<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()> _
+<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()> _
 Partial Class FormCekUpdate
     Inherits System.Windows.Forms.Form
 
@@ -53,12 +53,26 @@ Partial Class FormCekUpdate
         '
         'btnCekUpdate
         '
+        Me.btnCekUpdate.AutoSize = True
+        Me.btnCekUpdate.BackColor = System.Drawing.Color.White
+        Me.btnCekUpdate.Cursor = System.Windows.Forms.Cursors.Hand
+        Me.btnCekUpdate.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(CType(CType(100, Byte), Integer), CType(CType(116, Byte), Integer), CType(CType(139, Byte), Integer))
+        Me.btnCekUpdate.FlatAppearance.BorderSize = 1
+        Me.btnCekUpdate.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(CType(CType(226, Byte), Integer), CType(CType(232, Byte), Integer), CType(CType(240, Byte), Integer))
+        Me.btnCekUpdate.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(CType(CType(241, Byte), Integer), CType(CType(245, Byte), Integer), CType(CType(249, Byte), Integer))
+        Me.btnCekUpdate.FlatStyle = System.Windows.Forms.FlatStyle.Flat
+        Me.btnCekUpdate.Font = New System.Drawing.Font("Segoe UI", 9.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.btnCekUpdate.ForeColor = System.Drawing.Color.Black
+        Me.btnCekUpdate.Image = CType(resources.GetObject("btnCekUpdate.Image"), System.Drawing.Image)
+        Me.btnCekUpdate.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft
         Me.btnCekUpdate.Location = New System.Drawing.Point(44, 253)
         Me.btnCekUpdate.Name = "btnCekUpdate"
-        Me.btnCekUpdate.Size = New System.Drawing.Size(75, 23)
+        Me.btnCekUpdate.Size = New System.Drawing.Size(140, 34)
         Me.btnCekUpdate.TabIndex = 29
-        Me.btnCekUpdate.Text = "Button1"
-        Me.btnCekUpdate.UseVisualStyleBackColor = True
+        Me.btnCekUpdate.Text = "Cek Update"
+        Me.btnCekUpdate.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
+        Me.btnCekUpdate.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText
+        Me.btnCekUpdate.UseVisualStyleBackColor = False
         '
         'PanelHeader
         '
@@ -74,16 +88,18 @@ Partial Class FormCekUpdate
         'BtnClose
         '
         Me.BtnClose.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.BtnClose.BackColor = System.Drawing.Color.White
+        Me.BtnClose.Cursor = System.Windows.Forms.Cursors.Hand
         Me.BtnClose.FlatAppearance.BorderSize = 0
-        Me.BtnClose.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Crimson
+        Me.BtnClose.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(CType(CType(226, Byte), Integer), CType(CType(232, Byte), Integer), CType(CType(240, Byte), Integer))
+        Me.BtnClose.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(CType(CType(241, Byte), Integer), CType(CType(245, Byte), Integer), CType(CType(249, Byte), Integer))
         Me.BtnClose.FlatStyle = System.Windows.Forms.FlatStyle.Flat
-        Me.BtnClose.ForeColor = System.Drawing.Color.White
         Me.BtnClose.Image = CType(resources.GetObject("BtnClose.Image"), System.Drawing.Image)
         Me.BtnClose.Location = New System.Drawing.Point(765, 4)
         Me.BtnClose.Name = "BtnClose"
         Me.BtnClose.Size = New System.Drawing.Size(23, 23)
         Me.BtnClose.TabIndex = 0
-        Me.BtnClose.UseVisualStyleBackColor = True
+        Me.BtnClose.UseVisualStyleBackColor = False
         '
         'LblNama
         '
@@ -99,6 +115,7 @@ Partial Class FormCekUpdate
         '
         'FormCekUpdate
         '
+        Me.KeyPreview = True
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(800, 450)
@@ -126,3 +143,4 @@ Partial Class FormCekUpdate
     Friend WithEvents BtnClose As Button
     Friend WithEvents LblNama As Label
 End Class
+

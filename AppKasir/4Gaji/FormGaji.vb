@@ -1,14 +1,14 @@
-﻿Imports Microsoft.Reporting.WinForms
+Imports Microsoft.Reporting.WinForms
 
 Public Class FormGaji
     Dim teksBulanTahunTerpilih As String
 
     Private Sub FormGaji_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
+        ModuleTheme.TerapkanTheme(Me)
         Panel2.Visible = False
 
         Dim GAJI As Boolean() = ModulHakAkses.BacaHakAksesDariCache("GAJI")
-        ' Terapkan nilai hak akses ke tombol-tombol
-        BtnSimpann.Visible = GAJI(1) ' CanAdd 
+        BtnSimpann.Visible = GAJI(1)
 
         IsiComboBoxAkun(CmbRekening, "KAS", "BANK", "EKUITAS")
 
@@ -16,27 +16,46 @@ Public Class FormGaji
         AmbilDataKaryawan()
         AmbildataMasterGaji()
         UpdateTotalBonDanTotalBayarKaryawan()
-        Me.ReportViewer1.RefreshReport()
+        ' Report hanya di-render saat ada karyawan dipilih — hindari warning dataset kosong saat load
+        ' Me.ReportViewer1.RefreshReport()
+        CmbPilihCetak.Text = BacaPengaturanPrinter("GajiKaryawan", "CetakOtomatis", "IYA")
+        CmbProsesCetak.Text = BacaPengaturanPrinter("GajiKaryawan", "PilihPrinter", "LANGSUNG CETAK")
     End Sub
 
     Private Sub ResetControls()
-        'DtpTanggal.Value = DateTime.Today
+        ModulHakAkses.ResetDTPKeTanggalHariIni(DtpTanggal)
         DtpTanggal.Format = DateTimePickerFormat.Custom
         DtpTanggal.CustomFormat = "dd/MM/yyyy HH:mm:ss"
 
         LblKode.Text = "KRY"
-        CmbNama.SelectedIndex = -1
-        TxtPokok.Clear()
-        TxtKomisiJual.Clear()
+        LblRekening.Text = ""
+        LblNomor.Text = ""
+        LblSaldoBon.Text = "0"
+        LblSisaBon.Text = "0"
         LblSupir.Text = "0"
-        TxtSupir.Clear()
         LblHelper.Text = "0"
+        LblKetSupir.Text = "Supir 0 x 0 :"
+        LblKetHelp.Text = "Helper 0 x 0 :"
+        LblKomisJual.Text = "Komisi jual 0 % :"
+        LblLembur.Text = "Lembur 0 :"
+        LblAbsen.Text = "Absen 0 :"
+        LblAbsenkhusus.Text = "Abs Khusus 0 :"
+        LblTelat.Text = "Telat 0 :"
+
+        CmbNama.SelectedIndex = -1
+        CmbRekening.SelectedItem = nama_rek_Gaji_Karyawan
+
+        TxtPokok.Clear()
+        TxtOmsetJual.Clear()
+        TxtKomisiJual.Clear()
+        TxtSupir.Clear()
         TxtHelper.Clear()
         TxtLembur.Clear()
         TxtLemburRp.Clear()
         TxtTunjangan.Clear()
         TxtTransport.Clear()
         TxtMakan.Clear()
+        TxtPotAbsen.Clear()
         TxtPotBon.Clear()
         TxtAngsuran.Clear()
         TxtAbsen.Clear()
@@ -50,11 +69,10 @@ Public Class FormGaji
         TxtPotongan.Clear()
         TxtTerima.Clear()
         TxtPotBonUntukEdit.Text = "0"
-        LblSaldoBon.Text = "0"
 
         GenerateNomorGaji()
         UpdateTotalBonDanTotalBayarKaryawan()
-        MuatComboBoxBulanTahun()
+        MuatComboBoxBulanTahun(CmbBln, CmbThn)
         Ambildataperiodekerja()
         BtnSimpann.Text = "SIMPAN (F8)"
     End Sub
@@ -62,68 +80,27 @@ Public Class FormGaji
 
 
     Private Sub GenerateNomorGaji()
-        Dim cekTanggal As String = DtpTanggal.Value.ToString("yyMMdd")
-        Dim UrutKOde As String = ""
-        Dim cekNomor As String = "GJ-" & cekTanggal
-
-        ' Query untuk mendapatkan nomor maksimum berdasarkan format
-        Using cmd As New MySqlCommand("SELECT MAX(NOMOR) FROM Gaji_karyawan WHERE NOMOR LIKE @ceknomor", conn)
-            cmd.Parameters.AddWithValue("@ceknomor", cekNomor & "%")
-
-            ' Gunakan ExecuteScalar untuk mendapatkan nilai maksimum
-            Dim maxKode As Object = cmd.ExecuteScalar()
-
-            If Not IsDBNull(maxKode) AndAlso maxKode IsNot Nothing Then
-                Dim MaxNilaiKode As String = maxKode.ToString()
-                If Microsoft.VisualBasic.Left(MaxNilaiKode, 9) = "GJ-" & cekTanggal Then
-                    ' Hitung nomor berikutnya
-                    Dim Hitung As Integer = CInt(Microsoft.VisualBasic.Right(MaxNilaiKode, 4)) + 1
-                    UrutKOde = "GJ-" & cekTanggal & Microsoft.VisualBasic.Right("0000" & Hitung.ToString(), 4)
-                End If
-            End If
+        Using cmd As New MySqlCommand(
+            "CALL sp_hlp_faktur_generate(@prefix, @tgl, @tabel, @kolom, @nomor)", conn)
+            cmd.Parameters.AddWithValue("@prefix", "GJ")
+            cmd.Parameters.AddWithValue("@tgl", DtpTanggal.Value.Date)
+            cmd.Parameters.AddWithValue("@tabel", "gaji_karyawan")
+            cmd.Parameters.AddWithValue("@kolom", "NOMOR")
+            Dim pNomor = cmd.Parameters.Add("@nomor", MySqlDbType.VarChar, 30)
+            pNomor.Direction = ParameterDirection.Output
+            cmd.ExecuteNonQuery()
+            LblNomor.Text = pNomor.Value?.ToString()
         End Using
-
-        ' Jika UrutKOde masih kosong, buat nomor pertama
-        If String.IsNullOrEmpty(UrutKOde) Then
-            UrutKOde = "GJ-" & cekTanggal & "0001"
-        End If
-
-        LblNomor.Text = UrutKOde
-
     End Sub
 
-    Private Sub MuatComboBoxBulanTahun()
-        ' Bersihkan item sebelum menambahkannya kembali
-        CmbTahun.Items.Clear()
-
-        ' Tambahkan tahun dari 2022 hingga tahun sekarang
-        For i As Integer = 2022 To Year(Now)
-            CmbTahun.Items.Add(i)
-        Next
-
-        ' Set tahun sekarang sebagai tahun default
-        CmbTahun.SelectedItem = Year(Now)
-
-        ' Bersihkan item sebelum menambahkannya kembali
-        CmbBulan.Items.Clear()
-
-        ' Tambahkan daftar bulan
-        Dim daftarBulan As String() = {"Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"}
-        CmbBulan.Items.AddRange(daftarBulan)
-
-        ' Set bulan sekarang sebagai bulan default
-        CmbBulan.SelectedIndex = Month(Now) - 1 ' Index bulan dimulai dari 0, jadi dikurangi 1
-    End Sub
-
-
-    Private Sub CmbBulan_SelectedIndexChanged(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles CmbBulan.SelectedIndexChanged, CmbTahun.SelectedIndexChanged
+    Private Sub CmbBulan_SelectedIndexChanged(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles CmbBln.SelectedIndexChanged, CmbThn.SelectedIndexChanged
         PerbaruiTeksBulanTahunTerpilih()
         Ambildataperiodekerja()
     End Sub
 
     Private Sub PerbaruiTeksBulanTahunTerpilih()
-        If Not String.IsNullOrEmpty(CmbBulan.Text) Then
-            teksBulanTahunTerpilih = CmbBulan.Text & "/" & CmbTahun.Text
+        If Not String.IsNullOrEmpty(CmbBln.Text) Then
+            teksBulanTahunTerpilih = CmbBln.Text & "/" & CmbThn.Text
             SetupDataGridView()
             TampilkanDataGaji(teksBulanTahunTerpilih)
         End If
@@ -132,7 +109,7 @@ Public Class FormGaji
     Private Sub AmbilDataKaryawan()
         CmbNama.Items.Clear()
         ' Query untuk mengambil akun KAS atau BANK
-        Dim queryArmada As String = "SELECT Nama FROM tbl_Karyawan ORDER BY Nama ASC"
+        Dim queryArmada As String = "SELECT Nama FROM tbl_Karyawan WHERE Status = 'Aktif' ORDER BY Nama ASC"
         Using cmd As New MySqlCommand(queryArmada, conn)
             Using rd As MySqlDataReader = cmd.ExecuteReader()
                 If rd.HasRows Then
@@ -181,63 +158,21 @@ Public Class FormGaji
         Using cmd As New MySqlCommand(query, conn)
             Using reader As MySqlDataReader = cmd.ExecuteReader()
                 If reader.Read() Then
-                    ' Mengambil data dari reader
-                    If Not Convert.IsDBNull(reader("Hari_kerja")) Then
-                        hariKerja = Convert.ToInt32(reader("Hari_kerja"))
-                    End If
-
-                    If Not Convert.IsDBNull(reader("Prosentase_komisi")) Then
-                        prosentaseKomisi = Convert.ToDecimal(reader("Prosentase_komisi"))
-                    End If
-
-                    If Not Convert.IsDBNull(reader("Bonus_Supir")) Then
-                        bonusSupir = Convert.ToDecimal(reader("Bonus_Supir"))
-                    End If
-
-                    If Not Convert.IsDBNull(reader("Bonus_Helper")) Then
-                        bonusHelper = Convert.ToDecimal(reader("Bonus_Helper"))
-                    End If
-
-                    If Not Convert.IsDBNull(reader("Bonus_Lembur")) Then
-                        bonusLembur = Convert.ToDecimal(reader("Bonus_Lembur"))
-                    End If
-
-                    If Not Convert.IsDBNull(reader("Potongan_Absen")) Then
-                        potonganAbsen = Convert.ToDecimal(reader("Potongan_Absen"))
-                    End If
-
-                    If Not Convert.IsDBNull(reader("Potongan_Absen_Khusus")) Then
-                        potonganAbsenKhusus = Convert.ToDecimal(reader("Potongan_Absen_Khusus"))
-                    End If
-
-                    If Not Convert.IsDBNull(reader("Potongan_Terlambat")) Then
-                        potonganTerlambat = Convert.ToDecimal(reader("Potongan_Terlambat"))
-                    End If
-
-                    If Not Convert.IsDBNull(reader("Bonus_Transport")) Then
-                        bonusTransport = Convert.ToDecimal(reader("Bonus_Transport"))
-                    End If
-
-                    If Not Convert.IsDBNull(reader("Bonus_makan")) Then
-                        bonusMakan = Convert.ToDecimal(reader("Bonus_makan"))
-                    End If
-
-                    If Not Convert.IsDBNull(reader("Jenis_Potongan")) Then
-                        jenisPotongan = Convert.ToString(reader("Jenis_Potongan"))
-                    End If
-
+                    hariKerja = If(IsDBNull(reader("Hari_kerja")), 30, Convert.ToInt32(reader("Hari_kerja")))
+                    prosentaseKomisi = If(IsDBNull(reader("Prosentase_komisi")), 0D, Convert.ToDecimal(reader("Prosentase_komisi")))
+                    bonusSupir = If(IsDBNull(reader("Bonus_Supir")), 0D, Convert.ToDecimal(reader("Bonus_Supir")))
+                    bonusHelper = If(IsDBNull(reader("Bonus_Helper")), 0D, Convert.ToDecimal(reader("Bonus_Helper")))
+                    bonusLembur = If(IsDBNull(reader("Bonus_Lembur")), 0D, Convert.ToDecimal(reader("Bonus_Lembur")))
+                    bonusTransport = If(IsDBNull(reader("Bonus_Transport")), 0D, Convert.ToDecimal(reader("Bonus_Transport")))
+                    bonusMakan = If(IsDBNull(reader("Bonus_makan")), 0D, Convert.ToDecimal(reader("Bonus_makan")))
+                    potonganAbsen = If(IsDBNull(reader("Potongan_Absen")), 0D, Convert.ToDecimal(reader("Potongan_Absen")))
+                    potonganAbsenKhusus = If(IsDBNull(reader("Potongan_Absen_Khusus")), 0D, Convert.ToDecimal(reader("Potongan_Absen_Khusus")))
+                    potonganTerlambat = If(IsDBNull(reader("Potongan_Terlambat")), 0D, Convert.ToDecimal(reader("Potongan_Terlambat")))
+                    jenisPotongan = If(IsDBNull(reader("Jenis_Potongan")), "", reader("Jenis_Potongan").ToString())
                 Else
-                    ' Jika data tidak ditemukan, atur nilai variabel menjadi default
-                    hariKerja = 30
-                    prosentaseKomisi = 0
-                    bonusSupir = 0
-                    bonusHelper = 0
-                    bonusLembur = 0
-                    potonganAbsen = 0
-                    potonganAbsenKhusus = 0
-                    potonganTerlambat = 0
-                    bonusTransport = 0
-                    bonusMakan = 0
+                    hariKerja = 30 : prosentaseKomisi = 0D : bonusSupir = 0D : bonusHelper = 0D
+                    bonusLembur = 0D : bonusTransport = 0D : bonusMakan = 0D
+                    potonganAbsen = 0D : potonganAbsenKhusus = 0D : potonganTerlambat = 0D
                     jenisPotongan = ""
                 End If
             End Using
@@ -256,7 +191,7 @@ Public Class FormGaji
                 If reader.HasRows Then
                     reader.Read()
                     LblKode.Text = reader("Kode").ToString()
-                    TxtPokok.Text = Decimal.Parse(reader("Gaji").ToString()).ToString("N0")
+                    TxtPokok.Text = ModuleAngka.FormatUntukInput(If(IsDBNull(reader("Gaji")), 0D, Convert.ToDecimal(reader("Gaji"))))
 
                 Else
                     LblKode.Text = ""
@@ -280,7 +215,7 @@ Public Class FormGaji
             TxtPotAbsen.Text = Math.Round(Convert.ToDecimal(potonganAbsen), 0, MidpointRounding.AwayFromZero).ToString("N0")
             LblAbsen.Text = "Absen " & Math.Round(Convert.ToDecimal(potonganAbsen), 0, MidpointRounding.AwayFromZero).ToString("N0") & " :"
         Else
-            Dim potAbsen As Decimal = Convert.ToDecimal(TxtPokok.Text) / hariKerja
+            Dim potAbsen As Decimal = ModuleAngka.ParseDecimal(TxtPokok.Text) / hariKerja
             TxtPotAbsen.Text = Math.Round(potAbsen, 0, MidpointRounding.AwayFromZero).ToString("N0")
             LblAbsen.Text = "Absen " & Math.Round(potAbsen, 0, MidpointRounding.AwayFromZero).ToString("N0") & " :"
         End If
@@ -322,8 +257,8 @@ Public Class FormGaji
         If Integer.TryParse(TxtTanggal.Text, tanggal) Then
             If tanggal >= 1 AndAlso tanggal <= 28 Then
                 ' Dapatkan bulan dan tahun sekarang dari combo box
-                Dim bulanSekarang As Integer = CmbBulan.SelectedIndex + 1
-                Dim tahunSekarang As Integer = Integer.Parse(CmbTahun.Text)
+                Dim bulanSekarang As Integer = CmbBln.SelectedIndex + 1
+                Dim tahunSekarang As Integer = Integer.Parse(CmbThn.Text)
 
                 If JENIS_TUTUP_BULAN = "Berdasar bulan kalender" Then
                     ' Atur DtpAwal dengan tanggal 11 bulan sebelumnya
@@ -429,15 +364,14 @@ Public Class FormGaji
 
 
     Private Sub HitungPendapatan()
-        ' Konversi nilai dari setiap TextBox ke tipe Decimal, jika kosong atau null maka 0
-        Dim pokok As Decimal = If(Decimal.TryParse(TxtPokok.Text, pokok), pokok, 0D)
-        Dim komisijual As Decimal = If(Decimal.TryParse(TxtKomisiJual.Text, komisijual), komisijual, 0D)
-        Dim supir As Decimal = If(Decimal.TryParse(TxtSupir.Text, supir), supir, 0D)
-        Dim helper As Decimal = If(Decimal.TryParse(TxtHelper.Text, helper), helper, 0D)
-        Dim lemburRp As Decimal = If(Decimal.TryParse(TxtLemburRp.Text, lemburRp), lemburRp, 0D)
-        Dim tunjangan As Decimal = If(Decimal.TryParse(TxtTunjangan.Text, tunjangan), tunjangan, 0D)
-        Dim transport As Decimal = If(Decimal.TryParse(TxtTransport.Text, transport), transport, 0D)
-        Dim makan As Decimal = If(Decimal.TryParse(TxtMakan.Text, makan), makan, 0D)
+        Dim pokok As Decimal = ModuleAngka.ParseDecimal(TxtPokok.Text)
+        Dim komisijual As Decimal = ModuleAngka.ParseDecimal(TxtKomisiJual.Text)
+        Dim supir As Decimal = ModuleAngka.ParseDecimal(TxtSupir.Text)
+        Dim helper As Decimal = ModuleAngka.ParseDecimal(TxtHelper.Text)
+        Dim lemburRp As Decimal = ModuleAngka.ParseDecimal(TxtLemburRp.Text)
+        Dim tunjangan As Decimal = ModuleAngka.ParseDecimal(TxtTunjangan.Text)
+        Dim transport As Decimal = ModuleAngka.ParseDecimal(TxtTransport.Text)
+        Dim makan As Decimal = ModuleAngka.ParseDecimal(TxtMakan.Text)
 
         ' Hitung total pendapatan
         Dim pendapatan As Decimal = pokok + komisijual + supir + helper + lemburRp + tunjangan + transport + makan
@@ -452,13 +386,12 @@ Public Class FormGaji
     End Sub
 
     Private Sub HitungPotongan()
-        ' Konversi nilai dari setiap TextBox ke tipe Decimal, jika null atau kosong maka 0
-        Dim bon As Decimal = If(Decimal.TryParse(TxtPotBon.Text, bon), bon, 0D)
-        Dim angsuran As Decimal = If(Decimal.TryParse(TxtAngsuran.Text, angsuran), angsuran, 0D)
-        Dim absen As Decimal = If(Decimal.TryParse(TxtAbsenRp.Text, absen), absen, 0D)
-        Dim absenKhusus As Decimal = If(Decimal.TryParse(TxtAbsenKhususRp.Text, absenKhusus), absenKhusus, 0D)
-        Dim keterlambatan As Decimal = If(Decimal.TryParse(TxtKeterlambatanRp.Text, keterlambatan), keterlambatan, 0D)
-        Dim potlain As Decimal = If(Decimal.TryParse(TxtPotLain.Text, potlain), potlain, 0D)
+        Dim bon As Decimal = ModuleAngka.ParseDecimal(TxtPotBon.Text)
+        Dim angsuran As Decimal = ModuleAngka.ParseDecimal(TxtAngsuran.Text)
+        Dim absen As Decimal = ModuleAngka.ParseDecimal(TxtAbsenRp.Text)
+        Dim absenKhusus As Decimal = ModuleAngka.ParseDecimal(TxtAbsenKhususRp.Text)
+        Dim keterlambatan As Decimal = ModuleAngka.ParseDecimal(TxtKeterlambatanRp.Text)
+        Dim potlain As Decimal = ModuleAngka.ParseDecimal(TxtPotLain.Text)
 
         ' Hitung total potongan
         Dim potongan As Decimal = bon + angsuran + absen + absenKhusus + keterlambatan + potlain
@@ -474,8 +407,8 @@ Public Class FormGaji
 
     Private Sub TxtPendapatan_TextChanged(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles TxtPendapatan.TextChanged, TxtPotongan.TextChanged
         ' Konversi nilai dari TextBox ke tipe Decimal, jika null atau kosong maka 0
-        Dim pendapatan As Decimal = If(Decimal.TryParse(TxtPendapatan.Text, pendapatan), pendapatan, 0D)
-        Dim potongan As Decimal = If(Decimal.TryParse(TxtPotongan.Text, potongan), potongan, 0D)
+        Dim pendapatan As Decimal = ModuleAngka.ParseDecimal(TxtPendapatan.Text)
+        Dim potongan As Decimal = ModuleAngka.ParseDecimal(TxtPotongan.Text)
 
         ' Hitung total penerimaan
         Dim penerimaan As Decimal = pendapatan - potongan
@@ -489,7 +422,7 @@ Public Class FormGaji
 
     Private Sub TxtOmsetJual_TextChanged(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles TxtOmsetJual.TextChanged
         ' Konversi nilai dari TextBox, jika kosong atau null, maka 0
-        Dim OmsetPenjualan As Decimal = If(Decimal.TryParse(TxtOmsetJual.Text, OmsetPenjualan), OmsetPenjualan, 0D)
+        Dim OmsetPenjualan As Decimal = ModuleAngka.ParseDecimal(TxtOmsetJual.Text)
 
         ' Hitung total penerimaan dan bulatkan tanpa koma
         Dim KomisiJual As Decimal = Math.Round(OmsetPenjualan * (prosentaseKomisi / 100), 0, MidpointRounding.AwayFromZero)
@@ -501,7 +434,7 @@ Public Class FormGaji
 
     Private Sub LblSupir_TextChanged(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles LblSupir.TextChanged
         ' Konversi nilai dari TextBox, jika kosong atau null, maka 0
-        Dim Supir As Decimal = If(Decimal.TryParse(LblSupir.Text, Supir), Supir, 0D)
+        Dim Supir As Decimal = ModuleAngka.ParseDecimal(LblSupir.Text)
 
         ' Hitung total penerimaan
         Dim NilaiSupir As Decimal = Supir * bonusSupir
@@ -513,7 +446,7 @@ Public Class FormGaji
 
     Private Sub LblHelper_TextChanged(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles LblHelper.TextChanged
         ' Konversi nilai dari TextBox, jika kosong atau null, maka 0
-        Dim helper As Decimal = If(Decimal.TryParse(LblHelper.Text, helper), helper, 0D)
+        Dim helper As Decimal = ModuleAngka.ParseDecimal(LblHelper.Text)
 
         ' Hitung total penerimaan
         Dim NilaiHelper As Decimal = helper * bonusHelper
@@ -525,9 +458,9 @@ Public Class FormGaji
 
     Private Sub TxtPotBon_TextChanged_1(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles LblSaldoBon.TextChanged, TxtPotBon.TextChanged, TxtAngsuran.TextChanged
         ' Konversi nilai dari setiap TextBox ke tipe Decimal, jika kosong atau null maka 0
-        Dim SaldoBon As Decimal = If(Decimal.TryParse(LblSaldoBon.Text, SaldoBon), SaldoBon, 0D)
-        Dim PotonganBon As Decimal = If(Decimal.TryParse(TxtPotBon.Text, PotonganBon), PotonganBon, 0D)
-        Dim PotonganBonKhusus As Decimal = If(Decimal.TryParse(TxtAngsuran.Text, PotonganBonKhusus), PotonganBonKhusus, 0D)
+        Dim SaldoBon As Decimal = ModuleAngka.ParseDecimal(LblSaldoBon.Text)
+        Dim PotonganBon As Decimal = ModuleAngka.ParseDecimal(TxtPotBon.Text)
+        Dim PotonganBonKhusus As Decimal = ModuleAngka.ParseDecimal(TxtAngsuran.Text)
 
         ' Hitung total sisa bon
         Dim SisaBon As Decimal = SaldoBon - PotonganBon - PotonganBonKhusus
@@ -539,7 +472,7 @@ Public Class FormGaji
 
     Private Sub TxtLembur_TextChanged(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles TxtLembur.TextChanged
         ' Konversi nilai dari TextBox ke Decimal, jika kosong maka nilai menjadi 0
-        Dim lembur As Decimal = If(Decimal.TryParse(TxtLembur.Text, lembur), lembur, 0D)
+        Dim lembur As Decimal = ModuleAngka.ParseDecimal(TxtLembur.Text)
 
         ' Hitung total nilai lembur
         Dim Nilailembur As Decimal = lembur * bonusLembur
@@ -551,8 +484,8 @@ Public Class FormGaji
 
     Private Sub TxtAbsen_TextChanged(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles TxtAbsen.TextChanged
         ' Konversi nilai dari setiap TextBox ke Decimal, jika kosong maka nilai menjadi 0
-        Dim absen As Decimal = If(Decimal.TryParse(TxtAbsen.Text, absen), absen, 0D)
-        Dim nilaiPotAbse As Decimal = If(Decimal.TryParse(TxtPotAbsen.Text, nilaiPotAbse), nilaiPotAbse, 0D)
+        Dim absen As Decimal = ModuleAngka.ParseDecimal(TxtAbsen.Text)
+        Dim nilaiPotAbse As Decimal = ModuleAngka.ParseDecimal(TxtPotAbsen.Text)
 
         ' Hitung total penerimaan
         Dim Nilaiabsen As Decimal = absen * nilaiPotAbse
@@ -565,7 +498,7 @@ Public Class FormGaji
 
     Private Sub TxtAbsenKhusus_TextChanged(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles TxtAbsenKhusus.TextChanged
         ' Konversi nilai dari setiap TextBox ke Decimal, jika kosong maka nilai menjadi 0
-        Dim AbsenKhusus As Decimal = If(Decimal.TryParse(TxtAbsenKhusus.Text, AbsenKhusus), AbsenKhusus, 0D)
+        Dim AbsenKhusus As Decimal = ModuleAngka.ParseDecimal(TxtAbsenKhusus.Text)
 
         ' Hitung total penerimaan
         Dim NilaiAbsenKhusus As Decimal = AbsenKhusus * potonganAbsenKhusus
@@ -577,7 +510,7 @@ Public Class FormGaji
 
     Private Sub TxtKeterlambatan_TextChanged(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles TxtKeterlambatan.TextChanged
         ' Konversi nilai dari setiap TextBox ke Decimal, jika kosong maka nilai menjadi 0
-        Dim Keterlambatan As Decimal = If(Decimal.TryParse(TxtKeterlambatan.Text, Keterlambatan), Keterlambatan, 0D)
+        Dim Keterlambatan As Decimal = ModuleAngka.ParseDecimal(TxtKeterlambatan.Text)
 
         ' Hitung total penerimaan
         Dim NilaiKeterlambatan As Decimal = Keterlambatan * potonganTerlambat
@@ -777,34 +710,19 @@ Public Class FormGaji
                                             "PotLain", "Pendapatan", "Potongan", "Terima"}
 
         ' Format kolom di DataGridView
-        For Each columnName As String In columnsToFormat
-            If DGVGaji.Columns.Contains(columnName) Then
-                Dim column As DataGridViewColumn = DGVGaji.Columns(columnName)
-                column.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight
-                column.DefaultCellStyle.Format = "N0" ' Format tanpa desimal
-            End If
-        Next
+        ModuleAngka.TerapkanFormatKolomAngka(DGVGaji, columnsToFormat)
 
         With DGVGaji
             ' Set header style
-            .ColumnHeadersDefaultCellStyle.BackColor = Color.Yellow
 
             ' Set alternating row style
-            .AlternatingRowsDefaultCellStyle.BackColor = Color.LightGray
 
             ' Set visual style
             .BorderStyle = BorderStyle.FixedSingle
-            .GridColor = Color.Silver
-            .BackgroundColor = Color.White
 
             ' Enable double buffering to reduce flickering
-            EnableDoubleBuffering(DGVGaji)
+            ModuleTheme.ApplyThemeDataGridView(DGVGaji)
         End With
-    End Sub
-
-    ' Method to enable double buffering
-    Public Shared Sub EnableDoubleBuffering(ByVal dgv As DataGridView)
-        dgv.GetType().InvokeMember("DoubleBuffered", Reflection.BindingFlags.NonPublic Or Reflection.BindingFlags.Instance Or Reflection.BindingFlags.SetProperty, Nothing, dgv, New Object() {True})
     End Sub
 
     Private Sub DGVGaji_CellContentClick(ByVal sender As Object, ByVal e As DataGridViewCellEventArgs) Handles DGVGaji.CellContentClick
@@ -846,8 +764,8 @@ Public Class FormGaji
                 CmbRekening.Text = DGVGaji.Rows(e.RowIndex).Cells("Rekening").Value.ToString()
 
                 ' Konversi nilai dari TxtPotBon dan TxtAngsuran menjadi Decimal dengan default 0 jika tidak valid
-                Dim potBon As Decimal = If(Decimal.TryParse(TxtPotBon.Text, potBon), potBon, 0D)
-                Dim angsuran As Decimal = If(Decimal.TryParse(TxtAngsuran.Text, angsuran), angsuran, 0D)
+                Dim potBon As Decimal = ModuleAngka.ParseDecimal(TxtPotBon.Text)
+                Dim angsuran As Decimal = ModuleAngka.ParseDecimal(TxtAngsuran.Text)
                 TxtPotBonUntukEdit.Text = (potBon + angsuran).ToString("N0")
 
                 BtnSimpann.Text = "EDIT (F8)"
@@ -865,8 +783,8 @@ Public Class FormGaji
                 Dim kodeKaryawan As String = DGVGaji.Rows(e.RowIndex).Cells("Kode").Value.ToString()
 
                 ' Hitung total potongan bon dan angsuran
-                Dim potonganBon As Decimal = Decimal.Parse(DGVGaji.Rows(e.RowIndex).Cells("PotBon").Value.ToString().Replace(".", "")) _
-                                            + Decimal.Parse(DGVGaji.Rows(e.RowIndex).Cells("Angsuran").Value.ToString().Replace(".", ""))
+                Dim potonganBon As Decimal = ModuleAngka.ParseDecimal(DGVGaji.Rows(e.RowIndex).Cells("PotBon").Value) _
+                                            + ModuleAngka.ParseDecimal(DGVGaji.Rows(e.RowIndex).Cells("Angsuran").Value)
 
                 ' Konfirmasi penghapusan kepada pengguna
                 Dim result As DialogResult = MessageBox.Show("Apakah Anda yakin ingin menghapus data ini?", "Konfirmasi Hapus", MessageBoxButtons.YesNo, MessageBoxIcon.Question)
@@ -874,6 +792,70 @@ Public Class FormGaji
                 If result = DialogResult.Yes Then
                     Dim transaction As MySqlTransaction = conn.BeginTransaction()
                     Try
+                        ' ========================================
+                        ' START: Audit Trail - Hapus Slip Gaji
+                        ' ========================================
+                        Dim sbSnapshot As New System.Text.StringBuilder()
+                        Try
+                            Using cmdSnap As New MySqlCommand(
+                                "SELECT NOMOR, BULAN, TANGGAL, KODE, Nama, POKOK, OMSET_JUAL, KOMISI_JUAL, SUPIR_RP, HELPER_RP, LEMBUR_RP, TUNJANGAN, TRANSPORT, UANG_MAKAN, PENDAPATAN, POT_BON, ANGSURAN, ABSEN_RP, ABSEN_KHUSUS_RP, TERLAMBAT_RP, POT_LAIN, POTONGAN, TERIMA, REKENING " &
+                                "FROM Gaji_karyawan WHERE NOMOR = @n LIMIT 1", conn, transaction)
+                                cmdSnap.Parameters.AddWithValue("@n", nomorTransaksi)
+                                Using rdSnap = cmdSnap.ExecuteReader()
+                                    If rdSnap.Read() Then
+                                        sbSnapshot.AppendLine($"Nomor: {rdSnap("NOMOR")}")
+                                        sbSnapshot.AppendLine($"Bulan: {rdSnap("BULAN")}")
+                                        sbSnapshot.AppendLine($"Tanggal: {Convert.ToDateTime(rdSnap("TANGGAL")).ToString("dd/MM/yyyy HH:mm:ss")}")
+                                        sbSnapshot.AppendLine($"Kode Karyawan: {rdSnap("KODE")}")
+                                        sbSnapshot.AppendLine($"Nama Karyawan: {rdSnap("Nama")}")
+                                        sbSnapshot.AppendLine($"Gaji Pokok: {ModuleAngka.FormatRupiah(ModuleAngka.ParseDecimal(rdSnap("POKOK")))}")
+                                        sbSnapshot.AppendLine($"Omset Jual: {ModuleAngka.FormatRupiah(ModuleAngka.ParseDecimal(rdSnap("OMSET_JUAL")))}")
+                                        sbSnapshot.AppendLine($"Komisi Jual: {ModuleAngka.FormatRupiah(ModuleAngka.ParseDecimal(rdSnap("KOMISI_JUAL")))}")
+                                        sbSnapshot.AppendLine($"Supir: {ModuleAngka.FormatRupiah(ModuleAngka.ParseDecimal(rdSnap("SUPIR_RP")))}")
+                                        sbSnapshot.AppendLine($"Helper: {ModuleAngka.FormatRupiah(ModuleAngka.ParseDecimal(rdSnap("HELPER_RP")))}")
+                                        sbSnapshot.AppendLine($"Lembur: {ModuleAngka.FormatRupiah(ModuleAngka.ParseDecimal(rdSnap("LEMBUR_RP")))}")
+                                        sbSnapshot.AppendLine($"Tunjangan: {ModuleAngka.FormatRupiah(ModuleAngka.ParseDecimal(rdSnap("TUNJANGAN")))}")
+                                        sbSnapshot.AppendLine($"Transport: {ModuleAngka.FormatRupiah(ModuleAngka.ParseDecimal(rdSnap("TRANSPORT")))}")
+                                        sbSnapshot.AppendLine($"Uang Makan: {ModuleAngka.FormatRupiah(ModuleAngka.ParseDecimal(rdSnap("UANG_MAKAN")))}")
+                                        sbSnapshot.AppendLine($"Total Pendapatan: {ModuleAngka.FormatRupiah(ModuleAngka.ParseDecimal(rdSnap("PENDAPATAN")))}")
+                                        sbSnapshot.AppendLine($"Potongan Bon: {ModuleAngka.FormatRupiah(ModuleAngka.ParseDecimal(rdSnap("POT_BON")))}")
+                                        sbSnapshot.AppendLine($"Angsuran: {ModuleAngka.FormatRupiah(ModuleAngka.ParseDecimal(rdSnap("ANGSURAN")))}")
+                                        sbSnapshot.AppendLine($"Potongan Absen: {ModuleAngka.FormatRupiah(ModuleAngka.ParseDecimal(rdSnap("ABSEN_RP")))}")
+                                        sbSnapshot.AppendLine($"Potongan Absen Khusus: {ModuleAngka.FormatRupiah(ModuleAngka.ParseDecimal(rdSnap("ABSEN_KHUSUS_RP")))}")
+                                        sbSnapshot.AppendLine($"Potongan Terlambat: {ModuleAngka.FormatRupiah(ModuleAngka.ParseDecimal(rdSnap("TERLAMBAT_RP")))}")
+                                        sbSnapshot.AppendLine($"Potongan Lainnya: {ModuleAngka.FormatRupiah(ModuleAngka.ParseDecimal(rdSnap("POT_LAIN")))}")
+                                        sbSnapshot.AppendLine($"Total Potongan: {ModuleAngka.FormatRupiah(ModuleAngka.ParseDecimal(rdSnap("POTONGAN")))}")
+                                        sbSnapshot.AppendLine($"Total Terima: {ModuleAngka.FormatRupiah(ModuleAngka.ParseDecimal(rdSnap("TERIMA")))}")
+                                        sbSnapshot.AppendLine($"Rekening: {rdSnap("REKENING")}")
+                                    End If
+                                End Using
+                            End Using
+                        Catch
+                            sbSnapshot.AppendLine("Gagal baca data sebelum hapus")
+                        End Try
+                        ModuleAuditTrail.CatatAuditMaster("SLIP:" & nomorTransaksi, "HAPUS", "Slip Gaji", sbSnapshot.ToString(), trans:=transaction)
+                        ' ========================================
+                        ' END: Audit Trail - Hapus Slip Gaji
+                        ' ========================================
+
+                        ' ========================================
+                        ' STEP 1: SELECT daftar akun LAMA SEBELUM DELETE JurnalUmum
+                        ' ========================================
+                        Dim akunTerlibat As New HashSet(Of String)(StringComparer.OrdinalIgnoreCase)
+                        Using cmdAkun As New MySqlCommand(
+                            "SELECT DISTINCT NOMOR_AKUN_D FROM JurnalUmum WHERE NO_TRANSAKSI = @fk AND NOMOR_AKUN_D <> '' " &
+                            "UNION " &
+                            "SELECT DISTINCT NOMOR_AKUN_K FROM JurnalUmum WHERE NO_TRANSAKSI = @fk AND NOMOR_AKUN_K <> ''",
+                            conn, transaction)
+                            cmdAkun.Parameters.AddWithValue("@fk", nomorTransaksi)
+                            Using rd = cmdAkun.ExecuteReader()
+                                While rd.Read()
+                                    Dim kode As String = rd(0).ToString().Trim()
+                                    If kode <> "" Then akunTerlibat.Add(kode)
+                                End While
+                            End Using
+                        End Using
+
                         ' Hapus data gaji karyawan berdasarkan nomor transaksi
                         Dim queryHapusGaji As String = "DELETE FROM Gaji_karyawan WHERE NOMOR = @NomorTransaksi"
                         Using cmdHapusGaji As New MySqlCommand(queryHapusGaji, conn, transaction)
@@ -905,6 +887,16 @@ Public Class FormGaji
                                 cmdUpdateBayar.ExecuteNonQuery()
                             End Using
                         End If
+
+                        ' Update SaldoAkhir karyawan secara realtime
+                        UpdateBonKaryawan(kodeKaryawan, transaction)
+
+                        ' ========================================
+                        ' STEP 2: Update saldo untuk semua akun yang terlibat
+                        ' ========================================
+                        For Each kodeAkun As String In akunTerlibat
+                            UpdateSaldoAkun(kodeAkun, transaction)
+                        Next
 
                         ' Commit transaksi jika berhasil
                         transaction.Commit()
@@ -976,7 +968,7 @@ Public Class FormGaji
             New ReportParameter("LEMBUR", "Lembur " & bonusLembur.ToString("N0") & " :"),
             New ReportParameter("ABSENKHUSUS", "Pot Absen Khusus " & potonganAbsenKhusus.ToString("N0") & " :"),
             New ReportParameter("TERLAMBAT", "Pot Terlambat " & potonganTerlambat.ToString("N0") & " :"),
-            New ReportParameter("USER", FormUtama.SLogin.Text),
+            New ReportParameter("USER", FormUtama.StatusNamaUser.Text),
             New ReportParameter("TERBILANG", TerimaTerbilang),
             New ReportParameter("TOKO", NAMA_PERUSAHAAN),
             New ReportParameter("PEMILIK", PEMILIK_PERUSAHAAN)
@@ -1005,21 +997,84 @@ Public Class FormGaji
 
             Try
                 ' Mengonversi nilai TextBox menjadi Decimal dengan penanganan nilai kosong atau tidak valid
-                Dim terima As Decimal = If(Decimal.TryParse(TxtTerima.Text, Nothing), Decimal.Parse(TxtTerima.Text), 0D)
+                Dim terima As Decimal = ModuleAngka.ParseDecimal(TxtTerima.Text)
 
                 ' Hitung potonganBon terlebih dahulu
                 Dim potonganBon As Decimal =
-                    If(Decimal.TryParse(TxtPotBon.Text, Nothing), Decimal.Parse(TxtPotBon.Text), 0D) +
-                    If(Decimal.TryParse(TxtAngsuran.Text, Nothing), Decimal.Parse(TxtAngsuran.Text), 0D)
+                    ModuleAngka.ParseDecimal(TxtPotBon.Text) +
+                    ModuleAngka.ParseDecimal(TxtAngsuran.Text)
 
                 ' Hitung potongan dengan mengurangi potonganBon dari potongan
-                Dim potongan As Decimal =
-                    If(Decimal.TryParse(TxtPotongan.Text, Nothing), Decimal.Parse(TxtPotongan.Text), 0D)
+                Dim potongan As Decimal = ModuleAngka.ParseDecimal(TxtPotongan.Text)
 
                 Dim potonganlain As Decimal = potongan - potonganBon
 
+                Dim akunLama As New HashSet(Of String)(StringComparer.OrdinalIgnoreCase)
 
                 If BtnSimpann.Text = "EDIT (F8)" Then
+                    ' ========================================
+                    ' START: Audit Trail - Edit Slip Gaji
+                    ' ========================================
+                    Dim sbSnapshot As New System.Text.StringBuilder()
+                    Try
+                        Using cmdSnap As New MySqlCommand(
+                            "SELECT NOMOR, BULAN, TANGGAL, KODE, Nama, POKOK, OMSET_JUAL, KOMISI_JUAL, SUPIR_RP, HELPER_RP, LEMBUR_RP, TUNJANGAN, TRANSPORT, UANG_MAKAN, PENDAPATAN, POT_BON, ANGSURAN, ABSEN_RP, ABSEN_KHUSUS_RP, TERLAMBAT_RP, POT_LAIN, POTONGAN, TERIMA, REKENING " &
+                            "FROM Gaji_karyawan WHERE NOMOR = @n LIMIT 1", conn, transaction)
+                            cmdSnap.Parameters.AddWithValue("@n", LblNomor.Text)
+                            Using rdSnap = cmdSnap.ExecuteReader()
+                                If rdSnap.Read() Then
+                                    sbSnapshot.AppendLine($"Nomor: {rdSnap("NOMOR")}")
+                                    sbSnapshot.AppendLine($"Bulan: {rdSnap("BULAN")}")
+                                    sbSnapshot.AppendLine($"Tanggal: {Convert.ToDateTime(rdSnap("TANGGAL")).ToString("dd/MM/yyyy HH:mm:ss")}")
+                                    sbSnapshot.AppendLine($"Kode Karyawan: {rdSnap("KODE")}")
+                                    sbSnapshot.AppendLine($"Nama Karyawan: {rdSnap("Nama")}")
+                                    sbSnapshot.AppendLine($"Gaji Pokok: {ModuleAngka.FormatRupiah(ModuleAngka.ParseDecimal(rdSnap("POKOK")))}")
+                                    sbSnapshot.AppendLine($"Omset Jual: {ModuleAngka.FormatRupiah(ModuleAngka.ParseDecimal(rdSnap("OMSET_JUAL")))}")
+                                    sbSnapshot.AppendLine($"Komisi Jual: {ModuleAngka.FormatRupiah(ModuleAngka.ParseDecimal(rdSnap("KOMISI_JUAL")))}")
+                                    sbSnapshot.AppendLine($"Supir: {ModuleAngka.FormatRupiah(ModuleAngka.ParseDecimal(rdSnap("SUPIR_RP")))}")
+                                    sbSnapshot.AppendLine($"Helper: {ModuleAngka.FormatRupiah(ModuleAngka.ParseDecimal(rdSnap("HELPER_RP")))}")
+                                    sbSnapshot.AppendLine($"Lembur: {ModuleAngka.FormatRupiah(ModuleAngka.ParseDecimal(rdSnap("LEMBUR_RP")))}")
+                                    sbSnapshot.AppendLine($"Tunjangan: {ModuleAngka.FormatRupiah(ModuleAngka.ParseDecimal(rdSnap("TUNJANGAN")))}")
+                                    sbSnapshot.AppendLine($"Transport: {ModuleAngka.FormatRupiah(ModuleAngka.ParseDecimal(rdSnap("TRANSPORT")))}")
+                                    sbSnapshot.AppendLine($"Uang Makan: {ModuleAngka.FormatRupiah(ModuleAngka.ParseDecimal(rdSnap("UANG_MAKAN")))}")
+                                    sbSnapshot.AppendLine($"Total Pendapatan: {ModuleAngka.FormatRupiah(ModuleAngka.ParseDecimal(rdSnap("PENDAPATAN")))}")
+                                    sbSnapshot.AppendLine($"Potongan Bon: {ModuleAngka.FormatRupiah(ModuleAngka.ParseDecimal(rdSnap("POT_BON")))}")
+                                    sbSnapshot.AppendLine($"Angsuran: {ModuleAngka.FormatRupiah(ModuleAngka.ParseDecimal(rdSnap("ANGSURAN")))}")
+                                    sbSnapshot.AppendLine($"Potongan Absen: {ModuleAngka.FormatRupiah(ModuleAngka.ParseDecimal(rdSnap("ABSEN_RP")))}")
+                                    sbSnapshot.AppendLine($"Potongan Absen Khusus: {ModuleAngka.FormatRupiah(ModuleAngka.ParseDecimal(rdSnap("ABSEN_KHUSUS_RP")))}")
+                                    sbSnapshot.AppendLine($"Potongan Terlambat: {ModuleAngka.FormatRupiah(ModuleAngka.ParseDecimal(rdSnap("TERLAMBAT_RP")))}")
+                                    sbSnapshot.AppendLine($"Potongan Lainnya: {ModuleAngka.FormatRupiah(ModuleAngka.ParseDecimal(rdSnap("POT_LAIN")))}")
+                                    sbSnapshot.AppendLine($"Total Potongan: {ModuleAngka.FormatRupiah(ModuleAngka.ParseDecimal(rdSnap("POTONGAN")))}")
+                                    sbSnapshot.AppendLine($"Total Terima: {ModuleAngka.FormatRupiah(ModuleAngka.ParseDecimal(rdSnap("TERIMA")))}")
+                                    sbSnapshot.AppendLine($"Rekening: {rdSnap("REKENING")}")
+                                End If
+                            End Using
+                        End Using
+                    Catch
+                        sbSnapshot.AppendLine("Gagal baca data sebelum edit")
+                    End Try
+                    ModuleAuditTrail.CatatAuditMaster("SLIP:" & LblNomor.Text, "EDIT", "Slip Gaji", sbSnapshot.ToString(), trans:=transaction)
+                    ' ========================================
+                    ' END: Audit Trail - Edit Slip Gaji
+                    ' ========================================
+
+                    ' ========================================
+                    ' STEP 1: SELECT daftar akun LAMA SEBELUM DELETE JurnalUmum
+                    ' ========================================
+                    Using cmdAkunLama As New MySqlCommand(
+                        "SELECT DISTINCT NOMOR_AKUN_D FROM JurnalUmum WHERE NO_TRANSAKSI = @fk AND NOMOR_AKUN_D <> '' " &
+                        "UNION " &
+                        "SELECT DISTINCT NOMOR_AKUN_K FROM JurnalUmum WHERE NO_TRANSAKSI = @fk AND NOMOR_AKUN_K <> ''",
+                        conn, transaction)
+                        cmdAkunLama.Parameters.AddWithValue("@fk", LblNomor.Text)
+                        Using rd = cmdAkunLama.ExecuteReader()
+                            While rd.Read()
+                                Dim kode As String = rd(0).ToString().Trim()
+                                If kode <> "" Then akunLama.Add(kode)
+                            End While
+                        End Using
+                    End Using
+
                     ' Hapus data gaji karyawan berdasarkan nomor transaksi
                     Dim queryHapusGaji As String = "DELETE FROM Gaji_karyawan WHERE NOMOR = @NomorTransaksi"
                     Using cmdHapusGaji As New MySqlCommand(queryHapusGaji, conn, transaction)
@@ -1042,10 +1097,7 @@ Public Class FormGaji
                     End Using
 
                     ' Ambil nilai potongan bon untuk edit dan set ke 0 jika tidak valid
-                    Dim potonganBonEdit As Decimal
-                    If Not Decimal.TryParse(TxtPotBonUntukEdit.Text, potonganBonEdit) Then
-                        potonganBonEdit = 0D
-                    End If
+                    Dim potonganBonEdit As Decimal = ModuleAngka.ParseDecimal(TxtPotBonUntukEdit.Text)
 
                     ' Update total bayar karyawan jika ada potongan bon yang perlu di-edit
                     If potonganBonEdit <> 0 Then
@@ -1061,7 +1113,7 @@ Public Class FormGaji
 
 
                 SimpanGaji(transaction)
-                ' Simpan jurnal 
+                ' Simpan jurnal
                 Simpanjurnal(transaction, terima)
 
                 If potonganlain <> 0 Then
@@ -1072,11 +1124,91 @@ Public Class FormGaji
                     SimpanjurnalPotonganBon(transaction, potonganBon)
                 End If
 
+                ' Debug summary jurnal gaji
+                Dim totalGajiD As Decimal = terima
+                If potonganlain <> 0 Then totalGajiD += potonganlain
+                If potonganBon <> 0 Then totalGajiD += potonganBon
+                Dim totalGajiK As Decimal = totalGajiD  ' D+K selalu sama per baris
+                Debug.WriteLine("═══════════════════════════════════════════════════════")
+                Debug.WriteLine("DEBUG JURNAL GAJI - Nomor: " & LblNomor.Text & " | " & CmbNama.Text)
+                Debug.WriteLine("═══════════════════════════════════════════════════════")
+                Debug.WriteLine(String.Format("{0,-4} {1,-30} {2,-25} {3,-25} {4,12} {5,12}", "No", "Uraian", "Akun Debet", "Akun Kredit", "Debet", "Kredit"))
+                Debug.WriteLine(New String("─"c, 115))
+                Debug.WriteLine(String.Format("{0,-4} {1,-30} {2,-25} {3,-25} {4,12:N0} {5,12:N0}", "J1", "GajiDiterima", "BEBAN GAJI [07.01.001]", CmbRekening.Text & " [" & LblRekening.Text & "]", terima, terima))
+                If potonganlain <> 0 Then Debug.WriteLine(String.Format("{0,-4} {1,-30} {2,-25} {3,-25} {4,12:N0} {5,12:N0}", "J2", "PotonganLain", "BEBAN GAJI [07.01.001]", "PENDAPATAN LAIN [08.01.002]", potonganlain, potonganlain))
+                If potonganBon <> 0 Then Debug.WriteLine(String.Format("{0,-4} {1,-30} {2,-25} {3,-25} {4,12:N0} {5,12:N0}", "J3", "PotonganBon", "BEBAN GAJI [07.01.001]", "PIUTANG KARYAWAN [01.03.002]", potonganBon, potonganBon))
+                Debug.WriteLine(New String("─"c, 115))
+                Debug.WriteLine(String.Format("{0,-4} {1,-30} {2,-25} {3,-25} {4,12:N0} {5,12:N0}", "TOTAL", "", "", "", totalGajiD, totalGajiK))
+                Debug.WriteLine("✅ JURNAL SEIMBANG - D=K=" & totalGajiD.ToString("N0"))
+                Debug.WriteLine("═══════════════════════════════════════════════════════")
+
+                ' Update saldo bon karyawan secara realtime
+                UpdateBonKaryawan(LblKode.Text, transaction)
+
+                ' ========================================
+                ' STEP 2: SELECT daftar akun BARU
+                ' ========================================
+                Dim akunBaru As New HashSet(Of String)(StringComparer.OrdinalIgnoreCase)
+                Using cmdAkunBaru As New MySqlCommand(
+                    "SELECT DISTINCT NOMOR_AKUN_D FROM JurnalUmum WHERE NO_TRANSAKSI = @fk AND NOMOR_AKUN_D <> '' " &
+                    "UNION " &
+                    "SELECT DISTINCT NOMOR_AKUN_K FROM JurnalUmum WHERE NO_TRANSAKSI = @fk AND NOMOR_AKUN_K <> ''",
+                    conn, transaction)
+                    cmdAkunBaru.Parameters.AddWithValue("@fk", LblNomor.Text)
+                    Using rd = cmdAkunBaru.ExecuteReader()
+                        While rd.Read()
+                            Dim kode As String = rd(0).ToString().Trim()
+                            If kode <> "" Then akunBaru.Add(kode)
+                        End While
+                    End Using
+                End Using
+
+                ' ========================================
+                ' STEP 3: GABUNGKAN daftar akun LAMA + BARU
+                ' ========================================
+                Dim semuaAkunTerlibat As New HashSet(Of String)(akunLama, StringComparer.OrdinalIgnoreCase)
+                For Each akun In akunBaru
+                    semuaAkunTerlibat.Add(akun)
+                Next
+
+                ' ========================================
+                ' STEP 4: UPDATE saldo untuk SEMUA akun yang terlibat
+                ' ========================================
+                For Each kodeAkun As String In semuaAkunTerlibat
+                    UpdateSaldoAkun(kodeAkun, transaction)
+                Next
+
                 ' Commit transaksi jika berhasil
                 transaction.Commit()
 
+                ' Audit jurnal keseimbangan
+                Dim totalGajiJurnal As Decimal = terima
+                If potonganlain <> 0 Then totalGajiJurnal += potonganlain
+                If potonganBon <> 0 Then totalGajiJurnal += potonganBon
+                CatatJurnalTidakSeimbang(LblNomor.Text, totalGajiJurnal, totalGajiJurnal, "Gaji",
+                    {"GajiDiterima", "PotonganLain", "PotonganBon"})
+
                 ' Reset nilai-nilai pada kontrol setelah berhasil disimpan
+                Dim noGaji As String = LblNomor.Text
                 ResetControls()
+
+                ' Cetak setelah simpan
+                Try
+                    Select Case CmbPilihCetak.Text.Trim().ToUpper()
+                        Case "IYA"
+                            LakukanCetakGaji(noGaji)
+                        Case "SELALU TANYA"
+                            If MessageBox.Show("Apakah Anda ingin mencetak slip gaji?",
+                                               "Konfirmasi Cetak", MessageBoxButtons.YesNo, MessageBoxIcon.Question) = DialogResult.Yes Then
+                                LakukanCetakGaji(noGaji)
+                            End If
+                        Case "TAMPILKAN DI MONITOR"
+                            ModulePrinterGajiKaryawan.CetakGajiKaryawan(noGaji, "Tampilkan di Monitor")
+                    End Select
+                Catch ex As Exception
+                    MessageBox.Show("Gagal mencetak slip gaji." & vbCrLf & "Detail: " & ex.Message,
+                                    "Peringatan", MessageBoxButtons.OK, MessageBoxIcon.Warning)
+                End Try
 
             Catch ex As Exception
                 ' Rollback transaksi jika terjadi kesalahan
@@ -1087,19 +1219,27 @@ Public Class FormGaji
         End If
     End Sub
 
+    Private Sub LakukanCetakGaji(nomor As String)
+        If CmbProsesCetak.Text = "TANYA PILIH PRINTER" Then
+            ModulePrinterGajiKaryawan.TanyaPilihPrinterGajiKaryawan(nomor)
+        Else
+            ModulePrinterGajiKaryawan.CetakGajiKaryawan(nomor)
+        End If
+    End Sub
+
     Private Function ValidateInputs() As Boolean
         ' Validasi untuk input yang diperlukan
-        If CmbBulan.SelectedIndex = -1 Then
+        If CmbBln.SelectedIndex = -1 Then
             MessageBox.Show("Bulan belum dipilih", "Kesalahan", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
-            CmbBulan.DroppedDown = True ' Memunculkan dropdown list
-            CmbBulan.Focus()
+            CmbBln.DroppedDown = True ' Memunculkan dropdown list
+            CmbBln.Focus()
             Return False
         End If
 
-        If CmbTahun.SelectedIndex = -1 Then
+        If CmbThn.SelectedIndex = -1 Then
             MessageBox.Show("Tahun belum dipilih", "Kesalahan", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
-            CmbTahun.DroppedDown = True ' Memunculkan dropdown list
-            CmbTahun.Focus()
+            CmbThn.DroppedDown = True ' Memunculkan dropdown list
+            CmbThn.Focus()
             Return False
         End If
 
@@ -1125,9 +1265,9 @@ Public Class FormGaji
         End If
 
         ' Konversi nilai TextBox dan Label ke Decimal, dengan default 0
-        Dim potBon As Decimal = If(Not Decimal.TryParse(TxtPotBon.Text, potBon), 0, potBon)
-        Dim angsuran As Decimal = If(Not Decimal.TryParse(TxtAngsuran.Text, angsuran), 0, angsuran)
-        Dim sisaBon As Decimal = If(Not Decimal.TryParse(LblSisaBon.Text, sisaBon), 0, sisaBon)
+        Dim potBon As Decimal = ModuleAngka.ParseDecimal(TxtPotBon.Text)
+        Dim angsuran As Decimal = ModuleAngka.ParseDecimal(TxtAngsuran.Text)
+        Dim sisaBon As Decimal = ModuleAngka.ParseDecimal(LblSisaBon.Text)
 
         ' Cek apakah jumlah PotBon dan Angsuran lebih besar dari Sisa Bon
         If sisaBon < 0 Then
@@ -1169,8 +1309,7 @@ Public Class FormGaji
                     textBox.Text = "0"
                 Else
                     ' Memeriksa apakah nilai bisa di-parse menjadi Decimal
-                    Dim value As Decimal
-                    If Not Decimal.TryParse(textBox.Text.Replace(".", ""), value) Then
+                    If ModuleAngka.ParseDecimal(textBox.Text) = 0D AndAlso textBox.Text.Trim() <> "0" Then
                         textBox.Text = "0"
                     End If
                 End If
@@ -1198,42 +1337,42 @@ Public Class FormGaji
         Using cmd As New MySqlCommand(query, conn, transaction)
             ' Mengisi parameter-parameter pada perintah SQL
             cmd.Parameters.AddWithValue("@NOMOR", LblNomor.Text)
-            cmd.Parameters.AddWithValue("@BULAN", CmbBulan.Text & "/" & CmbTahun.Text)
+            cmd.Parameters.AddWithValue("@BULAN", CmbBln.Text & "/" & CmbThn.Text)
             cmd.Parameters.AddWithValue("@TANGGAL", DtpTanggal.Value.ToString("yyyy-MM-dd HH:mm:ss"))
             cmd.Parameters.AddWithValue("@TANGGALAWAL", DtpAwal.Value.ToString("yyyy-MM-dd HH:mm:ss"))
             cmd.Parameters.AddWithValue("@TANGGALAKHIR", DtpAkhir.Value.ToString("yyyy-MM-dd HH:mm:ss"))
             cmd.Parameters.AddWithValue("@KODE", LblKode.Text.Trim())
             cmd.Parameters.AddWithValue("@Nama", CmbNama.Text.Trim())
-            cmd.Parameters.AddWithValue("@POKOK", Decimal.Parse(TxtPokok.Text.Replace(".", "")))
-            cmd.Parameters.AddWithValue("@OMSET_JUAL", Decimal.Parse(TxtOmsetJual.Text.Replace(".", "")))
-            cmd.Parameters.AddWithValue("@KOMISI_JUAL", Decimal.Parse(TxtKomisiJual.Text.Replace(".", "")))
-            cmd.Parameters.AddWithValue("@SUPIR", Decimal.Parse(LblSupir.Text))
-            cmd.Parameters.AddWithValue("@SUPIR_RP", Decimal.Parse(TxtSupir.Text.Replace(".", "")))
-            cmd.Parameters.AddWithValue("@HELPER", Decimal.Parse(LblHelper.Text))
-            cmd.Parameters.AddWithValue("@HELPER_RP", Decimal.Parse(TxtHelper.Text.Replace(".", "")))
-            cmd.Parameters.AddWithValue("@LEMBUR", Decimal.Parse(TxtLembur.Text))
-            cmd.Parameters.AddWithValue("@LEMBUR_RP", Decimal.Parse(TxtLemburRp.Text.Replace(".", "")))
-            cmd.Parameters.AddWithValue("@TUNJANGAN", Decimal.Parse(TxtTunjangan.Text.Replace(".", "")))
-            cmd.Parameters.AddWithValue("@TRANSPORT", Decimal.Parse(TxtTransport.Text.Replace(".", "")))
-            cmd.Parameters.AddWithValue("@UANG_MAKAN", Decimal.Parse(TxtMakan.Text.Replace(".", "")))
-            cmd.Parameters.AddWithValue("@SALDO_BON", Decimal.Parse(LblSaldoBon.Text.Replace(".", "")))
-            cmd.Parameters.AddWithValue("@POT_BON", Decimal.Parse(TxtPotBon.Text.Replace(".", "")))
-            cmd.Parameters.AddWithValue("@ANGSURAN", Decimal.Parse(TxtAngsuran.Text.Replace(".", "")))
-            cmd.Parameters.AddWithValue("@NILAI_POTONGAN_ABSEN", Decimal.Parse(TxtPotAbsen.Text.Replace(".", "")))
-            cmd.Parameters.AddWithValue("@ABSEN", Decimal.Parse(TxtAbsen.Text))
-            cmd.Parameters.AddWithValue("@ABSEN_RP", Decimal.Parse(TxtAbsenRp.Text.Replace(".", "")))
-            cmd.Parameters.AddWithValue("@ABSEN_KHUSUS", Decimal.Parse(TxtAbsenKhusus.Text))
-            cmd.Parameters.AddWithValue("@ABSEN_KHUSUS_RP", Decimal.Parse(TxtAbsenKhususRp.Text.Replace(".", "")))
-            cmd.Parameters.AddWithValue("@TERLAMBAT", Decimal.Parse(TxtKeterlambatan.Text))
-            cmd.Parameters.AddWithValue("@TERLAMBAT_RP", Decimal.Parse(TxtKeterlambatanRp.Text.Replace(".", "")))
-            cmd.Parameters.AddWithValue("@POT_LAIN", Decimal.Parse(TxtPotLain.Text.Replace(".", "")))
-            cmd.Parameters.AddWithValue("@PENDAPATAN", Decimal.Parse(TxtPendapatan.Text.Replace(".", "")))
-            cmd.Parameters.AddWithValue("@POTONGAN", Decimal.Parse(TxtPotongan.Text.Replace(".", "")))
-            cmd.Parameters.AddWithValue("@TERIMA", Decimal.Parse(TxtTerima.Text.Replace(".", "")))
+            cmd.Parameters.AddWithValue("@POKOK", ModuleAngka.ParseDecimal(TxtPokok.Text))
+            cmd.Parameters.AddWithValue("@OMSET_JUAL", ModuleAngka.ParseDecimal(TxtOmsetJual.Text))
+            cmd.Parameters.AddWithValue("@KOMISI_JUAL", ModuleAngka.ParseDecimal(TxtKomisiJual.Text))
+            cmd.Parameters.AddWithValue("@SUPIR", ModuleAngka.ParseDecimal(LblSupir.Text))
+            cmd.Parameters.AddWithValue("@SUPIR_RP", ModuleAngka.ParseDecimal(TxtSupir.Text))
+            cmd.Parameters.AddWithValue("@HELPER", ModuleAngka.ParseDecimal(LblHelper.Text))
+            cmd.Parameters.AddWithValue("@HELPER_RP", ModuleAngka.ParseDecimal(TxtHelper.Text))
+            cmd.Parameters.AddWithValue("@LEMBUR", ModuleAngka.ParseDecimal(TxtLembur.Text))
+            cmd.Parameters.AddWithValue("@LEMBUR_RP", ModuleAngka.ParseDecimal(TxtLemburRp.Text))
+            cmd.Parameters.AddWithValue("@TUNJANGAN", ModuleAngka.ParseDecimal(TxtTunjangan.Text))
+            cmd.Parameters.AddWithValue("@TRANSPORT", ModuleAngka.ParseDecimal(TxtTransport.Text))
+            cmd.Parameters.AddWithValue("@UANG_MAKAN", ModuleAngka.ParseDecimal(TxtMakan.Text))
+            cmd.Parameters.AddWithValue("@SALDO_BON", ModuleAngka.ParseDecimal(LblSaldoBon.Text))
+            cmd.Parameters.AddWithValue("@POT_BON", ModuleAngka.ParseDecimal(TxtPotBon.Text))
+            cmd.Parameters.AddWithValue("@ANGSURAN", ModuleAngka.ParseDecimal(TxtAngsuran.Text))
+            cmd.Parameters.AddWithValue("@NILAI_POTONGAN_ABSEN", ModuleAngka.ParseDecimal(TxtPotAbsen.Text))
+            cmd.Parameters.AddWithValue("@ABSEN", ModuleAngka.ParseDecimal(TxtAbsen.Text))
+            cmd.Parameters.AddWithValue("@ABSEN_RP", ModuleAngka.ParseDecimal(TxtAbsenRp.Text))
+            cmd.Parameters.AddWithValue("@ABSEN_KHUSUS", ModuleAngka.ParseDecimal(TxtAbsenKhusus.Text))
+            cmd.Parameters.AddWithValue("@ABSEN_KHUSUS_RP", ModuleAngka.ParseDecimal(TxtAbsenKhususRp.Text))
+            cmd.Parameters.AddWithValue("@TERLAMBAT", ModuleAngka.ParseDecimal(TxtKeterlambatan.Text))
+            cmd.Parameters.AddWithValue("@TERLAMBAT_RP", ModuleAngka.ParseDecimal(TxtKeterlambatanRp.Text))
+            cmd.Parameters.AddWithValue("@POT_LAIN", ModuleAngka.ParseDecimal(TxtPotLain.Text))
+            cmd.Parameters.AddWithValue("@PENDAPATAN", ModuleAngka.ParseDecimal(TxtPendapatan.Text))
+            cmd.Parameters.AddWithValue("@POTONGAN", ModuleAngka.ParseDecimal(TxtPotongan.Text))
+            cmd.Parameters.AddWithValue("@TERIMA", ModuleAngka.ParseDecimal(TxtTerima.Text))
             cmd.Parameters.AddWithValue("@REKENING", CmbRekening.Text.Trim())
-            cmd.Parameters.AddWithValue("@LOKASI", FormUtama.SLokasi.Text)
-            cmd.Parameters.AddWithValue("@ID_USER", FormUtama.SLogin.Text)
-            cmd.Parameters.AddWithValue("@ID_KOMPUTER", FormUtama.Comp.Text)
+            cmd.Parameters.AddWithValue("@LOKASI", FormUtama.StatusLokasi.Text)
+            cmd.Parameters.AddWithValue("@ID_USER", FormUtama.StatusNamaUser.Text)
+            cmd.Parameters.AddWithValue("@ID_KOMPUTER", FormUtama.StatusNamaPC.Text)
 
             ' Eksekusi perintah INSERT
             cmd.ExecuteNonQuery()
@@ -1255,10 +1394,10 @@ Public Class FormGaji
             cmd.Parameters.AddWithValue("@NAMA_AKUN_K", CmbRekening.Text)
             cmd.Parameters.AddWithValue("@NOMOR_AKUN_K", LblRekening.Text)
             cmd.Parameters.AddWithValue("@NOMINAL", terima)
-            cmd.Parameters.AddWithValue("@JENIS_TRANSAKSI", "Gaji")
-            cmd.Parameters.AddWithValue("@LOKASI", FormUtama.SLokasi.Text)
-            cmd.Parameters.AddWithValue("@ID_USER", FormUtama.SLogin.Text)
-            cmd.Parameters.AddWithValue("@ID_KOMPUTER", FormUtama.Comp.Text)
+            cmd.Parameters.AddWithValue("@JENIS_TRANSAKSI", "GAJI")
+            cmd.Parameters.AddWithValue("@LOKASI", FormUtama.StatusLokasi.Text)
+            cmd.Parameters.AddWithValue("@ID_USER", FormUtama.StatusNamaUser.Text)
+            cmd.Parameters.AddWithValue("@ID_KOMPUTER", FormUtama.StatusNamaPC.Text)
 
             cmd.ExecuteNonQuery()
         End Using
@@ -1268,7 +1407,7 @@ Public Class FormGaji
 
     Private Sub SimpanjurnalPotonganLain(ByVal transaction As MySqlTransaction, ByVal potonganlain As Decimal)
 
-        Dim absenKhusus As Decimal = If(Decimal.TryParse(TxtAbsenKhususRp.Text, absenKhusus), absenKhusus, 0D)
+        Dim absenKhusus As Decimal = ModuleAngka.ParseDecimal(TxtAbsenKhususRp.Text)
         ' Simpan ke jurnal
         Using cmd As New MySqlCommand("INSERT INTO JurnalUmum (NO_TRANSAKSI, TGL_TRANSAKSI, NO_NOTA, URAIAN, NAMA_AKUN_D, NOMOR_AKUN_D, NAMA_AKUN_K, NOMOR_AKUN_K, NOMINAL, JENIS_TRANSAKSI, LOKASI, ID_USER, ID_KOMPUTER) " &
                                         "VALUES (@NO_TRANSAKSI, @TGL_TRANSAKSI, @NO_NOTA, @URAIAN, @NAMA_AKUN_D, @NOMOR_AKUN_D, @NAMA_AKUN_K, @NOMOR_AKUN_K, @NOMINAL, @JENIS_TRANSAKSI, @LOKASI, @ID_USER, @ID_KOMPUTER)", conn, transaction)
@@ -1282,10 +1421,10 @@ Public Class FormGaji
             cmd.Parameters.AddWithValue("@NAMA_AKUN_K", "PENDAPATAN LAIN LAIN")
             cmd.Parameters.AddWithValue("@NOMOR_AKUN_K", "08.01.002")
             cmd.Parameters.AddWithValue("@NOMINAL", potonganlain - absenKhusus)
-            cmd.Parameters.AddWithValue("@JENIS_TRANSAKSI", "Gaji")
-            cmd.Parameters.AddWithValue("@LOKASI", FormUtama.SLokasi.Text)
-            cmd.Parameters.AddWithValue("@ID_USER", FormUtama.SLogin.Text)
-            cmd.Parameters.AddWithValue("@ID_KOMPUTER", FormUtama.Comp.Text)
+            cmd.Parameters.AddWithValue("@JENIS_TRANSAKSI", "GAJI")
+            cmd.Parameters.AddWithValue("@LOKASI", FormUtama.StatusLokasi.Text)
+            cmd.Parameters.AddWithValue("@ID_USER", FormUtama.StatusNamaUser.Text)
+            cmd.Parameters.AddWithValue("@ID_KOMPUTER", FormUtama.StatusNamaPC.Text)
             cmd.ExecuteNonQuery()
         End Using
     End Sub
@@ -1305,10 +1444,10 @@ Public Class FormGaji
             cmd.Parameters.AddWithValue("@NAMA_AKUN_K", "PIUTANG KARYAWAN")
             cmd.Parameters.AddWithValue("@NOMOR_AKUN_K", "01.03.002")
             cmd.Parameters.AddWithValue("@NOMINAL", potonganBon)
-            cmd.Parameters.AddWithValue("@JENIS_TRANSAKSI", "Gaji")
-            cmd.Parameters.AddWithValue("@LOKASI", FormUtama.SLokasi.Text)
-            cmd.Parameters.AddWithValue("@ID_USER", FormUtama.SLogin.Text)
-            cmd.Parameters.AddWithValue("@ID_KOMPUTER", FormUtama.Comp.Text)
+            cmd.Parameters.AddWithValue("@JENIS_TRANSAKSI", "GAJI")
+            cmd.Parameters.AddWithValue("@LOKASI", FormUtama.StatusLokasi.Text)
+            cmd.Parameters.AddWithValue("@ID_USER", FormUtama.StatusNamaUser.Text)
+            cmd.Parameters.AddWithValue("@ID_KOMPUTER", FormUtama.StatusNamaPC.Text)
             cmd.ExecuteNonQuery()
         End Using
 
@@ -1321,18 +1460,18 @@ Public Class FormGaji
             ' Add parameters to the command
             cmd.Parameters.AddWithValue("@FAKTUR", LblNomor.Text)
             cmd.Parameters.AddWithValue("@TANGGAL", DtpTanggal.Value.ToString("yyyy-MM-dd HH:mm:ss"))
-            cmd.Parameters.AddWithValue("@LOKASI", FormUtama.SLokasi.Text)
+            cmd.Parameters.AddWithValue("@LOKASI", FormUtama.StatusLokasi.Text)
             cmd.Parameters.AddWithValue("@JENIS", "BAYAR")
             cmd.Parameters.AddWithValue("@KODE", LblKode.Text)
             cmd.Parameters.AddWithValue("@NAMA", CmbNama.Text)
             cmd.Parameters.AddWithValue("@KODE_REK", LblRekening.Text)
             cmd.Parameters.AddWithValue("@NAMA_REK", CmbRekening.Text)
-            cmd.Parameters.AddWithValue("@AWAL_BON", Decimal.Parse(LblSaldoBon.Text.Replace(".", "")))
+            cmd.Parameters.AddWithValue("@AWAL_BON", ModuleAngka.ParseDecimal(LblSaldoBon.Text))
             cmd.Parameters.AddWithValue("@NOMINAL", potonganBon)
-            cmd.Parameters.AddWithValue("@AKHIR_BON", Decimal.Parse(LblSisaBon.Text.Replace(".", "")))
+            cmd.Parameters.AddWithValue("@AKHIR_BON", ModuleAngka.ParseDecimal(LblSisaBon.Text))
             cmd.Parameters.AddWithValue("@KETERANGAN", "POTONG GAJI")
-            cmd.Parameters.AddWithValue("@ID_USER", FormUtama.SLogin.Text)
-            cmd.Parameters.AddWithValue("@ID_KOMPUTER", FormUtama.Comp.Text)
+            cmd.Parameters.AddWithValue("@ID_USER", FormUtama.StatusNamaUser.Text)
+            cmd.Parameters.AddWithValue("@ID_KOMPUTER", FormUtama.StatusNamaPC.Text)
 
             ' Execute the command
             cmd.ExecuteNonQuery()
@@ -1362,7 +1501,11 @@ Public Class FormGaji
         Me.Close()
     End Sub
 
-
-
+    Private Sub BtnSettingPrinter_Click(sender As Object, e As EventArgs) Handles BtnSettingPrinter.Click
+        Using frm As New FormPengaturanPrinter() With {.FilterTab = "Gaji"}
+            frm.ShowDialog()
+        End Using
+        MuatSemuaPengaturan()
+    End Sub
 
 End Class

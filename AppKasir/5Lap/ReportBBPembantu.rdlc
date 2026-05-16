@@ -1,0 +1,279 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Report xmlns:rd="http://schemas.microsoft.com/SQLServer/reporting/reportdesigner" xmlns="http://schemas.microsoft.com/sqlserver/reporting/2008/01/reportdefinition">
+  <DataSources>
+    <DataSource Name="PossDataSet">
+      <ConnectionProperties>
+        <DataProvider>System.Data.DataSet</DataProvider>
+        <ConnectString>/* Local Connection */</ConnectString>
+      </ConnectionProperties>
+      <rd:DataSourceID>a1b2c3d4-e5f6-7890-abcd-ef1234567890</rd:DataSourceID>
+    </DataSource>
+  </DataSources>
+  <DataSets>
+    <DataSet Name="DataSet1">
+      <Fields>
+        <Field Name="NOMOR"><DataField>NOMOR</DataField><rd:TypeName>System.Int32</rd:TypeName></Field>
+        <Field Name="TANGGAL"><DataField>TANGGAL</DataField><rd:TypeName>System.DateTime</rd:TypeName></Field>
+        <Field Name="NOTA"><DataField>NOTA</DataField><rd:TypeName>System.String</rd:TypeName></Field>
+        <Field Name="ENTITAS"><DataField>ENTITAS</DataField><rd:TypeName>System.String</rd:TypeName></Field>
+        <Field Name="KETERANGAN"><DataField>KETERANGAN</DataField><rd:TypeName>System.String</rd:TypeName></Field>
+        <Field Name="DEBET"><DataField>DEBET</DataField><rd:TypeName>System.Decimal</rd:TypeName></Field>
+        <Field Name="KREDIT"><DataField>KREDIT</DataField><rd:TypeName>System.Decimal</rd:TypeName></Field>
+        <Field Name="SALDO"><DataField>SALDO</DataField><rd:TypeName>System.Decimal</rd:TypeName></Field>
+      </Fields>
+      <Query>
+        <DataSourceName>PossDataSet</DataSourceName>
+        <CommandText>/* Local Query */</CommandText>
+      </Query>
+    </DataSet>
+  </DataSets>
+  <ReportParameters>
+    <ReportParameter Name="Perusahaan">
+      <DataType>String</DataType><Nullable>true</Nullable><AllowBlank>true</AllowBlank>
+      <Prompt>Perusahaan</Prompt>
+    </ReportParameter>
+    <ReportParameter Name="Judul">
+      <DataType>String</DataType><Nullable>true</Nullable><AllowBlank>true</AllowBlank>
+      <Prompt>Judul</Prompt>
+    </ReportParameter>
+    <ReportParameter Name="Entitas">
+      <DataType>String</DataType><Nullable>true</Nullable><AllowBlank>true</AllowBlank>
+      <Prompt>Entitas</Prompt>
+    </ReportParameter>
+    <ReportParameter Name="Periode">
+      <DataType>String</DataType><Nullable>true</Nullable><AllowBlank>true</AllowBlank>
+      <Prompt>Periode</Prompt>
+    </ReportParameter>
+    <ReportParameter Name="Kasir">
+      <DataType>String</DataType><Nullable>true</Nullable><AllowBlank>true</AllowBlank>
+      <Prompt>Kasir</Prompt>
+    </ReportParameter>
+  </ReportParameters>
+  <Body>
+    <ReportItems>
+      <Textbox Name="TxtEntitas">
+        <CanGrow>true</CanGrow>
+        <Paragraphs><Paragraph><TextRuns><TextRun>
+          <Value>=Parameters!Entitas.Value</Value>
+          <Style><FontFamily>Arial Narrow</FontFamily><FontSize>9pt</FontSize></Style>
+        </TextRun></TextRuns><Style><TextAlign>Left</TextAlign></Style></Paragraph></Paragraphs>
+        <Top>0.05cm</Top><Left>0cm</Left><Height>0.45cm</Height><Width>20cm</Width>
+        <Style><Border><Style>None</Style></Border><PaddingLeft>2pt</PaddingLeft></Style>
+      </Textbox>
+      <Textbox Name="TxtPeriode">
+        <CanGrow>true</CanGrow>
+        <Paragraphs><Paragraph><TextRuns><TextRun>
+          <Value>=Parameters!Periode.Value</Value>
+          <Style><FontFamily>Arial Narrow</FontFamily><FontSize>9pt</FontSize></Style>
+        </TextRun></TextRuns><Style><TextAlign>Left</TextAlign></Style></Paragraph></Paragraphs>
+        <Top>0.52cm</Top><Left>0cm</Left><Height>0.45cm</Height><Width>20cm</Width>
+        <Style><Border><Style>None</Style></Border><PaddingLeft>2pt</PaddingLeft></Style>
+      </Textbox>
+      <Tablix Name="Tablix1">
+        <TablixBody>
+          <TablixColumns>
+            <TablixColumn><Width>0.7cm</Width></TablixColumn>
+            <TablixColumn><Width>2.2cm</Width></TablixColumn>
+            <TablixColumn><Width>3.0cm</Width></TablixColumn>
+            <TablixColumn><Width>4.5cm</Width></TablixColumn>
+            <TablixColumn><Width>3.2cm</Width></TablixColumn>
+            <TablixColumn><Width>3.2cm</Width></TablixColumn>
+            <TablixColumn><Width>3.2cm</Width></TablixColumn>
+          </TablixColumns>
+          <TablixRows>
+            <!-- Header Row -->
+            <TablixRow>
+              <Height>0.6cm</Height>
+              <TablixCells>
+                <TablixCell><CellContents><Textbox Name="H_NO"><CanGrow>true</CanGrow><KeepTogether>true</KeepTogether>
+                  <Paragraphs><Paragraph><TextRuns><TextRun><Value>NO</Value><Style><FontFamily>Arial Narrow</FontFamily><FontSize>8pt</FontSize><FontWeight>Bold</FontWeight></Style></TextRun></TextRuns><Style><TextAlign>Center</TextAlign></Style></Paragraph></Paragraphs>
+                  <Style><Border><Style>Solid</Style></Border><BackgroundColor>LightSteelBlue</BackgroundColor><PaddingLeft>2pt</PaddingLeft><PaddingRight>2pt</PaddingRight><PaddingTop>2pt</PaddingTop><PaddingBottom>2pt</PaddingBottom></Style>
+                </Textbox></CellContents></TablixCell>
+                <TablixCell><CellContents><Textbox Name="H_TGL"><CanGrow>true</CanGrow><KeepTogether>true</KeepTogether>
+                  <Paragraphs><Paragraph><TextRuns><TextRun><Value>TANGGAL</Value><Style><FontFamily>Arial Narrow</FontFamily><FontSize>8pt</FontSize><FontWeight>Bold</FontWeight></Style></TextRun></TextRuns><Style><TextAlign>Center</TextAlign></Style></Paragraph></Paragraphs>
+                  <Style><Border><Style>Solid</Style></Border><BackgroundColor>LightSteelBlue</BackgroundColor><PaddingLeft>2pt</PaddingLeft><PaddingRight>2pt</PaddingRight><PaddingTop>2pt</PaddingTop><PaddingBottom>2pt</PaddingBottom></Style>
+                </Textbox></CellContents></TablixCell>
+                <TablixCell><CellContents><Textbox Name="H_NOTA"><CanGrow>true</CanGrow><KeepTogether>true</KeepTogether>
+                  <Paragraphs><Paragraph><TextRuns><TextRun><Value>NO. NOTA</Value><Style><FontFamily>Arial Narrow</FontFamily><FontSize>8pt</FontSize><FontWeight>Bold</FontWeight></Style></TextRun></TextRuns><Style><TextAlign>Center</TextAlign></Style></Paragraph></Paragraphs>
+                  <Style><Border><Style>Solid</Style></Border><BackgroundColor>LightSteelBlue</BackgroundColor><PaddingLeft>2pt</PaddingLeft><PaddingRight>2pt</PaddingRight><PaddingTop>2pt</PaddingTop><PaddingBottom>2pt</PaddingBottom></Style>
+                </Textbox></CellContents></TablixCell>
+                <TablixCell><CellContents><Textbox Name="H_KET"><CanGrow>true</CanGrow><KeepTogether>true</KeepTogether>
+                  <Paragraphs><Paragraph><TextRuns><TextRun><Value>KETERANGAN</Value><Style><FontFamily>Arial Narrow</FontFamily><FontSize>8pt</FontSize><FontWeight>Bold</FontWeight></Style></TextRun></TextRuns><Style><TextAlign>Center</TextAlign></Style></Paragraph></Paragraphs>
+                  <Style><Border><Style>Solid</Style></Border><BackgroundColor>LightSteelBlue</BackgroundColor><PaddingLeft>2pt</PaddingLeft><PaddingRight>2pt</PaddingRight><PaddingTop>2pt</PaddingTop><PaddingBottom>2pt</PaddingBottom></Style>
+                </Textbox></CellContents></TablixCell>
+                <TablixCell><CellContents><Textbox Name="H_DEBET"><CanGrow>true</CanGrow><KeepTogether>true</KeepTogether>
+                  <Paragraphs><Paragraph><TextRuns><TextRun><Value>DEBET</Value><Style><FontFamily>Arial Narrow</FontFamily><FontSize>8pt</FontSize><FontWeight>Bold</FontWeight></Style></TextRun></TextRuns><Style><TextAlign>Center</TextAlign></Style></Paragraph></Paragraphs>
+                  <Style><Border><Style>Solid</Style></Border><BackgroundColor>LightSteelBlue</BackgroundColor><PaddingLeft>2pt</PaddingLeft><PaddingRight>2pt</PaddingRight><PaddingTop>2pt</PaddingTop><PaddingBottom>2pt</PaddingBottom></Style>
+                </Textbox></CellContents></TablixCell>
+                <TablixCell><CellContents><Textbox Name="H_KREDIT"><CanGrow>true</CanGrow><KeepTogether>true</KeepTogether>
+                  <Paragraphs><Paragraph><TextRuns><TextRun><Value>KREDIT</Value><Style><FontFamily>Arial Narrow</FontFamily><FontSize>8pt</FontSize><FontWeight>Bold</FontWeight></Style></TextRun></TextRuns><Style><TextAlign>Center</TextAlign></Style></Paragraph></Paragraphs>
+                  <Style><Border><Style>Solid</Style></Border><BackgroundColor>LightSteelBlue</BackgroundColor><PaddingLeft>2pt</PaddingLeft><PaddingRight>2pt</PaddingRight><PaddingTop>2pt</PaddingTop><PaddingBottom>2pt</PaddingBottom></Style>
+                </Textbox></CellContents></TablixCell>
+                <TablixCell><CellContents><Textbox Name="H_SALDO"><CanGrow>true</CanGrow><KeepTogether>true</KeepTogether>
+                  <Paragraphs><Paragraph><TextRuns><TextRun><Value>SALDO</Value><Style><FontFamily>Arial Narrow</FontFamily><FontSize>8pt</FontSize><FontWeight>Bold</FontWeight></Style></TextRun></TextRuns><Style><TextAlign>Center</TextAlign></Style></Paragraph></Paragraphs>
+                  <Style><Border><Style>Solid</Style></Border><BackgroundColor>LightSteelBlue</BackgroundColor><PaddingLeft>2pt</PaddingLeft><PaddingRight>2pt</PaddingRight><PaddingTop>2pt</PaddingTop><PaddingBottom>2pt</PaddingBottom></Style>
+                </Textbox></CellContents></TablixCell>
+              </TablixCells>
+            </TablixRow>
+            <!-- Data Row -->
+            <TablixRow>
+              <Height>0.5cm</Height>
+              <TablixCells>
+                <TablixCell><CellContents><Textbox Name="D_NO"><CanGrow>true</CanGrow><KeepTogether>true</KeepTogether>
+                  <Paragraphs><Paragraph><TextRuns><TextRun><Value>=Fields!NOMOR.Value</Value><Style><FontFamily>Arial Narrow</FontFamily><FontSize>8pt</FontSize></Style></TextRun></TextRuns><Style><TextAlign>Center</TextAlign></Style></Paragraph></Paragraphs>
+                  <Style><Border><Style>Solid</Style></Border><PaddingLeft>2pt</PaddingLeft><PaddingRight>2pt</PaddingRight><PaddingTop>2pt</PaddingTop><PaddingBottom>2pt</PaddingBottom></Style>
+                </Textbox></CellContents></TablixCell>
+                <TablixCell><CellContents><Textbox Name="D_TGL"><CanGrow>true</CanGrow><KeepTogether>true</KeepTogether>
+                  <Paragraphs><Paragraph><TextRuns><TextRun><Value>=Fields!TANGGAL.Value</Value><Style><FontFamily>Arial Narrow</FontFamily><FontSize>8pt</FontSize><Format>dd/MM/yyyy</Format></Style></TextRun></TextRuns><Style><TextAlign>Center</TextAlign></Style></Paragraph></Paragraphs>
+                  <Style><Border><Style>Solid</Style></Border><PaddingLeft>2pt</PaddingLeft><PaddingRight>2pt</PaddingRight><PaddingTop>2pt</PaddingTop><PaddingBottom>2pt</PaddingBottom></Style>
+                </Textbox></CellContents></TablixCell>
+                <TablixCell><CellContents><Textbox Name="D_NOTA"><CanGrow>true</CanGrow><KeepTogether>true</KeepTogether>
+                  <Paragraphs><Paragraph><TextRuns><TextRun><Value>=Fields!NOTA.Value</Value><Style><FontFamily>Arial Narrow</FontFamily><FontSize>8pt</FontSize></Style></TextRun></TextRuns><Style /></Paragraph></Paragraphs>
+                  <Style><Border><Style>Solid</Style></Border><PaddingLeft>2pt</PaddingLeft><PaddingRight>2pt</PaddingRight><PaddingTop>2pt</PaddingTop><PaddingBottom>2pt</PaddingBottom></Style>
+                </Textbox></CellContents></TablixCell>
+                <TablixCell><CellContents><Textbox Name="D_KET"><CanGrow>true</CanGrow><KeepTogether>true</KeepTogether>
+                  <Paragraphs><Paragraph><TextRuns><TextRun><Value>=Fields!KETERANGAN.Value</Value><Style><FontFamily>Arial Narrow</FontFamily><FontSize>8pt</FontSize></Style></TextRun></TextRuns><Style /></Paragraph></Paragraphs>
+                  <Style><Border><Style>Solid</Style></Border><PaddingLeft>2pt</PaddingLeft><PaddingRight>2pt</PaddingRight><PaddingTop>2pt</PaddingTop><PaddingBottom>2pt</PaddingBottom></Style>
+                </Textbox></CellContents></TablixCell>
+                <TablixCell><CellContents><Textbox Name="D_DEBET"><CanGrow>true</CanGrow><KeepTogether>true</KeepTogether>
+                  <Paragraphs><Paragraph><TextRuns><TextRun><Value>=Fields!DEBET.Value</Value><Style><FontFamily>Arial Narrow</FontFamily><FontSize>8pt</FontSize><Format>#,0</Format><Language>id-ID</Language></Style></TextRun></TextRuns><Style><TextAlign>Right</TextAlign></Style></Paragraph></Paragraphs>
+                  <Style><Border><Style>Solid</Style></Border><PaddingLeft>2pt</PaddingLeft><PaddingRight>2pt</PaddingRight><PaddingTop>2pt</PaddingTop><PaddingBottom>2pt</PaddingBottom></Style>
+                </Textbox></CellContents></TablixCell>
+                <TablixCell><CellContents><Textbox Name="D_KREDIT"><CanGrow>true</CanGrow><KeepTogether>true</KeepTogether>
+                  <Paragraphs><Paragraph><TextRuns><TextRun><Value>=Fields!KREDIT.Value</Value><Style><FontFamily>Arial Narrow</FontFamily><FontSize>8pt</FontSize><Format>#,0</Format><Language>id-ID</Language></Style></TextRun></TextRuns><Style><TextAlign>Right</TextAlign></Style></Paragraph></Paragraphs>
+                  <Style><Border><Style>Solid</Style></Border><PaddingLeft>2pt</PaddingLeft><PaddingRight>2pt</PaddingRight><PaddingTop>2pt</PaddingTop><PaddingBottom>2pt</PaddingBottom></Style>
+                </Textbox></CellContents></TablixCell>
+                <TablixCell><CellContents><Textbox Name="D_SALDO"><CanGrow>true</CanGrow><KeepTogether>true</KeepTogether>
+                  <Paragraphs><Paragraph><TextRuns><TextRun><Value>=Fields!SALDO.Value</Value><Style><FontFamily>Arial Narrow</FontFamily><FontSize>8pt</FontSize><Format>#,0</Format><Language>id-ID</Language></Style></TextRun></TextRuns><Style><TextAlign>Right</TextAlign></Style></Paragraph></Paragraphs>
+                  <Style><Border><Style>Solid</Style></Border><PaddingLeft>2pt</PaddingLeft><PaddingRight>2pt</PaddingRight><PaddingTop>2pt</PaddingTop><PaddingBottom>2pt</PaddingBottom></Style>
+                </Textbox></CellContents></TablixCell>
+              </TablixCells>
+            </TablixRow>
+            <!-- Total Row -->
+            <TablixRow>
+              <Height>0.6cm</Height>
+              <TablixCells>
+                <TablixCell><CellContents>
+                  <Textbox Name="T_LABEL"><CanGrow>true</CanGrow><KeepTogether>true</KeepTogether>
+                    <Paragraphs><Paragraph><TextRuns><TextRun><Value>TOTAL</Value><Style><FontFamily>Arial Narrow</FontFamily><FontSize>8pt</FontSize><FontWeight>Bold</FontWeight></Style></TextRun></TextRuns><Style><TextAlign>Right</TextAlign></Style></Paragraph></Paragraphs>
+                    <Style><Border><Style>Solid</Style></Border><BackgroundColor>LightYellow</BackgroundColor><PaddingLeft>2pt</PaddingLeft><PaddingRight>2pt</PaddingRight><PaddingTop>2pt</PaddingTop><PaddingBottom>2pt</PaddingBottom></Style>
+                  </Textbox>
+                  <ColSpan>4</ColSpan>
+                </CellContents></TablixCell>
+                <TablixCell /><TablixCell /><TablixCell />
+                <TablixCell><CellContents><Textbox Name="T_DEBET"><CanGrow>true</CanGrow><KeepTogether>true</KeepTogether>
+                  <Paragraphs><Paragraph><TextRuns><TextRun><Value>=Sum(Fields!DEBET.Value)</Value><Style><FontFamily>Arial Narrow</FontFamily><FontSize>8pt</FontSize><FontWeight>Bold</FontWeight><Format>#,0</Format><Language>id-ID</Language></Style></TextRun></TextRuns><Style><TextAlign>Right</TextAlign></Style></Paragraph></Paragraphs>
+                  <Style><Border><Style>Solid</Style></Border><BackgroundColor>LightYellow</BackgroundColor><PaddingLeft>2pt</PaddingLeft><PaddingRight>2pt</PaddingRight><PaddingTop>2pt</PaddingTop><PaddingBottom>2pt</PaddingBottom></Style>
+                </Textbox></CellContents></TablixCell>
+                <TablixCell><CellContents><Textbox Name="T_KREDIT"><CanGrow>true</CanGrow><KeepTogether>true</KeepTogether>
+                  <Paragraphs><Paragraph><TextRuns><TextRun><Value>=Sum(Fields!KREDIT.Value)</Value><Style><FontFamily>Arial Narrow</FontFamily><FontSize>8pt</FontSize><FontWeight>Bold</FontWeight><Format>#,0</Format><Language>id-ID</Language></Style></TextRun></TextRuns><Style><TextAlign>Right</TextAlign></Style></Paragraph></Paragraphs>
+                  <Style><Border><Style>Solid</Style></Border><BackgroundColor>LightYellow</BackgroundColor><PaddingLeft>2pt</PaddingLeft><PaddingRight>2pt</PaddingRight><PaddingTop>2pt</PaddingTop><PaddingBottom>2pt</PaddingBottom></Style>
+                </Textbox></CellContents></TablixCell>
+                <TablixCell><CellContents><Textbox Name="T_SALDO"><CanGrow>true</CanGrow><KeepTogether>true</KeepTogether>
+                  <Paragraphs><Paragraph><TextRuns><TextRun><Value>=Last(Fields!SALDO.Value)</Value><Style><FontFamily>Arial Narrow</FontFamily><FontSize>8pt</FontSize><FontWeight>Bold</FontWeight><Format>#,0</Format><Language>id-ID</Language></Style></TextRun></TextRuns><Style><TextAlign>Right</TextAlign></Style></Paragraph></Paragraphs>
+                  <Style><Border><Style>Solid</Style></Border><BackgroundColor>LightYellow</BackgroundColor><PaddingLeft>2pt</PaddingLeft><PaddingRight>2pt</PaddingRight><PaddingTop>2pt</PaddingTop><PaddingBottom>2pt</PaddingBottom></Style>
+                </Textbox></CellContents></TablixCell>
+              </TablixCells>
+            </TablixRow>
+          </TablixRows>
+        </TablixBody>
+        <TablixColumnHierarchy>
+          <TablixMembers>
+            <TablixMember /><TablixMember /><TablixMember />
+            <TablixMember /><TablixMember /><TablixMember /><TablixMember />
+          </TablixMembers>
+        </TablixColumnHierarchy>
+        <TablixRowHierarchy>
+          <TablixMembers>
+            <TablixMember><KeepWithGroup>After</KeepWithGroup></TablixMember>
+            <TablixMember><Group Name="Details" /></TablixMember>
+            <TablixMember><KeepWithGroup>Before</KeepWithGroup></TablixMember>
+          </TablixMembers>
+        </TablixRowHierarchy>
+        <RepeatColumnHeaders>true</RepeatColumnHeaders>
+        <FixedColumnHeaders>true</FixedColumnHeaders>
+        <DataSetName>DataSet1</DataSetName>
+        <Top>1.0cm</Top><Left>0cm</Left><Height>1.7cm</Height><Width>20cm</Width>
+        <Style><Border><Style>None</Style></Border></Style>
+      </Tablix>
+    </ReportItems>
+    <Height>3cm</Height>
+    <Style />
+  </Body>
+  <Width>20cm</Width>
+  <Page>
+    <PageHeader>
+      <Height>1.2cm</Height>
+      <PrintOnFirstPage>true</PrintOnFirstPage>
+      <PrintOnLastPage>true</PrintOnLastPage>
+      <ReportItems>
+        <Textbox Name="TxtPerusahaan">
+          <CanGrow>true</CanGrow><KeepTogether>true</KeepTogether>
+          <Paragraphs><Paragraph><TextRuns><TextRun>
+            <Value>=Parameters!Perusahaan.Value</Value>
+            <Style><FontFamily>Arial Narrow</FontFamily><FontSize>12pt</FontSize><FontWeight>Bold</FontWeight></Style>
+          </TextRun></TextRuns><Style><TextAlign>Left</TextAlign></Style></Paragraph></Paragraphs>
+          <Top>0.3cm</Top><Left>0cm</Left><Height>0.7cm</Height><Width>10cm</Width>
+          <Style><Border><Style>None</Style></Border><PaddingLeft>2pt</PaddingLeft></Style>
+        </Textbox>
+        <Textbox Name="TxtJudul">
+          <CanGrow>true</CanGrow><KeepTogether>true</KeepTogether>
+          <Paragraphs><Paragraph><TextRuns><TextRun>
+            <Value>=Parameters!Judul.Value</Value>
+            <Style><FontFamily>Arial Narrow</FontFamily><FontSize>11pt</FontSize><FontWeight>Bold</FontWeight></Style>
+          </TextRun></TextRuns><Style><TextAlign>Right</TextAlign></Style></Paragraph></Paragraphs>
+          <Top>0.3cm</Top><Left>10cm</Left><Height>0.7cm</Height><Width>10cm</Width>
+          <ZIndex>1</ZIndex>
+          <Style><Border><Style>None</Style></Border><PaddingRight>2pt</PaddingRight></Style>
+        </Textbox>
+      </ReportItems>
+      <Style><Border><Style>None</Style></Border></Style>
+    </PageHeader>
+    <PageFooter>
+      <Height>0.8cm</Height>
+      <PrintOnFirstPage>true</PrintOnFirstPage>
+      <PrintOnLastPage>true</PrintOnLastPage>
+      <ReportItems>
+        <Textbox Name="TxtKasir">
+          <CanGrow>true</CanGrow><KeepTogether>true</KeepTogether>
+          <Paragraphs><Paragraph><TextRuns><TextRun>
+            <Value>=Parameters!Kasir.Value</Value>
+            <Style><FontFamily>Arial Narrow</FontFamily><FontSize>8pt</FontSize></Style>
+          </TextRun></TextRuns><Style><TextAlign>Left</TextAlign></Style></Paragraph></Paragraphs>
+          <Top>0.15cm</Top><Left>0cm</Left><Height>0.4cm</Height><Width>8cm</Width>
+          <Style><Border><Style>None</Style></Border><PaddingLeft>2pt</PaddingLeft></Style>
+        </Textbox>
+        <Textbox Name="TxtTanggalCetak">
+          <CanGrow>true</CanGrow><KeepTogether>true</KeepTogether>
+          <Paragraphs><Paragraph><TextRuns><TextRun>
+            <Value>=Globals!ExecutionTime</Value>
+            <Style><FontFamily>Arial Narrow</FontFamily><FontSize>8pt</FontSize><Format>dd MMMM yyyy HH:mm:ss</Format></Style>
+          </TextRun></TextRuns><Style><TextAlign>Center</TextAlign></Style></Paragraph></Paragraphs>
+          <Top>0.15cm</Top><Left>6cm</Left><Height>0.4cm</Height><Width>8cm</Width>
+          <ZIndex>1</ZIndex>
+          <Style><Border><Style>None</Style></Border></Style>
+        </Textbox>
+        <Textbox Name="TxtPage">
+          <CanGrow>true</CanGrow><KeepTogether>true</KeepTogether>
+          <Paragraphs><Paragraph><TextRuns><TextRun>
+            <Value>="Page " &amp; Globals!PageNumber &amp; " of " &amp; Globals!TotalPages</Value>
+            <Style><FontFamily>Arial Narrow</FontFamily><FontSize>8pt</FontSize></Style>
+          </TextRun></TextRuns><Style><TextAlign>Right</TextAlign></Style></Paragraph></Paragraphs>
+          <Top>0.15cm</Top><Left>15cm</Left><Height>0.4cm</Height><Width>5cm</Width>
+          <ZIndex>2</ZIndex>
+          <Style><Border><Style>None</Style></Border><PaddingRight>2pt</PaddingRight></Style>
+        </Textbox>
+      </ReportItems>
+      <Style><Border><Style>None</Style></Border></Style>
+    </PageFooter>
+    <PageHeight>33cm</PageHeight>
+    <PageWidth>21.5cm</PageWidth>
+    <LeftMargin>0.5cm</LeftMargin>
+    <RightMargin>0.5cm</RightMargin>
+    <TopMargin>0.5cm</TopMargin>
+    <BottomMargin>0.5cm</BottomMargin>
+    <Style />
+  </Page>
+  <rd:ReportUnitType>Cm</rd:ReportUnitType>
+  <rd:ReportID>a1b2c3d4-e5f6-7890-abcd-ef1234567890</rd:ReportID>
+</Report>

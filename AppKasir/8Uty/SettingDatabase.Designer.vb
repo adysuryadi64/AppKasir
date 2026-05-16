@@ -1,4 +1,4 @@
-﻿<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()> _
+<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()> _
 Partial Class SettingDatabase
     Inherits System.Windows.Forms.Form
 
@@ -24,6 +24,7 @@ Partial Class SettingDatabase
     Private Sub InitializeComponent()
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(SettingDatabase))
         Me.Panel2 = New System.Windows.Forms.Panel()
+        Me.BtnBuatDB = New System.Windows.Forms.Button()
         Me.ListDatabase = New System.Windows.Forms.ListBox()
         Me.BtnCekDatabase = New System.Windows.Forms.Button()
         Me.LblStatus = New System.Windows.Forms.Label()
@@ -42,7 +43,6 @@ Partial Class SettingDatabase
         Me.Panel4 = New System.Windows.Forms.Panel()
         Me.BtnClose = New System.Windows.Forms.Button()
         Me.Label7 = New System.Windows.Forms.Label()
-        Me.BtnBuatDB = New System.Windows.Forms.Button()
         Me.Panel2.SuspendLayout()
         Me.Panel4.SuspendLayout()
         Me.SuspendLayout()
@@ -70,6 +70,28 @@ Partial Class SettingDatabase
         Me.Panel2.Size = New System.Drawing.Size(560, 367)
         Me.Panel2.TabIndex = 1
         '
+        'BtnBuatDB
+        '
+        Me.BtnBuatDB.AutoSize = True
+        Me.BtnBuatDB.BackColor = System.Drawing.Color.White
+        Me.BtnBuatDB.Cursor = System.Windows.Forms.Cursors.Hand
+        Me.BtnBuatDB.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(CType(CType(22, Byte), Integer), CType(CType(163, Byte), Integer), CType(CType(74, Byte), Integer))
+        Me.BtnBuatDB.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(CType(CType(187, Byte), Integer), CType(CType(247, Byte), Integer), CType(CType(208, Byte), Integer))
+        Me.BtnBuatDB.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(CType(CType(220, Byte), Integer), CType(CType(252, Byte), Integer), CType(CType(231, Byte), Integer))
+        Me.BtnBuatDB.FlatStyle = System.Windows.Forms.FlatStyle.Flat
+        Me.BtnBuatDB.Font = New System.Drawing.Font("Segoe UI", 9.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.BtnBuatDB.ForeColor = System.Drawing.Color.FromArgb(CType(CType(22, Byte), Integer), CType(CType(163, Byte), Integer), CType(CType(74, Byte), Integer))
+        Me.BtnBuatDB.Image = CType(resources.GetObject("BtnBuatDB.Image"), System.Drawing.Image)
+        Me.BtnBuatDB.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft
+        Me.BtnBuatDB.Location = New System.Drawing.Point(13, 326)
+        Me.BtnBuatDB.Name = "BtnBuatDB"
+        Me.BtnBuatDB.Size = New System.Drawing.Size(139, 33)
+        Me.BtnBuatDB.TabIndex = 183
+        Me.BtnBuatDB.Text = "Buat Database"
+        Me.BtnBuatDB.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
+        Me.BtnBuatDB.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText
+        Me.BtnBuatDB.UseVisualStyleBackColor = False
+        '
         'ListDatabase
         '
         Me.ListDatabase.FormattingEnabled = True
@@ -80,13 +102,14 @@ Partial Class SettingDatabase
         '
         'BtnCekDatabase
         '
-        Me.BtnCekDatabase.BackColor = System.Drawing.Color.Silver
-        Me.BtnCekDatabase.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom
-        Me.BtnCekDatabase.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(CType(CType(224, Byte), Integer), CType(CType(224, Byte), Integer), CType(CType(224, Byte), Integer))
-        Me.BtnCekDatabase.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(CType(CType(224, Byte), Integer), CType(CType(224, Byte), Integer), CType(CType(224, Byte), Integer))
-        Me.BtnCekDatabase.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Yellow
-        Me.BtnCekDatabase.FlatStyle = System.Windows.Forms.FlatStyle.Popup
-        Me.BtnCekDatabase.Font = New System.Drawing.Font("Century Gothic", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.BtnCekDatabase.AutoSize = True
+        Me.BtnCekDatabase.BackColor = System.Drawing.Color.White
+        Me.BtnCekDatabase.Cursor = System.Windows.Forms.Cursors.Hand
+        Me.BtnCekDatabase.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(CType(CType(100, Byte), Integer), CType(CType(116, Byte), Integer), CType(CType(139, Byte), Integer))
+        Me.BtnCekDatabase.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(CType(CType(226, Byte), Integer), CType(CType(232, Byte), Integer), CType(CType(240, Byte), Integer))
+        Me.BtnCekDatabase.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(CType(CType(241, Byte), Integer), CType(CType(245, Byte), Integer), CType(CType(249, Byte), Integer))
+        Me.BtnCekDatabase.FlatStyle = System.Windows.Forms.FlatStyle.Flat
+        Me.BtnCekDatabase.Font = New System.Drawing.Font("Segoe UI", 9.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.BtnCekDatabase.ForeColor = System.Drawing.Color.Black
         Me.BtnCekDatabase.Image = CType(resources.GetObject("BtnCekDatabase.Image"), System.Drawing.Image)
         Me.BtnCekDatabase.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft
@@ -95,6 +118,7 @@ Partial Class SettingDatabase
         Me.BtnCekDatabase.Size = New System.Drawing.Size(139, 35)
         Me.BtnCekDatabase.TabIndex = 181
         Me.BtnCekDatabase.Text = "Cek Database"
+        Me.BtnCekDatabase.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
         Me.BtnCekDatabase.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText
         Me.BtnCekDatabase.UseVisualStyleBackColor = False
         '
@@ -158,10 +182,15 @@ Partial Class SettingDatabase
         '
         'BtnSimpan
         '
-        Me.BtnSimpan.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(CType(CType(224, Byte), Integer), CType(CType(224, Byte), Integer), CType(CType(224, Byte), Integer))
-        Me.BtnSimpan.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(CType(CType(224, Byte), Integer), CType(CType(224, Byte), Integer), CType(CType(224, Byte), Integer))
-        Me.BtnSimpan.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Lime
-        Me.BtnSimpan.Font = New System.Drawing.Font("Century Gothic", 11.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.BtnSimpan.AutoSize = True
+        Me.BtnSimpan.BackColor = System.Drawing.Color.White
+        Me.BtnSimpan.Cursor = System.Windows.Forms.Cursors.Hand
+        Me.BtnSimpan.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(CType(CType(22, Byte), Integer), CType(CType(163, Byte), Integer), CType(CType(74, Byte), Integer))
+        Me.BtnSimpan.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(CType(CType(187, Byte), Integer), CType(CType(247, Byte), Integer), CType(CType(208, Byte), Integer))
+        Me.BtnSimpan.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(CType(CType(220, Byte), Integer), CType(CType(252, Byte), Integer), CType(CType(231, Byte), Integer))
+        Me.BtnSimpan.FlatStyle = System.Windows.Forms.FlatStyle.Flat
+        Me.BtnSimpan.Font = New System.Drawing.Font("Segoe UI", 9.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.BtnSimpan.ForeColor = System.Drawing.Color.FromArgb(CType(CType(22, Byte), Integer), CType(CType(163, Byte), Integer), CType(CType(74, Byte), Integer))
         Me.BtnSimpan.Image = CType(resources.GetObject("BtnSimpan.Image"), System.Drawing.Image)
         Me.BtnSimpan.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft
         Me.BtnSimpan.Location = New System.Drawing.Point(403, 326)
@@ -169,26 +198,29 @@ Partial Class SettingDatabase
         Me.BtnSimpan.Size = New System.Drawing.Size(152, 38)
         Me.BtnSimpan.TabIndex = 174
         Me.BtnSimpan.Text = "Simpan (F8)"
-        Me.BtnSimpan.TextAlign = System.Drawing.ContentAlignment.MiddleRight
-        Me.BtnSimpan.UseVisualStyleBackColor = True
+        Me.BtnSimpan.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
+        Me.BtnSimpan.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText
+        Me.BtnSimpan.UseVisualStyleBackColor = False
         '
         'BtnCek
         '
-        Me.BtnCek.BackColor = System.Drawing.Color.Silver
-        Me.BtnCek.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom
-        Me.BtnCek.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(CType(CType(224, Byte), Integer), CType(CType(224, Byte), Integer), CType(CType(224, Byte), Integer))
-        Me.BtnCek.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(CType(CType(224, Byte), Integer), CType(CType(224, Byte), Integer), CType(CType(224, Byte), Integer))
-        Me.BtnCek.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Yellow
-        Me.BtnCek.FlatStyle = System.Windows.Forms.FlatStyle.Popup
-        Me.BtnCek.Font = New System.Drawing.Font("Century Gothic", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.BtnCek.AutoSize = True
+        Me.BtnCek.BackColor = System.Drawing.Color.White
+        Me.BtnCek.Cursor = System.Windows.Forms.Cursors.Hand
+        Me.BtnCek.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(CType(CType(100, Byte), Integer), CType(CType(116, Byte), Integer), CType(CType(139, Byte), Integer))
+        Me.BtnCek.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(CType(CType(226, Byte), Integer), CType(CType(232, Byte), Integer), CType(CType(240, Byte), Integer))
+        Me.BtnCek.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(CType(CType(241, Byte), Integer), CType(CType(245, Byte), Integer), CType(CType(249, Byte), Integer))
+        Me.BtnCek.FlatStyle = System.Windows.Forms.FlatStyle.Flat
+        Me.BtnCek.Font = New System.Drawing.Font("Segoe UI", 9.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.BtnCek.ForeColor = System.Drawing.Color.Black
         Me.BtnCek.Image = CType(resources.GetObject("BtnCek.Image"), System.Drawing.Image)
         Me.BtnCek.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft
         Me.BtnCek.Location = New System.Drawing.Point(144, 166)
         Me.BtnCek.Name = "BtnCek"
-        Me.BtnCek.Size = New System.Drawing.Size(139, 33)
+        Me.BtnCek.Size = New System.Drawing.Size(142, 33)
         Me.BtnCek.TabIndex = 59
-        Me.BtnCek.Text = "Test koneksi"
+        Me.BtnCek.Text = "Cek Koneksi (F5)"
+        Me.BtnCek.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
         Me.BtnCek.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText
         Me.BtnCek.UseVisualStyleBackColor = False
         '
@@ -277,12 +309,13 @@ Partial Class SettingDatabase
         'BtnClose
         '
         Me.BtnClose.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.BtnClose.BackColor = System.Drawing.Color.Yellow
+        Me.BtnClose.BackColor = System.Drawing.Color.White
+        Me.BtnClose.Cursor = System.Windows.Forms.Cursors.Hand
         Me.BtnClose.FlatAppearance.BorderSize = 0
-        Me.BtnClose.FlatAppearance.MouseDownBackColor = System.Drawing.Color.GreenYellow
-        Me.BtnClose.FlatAppearance.MouseOverBackColor = System.Drawing.Color.GreenYellow
-        Me.BtnClose.Font = New System.Drawing.Font("Century Gothic", 12.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.BtnClose.ForeColor = System.Drawing.Color.Black
+        Me.BtnClose.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(CType(CType(226, Byte), Integer), CType(CType(232, Byte), Integer), CType(CType(240, Byte), Integer))
+        Me.BtnClose.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(CType(CType(241, Byte), Integer), CType(CType(245, Byte), Integer), CType(CType(249, Byte), Integer))
+        Me.BtnClose.FlatStyle = System.Windows.Forms.FlatStyle.Flat
+        Me.BtnClose.ForeColor = System.Drawing.Color.White
         Me.BtnClose.Image = CType(resources.GetObject("BtnClose.Image"), System.Drawing.Image)
         Me.BtnClose.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft
         Me.BtnClose.Location = New System.Drawing.Point(528, 1)
@@ -303,26 +336,6 @@ Partial Class SettingDatabase
         Me.Label7.Size = New System.Drawing.Size(283, 35)
         Me.Label7.TabIndex = 1
         Me.Label7.Text = "Koneksi Database"
-        '
-        'BtnBuatDB
-        '
-        Me.BtnBuatDB.BackColor = System.Drawing.Color.Silver
-        Me.BtnBuatDB.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom
-        Me.BtnBuatDB.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(CType(CType(224, Byte), Integer), CType(CType(224, Byte), Integer), CType(CType(224, Byte), Integer))
-        Me.BtnBuatDB.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(CType(CType(224, Byte), Integer), CType(CType(224, Byte), Integer), CType(CType(224, Byte), Integer))
-        Me.BtnBuatDB.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Yellow
-        Me.BtnBuatDB.FlatStyle = System.Windows.Forms.FlatStyle.Popup
-        Me.BtnBuatDB.Font = New System.Drawing.Font("Century Gothic", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.BtnBuatDB.ForeColor = System.Drawing.Color.Black
-        Me.BtnBuatDB.Image = CType(resources.GetObject("BtnBuatDB.Image"), System.Drawing.Image)
-        Me.BtnBuatDB.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft
-        Me.BtnBuatDB.Location = New System.Drawing.Point(13, 326)
-        Me.BtnBuatDB.Name = "BtnBuatDB"
-        Me.BtnBuatDB.Size = New System.Drawing.Size(139, 33)
-        Me.BtnBuatDB.TabIndex = 183
-        Me.BtnBuatDB.Text = "Buat Database"
-        Me.BtnBuatDB.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText
-        Me.BtnBuatDB.UseVisualStyleBackColor = False
         '
         'SettingDatabase
         '

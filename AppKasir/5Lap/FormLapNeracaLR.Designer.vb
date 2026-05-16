@@ -1,4 +1,4 @@
-﻿<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()> _
+<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()> _
 Partial Class FormLapNeracaLR
     Inherits System.Windows.Forms.Form
 
@@ -166,7 +166,7 @@ Partial Class FormLapNeracaLR
         '
         'TabLapNeraca
         '
-        Me.TabLapNeraca.BackColor = System.Drawing.Color.Transparent
+        Me.TabLapNeraca.BackColor = System.Drawing.SystemColors.Control
         Me.TabLapNeraca.Controls.Add(Me.Panel16)
         Me.TabLapNeraca.Location = New System.Drawing.Point(27, 4)
         Me.TabLapNeraca.Name = "TabLapNeraca"
@@ -265,12 +265,15 @@ Partial Class FormLapNeracaLR
         '
         'BtnTampilNeraca
         '
-        Me.BtnTampilNeraca.BackColor = System.Drawing.Color.Gold
-        Me.BtnTampilNeraca.FlatAppearance.BorderSize = 0
-        Me.BtnTampilNeraca.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(CType(CType(128, Byte), Integer), CType(CType(255, Byte), Integer), CType(CType(128, Byte), Integer))
-        Me.BtnTampilNeraca.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Green
+        Me.BtnTampilNeraca.AutoSize = True
+        Me.BtnTampilNeraca.BackColor = System.Drawing.SystemColors.Control
+        Me.BtnTampilNeraca.Cursor = System.Windows.Forms.Cursors.Hand
+        Me.BtnTampilNeraca.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(CType(CType(100, Byte), Integer), CType(CType(116, Byte), Integer), CType(CType(139, Byte), Integer))
+        Me.BtnTampilNeraca.FlatAppearance.BorderSize = 1
+        Me.BtnTampilNeraca.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(CType(CType(226, Byte), Integer), CType(CType(232, Byte), Integer), CType(CType(240, Byte), Integer))
+        Me.BtnTampilNeraca.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(CType(CType(241, Byte), Integer), CType(CType(245, Byte), Integer), CType(CType(249, Byte), Integer))
         Me.BtnTampilNeraca.FlatStyle = System.Windows.Forms.FlatStyle.Flat
-        Me.BtnTampilNeraca.Font = New System.Drawing.Font("Century Gothic", 11.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.BtnTampilNeraca.Font = New System.Drawing.Font("Segoe UI", 9.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.BtnTampilNeraca.ForeColor = System.Drawing.Color.Black
         Me.BtnTampilNeraca.Image = CType(resources.GetObject("BtnTampilNeraca.Image"), System.Drawing.Image)
         Me.BtnTampilNeraca.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft
@@ -278,7 +281,8 @@ Partial Class FormLapNeracaLR
         Me.BtnTampilNeraca.Name = "BtnTampilNeraca"
         Me.BtnTampilNeraca.Size = New System.Drawing.Size(142, 37)
         Me.BtnTampilNeraca.TabIndex = 194
-        Me.BtnTampilNeraca.Text = "Tampilkan"
+        Me.BtnTampilNeraca.Text = "Tampilkan (F5)"
+        Me.BtnTampilNeraca.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
         Me.BtnTampilNeraca.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText
         Me.BtnTampilNeraca.UseVisualStyleBackColor = False
         '
@@ -451,7 +455,7 @@ Partial Class FormLapNeracaLR
         '
         'Panel2
         '
-        Me.Panel2.BackColor = System.Drawing.Color.White
+        Me.Panel2.BackColor = System.Drawing.SystemColors.Control
         Me.Panel2.Controls.Add(Me.CmbThn)
         Me.Panel2.Controls.Add(Me.Label3)
         Me.Panel2.Controls.Add(Me.CmbBln)
@@ -476,6 +480,7 @@ Partial Class FormLapNeracaLR
         Me.Controls.Add(Me.Panel2)
         Me.Controls.Add(Me.TCNeraca)
         Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None
+        Me.KeyPreview = True
         Me.Name = "FormLapNeracaLR"
         Me.ShowInTaskbar = False
         Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen

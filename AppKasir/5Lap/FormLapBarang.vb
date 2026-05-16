@@ -1,8 +1,17 @@
-﻿Imports Microsoft.Reporting.WinForms
+Imports Microsoft.Reporting.WinForms
 
 Public Class FormLapBarang
 
+    ' Variabel sumber kebenaran — Label hanya untuk display
+    Private _totalStokToko As Decimal = 0D
+    Private _totalRpToko As Decimal = 0D
+    Private _totalStokGudang As Decimal = 0D
+    Private _totalRpGudang As Decimal = 0D
+
     Private Sub FormLapBarang_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
+        ModuleTheme.TerapkanTheme(Me)
+        ' LblJudul header laporan otomatis via nama LblHeader*
+        ' Rename LblJudul -> LblHeader untuk tema otomatis
         TxtCari.Text = ""
         Tampil()
         ReportViewer1.RefreshReport()
@@ -12,13 +21,13 @@ Public Class FormLapBarang
     ' Handler untuk event GotFocus pada TextBox
     Private Sub TxtCari_GotFocus(ByVal sender As Object, ByVal e As EventArgs) Handles TxtCari.GotFocus
         ' Ubah warna latar belakang saat TextBox mendapatkan fokus
-        PanelCariNama.BackColor = Color.Yellow ' Ganti warna fokus sesuai kebutuhan
+        PanelCari.BackColor = ModuleTheme.C(Color.Yellow, Color.FromArgb(255, 204, 0)) ' Ganti warna fokus sesuai kebutuhan
     End Sub
 
     ' Handler untuk event LostFocus pada TextBox
     Private Sub TxtCari_LostFocus(ByVal sender As Object, ByVal e As EventArgs) Handles TxtCari.LostFocus
         ' Kembalikan warna latar belakang ke warna asli saat TextBox kehilangan fokus
-        PanelCariNama.BackColor = SystemColors.ActiveCaption
+        PanelCari.BackColor = SystemColors.ActiveCaption
     End Sub
 
     Public Sub Tampil()
@@ -138,8 +147,8 @@ Public Class FormLapBarang
         End Using
 
         ' Menghitung total kuantitas dan nilai rupiah
-        LblTotalQty.Text = Convert.ToDecimal(LblStokToko.Text) + Convert.ToDecimal(LblStokGudang.Text).ToString("N0")
-        LblTotalRp.Text = Convert.ToDecimal(LblRpToko.Text) + Convert.ToDecimal(LblRpGudang.Text).ToString("N0")
+        LblTotalQty.Text = ModuleAngka.FormatAngka(_totalStokToko + _totalStokGudang)
+        LblTotalRp.Text = ModuleAngka.FormatAngka(_totalRpToko + _totalRpGudang)
 
         Dim query As String = "SELECT ID_BARANG, NAMA_BARANG, NAMA_KATEGORI, HARGA_BELI, STOK_TOKO, (HARGA_BELI * (STOK_TOKO * SATUAN_ISI_STOK)) AS RP_TOKO, STOK_GUDANG, (HARGA_BELI * (STOK_GUDANG * SATUAN_ISI_STOK)) AS RP_GUDANG, SATUAN_STOK FROM tbl_barang WHERE NAMA_BARANG like @NAMA_BARANG ORDER BY NAMA_BARANG"
 
@@ -154,8 +163,8 @@ Public Class FormLapBarang
                     ReportViewer1.LocalReport.DataSources.Add(New ReportDataSource("DataSet1", dataset.Tables("StokBarang")))
 
                     ' Setel parameter untuk laporan RDLC
-                    Dim totalQtyParameter As New ReportParameter("totalqty", Convert.ToDecimal(LblTotalQty.Text).ToString("N0"))
-                    Dim totalRupiahParameter As New ReportParameter("TotalRupiah", "Rp. " & Convert.ToDecimal(LblTotalRp.Text).ToString("N0"))
+                    Dim totalQtyParameter As New ReportParameter("totalqty", ModuleAngka.FormatAngka(_totalStokToko + _totalStokGudang))
+                    Dim totalRupiahParameter As New ReportParameter("TotalRupiah", "Rp. " & ModuleAngka.FormatAngka(_totalRpToko + _totalRpGudang))
                     Dim perusahaanParameter As New ReportParameter("Perusahaan", NAMA_PERUSAHAAN)
                     Dim jenisLaporanParameter As New ReportParameter("JenisLaporan", "Laporan Stok Barang " & TxtCari.Text)
 
@@ -250,8 +259,8 @@ Public Class FormLapBarang
             End Using
         End Using
 
-        LblTotalQty.Text = Convert.ToDecimal(LblStokToko.Text) + Convert.ToDecimal(LblStokGudang.Text).ToString("N0")
-        LblTotalRp.Text = Convert.ToDecimal(LblRpToko.Text) + Convert.ToDecimal(LblRpGudang.Text).ToString("N0")
+        LblTotalQty.Text = ModuleAngka.FormatAngka(_totalStokToko + _totalStokGudang)
+        LblTotalRp.Text = ModuleAngka.FormatAngka(_totalRpToko + _totalRpGudang)
 
 
 
@@ -268,8 +277,8 @@ Public Class FormLapBarang
                     ReportViewer1.LocalReport.DataSources.Add(New ReportDataSource("DataSet1", dataset.Tables("StokBarang")))
 
                     ' Setel parameter untuk laporan RDLC
-                    Dim totalQtyParameter As New ReportParameter("totalqty", Convert.ToDecimal(LblTotalQty.Text).ToString("N0"))
-                    Dim totalRupiahParameter As New ReportParameter("TotalRupiah", "Rp. " & Convert.ToDecimal(LblTotalRp.Text).ToString("N0"))
+                    Dim totalQtyParameter As New ReportParameter("totalqty", ModuleAngka.FormatAngka(_totalStokToko + _totalStokGudang))
+                    Dim totalRupiahParameter As New ReportParameter("TotalRupiah", "Rp. " & ModuleAngka.FormatAngka(_totalRpToko + _totalRpGudang))
                     Dim perusahaanParameter As New ReportParameter("Perusahaan", NAMA_PERUSAHAAN)
                     Dim jenisLaporanParameter As New ReportParameter("JenisLaporan", "Laporan Stok Barang Kosong")
 
@@ -366,8 +375,8 @@ Public Class FormLapBarang
             End Using
         End Using
 
-        LblTotalQty.Text = Convert.ToDecimal(LblStokToko.Text) + Convert.ToDecimal(LblStokGudang.Text).ToString("N0")
-        LblTotalRp.Text = Convert.ToDecimal(LblRpToko.Text) + Convert.ToDecimal(LblRpGudang.Text).ToString("N0")
+        LblTotalQty.Text = ModuleAngka.FormatAngka(_totalStokToko + _totalStokGudang)
+        LblTotalRp.Text = ModuleAngka.FormatAngka(_totalRpToko + _totalRpGudang)
 
 
         Dim query As String = "SELECT ID_BARANG, NAMA_BARANG, NAMA_KATEGORI, HARGA_BELI, STOK_TOKO, (HARGA_BELI * (STOK_TOKO * SATUAN_ISI_STOK)) AS RP_TOKO, STOK_GUDANG, (HARGA_BELI * (STOK_GUDANG * SATUAN_ISI_STOK)) AS RP_GUDANG, SATUAN_STOK FROM tbl_barang WHERE STOK_TOKO > 0 OR STOK_GUDANG > 0 ORDER BY NAMA_BARANG"
@@ -382,8 +391,8 @@ Public Class FormLapBarang
                     ReportViewer1.LocalReport.DataSources.Add(New ReportDataSource("DataSet1", dataset.Tables("StokBarang")))
 
                     ' Setel parameter untuk laporan RDLC
-                    Dim totalQtyParameter As New ReportParameter("totalqty", Convert.ToDecimal(LblTotalQty.Text).ToString("N0"))
-                    Dim totalRupiahParameter As New ReportParameter("TotalRupiah", "Rp. " & Convert.ToDecimal(LblTotalRp.Text).ToString("N0"))
+                    Dim totalQtyParameter As New ReportParameter("totalqty", ModuleAngka.FormatAngka(_totalStokToko + _totalStokGudang))
+                    Dim totalRupiahParameter As New ReportParameter("TotalRupiah", "Rp. " & ModuleAngka.FormatAngka(_totalRpToko + _totalRpGudang))
                     Dim perusahaanParameter As New ReportParameter("Perusahaan", NAMA_PERUSAHAAN)
                     Dim jenisLaporanParameter As New ReportParameter("JenisLaporan", "Laporan Stok Barang Tidak Kosong")
 
@@ -480,8 +489,8 @@ Public Class FormLapBarang
             End Using
         End Using
 
-        LblTotalQty.Text = Convert.ToDecimal(LblStokToko.Text) + Convert.ToDecimal(LblStokGudang.Text).ToString("N0")
-        LblTotalRp.Text = Convert.ToDecimal(LblRpToko.Text) + Convert.ToDecimal(LblRpGudang.Text).ToString("N0")
+        LblTotalQty.Text = ModuleAngka.FormatAngka(_totalStokToko + _totalStokGudang)
+        LblTotalRp.Text = ModuleAngka.FormatAngka(_totalRpToko + _totalRpGudang)
 
 
         Dim query As String = "SELECT ID_BARANG, NAMA_BARANG, NAMA_KATEGORI, HARGA_BELI, STOK_TOKO, (HARGA_BELI * (STOK_TOKO * SATUAN_ISI_STOK)) AS RP_TOKO, STOK_GUDANG, (HARGA_BELI * (STOK_GUDANG * SATUAN_ISI_STOK)) AS RP_GUDANG, SATUAN_STOK FROM tbl_barang WHERE STOK_TOKO < 0 OR STOK_GUDANG < 0 ORDER BY NAMA_BARANG"
@@ -496,8 +505,8 @@ Public Class FormLapBarang
                     ReportViewer1.LocalReport.DataSources.Add(New ReportDataSource("DataSet1", dataset.Tables("StokBarang")))
 
                     ' Setel parameter untuk laporan RDLC
-                    Dim totalQtyParameter As New ReportParameter("totalqty", Convert.ToDecimal(LblTotalQty.Text).ToString("N0"))
-                    Dim totalRupiahParameter As New ReportParameter("TotalRupiah", "Rp. " & Convert.ToDecimal(LblTotalRp.Text).ToString("N0"))
+                    Dim totalQtyParameter As New ReportParameter("totalqty", ModuleAngka.FormatAngka(_totalStokToko + _totalStokGudang))
+                    Dim totalRupiahParameter As New ReportParameter("TotalRupiah", "Rp. " & ModuleAngka.FormatAngka(_totalRpToko + _totalRpGudang))
                     Dim perusahaanParameter As New ReportParameter("Perusahaan", NAMA_PERUSAHAAN)
                     Dim jenisLaporanParameter As New ReportParameter("JenisLaporan", "Laporan Stok Barang Minus")
 
@@ -541,4 +550,10 @@ Public Class FormLapBarang
         TxtCari.Clear()
         Tampilsemua()
     End Sub
+    Private Sub FormLapBarang_KeyDown(sender As Object, e As KeyEventArgs) Handles MyBase.KeyDown
+        Select Case e.KeyCode
+            Case Keys.F5 : BtnSemua.PerformClick()
+        End Select
+    End Sub
+
 End Class

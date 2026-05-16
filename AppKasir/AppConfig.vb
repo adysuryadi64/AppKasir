@@ -34,7 +34,8 @@ Public Class AppConfig
         {"PilihanMasuk", ""},
         {"CbSatuansama", False},
         {"CetakJual", "SELALU TANYA"},
-        {"TampilSN", False}
+        {"TampilSN", False},
+        {"DarkMode", False}
     }
 
     Public Sub New()
@@ -75,10 +76,12 @@ Public Class AppConfig
                                     _settings(kvp.Key) = kvp.Value.GetBoolean()
 
                                 Case JsonValueKind.Number
-                                    If kvp.Value.TryGetInt32(CInt(_settings(kvp.Key))) Then
-                                        ' Sudah di-set di atas
-                                    ElseIf kvp.Value.TryGetDecimal(CDec(_settings(kvp.Key))) Then
-                                        ' Sudah di-set di atas
+                                    Dim intVal As Integer
+                                    Dim decVal As Decimal
+                                    If kvp.Value.TryGetInt32(intVal) Then
+                                        _settings(kvp.Key) = intVal
+                                    ElseIf kvp.Value.TryGetDecimal(decVal) Then
+                                        _settings(kvp.Key) = decVal
                                     Else
                                         _settings(kvp.Key) = kvp.Value.GetDouble()
                                     End If

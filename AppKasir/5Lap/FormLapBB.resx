@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -17,15 +17,6 @@
     <resheader name="version">2.0</resheader>
     <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
     <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
-    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
-    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
-    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
-        <value>[base64 mime encoded serialized .NET Framework object]</value>
-    </data>
-    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
-        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
-        <comment>This is a comment</comment>
-    </data>
                 
     There are any number of "resheader" rows that contain simple 
     name/value pairs.
@@ -120,25 +111,20 @@
   <metadata name="BukuBesarBindingSource.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>268, 17</value>
   </metadata>
-  <metadata name="PossDataSet.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>149, 17</value>
-  </metadata>
   <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
   <data name="BtnTampilBB.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
-        iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAN
-        1wAADdcBQiibeAAAABl0RVh0U29mdHdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAAGySURBVEhLvZIx
-        SwJhGICtrTHqFwRBQ0Ptbf2DKKMpChoyGvwBldQi5l0NKpYOEWpkhdVVWnYidGBqhOQRBLpeYFQELU1v
-        fkeH75335XlawwO+573P8/GpBQDq8IUjCYLZGVP3gOANR4BgdsaohqRwO8LfZLLKQvWzTBNzljiwUxUg
-        LzQQGJmz2KkNyC85vT4ZszN26gZa4SotgCsQmPqTwO5hDDyhsHxdTr9fbGugkBeA41Oy3LW1DStuBpYY
-        Zrgtgcd4AKTVAajkjoC75on8y+Fm3uws20UNKP+MRghRBiRHP0jLfVC29cD9xgwcJ5KvjnXWSpzUgBHk
-        k//IS/PdUBy3gDjRAcX4zr7iNB3Qkxer8gfPXFVVc1IDetehgK9FKye72EkN0Pjt5Mo72NlUwIicgJ3U
-        gPZaLi45kNYG6+Q5dlr+Hu9iJzWg5eX9AyqFOJQXeqknV8BOw4HN4B6ITyW48y2CaO2kygnYSQ1or2ho
-        dBLGZu2QEjKQT3EqoRbspAZaATv/N3DOp3UXmoE4sFMVCJ1wz61EyC5xYKcqEDk9swWjB5/aH9goZJc4
-        ak6wfAOQytJL/AA/IwAAAABJRU5ErkJggg==
+        iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
+        YQUAAAAJcEhZcwAAGJsAABibAUl1g5QAAAFKSURBVDhPvZM9TsNAEIVn1xfAqTgDgRsQKgrgMigSmXEq
+        U5FQU3EQpAjPyIXPgiG0UBCBFLSbQLw/IY4EPOlJlvfttz8zC/CvynMNw3I/yeTM2Hzbf1urP+kolLEm
+        ftQkc8fItSIeQVal/rS4SI408nMACj2FAff86a4sTGaRyXGjzNZD+5NOy535nkaPr0iugzDyuyK518gv
+        wVjD9k4d5bmOFUCR3Njxi3JXId9qkg8/s1y4dqtPxUEQWgAvVyEAQOkq5Ds/Z2zGvnNJVpz4gShwqSQr
+        jjXJazNrGM3A7wLNC/BhUWDbI9uiINd+qHVRSB4A5moFtG3DoyBo24a5RdtcOTCrrEpNk/rhjUZ5gvNy
+        x8ctNODeVk+P5A2oOPQxrgy0zU7NzjbCvpRVqb3TSKFMAeydrT3mTzLPCaWbIJ8aw5D3gmr+tT4BbFza
+        JYBDNLcAAAAASUVORK5CYII=
 </value>
   </data>
-  <metadata name="BukuBesarTableAdapter.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>455, 17</value>
-  </metadata>
+  <data name="BtnTampilBB.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAACXBIWXMAABibAAAYmwFJdYOUAAABNElEQVR4nL2TTU7DQAyFPZML0K56BlJuAKxYFC6DKoE9WYUVhTUrDlKpIray6FkIP1tYUIFU5AhBwkzLBFEsWYom1jf2ex6Af408t5CVw8TJkaZ+12edYzzrG5QLS3xnSZatRK4M8QTcvBcHI9m3yI8eyM8HOOW9CJgsImAf3cpiNXQ860d25nfqAuMbksuAXq+G5MYiP62DGtW0FXluQwYYkqv6/0k5MMjXluQtPDpXbfep2AnfLGeti1FSgzwN1QJK+lmXuGIUBfyqP7Akz83axBWjzQEhK4d/OjKoKcjVr00huQVYmm9rw5Pw2jBHrM25L4yb93RJOy82yj0cl1shrUGfUaenR/ICVOyGYU1oTKfa2Y+wxvi1pgGj1IBas5Vjrgt9TihpgnyoCRlve25uOt4BbFzaJZsDiXEAAAAASUVORK5CYII=</value>
+  </data>
 </root>

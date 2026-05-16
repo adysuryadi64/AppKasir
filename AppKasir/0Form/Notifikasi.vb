@@ -1,8 +1,10 @@
-﻿Public Class Notifikasi
+Public Class Notifikasi
     Private Const WM_NCLBUTTONDOWN As Integer = &HA1
     Private Const HTCAPTION As Integer = &H2
     Private Sub Notifikasi_Load(ByVal sender As Object, ByVal e As EventArgs) Handles MyBase.Load
-
+        ModuleTheme.TerapkanTheme(Me)
+        ' Panel1-4 = border notifikasi merah (LightCoral)
+        ModuleTheme.SetWarnaPanelNotifMerah(Panel1, Panel2, Panel3, Panel4)
     End Sub
 
     Private Sub LinkLabel1_LinkClicked(ByVal sender As Object, ByVal e As System.Windows.Forms.LinkLabelLinkClickedEventArgs) Handles LinkLabel1.LinkClicked

@@ -1,4 +1,4 @@
-﻿<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()> _
+<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()> _
 Partial Class FormLapPembelian
     Inherits System.Windows.Forms.Form
 
@@ -29,16 +29,17 @@ Partial Class FormLapPembelian
         Dim ReportDataSource3 As Microsoft.Reporting.WinForms.ReportDataSource = New Microsoft.Reporting.WinForms.ReportDataSource()
         Dim ReportDataSource4 As Microsoft.Reporting.WinForms.ReportDataSource = New Microsoft.Reporting.WinForms.ReportDataSource()
         Me.pembelianBindingSource = New System.Windows.Forms.BindingSource(Me.components)
-        'Me.PossDataSet = New AppKasir.PossDataSet
         Me.pembelian_detail1BindingSource = New System.Windows.Forms.BindingSource(Me.components)
         Me.pembelian_barangBindingSource = New System.Windows.Forms.BindingSource(Me.components)
         Me.pembelianHutangBindingSource = New System.Windows.Forms.BindingSource(Me.components)
         Me.Panel1 = New System.Windows.Forms.Panel()
+        Me.Label6 = New System.Windows.Forms.Label()
+        Me.DTPAkhir = New System.Windows.Forms.DateTimePicker()
         Me.TxtRekening = New System.Windows.Forms.TextBox()
         Me.BtnClose = New System.Windows.Forms.Button()
         Me.DTPAwal = New System.Windows.Forms.DateTimePicker()
         Me.CbTanggal = New System.Windows.Forms.CheckBox()
-        Me.LabelJudul = New System.Windows.Forms.Label()
+        Me.LblHeaderForm = New System.Windows.Forms.Label()
         Me.Label5 = New System.Windows.Forms.Label()
         Me.CmbRekening = New System.Windows.Forms.ComboBox()
         Me.CmbKasir = New System.Windows.Forms.ComboBox()
@@ -55,14 +56,7 @@ Partial Class FormLapPembelian
         Me.ReportViewer3 = New Microsoft.Reporting.WinForms.ReportViewer()
         Me.Panel5 = New System.Windows.Forms.Panel()
         Me.ReportViewer4 = New Microsoft.Reporting.WinForms.ReportViewer()
-        'Me.pembelianTableAdapter = New AppKasir.PossDataSetLancarTableAdapters.pembelianTableAdapter()
-        'Me.pembelian_detail1TableAdapter = New AppKasir.PossDataSetLancarTableAdapters.pembelian_detail1TableAdapter()
-        'Me.pembelian_barangTableAdapter = New AppKasir.PossDataSetLancarTableAdapters.pembelian_barangTableAdapter()
-        'Me.pembelianHutangTableAdapter = New AppKasir.PossDataSetLancarTableAdapters.pembelianHutangTableAdapter()
-        Me.Label6 = New System.Windows.Forms.Label()
-        Me.DTPAkhir = New System.Windows.Forms.DateTimePicker()
         CType(Me.pembelianBindingSource, System.ComponentModel.ISupportInitialize).BeginInit()
-        'CType(Me.PossDataSet, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.pembelian_detail1BindingSource, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.pembelian_barangBindingSource, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.pembelianHutangBindingSource, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -76,27 +70,18 @@ Partial Class FormLapPembelian
         'pembelianBindingSource
         '
         Me.pembelianBindingSource.DataMember = "pembelian"
-        'Me.pembelianBindingSource.DataSource = Me.PossDataSet
-        '
-        'PossDataSet
-        '
-        'Me.PossDataSet.DataSetName = "PossDataSet"
-        'Me.PossDataSet.SchemaSerializationMode = System.Data.SchemaSerializationMode.IncludeSchema
         '
         'pembelian_detail1BindingSource
         '
         Me.pembelian_detail1BindingSource.DataMember = "pembelian_detail1"
-        'Me.pembelian_detail1BindingSource.DataSource = Me.PossDataSet
         '
         'pembelian_barangBindingSource
         '
         Me.pembelian_barangBindingSource.DataMember = "pembelian_barang"
-        'Me.pembelian_barangBindingSource.DataSource = Me.PossDataSet
         '
         'pembelianHutangBindingSource
         '
         Me.pembelianHutangBindingSource.DataMember = "pembelianHutang"
-        'Me.pembelianHutangBindingSource.DataSource = Me.PossDataSet
         '
         'Panel1
         '
@@ -106,7 +91,7 @@ Partial Class FormLapPembelian
         Me.Panel1.Controls.Add(Me.BtnClose)
         Me.Panel1.Controls.Add(Me.DTPAwal)
         Me.Panel1.Controls.Add(Me.CbTanggal)
-        Me.Panel1.Controls.Add(Me.LabelJudul)
+        Me.Panel1.Controls.Add(Me.LblHeaderForm)
         Me.Panel1.Controls.Add(Me.Label5)
         Me.Panel1.Controls.Add(Me.CmbRekening)
         Me.Panel1.Controls.Add(Me.CmbKasir)
@@ -121,6 +106,28 @@ Partial Class FormLapPembelian
         Me.Panel1.Size = New System.Drawing.Size(1115, 99)
         Me.Panel1.TabIndex = 132
         '
+        'Label6
+        '
+        Me.Label6.AutoSize = True
+        Me.Label6.BackColor = System.Drawing.Color.Transparent
+        Me.Label6.Font = New System.Drawing.Font("Century Gothic", 9.75!)
+        Me.Label6.Location = New System.Drawing.Point(195, 42)
+        Me.Label6.Name = "Label6"
+        Me.Label6.Size = New System.Drawing.Size(28, 17)
+        Me.Label6.TabIndex = 205
+        Me.Label6.Text = "s/d"
+        Me.Label6.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
+        '
+        'DTPAkhir
+        '
+        Me.DTPAkhir.CustomFormat = "dd-MM-yyyy"
+        Me.DTPAkhir.Font = New System.Drawing.Font("Century Gothic", 9.75!)
+        Me.DTPAkhir.Format = System.Windows.Forms.DateTimePickerFormat.Custom
+        Me.DTPAkhir.Location = New System.Drawing.Point(227, 39)
+        Me.DTPAkhir.Name = "DTPAkhir"
+        Me.DTPAkhir.Size = New System.Drawing.Size(91, 23)
+        Me.DTPAkhir.TabIndex = 204
+        '
         'TxtRekening
         '
         Me.TxtRekening.Location = New System.Drawing.Point(979, 69)
@@ -132,19 +139,18 @@ Partial Class FormLapPembelian
         'BtnClose
         '
         Me.BtnClose.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.BtnClose.BackColor = System.Drawing.Color.Yellow
+        Me.BtnClose.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.BtnClose.BackColor = System.Drawing.SystemColors.Control
+        Me.BtnClose.Cursor = System.Windows.Forms.Cursors.Hand
         Me.BtnClose.FlatAppearance.BorderSize = 0
-        Me.BtnClose.FlatAppearance.MouseDownBackColor = System.Drawing.Color.GreenYellow
-        Me.BtnClose.FlatAppearance.MouseOverBackColor = System.Drawing.Color.GreenYellow
-        Me.BtnClose.Font = New System.Drawing.Font("Century Gothic", 12.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.BtnClose.ForeColor = System.Drawing.Color.Black
+        Me.BtnClose.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(CType(CType(226, Byte), Integer), CType(CType(232, Byte), Integer), CType(CType(240, Byte), Integer))
+        Me.BtnClose.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(CType(CType(241, Byte), Integer), CType(CType(245, Byte), Integer), CType(CType(249, Byte), Integer))
+        Me.BtnClose.FlatStyle = System.Windows.Forms.FlatStyle.Flat
         Me.BtnClose.Image = CType(resources.GetObject("BtnClose.Image"), System.Drawing.Image)
-        Me.BtnClose.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft
         Me.BtnClose.Location = New System.Drawing.Point(1081, 0)
         Me.BtnClose.Name = "BtnClose"
         Me.BtnClose.Size = New System.Drawing.Size(30, 30)
         Me.BtnClose.TabIndex = 202
-        Me.BtnClose.TextAlign = System.Drawing.ContentAlignment.MiddleRight
         Me.BtnClose.UseVisualStyleBackColor = False
         '
         'DTPAwal
@@ -168,17 +174,17 @@ Partial Class FormLapPembelian
         Me.CbTanggal.Text = "Tanggal"
         Me.CbTanggal.UseVisualStyleBackColor = True
         '
-        'LabelJudul
+        'LblHeaderForm
         '
-        Me.LabelJudul.BackColor = System.Drawing.Color.Gold
-        Me.LabelJudul.Dock = System.Windows.Forms.DockStyle.Top
-        Me.LabelJudul.Font = New System.Drawing.Font("Bookman Old Style", 21.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.LabelJudul.Location = New System.Drawing.Point(0, 0)
-        Me.LabelJudul.Name = "LabelJudul"
-        Me.LabelJudul.Size = New System.Drawing.Size(1115, 31)
-        Me.LabelJudul.TabIndex = 124
-        Me.LabelJudul.Text = "LAPORAN PEMBELIAN"
-        Me.LabelJudul.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
+        Me.LblHeaderForm.BackColor = System.Drawing.SystemColors.Control
+        Me.LblHeaderForm.Dock = System.Windows.Forms.DockStyle.Top
+        Me.LblHeaderForm.Font = New System.Drawing.Font("Bookman Old Style", 21.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.LblHeaderForm.Location = New System.Drawing.Point(0, 0)
+        Me.LblHeaderForm.Name = "LblHeaderForm"
+        Me.LblHeaderForm.Size = New System.Drawing.Size(1115, 31)
+        Me.LblHeaderForm.TabIndex = 124
+        Me.LblHeaderForm.Text = "LAPORAN PEMBELIAN"
+        Me.LblHeaderForm.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
         '
         'Label5
         '
@@ -257,12 +263,15 @@ Partial Class FormLapPembelian
         '
         'BtnTampilkan
         '
-        Me.BtnTampilkan.BackColor = System.Drawing.Color.Gold
-        Me.BtnTampilkan.FlatAppearance.BorderSize = 0
-        Me.BtnTampilkan.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(CType(CType(128, Byte), Integer), CType(CType(255, Byte), Integer), CType(CType(255, Byte), Integer))
-        Me.BtnTampilkan.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Yellow
+        Me.BtnTampilkan.AutoSize = True
+        Me.BtnTampilkan.BackColor = System.Drawing.SystemColors.Control
+        Me.BtnTampilkan.Cursor = System.Windows.Forms.Cursors.Hand
+        Me.BtnTampilkan.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(CType(CType(100, Byte), Integer), CType(CType(116, Byte), Integer), CType(CType(139, Byte), Integer))
+        Me.BtnTampilkan.FlatAppearance.BorderSize = 1
+        Me.BtnTampilkan.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(CType(CType(226, Byte), Integer), CType(CType(232, Byte), Integer), CType(CType(240, Byte), Integer))
+        Me.BtnTampilkan.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(CType(CType(241, Byte), Integer), CType(CType(245, Byte), Integer), CType(CType(249, Byte), Integer))
         Me.BtnTampilkan.FlatStyle = System.Windows.Forms.FlatStyle.Flat
-        Me.BtnTampilkan.Font = New System.Drawing.Font("Century Gothic", 12.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.BtnTampilkan.Font = New System.Drawing.Font("Segoe UI", 9.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.BtnTampilkan.ForeColor = System.Drawing.Color.Black
         Me.BtnTampilkan.Image = CType(resources.GetObject("BtnTampilkan.Image"), System.Drawing.Image)
         Me.BtnTampilkan.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft
@@ -270,7 +279,8 @@ Partial Class FormLapPembelian
         Me.BtnTampilkan.Name = "BtnTampilkan"
         Me.BtnTampilkan.Size = New System.Drawing.Size(156, 35)
         Me.BtnTampilkan.TabIndex = 147
-        Me.BtnTampilkan.Text = "    TAMPILKAN"
+        Me.BtnTampilkan.Text = "Tampilkan (F5)"
+        Me.BtnTampilkan.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
         Me.BtnTampilkan.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText
         Me.BtnTampilkan.UseVisualStyleBackColor = False
         '
@@ -292,6 +302,7 @@ Partial Class FormLapPembelian
         Me.ReportViewer1.LocalReport.ReportEmbeddedResource = "KasirLancar.ReportPembelian.rdlc"
         Me.ReportViewer1.Location = New System.Drawing.Point(0, 0)
         Me.ReportViewer1.Name = "ReportViewer1"
+        Me.ReportViewer1.ServerReport.BearerToken = Nothing
         Me.ReportViewer1.Size = New System.Drawing.Size(1115, 432)
         Me.ReportViewer1.TabIndex = 1
         '
@@ -313,6 +324,7 @@ Partial Class FormLapPembelian
         Me.ReportViewer2.LocalReport.ReportEmbeddedResource = "KasirLancar.ReportBeliDetail.rdlc"
         Me.ReportViewer2.Location = New System.Drawing.Point(0, 0)
         Me.ReportViewer2.Name = "ReportViewer2"
+        Me.ReportViewer2.ServerReport.BearerToken = Nothing
         Me.ReportViewer2.Size = New System.Drawing.Size(1115, 432)
         Me.ReportViewer2.TabIndex = 1
         '
@@ -334,6 +346,7 @@ Partial Class FormLapPembelian
         Me.ReportViewer3.LocalReport.ReportEmbeddedResource = "KasirLancar.ReportBeliBarang.rdlc"
         Me.ReportViewer3.Location = New System.Drawing.Point(0, 0)
         Me.ReportViewer3.Name = "ReportViewer3"
+        Me.ReportViewer3.ServerReport.BearerToken = Nothing
         Me.ReportViewer3.Size = New System.Drawing.Size(1115, 432)
         Me.ReportViewer3.TabIndex = 1
         '
@@ -355,46 +368,9 @@ Partial Class FormLapPembelian
         Me.ReportViewer4.LocalReport.ReportEmbeddedResource = "KasirLancar.ReportPembelianHutang.rdlc"
         Me.ReportViewer4.Location = New System.Drawing.Point(0, 0)
         Me.ReportViewer4.Name = "ReportViewer4"
+        Me.ReportViewer4.ServerReport.BearerToken = Nothing
         Me.ReportViewer4.Size = New System.Drawing.Size(1115, 432)
         Me.ReportViewer4.TabIndex = 1
-        '
-        'pembelianTableAdapter
-        '
-        'Me.pembelianTableAdapter.ClearBeforeFill = True
-        '
-        'pembelian_detail1TableAdapter
-        '
-        'Me.pembelian_detail1TableAdapter.ClearBeforeFill = True
-        '
-        'pembelian_barangTableAdapter
-        '
-        'Me.pembelian_barangTableAdapter.ClearBeforeFill = True
-        '
-        'pembelianHutangTableAdapter
-        '
-        'Me.pembelianHutangTableAdapter.ClearBeforeFill = True
-        '
-        'Label6
-        '
-        Me.Label6.AutoSize = True
-        Me.Label6.BackColor = System.Drawing.Color.Transparent
-        Me.Label6.Font = New System.Drawing.Font("Century Gothic", 9.75!)
-        Me.Label6.Location = New System.Drawing.Point(195, 42)
-        Me.Label6.Name = "Label6"
-        Me.Label6.Size = New System.Drawing.Size(28, 17)
-        Me.Label6.TabIndex = 205
-        Me.Label6.Text = "s/d"
-        Me.Label6.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
-        '
-        'DTPAkhir
-        '
-        Me.DTPAkhir.CustomFormat = "dd-MM-yyyy"
-        Me.DTPAkhir.Font = New System.Drawing.Font("Century Gothic", 9.75!)
-        Me.DTPAkhir.Format = System.Windows.Forms.DateTimePickerFormat.Custom
-        Me.DTPAkhir.Location = New System.Drawing.Point(227, 39)
-        Me.DTPAkhir.Name = "DTPAkhir"
-        Me.DTPAkhir.Size = New System.Drawing.Size(91, 23)
-        Me.DTPAkhir.TabIndex = 204
         '
         'FormLapPembelian
         '
@@ -407,11 +383,11 @@ Partial Class FormLapPembelian
         Me.Controls.Add(Me.Panel2)
         Me.Controls.Add(Me.Panel1)
         Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None
+        Me.KeyPreview = True
         Me.Name = "FormLapPembelian"
         Me.ShowInTaskbar = False
         Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen
         CType(Me.pembelianBindingSource, System.ComponentModel.ISupportInitialize).EndInit()
-        'CType(Me.PossDataSet, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.pembelian_detail1BindingSource, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.pembelian_barangBindingSource, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.pembelianHutangBindingSource, System.ComponentModel.ISupportInitialize).EndInit()
@@ -429,7 +405,7 @@ Partial Class FormLapPembelian
     Friend WithEvents BtnClose As System.Windows.Forms.Button
     Friend WithEvents DTPAwal As System.Windows.Forms.DateTimePicker
     Friend WithEvents CbTanggal As System.Windows.Forms.CheckBox
-    Friend WithEvents LabelJudul As System.Windows.Forms.Label
+    Friend WithEvents LblHeaderForm As System.Windows.Forms.Label
     Friend WithEvents Label5 As System.Windows.Forms.Label
     Friend WithEvents CmbRekening As System.Windows.Forms.ComboBox
     Friend WithEvents CmbKasir As System.Windows.Forms.ComboBox

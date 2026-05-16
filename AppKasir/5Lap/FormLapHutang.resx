@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -17,15 +17,6 @@
     <resheader name="version">2.0</resheader>
     <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
     <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
-    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
-    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
-    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
-        <value>[base64 mime encoded serialized .NET Framework object]</value>
-    </data>
-    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
-        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
-        <comment>This is a comment</comment>
-    </data>
                 
     There are any number of "resheader" rows that contain simple 
     name/value pairs.
@@ -120,25 +111,18 @@
   <metadata name="pembelian_hutangBindingSource.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>268, 17</value>
   </metadata>
-  <metadata name="PossDataSet.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>149, 17</value>
-  </metadata>
   <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
   <data name="BtnLunas.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
-        iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAN
-        1wAADdcBQiibeAAAABl0RVh0U29mdHdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAAFESURBVEhLzZK/
-        SsNQFIfzAI4+QWcn566+QbcOvoeDg+AbtG4FEZpFShDRwVKIf4oWJxWKs4ivcewvcPF3DvfcJAbB4YPe
-        m5zvS26aicifohbzh6f+4v5xtUGacFZclDwfQy1ubpfrmMhjPM1rI2oRk6RAoC6iFjFJihBIRdQiJkkx
-        OZ/VRtSCh3mwDTbiBrrATjcQe7oUPMtON9AFdv7vwMfxrryfDOVufqn22ekGYudbXhfyfLAnL/vb1frr
-        sFfxebSjIuxsHID8dbglb4OsAnshAPAmYZadbsCCJw/yWADHFe5lpxuwb4BjsQEPdv46wIRvEmCnG7DY
-        I2Jwje9lpxuwb2A/cgB7uMaz7GwcAPw3Bfht5YCdbqAL7FSBq0UZHWgDHOxUgdNZse4SwSwc7FSBcZ73
-        R9N8xeffhmp24/hxSvYN6NXUV6iBAdcAAAAASUVORK5CYII=
+        iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAACXBIWXMAABibAAAYmwFJdYOUAAABNElE
+        QVR4nL2TTU7DQAyFPZML0K56BlJuAKxYFC6DKoE9WYUVhTUrDlKpIray6FkIP1tYUIFU5AhBwkzLBFEs
+        WYom1jf2ex6Af408t5CVw8TJkaZ+12edYzzrG5QLS3xnSZatRK4M8QTcvBcHI9m3yI8eyM8HOOW9CJgs
+        ImAf3cpiNXQ860d25nfqAuMbksuAXq+G5MYiP62DGtW0FXluQwYYkqv6/0k5MMjXluQtPDpXbfep2Anf
+        LGeti1FSgzwN1QJK+lmXuGIUBfyqP7Akz83axBWjzQEhK4d/OjKoKcjVr00huQVYmm9rw5Pw2jBHrM25
+        L4yb93RJOy82yj0cl1shrUGfUaenR/ICVOyGYU1oTKfa2Y+wxvi1pgGj1IBas5Vjrgt9TihpgnyoCRlv
+        e25uOt4BbFzaJZsDiXEAAAAASUVORK5CYII=
 </value>
   </data>
-  <metadata name="pembelian_hutangTableAdapter.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>500, 17</value>
-  </metadata>
   <metadata name="$this.TrayHeight" type="System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>63</value>
   </metadata>
@@ -1272,6 +1256,17 @@
         ////////////////////////////////////////////////////////////////////////////////
         ////////////////////////////////////////////////////////////////////////////////
         //////////////////////////////////8=
+</value>
+  </data>
+  <data name="BtnLunas.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAACXBIWXMAABibAAAYmwFJdYOUAAABNElE
+        QVR4nL2TTU7DQAyFPZML0K56BlJuAKxYFC6DKoE9WYUVhTUrDlKpIray6FkIP1tYUIFU5AhBwkzLBFEs
+        WYom1jf2ex6Af408t5CVw8TJkaZ+12edYzzrG5QLS3xnSZatRK4M8QTcvBcHI9m3yI8eyM8HOOW9CJgs
+        ImAf3cpiNXQ860d25nfqAuMbksuAXq+G5MYiP62DGtW0FXluQwYYkqv6/0k5MMjXluQtPDpXbfep2Anf
+        LGeti1FSgzwN1QJK+lmXuGIUBfyqP7Akz83axBWjzQEhK4d/OjKoKcjVr00huQVYmm9rw5Pw2jBHrM25
+        L4yb93RJOy82yj0cl1shrUGfUaenR/ICVOyGYU1oTKfa2Y+wxvi1pgGj1IBas5Vjrgt9TihpgnyoCRlv
+        e25uOt4BbFzaJZsDiXEAAAAASUVORK5CYII=
 </value>
   </data>
 </root>

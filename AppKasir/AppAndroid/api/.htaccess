@@ -1,0 +1,94 @@
+# ══════════════════════════════════════════════════════════════════════════════
+# Kasir Lancar API — Security & Access Control
+# Apache / AppServ
+# ══════════════════════════════════════════════════════════════════════════════
+
+# ── Halaman error kustom ──────────────────────────────────────────────────────
+ErrorDocument 403 /api/403.html
+ErrorDocument 401 /api/403.html
+
+# ── Sembunyikan listing direktori & info server ───────────────────────────────
+Options -Indexes -MultiViews
+ServerSignature Off
+
+# ── Blokir akses browser langsung ke file internal ───────────────────────────
+# File-file ini hanya boleh di-include oleh PHP (require_once),
+# TIDAK boleh diakses via URL oleh siapapun.
+
+<FilesMatch "^(config\.php|db_connect\.php|db_connect\.php|auth_check\.php|save_config\.php|payload_example\.json|favicon\.ico|get_users\.php)$">
+    Order allow,deny
+    Deny from all
+</FilesMatch>
+
+# ── Blokir file test — hanya dipakai saat setup awal ─────────────────────────
+# Setelah konfigurasi selesai, file ini tidak perlu diakses lagi dari luar.
+# Uncomment baris di bawah jika sudah tidak perlu test koneksi dari browser:
+#
+# <FilesMatch "^(test_connection\.php|test_db_connection\.php|get_databases\.php)$">
+#     Order allow,deny
+#     Deny from all
+# </FilesMatch>
+
+# ── Blokir ekstensi berbahaya ─────────────────────────────────────────────────
+<FilesMatch "\.(bak|bak2|log|sql|sh|env|git|ini|htpasswd|DS_Store)$">
+    Order allow,deny
+    Deny from all
+</FilesMatch>
+
+# ── Blokir akses ke file tersembunyi (dot files) ──────────────────────────────
+<FilesMatch "^\.">
+    Order allow,deny
+    Deny from all
+</FilesMatch>
+
+# ── CORS — hanya izinkan request dari jaringan lokal ─────────────────────────
+# Flutter di HP Android mengakses via WiFi LAN (192.168.x.x / 10.x.x.x)
+# Blokir request dari origin luar jaringan lokal tidak bisa dilakukan
+# di level .htaccess secara andal, tapi header CORS membatasi browser.
+<IfModule mod_headers.c>
+    # Izinkan semua origin (Flutter tidak mengirim Origin header standar browser)
+    Header always set Access-Control-Allow-Origin  "*"
+    Header always set Access-Control-Allow-Methods "GET, POST, PUT, DELETE, OPTIONS"
+    Header always set Access-Control-Allow-Headers "Content-Type, Authorization, X-Admin-Token"
+
+    # ── Security headers ──────────────────────────────────────────────────────
+    # Cegah browser menebak tipe konten
+    Header always set X-Content-Type-Options  "nosniff"
+    # Cegah halaman dimuat dalam iframe (clickjacking)
+    Header always set X-Frame-Options         "DENY"
+    # Jangan kirim referrer ke situs lain
+    Header always set Referrer-Policy         "no-referrer"
+    # Matikan fitur browser yang tidak perlu
+    Header always set Permissions-Policy      "geolocation=(), microphone=(), camera=()"
+    # Sembunyikan versi PHP dari response header
+    Header always unset X-Powered-By
+</IfModule>
+
+# ── Sembunyikan versi PHP via php_flag (AppServ) ─────────────────────────────
+<IfModule mod_php.c>
+    php_flag  expose_php Off
+</IfModule>
+<IfModule mod_php8.c>
+    php_flag  expose_php Off
+</IfModule>
+
+# ── Paksa Content-Type JSON untuk semua response PHP ─────────────────────────
+# (opsional — PHP sudah set ini via header(), tapi ini sebagai fallback)
+# AddType application/json .php
+
+# ── Paksa Apache meneruskan Authorization header ke PHP ──────────────────────
+# Apache sering memblokir header Authorization sebelum sampai ke PHP.
+# Ini fix standar untuk PHP-CGI, FastCGI, dan mod_php di AppServ/XAMPP.
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteCond %{HTTP:Authorization} .
+    RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
+</IfModule>
+
+# Fallback untuk CGI mode
+SetEnvIf Authorization "(.*)" HTTP_AUTHORIZATION=$1
+
+# ── Tangani OPTIONS preflight (CORS preflight dari Flutter) ──────────────────
+RewriteEngine On
+RewriteCond %{REQUEST_METHOD} OPTIONS
+RewriteRule ^(.*)$ $1 [R=200,L]

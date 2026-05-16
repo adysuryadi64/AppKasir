@@ -1,4 +1,4 @@
-﻿<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()>
+<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()>
 Partial Class TambahBarang
     Inherits System.Windows.Forms.Form
 
@@ -23,14 +23,12 @@ Partial Class TambahBarang
     <System.Diagnostics.DebuggerStepThrough()>
     Private Sub InitializeComponent()
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(TambahBarang))
-        Me.Panel1 = New System.Windows.Forms.Panel()
-        Me.Panel2 = New System.Windows.Forms.Panel()
-        Me.Panel3 = New System.Windows.Forms.Panel()
-        Me.LblUtama = New System.Windows.Forms.Label()
+        Me.PnlBatas1 = New System.Windows.Forms.Panel()
+        Me.PnlBatas3 = New System.Windows.Forms.Panel()
+        Me.PnlBatas2 = New System.Windows.Forms.Panel()
+        Me.LblHeaderForm = New System.Windows.Forms.Label()
         Me.PanelHeader = New System.Windows.Forms.Panel()
-        Me.BtnMinimize = New System.Windows.Forms.Button()
-        Me.BtnClose = New System.Windows.Forms.Button()
-        Me.GBJualUmum = New System.Windows.Forms.GroupBox()
+        Me.GBInput2 = New System.Windows.Forms.GroupBox()
         Me.LblBeliUmumBesar = New System.Windows.Forms.Label()
         Me.LbljualUmumBesar = New System.Windows.Forms.Label()
         Me.LbljualUmumSedang = New System.Windows.Forms.Label()
@@ -64,7 +62,7 @@ Partial Class TambahBarang
         Me.Label14 = New System.Windows.Forms.Label()
         Me.Label13 = New System.Windows.Forms.Label()
         Me.Label12 = New System.Windows.Forms.Label()
-        Me.GBJualPartai = New System.Windows.Forms.GroupBox()
+        Me.GBInput3 = New System.Windows.Forms.GroupBox()
         Me.LbljualPartaiBesar = New System.Windows.Forms.Label()
         Me.LbljualPartaiSedang = New System.Windows.Forms.Label()
         Me.LbljualPartaiKecil = New System.Windows.Forms.Label()
@@ -98,7 +96,10 @@ Partial Class TambahBarang
         Me.Label28 = New System.Windows.Forms.Label()
         Me.TxtHargaBeliPartaiKecil = New System.Windows.Forms.TextBox()
         Me.Label29 = New System.Windows.Forms.Label()
-        Me.GBBarang = New System.Windows.Forms.GroupBox()
+        Me.GBInput = New System.Windows.Forms.GroupBox()
+        Me.TxtMerk = New System.Windows.Forms.TextBox()
+        Me.CmbMerk = New System.Windows.Forms.ComboBox()
+        Me.Label45 = New System.Windows.Forms.Label()
         Me.LblHargaBeliTerakhir = New System.Windows.Forms.Label()
         Me.TxtHargaBeliTerakhir = New System.Windows.Forms.TextBox()
         Me.Label44 = New System.Windows.Forms.Label()
@@ -118,7 +119,7 @@ Partial Class TambahBarang
         Me.TxtKode = New System.Windows.Forms.TextBox()
         Me.LblMetode = New System.Windows.Forms.Label()
         Me.LblJenis = New System.Windows.Forms.Label()
-        Me.GBStok = New System.Windows.Forms.GroupBox()
+        Me.GBInput4 = New System.Windows.Forms.GroupBox()
         Me.CmBstokAwal = New System.Windows.Forms.ComboBox()
         Me.CmbStokAkhir = New System.Windows.Forms.ComboBox()
         Me.TxtJmlhToko = New System.Windows.Forms.TextBox()
@@ -134,14 +135,14 @@ Partial Class TambahBarang
         Me.TxtStokAwal = New System.Windows.Forms.TextBox()
         Me.TextMin = New System.Windows.Forms.TextBox()
         Me.TxtStokAkhir = New System.Windows.Forms.TextBox()
-        Me.GBBarcode = New System.Windows.Forms.GroupBox()
+        Me.GBInput1 = New System.Windows.Forms.GroupBox()
         Me.TxtBarcodeUmumBesar = New System.Windows.Forms.TextBox()
         Me.TxtBarcodeUmumSedang = New System.Windows.Forms.TextBox()
         Me.TxtBarcodeUmumKecil = New System.Windows.Forms.TextBox()
         Me.Label31 = New System.Windows.Forms.Label()
-        Me.Button1 = New System.Windows.Forms.Button()
-        Me.Button2 = New System.Windows.Forms.Button()
-        Me.Button3 = New System.Windows.Forms.Button()
+        Me.BtnPrintBesar = New System.Windows.Forms.Button()
+        Me.BtnPrintSedang = New System.Windows.Forms.Button()
+        Me.BtnPrintKecil = New System.Windows.Forms.Button()
         Me.BtnGenUmumBesar = New System.Windows.Forms.Button()
         Me.BtnGenUmumSedang = New System.Windows.Forms.Button()
         Me.BtnGenUmumKecil = New System.Windows.Forms.Button()
@@ -164,7 +165,7 @@ Partial Class TambahBarang
         Me.LblRpLama = New System.Windows.Forms.Label()
         Me.LblMetodeUpdate = New System.Windows.Forms.Label()
         Me.CBSatuanSama = New System.Windows.Forms.CheckBox()
-        Me.GBPoint = New System.Windows.Forms.GroupBox()
+        Me.GBInput5 = New System.Windows.Forms.GroupBox()
         Me.Label4 = New System.Windows.Forms.Label()
         Me.Label5 = New System.Windows.Forms.Label()
         Me.Label18 = New System.Windows.Forms.Label()
@@ -180,7 +181,7 @@ Partial Class TambahBarang
         Me.LblHargaUntukEdit = New System.Windows.Forms.Label()
         Me.LblStokUntukEdit = New System.Windows.Forms.Label()
         Me.LblQtySbl = New System.Windows.Forms.Label()
-        Me.BtnSupliyer = New System.Windows.Forms.Button()
+        Me.BtnTambahSupliyer = New System.Windows.Forms.Button()
         Me.BtnBaru = New System.Windows.Forms.Button()
         Me.BtnTambahSatuan = New System.Windows.Forms.Button()
         Me.BtnTambahKategori = New System.Windows.Forms.Button()
@@ -188,148 +189,115 @@ Partial Class TambahBarang
         Me.LblHargaDrJual = New System.Windows.Forms.Label()
         Me.LblsatuanDrJual = New System.Windows.Forms.Label()
         Me.LblJenisDrJual = New System.Windows.Forms.Label()
+        Me.BtnTambahMerk = New System.Windows.Forms.Button()
+        Me.BtnClose = New System.Windows.Forms.Button()
         Me.PanelHeader.SuspendLayout()
-        Me.GBJualUmum.SuspendLayout()
-        Me.GBJualPartai.SuspendLayout()
-        Me.GBBarang.SuspendLayout()
-        Me.GBStok.SuspendLayout()
-        Me.GBBarcode.SuspendLayout()
+        Me.GBInput2.SuspendLayout()
+        Me.GBInput3.SuspendLayout()
+        Me.GBInput.SuspendLayout()
+        Me.GBInput4.SuspendLayout()
+        Me.GBInput1.SuspendLayout()
         Me.PanelInfoRubahHarga.SuspendLayout()
-        Me.GBPoint.SuspendLayout()
+        Me.GBInput5.SuspendLayout()
         Me.SuspendLayout()
         '
-        'Panel1
+        'PnlBatas1
         '
-        Me.Panel1.BackColor = System.Drawing.Color.FromArgb(CType(CType(60, Byte), Integer), CType(CType(60, Byte), Integer), CType(CType(60, Byte), Integer))
-        Me.Panel1.Dock = System.Windows.Forms.DockStyle.Bottom
-        Me.Panel1.Font = New System.Drawing.Font("Century Gothic", 11.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Panel1.Location = New System.Drawing.Point(0, 617)
-        Me.Panel1.Name = "Panel1"
-        Me.Panel1.Size = New System.Drawing.Size(1143, 2)
-        Me.Panel1.TabIndex = 38
+        Me.PnlBatas1.BackColor = System.Drawing.Color.FromArgb(CType(CType(60, Byte), Integer), CType(CType(60, Byte), Integer), CType(CType(60, Byte), Integer))
+        Me.PnlBatas1.Dock = System.Windows.Forms.DockStyle.Bottom
+        Me.PnlBatas1.Font = New System.Drawing.Font("Century Gothic", 11.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.PnlBatas1.Location = New System.Drawing.Point(0, 696)
+        Me.PnlBatas1.Name = "PnlBatas1"
+        Me.PnlBatas1.Size = New System.Drawing.Size(1150, 6)
+        Me.PnlBatas1.TabIndex = 38
         '
-        'Panel2
+        'PnlBatas3
         '
-        Me.Panel2.BackColor = System.Drawing.Color.FromArgb(CType(CType(60, Byte), Integer), CType(CType(60, Byte), Integer), CType(CType(60, Byte), Integer))
-        Me.Panel2.Dock = System.Windows.Forms.DockStyle.Right
-        Me.Panel2.Font = New System.Drawing.Font("Century Gothic", 11.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Panel2.Location = New System.Drawing.Point(1141, 30)
-        Me.Panel2.Name = "Panel2"
-        Me.Panel2.Size = New System.Drawing.Size(2, 587)
-        Me.Panel2.TabIndex = 39
+        Me.PnlBatas3.BackColor = System.Drawing.Color.FromArgb(CType(CType(60, Byte), Integer), CType(CType(60, Byte), Integer), CType(CType(60, Byte), Integer))
+        Me.PnlBatas3.Dock = System.Windows.Forms.DockStyle.Right
+        Me.PnlBatas3.Font = New System.Drawing.Font("Century Gothic", 11.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.PnlBatas3.Location = New System.Drawing.Point(1144, 42)
+        Me.PnlBatas3.Name = "PnlBatas3"
+        Me.PnlBatas3.Size = New System.Drawing.Size(6, 654)
+        Me.PnlBatas3.TabIndex = 39
         '
-        'Panel3
+        'PnlBatas2
         '
-        Me.Panel3.BackColor = System.Drawing.Color.FromArgb(CType(CType(60, Byte), Integer), CType(CType(60, Byte), Integer), CType(CType(60, Byte), Integer))
-        Me.Panel3.Dock = System.Windows.Forms.DockStyle.Left
-        Me.Panel3.Font = New System.Drawing.Font("Century Gothic", 11.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Panel3.Location = New System.Drawing.Point(0, 30)
-        Me.Panel3.Name = "Panel3"
-        Me.Panel3.Size = New System.Drawing.Size(2, 587)
-        Me.Panel3.TabIndex = 40
+        Me.PnlBatas2.BackColor = System.Drawing.Color.FromArgb(CType(CType(60, Byte), Integer), CType(CType(60, Byte), Integer), CType(CType(60, Byte), Integer))
+        Me.PnlBatas2.Dock = System.Windows.Forms.DockStyle.Left
+        Me.PnlBatas2.Font = New System.Drawing.Font("Century Gothic", 11.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.PnlBatas2.Location = New System.Drawing.Point(0, 42)
+        Me.PnlBatas2.Name = "PnlBatas2"
+        Me.PnlBatas2.Size = New System.Drawing.Size(6, 654)
+        Me.PnlBatas2.TabIndex = 40
         '
-        'LblUtama
+        'LblHeaderForm
         '
-        Me.LblUtama.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
-            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.LblUtama.BackColor = System.Drawing.Color.Yellow
-        Me.LblUtama.Font = New System.Drawing.Font("Century Gothic", 18.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.LblUtama.ForeColor = System.Drawing.Color.Black
-        Me.LblUtama.Location = New System.Drawing.Point(3, 0)
-        Me.LblUtama.Name = "LblUtama"
-        Me.LblUtama.Size = New System.Drawing.Size(1137, 30)
-        Me.LblUtama.TabIndex = 20
-        Me.LblUtama.Text = "BARANG"
-        Me.LblUtama.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
+        Me.LblHeaderForm.BackColor = System.Drawing.Color.FromArgb(CType(CType(37, Byte), Integer), CType(CType(99, Byte), Integer), CType(CType(235, Byte), Integer))
+        Me.LblHeaderForm.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.LblHeaderForm.Font = New System.Drawing.Font("Bookman Old Style", 24.0!, CType((System.Drawing.FontStyle.Bold Or System.Drawing.FontStyle.Italic), System.Drawing.FontStyle))
+        Me.LblHeaderForm.ForeColor = System.Drawing.Color.Black
+        Me.LblHeaderForm.Location = New System.Drawing.Point(0, 0)
+        Me.LblHeaderForm.Name = "LblHeaderForm"
+        Me.LblHeaderForm.Size = New System.Drawing.Size(1150, 42)
+        Me.LblHeaderForm.TabIndex = 20
+        Me.LblHeaderForm.Text = "BARANG"
+        Me.LblHeaderForm.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
         '
         'PanelHeader
         '
-        Me.PanelHeader.BackColor = System.Drawing.Color.DarkGray
-        Me.PanelHeader.Controls.Add(Me.BtnMinimize)
-        Me.PanelHeader.Controls.Add(Me.BtnClose)
-        Me.PanelHeader.Controls.Add(Me.LblUtama)
+        Me.PanelHeader.Controls.Add(Me.LblHeaderForm)
         Me.PanelHeader.Dock = System.Windows.Forms.DockStyle.Top
         Me.PanelHeader.Font = New System.Drawing.Font("Century Gothic", 11.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.PanelHeader.Location = New System.Drawing.Point(0, 0)
         Me.PanelHeader.Name = "PanelHeader"
-        Me.PanelHeader.Size = New System.Drawing.Size(1143, 30)
+        Me.PanelHeader.Size = New System.Drawing.Size(1150, 42)
         Me.PanelHeader.TabIndex = 37
         '
-        'BtnMinimize
+        'GBInput2
         '
-        Me.BtnMinimize.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.BtnMinimize.BackColor = System.Drawing.Color.DimGray
-        Me.BtnMinimize.FlatAppearance.BorderSize = 0
-        Me.BtnMinimize.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(CType(CType(54, Byte), Integer), CType(CType(51, Byte), Integer), CType(CType(98, Byte), Integer))
-        Me.BtnMinimize.Font = New System.Drawing.Font("Century Gothic", 11.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.BtnMinimize.ForeColor = System.Drawing.Color.Blue
-        Me.BtnMinimize.Image = CType(resources.GetObject("BtnMinimize.Image"), System.Drawing.Image)
-        Me.BtnMinimize.ImageAlign = System.Drawing.ContentAlignment.BottomCenter
-        Me.BtnMinimize.Location = New System.Drawing.Point(1077, 3)
-        Me.BtnMinimize.Name = "BtnMinimize"
-        Me.BtnMinimize.Size = New System.Drawing.Size(23, 23)
-        Me.BtnMinimize.TabIndex = 0
-        Me.BtnMinimize.UseVisualStyleBackColor = False
-        '
-        'BtnClose
-        '
-        Me.BtnClose.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.BtnClose.BackColor = System.Drawing.Color.Red
-        Me.BtnClose.FlatAppearance.BorderSize = 0
-        Me.BtnClose.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Crimson
-        Me.BtnClose.Font = New System.Drawing.Font("Century Gothic", 11.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.BtnClose.ForeColor = System.Drawing.Color.Blue
-        Me.BtnClose.Image = CType(resources.GetObject("BtnClose.Image"), System.Drawing.Image)
-        Me.BtnClose.Location = New System.Drawing.Point(1106, 3)
-        Me.BtnClose.Name = "BtnClose"
-        Me.BtnClose.Size = New System.Drawing.Size(23, 23)
-        Me.BtnClose.TabIndex = 0
-        Me.BtnClose.UseVisualStyleBackColor = False
-        '
-        'GBJualUmum
-        '
-        Me.GBJualUmum.BackColor = System.Drawing.Color.White
-        Me.GBJualUmum.Controls.Add(Me.LblBeliUmumBesar)
-        Me.GBJualUmum.Controls.Add(Me.LbljualUmumBesar)
-        Me.GBJualUmum.Controls.Add(Me.LbljualUmumSedang)
-        Me.GBJualUmum.Controls.Add(Me.LblBeliUmumSedang)
-        Me.GBJualUmum.Controls.Add(Me.LbljualUmumKecil)
-        Me.GBJualUmum.Controls.Add(Me.Label36)
-        Me.GBJualUmum.Controls.Add(Me.LblBeliUmumKecil)
-        Me.GBJualUmum.Controls.Add(Me.Label37)
-        Me.GBJualUmum.Controls.Add(Me.Label38)
-        Me.GBJualUmum.Controls.Add(Me.TxtIsiUmumBesar)
-        Me.GBJualUmum.Controls.Add(Me.TxtLabaPersenUmumBesar)
-        Me.GBJualUmum.Controls.Add(Me.TxtLabaRpUmumBesar)
-        Me.GBJualUmum.Controls.Add(Me.TxtHArgaJUalUmumBesar)
-        Me.GBJualUmum.Controls.Add(Me.CmbSatUmumBesar)
-        Me.GBJualUmum.Controls.Add(Me.TxtHargaBeliUmumBesar)
-        Me.GBJualUmum.Controls.Add(Me.TxtLabaPersenUmumSedang)
-        Me.GBJualUmum.Controls.Add(Me.TxtHargaBeliUmumKecil)
-        Me.GBJualUmum.Controls.Add(Me.TxtHargaBeliUmumSedang)
-        Me.GBJualUmum.Controls.Add(Me.TxtHArgaJUalUmumKecil)
-        Me.GBJualUmum.Controls.Add(Me.TxtHArgaJUalUmumSedang)
-        Me.GBJualUmum.Controls.Add(Me.TxtLabaRpUmumSedang)
-        Me.GBJualUmum.Controls.Add(Me.TxtIsiUmumSedang)
-        Me.GBJualUmum.Controls.Add(Me.Label11)
-        Me.GBJualUmum.Controls.Add(Me.Label16)
-        Me.GBJualUmum.Controls.Add(Me.CmbSatUmumKecil)
-        Me.GBJualUmum.Controls.Add(Me.TxtIsiUmumKecil)
-        Me.GBJualUmum.Controls.Add(Me.TxtLabaPersenUmumKecil)
-        Me.GBJualUmum.Controls.Add(Me.CmbSatUmumSedang)
-        Me.GBJualUmum.Controls.Add(Me.TxtLabaRpUmumKecil)
-        Me.GBJualUmum.Controls.Add(Me.Label17)
-        Me.GBJualUmum.Controls.Add(Me.Label14)
-        Me.GBJualUmum.Controls.Add(Me.Label13)
-        Me.GBJualUmum.Controls.Add(Me.Label12)
-        Me.GBJualUmum.Font = New System.Drawing.Font("Century Gothic", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.GBJualUmum.ForeColor = System.Drawing.Color.Black
-        Me.GBJualUmum.Location = New System.Drawing.Point(12, 256)
-        Me.GBJualUmum.Name = "GBJualUmum"
-        Me.GBJualUmum.Size = New System.Drawing.Size(791, 152)
-        Me.GBJualUmum.TabIndex = 2
-        Me.GBJualUmum.TabStop = False
-        Me.GBJualUmum.Text = "Harga Jual Pelanggan Umum"
+        Me.GBInput2.BackColor = System.Drawing.Color.White
+        Me.GBInput2.Controls.Add(Me.LblBeliUmumBesar)
+        Me.GBInput2.Controls.Add(Me.LbljualUmumBesar)
+        Me.GBInput2.Controls.Add(Me.LbljualUmumSedang)
+        Me.GBInput2.Controls.Add(Me.LblBeliUmumSedang)
+        Me.GBInput2.Controls.Add(Me.LbljualUmumKecil)
+        Me.GBInput2.Controls.Add(Me.Label36)
+        Me.GBInput2.Controls.Add(Me.LblBeliUmumKecil)
+        Me.GBInput2.Controls.Add(Me.Label37)
+        Me.GBInput2.Controls.Add(Me.Label38)
+        Me.GBInput2.Controls.Add(Me.TxtIsiUmumBesar)
+        Me.GBInput2.Controls.Add(Me.TxtLabaPersenUmumBesar)
+        Me.GBInput2.Controls.Add(Me.TxtLabaRpUmumBesar)
+        Me.GBInput2.Controls.Add(Me.TxtHArgaJUalUmumBesar)
+        Me.GBInput2.Controls.Add(Me.CmbSatUmumBesar)
+        Me.GBInput2.Controls.Add(Me.TxtHargaBeliUmumBesar)
+        Me.GBInput2.Controls.Add(Me.TxtLabaPersenUmumSedang)
+        Me.GBInput2.Controls.Add(Me.TxtHargaBeliUmumKecil)
+        Me.GBInput2.Controls.Add(Me.TxtHargaBeliUmumSedang)
+        Me.GBInput2.Controls.Add(Me.TxtHArgaJUalUmumKecil)
+        Me.GBInput2.Controls.Add(Me.TxtHArgaJUalUmumSedang)
+        Me.GBInput2.Controls.Add(Me.TxtLabaRpUmumSedang)
+        Me.GBInput2.Controls.Add(Me.TxtIsiUmumSedang)
+        Me.GBInput2.Controls.Add(Me.Label11)
+        Me.GBInput2.Controls.Add(Me.Label16)
+        Me.GBInput2.Controls.Add(Me.CmbSatUmumKecil)
+        Me.GBInput2.Controls.Add(Me.TxtIsiUmumKecil)
+        Me.GBInput2.Controls.Add(Me.TxtLabaPersenUmumKecil)
+        Me.GBInput2.Controls.Add(Me.CmbSatUmumSedang)
+        Me.GBInput2.Controls.Add(Me.TxtLabaRpUmumKecil)
+        Me.GBInput2.Controls.Add(Me.Label17)
+        Me.GBInput2.Controls.Add(Me.Label14)
+        Me.GBInput2.Controls.Add(Me.Label13)
+        Me.GBInput2.Controls.Add(Me.Label12)
+        Me.GBInput2.Font = New System.Drawing.Font("Century Gothic", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.GBInput2.ForeColor = System.Drawing.Color.Black
+        Me.GBInput2.Location = New System.Drawing.Point(12, 306)
+        Me.GBInput2.Name = "GBInput2"
+        Me.GBInput2.Size = New System.Drawing.Size(791, 152)
+        Me.GBInput2.TabIndex = 2
+        Me.GBInput2.TabStop = False
+        Me.GBInput2.Text = "Harga Jual Pelanggan Umum"
         '
         'LblBeliUmumBesar
         '
@@ -698,49 +666,49 @@ Partial Class TambahBarang
         Me.Label12.TabIndex = 59
         Me.Label12.Text = "Harga Beli (Rp)"
         '
-        'GBJualPartai
+        'GBInput3
         '
-        Me.GBJualPartai.BackColor = System.Drawing.Color.White
-        Me.GBJualPartai.Controls.Add(Me.LbljualPartaiBesar)
-        Me.GBJualPartai.Controls.Add(Me.LbljualPartaiSedang)
-        Me.GBJualPartai.Controls.Add(Me.LbljualPartaiKecil)
-        Me.GBJualPartai.Controls.Add(Me.LblBeliPartaiBesar)
-        Me.GBJualPartai.Controls.Add(Me.LblBeliPartaiSedang)
-        Me.GBJualPartai.Controls.Add(Me.LblBeliPartaiKecil)
-        Me.GBJualPartai.Controls.Add(Me.TxtIsiPartaiBesar)
-        Me.GBJualPartai.Controls.Add(Me.TxtLabaPersenPartaiBesar)
-        Me.GBJualPartai.Controls.Add(Me.Label9)
-        Me.GBJualPartai.Controls.Add(Me.TxtLabaRpPartaiBesar)
-        Me.GBJualPartai.Controls.Add(Me.CmbSatPartaiBesar)
-        Me.GBJualPartai.Controls.Add(Me.TxtHArgaJualPartaiBesar)
-        Me.GBJualPartai.Controls.Add(Me.TxtHargaBeliPartaiBesar)
-        Me.GBJualPartai.Controls.Add(Me.TxtLabaPersenPartaiSedang)
-        Me.GBJualPartai.Controls.Add(Me.Label23)
-        Me.GBJualPartai.Controls.Add(Me.TxtLabaRpPartaiSedang)
-        Me.GBJualPartai.Controls.Add(Me.TxtIsiPartaiSedang)
-        Me.GBJualPartai.Controls.Add(Me.TxtHArgaJualPartaiSedang)
-        Me.GBJualPartai.Controls.Add(Me.TxtHargaBeliPartaiSedang)
-        Me.GBJualPartai.Controls.Add(Me.Label25)
-        Me.GBJualPartai.Controls.Add(Me.CmbSatPartaiKecil)
-        Me.GBJualPartai.Controls.Add(Me.CmbSatPartaiSedang)
-        Me.GBJualPartai.Controls.Add(Me.TxtLabaPersenPartaiKecil)
-        Me.GBJualPartai.Controls.Add(Me.Label30)
-        Me.GBJualPartai.Controls.Add(Me.Label26)
-        Me.GBJualPartai.Controls.Add(Me.TxtIsiPartaiKecil)
-        Me.GBJualPartai.Controls.Add(Me.TxtLabaRpPartaiKecil)
-        Me.GBJualPartai.Controls.Add(Me.Label24)
-        Me.GBJualPartai.Controls.Add(Me.Label27)
-        Me.GBJualPartai.Controls.Add(Me.TxtHArgaJualPartaikecil)
-        Me.GBJualPartai.Controls.Add(Me.Label28)
-        Me.GBJualPartai.Controls.Add(Me.TxtHargaBeliPartaiKecil)
-        Me.GBJualPartai.Controls.Add(Me.Label29)
-        Me.GBJualPartai.Font = New System.Drawing.Font("Century Gothic", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.GBJualPartai.Location = New System.Drawing.Point(12, 414)
-        Me.GBJualPartai.Name = "GBJualPartai"
-        Me.GBJualPartai.Size = New System.Drawing.Size(791, 150)
-        Me.GBJualPartai.TabIndex = 3
-        Me.GBJualPartai.TabStop = False
-        Me.GBJualPartai.Text = "Harga Jual Pelanggan Partai"
+        Me.GBInput3.BackColor = System.Drawing.Color.White
+        Me.GBInput3.Controls.Add(Me.LbljualPartaiBesar)
+        Me.GBInput3.Controls.Add(Me.LbljualPartaiSedang)
+        Me.GBInput3.Controls.Add(Me.LbljualPartaiKecil)
+        Me.GBInput3.Controls.Add(Me.LblBeliPartaiBesar)
+        Me.GBInput3.Controls.Add(Me.LblBeliPartaiSedang)
+        Me.GBInput3.Controls.Add(Me.LblBeliPartaiKecil)
+        Me.GBInput3.Controls.Add(Me.TxtIsiPartaiBesar)
+        Me.GBInput3.Controls.Add(Me.TxtLabaPersenPartaiBesar)
+        Me.GBInput3.Controls.Add(Me.Label9)
+        Me.GBInput3.Controls.Add(Me.TxtLabaRpPartaiBesar)
+        Me.GBInput3.Controls.Add(Me.CmbSatPartaiBesar)
+        Me.GBInput3.Controls.Add(Me.TxtHArgaJualPartaiBesar)
+        Me.GBInput3.Controls.Add(Me.TxtHargaBeliPartaiBesar)
+        Me.GBInput3.Controls.Add(Me.TxtLabaPersenPartaiSedang)
+        Me.GBInput3.Controls.Add(Me.Label23)
+        Me.GBInput3.Controls.Add(Me.TxtLabaRpPartaiSedang)
+        Me.GBInput3.Controls.Add(Me.TxtIsiPartaiSedang)
+        Me.GBInput3.Controls.Add(Me.TxtHArgaJualPartaiSedang)
+        Me.GBInput3.Controls.Add(Me.TxtHargaBeliPartaiSedang)
+        Me.GBInput3.Controls.Add(Me.Label25)
+        Me.GBInput3.Controls.Add(Me.CmbSatPartaiKecil)
+        Me.GBInput3.Controls.Add(Me.CmbSatPartaiSedang)
+        Me.GBInput3.Controls.Add(Me.TxtLabaPersenPartaiKecil)
+        Me.GBInput3.Controls.Add(Me.Label30)
+        Me.GBInput3.Controls.Add(Me.Label26)
+        Me.GBInput3.Controls.Add(Me.TxtIsiPartaiKecil)
+        Me.GBInput3.Controls.Add(Me.TxtLabaRpPartaiKecil)
+        Me.GBInput3.Controls.Add(Me.Label24)
+        Me.GBInput3.Controls.Add(Me.Label27)
+        Me.GBInput3.Controls.Add(Me.TxtHArgaJualPartaikecil)
+        Me.GBInput3.Controls.Add(Me.Label28)
+        Me.GBInput3.Controls.Add(Me.TxtHargaBeliPartaiKecil)
+        Me.GBInput3.Controls.Add(Me.Label29)
+        Me.GBInput3.Font = New System.Drawing.Font("Century Gothic", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.GBInput3.Location = New System.Drawing.Point(12, 464)
+        Me.GBInput3.Name = "GBInput3"
+        Me.GBInput3.Size = New System.Drawing.Size(791, 150)
+        Me.GBInput3.TabIndex = 3
+        Me.GBInput3.TabStop = False
+        Me.GBInput3.Text = "Harga Jual Pelanggan Partai"
         '
         'LbljualPartaiBesar
         '
@@ -1108,38 +1076,72 @@ Partial Class TambahBarang
         Me.Label29.TabIndex = 59
         Me.Label29.Text = "Harga Beli (Rp)"
         '
-        'GBBarang
+        'GBInput
         '
-        Me.GBBarang.BackColor = System.Drawing.Color.White
-        Me.GBBarang.Controls.Add(Me.LblHargaBeliTerakhir)
-        Me.GBBarang.Controls.Add(Me.TxtHargaBeliTerakhir)
-        Me.GBBarang.Controls.Add(Me.Label44)
-        Me.GBBarang.Controls.Add(Me.LblHargaBeli)
-        Me.GBBarang.Controls.Add(Me.CBManual)
-        Me.GBBarang.Controls.Add(Me.TxtKodeSupliyer)
-        Me.GBBarang.Controls.Add(Me.CmbSupliyer)
-        Me.GBBarang.Controls.Add(Me.Label8)
-        Me.GBBarang.Controls.Add(Me.TxtKategori)
-        Me.GBBarang.Controls.Add(Me.CmbKategori)
-        Me.GBBarang.Controls.Add(Me.Label3)
-        Me.GBBarang.Controls.Add(Me.TxtHrgBeli)
-        Me.GBBarang.Controls.Add(Me.TxtNama)
-        Me.GBBarang.Controls.Add(Me.Label6)
-        Me.GBBarang.Controls.Add(Me.Label1)
-        Me.GBBarang.Controls.Add(Me.Label2)
-        Me.GBBarang.Controls.Add(Me.TxtKode)
-        Me.GBBarang.Font = New System.Drawing.Font("Century Gothic", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.GBBarang.Location = New System.Drawing.Point(12, 36)
-        Me.GBBarang.Name = "GBBarang"
-        Me.GBBarang.Size = New System.Drawing.Size(581, 181)
-        Me.GBBarang.TabIndex = 1
-        Me.GBBarang.TabStop = False
-        Me.GBBarang.Text = "Pengaturan Barang"
+        Me.GBInput.BackColor = System.Drawing.Color.White
+        Me.GBInput.Controls.Add(Me.TxtMerk)
+        Me.GBInput.Controls.Add(Me.CmbMerk)
+        Me.GBInput.Controls.Add(Me.Label45)
+        Me.GBInput.Controls.Add(Me.LblHargaBeliTerakhir)
+        Me.GBInput.Controls.Add(Me.TxtHargaBeliTerakhir)
+        Me.GBInput.Controls.Add(Me.Label44)
+        Me.GBInput.Controls.Add(Me.LblHargaBeli)
+        Me.GBInput.Controls.Add(Me.CBManual)
+        Me.GBInput.Controls.Add(Me.TxtKodeSupliyer)
+        Me.GBInput.Controls.Add(Me.CmbSupliyer)
+        Me.GBInput.Controls.Add(Me.Label8)
+        Me.GBInput.Controls.Add(Me.TxtKategori)
+        Me.GBInput.Controls.Add(Me.CmbKategori)
+        Me.GBInput.Controls.Add(Me.Label3)
+        Me.GBInput.Controls.Add(Me.TxtHrgBeli)
+        Me.GBInput.Controls.Add(Me.TxtNama)
+        Me.GBInput.Controls.Add(Me.Label6)
+        Me.GBInput.Controls.Add(Me.Label1)
+        Me.GBInput.Controls.Add(Me.Label2)
+        Me.GBInput.Controls.Add(Me.TxtKode)
+        Me.GBInput.Font = New System.Drawing.Font("Century Gothic", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.GBInput.Location = New System.Drawing.Point(12, 48)
+        Me.GBInput.Name = "GBInput"
+        Me.GBInput.Size = New System.Drawing.Size(581, 216)
+        Me.GBInput.TabIndex = 1
+        Me.GBInput.TabStop = False
+        Me.GBInput.Text = "Pengaturan Barang"
+        '
+        'TxtMerk
+        '
+        Me.TxtMerk.BackColor = System.Drawing.Color.White
+        Me.TxtMerk.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
+        Me.TxtMerk.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.TxtMerk.Location = New System.Drawing.Point(286, 116)
+        Me.TxtMerk.Name = "TxtMerk"
+        Me.TxtMerk.ReadOnly = True
+        Me.TxtMerk.Size = New System.Drawing.Size(85, 22)
+        Me.TxtMerk.TabIndex = 95
+        '
+        'CmbMerk
+        '
+        Me.CmbMerk.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
+        Me.CmbMerk.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.CmbMerk.FormattingEnabled = True
+        Me.CmbMerk.Location = New System.Drawing.Point(103, 115)
+        Me.CmbMerk.Name = "CmbMerk"
+        Me.CmbMerk.Size = New System.Drawing.Size(177, 24)
+        Me.CmbMerk.TabIndex = 93
+        '
+        'Label45
+        '
+        Me.Label45.AutoSize = True
+        Me.Label45.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.Label45.Location = New System.Drawing.Point(55, 119)
+        Me.Label45.Name = "Label45"
+        Me.Label45.Size = New System.Drawing.Size(43, 16)
+        Me.Label45.TabIndex = 94
+        Me.Label45.Text = "Merk :"
         '
         'LblHargaBeliTerakhir
         '
         Me.LblHargaBeliTerakhir.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.LblHargaBeliTerakhir.Location = New System.Drawing.Point(227, 150)
+        Me.LblHargaBeliTerakhir.Location = New System.Drawing.Point(227, 177)
         Me.LblHargaBeliTerakhir.Name = "LblHargaBeliTerakhir"
         Me.LblHargaBeliTerakhir.Size = New System.Drawing.Size(136, 20)
         Me.LblHargaBeliTerakhir.TabIndex = 92
@@ -1151,7 +1153,7 @@ Partial Class TambahBarang
         Me.TxtHargaBeliTerakhir.BackColor = System.Drawing.Color.White
         Me.TxtHargaBeliTerakhir.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
         Me.TxtHargaBeliTerakhir.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.TxtHargaBeliTerakhir.Location = New System.Drawing.Point(103, 147)
+        Me.TxtHargaBeliTerakhir.Location = New System.Drawing.Point(103, 174)
         Me.TxtHargaBeliTerakhir.Name = "TxtHargaBeliTerakhir"
         Me.TxtHargaBeliTerakhir.Size = New System.Drawing.Size(118, 22)
         Me.TxtHargaBeliTerakhir.TabIndex = 91
@@ -1162,7 +1164,7 @@ Partial Class TambahBarang
         '
         Me.Label44.AutoSize = True
         Me.Label44.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label44.Location = New System.Drawing.Point(19, 150)
+        Me.Label44.Location = New System.Drawing.Point(21, 177)
         Me.Label44.Name = "Label44"
         Me.Label44.Size = New System.Drawing.Size(77, 16)
         Me.Label44.TabIndex = 90
@@ -1171,7 +1173,7 @@ Partial Class TambahBarang
         'LblHargaBeli
         '
         Me.LblHargaBeli.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.LblHargaBeli.Location = New System.Drawing.Point(227, 120)
+        Me.LblHargaBeli.Location = New System.Drawing.Point(227, 147)
         Me.LblHargaBeli.Name = "LblHargaBeli"
         Me.LblHargaBeli.Size = New System.Drawing.Size(136, 20)
         Me.LblHargaBeli.TabIndex = 89
@@ -1212,7 +1214,7 @@ Partial Class TambahBarang
         '
         Me.Label8.AutoSize = True
         Me.Label8.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label8.Location = New System.Drawing.Point(40, 89)
+        Me.Label8.Location = New System.Drawing.Point(42, 89)
         Me.Label8.Name = "Label8"
         Me.Label8.Size = New System.Drawing.Size(56, 16)
         Me.Label8.TabIndex = 67
@@ -1243,7 +1245,7 @@ Partial Class TambahBarang
         '
         Me.Label3.AutoSize = True
         Me.Label3.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label3.Location = New System.Drawing.Point(39, 58)
+        Me.Label3.Location = New System.Drawing.Point(41, 58)
         Me.Label3.Name = "Label3"
         Me.Label3.Size = New System.Drawing.Size(57, 16)
         Me.Label3.TabIndex = 62
@@ -1253,7 +1255,7 @@ Partial Class TambahBarang
         '
         Me.TxtHrgBeli.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
         Me.TxtHrgBeli.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.TxtHrgBeli.Location = New System.Drawing.Point(103, 118)
+        Me.TxtHrgBeli.Location = New System.Drawing.Point(103, 145)
         Me.TxtHrgBeli.Name = "TxtHrgBeli"
         Me.TxtHrgBeli.Size = New System.Drawing.Size(118, 22)
         Me.TxtHrgBeli.TabIndex = 4
@@ -1272,7 +1274,7 @@ Partial Class TambahBarang
         '
         Me.Label6.AutoSize = True
         Me.Label6.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label6.Location = New System.Drawing.Point(61, 121)
+        Me.Label6.Location = New System.Drawing.Point(63, 148)
         Me.Label6.Name = "Label6"
         Me.Label6.Size = New System.Drawing.Size(35, 16)
         Me.Label6.TabIndex = 55
@@ -1282,7 +1284,7 @@ Partial Class TambahBarang
         '
         Me.Label1.AutoSize = True
         Me.Label1.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label1.Location = New System.Drawing.Point(52, 28)
+        Me.Label1.Location = New System.Drawing.Point(54, 28)
         Me.Label1.Name = "Label1"
         Me.Label1.Size = New System.Drawing.Size(44, 16)
         Me.Label1.TabIndex = 54
@@ -1311,7 +1313,7 @@ Partial Class TambahBarang
         '
         Me.LblMetode.AutoSize = True
         Me.LblMetode.Font = New System.Drawing.Font("Century Gothic", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.LblMetode.Location = New System.Drawing.Point(843, 235)
+        Me.LblMetode.Location = New System.Drawing.Point(843, 247)
         Me.LblMetode.Name = "LblMetode"
         Me.LblMetode.Size = New System.Drawing.Size(58, 17)
         Me.LblMetode.TabIndex = 91
@@ -1322,37 +1324,37 @@ Partial Class TambahBarang
         '
         Me.LblJenis.AutoSize = True
         Me.LblJenis.Font = New System.Drawing.Font("Century Gothic", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.LblJenis.Location = New System.Drawing.Point(912, 235)
+        Me.LblJenis.Location = New System.Drawing.Point(912, 247)
         Me.LblJenis.Name = "LblJenis"
         Me.LblJenis.Size = New System.Drawing.Size(38, 17)
         Me.LblJenis.TabIndex = 90
         Me.LblJenis.Text = "Jenis"
         Me.LblJenis.Visible = False
         '
-        'GBStok
+        'GBInput4
         '
-        Me.GBStok.BackColor = System.Drawing.Color.White
-        Me.GBStok.Controls.Add(Me.CmBstokAwal)
-        Me.GBStok.Controls.Add(Me.CmbStokAkhir)
-        Me.GBStok.Controls.Add(Me.TxtJmlhToko)
-        Me.GBStok.Controls.Add(Me.TxtJmlhGudang)
-        Me.GBStok.Controls.Add(Me.TxtIsiStokAwal)
-        Me.GBStok.Controls.Add(Me.TxtIsiStokAkhir)
-        Me.GBStok.Controls.Add(Me.Label34)
-        Me.GBStok.Controls.Add(Me.LblJudulStok)
-        Me.GBStok.Controls.Add(Me.Label35)
-        Me.GBStok.Controls.Add(Me.Label7)
-        Me.GBStok.Controls.Add(Me.Label33)
-        Me.GBStok.Controls.Add(Me.TxtStokMAx)
-        Me.GBStok.Controls.Add(Me.TxtStokAwal)
-        Me.GBStok.Controls.Add(Me.TextMin)
-        Me.GBStok.Controls.Add(Me.TxtStokAkhir)
-        Me.GBStok.Font = New System.Drawing.Font("Century Gothic", 11.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.GBStok.Location = New System.Drawing.Point(811, 256)
-        Me.GBStok.Name = "GBStok"
-        Me.GBStok.Size = New System.Drawing.Size(326, 152)
-        Me.GBStok.TabIndex = 5
-        Me.GBStok.TabStop = False
+        Me.GBInput4.BackColor = System.Drawing.Color.White
+        Me.GBInput4.Controls.Add(Me.CmBstokAwal)
+        Me.GBInput4.Controls.Add(Me.CmbStokAkhir)
+        Me.GBInput4.Controls.Add(Me.TxtJmlhToko)
+        Me.GBInput4.Controls.Add(Me.TxtJmlhGudang)
+        Me.GBInput4.Controls.Add(Me.TxtIsiStokAwal)
+        Me.GBInput4.Controls.Add(Me.TxtIsiStokAkhir)
+        Me.GBInput4.Controls.Add(Me.Label34)
+        Me.GBInput4.Controls.Add(Me.LblJudulStok)
+        Me.GBInput4.Controls.Add(Me.Label35)
+        Me.GBInput4.Controls.Add(Me.Label7)
+        Me.GBInput4.Controls.Add(Me.Label33)
+        Me.GBInput4.Controls.Add(Me.TxtStokMAx)
+        Me.GBInput4.Controls.Add(Me.TxtStokAwal)
+        Me.GBInput4.Controls.Add(Me.TextMin)
+        Me.GBInput4.Controls.Add(Me.TxtStokAkhir)
+        Me.GBInput4.Font = New System.Drawing.Font("Century Gothic", 11.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.GBInput4.Location = New System.Drawing.Point(811, 268)
+        Me.GBInput4.Name = "GBInput4"
+        Me.GBInput4.Size = New System.Drawing.Size(326, 152)
+        Me.GBInput4.TabIndex = 5
+        Me.GBInput4.TabStop = False
         '
         'CmBstokAwal
         '
@@ -1506,30 +1508,30 @@ Partial Class TambahBarang
         Me.TxtStokAkhir.Text = "0"
         Me.TxtStokAkhir.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
         '
-        'GBBarcode
+        'GBInput1
         '
-        Me.GBBarcode.BackColor = System.Drawing.Color.White
-        Me.GBBarcode.Controls.Add(Me.TxtBarcodeUmumBesar)
-        Me.GBBarcode.Controls.Add(Me.TxtBarcodeUmumSedang)
-        Me.GBBarcode.Controls.Add(Me.TxtBarcodeUmumKecil)
-        Me.GBBarcode.Controls.Add(Me.Label31)
-        Me.GBBarcode.Controls.Add(Me.Button1)
-        Me.GBBarcode.Controls.Add(Me.Button2)
-        Me.GBBarcode.Controls.Add(Me.Button3)
-        Me.GBBarcode.Controls.Add(Me.BtnGenUmumBesar)
-        Me.GBBarcode.Controls.Add(Me.BtnGenUmumSedang)
-        Me.GBBarcode.Controls.Add(Me.BtnGenUmumKecil)
-        Me.GBBarcode.Controls.Add(Me.Label21)
-        Me.GBBarcode.Controls.Add(Me.Label19)
-        Me.GBBarcode.Controls.Add(Me.Label15)
-        Me.GBBarcode.Controls.Add(Me.Label32)
-        Me.GBBarcode.Controls.Add(Me.Label10)
-        Me.GBBarcode.Font = New System.Drawing.Font("Century Gothic", 11.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.GBBarcode.Location = New System.Drawing.Point(599, 36)
-        Me.GBBarcode.Name = "GBBarcode"
-        Me.GBBarcode.Size = New System.Drawing.Size(421, 147)
-        Me.GBBarcode.TabIndex = 4
-        Me.GBBarcode.TabStop = False
+        Me.GBInput1.BackColor = System.Drawing.Color.White
+        Me.GBInput1.Controls.Add(Me.TxtBarcodeUmumBesar)
+        Me.GBInput1.Controls.Add(Me.TxtBarcodeUmumSedang)
+        Me.GBInput1.Controls.Add(Me.TxtBarcodeUmumKecil)
+        Me.GBInput1.Controls.Add(Me.Label31)
+        Me.GBInput1.Controls.Add(Me.BtnPrintBesar)
+        Me.GBInput1.Controls.Add(Me.BtnPrintSedang)
+        Me.GBInput1.Controls.Add(Me.BtnPrintKecil)
+        Me.GBInput1.Controls.Add(Me.BtnGenUmumBesar)
+        Me.GBInput1.Controls.Add(Me.BtnGenUmumSedang)
+        Me.GBInput1.Controls.Add(Me.BtnGenUmumKecil)
+        Me.GBInput1.Controls.Add(Me.Label21)
+        Me.GBInput1.Controls.Add(Me.Label19)
+        Me.GBInput1.Controls.Add(Me.Label15)
+        Me.GBInput1.Controls.Add(Me.Label32)
+        Me.GBInput1.Controls.Add(Me.Label10)
+        Me.GBInput1.Font = New System.Drawing.Font("Century Gothic", 11.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.GBInput1.Location = New System.Drawing.Point(599, 48)
+        Me.GBInput1.Name = "GBInput1"
+        Me.GBInput1.Size = New System.Drawing.Size(421, 147)
+        Me.GBInput1.TabIndex = 4
+        Me.GBInput1.TabStop = False
         '
         'TxtBarcodeUmumBesar
         '
@@ -1568,77 +1570,140 @@ Partial Class TambahBarang
         Me.Label31.TabIndex = 115
         Me.Label31.Text = "Kode Barcode Otomatis"
         '
-        'Button1
+        'BtnPrintBesar
         '
-        Me.Button1.Font = New System.Drawing.Font("Century Gothic", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Button1.Image = CType(resources.GetObject("Button1.Image"), System.Drawing.Image)
-        Me.Button1.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft
-        Me.Button1.Location = New System.Drawing.Point(316, 106)
-        Me.Button1.Name = "Button1"
-        Me.Button1.Size = New System.Drawing.Size(81, 26)
-        Me.Button1.TabIndex = 114
-        Me.Button1.Text = "Print"
-        Me.Button1.TextAlign = System.Drawing.ContentAlignment.MiddleRight
-        Me.Button1.UseVisualStyleBackColor = True
-        Me.Button1.Visible = False
+        Me.BtnPrintBesar.AutoSize = True
+        Me.BtnPrintBesar.BackColor = System.Drawing.Color.White
+        Me.BtnPrintBesar.Cursor = System.Windows.Forms.Cursors.Hand
+        Me.BtnPrintBesar.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(CType(CType(100, Byte), Integer), CType(CType(116, Byte), Integer), CType(CType(139, Byte), Integer))
+        Me.BtnPrintBesar.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(CType(CType(226, Byte), Integer), CType(CType(232, Byte), Integer), CType(CType(240, Byte), Integer))
+        Me.BtnPrintBesar.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(CType(CType(241, Byte), Integer), CType(CType(245, Byte), Integer), CType(CType(249, Byte), Integer))
+        Me.BtnPrintBesar.FlatStyle = System.Windows.Forms.FlatStyle.Flat
+        Me.BtnPrintBesar.Font = New System.Drawing.Font("Segoe UI Semibold", 9.0!, System.Drawing.FontStyle.Bold)
+        Me.BtnPrintBesar.ForeColor = System.Drawing.Color.Black
+        Me.BtnPrintBesar.Image = CType(resources.GetObject("BtnPrintBesar.Image"), System.Drawing.Image)
+        Me.BtnPrintBesar.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft
+        Me.BtnPrintBesar.Location = New System.Drawing.Point(303, 106)
+        Me.BtnPrintBesar.Name = "BtnPrintBesar"
+        Me.BtnPrintBesar.Size = New System.Drawing.Size(103, 29)
+        Me.BtnPrintBesar.TabIndex = 114
+        Me.BtnPrintBesar.Text = "Print Besar"
+        Me.BtnPrintBesar.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
+        Me.BtnPrintBesar.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText
+        Me.BtnPrintBesar.UseVisualStyleBackColor = False
+        Me.BtnPrintBesar.Visible = False
         '
-        'Button2
+        'BtnPrintSedang
         '
-        Me.Button2.Font = New System.Drawing.Font("Century Gothic", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Button2.Image = CType(resources.GetObject("Button2.Image"), System.Drawing.Image)
-        Me.Button2.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft
-        Me.Button2.Location = New System.Drawing.Point(316, 74)
-        Me.Button2.Name = "Button2"
-        Me.Button2.Size = New System.Drawing.Size(81, 26)
-        Me.Button2.TabIndex = 113
-        Me.Button2.Text = "Print"
-        Me.Button2.TextAlign = System.Drawing.ContentAlignment.MiddleRight
-        Me.Button2.UseVisualStyleBackColor = True
-        Me.Button2.Visible = False
+        Me.BtnPrintSedang.AutoSize = True
+        Me.BtnPrintSedang.BackColor = System.Drawing.Color.White
+        Me.BtnPrintSedang.Cursor = System.Windows.Forms.Cursors.Hand
+        Me.BtnPrintSedang.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(CType(CType(100, Byte), Integer), CType(CType(116, Byte), Integer), CType(CType(139, Byte), Integer))
+        Me.BtnPrintSedang.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(CType(CType(226, Byte), Integer), CType(CType(232, Byte), Integer), CType(CType(240, Byte), Integer))
+        Me.BtnPrintSedang.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(CType(CType(241, Byte), Integer), CType(CType(245, Byte), Integer), CType(CType(249, Byte), Integer))
+        Me.BtnPrintSedang.FlatStyle = System.Windows.Forms.FlatStyle.Flat
+        Me.BtnPrintSedang.Font = New System.Drawing.Font("Segoe UI Semibold", 9.0!, System.Drawing.FontStyle.Bold)
+        Me.BtnPrintSedang.ForeColor = System.Drawing.Color.Black
+        Me.BtnPrintSedang.Image = CType(resources.GetObject("BtnPrintSedang.Image"), System.Drawing.Image)
+        Me.BtnPrintSedang.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft
+        Me.BtnPrintSedang.Location = New System.Drawing.Point(303, 74)
+        Me.BtnPrintSedang.Name = "BtnPrintSedang"
+        Me.BtnPrintSedang.Size = New System.Drawing.Size(103, 29)
+        Me.BtnPrintSedang.TabIndex = 113
+        Me.BtnPrintSedang.Text = "Print Sedang"
+        Me.BtnPrintSedang.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
+        Me.BtnPrintSedang.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText
+        Me.BtnPrintSedang.UseVisualStyleBackColor = False
+        Me.BtnPrintSedang.Visible = False
         '
-        'Button3
+        'BtnPrintKecil
         '
-        Me.Button3.Font = New System.Drawing.Font("Century Gothic", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Button3.Image = CType(resources.GetObject("Button3.Image"), System.Drawing.Image)
-        Me.Button3.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft
-        Me.Button3.Location = New System.Drawing.Point(316, 41)
-        Me.Button3.Name = "Button3"
-        Me.Button3.Size = New System.Drawing.Size(81, 26)
-        Me.Button3.TabIndex = 112
-        Me.Button3.Text = "Print"
-        Me.Button3.TextAlign = System.Drawing.ContentAlignment.MiddleRight
-        Me.Button3.UseVisualStyleBackColor = True
-        Me.Button3.Visible = False
+        Me.BtnPrintKecil.AutoSize = True
+        Me.BtnPrintKecil.BackColor = System.Drawing.Color.White
+        Me.BtnPrintKecil.Cursor = System.Windows.Forms.Cursors.Hand
+        Me.BtnPrintKecil.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(CType(CType(100, Byte), Integer), CType(CType(116, Byte), Integer), CType(CType(139, Byte), Integer))
+        Me.BtnPrintKecil.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(CType(CType(226, Byte), Integer), CType(CType(232, Byte), Integer), CType(CType(240, Byte), Integer))
+        Me.BtnPrintKecil.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(CType(CType(241, Byte), Integer), CType(CType(245, Byte), Integer), CType(CType(249, Byte), Integer))
+        Me.BtnPrintKecil.FlatStyle = System.Windows.Forms.FlatStyle.Flat
+        Me.BtnPrintKecil.Font = New System.Drawing.Font("Segoe UI Semibold", 9.0!, System.Drawing.FontStyle.Bold)
+        Me.BtnPrintKecil.ForeColor = System.Drawing.Color.Black
+        Me.BtnPrintKecil.Image = CType(resources.GetObject("BtnPrintKecil.Image"), System.Drawing.Image)
+        Me.BtnPrintKecil.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft
+        Me.BtnPrintKecil.Location = New System.Drawing.Point(303, 41)
+        Me.BtnPrintKecil.Name = "BtnPrintKecil"
+        Me.BtnPrintKecil.Size = New System.Drawing.Size(103, 29)
+        Me.BtnPrintKecil.TabIndex = 112
+        Me.BtnPrintKecil.Text = "Print Kecil"
+        Me.BtnPrintKecil.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
+        Me.BtnPrintKecil.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText
+        Me.BtnPrintKecil.UseVisualStyleBackColor = False
+        Me.BtnPrintKecil.Visible = False
         '
         'BtnGenUmumBesar
         '
-        Me.BtnGenUmumBesar.Font = New System.Drawing.Font("Century Gothic", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.BtnGenUmumBesar.Location = New System.Drawing.Point(214, 106)
+        Me.BtnGenUmumBesar.AutoSize = True
+        Me.BtnGenUmumBesar.BackColor = System.Drawing.Color.White
+        Me.BtnGenUmumBesar.Cursor = System.Windows.Forms.Cursors.Hand
+        Me.BtnGenUmumBesar.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(CType(CType(100, Byte), Integer), CType(CType(116, Byte), Integer), CType(CType(139, Byte), Integer))
+        Me.BtnGenUmumBesar.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(CType(CType(226, Byte), Integer), CType(CType(232, Byte), Integer), CType(CType(240, Byte), Integer))
+        Me.BtnGenUmumBesar.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(CType(CType(241, Byte), Integer), CType(CType(245, Byte), Integer), CType(CType(249, Byte), Integer))
+        Me.BtnGenUmumBesar.FlatStyle = System.Windows.Forms.FlatStyle.Flat
+        Me.BtnGenUmumBesar.Font = New System.Drawing.Font("Segoe UI Semibold", 9.0!, System.Drawing.FontStyle.Bold)
+        Me.BtnGenUmumBesar.ForeColor = System.Drawing.Color.Black
+        Me.BtnGenUmumBesar.Image = CType(resources.GetObject("BtnGenUmumBesar.Image"), System.Drawing.Image)
+        Me.BtnGenUmumBesar.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft
+        Me.BtnGenUmumBesar.Location = New System.Drawing.Point(216, 104)
         Me.BtnGenUmumBesar.Name = "BtnGenUmumBesar"
-        Me.BtnGenUmumBesar.Size = New System.Drawing.Size(96, 26)
+        Me.BtnGenUmumBesar.Size = New System.Drawing.Size(82, 27)
         Me.BtnGenUmumBesar.TabIndex = 111
         Me.BtnGenUmumBesar.Text = "Generate"
-        Me.BtnGenUmumBesar.UseVisualStyleBackColor = True
+        Me.BtnGenUmumBesar.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
+        Me.BtnGenUmumBesar.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText
+        Me.BtnGenUmumBesar.UseVisualStyleBackColor = False
         '
         'BtnGenUmumSedang
         '
-        Me.BtnGenUmumSedang.Font = New System.Drawing.Font("Century Gothic", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.BtnGenUmumSedang.Location = New System.Drawing.Point(214, 74)
+        Me.BtnGenUmumSedang.AutoSize = True
+        Me.BtnGenUmumSedang.BackColor = System.Drawing.Color.White
+        Me.BtnGenUmumSedang.Cursor = System.Windows.Forms.Cursors.Hand
+        Me.BtnGenUmumSedang.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(CType(CType(100, Byte), Integer), CType(CType(116, Byte), Integer), CType(CType(139, Byte), Integer))
+        Me.BtnGenUmumSedang.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(CType(CType(226, Byte), Integer), CType(CType(232, Byte), Integer), CType(CType(240, Byte), Integer))
+        Me.BtnGenUmumSedang.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(CType(CType(241, Byte), Integer), CType(CType(245, Byte), Integer), CType(CType(249, Byte), Integer))
+        Me.BtnGenUmumSedang.FlatStyle = System.Windows.Forms.FlatStyle.Flat
+        Me.BtnGenUmumSedang.Font = New System.Drawing.Font("Segoe UI Semibold", 9.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.BtnGenUmumSedang.ForeColor = System.Drawing.Color.Black
+        Me.BtnGenUmumSedang.Image = CType(resources.GetObject("BtnGenUmumSedang.Image"), System.Drawing.Image)
+        Me.BtnGenUmumSedang.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft
+        Me.BtnGenUmumSedang.Location = New System.Drawing.Point(216, 74)
         Me.BtnGenUmumSedang.Name = "BtnGenUmumSedang"
-        Me.BtnGenUmumSedang.Size = New System.Drawing.Size(96, 26)
+        Me.BtnGenUmumSedang.Size = New System.Drawing.Size(82, 28)
         Me.BtnGenUmumSedang.TabIndex = 110
         Me.BtnGenUmumSedang.Text = "Generate"
-        Me.BtnGenUmumSedang.UseVisualStyleBackColor = True
+        Me.BtnGenUmumSedang.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
+        Me.BtnGenUmumSedang.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText
+        Me.BtnGenUmumSedang.UseVisualStyleBackColor = False
         '
         'BtnGenUmumKecil
         '
-        Me.BtnGenUmumKecil.Font = New System.Drawing.Font("Century Gothic", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.BtnGenUmumKecil.Location = New System.Drawing.Point(214, 41)
+        Me.BtnGenUmumKecil.AutoSize = True
+        Me.BtnGenUmumKecil.BackColor = System.Drawing.Color.White
+        Me.BtnGenUmumKecil.Cursor = System.Windows.Forms.Cursors.Hand
+        Me.BtnGenUmumKecil.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(CType(CType(100, Byte), Integer), CType(CType(116, Byte), Integer), CType(CType(139, Byte), Integer))
+        Me.BtnGenUmumKecil.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(CType(CType(226, Byte), Integer), CType(CType(232, Byte), Integer), CType(CType(240, Byte), Integer))
+        Me.BtnGenUmumKecil.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(CType(CType(241, Byte), Integer), CType(CType(245, Byte), Integer), CType(CType(249, Byte), Integer))
+        Me.BtnGenUmumKecil.FlatStyle = System.Windows.Forms.FlatStyle.Flat
+        Me.BtnGenUmumKecil.Font = New System.Drawing.Font("Segoe UI Semibold", 9.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.BtnGenUmumKecil.ForeColor = System.Drawing.Color.Black
+        Me.BtnGenUmumKecil.Image = CType(resources.GetObject("BtnGenUmumKecil.Image"), System.Drawing.Image)
+        Me.BtnGenUmumKecil.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft
+        Me.BtnGenUmumKecil.Location = New System.Drawing.Point(216, 41)
         Me.BtnGenUmumKecil.Name = "BtnGenUmumKecil"
-        Me.BtnGenUmumKecil.Size = New System.Drawing.Size(96, 26)
+        Me.BtnGenUmumKecil.Size = New System.Drawing.Size(82, 28)
         Me.BtnGenUmumKecil.TabIndex = 109
         Me.BtnGenUmumKecil.Text = "Generate"
-        Me.BtnGenUmumKecil.UseVisualStyleBackColor = True
+        Me.BtnGenUmumKecil.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
+        Me.BtnGenUmumKecil.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText
+        Me.BtnGenUmumKecil.UseVisualStyleBackColor = False
         '
         'Label21
         '
@@ -1705,7 +1770,7 @@ Partial Class TambahBarang
         Me.PanelInfoRubahHarga.Controls.Add(Me.LblRpBaru)
         Me.PanelInfoRubahHarga.Controls.Add(Me.LblRpLama)
         Me.PanelInfoRubahHarga.Controls.Add(Me.LblMetodeUpdate)
-        Me.PanelInfoRubahHarga.Location = New System.Drawing.Point(598, 36)
+        Me.PanelInfoRubahHarga.Location = New System.Drawing.Point(598, 48)
         Me.PanelInfoRubahHarga.Name = "PanelInfoRubahHarga"
         Me.PanelInfoRubahHarga.Size = New System.Drawing.Size(204, 181)
         Me.PanelInfoRubahHarga.TabIndex = 7
@@ -1832,33 +1897,33 @@ Partial Class TambahBarang
         '
         Me.CBSatuanSama.AutoSize = True
         Me.CBSatuanSama.Font = New System.Drawing.Font("Century Gothic", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.CBSatuanSama.Location = New System.Drawing.Point(12, 234)
+        Me.CBSatuanSama.Location = New System.Drawing.Point(12, 284)
         Me.CBSatuanSama.Name = "CBSatuanSama"
         Me.CBSatuanSama.Size = New System.Drawing.Size(146, 21)
         Me.CBSatuanSama.TabIndex = 119
         Me.CBSatuanSama.Text = "Buat Satuan Sama"
         Me.CBSatuanSama.UseVisualStyleBackColor = True
         '
-        'GBPoint
+        'GBInput5
         '
-        Me.GBPoint.BackColor = System.Drawing.Color.White
-        Me.GBPoint.Controls.Add(Me.Label4)
-        Me.GBPoint.Controls.Add(Me.Label5)
-        Me.GBPoint.Controls.Add(Me.Label18)
-        Me.GBPoint.Controls.Add(Me.Label20)
-        Me.GBPoint.Controls.Add(Me.Label22)
-        Me.GBPoint.Controls.Add(Me.TxtKomisiSalesRp)
-        Me.GBPoint.Controls.Add(Me.TxtPointKaryawan)
-        Me.GBPoint.Controls.Add(Me.TxtPointMember)
-        Me.GBPoint.Controls.Add(Me.TxtKomisiSalesPersen)
-        Me.GBPoint.Controls.Add(Me.TxtLokasiRak)
-        Me.GBPoint.Font = New System.Drawing.Font("Century Gothic", 11.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.GBPoint.ForeColor = System.Drawing.Color.Black
-        Me.GBPoint.Location = New System.Drawing.Point(810, 414)
-        Me.GBPoint.Name = "GBPoint"
-        Me.GBPoint.Size = New System.Drawing.Size(328, 150)
-        Me.GBPoint.TabIndex = 6
-        Me.GBPoint.TabStop = False
+        Me.GBInput5.BackColor = System.Drawing.Color.White
+        Me.GBInput5.Controls.Add(Me.Label4)
+        Me.GBInput5.Controls.Add(Me.Label5)
+        Me.GBInput5.Controls.Add(Me.Label18)
+        Me.GBInput5.Controls.Add(Me.Label20)
+        Me.GBInput5.Controls.Add(Me.Label22)
+        Me.GBInput5.Controls.Add(Me.TxtKomisiSalesRp)
+        Me.GBInput5.Controls.Add(Me.TxtPointKaryawan)
+        Me.GBInput5.Controls.Add(Me.TxtPointMember)
+        Me.GBInput5.Controls.Add(Me.TxtKomisiSalesPersen)
+        Me.GBInput5.Controls.Add(Me.TxtLokasiRak)
+        Me.GBInput5.Font = New System.Drawing.Font("Century Gothic", 11.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.GBInput5.ForeColor = System.Drawing.Color.Black
+        Me.GBInput5.Location = New System.Drawing.Point(810, 426)
+        Me.GBInput5.Name = "GBInput5"
+        Me.GBInput5.Size = New System.Drawing.Size(325, 150)
+        Me.GBInput5.TabIndex = 6
+        Me.GBInput5.TabStop = False
         '
         'Label4
         '
@@ -1919,7 +1984,7 @@ Partial Class TambahBarang
         '
         Me.TxtKomisiSalesRp.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
         Me.TxtKomisiSalesRp.Font = New System.Drawing.Font("Century Gothic", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.TxtKomisiSalesRp.Location = New System.Drawing.Point(168, 94)
+        Me.TxtKomisiSalesRp.Location = New System.Drawing.Point(148, 94)
         Me.TxtKomisiSalesRp.Name = "TxtKomisiSalesRp"
         Me.TxtKomisiSalesRp.Size = New System.Drawing.Size(149, 23)
         Me.TxtKomisiSalesRp.TabIndex = 4
@@ -1928,7 +1993,7 @@ Partial Class TambahBarang
         '
         Me.TxtPointKaryawan.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
         Me.TxtPointKaryawan.Font = New System.Drawing.Font("Century Gothic", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.TxtPointKaryawan.Location = New System.Drawing.Point(168, 67)
+        Me.TxtPointKaryawan.Location = New System.Drawing.Point(148, 67)
         Me.TxtPointKaryawan.Name = "TxtPointKaryawan"
         Me.TxtPointKaryawan.Size = New System.Drawing.Size(149, 23)
         Me.TxtPointKaryawan.TabIndex = 3
@@ -1937,7 +2002,7 @@ Partial Class TambahBarang
         '
         Me.TxtPointMember.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
         Me.TxtPointMember.Font = New System.Drawing.Font("Century Gothic", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.TxtPointMember.Location = New System.Drawing.Point(168, 41)
+        Me.TxtPointMember.Location = New System.Drawing.Point(148, 41)
         Me.TxtPointMember.Name = "TxtPointMember"
         Me.TxtPointMember.Size = New System.Drawing.Size(149, 23)
         Me.TxtPointMember.TabIndex = 2
@@ -1946,7 +2011,7 @@ Partial Class TambahBarang
         '
         Me.TxtKomisiSalesPersen.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
         Me.TxtKomisiSalesPersen.Font = New System.Drawing.Font("Century Gothic", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.TxtKomisiSalesPersen.Location = New System.Drawing.Point(168, 121)
+        Me.TxtKomisiSalesPersen.Location = New System.Drawing.Point(148, 121)
         Me.TxtKomisiSalesPersen.Name = "TxtKomisiSalesPersen"
         Me.TxtKomisiSalesPersen.Size = New System.Drawing.Size(149, 23)
         Me.TxtKomisiSalesPersen.TabIndex = 1
@@ -1955,7 +2020,7 @@ Partial Class TambahBarang
         '
         Me.TxtLokasiRak.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
         Me.TxtLokasiRak.Font = New System.Drawing.Font("Century Gothic", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.TxtLokasiRak.Location = New System.Drawing.Point(168, 15)
+        Me.TxtLokasiRak.Location = New System.Drawing.Point(148, 15)
         Me.TxtLokasiRak.Name = "TxtLokasiRak"
         Me.TxtLokasiRak.Size = New System.Drawing.Size(149, 23)
         Me.TxtLokasiRak.TabIndex = 1
@@ -1963,7 +2028,7 @@ Partial Class TambahBarang
         'LblStokToko
         '
         Me.LblStokToko.Font = New System.Drawing.Font("Century Gothic", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.LblStokToko.Location = New System.Drawing.Point(463, 235)
+        Me.LblStokToko.Location = New System.Drawing.Point(463, 285)
         Me.LblStokToko.Name = "LblStokToko"
         Me.LblStokToko.Size = New System.Drawing.Size(40, 17)
         Me.LblStokToko.TabIndex = 170
@@ -1974,7 +2039,7 @@ Partial Class TambahBarang
         'LblStokGudang
         '
         Me.LblStokGudang.Font = New System.Drawing.Font("Century Gothic", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.LblStokGudang.Location = New System.Drawing.Point(509, 234)
+        Me.LblStokGudang.Location = New System.Drawing.Point(509, 284)
         Me.LblStokGudang.Name = "LblStokGudang"
         Me.LblStokGudang.Size = New System.Drawing.Size(63, 17)
         Me.LblStokGudang.TabIndex = 171
@@ -1985,7 +2050,7 @@ Partial Class TambahBarang
         'LblHargaUntukEdit
         '
         Me.LblHargaUntukEdit.Font = New System.Drawing.Font("Century Gothic", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.LblHargaUntukEdit.Location = New System.Drawing.Point(250, 235)
+        Me.LblHargaUntukEdit.Location = New System.Drawing.Point(250, 285)
         Me.LblHargaUntukEdit.Name = "LblHargaUntukEdit"
         Me.LblHargaUntukEdit.Size = New System.Drawing.Size(115, 17)
         Me.LblHargaUntukEdit.TabIndex = 172
@@ -1996,7 +2061,7 @@ Partial Class TambahBarang
         'LblStokUntukEdit
         '
         Me.LblStokUntukEdit.Font = New System.Drawing.Font("Century Gothic", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.LblStokUntukEdit.Location = New System.Drawing.Point(175, 235)
+        Me.LblStokUntukEdit.Location = New System.Drawing.Point(175, 285)
         Me.LblStokUntukEdit.Name = "LblStokUntukEdit"
         Me.LblStokUntukEdit.Size = New System.Drawing.Size(72, 17)
         Me.LblStokUntukEdit.TabIndex = 173
@@ -2007,7 +2072,7 @@ Partial Class TambahBarang
         'LblQtySbl
         '
         Me.LblQtySbl.Font = New System.Drawing.Font("Century Gothic", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.LblQtySbl.Location = New System.Drawing.Point(371, 234)
+        Me.LblQtySbl.Location = New System.Drawing.Point(371, 284)
         Me.LblQtySbl.Name = "LblQtySbl"
         Me.LblQtySbl.Size = New System.Drawing.Size(63, 17)
         Me.LblQtySbl.TabIndex = 174
@@ -2015,106 +2080,122 @@ Partial Class TambahBarang
         Me.LblQtySbl.TextAlign = System.Drawing.ContentAlignment.MiddleRight
         Me.LblQtySbl.Visible = False
         '
-        'BtnSupliyer
+        'BtnTambahSupliyer
         '
-        Me.BtnSupliyer.BackColor = System.Drawing.Color.Yellow
-        Me.BtnSupliyer.FlatAppearance.BorderSize = 0
-        Me.BtnSupliyer.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(CType(CType(128, Byte), Integer), CType(CType(255, Byte), Integer), CType(CType(128, Byte), Integer))
-        Me.BtnSupliyer.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Green
-        Me.BtnSupliyer.FlatStyle = System.Windows.Forms.FlatStyle.Flat
-        Me.BtnSupliyer.Font = New System.Drawing.Font("Century Gothic", 11.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.BtnSupliyer.ForeColor = System.Drawing.Color.Black
-        Me.BtnSupliyer.Image = CType(resources.GetObject("BtnSupliyer.Image"), System.Drawing.Image)
-        Me.BtnSupliyer.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft
-        Me.BtnSupliyer.Location = New System.Drawing.Point(755, 189)
-        Me.BtnSupliyer.Name = "BtnSupliyer"
-        Me.BtnSupliyer.Size = New System.Drawing.Size(140, 39)
-        Me.BtnSupliyer.TabIndex = 88
-        Me.BtnSupliyer.Text = "   Supliyer (F6)"
-        Me.BtnSupliyer.TextAlign = System.Drawing.ContentAlignment.MiddleRight
-        Me.BtnSupliyer.UseVisualStyleBackColor = False
+        Me.BtnTambahSupliyer.AutoSize = True
+        Me.BtnTambahSupliyer.BackColor = System.Drawing.Color.White
+        Me.BtnTambahSupliyer.Cursor = System.Windows.Forms.Cursors.Hand
+        Me.BtnTambahSupliyer.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(CType(CType(22, Byte), Integer), CType(CType(163, Byte), Integer), CType(CType(74, Byte), Integer))
+        Me.BtnTambahSupliyer.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(CType(CType(187, Byte), Integer), CType(CType(247, Byte), Integer), CType(CType(208, Byte), Integer))
+        Me.BtnTambahSupliyer.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(CType(CType(220, Byte), Integer), CType(CType(252, Byte), Integer), CType(CType(231, Byte), Integer))
+        Me.BtnTambahSupliyer.FlatStyle = System.Windows.Forms.FlatStyle.Flat
+        Me.BtnTambahSupliyer.Font = New System.Drawing.Font("Segoe UI", 9.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.BtnTambahSupliyer.ForeColor = System.Drawing.Color.FromArgb(CType(CType(22, Byte), Integer), CType(CType(163, Byte), Integer), CType(CType(74, Byte), Integer))
+        Me.BtnTambahSupliyer.Image = CType(resources.GetObject("BtnTambahSupliyer.Image"), System.Drawing.Image)
+        Me.BtnTambahSupliyer.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft
+        Me.BtnTambahSupliyer.Location = New System.Drawing.Point(727, 201)
+        Me.BtnTambahSupliyer.Name = "BtnTambahSupliyer"
+        Me.BtnTambahSupliyer.Size = New System.Drawing.Size(119, 39)
+        Me.BtnTambahSupliyer.TabIndex = 88
+        Me.BtnTambahSupliyer.Text = "Supplier (F6)"
+        Me.BtnTambahSupliyer.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
+        Me.BtnTambahSupliyer.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText
+        Me.BtnTambahSupliyer.UseVisualStyleBackColor = False
         '
         'BtnBaru
         '
         Me.BtnBaru.Anchor = System.Windows.Forms.AnchorStyles.Top
-        Me.BtnBaru.BackColor = System.Drawing.Color.Yellow
-        Me.BtnBaru.FlatAppearance.BorderSize = 0
-        Me.BtnBaru.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(CType(CType(255, Byte), Integer), CType(CType(192, Byte), Integer), CType(CType(192, Byte), Integer))
-        Me.BtnBaru.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Red
+        Me.BtnBaru.AutoSize = True
+        Me.BtnBaru.BackColor = System.Drawing.Color.White
+        Me.BtnBaru.Cursor = System.Windows.Forms.Cursors.Hand
+        Me.BtnBaru.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(CType(CType(22, Byte), Integer), CType(CType(163, Byte), Integer), CType(CType(74, Byte), Integer))
+        Me.BtnBaru.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(CType(CType(187, Byte), Integer), CType(CType(247, Byte), Integer), CType(CType(208, Byte), Integer))
+        Me.BtnBaru.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(CType(CType(220, Byte), Integer), CType(CType(252, Byte), Integer), CType(CType(231, Byte), Integer))
         Me.BtnBaru.FlatStyle = System.Windows.Forms.FlatStyle.Flat
-        Me.BtnBaru.Font = New System.Drawing.Font("Century Gothic", 12.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.BtnBaru.ForeColor = System.Drawing.Color.Black
+        Me.BtnBaru.Font = New System.Drawing.Font("Segoe UI", 9.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.BtnBaru.ForeColor = System.Drawing.Color.FromArgb(CType(CType(22, Byte), Integer), CType(CType(163, Byte), Integer), CType(CType(74, Byte), Integer))
         Me.BtnBaru.Image = CType(resources.GetObject("BtnBaru.Image"), System.Drawing.Image)
         Me.BtnBaru.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft
-        Me.BtnBaru.Location = New System.Drawing.Point(667, 570)
+        Me.BtnBaru.Location = New System.Drawing.Point(526, 625)
         Me.BtnBaru.Name = "BtnBaru"
-        Me.BtnBaru.Size = New System.Drawing.Size(137, 37)
+        Me.BtnBaru.Size = New System.Drawing.Size(96, 32)
         Me.BtnBaru.TabIndex = 157
-        Me.BtnBaru.Text = "RESET (F3)"
+        Me.BtnBaru.Text = "Baru (F3)"
+        Me.BtnBaru.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
+        Me.BtnBaru.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText
         Me.BtnBaru.UseVisualStyleBackColor = False
         '
         'BtnTambahSatuan
         '
-        Me.BtnTambahSatuan.BackColor = System.Drawing.Color.Yellow
-        Me.BtnTambahSatuan.FlatAppearance.BorderSize = 0
-        Me.BtnTambahSatuan.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(CType(CType(128, Byte), Integer), CType(CType(255, Byte), Integer), CType(CType(128, Byte), Integer))
-        Me.BtnTambahSatuan.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Green
+        Me.BtnTambahSatuan.AutoSize = True
+        Me.BtnTambahSatuan.BackColor = System.Drawing.Color.White
+        Me.BtnTambahSatuan.Cursor = System.Windows.Forms.Cursors.Hand
+        Me.BtnTambahSatuan.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(CType(CType(22, Byte), Integer), CType(CType(163, Byte), Integer), CType(CType(74, Byte), Integer))
+        Me.BtnTambahSatuan.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(CType(CType(187, Byte), Integer), CType(CType(247, Byte), Integer), CType(CType(208, Byte), Integer))
+        Me.BtnTambahSatuan.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(CType(CType(220, Byte), Integer), CType(CType(252, Byte), Integer), CType(CType(231, Byte), Integer))
         Me.BtnTambahSatuan.FlatStyle = System.Windows.Forms.FlatStyle.Flat
-        Me.BtnTambahSatuan.Font = New System.Drawing.Font("Century Gothic", 11.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.BtnTambahSatuan.ForeColor = System.Drawing.Color.Black
+        Me.BtnTambahSatuan.Font = New System.Drawing.Font("Segoe UI", 9.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.BtnTambahSatuan.ForeColor = System.Drawing.Color.FromArgb(CType(CType(22, Byte), Integer), CType(CType(163, Byte), Integer), CType(CType(74, Byte), Integer))
         Me.BtnTambahSatuan.Image = CType(resources.GetObject("BtnTambahSatuan.Image"), System.Drawing.Image)
         Me.BtnTambahSatuan.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft
-        Me.BtnTambahSatuan.Location = New System.Drawing.Point(902, 190)
+        Me.BtnTambahSatuan.Location = New System.Drawing.Point(852, 202)
         Me.BtnTambahSatuan.Name = "BtnTambahSatuan"
-        Me.BtnTambahSatuan.Size = New System.Drawing.Size(130, 37)
+        Me.BtnTambahSatuan.Size = New System.Drawing.Size(110, 37)
         Me.BtnTambahSatuan.TabIndex = 71
-        Me.BtnTambahSatuan.Text = "      Satuan (F7)"
-        Me.BtnTambahSatuan.TextAlign = System.Drawing.ContentAlignment.MiddleRight
+        Me.BtnTambahSatuan.Text = "Satuan (F7)"
+        Me.BtnTambahSatuan.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
+        Me.BtnTambahSatuan.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText
         Me.BtnTambahSatuan.UseVisualStyleBackColor = False
         '
         'BtnTambahKategori
         '
-        Me.BtnTambahKategori.BackColor = System.Drawing.Color.Yellow
-        Me.BtnTambahKategori.FlatAppearance.BorderSize = 0
-        Me.BtnTambahKategori.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(CType(CType(128, Byte), Integer), CType(CType(255, Byte), Integer), CType(CType(128, Byte), Integer))
-        Me.BtnTambahKategori.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Green
+        Me.BtnTambahKategori.AutoSize = True
+        Me.BtnTambahKategori.BackColor = System.Drawing.Color.White
+        Me.BtnTambahKategori.Cursor = System.Windows.Forms.Cursors.Hand
+        Me.BtnTambahKategori.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(CType(CType(22, Byte), Integer), CType(CType(163, Byte), Integer), CType(CType(74, Byte), Integer))
+        Me.BtnTambahKategori.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(CType(CType(187, Byte), Integer), CType(CType(247, Byte), Integer), CType(CType(208, Byte), Integer))
+        Me.BtnTambahKategori.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(CType(CType(220, Byte), Integer), CType(CType(252, Byte), Integer), CType(CType(231, Byte), Integer))
         Me.BtnTambahKategori.FlatStyle = System.Windows.Forms.FlatStyle.Flat
-        Me.BtnTambahKategori.Font = New System.Drawing.Font("Century Gothic", 11.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.BtnTambahKategori.ForeColor = System.Drawing.Color.Black
+        Me.BtnTambahKategori.Font = New System.Drawing.Font("Segoe UI", 9.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.BtnTambahKategori.ForeColor = System.Drawing.Color.FromArgb(CType(CType(22, Byte), Integer), CType(CType(163, Byte), Integer), CType(CType(74, Byte), Integer))
         Me.BtnTambahKategori.Image = CType(resources.GetObject("BtnTambahKategori.Image"), System.Drawing.Image)
         Me.BtnTambahKategori.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft
-        Me.BtnTambahKategori.Location = New System.Drawing.Point(599, 189)
+        Me.BtnTambahKategori.Location = New System.Drawing.Point(599, 201)
         Me.BtnTambahKategori.Name = "BtnTambahKategori"
-        Me.BtnTambahKategori.Size = New System.Drawing.Size(147, 39)
+        Me.BtnTambahKategori.Size = New System.Drawing.Size(120, 39)
         Me.BtnTambahKategori.TabIndex = 70
-        Me.BtnTambahKategori.Text = "   Kategori (F5)"
-        Me.BtnTambahKategori.TextAlign = System.Drawing.ContentAlignment.MiddleRight
+        Me.BtnTambahKategori.Text = "Kategori (F5)"
+        Me.BtnTambahKategori.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
+        Me.BtnTambahKategori.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText
         Me.BtnTambahKategori.UseVisualStyleBackColor = False
         '
         'BtnSimpan
         '
-        Me.BtnSimpan.BackColor = System.Drawing.Color.Yellow
-        Me.BtnSimpan.FlatAppearance.BorderSize = 0
-        Me.BtnSimpan.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(CType(CType(128, Byte), Integer), CType(CType(255, Byte), Integer), CType(CType(128, Byte), Integer))
-        Me.BtnSimpan.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Green
+        Me.BtnSimpan.AutoSize = True
+        Me.BtnSimpan.BackColor = System.Drawing.Color.White
+        Me.BtnSimpan.Cursor = System.Windows.Forms.Cursors.Hand
+        Me.BtnSimpan.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(CType(CType(22, Byte), Integer), CType(CType(163, Byte), Integer), CType(CType(74, Byte), Integer))
+        Me.BtnSimpan.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(CType(CType(187, Byte), Integer), CType(CType(247, Byte), Integer), CType(CType(208, Byte), Integer))
+        Me.BtnSimpan.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(CType(CType(220, Byte), Integer), CType(CType(252, Byte), Integer), CType(CType(231, Byte), Integer))
         Me.BtnSimpan.FlatStyle = System.Windows.Forms.FlatStyle.Flat
-        Me.BtnSimpan.Font = New System.Drawing.Font("Century Gothic", 12.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.BtnSimpan.ForeColor = System.Drawing.Color.Black
+        Me.BtnSimpan.Font = New System.Drawing.Font("Segoe UI", 9.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.BtnSimpan.ForeColor = System.Drawing.Color.FromArgb(CType(CType(22, Byte), Integer), CType(CType(163, Byte), Integer), CType(CType(74, Byte), Integer))
         Me.BtnSimpan.Image = CType(resources.GetObject("BtnSimpan.Image"), System.Drawing.Image)
         Me.BtnSimpan.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft
-        Me.BtnSimpan.Location = New System.Drawing.Point(346, 570)
+        Me.BtnSimpan.Location = New System.Drawing.Point(92, 625)
         Me.BtnSimpan.Name = "BtnSimpan"
-        Me.BtnSimpan.Size = New System.Drawing.Size(141, 37)
+        Me.BtnSimpan.Size = New System.Drawing.Size(114, 32)
         Me.BtnSimpan.TabIndex = 35
-        Me.BtnSimpan.Text = "SIMPAN (F2)"
-        Me.BtnSimpan.TextAlign = System.Drawing.ContentAlignment.MiddleRight
+        Me.BtnSimpan.Text = "Simpan (F2)"
+        Me.BtnSimpan.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
+        Me.BtnSimpan.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText
         Me.BtnSimpan.UseVisualStyleBackColor = False
         '
         'LblHargaDrJual
         '
         Me.LblHargaDrJual.AutoSize = True
         Me.LblHargaDrJual.Font = New System.Drawing.Font("Century Gothic", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.LblHargaDrJual.Location = New System.Drawing.Point(1031, 64)
+        Me.LblHargaDrJual.Location = New System.Drawing.Point(1031, 76)
         Me.LblHargaDrJual.Name = "LblHargaDrJual"
         Me.LblHargaDrJual.Size = New System.Drawing.Size(104, 17)
         Me.LblHargaDrJual.TabIndex = 175
@@ -2125,7 +2206,7 @@ Partial Class TambahBarang
         '
         Me.LblsatuanDrJual.AutoSize = True
         Me.LblsatuanDrJual.Font = New System.Drawing.Font("Century Gothic", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.LblsatuanDrJual.Location = New System.Drawing.Point(1026, 87)
+        Me.LblsatuanDrJual.Location = New System.Drawing.Point(1026, 99)
         Me.LblsatuanDrJual.Name = "LblsatuanDrJual"
         Me.LblsatuanDrJual.Size = New System.Drawing.Size(109, 17)
         Me.LblsatuanDrJual.TabIndex = 176
@@ -2136,19 +2217,64 @@ Partial Class TambahBarang
         '
         Me.LblJenisDrJual.AutoSize = True
         Me.LblJenisDrJual.Font = New System.Drawing.Font("Century Gothic", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.LblJenisDrJual.Location = New System.Drawing.Point(1041, 110)
+        Me.LblJenisDrJual.Location = New System.Drawing.Point(1041, 122)
         Me.LblJenisDrJual.Name = "LblJenisDrJual"
         Me.LblJenisDrJual.Size = New System.Drawing.Size(94, 17)
         Me.LblJenisDrJual.TabIndex = 177
         Me.LblJenisDrJual.Text = "Jenis dari jual"
         Me.LblJenisDrJual.Visible = False
         '
+        'BtnTambahMerk
+        '
+        Me.BtnTambahMerk.AutoSize = True
+        Me.BtnTambahMerk.BackColor = System.Drawing.Color.White
+        Me.BtnTambahMerk.Cursor = System.Windows.Forms.Cursors.Hand
+        Me.BtnTambahMerk.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(CType(CType(22, Byte), Integer), CType(CType(163, Byte), Integer), CType(CType(74, Byte), Integer))
+        Me.BtnTambahMerk.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(CType(CType(187, Byte), Integer), CType(CType(247, Byte), Integer), CType(CType(208, Byte), Integer))
+        Me.BtnTambahMerk.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(CType(CType(220, Byte), Integer), CType(CType(252, Byte), Integer), CType(CType(231, Byte), Integer))
+        Me.BtnTambahMerk.FlatStyle = System.Windows.Forms.FlatStyle.Flat
+        Me.BtnTambahMerk.Font = New System.Drawing.Font("Segoe UI", 9.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.BtnTambahMerk.ForeColor = System.Drawing.Color.FromArgb(CType(CType(22, Byte), Integer), CType(CType(163, Byte), Integer), CType(CType(74, Byte), Integer))
+        Me.BtnTambahMerk.Image = CType(resources.GetObject("BtnTambahMerk.Image"), System.Drawing.Image)
+        Me.BtnTambahMerk.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft
+        Me.BtnTambahMerk.Location = New System.Drawing.Point(970, 203)
+        Me.BtnTambahMerk.Name = "BtnTambahMerk"
+        Me.BtnTambahMerk.Size = New System.Drawing.Size(99, 37)
+        Me.BtnTambahMerk.TabIndex = 178
+        Me.BtnTambahMerk.Text = "Merk (F8)"
+        Me.BtnTambahMerk.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
+        Me.BtnTambahMerk.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText
+        Me.BtnTambahMerk.UseVisualStyleBackColor = False
+        '
+        'BtnClose
+        '
+        Me.BtnClose.AutoSize = True
+        Me.BtnClose.Cursor = System.Windows.Forms.Cursors.Hand
+        Me.BtnClose.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(CType(CType(220, Byte), Integer), CType(CType(38, Byte), Integer), CType(CType(38, Byte), Integer))
+        Me.BtnClose.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(CType(CType(252, Byte), Integer), CType(CType(165, Byte), Integer), CType(CType(165, Byte), Integer))
+        Me.BtnClose.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(CType(CType(254, Byte), Integer), CType(CType(226, Byte), Integer), CType(CType(226, Byte), Integer))
+        Me.BtnClose.FlatStyle = System.Windows.Forms.FlatStyle.Flat
+        Me.BtnClose.Font = New System.Drawing.Font("Segoe UI", 9.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.BtnClose.ForeColor = System.Drawing.Color.FromArgb(CType(CType(220, Byte), Integer), CType(CType(38, Byte), Integer), CType(CType(38, Byte), Integer))
+        Me.BtnClose.Image = CType(resources.GetObject("BtnClose.Image"), System.Drawing.Image)
+        Me.BtnClose.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft
+        Me.BtnClose.Location = New System.Drawing.Point(684, 625)
+        Me.BtnClose.Name = "BtnClose"
+        Me.BtnClose.Size = New System.Drawing.Size(112, 32)
+        Me.BtnClose.TabIndex = 179
+        Me.BtnClose.Text = "Keluar (Esc)"
+        Me.BtnClose.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
+        Me.BtnClose.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText
+        Me.BtnClose.UseVisualStyleBackColor = False
+        '
         'TambahBarang
         '
-        Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 14.0!)
+        Me.AutoScaleDimensions = New System.Drawing.SizeF(7.0!, 17.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.BackColor = System.Drawing.Color.Gainsboro
-        Me.ClientSize = New System.Drawing.Size(1143, 619)
+        Me.BackColor = System.Drawing.Color.White
+        Me.ClientSize = New System.Drawing.Size(1150, 702)
+        Me.Controls.Add(Me.BtnClose)
+        Me.Controls.Add(Me.BtnTambahMerk)
         Me.Controls.Add(Me.LblJenisDrJual)
         Me.Controls.Add(Me.LblsatuanDrJual)
         Me.Controls.Add(Me.LblHargaDrJual)
@@ -2161,22 +2287,22 @@ Partial Class TambahBarang
         Me.Controls.Add(Me.LblStokToko)
         Me.Controls.Add(Me.PanelInfoRubahHarga)
         Me.Controls.Add(Me.CBSatuanSama)
-        Me.Controls.Add(Me.BtnSupliyer)
-        Me.Controls.Add(Me.GBPoint)
+        Me.Controls.Add(Me.BtnTambahSupliyer)
+        Me.Controls.Add(Me.GBInput5)
         Me.Controls.Add(Me.BtnBaru)
         Me.Controls.Add(Me.BtnTambahSatuan)
-        Me.Controls.Add(Me.GBBarcode)
+        Me.Controls.Add(Me.GBInput1)
         Me.Controls.Add(Me.BtnTambahKategori)
-        Me.Controls.Add(Me.GBStok)
-        Me.Controls.Add(Me.GBBarang)
-        Me.Controls.Add(Me.GBJualPartai)
-        Me.Controls.Add(Me.GBJualUmum)
-        Me.Controls.Add(Me.Panel3)
-        Me.Controls.Add(Me.Panel2)
-        Me.Controls.Add(Me.Panel1)
+        Me.Controls.Add(Me.GBInput4)
+        Me.Controls.Add(Me.GBInput)
+        Me.Controls.Add(Me.GBInput3)
+        Me.Controls.Add(Me.GBInput2)
+        Me.Controls.Add(Me.PnlBatas2)
+        Me.Controls.Add(Me.PnlBatas3)
+        Me.Controls.Add(Me.PnlBatas1)
         Me.Controls.Add(Me.PanelHeader)
         Me.Controls.Add(Me.BtnSimpan)
-        Me.Font = New System.Drawing.Font("Calibri", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.Font = New System.Drawing.Font("Segoe UI", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None
         Me.KeyPreview = True
         Me.Name = "TambahBarang"
@@ -2186,33 +2312,31 @@ Partial Class TambahBarang
         Me.Text = "                                                                                 " &
     "   "
         Me.PanelHeader.ResumeLayout(False)
-        Me.GBJualUmum.ResumeLayout(False)
-        Me.GBJualUmum.PerformLayout()
-        Me.GBJualPartai.ResumeLayout(False)
-        Me.GBJualPartai.PerformLayout()
-        Me.GBBarang.ResumeLayout(False)
-        Me.GBBarang.PerformLayout()
-        Me.GBStok.ResumeLayout(False)
-        Me.GBStok.PerformLayout()
-        Me.GBBarcode.ResumeLayout(False)
-        Me.GBBarcode.PerformLayout()
+        Me.GBInput2.ResumeLayout(False)
+        Me.GBInput2.PerformLayout()
+        Me.GBInput3.ResumeLayout(False)
+        Me.GBInput3.PerformLayout()
+        Me.GBInput.ResumeLayout(False)
+        Me.GBInput.PerformLayout()
+        Me.GBInput4.ResumeLayout(False)
+        Me.GBInput4.PerformLayout()
+        Me.GBInput1.ResumeLayout(False)
+        Me.GBInput1.PerformLayout()
         Me.PanelInfoRubahHarga.ResumeLayout(False)
         Me.PanelInfoRubahHarga.PerformLayout()
-        Me.GBPoint.ResumeLayout(False)
-        Me.GBPoint.PerformLayout()
+        Me.GBInput5.ResumeLayout(False)
+        Me.GBInput5.PerformLayout()
         Me.ResumeLayout(False)
         Me.PerformLayout()
 
     End Sub
     Friend WithEvents BtnSimpan As System.Windows.Forms.Button
-    Friend WithEvents Panel1 As System.Windows.Forms.Panel
-    Friend WithEvents Panel2 As System.Windows.Forms.Panel
-    Friend WithEvents Panel3 As System.Windows.Forms.Panel
-    Friend WithEvents LblUtama As System.Windows.Forms.Label
-    Friend WithEvents BtnClose As System.Windows.Forms.Button
-    Friend WithEvents BtnMinimize As System.Windows.Forms.Button
+    Friend WithEvents PnlBatas1 As System.Windows.Forms.Panel
+    Friend WithEvents PnlBatas3 As System.Windows.Forms.Panel
+    Friend WithEvents PnlBatas2 As System.Windows.Forms.Panel
+    Friend WithEvents LblHeaderForm As System.Windows.Forms.Label
     Friend WithEvents PanelHeader As System.Windows.Forms.Panel
-    Friend WithEvents GBJualUmum As System.Windows.Forms.GroupBox
+    Friend WithEvents GBInput2 As System.Windows.Forms.GroupBox
     Friend WithEvents TxtLabaRpUmumKecil As System.Windows.Forms.TextBox
     Friend WithEvents Label14 As System.Windows.Forms.Label
     Friend WithEvents TxtHArgaJUalUmumKecil As System.Windows.Forms.TextBox
@@ -2237,7 +2361,7 @@ Partial Class TambahBarang
     Friend WithEvents TxtLabaRpUmumSedang As System.Windows.Forms.TextBox
     Friend WithEvents TxtHArgaJUalUmumSedang As System.Windows.Forms.TextBox
     Friend WithEvents TxtHargaBeliUmumSedang As System.Windows.Forms.TextBox
-    Friend WithEvents GBJualPartai As System.Windows.Forms.GroupBox
+    Friend WithEvents GBInput3 As System.Windows.Forms.GroupBox
     Friend WithEvents TxtIsiPartaiBesar As System.Windows.Forms.TextBox
     Friend WithEvents TxtLabaPersenPartaiBesar As System.Windows.Forms.TextBox
     Friend WithEvents CmbSatPartaiBesar As System.Windows.Forms.ComboBox
@@ -2265,7 +2389,7 @@ Partial Class TambahBarang
     Friend WithEvents TxtHargaBeliPartaiKecil As System.Windows.Forms.TextBox
     Friend WithEvents Label29 As System.Windows.Forms.Label
     Friend WithEvents Label30 As System.Windows.Forms.Label
-    Friend WithEvents GBBarang As System.Windows.Forms.GroupBox
+    Friend WithEvents GBInput As System.Windows.Forms.GroupBox
     Friend WithEvents TxtKategori As System.Windows.Forms.TextBox
     Friend WithEvents CmbKategori As System.Windows.Forms.ComboBox
     Friend WithEvents Label3 As System.Windows.Forms.Label
@@ -2283,13 +2407,13 @@ Partial Class TambahBarang
     Friend WithEvents Label36 As System.Windows.Forms.Label
     Friend WithEvents Label37 As System.Windows.Forms.Label
     Friend WithEvents Label38 As System.Windows.Forms.Label
-    Friend WithEvents GBStok As System.Windows.Forms.GroupBox
+    Friend WithEvents GBInput4 As System.Windows.Forms.GroupBox
     Friend WithEvents Label34 As System.Windows.Forms.Label
     Friend WithEvents Label33 As System.Windows.Forms.Label
     Friend WithEvents TxtStokMAx As System.Windows.Forms.TextBox
     Friend WithEvents TextMin As System.Windows.Forms.TextBox
     Friend WithEvents TxtStokAkhir As System.Windows.Forms.TextBox
-    Friend WithEvents GBBarcode As System.Windows.Forms.GroupBox
+    Friend WithEvents GBInput1 As System.Windows.Forms.GroupBox
     Friend WithEvents BtnGenUmumBesar As System.Windows.Forms.Button
     Friend WithEvents BtnGenUmumSedang As System.Windows.Forms.Button
     Friend WithEvents BtnGenUmumKecil As System.Windows.Forms.Button
@@ -2297,13 +2421,13 @@ Partial Class TambahBarang
     Friend WithEvents Label19 As System.Windows.Forms.Label
     Friend WithEvents Label15 As System.Windows.Forms.Label
     Friend WithEvents Label10 As System.Windows.Forms.Label
-    Friend WithEvents Button1 As System.Windows.Forms.Button
-    Friend WithEvents Button2 As System.Windows.Forms.Button
-    Friend WithEvents Button3 As System.Windows.Forms.Button
+    Friend WithEvents BtnPrintBesar As System.Windows.Forms.Button
+    Friend WithEvents BtnPrintSedang As System.Windows.Forms.Button
+    Friend WithEvents BtnPrintKecil As System.Windows.Forms.Button
     Friend WithEvents Label31 As System.Windows.Forms.Label
     Friend WithEvents BtnBaru As System.Windows.Forms.Button
     Friend WithEvents CBManual As System.Windows.Forms.CheckBox
-    Friend WithEvents BtnSupliyer As System.Windows.Forms.Button
+    Friend WithEvents BtnTambahSupliyer As System.Windows.Forms.Button
     Friend WithEvents LblHargaBeli As System.Windows.Forms.Label
     Friend WithEvents LbljualUmumBesar As System.Windows.Forms.Label
     Friend WithEvents LbljualUmumSedang As System.Windows.Forms.Label
@@ -2323,7 +2447,7 @@ Partial Class TambahBarang
     Friend WithEvents TxtBarcodeUmumBesar As System.Windows.Forms.TextBox
     Friend WithEvents TxtBarcodeUmumSedang As System.Windows.Forms.TextBox
     Friend WithEvents CBSatuanSama As CheckBox
-    Friend WithEvents GBPoint As System.Windows.Forms.GroupBox
+    Friend WithEvents GBInput5 As System.Windows.Forms.GroupBox
     Friend WithEvents Label4 As System.Windows.Forms.Label
     Friend WithEvents Label5 As System.Windows.Forms.Label
     Friend WithEvents Label18 As System.Windows.Forms.Label
@@ -2369,4 +2493,9 @@ Partial Class TambahBarang
     Friend WithEvents LblHargaDrJual As Label
     Friend WithEvents LblsatuanDrJual As Label
     Friend WithEvents LblJenisDrJual As Label
+    Friend WithEvents TxtMerk As TextBox
+    Friend WithEvents CmbMerk As ComboBox
+    Friend WithEvents Label45 As Label
+    Friend WithEvents BtnTambahMerk As Button
+    Friend WithEvents BtnClose As Button
 End Class

@@ -24,7 +24,6 @@ Partial Class FormReturPenjualan
     Private Sub InitializeComponent()
         Me.components = New System.ComponentModel.Container()
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(FormReturPenjualan))
-        Dim DataGridViewCellStyle7 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
         Dim DataGridViewCellStyle1 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
         Dim DataGridViewCellStyle2 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
         Dim DataGridViewCellStyle3 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
@@ -36,8 +35,8 @@ Partial Class FormReturPenjualan
         Me.Panel1 = New System.Windows.Forms.Panel()
         Me.Label8 = New System.Windows.Forms.Label()
         Me.PanelHeader = New System.Windows.Forms.Panel()
-        Me.Button2 = New System.Windows.Forms.Button()
-        Me.BtnClose = New System.Windows.Forms.Button()
+        Me.BtnKeluarForm = New System.Windows.Forms.Button()
+        Me.BtnHidePilihTanggal = New System.Windows.Forms.Button()
         Me.DTPRetur = New System.Windows.Forms.DateTimePicker()
         Me.Label17 = New System.Windows.Forms.Label()
         Me.LblKontakPel = New System.Windows.Forms.Label()
@@ -68,6 +67,7 @@ Partial Class FormReturPenjualan
         Me.Label5 = New System.Windows.Forms.Label()
         Me.LblNoNotaRetur = New System.Windows.Forms.Label()
         Me.PanelSimpan = New System.Windows.Forms.Panel()
+        Me.BtnSettingPrinter = New System.Windows.Forms.Button()
         Me.LblStatusPiutang = New System.Windows.Forms.Label()
         Me.Label21 = New System.Windows.Forms.Label()
         Me.TxtHPP = New System.Windows.Forms.TextBox()
@@ -90,7 +90,7 @@ Partial Class FormReturPenjualan
         Me.TxtTotalRupiah = New System.Windows.Forms.TextBox()
         Me.BtnSimpan = New System.Windows.Forms.Button()
         Me.Label9 = New System.Windows.Forms.Label()
-        Me.PanelPencarian = New System.Windows.Forms.Panel()
+        Me.PanelDatagridview = New System.Windows.Forms.Panel()
         Me.DGVPenjualan = New System.Windows.Forms.DataGridView()
         Me.ID_PENJUALAN = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.ID_PELANGGAN = New System.Windows.Forms.DataGridViewTextBoxColumn()
@@ -118,40 +118,29 @@ Partial Class FormReturPenjualan
         Me.HARGA_JUAL = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.TOTAL_DISKON = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.TOTAL_HARGA = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.LblNAmaPel = New System.Windows.Forms.Label()
         Me.Label19 = New System.Windows.Forms.Label()
         Me.LblJenisPel = New System.Windows.Forms.Label()
         Me.PanelDataPel = New System.Windows.Forms.Panel()
-        Me.BtnDaftarBarang = New System.Windows.Forms.Button()
-        Me.Panelcaribarang = New System.Windows.Forms.Panel()
-        Me.Button1 = New System.Windows.Forms.Button()
-        Me.LblPilihbarang = New System.Windows.Forms.Label()
-        Me.DGVPilihBarang = New System.Windows.Forms.DataGridView()
-        Me.ID_BARANG1 = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.NAMA_BARANG1 = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.HARGA_BELI1 = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.HARGA_JUAL_1 = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.TOTAL_DISKON1 = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.QTY_SATUAN1 = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.CmbNamaPel = New System.Windows.Forms.ComboBox()
         Me.RTBAlasanRetur = New System.Windows.Forms.RichTextBox()
         Me.Label12 = New System.Windows.Forms.Label()
         Me.Label22 = New System.Windows.Forms.Label()
+        Me.CbJenisRetur = New System.Windows.Forms.CheckBox()
+        Me.LstBarang = New System.Windows.Forms.ListBox()
         Me.PanelHeader.SuspendLayout()
         Me.PanelRetur.SuspendLayout()
         CType(Me.PBcariNotaJual, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.PanelSimpan.SuspendLayout()
-        Me.PanelPencarian.SuspendLayout()
+        Me.PanelDatagridview.SuspendLayout()
         CType(Me.DGVPenjualan, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.DGVReturjual, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.CMSHapus.SuspendLayout()
         Me.PanelDataPel.SuspendLayout()
-        Me.Panelcaribarang.SuspendLayout()
-        CType(Me.DGVPilihBarang, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
         'Panel3
         '
-        Me.Panel3.BackColor = System.Drawing.Color.FromArgb(CType(CType(60, Byte), Integer), CType(CType(60, Byte), Integer), CType(CType(60, Byte), Integer))
+        Me.Panel3.BackColor = System.Drawing.Color.FromArgb(CType(CType(22, Byte), Integer), CType(CType(163, Byte), Integer), CType(CType(74, Byte), Integer))
         Me.Panel3.Dock = System.Windows.Forms.DockStyle.Left
         Me.Panel3.Location = New System.Drawing.Point(0, 36)
         Me.Panel3.Margin = New System.Windows.Forms.Padding(4)
@@ -161,7 +150,7 @@ Partial Class FormReturPenjualan
         '
         'Panel2
         '
-        Me.Panel2.BackColor = System.Drawing.Color.FromArgb(CType(CType(60, Byte), Integer), CType(CType(60, Byte), Integer), CType(CType(60, Byte), Integer))
+        Me.Panel2.BackColor = System.Drawing.Color.FromArgb(CType(CType(22, Byte), Integer), CType(CType(163, Byte), Integer), CType(CType(74, Byte), Integer))
         Me.Panel2.Dock = System.Windows.Forms.DockStyle.Right
         Me.Panel2.Location = New System.Drawing.Point(1206, 36)
         Me.Panel2.Margin = New System.Windows.Forms.Padding(4)
@@ -171,7 +160,7 @@ Partial Class FormReturPenjualan
         '
         'Panel1
         '
-        Me.Panel1.BackColor = System.Drawing.Color.FromArgb(CType(CType(60, Byte), Integer), CType(CType(60, Byte), Integer), CType(CType(60, Byte), Integer))
+        Me.Panel1.BackColor = System.Drawing.Color.FromArgb(CType(CType(22, Byte), Integer), CType(CType(163, Byte), Integer), CType(CType(74, Byte), Integer))
         Me.Panel1.Dock = System.Windows.Forms.DockStyle.Bottom
         Me.Panel1.Location = New System.Drawing.Point(0, 634)
         Me.Panel1.Margin = New System.Windows.Forms.Padding(4)
@@ -181,21 +170,22 @@ Partial Class FormReturPenjualan
         '
         'Label8
         '
-        Me.Label8.AutoSize = True
         Me.Label8.BackColor = System.Drawing.Color.Transparent
-        Me.Label8.Font = New System.Drawing.Font("Century Gothic", 14.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.Label8.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.Label8.Font = New System.Drawing.Font("Century Gothic", 21.75!, System.Drawing.FontStyle.Bold)
         Me.Label8.ForeColor = System.Drawing.Color.Black
-        Me.Label8.Location = New System.Drawing.Point(659, 6)
+        Me.Label8.Location = New System.Drawing.Point(0, 0)
         Me.Label8.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Me.Label8.Name = "Label8"
-        Me.Label8.Size = New System.Drawing.Size(175, 23)
+        Me.Label8.Size = New System.Drawing.Size(1209, 36)
         Me.Label8.TabIndex = 20
         Me.Label8.Text = "RETUR PENJUALAN"
+        Me.Label8.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
         '
         'PanelHeader
         '
-        Me.PanelHeader.BackColor = System.Drawing.Color.DarkOrange
-        Me.PanelHeader.Controls.Add(Me.Button2)
+        Me.PanelHeader.BackColor = System.Drawing.Color.FromArgb(CType(CType(22, Byte), Integer), CType(CType(163, Byte), Integer), CType(CType(74, Byte), Integer))
+        Me.PanelHeader.Controls.Add(Me.BtnKeluarForm)
         Me.PanelHeader.Controls.Add(Me.Label8)
         Me.PanelHeader.Dock = System.Windows.Forms.DockStyle.Top
         Me.PanelHeader.Location = New System.Drawing.Point(0, 0)
@@ -204,43 +194,52 @@ Partial Class FormReturPenjualan
         Me.PanelHeader.Size = New System.Drawing.Size(1209, 36)
         Me.PanelHeader.TabIndex = 87
         '
-        'Button2
+        'BtnKeluarForm
         '
-        Me.Button2.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.Button2.BackColor = System.Drawing.Color.SandyBrown
-        Me.Button2.FlatAppearance.BorderSize = 0
-        Me.Button2.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Gray
-        Me.Button2.FlatStyle = System.Windows.Forms.FlatStyle.Flat
-        Me.Button2.ForeColor = System.Drawing.Color.Black
-        Me.Button2.Image = CType(resources.GetObject("Button2.Image"), System.Drawing.Image)
-        Me.Button2.Location = New System.Drawing.Point(1174, 3)
-        Me.Button2.Margin = New System.Windows.Forms.Padding(4, 3, 4, 3)
-        Me.Button2.Name = "Button2"
-        Me.Button2.Size = New System.Drawing.Size(31, 31)
-        Me.Button2.TabIndex = 21
-        Me.Button2.UseVisualStyleBackColor = False
+        Me.BtnKeluarForm.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.BtnKeluarForm.AutoSize = True
+        Me.BtnKeluarForm.BackColor = System.Drawing.Color.White
+        Me.BtnKeluarForm.Cursor = System.Windows.Forms.Cursors.Hand
+        Me.BtnKeluarForm.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(CType(CType(220, Byte), Integer), CType(CType(38, Byte), Integer), CType(CType(38, Byte), Integer))
+        Me.BtnKeluarForm.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(CType(CType(252, Byte), Integer), CType(CType(165, Byte), Integer), CType(CType(165, Byte), Integer))
+        Me.BtnKeluarForm.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(CType(CType(254, Byte), Integer), CType(CType(226, Byte), Integer), CType(CType(226, Byte), Integer))
+        Me.BtnKeluarForm.FlatStyle = System.Windows.Forms.FlatStyle.Flat
+        Me.BtnKeluarForm.Font = New System.Drawing.Font("Segoe UI", 9.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.BtnKeluarForm.ForeColor = System.Drawing.Color.FromArgb(CType(CType(220, Byte), Integer), CType(CType(38, Byte), Integer), CType(CType(38, Byte), Integer))
+        Me.BtnKeluarForm.Image = CType(resources.GetObject("BtnKeluarForm.Image"), System.Drawing.Image)
+        Me.BtnKeluarForm.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft
+        Me.BtnKeluarForm.Location = New System.Drawing.Point(1093, 2)
+        Me.BtnKeluarForm.Margin = New System.Windows.Forms.Padding(4, 3, 4, 3)
+        Me.BtnKeluarForm.Name = "BtnKeluarForm"
+        Me.BtnKeluarForm.Size = New System.Drawing.Size(112, 31)
+        Me.BtnKeluarForm.TabIndex = 21
+        Me.BtnKeluarForm.Text = "Keluar (Esc)"
+        Me.BtnKeluarForm.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
+        Me.BtnKeluarForm.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText
+        Me.BtnKeluarForm.UseVisualStyleBackColor = False
         '
-        'BtnClose
+        'BtnHidePilihTanggal
         '
-        Me.BtnClose.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.BtnClose.BackColor = System.Drawing.Color.Tomato
-        Me.BtnClose.FlatAppearance.BorderSize = 0
-        Me.BtnClose.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Gray
-        Me.BtnClose.FlatStyle = System.Windows.Forms.FlatStyle.Flat
-        Me.BtnClose.ForeColor = System.Drawing.Color.White
-        Me.BtnClose.Image = CType(resources.GetObject("BtnClose.Image"), System.Drawing.Image)
-        Me.BtnClose.Location = New System.Drawing.Point(1096, 6)
-        Me.BtnClose.Margin = New System.Windows.Forms.Padding(4)
-        Me.BtnClose.Name = "BtnClose"
-        Me.BtnClose.Size = New System.Drawing.Size(27, 23)
-        Me.BtnClose.TabIndex = 0
-        Me.BtnClose.UseVisualStyleBackColor = False
+        Me.BtnHidePilihTanggal.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.BtnHidePilihTanggal.BackColor = System.Drawing.Color.White
+        Me.BtnHidePilihTanggal.Cursor = System.Windows.Forms.Cursors.Hand
+        Me.BtnHidePilihTanggal.FlatAppearance.BorderSize = 0
+        Me.BtnHidePilihTanggal.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(CType(CType(226, Byte), Integer), CType(CType(232, Byte), Integer), CType(CType(240, Byte), Integer))
+        Me.BtnHidePilihTanggal.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(CType(CType(241, Byte), Integer), CType(CType(245, Byte), Integer), CType(CType(249, Byte), Integer))
+        Me.BtnHidePilihTanggal.FlatStyle = System.Windows.Forms.FlatStyle.Flat
+        Me.BtnHidePilihTanggal.Image = CType(resources.GetObject("BtnHidePilihTanggal.Image"), System.Drawing.Image)
+        Me.BtnHidePilihTanggal.Location = New System.Drawing.Point(1096, 6)
+        Me.BtnHidePilihTanggal.Margin = New System.Windows.Forms.Padding(4)
+        Me.BtnHidePilihTanggal.Name = "BtnHidePilihTanggal"
+        Me.BtnHidePilihTanggal.Size = New System.Drawing.Size(27, 23)
+        Me.BtnHidePilihTanggal.TabIndex = 0
+        Me.BtnHidePilihTanggal.UseVisualStyleBackColor = False
         '
         'DTPRetur
         '
         Me.DTPRetur.CalendarFont = New System.Drawing.Font("Calibri", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.DTPRetur.Font = New System.Drawing.Font("Century Gothic", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.DTPRetur.Location = New System.Drawing.Point(507, 47)
+        Me.DTPRetur.Location = New System.Drawing.Point(992, 45)
         Me.DTPRetur.Margin = New System.Windows.Forms.Padding(4)
         Me.DTPRetur.Name = "DTPRetur"
         Me.DTPRetur.Size = New System.Drawing.Size(200, 23)
@@ -270,7 +269,7 @@ Partial Class FormReturPenjualan
         '
         'PanelRetur
         '
-        Me.PanelRetur.BackColor = System.Drawing.Color.WhiteSmoke
+        Me.PanelRetur.BackColor = System.Drawing.Color.FromArgb(CType(CType(248, Byte), Integer), CType(CType(250, Byte), Integer), CType(CType(252, Byte), Integer))
         Me.PanelRetur.Controls.Add(Me.Label18)
         Me.PanelRetur.Controls.Add(Me.LblTotalJual)
         Me.PanelRetur.Controls.Add(Me.TxtTotalJual)
@@ -503,7 +502,7 @@ Partial Class FormReturPenjualan
         '
         Me.Label25.AutoSize = True
         Me.Label25.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label25.Location = New System.Drawing.Point(48, 7)
+        Me.Label25.Location = New System.Drawing.Point(48, 32)
         Me.Label25.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Me.Label25.Name = "Label25"
         Me.Label25.Size = New System.Drawing.Size(45, 16)
@@ -536,7 +535,7 @@ Partial Class FormReturPenjualan
         '
         Me.LblKodePel.AutoSize = True
         Me.LblKodePel.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.LblKodePel.Location = New System.Drawing.Point(96, 7)
+        Me.LblKodePel.Location = New System.Drawing.Point(96, 32)
         Me.LblKodePel.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Me.LblKodePel.Name = "LblKodePel"
         Me.LblKodePel.Size = New System.Drawing.Size(39, 16)
@@ -547,7 +546,7 @@ Partial Class FormReturPenjualan
         '
         Me.Label6.AutoSize = True
         Me.Label6.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label6.Location = New System.Drawing.Point(14, 32)
+        Me.Label6.Location = New System.Drawing.Point(14, 6)
         Me.Label6.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Me.Label6.Name = "Label6"
         Me.Label6.Size = New System.Drawing.Size(79, 16)
@@ -558,7 +557,7 @@ Partial Class FormReturPenjualan
         '
         Me.Label5.AutoSize = True
         Me.Label5.Font = New System.Drawing.Font("Century Gothic", 9.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label5.Location = New System.Drawing.Point(21, 50)
+        Me.Label5.Location = New System.Drawing.Point(717, 48)
         Me.Label5.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Me.Label5.Name = "Label5"
         Me.Label5.Size = New System.Drawing.Size(83, 16)
@@ -569,7 +568,7 @@ Partial Class FormReturPenjualan
         '
         Me.LblNoNotaRetur.AutoSize = True
         Me.LblNoNotaRetur.Font = New System.Drawing.Font("Century Gothic", 9.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.LblNoNotaRetur.Location = New System.Drawing.Point(107, 50)
+        Me.LblNoNotaRetur.Location = New System.Drawing.Point(803, 48)
         Me.LblNoNotaRetur.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Me.LblNoNotaRetur.Name = "LblNoNotaRetur"
         Me.LblNoNotaRetur.Size = New System.Drawing.Size(64, 16)
@@ -580,7 +579,8 @@ Partial Class FormReturPenjualan
         '
         Me.PanelSimpan.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.PanelSimpan.BackColor = System.Drawing.Color.WhiteSmoke
+        Me.PanelSimpan.BackColor = System.Drawing.Color.FromArgb(CType(CType(248, Byte), Integer), CType(CType(250, Byte), Integer), CType(CType(252, Byte), Integer))
+        Me.PanelSimpan.Controls.Add(Me.BtnSettingPrinter)
         Me.PanelSimpan.Controls.Add(Me.LblStatusPiutang)
         Me.PanelSimpan.Controls.Add(Me.Label21)
         Me.PanelSimpan.Controls.Add(Me.TxtHPP)
@@ -608,6 +608,27 @@ Partial Class FormReturPenjualan
         Me.PanelSimpan.Name = "PanelSimpan"
         Me.PanelSimpan.Size = New System.Drawing.Size(390, 333)
         Me.PanelSimpan.TabIndex = 4
+        '
+        'BtnSettingPrinter
+        '
+        Me.BtnSettingPrinter.AutoSize = True
+        Me.BtnSettingPrinter.BackColor = System.Drawing.Color.White
+        Me.BtnSettingPrinter.Cursor = System.Windows.Forms.Cursors.Hand
+        Me.BtnSettingPrinter.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(CType(CType(226, Byte), Integer), CType(CType(232, Byte), Integer), CType(CType(240, Byte), Integer))
+        Me.BtnSettingPrinter.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(CType(CType(241, Byte), Integer), CType(CType(245, Byte), Integer), CType(CType(249, Byte), Integer))
+        Me.BtnSettingPrinter.FlatStyle = System.Windows.Forms.FlatStyle.Flat
+        Me.BtnSettingPrinter.Font = New System.Drawing.Font("Segoe UI", 9.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.BtnSettingPrinter.ForeColor = System.Drawing.Color.Black
+        Me.BtnSettingPrinter.Image = CType(resources.GetObject("BtnSettingPrinter.Image"), System.Drawing.Image)
+        Me.BtnSettingPrinter.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft
+        Me.BtnSettingPrinter.Location = New System.Drawing.Point(254, 289)
+        Me.BtnSettingPrinter.Name = "BtnSettingPrinter"
+        Me.BtnSettingPrinter.Size = New System.Drawing.Size(82, 29)
+        Me.BtnSettingPrinter.TabIndex = 257
+        Me.BtnSettingPrinter.Text = "Printer"
+        Me.BtnSettingPrinter.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
+        Me.BtnSettingPrinter.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText
+        Me.BtnSettingPrinter.UseVisualStyleBackColor = False
         '
         'LblStatusPiutang
         '
@@ -704,14 +725,15 @@ Partial Class FormReturPenjualan
         '
         'BtnReset
         '
-        Me.BtnReset.BackColor = System.Drawing.Color.Green
+        Me.BtnReset.AutoSize = True
+        Me.BtnReset.BackColor = System.Drawing.Color.White
         Me.BtnReset.Cursor = System.Windows.Forms.Cursors.Hand
-        Me.BtnReset.FlatAppearance.BorderSize = 0
-        Me.BtnReset.FlatAppearance.MouseDownBackColor = System.Drawing.Color.HotPink
-        Me.BtnReset.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Crimson
+        Me.BtnReset.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(CType(CType(220, Byte), Integer), CType(CType(38, Byte), Integer), CType(CType(38, Byte), Integer))
+        Me.BtnReset.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(CType(CType(252, Byte), Integer), CType(CType(165, Byte), Integer), CType(CType(165, Byte), Integer))
+        Me.BtnReset.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(CType(CType(254, Byte), Integer), CType(CType(226, Byte), Integer), CType(CType(226, Byte), Integer))
         Me.BtnReset.FlatStyle = System.Windows.Forms.FlatStyle.Flat
-        Me.BtnReset.Font = New System.Drawing.Font("Century Gothic", 9.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.BtnReset.ForeColor = System.Drawing.Color.White
+        Me.BtnReset.Font = New System.Drawing.Font("Segoe UI", 9.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.BtnReset.ForeColor = System.Drawing.Color.FromArgb(CType(CType(220, Byte), Integer), CType(CType(38, Byte), Integer), CType(CType(38, Byte), Integer))
         Me.BtnReset.Image = CType(resources.GetObject("BtnReset.Image"), System.Drawing.Image)
         Me.BtnReset.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft
         Me.BtnReset.Location = New System.Drawing.Point(225, 232)
@@ -719,7 +741,9 @@ Partial Class FormReturPenjualan
         Me.BtnReset.Name = "BtnReset"
         Me.BtnReset.Size = New System.Drawing.Size(131, 36)
         Me.BtnReset.TabIndex = 245
-        Me.BtnReset.Text = "Reset  (F12)"
+        Me.BtnReset.Text = "Reset (F12)"
+        Me.BtnReset.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
+        Me.BtnReset.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText
         Me.BtnReset.UseVisualStyleBackColor = False
         '
         'LblTotalQTY
@@ -850,13 +874,15 @@ Partial Class FormReturPenjualan
         '
         'BtnSimpan
         '
-        Me.BtnSimpan.BackColor = System.Drawing.Color.FromArgb(CType(CType(36, Byte), Integer), CType(CType(91, Byte), Integer), CType(CType(32, Byte), Integer))
-        Me.BtnSimpan.FlatAppearance.BorderSize = 0
-        Me.BtnSimpan.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(CType(CType(128, Byte), Integer), CType(CType(255, Byte), Integer), CType(CType(128, Byte), Integer))
-        Me.BtnSimpan.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Green
+        Me.BtnSimpan.AutoSize = True
+        Me.BtnSimpan.BackColor = System.Drawing.Color.White
+        Me.BtnSimpan.Cursor = System.Windows.Forms.Cursors.Hand
+        Me.BtnSimpan.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(CType(CType(22, Byte), Integer), CType(CType(163, Byte), Integer), CType(CType(74, Byte), Integer))
+        Me.BtnSimpan.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(CType(CType(187, Byte), Integer), CType(CType(247, Byte), Integer), CType(CType(208, Byte), Integer))
+        Me.BtnSimpan.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(CType(CType(220, Byte), Integer), CType(CType(252, Byte), Integer), CType(CType(231, Byte), Integer))
         Me.BtnSimpan.FlatStyle = System.Windows.Forms.FlatStyle.Flat
-        Me.BtnSimpan.Font = New System.Drawing.Font("Century Gothic", 9.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.BtnSimpan.ForeColor = System.Drawing.Color.White
+        Me.BtnSimpan.Font = New System.Drawing.Font("Segoe UI", 9.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.BtnSimpan.ForeColor = System.Drawing.Color.FromArgb(CType(CType(22, Byte), Integer), CType(CType(163, Byte), Integer), CType(CType(74, Byte), Integer))
         Me.BtnSimpan.Image = CType(resources.GetObject("BtnSimpan.Image"), System.Drawing.Image)
         Me.BtnSimpan.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft
         Me.BtnSimpan.Location = New System.Drawing.Point(23, 232)
@@ -864,7 +890,8 @@ Partial Class FormReturPenjualan
         Me.BtnSimpan.Name = "BtnSimpan"
         Me.BtnSimpan.Size = New System.Drawing.Size(129, 36)
         Me.BtnSimpan.TabIndex = 220
-        Me.BtnSimpan.Text = "   SIMPAN (F8)"
+        Me.BtnSimpan.Text = "Simpan (F8)"
+        Me.BtnSimpan.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
         Me.BtnSimpan.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText
         Me.BtnSimpan.UseVisualStyleBackColor = False
         '
@@ -879,24 +906,23 @@ Partial Class FormReturPenjualan
         Me.Label9.TabIndex = 219
         Me.Label9.Text = "Metode pengembalian :"
         '
-        'PanelPencarian
+        'PanelDatagridview
         '
-        Me.PanelPencarian.BackColor = System.Drawing.Color.SaddleBrown
-        Me.PanelPencarian.Controls.Add(Me.DGVPenjualan)
-        Me.PanelPencarian.Controls.Add(Me.BtnClose)
-        Me.PanelPencarian.Controls.Add(Me.DateTimePicker1)
-        Me.PanelPencarian.Controls.Add(Me.Label16)
-        Me.PanelPencarian.Location = New System.Drawing.Point(18, 569)
-        Me.PanelPencarian.Margin = New System.Windows.Forms.Padding(4)
-        Me.PanelPencarian.Name = "PanelPencarian"
-        Me.PanelPencarian.Size = New System.Drawing.Size(1136, 446)
-        Me.PanelPencarian.TabIndex = 249
+        Me.PanelDatagridview.BackColor = System.Drawing.Color.FromArgb(CType(CType(248, Byte), Integer), CType(CType(250, Byte), Integer), CType(CType(252, Byte), Integer))
+        Me.PanelDatagridview.Controls.Add(Me.DGVPenjualan)
+        Me.PanelDatagridview.Controls.Add(Me.BtnHidePilihTanggal)
+        Me.PanelDatagridview.Controls.Add(Me.DateTimePicker1)
+        Me.PanelDatagridview.Controls.Add(Me.Label16)
+        Me.PanelDatagridview.Location = New System.Drawing.Point(18, 569)
+        Me.PanelDatagridview.Margin = New System.Windows.Forms.Padding(4)
+        Me.PanelDatagridview.Name = "PanelDatagridview"
+        Me.PanelDatagridview.Size = New System.Drawing.Size(1136, 446)
+        Me.PanelDatagridview.TabIndex = 249
         '
         'DGVPenjualan
         '
         Me.DGVPenjualan.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill
         Me.DGVPenjualan.AutoSizeRowsMode = System.Windows.Forms.DataGridViewAutoSizeRowsMode.AllCells
-        Me.DGVPenjualan.BackgroundColor = System.Drawing.Color.White
         Me.DGVPenjualan.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
         Me.DGVPenjualan.Columns.AddRange(New System.Windows.Forms.DataGridViewColumn() {Me.ID_PENJUALAN, Me.ID_PELANGGAN, Me.NAMA_PELANGGAN, Me.JENIS_PELANGGAN, Me.LOKASIBARANG, Me.TGL_TRANSAKSI, Me.GRAND_TOTAL_STL_PAJAK, Me.BAYAR, Me.SISA_TAGIHAN, Me.STATUS_TRANSAKSI})
         Me.DGVPenjualan.Dock = System.Windows.Forms.DockStyle.Bottom
@@ -989,17 +1015,8 @@ Partial Class FormReturPenjualan
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.DGVReturjual.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill
         Me.DGVReturjual.AutoSizeRowsMode = System.Windows.Forms.DataGridViewAutoSizeRowsMode.AllCells
-        Me.DGVReturjual.BackgroundColor = System.Drawing.Color.White
         Me.DGVReturjual.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
         Me.DGVReturjual.Columns.AddRange(New System.Windows.Forms.DataGridViewColumn() {Me.ID_BARANG, Me.NAMA_BARANG, Me.HARGA_BELI, Me.QTY, Me.SATUAN, Me.ISI_SATUAN, Me.QTY_SATUAN, Me.HARGA_BELI_SATUAN, Me.HARGA_JUAL, Me.TOTAL_DISKON, Me.TOTAL_HARGA})
-        DataGridViewCellStyle7.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft
-        DataGridViewCellStyle7.BackColor = System.Drawing.SystemColors.Window
-        DataGridViewCellStyle7.Font = New System.Drawing.Font("Century Gothic", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        DataGridViewCellStyle7.ForeColor = System.Drawing.SystemColors.ControlText
-        DataGridViewCellStyle7.SelectionBackColor = System.Drawing.Color.Teal
-        DataGridViewCellStyle7.SelectionForeColor = System.Drawing.SystemColors.HighlightText
-        DataGridViewCellStyle7.WrapMode = System.Windows.Forms.DataGridViewTriState.[False]
-        Me.DGVReturjual.DefaultCellStyle = DataGridViewCellStyle7
         Me.DGVReturjual.Location = New System.Drawing.Point(11, 277)
         Me.DGVReturjual.Margin = New System.Windows.Forms.Padding(4)
         Me.DGVReturjual.Name = "DGVReturjual"
@@ -1110,17 +1127,6 @@ Partial Class FormReturPenjualan
         Me.TOTAL_HARGA.Resizable = System.Windows.Forms.DataGridViewTriState.[True]
         Me.TOTAL_HARGA.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable
         '
-        'LblNAmaPel
-        '
-        Me.LblNAmaPel.AutoSize = True
-        Me.LblNAmaPel.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.LblNAmaPel.Location = New System.Drawing.Point(96, 32)
-        Me.LblNAmaPel.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
-        Me.LblNAmaPel.Name = "LblNAmaPel"
-        Me.LblNAmaPel.Size = New System.Drawing.Size(44, 16)
-        Me.LblNAmaPel.TabIndex = 251
-        Me.LblNAmaPel.Text = "Nama"
-        '
         'Label19
         '
         Me.Label19.AutoSize = True
@@ -1145,7 +1151,7 @@ Partial Class FormReturPenjualan
         '
         'PanelDataPel
         '
-        Me.PanelDataPel.Controls.Add(Me.BtnDaftarBarang)
+        Me.PanelDataPel.Controls.Add(Me.CmbNamaPel)
         Me.PanelDataPel.Controls.Add(Me.Label25)
         Me.PanelDataPel.Controls.Add(Me.Label17)
         Me.PanelDataPel.Controls.Add(Me.LblKontakPel)
@@ -1153,7 +1159,6 @@ Partial Class FormReturPenjualan
         Me.PanelDataPel.Controls.Add(Me.Label10)
         Me.PanelDataPel.Controls.Add(Me.LblAlamatPel)
         Me.PanelDataPel.Controls.Add(Me.Label6)
-        Me.PanelDataPel.Controls.Add(Me.LblNAmaPel)
         Me.PanelDataPel.Controls.Add(Me.LblJenisPel)
         Me.PanelDataPel.Controls.Add(Me.LblKodePel)
         Me.PanelDataPel.Location = New System.Drawing.Point(425, 78)
@@ -1162,130 +1167,18 @@ Partial Class FormReturPenjualan
         Me.PanelDataPel.Size = New System.Drawing.Size(369, 193)
         Me.PanelDataPel.TabIndex = 1
         '
-        'BtnDaftarBarang
+        'CmbNamaPel
         '
-        Me.BtnDaftarBarang.AutoSize = True
-        Me.BtnDaftarBarang.BackColor = System.Drawing.SystemColors.ActiveCaption
-        Me.BtnDaftarBarang.FlatAppearance.BorderColor = System.Drawing.Color.White
-        Me.BtnDaftarBarang.FlatAppearance.BorderSize = 0
-        Me.BtnDaftarBarang.FlatAppearance.MouseDownBackColor = System.Drawing.Color.LightSeaGreen
-        Me.BtnDaftarBarang.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Yellow
-        Me.BtnDaftarBarang.Font = New System.Drawing.Font("Bookman Old Style", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.BtnDaftarBarang.ForeColor = System.Drawing.Color.Black
-        Me.BtnDaftarBarang.Image = CType(resources.GetObject("BtnDaftarBarang.Image"), System.Drawing.Image)
-        Me.BtnDaftarBarang.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft
-        Me.BtnDaftarBarang.Location = New System.Drawing.Point(17, 149)
-        Me.BtnDaftarBarang.Margin = New System.Windows.Forms.Padding(4)
-        Me.BtnDaftarBarang.Name = "BtnDaftarBarang"
-        Me.BtnDaftarBarang.Size = New System.Drawing.Size(197, 36)
-        Me.BtnDaftarBarang.TabIndex = 254
-        Me.BtnDaftarBarang.Text = "Daftar barang (F2)"
-        Me.BtnDaftarBarang.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText
-        Me.BtnDaftarBarang.UseVisualStyleBackColor = False
-        '
-        'Panelcaribarang
-        '
-        Me.Panelcaribarang.BackColor = System.Drawing.SystemColors.ActiveCaption
-        Me.Panelcaribarang.Controls.Add(Me.Button1)
-        Me.Panelcaribarang.Controls.Add(Me.LblPilihbarang)
-        Me.Panelcaribarang.Controls.Add(Me.DGVPilihBarang)
-        Me.Panelcaribarang.ForeColor = System.Drawing.SystemColors.ActiveCaptionText
-        Me.Panelcaribarang.Location = New System.Drawing.Point(213, 333)
-        Me.Panelcaribarang.Margin = New System.Windows.Forms.Padding(5, 4, 5, 4)
-        Me.Panelcaribarang.Name = "Panelcaribarang"
-        Me.Panelcaribarang.Size = New System.Drawing.Size(738, 464)
-        Me.Panelcaribarang.TabIndex = 255
-        Me.Panelcaribarang.Visible = False
-        '
-        'Button1
-        '
-        Me.Button1.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.Button1.BackColor = System.Drawing.Color.Tomato
-        Me.Button1.FlatAppearance.BorderSize = 0
-        Me.Button1.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Gray
-        Me.Button1.FlatStyle = System.Windows.Forms.FlatStyle.Flat
-        Me.Button1.ForeColor = System.Drawing.Color.White
-        Me.Button1.Image = CType(resources.GetObject("Button1.Image"), System.Drawing.Image)
-        Me.Button1.Location = New System.Drawing.Point(709, 4)
-        Me.Button1.Margin = New System.Windows.Forms.Padding(4)
-        Me.Button1.Name = "Button1"
-        Me.Button1.Size = New System.Drawing.Size(25, 21)
-        Me.Button1.TabIndex = 231
-        Me.Button1.UseVisualStyleBackColor = False
-        '
-        'LblPilihbarang
-        '
-        Me.LblPilihbarang.AutoSize = True
-        Me.LblPilihbarang.Font = New System.Drawing.Font("Century Gothic", 9.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.LblPilihbarang.ForeColor = System.Drawing.Color.Black
-        Me.LblPilihbarang.Location = New System.Drawing.Point(27, 6)
-        Me.LblPilihbarang.Margin = New System.Windows.Forms.Padding(5, 0, 5, 0)
-        Me.LblPilihbarang.Name = "LblPilihbarang"
-        Me.LblPilihbarang.Size = New System.Drawing.Size(87, 16)
-        Me.LblPilihbarang.TabIndex = 230
-        Me.LblPilihbarang.Text = "Pilih barang"
-        '
-        'DGVPilihBarang
-        '
-        Me.DGVPilihBarang.AllowUserToAddRows = False
-        Me.DGVPilihBarang.AllowUserToDeleteRows = False
-        Me.DGVPilihBarang.AllowUserToResizeRows = False
-        Me.DGVPilihBarang.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill
-        Me.DGVPilihBarang.AutoSizeRowsMode = System.Windows.Forms.DataGridViewAutoSizeRowsMode.AllCells
-        Me.DGVPilihBarang.BackgroundColor = System.Drawing.Color.White
-        Me.DGVPilihBarang.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
-        Me.DGVPilihBarang.Columns.AddRange(New System.Windows.Forms.DataGridViewColumn() {Me.ID_BARANG1, Me.NAMA_BARANG1, Me.HARGA_BELI1, Me.HARGA_JUAL_1, Me.TOTAL_DISKON1, Me.QTY_SATUAN1})
-        Me.DGVPilihBarang.Dock = System.Windows.Forms.DockStyle.Bottom
-        Me.DGVPilihBarang.Location = New System.Drawing.Point(0, 26)
-        Me.DGVPilihBarang.Margin = New System.Windows.Forms.Padding(5, 4, 5, 4)
-        Me.DGVPilihBarang.Name = "DGVPilihBarang"
-        Me.DGVPilihBarang.ReadOnly = True
-        Me.DGVPilihBarang.RowHeadersVisible = False
-        Me.DGVPilihBarang.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect
-        Me.DGVPilihBarang.Size = New System.Drawing.Size(738, 438)
-        Me.DGVPilihBarang.TabIndex = 0
-        '
-        'ID_BARANG1
-        '
-        Me.ID_BARANG1.HeaderText = "ID BARANG"
-        Me.ID_BARANG1.Name = "ID_BARANG1"
-        Me.ID_BARANG1.ReadOnly = True
-        '
-        'NAMA_BARANG1
-        '
-        Me.NAMA_BARANG1.FillWeight = 300.0!
-        Me.NAMA_BARANG1.HeaderText = "NAMA BARANG"
-        Me.NAMA_BARANG1.Name = "NAMA_BARANG1"
-        Me.NAMA_BARANG1.ReadOnly = True
-        '
-        'HARGA_BELI1
-        '
-        Me.HARGA_BELI1.HeaderText = "HARGA BELI"
-        Me.HARGA_BELI1.Name = "HARGA_BELI1"
-        Me.HARGA_BELI1.ReadOnly = True
-        '
-        'HARGA_JUAL_1
-        '
-        Me.HARGA_JUAL_1.HeaderText = "HARGA JUAL"
-        Me.HARGA_JUAL_1.Name = "HARGA_JUAL_1"
-        Me.HARGA_JUAL_1.ReadOnly = True
-        '
-        'TOTAL_DISKON1
-        '
-        Me.TOTAL_DISKON1.HeaderText = "DISKON"
-        Me.TOTAL_DISKON1.Name = "TOTAL_DISKON1"
-        Me.TOTAL_DISKON1.ReadOnly = True
-        '
-        'QTY_SATUAN1
-        '
-        Me.QTY_SATUAN1.HeaderText = "QTY"
-        Me.QTY_SATUAN1.Name = "QTY_SATUAN1"
-        Me.QTY_SATUAN1.ReadOnly = True
+        Me.CmbNamaPel.FormattingEnabled = True
+        Me.CmbNamaPel.Location = New System.Drawing.Point(99, 6)
+        Me.CmbNamaPel.Name = "CmbNamaPel"
+        Me.CmbNamaPel.Size = New System.Drawing.Size(267, 25)
+        Me.CmbNamaPel.TabIndex = 255
         '
         'RTBAlasanRetur
         '
         Me.RTBAlasanRetur.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.RTBAlasanRetur.BackColor = System.Drawing.Color.Ivory
+        Me.RTBAlasanRetur.BackColor = System.Drawing.Color.FromArgb(CType(CType(255, Byte), Integer), CType(CType(253, Byte), Integer), CType(CType(235, Byte), Integer))
         Me.RTBAlasanRetur.Location = New System.Drawing.Point(802, 104)
         Me.RTBAlasanRetur.Margin = New System.Windows.Forms.Padding(4)
         Me.RTBAlasanRetur.Name = "RTBAlasanRetur"
@@ -1309,12 +1202,35 @@ Partial Class FormReturPenjualan
         '
         Me.Label22.AutoSize = True
         Me.Label22.Font = New System.Drawing.Font("Century Gothic", 9.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label22.Location = New System.Drawing.Point(435, 50)
+        Me.Label22.Location = New System.Drawing.Point(920, 48)
         Me.Label22.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Me.Label22.Name = "Label22"
         Me.Label22.Size = New System.Drawing.Size(69, 16)
         Me.Label22.TabIndex = 258
         Me.Label22.Text = "Tanggal :"
+        '
+        'CbJenisRetur
+        '
+        Me.CbJenisRetur.AutoSize = True
+        Me.CbJenisRetur.Font = New System.Drawing.Font("Century Gothic", 12.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.CbJenisRetur.Location = New System.Drawing.Point(11, 46)
+        Me.CbJenisRetur.Margin = New System.Windows.Forms.Padding(4, 3, 4, 3)
+        Me.CbJenisRetur.Name = "CbJenisRetur"
+        Me.CbJenisRetur.Size = New System.Drawing.Size(270, 23)
+        Me.CbJenisRetur.TabIndex = 259
+        Me.CbJenisRetur.Text = "Retur diluar transaksi penjualan"
+        Me.CbJenisRetur.UseVisualStyleBackColor = True
+        '
+        'LstBarang
+        '
+        Me.LstBarang.Font = New System.Drawing.Font("Century Gothic", 11.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.LstBarang.FormattingEnabled = True
+        Me.LstBarang.ItemHeight = 20
+        Me.LstBarang.Location = New System.Drawing.Point(697, 39)
+        Me.LstBarang.Name = "LstBarang"
+        Me.LstBarang.Size = New System.Drawing.Size(351, 104)
+        Me.LstBarang.TabIndex = 261
+        Me.LstBarang.Visible = False
         '
         'FormReturPenjualan
         '
@@ -1322,8 +1238,9 @@ Partial Class FormReturPenjualan
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.BackColor = System.Drawing.Color.White
         Me.ClientSize = New System.Drawing.Size(1209, 636)
-        Me.Controls.Add(Me.PanelPencarian)
-        Me.Controls.Add(Me.Panelcaribarang)
+        Me.Controls.Add(Me.LstBarang)
+        Me.Controls.Add(Me.CbJenisRetur)
+        Me.Controls.Add(Me.PanelDatagridview)
         Me.Controls.Add(Me.Label12)
         Me.Controls.Add(Me.RTBAlasanRetur)
         Me.Controls.Add(Me.PanelDataPel)
@@ -1353,16 +1270,13 @@ Partial Class FormReturPenjualan
         CType(Me.PBcariNotaJual, System.ComponentModel.ISupportInitialize).EndInit()
         Me.PanelSimpan.ResumeLayout(False)
         Me.PanelSimpan.PerformLayout()
-        Me.PanelPencarian.ResumeLayout(False)
-        Me.PanelPencarian.PerformLayout()
+        Me.PanelDatagridview.ResumeLayout(False)
+        Me.PanelDatagridview.PerformLayout()
         CType(Me.DGVPenjualan, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.DGVReturjual, System.ComponentModel.ISupportInitialize).EndInit()
         Me.CMSHapus.ResumeLayout(False)
         Me.PanelDataPel.ResumeLayout(False)
         Me.PanelDataPel.PerformLayout()
-        Me.Panelcaribarang.ResumeLayout(False)
-        Me.Panelcaribarang.PerformLayout()
-        CType(Me.DGVPilihBarang, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ResumeLayout(False)
         Me.PerformLayout()
 
@@ -1372,7 +1286,7 @@ Partial Class FormReturPenjualan
     Friend WithEvents Panel1 As System.Windows.Forms.Panel
     Friend WithEvents Label8 As System.Windows.Forms.Label
     Friend WithEvents PanelHeader As System.Windows.Forms.Panel
-    Friend WithEvents BtnClose As System.Windows.Forms.Button
+    Friend WithEvents BtnHidePilihTanggal As System.Windows.Forms.Button
     Friend WithEvents DTPRetur As DateTimePicker
     Friend WithEvents Label17 As Label
     Friend WithEvents LblKontakPel As Label
@@ -1417,25 +1331,19 @@ Partial Class FormReturPenjualan
     Friend WithEvents TxtTotalRupiah As TextBox
     Friend WithEvents BtnSimpan As Button
     Friend WithEvents Label9 As Label
-    Friend WithEvents PanelPencarian As Panel
+    Friend WithEvents PanelDatagridview As Panel
     Friend WithEvents DGVPenjualan As DataGridView
     Friend WithEvents DGVReturjual As System.Windows.Forms.DataGridView
     Friend WithEvents CMSHapus As System.Windows.Forms.ContextMenuStrip
     Friend WithEvents TSMhapus As System.Windows.Forms.ToolStripMenuItem
     Friend WithEvents DateTimePicker1 As System.Windows.Forms.DateTimePicker
     Friend WithEvents Label16 As System.Windows.Forms.Label
-    Friend WithEvents LblNAmaPel As System.Windows.Forms.Label
     Friend WithEvents Label19 As System.Windows.Forms.Label
     Friend WithEvents LblJenisPel As System.Windows.Forms.Label
     Friend WithEvents Label18 As System.Windows.Forms.Label
     Friend WithEvents LblTotalJual As System.Windows.Forms.Label
     Friend WithEvents TxtTotalJual As System.Windows.Forms.TextBox
     Friend WithEvents PanelDataPel As System.Windows.Forms.Panel
-    Friend WithEvents Panelcaribarang As System.Windows.Forms.Panel
-    Friend WithEvents Button1 As System.Windows.Forms.Button
-    Friend WithEvents LblPilihbarang As System.Windows.Forms.Label
-    Friend WithEvents DGVPilihBarang As System.Windows.Forms.DataGridView
-    Friend WithEvents BtnDaftarBarang As System.Windows.Forms.Button
     Friend WithEvents RTBAlasanRetur As System.Windows.Forms.RichTextBox
     Friend WithEvents Label12 As System.Windows.Forms.Label
     Friend WithEvents Label20 As System.Windows.Forms.Label
@@ -1453,12 +1361,6 @@ Partial Class FormReturPenjualan
     Friend WithEvents HARGA_JUAL As System.Windows.Forms.DataGridViewTextBoxColumn
     Friend WithEvents TOTAL_DISKON As System.Windows.Forms.DataGridViewTextBoxColumn
     Friend WithEvents TOTAL_HARGA As System.Windows.Forms.DataGridViewTextBoxColumn
-    Friend WithEvents ID_BARANG1 As System.Windows.Forms.DataGridViewTextBoxColumn
-    Friend WithEvents NAMA_BARANG1 As System.Windows.Forms.DataGridViewTextBoxColumn
-    Friend WithEvents HARGA_BELI1 As System.Windows.Forms.DataGridViewTextBoxColumn
-    Friend WithEvents HARGA_JUAL_1 As System.Windows.Forms.DataGridViewTextBoxColumn
-    Friend WithEvents TOTAL_DISKON1 As System.Windows.Forms.DataGridViewTextBoxColumn
-    Friend WithEvents QTY_SATUAN1 As System.Windows.Forms.DataGridViewTextBoxColumn
     Friend WithEvents LblStatusPiutang As System.Windows.Forms.Label
     Friend WithEvents ID_PENJUALAN As System.Windows.Forms.DataGridViewTextBoxColumn
     Friend WithEvents ID_PELANGGAN As System.Windows.Forms.DataGridViewTextBoxColumn
@@ -1471,5 +1373,12 @@ Partial Class FormReturPenjualan
     Friend WithEvents SISA_TAGIHAN As System.Windows.Forms.DataGridViewTextBoxColumn
     Friend WithEvents STATUS_TRANSAKSI As System.Windows.Forms.DataGridViewTextBoxColumn
     Friend WithEvents Label22 As System.Windows.Forms.Label
-    Friend WithEvents Button2 As System.Windows.Forms.Button
+    Friend WithEvents BtnKeluarForm As System.Windows.Forms.Button
+    Friend WithEvents BtnSettingPrinter As Button
+    Friend WithEvents CbJenisRetur As CheckBox
+    Friend WithEvents CmbNamaPel As ComboBox
+    Friend WithEvents LstBarang As ListBox
 End Class
+
+
+

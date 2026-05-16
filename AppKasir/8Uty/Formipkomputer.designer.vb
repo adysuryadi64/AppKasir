@@ -1,4 +1,4 @@
-﻿<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()> _
+<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()> _
 Partial Class Formipkomputer
     Inherits System.Windows.Forms.Form
 
@@ -91,6 +91,7 @@ Partial Class Formipkomputer
         '
         'Formipkomputer
         '
+        Me.KeyPreview = True
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(351, 226)
@@ -117,3 +118,4 @@ Partial Class Formipkomputer
     Friend WithEvents TxtIPAddress As System.Windows.Forms.TextBox
     Friend WithEvents Label3 As System.Windows.Forms.Label
 End Class
+

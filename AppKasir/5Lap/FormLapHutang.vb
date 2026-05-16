@@ -5,6 +5,9 @@
 Public Class FormLapHutang
 
     Private Sub FormLapHutang_Load(ByVal sender As Object, ByVal e As EventArgs) Handles MyBase.Load
+        ModuleTheme.TerapkanTheme(Me)
+        ' Nilai keuangan otomatis via nama TxtGrandtotal
+        ' Rename TxtBayar/TxtHutang/TxtTotalHutang -> TxtGrandtotal untuk tema otomatis
         Kondisiawal()
         DTPAwal.Value = tanggalAwalPeriodeKerja
         DTPAkhir.Value = tanggalAkhirPeriodeKerja
@@ -19,48 +22,6 @@ Public Class FormLapHutang
         TxtTotalHutang.Text = 0
         TxtBayar.Text = 0
         TxtHutang.Text = 0
-    End Sub
-
-    Private bulanTerpilih As Integer
-
-    Private Sub KonversiBulanKeAngka()
-        Select Case CmbBln.Text
-            Case "Januari" : bulanTerpilih = 1
-            Case "Februari" : bulanTerpilih = 2
-            Case "Maret" : bulanTerpilih = 3
-            Case "April" : bulanTerpilih = 4
-            Case "Mei" : bulanTerpilih = 5
-            Case "Juni" : bulanTerpilih = 6
-            Case "Juli" : bulanTerpilih = 7
-            Case "Agustus" : bulanTerpilih = 8
-            Case "September" : bulanTerpilih = 9
-            Case "Oktober" : bulanTerpilih = 10
-            Case "November" : bulanTerpilih = 11
-            Case "Desember" : bulanTerpilih = 12
-        End Select
-    End Sub
-
-    Private Sub MuatComboBoxBulanTahun()
-        ' Bersihkan item sebelum menambahkannya kembali
-        CmbThn.Items.Clear()
-
-        ' Tambahkan tahun dari 2022 hingga tahun sekarang
-        For i As Integer = 2022 To Year(Now)
-            CmbThn.Items.Add(i)
-        Next
-
-        ' Bersihkan item sebelum menambahkannya kembali
-        CmbBln.Items.Clear()
-
-        ' Tambahkan daftar bulan
-        Dim daftarBulan As String() = {"Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"}
-        CmbBln.Items.AddRange(daftarBulan)
-
-        ' Set tahun sekarang sebagai tahun default
-        CmbThn.SelectedItem = Year(Now)
-
-        ' Set bulan sekarang sebagai bulan default
-        CmbBln.SelectedIndex = Month(Now) - 1
     End Sub
 
     Private Sub CmbBln_SelectedIndexChanged(ByVal sender As Object, ByVal e As EventArgs) Handles CmbBln.SelectedIndexChanged
@@ -88,7 +49,7 @@ Public Class FormLapHutang
     Private Sub CBBulan_CheckedChanged(ByVal sender As Object, ByVal e As EventArgs) Handles CbBulan.CheckedChanged
         If CbBulan.Checked = True Then
             CbTanggal.Checked = False
-            MuatComboBoxBulanTahun()
+            MuatComboBoxBulanTahun(CmbBln, CmbThn)
             CmbBln.Enabled = True
             CmbThn.Enabled = True
         Else
@@ -102,11 +63,11 @@ Public Class FormLapHutang
     Public Sub TampilSupliyer()
         CmbSupliyer.Items.Clear()
         CmbSupliyer.Items.Add("SEMUA") ' Tambahkan opsi "Semua"
-        Dim query As String = "SELECT DISTINCT NAMA_SUPLIYER FROM pembelian ORDER BY NAMA_SUPLIYER"
+        Dim query As String = "SELECT DISTINCT NAMA FROM hutang_detail WHERE JENIS = 'BELI' ORDER BY NAMA"
         Using cmd As New MySqlCommand(query, conn)
             Using rd As MySqlDataReader = cmd.ExecuteReader()
                 While rd.Read()
-                    CmbSupliyer.Items.Add(rd("NAMA_SUPLIYER").ToString())
+                    CmbSupliyer.Items.Add(rd("NAMA").ToString())
                 End While
             End Using
         End Using
@@ -134,20 +95,11 @@ Public Class FormLapHutang
                 AwalBulan = DTPAwal.Value.Date.ToString("yyyy-MM-dd HH:mm:ss")
                 AkhirBulan = DTPAkhir.Value.Date.AddDays(1).AddTicks(-1).ToString("yyyy-MM-dd HH:mm:ss")
             ElseIf CbBulan.Checked Then
-                ' Cek apakah ComboBox belum dipilih
-                If CmbBln.SelectedIndex = -1 Then
-                    ' Tampilkan pesan peringatan
-                    MessageBox.Show("Harap pilih bulan terlebih dahulu.", "Peringatan", MessageBoxButtons.OK, MessageBoxIcon.Warning)
-                    CmbBln.DroppedDown = True
-                    Exit Sub
-                End If
-
-                ' Tetapkan AwalBulan dan AkhirBulan berdasarkan bulan dan tahun yang dipilih
-                KonversiBulanKeAngka() ' (Jika diperlukan)
-                Dim bulan As Integer = bulanTerpilih
-                Dim tahun As Integer = CmbThn.Text
-                AwalBulan = New DateTime(tahun, bulan, 1).ToString("yyyy-MM-dd HH:mm:ss")
-                AkhirBulan = AwalBulan.AddMonths(1).AddDays(-1).AddSeconds(86399).ToString("yyyy-MM-dd HH:mm:ss")
+                Dim tglAwal As DateTime
+                Dim tglAkhir As DateTime
+                If Not GetRentangBulan(CmbBln, CmbThn, tglAwal, tglAkhir) Then Exit Sub
+                AwalBulan = tglAwal.ToString("yyyy-MM-dd HH:mm:ss")
+                AkhirBulan = tglAkhir.ToString("yyyy-MM-dd HH:mm:ss")
             End If
 
             Cursor = Cursors.WaitCursor
@@ -159,31 +111,31 @@ Public Class FormLapHutang
 
 
             Dim query As String = Nothing
-            If LabelJudul.Text = "LAPORAN HUTANG KE SUPPLIER BY PEMBELIAN" Then
-                query = "SELECT Sum(TAGIHAN + NOMINALBAYAR) as NOMINALHUTANG, Sum(NOMINALBAYAR) as NOMINALBAYAR " &
-                                      "FROM pembelian " &
-                                      "WHERE (@AwalBulan IS NULL OR TGL_BELI >= @AwalBulan) " &
-                                      "AND (@AkhirBulan IS NULL OR TGL_BELI <= @AkhirBulan) " &
-                                      "AND NAMA_SUPLIYER LIKE @Supliyer " &
-                                      "AND STATUS_TRANSAKSI_BELI LIKE @Status " &
-                                      "AND STATUS_JUAL = 'TERHUTANG'"
+            If LblHeaderForm.Text = "LAPORAN HUTANG KE SUPPLIER BY PEMBELIAN" Then
+                query = "SELECT SUM(TOTAL_HUTANG) AS NOMINALHUTANG, SUM(DIBAYAR) AS NOMINALBAYAR " &
+                        "FROM hutang_detail " &
+                        "WHERE JENIS = 'BELI' " &
+                        "AND (@AwalBulan IS NULL OR TANGGAL_BELI >= @AwalBulan) " &
+                        "AND (@AkhirBulan IS NULL OR TANGGAL_BELI <= @AkhirBulan) " &
+                        "AND NAMA LIKE @Supliyer " &
+                        "AND STATUS LIKE @Status"
 
-            ElseIf LabelJudul.Text = "LAPORAN HUTANG KE SUPPLIER BY PELUNASAN" Then
-                query = "SELECT Sum(TAGIHAN + NOMINALBAYAR) as NOMINALHUTANG, Sum(NOMINALBAYAR) as NOMINALBAYAR " &
-                                      "FROM pembelian " &
-                                      "WHERE (@AwalBulan IS NULL OR TGL_BAYAR >= @AwalBulan) " &
-                                      "AND (@AkhirBulan IS NULL OR TGL_BAYAR <= @AkhirBulan) " &
-                                      "AND NAMA_SUPLIYER LIKE @Supliyer " &
-                                      "AND STATUS_TRANSAKSI_BELI LIKE @Status " &
-                                      "AND STATUS_JUAL = 'TERHUTANG'"
+            ElseIf LblHeaderForm.Text = "LAPORAN HUTANG KE SUPPLIER BY PELUNASAN" Then
+                query = "SELECT SUM(TOTAL_HUTANG) AS NOMINALHUTANG, SUM(DIBAYAR) AS NOMINALBAYAR " &
+                        "FROM hutang_detail " &
+                        "WHERE JENIS = 'BELI' " &
+                        "AND (@AwalBulan IS NULL OR TANGGAL_BAYAR >= @AwalBulan) " &
+                        "AND (@AkhirBulan IS NULL OR TANGGAL_BAYAR <= @AkhirBulan) " &
+                        "AND NAMA LIKE @Supliyer " &
+                        "AND STATUS LIKE @Status"
             Else
-                query = "SELECT Sum(TAGIHAN + NOMINALBAYAR) as NOMINALHUTANG, Sum(NOMINALBAYAR) as NOMINALBAYAR " &
-                                      "FROM pembelian " &
-                                      "WHERE (@AwalBulan IS NULL OR JATUH_TEMPO >= @AwalBulan) " &
-                                      "AND (@AkhirBulan IS NULL OR JATUH_TEMPO <= @AkhirBulan) " &
-                                      "AND NAMA_SUPLIYER LIKE @Supliyer " &
-                                      "AND STATUS_TRANSAKSI_BELI LIKE @Status " &
-                                      "AND STATUS_JUAL = 'TERHUTANG'"
+                query = "SELECT SUM(TOTAL_HUTANG) AS NOMINALHUTANG, SUM(DIBAYAR) AS NOMINALBAYAR " &
+                        "FROM hutang_detail " &
+                        "WHERE JENIS = 'BELI' " &
+                        "AND (@AwalBulan IS NULL OR JATUH_TEMPO >= @AwalBulan) " &
+                        "AND (@AkhirBulan IS NULL OR JATUH_TEMPO <= @AkhirBulan) " &
+                        "AND NAMA LIKE @Supliyer " &
+                        "AND STATUS LIKE @Status"
             End If
 
 
@@ -195,17 +147,8 @@ Public Class FormLapHutang
 
                 Using rd As MySqlDataReader = cmd.ExecuteReader()
                     If rd.Read() Then
-                        If Not rd.IsDBNull(rd.GetOrdinal("NOMINALHUTANG")) Then
-                            totalHutang = rd.GetDecimal(rd.GetOrdinal("NOMINALHUTANG"))
-                        Else
-                            totalHutang = 0
-                        End If
-
-                        If Not rd.IsDBNull(rd.GetOrdinal("NOMINALBAYAR")) Then
-                            totalBayar = rd.GetDecimal(rd.GetOrdinal("NOMINALBAYAR"))
-                        Else
-                            totalBayar = 0
-                        End If
+                        totalHutang = ModuleAngka.SafeGetValue(Of Decimal)(rd, "NOMINALHUTANG", 0D)
+                        totalBayar = ModuleAngka.SafeGetValue(Of Decimal)(rd, "NOMINALBAYAR", 0D)
                     End If
                 End Using
             End Using
@@ -217,31 +160,40 @@ Public Class FormLapHutang
             TxtHutang.Text = totalHutang - totalBayar.ToString("N0")
 
             Dim queryTampil As String = Nothing
-            If LabelJudul.Text = "LAPORAN HUTANG KE SUPPLIER BY PEMBELIAN" Then
-                queryTampil = "SELECT ID_PEMBELIAN, NAMA_SUPLIYER, TGL_BELI, GRAND_TOTAL_BELI, PEMBAYARAN, TAGIHAN, JATUH_TEMPO, TGL_BAYAR, NOMINALBAYAR, STATUS_TRANSAKSI_BELI, ID_USER " &
-                                 "FROM pembelian " &
-                                 "WHERE (@AwalBulan IS NULL OR TGL_BELI >= @AwalBulan) " &
-                                 "AND (@AkhirBulan IS NULL OR TGL_BELI <= @AkhirBulan) " &
-                                 "AND NAMA_SUPLIYER LIKE @Supliyer " &
-                                 "AND STATUS_TRANSAKSI_BELI LIKE @Status " &
-                                 "AND STATUS_JUAL = 'TERHUTANG'"
+            If LblHeaderForm.Text = "LAPORAN HUTANG KE SUPPLIER BY PEMBELIAN" Then
+                queryTampil = "SELECT ID_BELI AS ID_PEMBELIAN, NAMA AS NAMA_SUPLIYER, TANGGAL_BELI AS TGL_BELI, " &
+                              "TOTAL_HUTANG AS GRAND_TOTAL_BELI, DIBAYAR AS PEMBAYARAN, HUTANG AS TAGIHAN, " &
+                              "JATUH_TEMPO, TANGGAL_BAYAR AS TGL_BAYAR, DIBAYAR AS NOMINALBAYAR, STATUS AS STATUS_TRANSAKSI_BELI, ID_USER " &
+                              "FROM hutang_detail " &
+                              "WHERE JENIS = 'BELI' " &
+                              "AND (@AwalBulan IS NULL OR TANGGAL_BELI >= @AwalBulan) " &
+                              "AND (@AkhirBulan IS NULL OR TANGGAL_BELI <= @AkhirBulan) " &
+                              "AND NAMA LIKE @Supliyer " &
+                              "AND STATUS LIKE @Status " &
+                              "ORDER BY JATUH_TEMPO ASC"
 
-            ElseIf LabelJudul.Text = "LAPORAN HUTANG KE SUPPLIER BY PELUNASAN" Then
-                queryTampil = "SELECT ID_PEMBELIAN, NAMA_SUPLIYER, TGL_BELI, GRAND_TOTAL_BELI, PEMBAYARAN, TAGIHAN, JATUH_TEMPO, TGL_BAYAR, NOMINALBAYAR, STATUS_TRANSAKSI_BELI, ID_USER " &
-                                 "FROM pembelian " &
-                                 "WHERE (@AwalBulan IS NULL OR TGL_BAYAR >= @AwalBulan) " &
-                                 "AND (@AkhirBulan IS NULL OR TGL_BAYAR <= @AkhirBulan) " &
-                                 "AND NAMA_SUPLIYER LIKE @Supliyer " &
-                                 "AND STATUS_TRANSAKSI_BELI LIKE @Status " &
-                                 "AND STATUS_JUAL = 'TERHUTANG'"
+            ElseIf LblHeaderForm.Text = "LAPORAN HUTANG KE SUPPLIER BY PELUNASAN" Then
+                queryTampil = "SELECT ID_BELI AS ID_PEMBELIAN, NAMA AS NAMA_SUPLIYER, TANGGAL_BELI AS TGL_BELI, " &
+                              "TOTAL_HUTANG AS GRAND_TOTAL_BELI, DIBAYAR AS PEMBAYARAN, HUTANG AS TAGIHAN, " &
+                              "JATUH_TEMPO, TANGGAL_BAYAR AS TGL_BAYAR, DIBAYAR AS NOMINALBAYAR, STATUS AS STATUS_TRANSAKSI_BELI, ID_USER " &
+                              "FROM hutang_detail " &
+                              "WHERE JENIS = 'BELI' " &
+                              "AND (@AwalBulan IS NULL OR TANGGAL_BAYAR >= @AwalBulan) " &
+                              "AND (@AkhirBulan IS NULL OR TANGGAL_BAYAR <= @AkhirBulan) " &
+                              "AND NAMA LIKE @Supliyer " &
+                              "AND STATUS LIKE @Status " &
+                              "ORDER BY JATUH_TEMPO ASC"
             Else
-                queryTampil = "SELECT ID_PEMBELIAN, NAMA_SUPLIYER, TGL_BELI, GRAND_TOTAL_BELI, PEMBAYARAN, TAGIHAN, JATUH_TEMPO, TGL_BAYAR, NOMINALBAYAR, STATUS_TRANSAKSI_BELI, ID_USER " &
-                                "FROM pembelian " &
-                                "WHERE (@AwalBulan IS NULL OR JATUH_TEMPO >= @AwalBulan) " &
-                                "AND (@AkhirBulan IS NULL OR JATUH_TEMPO <= @AkhirBulan) " &
-                                "AND NAMA_SUPLIYER LIKE @Supliyer " &
-                                "AND STATUS_TRANSAKSI_BELI LIKE @Status " &
-                                "AND STATUS_JUAL = 'TERHUTANG'"
+                queryTampil = "SELECT ID_BELI AS ID_PEMBELIAN, NAMA AS NAMA_SUPLIYER, TANGGAL_BELI AS TGL_BELI, " &
+                              "TOTAL_HUTANG AS GRAND_TOTAL_BELI, DIBAYAR AS PEMBAYARAN, HUTANG AS TAGIHAN, " &
+                              "JATUH_TEMPO, TANGGAL_BAYAR AS TGL_BAYAR, DIBAYAR AS NOMINALBAYAR, STATUS AS STATUS_TRANSAKSI_BELI, ID_USER " &
+                              "FROM hutang_detail " &
+                              "WHERE JENIS = 'BELI' " &
+                              "AND (@AwalBulan IS NULL OR JATUH_TEMPO >= @AwalBulan) " &
+                              "AND (@AkhirBulan IS NULL OR JATUH_TEMPO <= @AkhirBulan) " &
+                              "AND NAMA LIKE @Supliyer " &
+                              "AND STATUS LIKE @Status " &
+                              "ORDER BY JATUH_TEMPO ASC"
             End If
 
             ' Muat laporan berdasarkan kriteria yang dipilih
@@ -258,7 +210,7 @@ Public Class FormLapHutang
 
                         Dim parameters As New ReportParameterCollection From {
                         New ReportParameter("Supliyer", "Supliyer : " & Supliyer),
-                        New ReportParameter("Kasir", "Dicetak oleh : " & FormUtama.SLogin.Text),
+                        New ReportParameter("Kasir", "Dicetak oleh : " & FormUtama.StatusNamaUser.Text),
                         New ReportParameter("Perusahaan", NAMA_PERUSAHAAN)
                     }
 
@@ -295,5 +247,11 @@ Public Class FormLapHutang
 
 
 
+
+    Private Sub FormLapHutang_KeyDown(sender As Object, e As KeyEventArgs) Handles MyBase.KeyDown
+        Select Case e.KeyCode
+            Case Keys.F5 : BtnLunas.PerformClick()
+        End Select
+    End Sub
 
 End Class

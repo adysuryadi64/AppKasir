@@ -1,4 +1,4 @@
-﻿
+
 
 Public Class FormGrafikLaba
 
@@ -21,6 +21,7 @@ Public Class FormGrafikLaba
 
 
     Private Sub FormGrafikLaba_Load(ByVal sender As Object, ByVal e As EventArgs) Handles MyBase.Load
+        ModuleTheme.TerapkanTheme(Me)
         DataCombox()
 
     End Sub

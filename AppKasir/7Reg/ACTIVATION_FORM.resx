@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -17,15 +17,6 @@
     <resheader name="version">2.0</resheader>
     <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
     <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
-    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
-    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
-    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
-        <value>[base64 mime encoded serialized .NET Framework object]</value>
-    </data>
-    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
-        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
-        <comment>This is a comment</comment>
-    </data>
                 
     There are any number of "resheader" rows that contain simple 
     name/value pairs.
@@ -1248,6 +1239,40 @@
         ///////////4AAAAB///////////////+AAAAA////////////////wAAAAf///////////////+AAAA
         P////////////////wAAAH/////////////////AAAD/////////////////8AAD////////////////
         //wAD/////////////////////////////8=
+</value>
+  </data>
+  <data name="BtnGenerate.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAACXBIWXMAABibAAAYmwFJdYOUAAABfElE
+        QVR4nN2Tu0oDURCGlyhWikowl5mQSPACFmotVoIXEBshrYWFyZwVBV9gC9FSUEOSmY2IEIWkEn0AsUvn
+        O2ihIFgI3gov7CarQbKJJBbiD6c6P9/8c2aOpv1rEcqC6km2Nw0yNMOjgjyuUN4JZK0ulJBP4/50r9t9
+        HNP9CvjFAirkNytpdVA41U0g22XjiQIZrbyPDRXaVCQZ+PSDPBPwmGuyhD/lI+BcqRU+qzQvY3qEgK/s
+        YsAHTlJDMzw12y1XLuogA5UwhXJLyHmCzJwNDZl9WiNyYAr5npAvFPCOArlb9GY7GoeBHNrPgXxDII96
+        0JxsGEbIeUMzWgl53R4C8uyfgR3FtEILAW8o4CcK8pTjsab/faWqitAcrgbTQzLteBKQHSSQc0I+pvBe
+        tCmY7QMplha/tPxajR9yXQ/2BeUcgWy5pkugTBDK62pkv0uBbNaCWVrxmX7L6wpcinKnQr5UKA/2CWVm
+        XM0/lQ67XkJzXgWykaZhv6kPMLvKnFiqLfkAAAAASUVORK5CYII=
+</value>
+  </data>
+  <data name="BtnAktivasi.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAACXBIWXMAABibAAAYmwFJdYOUAAABi0lE
+        QVR4nNWTvy+DYRDH34ofYTB04b2rEhHEIML/IBKJzSgkpO1ddZBYGkNJbBg61V3LH2BAJEzC1n+BCGIh
+        fsxlEZUrEVHVvjqISy55c/e9T557nu/rOH8RFNzotKwaFOtKNhBKnEGeLO17vG+r3iMm7yNM9xPIAoPe
+        EMp9BGSSQacY9YFArq1nGtM6pSICMsYgF4yaY9Q8oZ4QyHzMn2z+OLE/2Ww165mmoAW5sNkiIKEsMsop
+        oYxya6a93B7hllRHQYuFmcVvgQRy7PF+HJv5v8A4oWY9A1GzNlvUiAZkhlAuvQPlilydLmow6IBZIRxI
+        YcUw2Gx7s5h58ksknEQNg54x6lKlQEZdNk+WNPj735CLgnaXg8260kugj4wy8YMs72OUPQI9t3VKqUKu
+        BO2+CWW37BohV5oY9IhQbsmV4aItAusjjHpHqIdzgbXGssACdEjqCHWVUZ4JZDvqyiC56SFG3bEao64k
+        nERtRTDn82ns5UEPGOXFkkD2reYZ9DUikOmxrBr0m3gFTzO3moh3Lx8AAAAASUVORK5CYII=
+</value>
+  </data>
+  <data name="BtnClose.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAACXBIWXMAABibAAAYmwFJdYOUAAAA+klE
+        QVR4nO2Uzw4BMRDGXbmTSMRB7M5nLyRu4gXEQ/nzYsKa2YsnwEHwEJzISEkj3dXFRWKSpkk7/c3XmXYK
+        hZ8zBoYMHAW4ZA0GDkkYDnyABybqvfJLwrDPRPuXQI3uexsvX/kDvwYUgBmIs3zjKKp7AxUmRAt7b9Xt
+        loRoKsCWic5mnkitVsx9DQNLnA+dSFKhaUCj7AGJg6DNwOzxc4jG+YDA9unrzRbNZvkOZaJNLqDJ2SVp
+        tQJ7fQ5UTZDTxwq50ahYCtdOoOkifYfCiQ1cRlHHzqEAIydQW5JCn6q4UzW3arrbGWc+nTTTQ1pNLYDm
+        VGdV9hbM164NW925qK5SEAAAAABJRU5ErkJggg==
 </value>
   </data>
 </root>

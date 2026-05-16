@@ -1,4 +1,4 @@
-﻿Imports Microsoft.Reporting.WinForms
+Imports Microsoft.Reporting.WinForms
 
 Public Class FormHistory
 
@@ -20,6 +20,7 @@ Public Class FormHistory
 
 
     Private Sub FormHistory_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
+        ModuleTheme.TerapkanTheme(Me)
         ' Mengatur DateTimePicker ke tanggal saat ini
         DateTimePicker1.Value = DateTime.Now
         DateTimePicker2.Value = DateTime.Now
@@ -32,7 +33,6 @@ Public Class FormHistory
         Dim tanggalAwal As Date = DateTimePicker1.Value.Date
         Dim tanggalAkhir As Date = DateTimePicker1.Value.Date.AddDays(1).AddTicks(-1)
 
-        ' Ambil data History
         Dim queryHistory As String = "SELECT TANGGAL, AKSI FROM History WHERE TANGGAL >= @tanggalAwal AND TANGGAL <= @tanggalAkhir ORDER BY TANGGAL"
 
         Using cmdHistory As New MySqlCommand(queryHistory, conn)
@@ -40,18 +40,19 @@ Public Class FormHistory
             cmdHistory.Parameters.AddWithValue("@tanggalAkhir", tanggalAkhir.ToString("yyyy-MM-dd HH:mm:ss"))
             Using rd As MySqlDataReader = cmdHistory.ExecuteReader()
                 Using datasetHistory As New DataSetKL()
+                    datasetHistory.EnforceConstraints = False
                     datasetHistory.Load(rd, LoadOption.OverwriteChanges, "History")
+                    ' Remove this line: datasetHistory.EnforceConstraints = True
+
                     ReportViewer1.LocalReport.DataSources.Add(New ReportDataSource("DataSet1", datasetHistory.Tables("History")))
                 End Using
             End Using
         End Using
 
-        ' Set parameter laporan
         Dim parameters As ReportParameter() = New ReportParameter(0) {}
         parameters(0) = New ReportParameter("NAMATOKO", TxtPerusahaan.Text)
 
         ReportViewer1.LocalReport.SetParameters(parameters)
-
         ReportViewer1.RefreshReport()
     End Sub
 End Class

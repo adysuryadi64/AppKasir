@@ -1,4 +1,4 @@
-﻿Public Class FormStokBarang
+Public Class FormStokBarang
     Private mRow As Integer = 0
     Private newpage As Boolean = True
 
@@ -14,7 +14,7 @@
 
     Public Sub AturDataGridView()
         With DataGridView1
-            If FormUtama.SLevel.Text = "Kasir" Or FormUtama.SLevel.Text = "Admin" Then
+            If FormUtama.StatusLevelUser.Text = "Kasir" Or FormUtama.StatusLevelUser.Text = "Admin" Then
                 .Columns("HARGA_BELI").Visible = False
             End If
 
@@ -24,10 +24,8 @@
             .Columns("HARGA_BELI").HeaderText = "HARGA BELI"
             .Columns("STOK_TOKO").HeaderText = "STOK TOKO"
             .Columns("STOK_GUDANG").HeaderText = "STOK GUDANG"
-
-            .Columns("HARGA_BELI").DefaultCellStyle.Format = "###,###"
-            .Columns("HARGA_BELI").DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight
         End With
+        ModuleAngka.TerapkanFormatKolomAngka(DataGridView1, "HARGA_BELI")
         HitungTotalHarga()
         HitungJumlahBarisDataBarang()
     End Sub
@@ -64,6 +62,7 @@
 
 
     Private Sub FormStokBarang_Load(ByVal sender As Object, ByVal e As EventArgs) Handles MyBase.Load
+        ModuleTheme.TerapkanTheme(Me)
         Cursor = Cursors.WaitCursor
         Kondisiawal()
         Cursor = Cursors.Default
@@ -83,13 +82,13 @@
     End Sub
 
     Private Sub FormStokBarang_Paint(ByVal sender As Object, ByVal e As System.Windows.Forms.PaintEventArgs) Handles MyBase.Paint
-        Using i As New System.Drawing.Drawing2D.LinearGradientBrush(ClientRectangle, Color.MediumPurple, Color.ForestGreen, Drawing2D.LinearGradientMode.BackwardDiagonal)
+        Using i As New System.Drawing.Drawing2D.LinearGradientBrush(ClientRectangle, ModuleTheme.C(Color.MediumPurple, Color.FromArgb(40, 44, 52)), ModuleTheme.C(Color.ForestGreen, Color.FromArgb(60, 64, 72)), Drawing2D.LinearGradientMode.BackwardDiagonal)
             e.Graphics.FillRectangle(i, ClientRectangle)
         End Using
     End Sub
 
     Private Sub BtnStokKosong_Click(ByVal sender As Object, ByVal e As EventArgs) Handles BtnStokKosong.Click
-        LblJudul.Text = "DATA BARANG KOSONG"
+        LblHeaderForm.Text = "DATA BARANG KOSONG"
 
         Using da As New MySqlDataAdapter("SELECT ID_BARANG, NAMA_BARANG, NAMA_KATEGORI, HARGA_BELI, STOK_TOKO, STOK_GUDANG FROM tbl_barang where STOK_TOKO = 0 and STOK_GUDANG = 0", conn)
             Using ds As New DataSet()
@@ -102,13 +101,13 @@
 
 
     Private Sub BtnTampilSemua_Click(ByVal sender As Object, ByVal e As EventArgs) Handles BtnTampilSemua.Click
-        LblJudul.Text = "DATA BARANG"
+        LblHeaderForm.Text = "DATA BARANG"
         Kondisiawal()
 
     End Sub
 
     Private Sub BtnStok_Click(ByVal sender As Object, ByVal e As EventArgs) Handles BtnStok.Click
-        LblJudul.Text = "D A T A   S T O K  S P A R E P A R T  T I D A K  K O S O N G"
+        LblHeaderForm.Text = "D A T A   S T O K  S P A R E P A R T  T I D A K  K O S O N G"
 
         Using da As New MySqlDataAdapter("SELECT ID_BARANG, NAMA_BARANG, NAMA_KATEGORI, HARGA_BELI, STOK_TOKO, STOK_GUDANG FROM tbl_barang where STOK_TOKO <> 0 and STOK_GUDANG <> 0", conn)
             Using ds As New DataSet()
@@ -127,7 +126,7 @@
 
     Private Sub BtnCetak_Click(ByVal sender As Object, ByVal e As EventArgs) Handles BtnCetak.Click
         If DataGridView1.Rows.Count < 1 Then
-            MsgBox("Tidak ada data", vbCritical, "Kosong")
+            MessageBox.Show("Tidak ada data", "Kosong", MessageBoxButtons.OK, MessageBoxIcon.Error)
         Else
             Try
                 With PrintPreviewDialog1
@@ -155,7 +154,7 @@
 
         ' judul documen
         Dim fontheader As New System.Drawing.Font("Arial", 18, FontStyle.Bold)
-        e.Graphics.DrawString(LblJudul.Text, fontheader, Brushes.Black, 250, 50)
+        e.Graphics.DrawString(LblHeaderForm.Text, fontheader, Brushes.Black, 250, 50)
 
         ' print the header text for a new page
         '   use a grey bg just like the control
@@ -297,7 +296,7 @@
     '    xlWorkBook.SaveAs(System.IO.Path.Combine(System.Windows.Forms.Application.StartupPath, LblJudul.Text))
     '    xlWorkBook.Close()
     '    xlApp.Quit()
-    '    MessageBox.Show("Data berhasil di export", "Pesan", MessageBoxButtons.OK, MessageBoxIcon.Information)
+    '    MsgBox("Tidak ada data", vbCritical, "Kosong")
     '    Cursor = Cursors.Default
     'End Sub
 

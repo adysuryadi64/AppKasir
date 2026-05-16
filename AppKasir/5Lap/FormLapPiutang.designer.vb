@@ -1,4 +1,4 @@
-﻿<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()>
+<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()>
 Partial Class FormLapPiutang
     Inherits System.Windows.Forms.Form
 
@@ -26,12 +26,11 @@ Partial Class FormLapPiutang
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(FormLapPiutang))
         Dim ReportDataSource1 As Microsoft.Reporting.WinForms.ReportDataSource = New Microsoft.Reporting.WinForms.ReportDataSource()
         Me.penjualan_PiutangBindingSource = New System.Windows.Forms.BindingSource(Me.components)
-        'Me.PossDataSet = New AppKasir.DataSetKL()
         Me.Label5 = New System.Windows.Forms.Label()
         Me.CmbLunas = New System.Windows.Forms.ComboBox()
         Me.Label4 = New System.Windows.Forms.Label()
         Me.Label3 = New System.Windows.Forms.Label()
-        Me.LabelJudul = New System.Windows.Forms.Label()
+        Me.LblHeaderForm = New System.Windows.Forms.Label()
         Me.Label2 = New System.Windows.Forms.Label()
         Me.Label1 = New System.Windows.Forms.Label()
         Me.TxtBayar = New System.Windows.Forms.TextBox()
@@ -43,7 +42,6 @@ Partial Class FormLapPiutang
         Me.CmbBln = New System.Windows.Forms.ComboBox()
         Me.CmbSupliyer = New System.Windows.Forms.ComboBox()
         Me.ReportViewer1 = New Microsoft.Reporting.WinForms.ReportViewer()
-        'Me.penjualan_PiutangTableAdapter = New AppKasir.PossDataSetLancarTableAdapters.penjualan_PiutangTableAdapter()
         Me.CbTanggal = New System.Windows.Forms.CheckBox()
         Me.Panel1 = New System.Windows.Forms.Panel()
         Me.Label6 = New System.Windows.Forms.Label()
@@ -51,7 +49,6 @@ Partial Class FormLapPiutang
         Me.DTPAwal = New System.Windows.Forms.DateTimePicker()
         Me.Panel2 = New System.Windows.Forms.Panel()
         CType(Me.penjualan_PiutangBindingSource, System.ComponentModel.ISupportInitialize).BeginInit()
-        'CType(Me.PossDataSet, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.Panel1.SuspendLayout()
         Me.Panel2.SuspendLayout()
         Me.SuspendLayout()
@@ -59,12 +56,6 @@ Partial Class FormLapPiutang
         'penjualan_PiutangBindingSource
         '
         Me.penjualan_PiutangBindingSource.DataMember = "penjualan_Piutang"
-        'Me.penjualan_PiutangBindingSource.DataSource = Me.PossDataSet
-        '
-        'PossDataSet
-        '
-        'Me.PossDataSet.DataSetName = "PossDataSet"
-        'Me.PossDataSet.SchemaSerializationMode = System.Data.SchemaSerializationMode.IncludeSchema
         '
         'Label5
         '
@@ -109,23 +100,23 @@ Partial Class FormLapPiutang
         Me.Label3.Font = New System.Drawing.Font("Century Gothic", 9.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.Label3.Location = New System.Drawing.Point(844, 47)
         Me.Label3.Name = "Label3"
-        Me.Label3.Size = New System.Drawing.Size(112, 16)
+        Me.Label3.Size = New System.Drawing.Size(111, 16)
         Me.Label3.TabIndex = 156
         Me.Label3.Text = "SUDAH DIBAYAR"
         Me.Label3.TextAlign = System.Drawing.ContentAlignment.MiddleRight
         '
-        'LabelJudul
+        'LblHeaderForm
         '
-        Me.LabelJudul.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
-                    Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.LabelJudul.BackColor = System.Drawing.Color.Gold
-        Me.LabelJudul.Font = New System.Drawing.Font("Bookman Old Style", 21.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.LabelJudul.Location = New System.Drawing.Point(2, 5)
-        Me.LabelJudul.Name = "LabelJudul"
-        Me.LabelJudul.Size = New System.Drawing.Size(743, 31)
-        Me.LabelJudul.TabIndex = 124
-        Me.LabelJudul.Text = "LAPORAN PIUTANG PELANGGAN"
-        Me.LabelJudul.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
+        Me.LblHeaderForm.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.LblHeaderForm.BackColor = System.Drawing.SystemColors.Control
+        Me.LblHeaderForm.Font = New System.Drawing.Font("Bookman Old Style", 21.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.LblHeaderForm.Location = New System.Drawing.Point(2, 5)
+        Me.LblHeaderForm.Name = "LblHeaderForm"
+        Me.LblHeaderForm.Size = New System.Drawing.Size(743, 31)
+        Me.LblHeaderForm.TabIndex = 124
+        Me.LblHeaderForm.Text = "LAPORAN PIUTANG PELANGGAN"
+        Me.LblHeaderForm.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
         '
         'Label2
         '
@@ -135,7 +126,7 @@ Partial Class FormLapPiutang
         Me.Label2.Font = New System.Drawing.Font("Century Gothic", 9.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.Label2.Location = New System.Drawing.Point(846, 75)
         Me.Label2.Name = "Label2"
-        Me.Label2.Size = New System.Drawing.Size(110, 16)
+        Me.Label2.Size = New System.Drawing.Size(109, 16)
         Me.Label2.TabIndex = 155
         Me.Label2.Text = "BELUM DIBAYAR"
         Me.Label2.TextAlign = System.Drawing.ContentAlignment.MiddleRight
@@ -148,7 +139,7 @@ Partial Class FormLapPiutang
         Me.Label1.Font = New System.Drawing.Font("Century Gothic", 9.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.Label1.Location = New System.Drawing.Point(849, 19)
         Me.Label1.Name = "Label1"
-        Me.Label1.Size = New System.Drawing.Size(107, 16)
+        Me.Label1.Size = New System.Drawing.Size(106, 16)
         Me.Label1.TabIndex = 154
         Me.Label1.Text = "TOTAL PIUTANG"
         Me.Label1.TextAlign = System.Drawing.ContentAlignment.MiddleRight
@@ -185,12 +176,15 @@ Partial Class FormLapPiutang
         '
         'BtnLunas
         '
-        Me.BtnLunas.BackColor = System.Drawing.Color.Gold
-        Me.BtnLunas.FlatAppearance.BorderSize = 0
-        Me.BtnLunas.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(CType(CType(128, Byte), Integer), CType(CType(255, Byte), Integer), CType(CType(255, Byte), Integer))
-        Me.BtnLunas.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Yellow
+        Me.BtnLunas.AutoSize = True
+        Me.BtnLunas.BackColor = System.Drawing.SystemColors.Control
+        Me.BtnLunas.Cursor = System.Windows.Forms.Cursors.Hand
+        Me.BtnLunas.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(CType(CType(100, Byte), Integer), CType(CType(116, Byte), Integer), CType(CType(139, Byte), Integer))
+        Me.BtnLunas.FlatAppearance.BorderSize = 1
+        Me.BtnLunas.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(CType(CType(226, Byte), Integer), CType(CType(232, Byte), Integer), CType(CType(240, Byte), Integer))
+        Me.BtnLunas.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(CType(CType(241, Byte), Integer), CType(CType(245, Byte), Integer), CType(CType(249, Byte), Integer))
         Me.BtnLunas.FlatStyle = System.Windows.Forms.FlatStyle.Flat
-        Me.BtnLunas.Font = New System.Drawing.Font("Century Gothic", 11.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.BtnLunas.Font = New System.Drawing.Font("Segoe UI", 9.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.BtnLunas.ForeColor = System.Drawing.Color.Black
         Me.BtnLunas.Image = CType(resources.GetObject("BtnLunas.Image"), System.Drawing.Image)
         Me.BtnLunas.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft
@@ -198,7 +192,8 @@ Partial Class FormLapPiutang
         Me.BtnLunas.Name = "BtnLunas"
         Me.BtnLunas.Size = New System.Drawing.Size(139, 35)
         Me.BtnLunas.TabIndex = 147
-        Me.BtnLunas.Text = "    TAMPILKAN"
+        Me.BtnLunas.Text = "Tampilkan (F5)"
+        Me.BtnLunas.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
         Me.BtnLunas.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText
         Me.BtnLunas.UseVisualStyleBackColor = False
         '
@@ -267,12 +262,9 @@ Partial Class FormLapPiutang
         Me.ReportViewer1.LocalReport.ReportEmbeddedResource = "KasirLancar.ReportPiutang.rdlc"
         Me.ReportViewer1.Location = New System.Drawing.Point(0, 0)
         Me.ReportViewer1.Name = "ReportViewer1"
+        Me.ReportViewer1.ServerReport.BearerToken = Nothing
         Me.ReportViewer1.Size = New System.Drawing.Size(1159, 511)
         Me.ReportViewer1.TabIndex = 124
-        '
-        'penjualan_PiutangTableAdapter
-        '
-        'Me.penjualan_PiutangTableAdapter.ClearBeforeFill = True
         '
         'CbTanggal
         '
@@ -291,7 +283,7 @@ Partial Class FormLapPiutang
         Me.Panel1.Controls.Add(Me.DTPAkhir)
         Me.Panel1.Controls.Add(Me.DTPAwal)
         Me.Panel1.Controls.Add(Me.CbTanggal)
-        Me.Panel1.Controls.Add(Me.LabelJudul)
+        Me.Panel1.Controls.Add(Me.LblHeaderForm)
         Me.Panel1.Controls.Add(Me.Label5)
         Me.Panel1.Controls.Add(Me.CmbSupliyer)
         Me.Panel1.Controls.Add(Me.CmbLunas)
@@ -357,17 +349,17 @@ Partial Class FormLapPiutang
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.BackColor = System.Drawing.Color.Khaki
+        Me.BackColor = System.Drawing.SystemColors.Control
         Me.ClientSize = New System.Drawing.Size(1159, 622)
         Me.Controls.Add(Me.Panel2)
         Me.Controls.Add(Me.Panel1)
         Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None
+        Me.KeyPreview = True
         Me.Icon = CType(resources.GetObject("$this.Icon"), System.Drawing.Icon)
         Me.Name = "FormLapPiutang"
         Me.ShowInTaskbar = False
         Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen
         CType(Me.penjualan_PiutangBindingSource, System.ComponentModel.ISupportInitialize).EndInit()
-        'CType(Me.PossDataSet, System.ComponentModel.ISupportInitialize).EndInit()
         Me.Panel1.ResumeLayout(False)
         Me.Panel1.PerformLayout()
         Me.Panel2.ResumeLayout(False)
@@ -378,7 +370,7 @@ Partial Class FormLapPiutang
     Friend WithEvents CmbThn As System.Windows.Forms.ComboBox
     Friend WithEvents CmbBln As System.Windows.Forms.ComboBox
     Friend WithEvents CmbSupliyer As System.Windows.Forms.ComboBox
-    Friend WithEvents LabelJudul As System.Windows.Forms.Label
+    Friend WithEvents LblHeaderForm As System.Windows.Forms.Label
     Friend WithEvents CbBulan As CheckBox
     Friend WithEvents BtnLunas As Button
 
