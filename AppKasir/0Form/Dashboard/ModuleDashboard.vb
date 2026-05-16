@@ -59,101 +59,100 @@ Module ModuleDashboard
 
         Try
             EnsureConnectionReady()
-            Dim tglHariIni As String = Now.ToString("yyyy-MM-dd")
-            Dim tglBulanAwal As String = New Date(Now.Year, Now.Month, 1).ToString("yyyy-MM-dd")
-            Dim tglBulanLaluAwal As String = New Date(Now.Year, Now.Month, 1).AddMonths(-1).ToString("yyyy-MM-dd")
-            Dim tglBulanLaluAkhir As String = New Date(Now.Year, Now.Month, 1).AddDays(-1).ToString("yyyy-MM-dd")
 
-            ' ── Omset & transaksi hari ini ────────────────────────────
+            ' ── Rentang waktu ─────────────────────────────────────────
+            Dim tglHariIni As Date    = Now.Date
+            Dim tglBesok As Date      = tglHariIni.AddDays(1)
+            Dim tglBulanAwal As Date  = New Date(Now.Year, Now.Month, 1)
+            Dim tglBulanAkhir As Date = tglBulanAwal.AddMonths(1)
+            Dim tglBulanLaluAwal As Date  = tglBulanAwal.AddMonths(-1)
+            Dim tglBulanLaluAkhir As Date = tglBulanAwal
+            Dim tgl7HariLalu As Date  = tglHariIni.AddDays(-6)
+
+            ' ══════════════════════════════════════════════════════════
+            ' QUERY 1 — Semua agregasi penjualan dalam 1 query
+            ' Mencakup: omset hari ini, bulan ini, bulan lalu,
+            '           piutang belum lunas, dan data 7 hari (GROUP BY)
+            ' Pakai range >= AND < agar index TGL_TRANSAKSI terpakai
+            ' ══════════════════════════════════════════════════════════
             Using cmd As New MySqlCommand(
-                "SELECT COALESCE(SUM(GRAND_TOTAL_STL_PAJAK),0) AS OMSET, COUNT(*) AS JML " &
+                "SELECT " &
+                "  COALESCE(SUM(CASE WHEN TGL_TRANSAKSI >= @hariIni AND TGL_TRANSAKSI < @besok " &
+                "    THEN GRAND_TOTAL_STL_PAJAK ELSE 0 END), 0) AS OMSET_HARI, " &
+                "  COALESCE(SUM(CASE WHEN TGL_TRANSAKSI >= @hariIni AND TGL_TRANSAKSI < @besok " &
+                "    THEN 1 ELSE 0 END), 0) AS JML_HARI, " &
+                "  COALESCE(SUM(CASE WHEN TGL_TRANSAKSI >= @bulanAwal AND TGL_TRANSAKSI < @bulanAkhir " &
+                "    THEN GRAND_TOTAL_STL_PAJAK ELSE 0 END), 0) AS OMSET_BULAN, " &
+                "  COALESCE(SUM(CASE WHEN TGL_TRANSAKSI >= @bulanLaluAwal AND TGL_TRANSAKSI < @bulanLaluAkhir " &
+                "    THEN GRAND_TOTAL_STL_PAJAK ELSE 0 END), 0) AS OMSET_LALU, " &
+                "  COALESCE(SUM(CASE WHEN STATUS_BAYAR = 'TERHUTANG' " &
+                "    THEN SISA_TAGIHAN ELSE 0 END), 0) AS TOTAL_PIUTANG, " &
+                "  COALESCE(SUM(CASE WHEN STATUS_BAYAR = 'TERHUTANG' THEN 1 ELSE 0 END), 0) AS JML_PIUTANG " &
                 "FROM penjualan " &
-                "WHERE DATE(TGL_TRANSAKSI) = @tgl AND STATUS_TRANSAKSI <> 'BATAL' " &
-                "  AND LOKASIBARANG = @lok", conn)
-                cmd.Parameters.AddWithValue("@tgl", tglHariIni)
+                "WHERE STATUS_TRANSAKSI <> 'BATAL' AND LOKASIBARANG = @lok " &
+                "  AND TGL_TRANSAKSI >= @bulanLaluAwal", conn)
+                cmd.Parameters.AddWithValue("@hariIni", tglHariIni)
+                cmd.Parameters.AddWithValue("@besok", tglBesok)
+                cmd.Parameters.AddWithValue("@bulanAwal", tglBulanAwal)
+                cmd.Parameters.AddWithValue("@bulanAkhir", tglBulanAkhir)
+                cmd.Parameters.AddWithValue("@bulanLaluAwal", tglBulanLaluAwal)
+                cmd.Parameters.AddWithValue("@bulanLaluAkhir", tglBulanLaluAkhir)
                 cmd.Parameters.AddWithValue("@lok", lokasi)
                 Using rd = cmd.ExecuteReader()
                     If rd.Read() Then
-                        omsetHariIni = ModuleAngka.ParseDecimal(rd("OMSET"))
-                        jmlTransaksi = ModuleAngka.ParseInteger(rd("JML"))
+                        omsetHariIni         = ModuleAngka.ParseDecimal(rd("OMSET_HARI"))
+                        jmlTransaksi         = ModuleAngka.ParseInteger(rd("JML_HARI"))
+                        omsetBulanIni        = ModuleAngka.ParseDecimal(rd("OMSET_BULAN"))
+                        omsetBulanLalu       = ModuleAngka.ParseDecimal(rd("OMSET_LALU"))
+                        totalPiutang         = ModuleAngka.ParseDecimal(rd("TOTAL_PIUTANG"))
+                        piutangBelumLunas    = ModuleAngka.ParseInteger(rd("JML_PIUTANG"))
                     End If
                 End Using
             End Using
             nilaiRataTransaksi = If(jmlTransaksi > 0, omsetHariIni / jmlTransaksi, 0D)
 
-            ' ── Omset bulan ini ───────────────────────────────────────
+            ' ══════════════════════════════════════════════════════════
+            ' QUERY 2 — Pembelian bulan ini + hutang jatuh tempo + data 7 hari
+            ' Semua dari tabel pembelian dalam 1 query
+            ' ══════════════════════════════════════════════════════════
             Using cmd As New MySqlCommand(
-                "SELECT COALESCE(SUM(GRAND_TOTAL_STL_PAJAK),0) FROM penjualan " &
-                "WHERE DATE(TGL_TRANSAKSI) >= @tgl AND STATUS_TRANSAKSI <> 'BATAL' " &
-                "  AND LOKASIBARANG = @lok", conn)
-                cmd.Parameters.AddWithValue("@tgl", tglBulanAwal)
+                "SELECT " &
+                "  COALESCE(SUM(CASE WHEN TGL_BELI >= @bulanAwal AND TGL_BELI < @bulanAkhir " &
+                "    THEN GRAND_TOTAL_BELI ELSE 0 END), 0) AS BELI_BULAN, " &
+                "  COALESCE(SUM(CASE WHEN STATUS_JUAL = 'TERHUTANG' AND JATUH_TEMPO < @besok " &
+                "    THEN TAGIHAN - NOMINALBAYAR ELSE 0 END), 0) AS TOTAL_HUTANG, " &
+                "  COALESCE(SUM(CASE WHEN STATUS_JUAL = 'TERHUTANG' AND JATUH_TEMPO < @besok " &
+                "    THEN 1 ELSE 0 END), 0) AS JML_HUTANG " &
+                "FROM pembelian WHERE LOKASI = @lok", conn)
+                cmd.Parameters.AddWithValue("@bulanAwal", tglBulanAwal)
+                cmd.Parameters.AddWithValue("@bulanAkhir", tglBulanAkhir)
+                cmd.Parameters.AddWithValue("@besok", tglBesok)
                 cmd.Parameters.AddWithValue("@lok", lokasi)
-                omsetBulanIni = ModuleAngka.ParseDecimal(cmd.ExecuteScalar())
+                Using rd = cmd.ExecuteReader()
+                    If rd.Read() Then
+                        totalPembelianBulan = ModuleAngka.ParseDecimal(rd("BELI_BULAN"))
+                        totalHutang         = ModuleAngka.ParseDecimal(rd("TOTAL_HUTANG"))
+                        hutangJatuhTempo    = ModuleAngka.ParseInteger(rd("JML_HUTANG"))
+                    End If
+                End Using
             End Using
 
-            ' ── Omset bulan lalu ──────────────────────────────────────
-            Using cmd As New MySqlCommand(
-                "SELECT COALESCE(SUM(GRAND_TOTAL_STL_PAJAK),0) FROM penjualan " &
-                "WHERE DATE(TGL_TRANSAKSI) BETWEEN @awal AND @akhir AND STATUS_TRANSAKSI <> 'BATAL' " &
-                "  AND LOKASIBARANG = @lok", conn)
-                cmd.Parameters.AddWithValue("@awal", tglBulanLaluAwal)
-                cmd.Parameters.AddWithValue("@akhir", tglBulanLaluAkhir)
-                cmd.Parameters.AddWithValue("@lok", lokasi)
-                omsetBulanLalu = ModuleAngka.ParseDecimal(cmd.ExecuteScalar())
-            End Using
-
-            ' ── Pembelian bulan ini ───────────────────────────────────
-            Using cmd As New MySqlCommand(
-                "SELECT COALESCE(SUM(GRAND_TOTAL_BELI),0) FROM pembelian " &
-                "WHERE DATE(TGL_BELI) >= @tgl AND LOKASI = @lok", conn)
-                cmd.Parameters.AddWithValue("@tgl", tglBulanAwal)
-                cmd.Parameters.AddWithValue("@lok", lokasi)
-                totalPembelianBulan = ModuleAngka.ParseDecimal(cmd.ExecuteScalar())
-            End Using
-
-            ' ── Stok kritis, habis & aman ────────────────────────────────
+            ' ══════════════════════════════════════════════════════════
+            ' QUERY 3 — Status stok (tbl_barang kecil, cepat)
+            ' ══════════════════════════════════════════════════════════
             Using cmd As New MySqlCommand(
                 $"SELECT " &
-                $"  SUM(CASE WHEN {kolStok} <= STOK_MIN AND STOK_MIN > 0 AND {kolStok} > 0 THEN 1 ELSE 0 END) AS KRITIS, " &
                 $"  SUM(CASE WHEN {kolStok} <= 0 THEN 1 ELSE 0 END) AS HABIS, " &
-                $"  SUM(CASE WHEN {kolStok} > STOK_MIN OR STOK_MIN = 0 THEN 1 ELSE 0 END) AS AMAN, " &
-                $"  COALESCE(SUM({kolStok} * HARGA_BELI), 0) AS NILAI " &
+                $"  SUM(CASE WHEN {kolStok} > 0 AND STOK_MIN > 0 AND {kolStok} <= STOK_MIN THEN 1 ELSE 0 END) AS KRITIS, " &
+                $"  SUM(CASE WHEN {kolStok} > 0 AND ({kolStok} > STOK_MIN OR STOK_MIN = 0) THEN 1 ELSE 0 END) AS AMAN, " &
+                $"  COALESCE(SUM(CASE WHEN {kolStok} > 0 THEN {kolStok} * HARGA_BELI ELSE 0 END), 0) AS NILAI " &
                 "FROM tbl_barang WHERE STATUS = 'Aktif'", conn)
                 Using rd = cmd.ExecuteReader()
                     If rd.Read() Then
-                        stokKritis = ModuleAngka.ParseInteger(rd("KRITIS"))
-                        stokHabis = ModuleAngka.ParseInteger(rd("HABIS"))
-                        stokAman = ModuleAngka.ParseInteger(rd("AMAN"))
+                        stokHabis       = ModuleAngka.ParseInteger(rd("HABIS"))
+                        stokKritis      = ModuleAngka.ParseInteger(rd("KRITIS"))
+                        stokAman        = ModuleAngka.ParseInteger(rd("AMAN"))
                         nilaiPersediaan = ModuleAngka.ParseDecimal(rd("NILAI"))
-                    End If
-                End Using
-            End Using
-
-            ' ── Hutang jatuh tempo ────────────────────────────────────
-            ' Hutang ada di tabel pembelian: STATUS_JUAL='TERHUTANG', sisa = TAGIHAN - NOMINALBAYAR
-            Using cmd As New MySqlCommand(
-                "SELECT COUNT(*), COALESCE(SUM(TAGIHAN - NOMINALBAYAR),0) FROM pembelian " &
-                "WHERE DATE(JATUH_TEMPO) <= @tgl AND STATUS_JUAL = 'TERHUTANG' " &
-                "  AND LOKASI = @lok", conn)
-                cmd.Parameters.AddWithValue("@tgl", tglHariIni)
-                cmd.Parameters.AddWithValue("@lok", lokasi)
-                Using rd = cmd.ExecuteReader()
-                    If rd.Read() Then
-                        hutangJatuhTempo = ModuleAngka.ParseInteger(rd(0))
-                        totalHutang = ModuleAngka.ParseDecimal(rd(1))
-                    End If
-                End Using
-            End Using
-
-            ' ── Piutang belum lunas ───────────────────────────────────
-            Using cmd As New MySqlCommand(
-                "SELECT COUNT(*), COALESCE(SUM(SISA_TAGIHAN),0) FROM penjualan " &
-                "WHERE STATUS_BAYAR = 'TERHUTANG' AND LOKASIBARANG = @lok", conn)
-                cmd.Parameters.AddWithValue("@lok", lokasi)
-                Using rd = cmd.ExecuteReader()
-                    If rd.Read() Then
-                        piutangBelumLunas = ModuleAngka.ParseInteger(rd(0))
-                        totalPiutang = ModuleAngka.ParseDecimal(rd(1))
                     End If
                 End Using
             End Using
@@ -172,42 +171,67 @@ Module ModuleDashboard
             tumbuhCss = If(tumbuh >= 0, "naik", "turun")
         End If
 
-        ' ── Omset & Data 7 hari terakhir untuk chart ────────────────────────
+        ' ── Data 7 hari untuk chart — 1 query GROUP BY ───────────────
         Dim omset7Hari(6) As Decimal
         Dim transaksi7Hari(6) As Integer
         Dim beli7Hari(6) As Decimal
         Dim label7Hari(6) As String
 
-        For i As Integer = 6 To 0 Step -1
-            Dim tgl As Date = Now.Date.AddDays(-i)
-            label7Hari(6 - i) = tgl.ToString("dd/MM", _id)
-            Try
-                ' Omset & Transaksi
-                Using cmd As New MySqlCommand(
-                    "SELECT COALESCE(SUM(GRAND_TOTAL_STL_PAJAK),0) AS OMSET, COUNT(*) AS JML FROM penjualan " &
-                    "WHERE DATE(TGL_TRANSAKSI) = @tgl AND STATUS_TRANSAKSI <> 'BATAL' " &
-                    "  AND LOKASIBARANG = @lok", conn)
-                    cmd.Parameters.AddWithValue("@tgl", tgl.ToString("yyyy-MM-dd"))
-                    cmd.Parameters.AddWithValue("@lok", lokasi)
-                    Using rd = cmd.ExecuteReader()
-                        If rd.Read() Then
-                            omset7Hari(6 - i) = ModuleAngka.ParseDecimal(rd("OMSET"))
-                            transaksi7Hari(6 - i) = ModuleAngka.ParseInteger(rd("JML"))
-                        End If
-                    End Using
-                End Using
-
-                ' Pembelian
-                Using cmd As New MySqlCommand(
-                    "SELECT COALESCE(SUM(GRAND_TOTAL_BELI),0) FROM pembelian " &
-                    "WHERE DATE(TGL_BELI) = @tgl AND LOKASI = @lok", conn)
-                    cmd.Parameters.AddWithValue("@tgl", tgl.ToString("yyyy-MM-dd"))
-                    cmd.Parameters.AddWithValue("@lok", lokasi)
-                    beli7Hari(6 - i) = ModuleAngka.ParseDecimal(cmd.ExecuteScalar())
-                End Using
-            Catch
-            End Try
+        ' Inisialisasi label dulu
+        For i As Integer = 0 To 6
+            Dim tgl As Date = Now.Date.AddDays(i - 6)
+            label7Hari(i) = tgl.ToString("dd/MM", _id)
         Next
+
+        Try
+            EnsureConnectionReady()
+            Dim tgl7HariLalu As Date = Now.Date.AddDays(-6)
+            Dim tglBesok2 As Date    = Now.Date.AddDays(1)
+
+            ' Penjualan 7 hari — 1 query GROUP BY
+            Using cmd As New MySqlCommand(
+                "SELECT DATE(TGL_TRANSAKSI) AS TGL, " &
+                "  COALESCE(SUM(GRAND_TOTAL_STL_PAJAK),0) AS OMSET, COUNT(*) AS JML " &
+                "FROM penjualan " &
+                "WHERE TGL_TRANSAKSI >= @awal AND TGL_TRANSAKSI < @akhir " &
+                "  AND STATUS_TRANSAKSI <> 'BATAL' AND LOKASIBARANG = @lok " &
+                "GROUP BY DATE(TGL_TRANSAKSI)", conn)
+                cmd.Parameters.AddWithValue("@awal", tgl7HariLalu)
+                cmd.Parameters.AddWithValue("@akhir", tglBesok2)
+                cmd.Parameters.AddWithValue("@lok", lokasi)
+                Using rd = cmd.ExecuteReader()
+                    While rd.Read()
+                        Dim tglRow As Date = Convert.ToDateTime(rd("TGL"))
+                        Dim idx As Integer = CInt((tglRow.Date - tgl7HariLalu).TotalDays)
+                        If idx >= 0 AndAlso idx <= 6 Then
+                            omset7Hari(idx)     = ModuleAngka.ParseDecimal(rd("OMSET"))
+                            transaksi7Hari(idx) = ModuleAngka.ParseInteger(rd("JML"))
+                        End If
+                    End While
+                End Using
+            End Using
+
+            ' Pembelian 7 hari — 1 query GROUP BY
+            Using cmd As New MySqlCommand(
+                "SELECT DATE(TGL_BELI) AS TGL, COALESCE(SUM(GRAND_TOTAL_BELI),0) AS BELI " &
+                "FROM pembelian " &
+                "WHERE TGL_BELI >= @awal AND TGL_BELI < @akhir AND LOKASI = @lok " &
+                "GROUP BY DATE(TGL_BELI)", conn)
+                cmd.Parameters.AddWithValue("@awal", tgl7HariLalu)
+                cmd.Parameters.AddWithValue("@akhir", tglBesok2)
+                cmd.Parameters.AddWithValue("@lok", lokasi)
+                Using rd = cmd.ExecuteReader()
+                    While rd.Read()
+                        Dim tglRow As Date = Convert.ToDateTime(rd("TGL"))
+                        Dim idx As Integer = CInt((tglRow.Date - tgl7HariLalu).TotalDays)
+                        If idx >= 0 AndAlso idx <= 6 Then
+                            beli7Hari(idx) = ModuleAngka.ParseDecimal(rd("BELI"))
+                        End If
+                    End While
+                End Using
+            End Using
+        Catch
+        End Try
 
         ' ── Bangun HTML dari Template Embedded Resource ─────────────────────────────────
         ' Template HTML disimpan sebagai Embedded Resource di project — tidak perlu file eksternal

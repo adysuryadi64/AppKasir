@@ -98,6 +98,12 @@ CALL add_index_if_not_exists('jurnalumum', 'idx_tgl_jenis_transaksi', 'TGL_TRANS
 -- CALL add_index_if_not_exists('jurnalumum', 'idx_id_user_jurnal', 'ID_USER');
 CALL add_index_if_not_exists('jurnalumum', 'idx_nomor_akun_d_jurnal', 'NOMOR_AKUN_D,TGL_TRANSAKSI');
 CALL add_index_if_not_exists('jurnalumum', 'idx_nomor_akun_k_jurnal', 'NOMOR_AKUN_K,TGL_TRANSAKSI');
+-- Covering index untuk HitungSaldoAwal & HitungSaldoAkhir di ModuleLaporanKalkulasi:
+-- Query: WHERE TGL_TRANSAKSI < @tgl AND NOMOR_AKUN_D <> '' GROUP BY NOMOR_AKUN_D → SUM(NOMINAL)
+-- Tanpa index ini: full index scan 627K baris (~22 detik per query)
+-- Dengan index ini: range scan + covering index (tidak baca row) → jauh lebih cepat
+CALL add_index_if_not_exists('jurnalumum', 'idx_covering_akun_d', 'TGL_TRANSAKSI,NOMOR_AKUN_D,NOMINAL');
+CALL add_index_if_not_exists('jurnalumum', 'idx_covering_akun_k', 'TGL_TRANSAKSI,NOMOR_AKUN_K,NOMINAL');
 -- [DIHAPUS] prefix dari idx_tgl_jenis_akun_d_nominal — tidak ada query filter NOMINAL tanpa JENIS
 -- CALL add_index_if_not_exists('jurnalumum', 'idx_tgl_akun_d_nominal', 'TGL_TRANSAKSI,NOMOR_AKUN_D,NOMINAL');
 -- [DIHAPUS] prefix dari idx_tgl_jenis_akun_k_nominal — tidak ada query filter NOMINAL tanpa JENIS

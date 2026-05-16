@@ -133,27 +133,65 @@ Public Class FormLapNeracaLR
     Private Sub Tampilnerca()
         ReportViewer1.LocalReport.DataSources.Clear()
 
-        ' Daftar query dan parameter untuk setiap jenis akun
+        ' ── Aturan akuntansi untuk nilai yang dikirim ke RDLC ────────────────────────
+        ' Aktiva  DEBET  normal → +SALDO (positif)
+        ' Aktiva  KREDIT normal → -SALDO (akumulasi penyusutan mengurangi aktiva)
+        ' Pasiva  KREDIT normal → +SALDO (positif)
+        ' Pasiva  DEBET  normal → -SALDO (PRIVE mengurangi modal)
+        ' Laba Rugi Berjalan    → +SALDO (masuk sisi modal, laba menambah modal)
+        ' RDLC cukup SUM() — tidak perlu logika tanda di sana
+
         Dim queries As New Dictionary(Of String, String) From {
-            {"DataSet1", "ASET LANCAR"},
-            {"DataSet2", "ASET TETAP"},
-            {"DataSet3", "PASIVA"},
-            {"DataSet4", "MODAL"}
+            {"DataSet1",
+             "SELECT KODE_AKUN, NAMA_AKUN, " &
+             "  CASE WHEN AKUN_DK='DEBET'  THEN  SALDO_SEBELUMNYA " &
+             "       WHEN AKUN_DK='KREDIT' THEN -SALDO_SEBELUMNYA END AS SALDO_SEBELUMNYA, " &
+             "  CASE WHEN AKUN_DK='DEBET'  THEN  (SALDO_AKHIR - SALDO_SEBELUMNYA) " &
+             "       WHEN AKUN_DK='KREDIT' THEN -(SALDO_AKHIR - SALDO_SEBELUMNYA) END AS Perubahan, " &
+             "  CASE WHEN AKUN_DK='DEBET'  THEN  SALDO_AKHIR " &
+             "       WHEN AKUN_DK='KREDIT' THEN -SALDO_AKHIR END AS SALDO_AKHIR " &
+             "FROM temp_datareferensi WHERE JENIS_AKUN = 'ASET LANCAR' ORDER BY KODE_AKUN"},
+            {"DataSet2",
+             "SELECT KODE_AKUN, NAMA_AKUN, " &
+             "  CASE WHEN AKUN_DK='DEBET'  THEN  SALDO_SEBELUMNYA " &
+             "       WHEN AKUN_DK='KREDIT' THEN -SALDO_SEBELUMNYA END AS SALDO_SEBELUMNYA, " &
+             "  CASE WHEN AKUN_DK='DEBET'  THEN  (SALDO_AKHIR - SALDO_SEBELUMNYA) " &
+             "       WHEN AKUN_DK='KREDIT' THEN -(SALDO_AKHIR - SALDO_SEBELUMNYA) END AS Perubahan, " &
+             "  CASE WHEN AKUN_DK='DEBET'  THEN  SALDO_AKHIR " &
+             "       WHEN AKUN_DK='KREDIT' THEN -SALDO_AKHIR END AS SALDO_AKHIR " &
+             "FROM temp_datareferensi WHERE JENIS_AKUN = 'ASET TETAP' ORDER BY KODE_AKUN"},
+            {"DataSet3",
+             "SELECT KODE_AKUN, NAMA_AKUN, " &
+             "  CASE WHEN AKUN_DK='KREDIT' THEN  SALDO_SEBELUMNYA " &
+             "       WHEN AKUN_DK='DEBET'  THEN -SALDO_SEBELUMNYA END AS SALDO_SEBELUMNYA, " &
+             "  CASE WHEN AKUN_DK='KREDIT' THEN  (SALDO_AKHIR - SALDO_SEBELUMNYA) " &
+             "       WHEN AKUN_DK='DEBET'  THEN -(SALDO_AKHIR - SALDO_SEBELUMNYA) END AS Perubahan, " &
+             "  CASE WHEN AKUN_DK='KREDIT' THEN  SALDO_AKHIR " &
+             "       WHEN AKUN_DK='DEBET'  THEN -SALDO_AKHIR END AS SALDO_AKHIR " &
+             "FROM temp_datareferensi WHERE JENIS_AKUN = 'PASIVA' ORDER BY KODE_AKUN"},
+            {"DataSet4",
+             "SELECT KODE_AKUN, NAMA_AKUN, " &
+             "  CASE WHEN AKUN_DK='KREDIT' THEN  SALDO_SEBELUMNYA " &
+             "       WHEN AKUN_DK='DEBET'  THEN -SALDO_SEBELUMNYA END AS SALDO_SEBELUMNYA, " &
+             "  CASE WHEN AKUN_DK='KREDIT' THEN  (SALDO_AKHIR - SALDO_SEBELUMNYA) " &
+             "       WHEN AKUN_DK='DEBET'  THEN -(SALDO_AKHIR - SALDO_SEBELUMNYA) END AS Perubahan, " &
+             "  CASE WHEN AKUN_DK='KREDIT' THEN  SALDO_AKHIR " &
+             "       WHEN AKUN_DK='DEBET'  THEN -SALDO_AKHIR END AS SALDO_AKHIR " &
+             "FROM temp_datareferensi " &
+             "WHERE JENIS_AKUN = 'MODAL' OR KODE_AKUN = '05.01.001' " &
+             "ORDER BY KODE_AKUN"}
         }
 
-        ' Eksekusi query untuk setiap jenis akun dan tambahkan ke data source laporan
+        ' Eksekusi query untuk setiap dataset dan tambahkan ke data source laporan
         For Each kvp As KeyValuePair(Of String, String) In queries
-            Dim query As String = "SELECT KODE_AKUN, NAMA_AKUN, SALDO_SEBELUMNYA, (SALDO_AKHIR - SALDO_SEBELUMNYA) AS Perubahan, SALDO_AKHIR FROM temp_datareferensi WHERE JENIS_AKUN LIKE @JENIS_AKUN ORDER BY KODE_AKUN"
-            Using cmd As New MySqlCommand(query, conn)
-                cmd.Parameters.AddWithValue("@JENIS_AKUN", kvp.Value)
+            Using cmd As New MySqlCommand(kvp.Value, conn)
                 Using rd As MySqlDataReader = cmd.ExecuteReader()
-                    Dim dataset As New DataSet()
-                    dataset.Load(rd, LoadOption.OverwriteChanges, kvp.Key)
-                    ReportViewer1.LocalReport.DataSources.Add(New ReportDataSource(kvp.Key, dataset.Tables(kvp.Key)))
+                    Dim ds As New DataSet()
+                    ds.Load(rd, LoadOption.OverwriteChanges, kvp.Key)
+                    ReportViewer1.LocalReport.DataSources.Add(New ReportDataSource(kvp.Key, ds.Tables(kvp.Key)))
                 End Using
             End Using
         Next
-
 
         Dim AWAL As String = String.Empty
         Dim RUBAH As String = String.Empty

@@ -29,48 +29,57 @@ Module ModuleLaporanKalkulasi
     ''' </summary>
     Public Sub PostingResmi_HitungSemuaSaldo_KeTblDatareferensi()
         EnsureConnectionReady()
+        Dim swTotal As New Stopwatch() : swTotal.Start()
+        Dim sw As New Stopwatch()
 
-        ' ── LANGKAH 1: Reset SALDO_SEBELUMNYA ke SALDO_AWAL ─────────────────────────
-        ' Tujuan: memastikan titik awal kalkulasi bersih dari sisa posting sebelumnya.
-        ' SALDO_SEBELUMNYA dipakai oleh laporan sebagai kolom "Saldo Awal" / "Periode Lalu".
-        ' Kolom ini TIDAK boleh diubah di langkah manapun setelah ini.
+        ' ── CEK: Skip jika tidak ada jurnal baru sejak terakhir posting ──────────────
+        sw.Restart()
+        Dim lastJurnalStr As String = ""
+        Using cmdCekJurnal As New MySqlCommand(
+            "SELECT COALESCE(MAX(updated_at), '1970-01-01') FROM JurnalUmum", conn)
+            lastJurnalStr = cmdCekJurnal.ExecuteScalar().ToString()
+        End Using
+        Debug.WriteLine($"[PostingResmi] CekJurnalBaru: {sw.ElapsedMilliseconds}ms")
+
+        Dim lastPostingStr As String = AppConfig.Instance.GetValue(Of String)("LastPostingJurnal", "")
+        If lastJurnalStr = lastPostingStr AndAlso lastJurnalStr <> "" Then
+            Debug.WriteLine($"[PostingResmi] SKIP — tidak ada jurnal baru. Total: {swTotal.ElapsedMilliseconds}ms")
+            Exit Sub
+        End If
+
+        ' ── LANGKAH 1 ────────────────────────────────────────────────────────────────
+        sw.Restart()
         Using cmdResetSaldoAwal As New MySqlCommand(
-            "UPDATE tbl_datareferensi SET SALDO_SEBELUMNYA = SALDO_AWAL",
-            conn)
+            "UPDATE tbl_datareferensi SET SALDO_SEBELUMNYA = SALDO_AWAL", conn)
             cmdResetSaldoAwal.ExecuteNonQuery()
         End Using
+        Debug.WriteLine($"[PostingResmi] L1 ResetSaldoAwal: {sw.ElapsedMilliseconds}ms")
 
-        ' ── LANGKAH 2: Hitung total mutasi DEBET dan KREDIT dari JurnalUmum ─────────
-        ' Setiap akun dijumlahkan dari semua baris jurnal yang mencantumkan kode akun tersebut
-        ' di kolom NOMOR_AKUN_D (sisi debet) atau NOMOR_AKUN_K (sisi kredit).
-        ' Akun yang tidak punya mutasi akan mendapat nilai 0 via COALESCE.
+        ' ── LANGKAH 2 ────────────────────────────────────────────────────────────────
+        sw.Restart()
         Using cmdHitungMutasiJurnal As New MySqlCommand(
             "UPDATE tbl_datareferensi AS akun " &
             "LEFT JOIN ( " &
-            "    SELECT NOMOR_AKUN_D AS KODE_AKUN, SUM(NOMINAL) AS TOTAL_MUTASI_DEBET " &
-            "    FROM JurnalUmum " &
-            "    WHERE NOMOR_AKUN_D <> '' " &
-            "    GROUP BY NOMOR_AKUN_D " &
-            ") mutasi_debet ON mutasi_debet.KODE_AKUN = akun.KODE_AKUN " &
-            "LEFT JOIN ( " &
-            "    SELECT NOMOR_AKUN_K AS KODE_AKUN, SUM(NOMINAL) AS TOTAL_MUTASI_KREDIT " &
-            "    FROM JurnalUmum " &
-            "    WHERE NOMOR_AKUN_K <> '' " &
-            "    GROUP BY NOMOR_AKUN_K " &
-            ") mutasi_kredit ON mutasi_kredit.KODE_AKUN = akun.KODE_AKUN " &
+            "    SELECT KODE_AKUN, " &
+            "        SUM(CASE WHEN tipe = 'D' THEN NOMINAL ELSE 0 END) AS TOTAL_MUTASI_DEBET, " &
+            "        SUM(CASE WHEN tipe = 'K' THEN NOMINAL ELSE 0 END) AS TOTAL_MUTASI_KREDIT " &
+            "    FROM ( " &
+            "        SELECT NOMOR_AKUN_D AS KODE_AKUN, 'D' AS tipe, NOMINAL FROM JurnalUmum WHERE NOMOR_AKUN_D <> '' " &
+            "        UNION ALL " &
+            "        SELECT NOMOR_AKUN_K, 'K', NOMINAL FROM JurnalUmum WHERE NOMOR_AKUN_K <> '' " &
+            "    ) x " &
+            "    GROUP BY KODE_AKUN " &
+            ") mutasi ON mutasi.KODE_AKUN = akun.KODE_AKUN " &
             "SET " &
-            "    akun.S_DEBET  = COALESCE(mutasi_debet.TOTAL_MUTASI_DEBET,   0), " &
-            "    akun.S_KREDIT = COALESCE(mutasi_kredit.TOTAL_MUTASI_KREDIT, 0)",
+            "    akun.S_DEBET  = COALESCE(mutasi.TOTAL_MUTASI_DEBET,  0), " &
+            "    akun.S_KREDIT = COALESCE(mutasi.TOTAL_MUTASI_KREDIT, 0)",
             conn)
             cmdHitungMutasiJurnal.ExecuteNonQuery()
         End Using
+        Debug.WriteLine($"[PostingResmi] L2 HitungMutasiJurnal (1x scan): {sw.ElapsedMilliseconds}ms")
 
-        ' ── LANGKAH 3: Hitung SALDO_AKHIR untuk semua akun NERACA ───────────────────
-        ' Dikecualikan: akun LABA RUGI BERJALAN (TYPE_AKUN = 'LABA RUGI') — dihitung di LANGKAH 5.
-        '
-        ' Rumus berdasarkan saldo normal akun:
-        '   Akun saldo normal DEBET  (aset, beban):   SALDO_AKHIR = SALDO_SEBELUMNYA + S_DEBET - S_KREDIT
-        '   Akun saldo normal KREDIT (pasiva, modal):  SALDO_AKHIR = SALDO_SEBELUMNYA - S_DEBET + S_KREDIT
+        ' ── LANGKAH 3 ────────────────────────────────────────────────────────────────
+        sw.Restart()
         Using cmdHitungSaldoAkhirNeraca As New MySqlCommand(
             "UPDATE tbl_datareferensi " &
             "SET SALDO_AKHIR = CASE " &
@@ -82,26 +91,13 @@ Module ModuleLaporanKalkulasi
             conn)
             cmdHitungSaldoAkhirNeraca.ExecuteNonQuery()
         End Using
+        Debug.WriteLine($"[PostingResmi] L3 HitungSaldoAkhirNeraca: {sw.ElapsedMilliseconds}ms")
 
-        ' ── LANGKAH 4: Hitung laba/rugi bersih dari akun pendapatan dan beban ───────
-        ' Akun pendapatan (SUB_AKUN = 'LABA'):
-        '   - Saldo normal KREDIT → menambah laba (K 05.02.001 PENJUALAN, K 06.05.001 DISKON BELI, dll)
-        '   - Saldo normal DEBET  → mengurangi laba (D 05.03.001 RETUR JUAL, D 05.04.001 DISKON JUAL, dll)
-        ' Akun beban (SUB_AKUN = 'RUGI'):
-        '   - Semua saldo normal DEBET → mengurangi laba (D 07.xx.xxx BEBAN, D 06.01.001 HPP, dll)
-        '
-        ' Rumus laba bersih:
-        '   Laba Bersih = SUM(SALDO_AKHIR akun LABA sisi KREDIT)
-        '               - SUM(SALDO_AKHIR akun LABA sisi DEBET)
-        '               - SUM(SALDO_AKHIR akun RUGI sisi DEBET)
-        '               + SUM(SALDO_AKHIR akun RUGI sisi KREDIT)   ← kontra-beban (diskon beli, retur beli)
-        '
-        ' totalBebanPeriode dan totalPendapatanPeriode dipakai untuk mengisi S_DEBET dan S_KREDIT
-        ' akun LABA RUGI BERJALAN — agar neraca lajur bisa menampilkan kolom mutasi dengan benar.
+        ' ── LANGKAH 4 ────────────────────────────────────────────────────────────────
+        sw.Restart()
         Dim labaBersihPeriode As Decimal = 0D
-        Dim totalBebanPeriode As Decimal = 0D      ' → S_DEBET  akun 05.01.001
-        Dim totalPendapatanPeriode As Decimal = 0D ' → S_KREDIT akun 05.01.001
-
+        Dim totalBebanPeriode As Decimal = 0D
+        Dim totalPendapatanPeriode As Decimal = 0D
         Using cmdHitungLabaRugi As New MySqlCommand(
             "SELECT " &
             "    SUM(CASE WHEN SUB_AKUN = 'LABA' AND AKUN_DK = 'KREDIT' THEN SALDO_AKHIR ELSE 0 END) " &
@@ -111,37 +107,24 @@ Module ModuleLaporanKalkulasi
             "    AS LABA_BERSIH_PERIODE, " &
             "    SUM(CASE WHEN SUB_AKUN IN ('LABA','RUGI') THEN S_DEBET  ELSE 0 END) AS TOTAL_BEBAN_PERIODE, " &
             "    SUM(CASE WHEN SUB_AKUN IN ('LABA','RUGI') THEN S_KREDIT ELSE 0 END) AS TOTAL_PENDAPATAN_PERIODE " &
-            "FROM tbl_datareferensi " &
-            "WHERE SUB_AKUN IN ('LABA', 'RUGI')",
+            "FROM tbl_datareferensi WHERE SUB_AKUN IN ('LABA', 'RUGI')",
             conn)
             Using pembacaHasilLabaRugi As MySqlDataReader = cmdHitungLabaRugi.ExecuteReader()
                 If pembacaHasilLabaRugi.Read() Then
-                    labaBersihPeriode = ModuleAngka.SafeGetValue(Of Decimal)(pembacaHasilLabaRugi, "LABA_BERSIH_PERIODE", 0D)
-                    totalBebanPeriode = ModuleAngka.SafeGetValue(Of Decimal)(pembacaHasilLabaRugi, "TOTAL_BEBAN_PERIODE", 0D)
+                    labaBersihPeriode      = ModuleAngka.SafeGetValue(Of Decimal)(pembacaHasilLabaRugi, "LABA_BERSIH_PERIODE", 0D)
+                    totalBebanPeriode      = ModuleAngka.SafeGetValue(Of Decimal)(pembacaHasilLabaRugi, "TOTAL_BEBAN_PERIODE", 0D)
                     totalPendapatanPeriode = ModuleAngka.SafeGetValue(Of Decimal)(pembacaHasilLabaRugi, "TOTAL_PENDAPATAN_PERIODE", 0D)
                 End If
             End Using
         End Using
+        Debug.WriteLine($"[PostingResmi] L4 HitungLabaRugi: {sw.ElapsedMilliseconds}ms")
 
-        ' ── LANGKAH 5: Simpan hasil laba/rugi ke akun LABA RUGI BERJALAN ─────────────
-        ' Akun 05.01.001 LABA RUGI BERJALAN adalah akun KREDIT (saldo normal kredit).
-        '
-        ' Yang diisi:
-        '   S_DEBET  = totalBebanPeriode      → total semua beban (untuk neraca lajur)
-        '   S_KREDIT = totalPendapatanPeriode  → total semua pendapatan (untuk neraca lajur)
-        '   SALDO_AKHIR = SALDO_SEBELUMNYA - totalBebanPeriode + totalPendapatanPeriode
-        '               = SALDO_AWAL + labaBersihPeriode
-        '               (rumus akun KREDIT — konsisten dengan LANGKAH 3)
-        '
-        ' Yang TIDAK diubah:
-        '   SALDO_SEBELUMNYA → tetap = SALDO_AWAL (sudah di-set di LANGKAH 1)
-        '                      dipakai laporan sebagai kolom "Saldo Awal"
+        ' ── LANGKAH 5 ────────────────────────────────────────────────────────────────
+        sw.Restart()
         Using cmdSimpanLabaRugiBerjalan As New MySqlCommand(
             "UPDATE tbl_datareferensi " &
-            "SET " &
-            "    S_DEBET       = @totalBebanPeriode, " &
-            "    S_KREDIT      = @totalPendapatanPeriode, " &
-            "    SALDO_AKHIR   = SALDO_SEBELUMNYA - @totalBebanPeriode2 + @totalPendapatanPeriode2 " &
+            "SET S_DEBET = @totalBebanPeriode, S_KREDIT = @totalPendapatanPeriode, " &
+            "    SALDO_AKHIR = SALDO_SEBELUMNYA - @totalBebanPeriode2 + @totalPendapatanPeriode2 " &
             "WHERE TYPE_AKUN = 'LABA RUGI'",
             conn)
             cmdSimpanLabaRugiBerjalan.Parameters.AddWithValue("@totalBebanPeriode", totalBebanPeriode)
@@ -150,9 +133,12 @@ Module ModuleLaporanKalkulasi
             cmdSimpanLabaRugiBerjalan.Parameters.AddWithValue("@totalPendapatanPeriode2", totalPendapatanPeriode)
             cmdSimpanLabaRugiBerjalan.ExecuteNonQuery()
         End Using
+        Debug.WriteLine($"[PostingResmi] L5 SimpanLabaRugiBerjalan: {sw.ElapsedMilliseconds}ms")
 
+        AppConfig.Instance.SetValue("LastPostingJurnal", lastJurnalStr)
+        AppConfig.Instance.Save()
+        Debug.WriteLine($"[PostingResmi] TOTAL: {swTotal.ElapsedMilliseconds}ms")
     End Sub
-
 
     ''' <summary>
     ''' Siapkan temp_datareferensi sebagai ruang kerja kalkulasi laporan periode.
@@ -163,25 +149,26 @@ Module ModuleLaporanKalkulasi
     ''' </summary>
     Public Sub SiapkanTempDatareferensi_SalinDariTblDatareferensi()
         EnsureConnectionReady()
+        Dim sw As New Stopwatch() : sw.Start()
 
-        ' Kosongkan temp_datareferensi dari kalkulasi laporan sebelumnya
         Using cmdKosongkan As New MySqlCommand("TRUNCATE TABLE temp_datareferensi", conn)
             cmdKosongkan.ExecuteNonQuery()
         End Using
+        Debug.WriteLine($"[Siapkan] TRUNCATE: {sw.ElapsedMilliseconds}ms")
+        sw.Restart()
 
-        ' Salin seluruh master akun dari tbl_datareferensi ke temp_datareferensi.
-        ' Semua kolom disalin termasuk SALDO_AWAL — dipakai sebagai titik awal kalkulasi periode.
         Using cmdSalinMasterAkun As New MySqlCommand(
             "INSERT INTO temp_datareferensi " &
-            "    (STATUS, JENIS_AKUN, TYPE_AKUN, KODE_AKUN, NAMA_AKUN, SUB_AKUN, AKUN_DK, AKUN_NRLR, KETERANGAN, " &
+            "    (STATUS, JENIS_AKUN, TYPE_AKUN, KODE_AKUN, NAMA_AKUN, SUB_AKUN, AKUN_DK, AKUN_NRLR, " &
             "     SALDO_AWAL, SALDO_SEBELUMNYA, S_DEBET, S_KREDIT, SALDO_AKHIR) " &
             "SELECT " &
-            "    STATUS, JENIS_AKUN, TYPE_AKUN, KODE_AKUN, NAMA_AKUN, SUB_AKUN, AKUN_DK, AKUN_NRLR, KETERANGAN, " &
+            "    STATUS, JENIS_AKUN, TYPE_AKUN, KODE_AKUN, NAMA_AKUN, SUB_AKUN, AKUN_DK, AKUN_NRLR, " &
             "    SALDO_AWAL, SALDO_SEBELUMNYA, S_DEBET, S_KREDIT, SALDO_AKHIR " &
             "FROM tbl_datareferensi",
             conn)
             cmdSalinMasterAkun.ExecuteNonQuery()
         End Using
+        Debug.WriteLine($"[Siapkan] INSERT dari tbl_datareferensi: {sw.ElapsedMilliseconds}ms")
     End Sub
 
     ''' <summary>
@@ -195,11 +182,11 @@ Module ModuleLaporanKalkulasi
     ''' <param name="tanggalAwalPeriode">Tanggal awal periode laporan (eksklusif — jurnal sebelum tanggal ini)</param>
     Public Sub HitungSaldoAwal_PeriodeLaporan_KeTempDatareferensi(ByVal tanggalAwalPeriode As Date)
         EnsureConnectionReady()
+        Dim swTotal As New Stopwatch() : swTotal.Start()
+        Dim sw As New Stopwatch()
 
         ' ── LANGKAH 1: Hitung SALDO_SEBELUMNYA semua akun neraca ─────────────────────
-        ' Ambil total mutasi dari JurnalUmum dengan TGL_TRANSAKSI < tanggalAwalPeriode.
-        ' Hasilnya ditambahkan ke SALDO_AWAL menggunakan rumus saldo normal masing-masing akun.
-        ' Akun LABA RUGI BERJALAN dikecualikan — dihitung terpisah di LANGKAH 2.
+        sw.Restart()
         Using cmdHitungSaldoAwalNeraca As New MySqlCommand(
             "UPDATE temp_datareferensi AS akun " &
             "LEFT JOIN ( " &
@@ -227,15 +214,11 @@ Module ModuleLaporanKalkulasi
             cmdHitungSaldoAwalNeraca.Parameters.AddWithValue("@tanggalAwalPeriode2", tanggalAwalPeriode.ToString("yyyy-MM-dd HH:mm:ss"))
             cmdHitungSaldoAwalNeraca.ExecuteNonQuery()
         End Using
+        Debug.WriteLine($"[HitungSaldoAwal] L1 SaldoSebelumnya Neraca (2x scan JurnalUmum): {sw.ElapsedMilliseconds}ms")
 
         ' ── LANGKAH 2: Hitung SALDO_SEBELUMNYA akun LABA RUGI BERJALAN ───────────────
-        ' Nilai SALDO_SEBELUMNYA akun LABA RUGI = laba/rugi kumulatif sebelum periode ini.
-        ' Dihitung dari SALDO_SEBELUMNYA akun-akun pendapatan dan beban yang sudah dihitung di LANGKAH 1:
-        '   Laba Kumulatif Sebelum Periode = SUM(SALDO_SEBELUMNYA akun LABA sisi KREDIT)
-        '                                  - SUM(SALDO_SEBELUMNYA akun LABA sisi DEBET)
-        '                                  - SUM(SALDO_SEBELUMNYA akun RUGI)
+        sw.Restart()
         Dim labaBersihSebelumPeriode As Decimal = 0D
-
         Using cmdHitungLabaSebelumPeriode As New MySqlCommand(
             "SELECT " &
             "    SUM(CASE WHEN SUB_AKUN = 'LABA' AND AKUN_DK = 'KREDIT' THEN SALDO_SEBELUMNYA ELSE 0 END) " &
@@ -243,21 +226,19 @@ Module ModuleLaporanKalkulasi
             "  - SUM(CASE WHEN SUB_AKUN = 'RUGI' AND AKUN_DK = 'DEBET'  THEN SALDO_SEBELUMNYA ELSE 0 END) " &
             "  + SUM(CASE WHEN SUB_AKUN = 'RUGI' AND AKUN_DK = 'KREDIT' THEN SALDO_SEBELUMNYA ELSE 0 END) " &
             "    AS LABA_BERSIH_SEBELUM_PERIODE " &
-            "FROM temp_datareferensi " &
-            "WHERE SUB_AKUN IN ('LABA', 'RUGI')",
+            "FROM temp_datareferensi WHERE SUB_AKUN IN ('LABA', 'RUGI')",
             conn)
             Dim hasilSkalar As Object = cmdHitungLabaSebelumPeriode.ExecuteScalar()
             labaBersihSebelumPeriode = If(hasilSkalar Is DBNull.Value OrElse hasilSkalar Is Nothing, 0D, Convert.ToDecimal(hasilSkalar))
         End Using
-
         Using cmdSimpanSaldoAwalLabaRugi As New MySqlCommand(
-            "UPDATE temp_datareferensi " &
-            "SET SALDO_SEBELUMNYA = @labaBersihSebelumPeriode " &
-            "WHERE TYPE_AKUN = 'LABA RUGI'",
+            "UPDATE temp_datareferensi SET SALDO_SEBELUMNYA = @labaBersihSebelumPeriode WHERE TYPE_AKUN = 'LABA RUGI'",
             conn)
             cmdSimpanSaldoAwalLabaRugi.Parameters.AddWithValue("@labaBersihSebelumPeriode", labaBersihSebelumPeriode)
             cmdSimpanSaldoAwalLabaRugi.ExecuteNonQuery()
         End Using
+        Debug.WriteLine($"[HitungSaldoAwal] L2 SaldoSebelumnya LabaRugi: {sw.ElapsedMilliseconds}ms")
+        Debug.WriteLine($"[HitungSaldoAwal] TOTAL: {swTotal.ElapsedMilliseconds}ms")
     End Sub
 
     ''' <summary>
@@ -272,10 +253,11 @@ Module ModuleLaporanKalkulasi
     ''' <param name="tanggalAkhirPeriode">Tanggal akhir periode (inklusif)</param>
     Public Sub HitungDebetKredit_PeriodeLaporan_KeTempDatareferensi(ByVal tanggalAwalPeriode As Date, ByVal tanggalAkhirPeriode As Date)
         EnsureConnectionReady()
+        Dim swTotal As New Stopwatch() : swTotal.Start()
+        Dim sw As New Stopwatch()
 
-        ' ── LANGKAH 1: Hitung S_DEBET dan S_KREDIT semua akun neraca ─────────────────
-        ' Ambil total mutasi dari JurnalUmum dalam rentang tanggalAwal s/d tanggalAkhir.
-        ' Akun LABA RUGI BERJALAN dikecualikan — dihitung terpisah di LANGKAH 2.
+        ' ── LANGKAH 1 ────────────────────────────────────────────────────────────────
+        sw.Restart()
         Using cmdHitungMutasiPeriode As New MySqlCommand(
             "UPDATE temp_datareferensi AS akun " &
             "LEFT JOIN ( " &
@@ -305,29 +287,25 @@ Module ModuleLaporanKalkulasi
             cmdHitungMutasiPeriode.Parameters.AddWithValue("@tanggalAkhirPeriode2", tanggalAkhirPeriode.ToString("yyyy-MM-dd HH:mm:ss"))
             cmdHitungMutasiPeriode.ExecuteNonQuery()
         End Using
+        Debug.WriteLine($"[HitungDebetKredit] L1 MutasiPeriode Neraca (2x scan JurnalUmum): {sw.ElapsedMilliseconds}ms")
 
-        ' ── LANGKAH 2: Hitung S_DEBET dan S_KREDIT akun LABA RUGI BERJALAN ───────────
-        ' S_DEBET  akun LABA RUGI = total beban periode (untuk ditampilkan di neraca lajur)
-        ' S_KREDIT akun LABA RUGI = total pendapatan periode (untuk ditampilkan di neraca lajur)
-        ' Konsisten dengan cara PostingResmi menghitung kolom yang sama.
+        ' ── LANGKAH 2 ────────────────────────────────────────────────────────────────
+        sw.Restart()
         Dim totalBebanPeriode As Decimal = 0D
         Dim totalPendapatanPeriode As Decimal = 0D
-
         Using cmdHitungMutasiLabaRugi As New MySqlCommand(
             "SELECT " &
             "    SUM(CASE WHEN SUB_AKUN IN ('LABA','RUGI') THEN S_DEBET  ELSE 0 END) AS TOTAL_BEBAN_PERIODE, " &
             "    SUM(CASE WHEN SUB_AKUN IN ('LABA','RUGI') THEN S_KREDIT ELSE 0 END) AS TOTAL_PENDAPATAN_PERIODE " &
-            "FROM temp_datareferensi " &
-            "WHERE SUB_AKUN IN ('LABA', 'RUGI')",
+            "FROM temp_datareferensi WHERE SUB_AKUN IN ('LABA', 'RUGI')",
             conn)
             Using pembacaHasil As MySqlDataReader = cmdHitungMutasiLabaRugi.ExecuteReader()
                 If pembacaHasil.Read() Then
-                    totalBebanPeriode = ModuleAngka.SafeGetValue(Of Decimal)(pembacaHasil, "TOTAL_BEBAN_PERIODE", 0D)
+                    totalBebanPeriode      = ModuleAngka.SafeGetValue(Of Decimal)(pembacaHasil, "TOTAL_BEBAN_PERIODE", 0D)
                     totalPendapatanPeriode = ModuleAngka.SafeGetValue(Of Decimal)(pembacaHasil, "TOTAL_PENDAPATAN_PERIODE", 0D)
                 End If
             End Using
         End Using
-
         Using cmdSimpanMutasiLabaRugi As New MySqlCommand(
             "UPDATE temp_datareferensi " &
             "SET S_DEBET = @totalBebanPeriode, S_KREDIT = @totalPendapatanPeriode " &
@@ -337,6 +315,8 @@ Module ModuleLaporanKalkulasi
             cmdSimpanMutasiLabaRugi.Parameters.AddWithValue("@totalPendapatanPeriode", totalPendapatanPeriode)
             cmdSimpanMutasiLabaRugi.ExecuteNonQuery()
         End Using
+        Debug.WriteLine($"[HitungDebetKredit] L2 MutasiPeriode LabaRugi: {sw.ElapsedMilliseconds}ms")
+        Debug.WriteLine($"[HitungDebetKredit] TOTAL: {swTotal.ElapsedMilliseconds}ms")
     End Sub
 
     ''' <summary>
@@ -350,12 +330,11 @@ Module ModuleLaporanKalkulasi
     ''' <param name="tanggalAkhirPeriode">Tanggal akhir periode laporan (inklusif)</param>
     Public Sub HitungSaldoAkhir_PeriodeLaporan_KeTempDatareferensi(ByVal tanggalAkhirPeriode As Date)
         EnsureConnectionReady()
+        Dim swTotal As New Stopwatch() : swTotal.Start()
+        Dim sw As New Stopwatch()
 
-        ' ── LANGKAH 1: Hitung SALDO_AKHIR semua akun neraca ──────────────────────────
-        ' Ambil total mutasi kumulatif dari JurnalUmum dengan TGL_TRANSAKSI <= tanggalAkhirPeriode.
-        ' SALDO_AKHIR dihitung dari SALDO_AWAL (bukan SALDO_SEBELUMNYA) agar hasilnya
-        ' mencerminkan posisi kumulatif sejak awal, bukan hanya perubahan dalam periode.
-        ' Akun LABA RUGI BERJALAN dikecualikan — dihitung terpisah di LANGKAH 2.
+        ' ── LANGKAH 1 ────────────────────────────────────────────────────────────────
+        sw.Restart()
         Using cmdHitungSaldoAkhirNeraca As New MySqlCommand(
             "UPDATE temp_datareferensi AS akun " &
             "LEFT JOIN ( " &
@@ -383,15 +362,11 @@ Module ModuleLaporanKalkulasi
             cmdHitungSaldoAkhirNeraca.Parameters.AddWithValue("@tanggalAkhirPeriode2", tanggalAkhirPeriode.ToString("yyyy-MM-dd HH:mm:ss"))
             cmdHitungSaldoAkhirNeraca.ExecuteNonQuery()
         End Using
+        Debug.WriteLine($"[HitungSaldoAkhir] L1 SaldoAkhir Neraca (2x scan JurnalUmum): {sw.ElapsedMilliseconds}ms")
 
-        ' ── LANGKAH 2: Hitung SALDO_AKHIR akun LABA RUGI BERJALAN ────────────────────
-        ' Nilai SALDO_AKHIR akun LABA RUGI = laba/rugi kumulatif hingga akhir periode.
-        ' Dihitung dari SALDO_AKHIR akun-akun pendapatan dan beban yang sudah dihitung di LANGKAH 1:
-        '   Laba Bersih Kumulatif = SUM(SALDO_AKHIR akun LABA sisi KREDIT)
-        '                         - SUM(SALDO_AKHIR akun LABA sisi DEBET)
-        '                         - SUM(SALDO_AKHIR akun RUGI)
+        ' ── LANGKAH 2 ────────────────────────────────────────────────────────────────
+        sw.Restart()
         Dim labaBersihKumulatif As Decimal = 0D
-
         Using cmdHitungLabaKumulatif As New MySqlCommand(
             "SELECT " &
             "    SUM(CASE WHEN SUB_AKUN = 'LABA' AND AKUN_DK = 'KREDIT' THEN SALDO_AKHIR ELSE 0 END) " &
@@ -399,21 +374,19 @@ Module ModuleLaporanKalkulasi
             "  - SUM(CASE WHEN SUB_AKUN = 'RUGI' AND AKUN_DK = 'DEBET'  THEN SALDO_AKHIR ELSE 0 END) " &
             "  + SUM(CASE WHEN SUB_AKUN = 'RUGI' AND AKUN_DK = 'KREDIT' THEN SALDO_AKHIR ELSE 0 END) " &
             "    AS LABA_BERSIH_KUMULATIF " &
-            "FROM temp_datareferensi " &
-            "WHERE SUB_AKUN IN ('LABA', 'RUGI')",
+            "FROM temp_datareferensi WHERE SUB_AKUN IN ('LABA', 'RUGI')",
             conn)
             Dim hasilSkalar As Object = cmdHitungLabaKumulatif.ExecuteScalar()
             labaBersihKumulatif = If(hasilSkalar Is DBNull.Value OrElse hasilSkalar Is Nothing, 0D, Convert.ToDecimal(hasilSkalar))
         End Using
-
         Using cmdSimpanSaldoAkhirLabaRugi As New MySqlCommand(
-            "UPDATE temp_datareferensi " &
-            "SET SALDO_AKHIR = @labaBersihKumulatif " &
-            "WHERE TYPE_AKUN = 'LABA RUGI'",
+            "UPDATE temp_datareferensi SET SALDO_AKHIR = @labaBersihKumulatif WHERE TYPE_AKUN = 'LABA RUGI'",
             conn)
             cmdSimpanSaldoAkhirLabaRugi.Parameters.AddWithValue("@labaBersihKumulatif", labaBersihKumulatif)
             cmdSimpanSaldoAkhirLabaRugi.ExecuteNonQuery()
         End Using
+        Debug.WriteLine($"[HitungSaldoAkhir] L2 SaldoAkhir LabaRugi: {sw.ElapsedMilliseconds}ms")
+        Debug.WriteLine($"[HitungSaldoAkhir] TOTAL: {swTotal.ElapsedMilliseconds}ms")
     End Sub
 
 End Module
