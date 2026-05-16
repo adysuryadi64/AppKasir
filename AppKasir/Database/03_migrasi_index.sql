@@ -94,11 +94,13 @@ CALL add_index_if_not_exists('hutang_detail', 'idx_id_bayar_hutang', 'ID_BAYAR')
 -- ============================================================
 CALL add_index_if_not_exists('jurnalumum', 'idx_no_transaksi_jurnal', 'NO_TRANSAKSI');
 CALL add_index_if_not_exists('jurnalumum', 'idx_tgl_jenis_transaksi', 'TGL_TRANSAKSI,JENIS_TRANSAKSI');
--- [DIHAPUS] tidak ada query WHERE ID_USER saja; idx_tgl_id_user_jurnal sudah cover semua kasus
--- CALL add_index_if_not_exists('jurnalumum', 'idx_id_user_jurnal', 'ID_USER');
 CALL add_index_if_not_exists('jurnalumum', 'idx_nomor_akun_d_jurnal', 'NOMOR_AKUN_D,TGL_TRANSAKSI');
 CALL add_index_if_not_exists('jurnalumum', 'idx_nomor_akun_k_jurnal', 'NOMOR_AKUN_K,TGL_TRANSAKSI');
--- Covering index untuk HitungSaldoAwal & HitungSaldoAkhir di ModuleLaporanKalkulasi:
+CALL add_index_if_not_exists('jurnalumum', 'idx_covering_akun_d', 'TGL_TRANSAKSI,NOMOR_AKUN_D,NOMINAL');
+CALL add_index_if_not_exists('jurnalumum', 'idx_covering_akun_k', 'TGL_TRANSAKSI,NOMOR_AKUN_K,NOMINAL');
+CALL add_index_if_not_exists('jurnalumum', 'idx_tgl_id_user_jurnal', 'TGL_TRANSAKSI,ID_USER');
+-- Untuk MAX(updated_at) di cek skip posting — tanpa index ini full scan 627K baris
+CALL add_index_if_not_exists('jurnalumum', 'idx_updated_at_jurnal', 'updated_at');
 -- Query: WHERE TGL_TRANSAKSI < @tgl AND NOMOR_AKUN_D <> '' GROUP BY NOMOR_AKUN_D → SUM(NOMINAL)
 -- Tanpa index ini: full index scan 627K baris (~22 detik per query)
 -- Dengan index ini: range scan + covering index (tidak baca row) → jauh lebih cepat
