@@ -45,30 +45,59 @@ Aplikasi tidak melakukan update langsung pada kolom stok akhir. Sebagai gantinya
 
 ---
 
-## 📂 Struktur Proyek Terkini
+## 📂 Struktur Proyek Terkini (Full Architecture)
 
 ```text
 AppKasir/
-├── 0Form/                  # Dashboard & Central Control
-│   ├── FormUtama.vb        # Dashboard dengan Async Loading
-│   └── ModuleHapusTransaksi.vb # Jantung Reversal Transaksi (Beli, Jual, Retur)
-├── 1Master/                # Manajemen Data Master
-│   ├── TambahBarang.vb     # Master Produk (Multi-Satuan)
-│   └── TambahPelanggan.vb  # Master Pelanggan & Supplier
-├── 2Trans/                 # Modul Transaksi Aktif
-│   ├── FormJual.vb         # Modul Penjualan Retail & Partai
-│   ├── FormPembelian.vb    # Modul Pembelian (Restock)
-│   ├── FormReturBeli.vb    # Reversal Pembelian
-│   └── FormReturPenjualan.vb # Reversal Penjualan
-├── 3Jurnal/                # Akuntansi & Buku Besar
-├── 4Gaji/                  # Penggajian Karyawan
-├── 5Lap/                   # Reporting & Audit Trail
-├── 6Print/                 # Engine Cetak (EscPos & RawPrinting)
-├── 8Uty/                   # Utilities (Backup, Restore, History)
-├── Modules/                # Library & Variabel Global
+├── 0Form/                  # 🖥️ Dashboard & Central Control
+│   ├── FormUtama.vb        # Main Dashboard dengan background loading
+│   └── ModuleHapusTransaksi.vb # Logika tersentralisasi untuk reversal data
+│
+├── 1Master/                # 📁 Manajemen Data Master
+│   ├── TambahBarang.vb     # Master Produk (Multi-Satuan, Harga Partai/Umum)
+│   ├── TambahPelanggan.vb  # Master Pelanggan & Supplier
+│   ├── TambahMerk.vb       # Manajemen Kategori & Merk
+│   └── FormCabang.vb       # Manajemen Multi-Cabang & Lokasi Rak
+│
+├── 2Trans/                 # 🛒 Modul Transaksi Operasional
+│   ├── FormJual.vb         # Kasir Penjualan Retail & Partai
+│   ├── FormPembelian.vb    # Pembelian / Restock Barang
+│   ├── FormReturBeli.vb    # Retur Pembelian ke Supplier
+│   ├── FormReturPenjualan.vb # Retur Penjualan dari Pelanggan
+│   ├── FormTransferCabang.vb # Pemindahan stok antar cabang
+│   └── FormPembelianDitahan.vb # Hold & Recall Transaksi
+│
+├── 3Jurnal/                # 📓 Akuntansi & Keuangan
+│   ├── JurnalUmum/         # Double-entry bookkeeping engine
+│   ├── SetSaldoAwal/       # Setup Buku Besar
+│   └── TutupBuku/          # Proses End-of-Month / End-of-Year
+│
+├── 4Gaji/                  # 👥 Manajemen SDM
+│   └── Penggajian/         # Hitung Gaji, Potongan Kasbon, & Tunjangan
+│
+├── 5Lap/                   # 📊 Reporting & Analitik Bisnis
+│   ├── FormLapLabaRugi.vb  # Analisis Keuntungan & Arus Kas
+│   ├── FormLapOmset.vb     # Analisis Pendapatan Harian/Bulanan
+│   ├── FormLapRanking.vb   # Analisis Kinerja (Barang Terlaris, Sales Terbaik)
+│   ├── FormAuditTrail.vb   # Pelacakan Aktivitas User
+│   └── *.rdlc / *.frx      # Puluhan template ReportViewer & FastReport
+│
+├── 6Print/                 # 🖨️ Engine Cetak Hardware
+│   ├── PrinterEscPos.vb    # Direct-to-port thermal printing
+│   ├── RawPrinterHelper.vb # API Spooler Windows bypass
+│   └── Cetak*/             # Modul spesifik per dokumen (Nota, Surat Jalan, dll)
+│
+├── 8Uty/                   # ⚙️ Utilitas & Keamanan Enterprise
+│   ├── FormMigrasiDB.vb    # Auto-updater struktur database
+│   ├── FormPerbaikanDatabase.vb # Tools maintenance tabel
+│   ├── FormHistory.vb      # Riwayat Mutasi Barang
+│   └── FormQuery.vb        # Eksekusi kueri SQL manual
+│
+├── Modules/                # 🧠 Library & Engine Utama
 │   ├── ModuleVariabel.vb   # Konstanta & Parameter Sistem
 │   └── ModuleAuditTrail.vb # Engine Pencatat Jejak User
-└── MySQL/                  # Driver & Konektor Database
+│
+└── MySQL/                  # 🗄️ Driver Database Standalone
 ```
 
 ---
