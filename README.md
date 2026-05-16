@@ -19,10 +19,15 @@ AppKasir menggabungkan transaksi kasir harian dengan pembukuan double-entry seca
 
 ## Teknologi
 
-- **Bahasa:** Visual Basic .NET
-- **Framework:** .NET Framework 4.7.2+
-- **Database:** MySQL 5.7+ / 8.0+
-- **UI:** Windows Forms
+| Komponen | Teknologi |
+|---|---|
+| Aplikasi Desktop | Visual Basic .NET — Windows Forms |
+| Mobile / Android | Dart (Flutter) |
+| API Backend | PHP |
+| Dashboard Web | HTML / CSS / JS |
+| Installer | Inno Setup |
+| Database | MySQL 5.7+ / 8.0+ |
+| Driver Printer | C++ (ESC/POS raw) |
 
 ## Dokumentasi Lengkap
 
