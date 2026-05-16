@@ -29,34 +29,26 @@ Module ModuleLaporanKalkulasi
     ''' </summary>
     Public Sub PostingResmi_HitungSemuaSaldo_KeTblDatareferensi()
         EnsureConnectionReady()
-        Dim swTotal As New Stopwatch() : swTotal.Start()
-        Dim sw As New Stopwatch()
 
         ' ── CEK: Skip jika tidak ada jurnal baru sejak terakhir posting ──────────────
-        sw.Restart()
         Dim lastJurnalStr As String = ""
         Using cmdCekJurnal As New MySqlCommand(
             "SELECT COALESCE(MAX(updated_at), '1970-01-01') FROM JurnalUmum", conn)
             lastJurnalStr = cmdCekJurnal.ExecuteScalar().ToString()
         End Using
-        Debug.WriteLine($"[PostingResmi] CekJurnalBaru: {sw.ElapsedMilliseconds}ms")
 
         Dim lastPostingStr As String = AppConfig.Instance.GetValue(Of String)("LastPostingJurnal", "")
         If lastJurnalStr = lastPostingStr AndAlso lastJurnalStr <> "" Then
-            Debug.WriteLine($"[PostingResmi] SKIP — tidak ada jurnal baru. Total: {swTotal.ElapsedMilliseconds}ms")
             Exit Sub
         End If
 
         ' ── LANGKAH 1 ────────────────────────────────────────────────────────────────
-        sw.Restart()
         Using cmdResetSaldoAwal As New MySqlCommand(
             "UPDATE tbl_datareferensi SET SALDO_SEBELUMNYA = SALDO_AWAL", conn)
             cmdResetSaldoAwal.ExecuteNonQuery()
         End Using
-        Debug.WriteLine($"[PostingResmi] L1 ResetSaldoAwal: {sw.ElapsedMilliseconds}ms")
 
         ' ── LANGKAH 2 ────────────────────────────────────────────────────────────────
-        sw.Restart()
         Using cmdHitungMutasiJurnal As New MySqlCommand(
             "UPDATE tbl_datareferensi AS akun " &
             "LEFT JOIN ( " &
@@ -76,10 +68,8 @@ Module ModuleLaporanKalkulasi
             conn)
             cmdHitungMutasiJurnal.ExecuteNonQuery()
         End Using
-        Debug.WriteLine($"[PostingResmi] L2 HitungMutasiJurnal (1x scan): {sw.ElapsedMilliseconds}ms")
 
         ' ── LANGKAH 3 ────────────────────────────────────────────────────────────────
-        sw.Restart()
         Using cmdHitungSaldoAkhirNeraca As New MySqlCommand(
             "UPDATE tbl_datareferensi " &
             "SET SALDO_AKHIR = CASE " &
@@ -91,10 +81,8 @@ Module ModuleLaporanKalkulasi
             conn)
             cmdHitungSaldoAkhirNeraca.ExecuteNonQuery()
         End Using
-        Debug.WriteLine($"[PostingResmi] L3 HitungSaldoAkhirNeraca: {sw.ElapsedMilliseconds}ms")
 
         ' ── LANGKAH 4 ────────────────────────────────────────────────────────────────
-        sw.Restart()
         Dim labaBersihPeriode As Decimal = 0D
         Dim totalBebanPeriode As Decimal = 0D
         Dim totalPendapatanPeriode As Decimal = 0D
@@ -117,10 +105,8 @@ Module ModuleLaporanKalkulasi
                 End If
             End Using
         End Using
-        Debug.WriteLine($"[PostingResmi] L4 HitungLabaRugi: {sw.ElapsedMilliseconds}ms")
 
         ' ── LANGKAH 5 ────────────────────────────────────────────────────────────────
-        sw.Restart()
         Using cmdSimpanLabaRugiBerjalan As New MySqlCommand(
             "UPDATE tbl_datareferensi " &
             "SET S_DEBET = @totalBebanPeriode, S_KREDIT = @totalPendapatanPeriode, " &
@@ -133,11 +119,9 @@ Module ModuleLaporanKalkulasi
             cmdSimpanLabaRugiBerjalan.Parameters.AddWithValue("@totalPendapatanPeriode2", totalPendapatanPeriode)
             cmdSimpanLabaRugiBerjalan.ExecuteNonQuery()
         End Using
-        Debug.WriteLine($"[PostingResmi] L5 SimpanLabaRugiBerjalan: {sw.ElapsedMilliseconds}ms")
 
         AppConfig.Instance.SetValue("LastPostingJurnal", lastJurnalStr)
         AppConfig.Instance.Save()
-        Debug.WriteLine($"[PostingResmi] TOTAL: {swTotal.ElapsedMilliseconds}ms")
     End Sub
 
     ''' <summary>
@@ -149,13 +133,10 @@ Module ModuleLaporanKalkulasi
     ''' </summary>
     Public Sub SiapkanTempDatareferensi_SalinDariTblDatareferensi()
         EnsureConnectionReady()
-        Dim sw As New Stopwatch() : sw.Start()
 
         Using cmdKosongkan As New MySqlCommand("TRUNCATE TABLE temp_datareferensi", conn)
             cmdKosongkan.ExecuteNonQuery()
         End Using
-        Debug.WriteLine($"[Siapkan] TRUNCATE: {sw.ElapsedMilliseconds}ms")
-        sw.Restart()
 
         Using cmdSalinMasterAkun As New MySqlCommand(
             "INSERT INTO temp_datareferensi " &
@@ -168,7 +149,6 @@ Module ModuleLaporanKalkulasi
             conn)
             cmdSalinMasterAkun.ExecuteNonQuery()
         End Using
-        Debug.WriteLine($"[Siapkan] INSERT dari tbl_datareferensi: {sw.ElapsedMilliseconds}ms")
     End Sub
 
     ''' <summary>
@@ -182,11 +162,8 @@ Module ModuleLaporanKalkulasi
     ''' <param name="tanggalAwalPeriode">Tanggal awal periode laporan (eksklusif — jurnal sebelum tanggal ini)</param>
     Public Sub HitungSaldoAwal_PeriodeLaporan_KeTempDatareferensi(ByVal tanggalAwalPeriode As Date)
         EnsureConnectionReady()
-        Dim swTotal As New Stopwatch() : swTotal.Start()
-        Dim sw As New Stopwatch()
 
-        ' ── LANGKAH 1: Hitung SALDO_SEBELUMNYA semua akun neraca ─────────────────────
-        sw.Restart()
+        ' ── LANGKAH 1 ────────────────────────────────────────────────────────────────
         Using cmdHitungSaldoAwalNeraca As New MySqlCommand(
             "UPDATE temp_datareferensi AS akun " &
             "LEFT JOIN ( " &
@@ -214,10 +191,8 @@ Module ModuleLaporanKalkulasi
             cmdHitungSaldoAwalNeraca.Parameters.AddWithValue("@tanggalAwalPeriode2", tanggalAwalPeriode.ToString("yyyy-MM-dd HH:mm:ss"))
             cmdHitungSaldoAwalNeraca.ExecuteNonQuery()
         End Using
-        Debug.WriteLine($"[HitungSaldoAwal] L1 SaldoSebelumnya Neraca (2x scan JurnalUmum): {sw.ElapsedMilliseconds}ms")
 
-        ' ── LANGKAH 2: Hitung SALDO_SEBELUMNYA akun LABA RUGI BERJALAN ───────────────
-        sw.Restart()
+        ' ── LANGKAH 2 ────────────────────────────────────────────────────────────────
         Dim labaBersihSebelumPeriode As Decimal = 0D
         Using cmdHitungLabaSebelumPeriode As New MySqlCommand(
             "SELECT " &
@@ -237,8 +212,6 @@ Module ModuleLaporanKalkulasi
             cmdSimpanSaldoAwalLabaRugi.Parameters.AddWithValue("@labaBersihSebelumPeriode", labaBersihSebelumPeriode)
             cmdSimpanSaldoAwalLabaRugi.ExecuteNonQuery()
         End Using
-        Debug.WriteLine($"[HitungSaldoAwal] L2 SaldoSebelumnya LabaRugi: {sw.ElapsedMilliseconds}ms")
-        Debug.WriteLine($"[HitungSaldoAwal] TOTAL: {swTotal.ElapsedMilliseconds}ms")
     End Sub
 
     ''' <summary>
@@ -253,11 +226,8 @@ Module ModuleLaporanKalkulasi
     ''' <param name="tanggalAkhirPeriode">Tanggal akhir periode (inklusif)</param>
     Public Sub HitungDebetKredit_PeriodeLaporan_KeTempDatareferensi(ByVal tanggalAwalPeriode As Date, ByVal tanggalAkhirPeriode As Date)
         EnsureConnectionReady()
-        Dim swTotal As New Stopwatch() : swTotal.Start()
-        Dim sw As New Stopwatch()
 
         ' ── LANGKAH 1 ────────────────────────────────────────────────────────────────
-        sw.Restart()
         Using cmdHitungMutasiPeriode As New MySqlCommand(
             "UPDATE temp_datareferensi AS akun " &
             "LEFT JOIN ( " &
@@ -287,10 +257,8 @@ Module ModuleLaporanKalkulasi
             cmdHitungMutasiPeriode.Parameters.AddWithValue("@tanggalAkhirPeriode2", tanggalAkhirPeriode.ToString("yyyy-MM-dd HH:mm:ss"))
             cmdHitungMutasiPeriode.ExecuteNonQuery()
         End Using
-        Debug.WriteLine($"[HitungDebetKredit] L1 MutasiPeriode Neraca (2x scan JurnalUmum): {sw.ElapsedMilliseconds}ms")
 
         ' ── LANGKAH 2 ────────────────────────────────────────────────────────────────
-        sw.Restart()
         Dim totalBebanPeriode As Decimal = 0D
         Dim totalPendapatanPeriode As Decimal = 0D
         Using cmdHitungMutasiLabaRugi As New MySqlCommand(
@@ -315,8 +283,6 @@ Module ModuleLaporanKalkulasi
             cmdSimpanMutasiLabaRugi.Parameters.AddWithValue("@totalPendapatanPeriode", totalPendapatanPeriode)
             cmdSimpanMutasiLabaRugi.ExecuteNonQuery()
         End Using
-        Debug.WriteLine($"[HitungDebetKredit] L2 MutasiPeriode LabaRugi: {sw.ElapsedMilliseconds}ms")
-        Debug.WriteLine($"[HitungDebetKredit] TOTAL: {swTotal.ElapsedMilliseconds}ms")
     End Sub
 
     ''' <summary>
@@ -330,11 +296,8 @@ Module ModuleLaporanKalkulasi
     ''' <param name="tanggalAkhirPeriode">Tanggal akhir periode laporan (inklusif)</param>
     Public Sub HitungSaldoAkhir_PeriodeLaporan_KeTempDatareferensi(ByVal tanggalAkhirPeriode As Date)
         EnsureConnectionReady()
-        Dim swTotal As New Stopwatch() : swTotal.Start()
-        Dim sw As New Stopwatch()
 
         ' ── LANGKAH 1 ────────────────────────────────────────────────────────────────
-        sw.Restart()
         Using cmdHitungSaldoAkhirNeraca As New MySqlCommand(
             "UPDATE temp_datareferensi AS akun " &
             "LEFT JOIN ( " &
@@ -362,10 +325,8 @@ Module ModuleLaporanKalkulasi
             cmdHitungSaldoAkhirNeraca.Parameters.AddWithValue("@tanggalAkhirPeriode2", tanggalAkhirPeriode.ToString("yyyy-MM-dd HH:mm:ss"))
             cmdHitungSaldoAkhirNeraca.ExecuteNonQuery()
         End Using
-        Debug.WriteLine($"[HitungSaldoAkhir] L1 SaldoAkhir Neraca (2x scan JurnalUmum): {sw.ElapsedMilliseconds}ms")
 
         ' ── LANGKAH 2 ────────────────────────────────────────────────────────────────
-        sw.Restart()
         Dim labaBersihKumulatif As Decimal = 0D
         Using cmdHitungLabaKumulatif As New MySqlCommand(
             "SELECT " &
@@ -385,8 +346,6 @@ Module ModuleLaporanKalkulasi
             cmdSimpanSaldoAkhirLabaRugi.Parameters.AddWithValue("@labaBersihKumulatif", labaBersihKumulatif)
             cmdSimpanSaldoAkhirLabaRugi.ExecuteNonQuery()
         End Using
-        Debug.WriteLine($"[HitungSaldoAkhir] L2 SaldoAkhir LabaRugi: {sw.ElapsedMilliseconds}ms")
-        Debug.WriteLine($"[HitungSaldoAkhir] TOTAL: {swTotal.ElapsedMilliseconds}ms")
     End Sub
 
 End Module
