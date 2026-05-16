@@ -94,13 +94,11 @@ ComponentReportViewer=Microsoft Report Viewer 2015
 ComponentMySQLConnector=MySQL Connector .NET 9.1.0
 ComponentVCRedist=Visual C++ Redistributable (x64 + x86)
 ComponentPOSPrinter=POS Printer Driver
-ComponentEdgeWebView=Microsoft Edge WebView2 Runtime
 StatusAppServ=Memasang AppServ (Apache + MySQL)...
 StatusReportViewer=Memasang Microsoft Report Viewer...
 StatusMySQLConnector=Memasang MySQL Connector .NET...
 StatusVCRedist=Memasang Visual C++ Redistributable...
 StatusPOSPrinter=Memasang POS Printer Driver...
-StatusEdgeWebView=Memasang Microsoft Edge WebView2...
 StatusConfigAPI=Mengkonfigurasi API server...
 LaunchApp=Jalankan {#MyAppName} sekarang
 
@@ -119,7 +117,6 @@ Name: "reportviewer";  Description: "{cm:ComponentReportViewer}";   Types: serve
 Name: "mysqlconn";     Description: "{cm:ComponentMySQLConnector}"; Types: server client
 Name: "vcredist";      Description: "{cm:ComponentVCRedist}";       Types: server client
 Name: "posprinter";    Description: "{cm:ComponentPOSPrinter}";     Types: server client
-Name: "edgewebview";   Description: "{cm:ComponentEdgeWebView}";    Types: server client
 
 ; ============================================================
 [Tasks]
@@ -230,10 +227,6 @@ Source: "{#MyAppSourceDir}\Microsoft.ReportViewer.ProcessingObjectModel.dll"; De
 Source: "{#MyAppSourceDir}\Microsoft.ReportViewer.WinForms.dll"; DestDir: "{app}"; Flags: ignoreversion; Components: mainapp
 Source: "{#MyAppSourceDir}\Microsoft.SqlServer.Types.dll"; DestDir: "{app}"; Flags: ignoreversion; Components: mainapp
 Source: "{#MyAppSourceDir}\Microsoft.VisualBasic.PowerPacks.Vs.dll"; DestDir: "{app}"; Flags: ignoreversion; Components: mainapp
-Source: "{#MyAppSourceDir}\Microsoft.Web.WebView2.Core.dll"; DestDir: "{app}"; Flags: ignoreversion; Components: mainapp
-Source: "{#MyAppSourceDir}\Microsoft.Web.WebView2.Core.xml"; DestDir: "{app}"; Flags: ignoreversion; Components: mainapp
-Source: "{#MyAppSourceDir}\Microsoft.Web.WebView2.WinForms.dll"; DestDir: "{app}"; Flags: ignoreversion; Components: mainapp
-Source: "{#MyAppSourceDir}\Microsoft.Web.WebView2.WinForms.xml"; DestDir: "{app}"; Flags: ignoreversion; Components: mainapp
 Source: "{#MyAppSourceDir}\MySql.Data.dll"; DestDir: "{app}"; Flags: ignoreversion; Components: mainapp
 Source: "{#MyAppSourceDir}\MySql.Data.xml"; DestDir: "{app}"; Flags: ignoreversion; Components: mainapp
 Source: "{#MyAppSourceDir}\mysql.exe"; DestDir: "{app}"; Flags: ignoreversion; Components: mainapp
@@ -292,7 +285,6 @@ Source: "{#MyAppSourceDir}\System.Text.Json.xml"; DestDir: "{app}"; Flags: ignor
 Source: "{#MyAppSourceDir}\System.Threading.Tasks.Extensions.dll"; DestDir: "{app}"; Flags: ignoreversion; Components: mainapp
 Source: "{#MyAppSourceDir}\System.Threading.Tasks.Extensions.xml"; DestDir: "{app}"; Flags: ignoreversion; Components: mainapp
 Source: "{#MyAppSourceDir}\toko.jpg"; DestDir: "{app}"; Flags: ignoreversion; Components: mainapp
-Source: "{#MyAppSourceDir}\WebView2Loader.dll"; DestDir: "{app}"; Flags: ignoreversion; Components: mainapp
 Source: "{#MyAppSourceDir}\ZstdSharp.dll"; DestDir: "{app}"; Flags: ignoreversion; Components: mainapp
 Source: "{#MyAppSourceDir}\zxing.dll"; DestDir: "{app}"; Flags: ignoreversion; Components: mainapp
 Source: "{#MyAppSourceDir}\zxing.presentation.dll"; DestDir: "{app}"; Flags: ignoreversion; Components: mainapp
@@ -335,7 +327,6 @@ Source: "{#MyAppSourceDir}\pl\*"; DestDir: "{app}\pl"; Flags: ignoreversion recu
 ; ----- Printer Driver Software (8 file) -----
 ; Semua file driver disertakan ke {app}\Printer Driver Software
 Source: "{#MyAppDriverDir}\appserv-9-3-0.exe"; DestDir: "{app}\Printer Driver Software"; Flags: ignoreversion; Components: mainapp
-Source: "{#MyAppDriverDir}\MicrosoftEdgeWebView2RuntimeInstaller.exe"; DestDir: "{app}\Printer Driver Software"; Flags: ignoreversion; Components: mainapp
 Source: "{#MyAppDriverDir}\mysql-connector-net-9.1.0.msi"; DestDir: "{app}\Printer Driver Software"; Flags: ignoreversion; Components: mainapp
 Source: "{#MyAppDriverDir}\POS Printer Driver Setup .exe"; DestDir: "{app}\Printer Driver Software"; Flags: ignoreversion; Components: mainapp
 Source: "{#MyAppDriverDir}\ReportViewer.exe"; DestDir: "{app}\Printer Driver Software"; Flags: ignoreversion; Components: mainapp
@@ -346,7 +337,6 @@ Source: "{#MyAppDriverDir}\VC_redist.x86.exe"; DestDir: "{app}\Printer Driver So
 ; Installer prerequisite juga ke {tmp} untuk dijalankan
 Source: "{#MyAppDriverDir}\mysql-connector-net-9.1.0.msi"; DestDir: "{tmp}"; Flags: deleteafterinstall; Components: mysqlconn
 Source: "{#MyAppDriverDir}\appserv-9-3-0.exe"; DestDir: "{tmp}"; Flags: deleteafterinstall; Components: appserv
-Source: "{#MyAppDriverDir}\MicrosoftEdgeWebView2RuntimeInstaller.exe"; DestDir: "{tmp}"; Flags: deleteafterinstall; Components: edgewebview
 Source: "{#MyAppDriverDir}\VC_redist.x86.exe"; DestDir: "{tmp}"; Flags: deleteafterinstall; Components: vcredist
 Source: "{#MyAppDriverDir}\VC_redist.x64.exe"; DestDir: "{tmp}"; Flags: deleteafterinstall; Components: vcredist
 Source: "{#MyAppDriverDir}\ReportViewer.exe"; DestDir: "{tmp}"; Flags: deleteafterinstall; Components: reportviewer
@@ -414,10 +404,6 @@ Filename: "msiexec.exe"; Parameters: "/i ""{tmp}\mysql-connector-net-9.1.0.msi""
 
 ; POS Printer Driver
 Filename: "{tmp}\POS Printer Driver Setup .exe"; Parameters: "/S"; StatusMsg: "{cm:StatusPOSPrinter}"; Components: posprinter
-
-; Microsoft Edge WebView2 Runtime
-; Flag skipiferror: jika bootstrapper gagal (misal tidak ada internet), installer tetap lanjut
-Filename: "{tmp}\MicrosoftEdgeWebView2RuntimeInstaller.exe"; Parameters: "/silent /install"; StatusMsg: "{cm:StatusEdgeWebView}"; Components: edgewebview; Flags: skipiferror
 
 ; Jalankan aplikasi setelah selesai
 Filename: "{app}\{#MyAppExeName}"; Description: "{cm:LaunchApp}"; Flags: nowait postinstall skipifsilent
@@ -487,28 +473,6 @@ begin
   end;
 end;
 
-{ ================================================================
-  HELPER — cek WebView2 sudah terinstall di registry
-  ================================================================ }
-function IsWebView2Installed(): Boolean;
-var
-  Ver: string;
-begin
-  Result :=
-    RegQueryStringValue(HKLM,
-      'SOFTWARE\WOW6432Node\Microsoft\EdgeUpdate\Clients\{F3017226-FE2A-4295-8BDF-00C3A9A7E4C5}',
-      'pv', Ver) or
-    RegQueryStringValue(HKLM,
-      'SOFTWARE\Microsoft\EdgeUpdate\Clients\{F3017226-FE2A-4295-8BDF-00C3A9A7E4C5}',
-      'pv', Ver) or
-    RegQueryStringValue(HKCU,
-      'SOFTWARE\Microsoft\EdgeUpdate\Clients\{F3017226-FE2A-4295-8BDF-00C3A9A7E4C5}',
-      'pv', Ver);
-  { Anggap terinstall jika versi bukan string kosong }
-  if Result then
-    Result := (Ver <> '') and (Ver <> '0.0.0.0');
-end;
-
 function FontBelumAda(NamaFont: string): Boolean;
 var
   Dummy: string;
@@ -550,7 +514,7 @@ begin
       '  •  AppServ (Apache + MySQL Server)' + #13#10 +
       '  •  API PHP (dikopi ke htdocs AppServ)' + #13#10 +
       '  •  ReportViewer, MySQL Connector, VC++ Redist' + #13#10 +
-      '  •  Edge WebView2, POS Printer Driver' + #13#10 + #13#10 +
+      '  •  POS Printer Driver' + #13#10 + #13#10 +
       'Wizard AppServ akan terbuka — set password MySQL di sana.' + #13#10 +
       'Setelah semua komponen terpasang, Anda diminta konfirmasi password.'
   else if InstallMode = 'client' then
@@ -558,7 +522,7 @@ begin
       'Instalasi Client memasang komponen untuk komputer kasir:' + #13#10 +
       '  •  Aplikasi Kasir Lancar' + #13#10 +
       '  •  ReportViewer, MySQL Connector, VC++ Redist' + #13#10 +
-      '  •  Edge WebView2, POS Printer Driver' + #13#10 + #13#10 +
+      '  •  POS Printer Driver' + #13#10 + #13#10 +
       'AppServ TIDAK dipasang — client konek ke server di jaringan.'
   else
     LblModeInfo.Caption :=
@@ -1268,26 +1232,7 @@ begin
       { User mengisi IP server lewat SettingDatabase di dalam aplikasi }
     end;
 
-    { ── Cek WebView2 setelah semua komponen terpasang ── }
-    if WizardIsComponentSelected('edgewebview') then
-    begin
-      if not IsWebView2Installed() then
-      begin
-        MsgBox(
-          'Perhatian: Microsoft Edge WebView2 Runtime belum berhasil dipasang.' + #13#10 + #13#10 +
-          'Kemungkinan penyebab:' + #13#10 +
-          '  • Tidak ada koneksi internet saat instalasi' + #13#10 +
-          '  • Koneksi internet terputus di tengah proses' + #13#10 + #13#10 +
-          'Akibatnya: fitur Dashboard di aplikasi tidak akan tampil.' + #13#10 + #13#10 +
-          'Cara mengatasi:' + #13#10 +
-          '  1. Pastikan komputer terhubung ke internet' + #13#10 +
-          '  2. Jalankan file berikut secara manual:' + #13#10 +
-          '     ' + ExpandConstant('{app}') + '\Printer Driver Software\' + #13#10 +
-          '     MicrosoftEdgeWebView2RuntimeInstaller.exe' + #13#10 + #13#10 +
-          'Aplikasi tetap bisa digunakan untuk transaksi tanpa WebView2.',
-          mbInformation, MB_OK);
-      end;
-    end;
+    { ── Tidak ada cek WebView2 ── }
   end;
 end;
 

@@ -361,3 +361,7 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+
+# Installer output & large setup files
+AppKasir/Installer/Output/
+AppKasir/Installer/MicrosoftEdgeWebview2Setup.exe
