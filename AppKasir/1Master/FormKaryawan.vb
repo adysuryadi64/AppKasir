@@ -4,7 +4,7 @@ Public Class FormKaryawan
 
     Private Sub FormKaryawan_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
         Me.Cursor = Cursors.WaitCursor
-        Dim Karyawan As Boolean() = ModulHakAkses.BacaHakAkses(FormUtama.SLevel.Text, "Karyawan", conn)
+        Dim Karyawan As Boolean() = ModulHakAkses.BacaHakAksesDariCache("Karyawan")
         ' Terapkan nilai hak akses ke tombol-tombol
         BTNSimpan.Visible = Karyawan(1) ' CanAdd 
         'BTNSimpan.Visible = Karyawan(2) ' CanEdit 

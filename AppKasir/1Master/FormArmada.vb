@@ -4,7 +4,7 @@ Public Class FormArmada
 
     Private Sub FormArmada_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
         Me.Cursor = Cursors.WaitCursor
-        Dim Armada As Boolean() = ModulHakAkses.BacaHakAkses(FormUtama.SLevel.Text, "Armada", conn)
+        Dim Armada As Boolean() = ModulHakAkses.BacaHakAksesDariCache("Armada")
         ' Terapkan nilai hak akses ke tombol-tombol
         BTNSimpan.Visible = Armada(1) ' CanAdd 
         'BTNSimpan.Visible = Armada(2) ' CanEdit 

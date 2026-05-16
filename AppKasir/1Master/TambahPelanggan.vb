@@ -7,7 +7,7 @@ Public Class TambahPelanggan
     Private Sub TambahPelanggan_Load(ByVal sender As Object, ByVal e As EventArgs) Handles MyBase.Load
         Me.Cursor = Cursors.WaitCursor
 
-        Dim Pelanggan As Boolean() = ModulHakAkses.BacaHakAkses(FormUtama.SLevel.Text, "Pelanggan", conn)
+        Dim Pelanggan As Boolean() = ModulHakAkses.BacaHakAksesDariCache("Pelanggan")
         ' Terapkan nilai hak akses ke tombol-tombol
         BTNSimpan.Visible = Pelanggan(1) ' CanAdd 
         'BTNSimpan.Visible = Pelanggan(2) ' CanEdit 
@@ -205,7 +205,7 @@ Public Class TambahPelanggan
             BTNSimpan.Text = "EDIT (F2)"
 
             If BTNSimpan.Text = "EDIT (F2)" Then
-                Dim Pelanggan As Boolean() = ModulHakAkses.BacaHakAkses(FormUtama.SLevel.Text, "Pelanggan", conn)
+                Dim Pelanggan As Boolean() = ModulHakAkses.BacaHakAksesDariCache("Pelanggan")
                 ' Terapkan nilai hak akses ke tombol-tombol
                 BTNSimpan.Visible = Pelanggan(2) ' CanEdit 
             End If

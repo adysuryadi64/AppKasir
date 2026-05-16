@@ -52,9 +52,7 @@ Public Class FormBayarPiutang
         LblKodePelanggan.Text = ""
         DgvData.Rows.Clear()
 
-        CmbRekening.Items.Clear()
-        ' Isi ComboBox dengan data dari list
-        CmbRekening.Items.AddRange(GetDaftarAkun().ToArray())
+        IsiComboBoxAkun(CmbRekening, "KAS", "BANK", "EKUITAS")
 
         GenerateNomorBayarHutang()
         SelectNamaPelanggan()

@@ -2,7 +2,7 @@
 
     Private Sub FormBon_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
         If LblJenis.Text = "BON" Then
-            Dim BON As Boolean() = ModulHakAkses.BacaHakAkses(FormUtama.SLevel.Text, "BON", conn)
+            Dim BON As Boolean() = ModulHakAkses.BacaHakAksesDariCache("BON")
             ' Terapkan nilai hak akses ke tombol-tombol
             BtnSimpann.Visible = BON(1) ' CanAdd 
             DgvKeuangan.Columns("EDITKEUANGAN").Visible = BON(2) ' CanEdit 
@@ -11,7 +11,7 @@
             Label71.Text = "Nominal Bon :"
             Label8.Text = "Saldo Bon Akhir :"
         Else
-            Dim BAYAR As Boolean() = ModulHakAkses.BacaHakAkses(FormUtama.SLevel.Text, "BAYAR", conn)
+            Dim BAYAR As Boolean() = ModulHakAkses.BacaHakAksesDariCache("BAYAR")
             ' Terapkan nilai hak akses ke tombol-tombol
             BtnSimpann.Visible = BAYAR(1) ' CanAdd 
             DgvKeuangan.Columns("EDITKEUANGAN").Visible = BAYAR(2) ' CanEdit 
@@ -29,10 +29,7 @@
         GenerateNomorBon()
 
         ' Panggil untuk mengambil data rekening KAS dan BANK dan MODAL
-        ' Hapus semua item dan tambahkan yang baru
-        CmbRekening.Items.Clear()
-        ' Isi ComboBox dengan data dari list
-        CmbRekening.Items.AddRange(GetDaftarAkun().ToArray())
+        IsiComboBoxAkun(CmbRekening, "KAS", "BANK", "EKUITAS")
 
         AmbilDataKaryawan()
 

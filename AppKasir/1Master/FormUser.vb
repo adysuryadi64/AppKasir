@@ -5,7 +5,7 @@ Public Class FormUser
     Private Sub Form_User_Load(ByVal sender As Object, ByVal e As EventArgs) Handles MyBase.Load
         Me.Cursor = Cursors.WaitCursor
 
-        Dim User As Boolean() = ModulHakAkses.BacaHakAkses(FormUtama.SLevel.Text, "User", conn)
+        Dim User As Boolean() = ModulHakAkses.BacaHakAksesDariCache("User")
         ' Terapkan nilai hak akses ke tombol-tombol
         BTNSimpan.Visible = User(1) ' CanAdd 
         'BTNSimpan.Visible = User(2) ' CanEdit 

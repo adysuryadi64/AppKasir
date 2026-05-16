@@ -45,9 +45,7 @@
             TxtSupplier.Clear()
             KosongkanDataSupplier()
             ' Hapus semua item dan tambahkan yang baru
-            CmbJenisBayar.Items.Clear()
-            ' Isi ComboBox dengan data dari list
-            CmbJenisBayar.Items.AddRange(GetDaftarAkun().ToArray())
+            IsiComboBoxAkun(CmbJenisBayar, "KAS", "BANK", "EKUITAS")
 
             If LblLokasiBarang.Text = "TOKO" Then
                 CmbJenisBayar.SelectedItem = nama_rek_Beli_toko

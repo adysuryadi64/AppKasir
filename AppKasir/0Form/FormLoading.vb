@@ -16,7 +16,7 @@
             Select Case i
                 Case 1
                     FormUtama.AmbilKomputer()
-                    Rekeningkasbank()
+                    'Rekeningkasbank()
                 Case 2
                     UpdateTotalBonDanTotalBayarKaryawan()
                     TambahPelanggan.UpdatePiutangDibayar()
@@ -275,13 +275,13 @@
         Dim UserLevel As String = FormUtama.SLevel.Text
 
         ' Permissions for MenuStrips
-        FormUtama.MenuMaster.Visible = ModulHakAkses.BacaHakAkses(UserLevel, "MASTER", conn)(0)
-        FormUtama.MenuTransaksi.Visible = ModulHakAkses.BacaHakAkses(UserLevel, "TRANSAKSI", conn)(0)
-        FormUtama.MenuJurnal.Visible = ModulHakAkses.BacaHakAkses(UserLevel, "JURNAL", conn)(0)
-        FormUtama.MenuKaryawan.Visible = ModulHakAkses.BacaHakAkses(UserLevel, "MENUKARYAWAN", conn)(0)
-        FormUtama.MenuLaporan.Visible = ModulHakAkses.BacaHakAkses(UserLevel, "LAPORAN", conn)(0)
-        FormUtama.MenuUtility.Visible = ModulHakAkses.BacaHakAkses(UserLevel, "UTILITY", conn)(0)
-        FormUtama.MenuPosting.Visible = ModulHakAkses.BacaHakAkses(UserLevel, "POSTING", conn)(0)
+        FormUtama.MenuMaster.Visible = ModulHakAkses.BacaHakAksesDariCache("MASTER")(0)
+        FormUtama.MenuTransaksi.Visible = ModulHakAkses.BacaHakAksesDariCache("TRANSAKSI")(0)
+        FormUtama.MenuJurnal.Visible = ModulHakAkses.BacaHakAksesDariCache("JURNAL")(0)
+        FormUtama.MenuKaryawan.Visible = ModulHakAkses.BacaHakAksesDariCache("MENUKARYAWAN")(0)
+        FormUtama.MenuLaporan.Visible = ModulHakAkses.BacaHakAksesDariCache("LAPORAN")(0)
+        FormUtama.MenuUtility.Visible = ModulHakAkses.BacaHakAksesDariCache("UTILITY")(0)
+        FormUtama.MenuPosting.Visible = ModulHakAkses.BacaHakAksesDariCache("POSTING")(0)
 
         ' Dictionary for ToolStripMenuItems
         Dim toolStripItems As New Dictionary(Of String, ToolStripMenuItem) From {
@@ -321,7 +321,7 @@
 
         ' Apply permissions to ToolStripMenuItems
         For Each moduleName As String In toolStripItems.Keys
-            toolStripItems(moduleName).Visible = ModulHakAkses.BacaHakAkses(UserLevel, moduleName, conn)(0)
+            toolStripItems(moduleName).Visible = ModulHakAkses.BacaHakAksesDariCache(moduleName)(0)
         Next
 
         ' Dictionary for other controls
@@ -349,7 +349,7 @@
 
         ' Apply permissions to other controls
         For Each moduleName As String In controls.Keys
-            controls(moduleName).Visible = ModulHakAkses.BacaHakAkses(UserLevel, moduleName, conn)(0)
+            controls(moduleName).Visible = ModulHakAkses.BacaHakAksesDariCache(moduleName)(0)
         Next
 
         If FormUtama.SLevel.Text = "Master" Then

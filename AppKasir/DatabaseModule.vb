@@ -109,57 +109,41 @@ Public Module DatabaseModule
         Public Property Database As String
     End Class
 
+    Public Function AmbilAkun(ParamArray tipeAkun() As String) As List(Of String)
+        Dim result As New HashSet(Of String)()
 
+        Dim kondisi As String = String.Join(" OR ", tipeAkun.Select(Function(t) $"Type_Akun LIKE '{t}'"))
 
+        Dim query As String = $"SELECT Nama_Akun 
+                           FROM tbl_datareferensi 
+                           WHERE {kondisi}
+                           ORDER BY Kode_akun ASC"
 
-    Private ReadOnly akunSet As New HashSet(Of String)()
-
-    Public Sub Rekeningkasbank()
-        Dim namaakun As String = "SELECT Nama_Akun FROM tbl_datareferensi WHERE Type_Akun LIKE 'KAS' OR Type_Akun LIKE 'BANK' ORDER BY Kode_akun ASC"
-
-        Using cmd As New MySqlCommand(namaakun, conn)
+        Using cmd As New MySqlCommand(query, conn)
             Using rd As MySqlDataReader = cmd.ExecuteReader()
-                If rd.HasRows Then
-                    While rd.Read()
-                        Dim combinedValue As String = rd("Nama_Akun").ToString()
-
-                        ' HashSet otomatis mencegah duplikasi
-                        akunSet.Add(combinedValue)
-                    End While
-                End If
+                While rd.Read()
+                    result.Add(rd("Nama_Akun").ToString())
+                End While
             End Using
         End Using
-    End Sub
 
-    Public Function GetAkunList() As List(Of String)
-        ' Gunakan konstruktor List untuk konversi
-        Return New List(Of String)(akunSet)
+        Return result.ToList()
     End Function
 
+    Public Sub IsiComboBoxAkun(cb As ComboBox, ParamArray tipeAkun() As String)
+        Dim data = AmbilAkun(tipeAkun)
 
-    Private ReadOnly daftarAkun As New HashSet(Of String)()
+        cb.BeginUpdate()
+        cb.Items.Clear()
 
-    Public Sub AmbilAkunKasBankEkuitas()
-        Dim queryAkun As String = "SELECT Nama_Akun FROM tbl_datareferensi WHERE Type_Akun LIKE 'KAS' OR Type_Akun LIKE 'BANK' OR Type_Akun LIKE 'EKUITAS' ORDER BY Kode_akun ASC"
+        For Each item In data
+            cb.Items.Add(item)
+        Next
 
-        Using cmd As New MySqlCommand(queryAkun, conn)
-            Using rd As MySqlDataReader = cmd.ExecuteReader()
-                If rd.HasRows Then
-                    While rd.Read()
-                        Dim namaAkun As String = rd("Nama_Akun").ToString()
-
-                        ' HashSet otomatis mencegah duplikasi
-                        daftarAkun.Add(namaAkun)
-                    End While
-                End If
-            End Using
-        End Using
+        cb.EndUpdate()
     End Sub
 
-    Public Function GetDaftarAkun() As List(Of String)
-        ' Gunakan konstruktor List untuk konversi
-        Return New List(Of String)(daftarAkun)
-    End Function
+
 
     Public KODE_PERUSAHAAN As String = ""
     Public NAMA_PERUSAHAAN As String = ""

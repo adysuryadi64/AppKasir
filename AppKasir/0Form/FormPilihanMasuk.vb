@@ -21,7 +21,7 @@
     End Sub
 
     Private Sub PilihanMasuk()
-        Dim pilihan = My.Settings.PilihanMasuk?.ToUpper()
+        Dim pilihan = AppConfig.Instance.GetValue(Of String)("PilihanMasuk", "").ToUpper()
 
         If CmbMasuk.Items.Contains(pilihan) Then
             CmbMasuk.SelectedItem = pilihan
@@ -36,8 +36,8 @@
             Exit Sub
         End If
 
-        My.Settings.PilihanMasuk = CmbMasuk.SelectedItem.ToString()
-        My.Settings.Save()
+        AppConfig.Instance.SetValue("PilihanMasuk", CmbMasuk.SelectedItem.ToString())
+        AppConfig.Instance.Save()
 
         MessageBox.Show("Pilihan masuk berhasil disimpan.", "Informasi", MessageBoxButtons.OK, MessageBoxIcon.Information)
         Me.Close() ' Optional: Tutup form setelah simpan

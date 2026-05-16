@@ -1,16 +1,24 @@
-﻿Imports System.Globalization
+Imports System.Globalization
 
 Public Class FormReturPembelian
+
+    ' ── AUDIT TRAIL INTEGRATED ────────────────────────────────────────────────
+    ' Logic audit trail ditambahkan pada Prosessimpan
+    ' ─────────────────────────────────────────────────────────────────────────
     Private Sub FormReturPembelian_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
-        LblLokasi.Text = FormUtama.SLokasi.Text
+        ModuleTheme.TerapkanTheme(Me)
+        ' Nilai keuangan otomatis via nama TxtGrandtotal
+        ' Rename TxtTotalBarang/TxtTotalQTY/TxtTotalRupiah/TxtSisaBayar/TxtBayarBeli -> TxtGrandtotal untuk tema otomatis
+        ModuleTheme.SetWarnaRtbCatatan(RTBAlasanRetur)
+        LblLokasi.Text = FormUtama.StatusLokasi.Text
         Ambildatasupplier()
         Datagrid()
-
         Kondisiawalretur()
     End Sub
 
+
     Private Sub Ambildatasupplier()
-        Using cmd As New MySqlCommand("SELECT Nama FROM tbl_supliyer ORDER BY Nama ASC", conn)
+        Using cmd As New MySqlCommand("SELECT Nama FROM tbl_supliyer WHERE Status = 'Aktif' ORDER BY Nama ASC", conn)
             Using rd As MySqlDataReader = cmd.ExecuteReader()
                 CmbSupplier.Items.Clear()
                 CmbSupplier.Items.Add("")
@@ -26,8 +34,8 @@ Public Class FormReturPembelian
         DTPtglBeli.Value = DateTime.Now
         DTPtglBeli.Format = DateTimePickerFormat.Custom
         DTPtglBeli.CustomFormat = "dd/MM/yyyy"
-        LblLokasi.Text = FormUtama.SLokasi.Text
-        DTPRetur.Value = DateTime.Now
+        LblLokasi.Text = FormUtama.StatusLokasi.Text
+        ModulHakAkses.ResetDTPKeTanggalHariIni(DTPRetur)
         DTPRetur.Format = DateTimePickerFormat.Custom
         DTPRetur.CustomFormat = "dd/MM/yyyy HH:mm:ss"
         DTPtglBeli.Enabled = True
@@ -49,60 +57,37 @@ Public Class FormReturPembelian
         LblTotalRupiah.Text = "Rp. 0"
         LblStatusHutang.Text = "Status"
         DGVReturPembelian.Rows.Clear()
-        If dtBarang IsNot Nothing Then
-            dtBarang.Clear()
-        End If
+        dtBarang?.Clear()
 
         GenerateNomorReturPembelian()
 
-        CmbRekening.Items.Clear()
-        ' Isi ComboBox dengan data dari list
-        CmbRekening.Items.AddRange(GetDaftarAkun().ToArray())
+        IsiComboBoxAkun(CmbRekening, "KAS", "BANK", "EKUITAS")
 
 
         CbTunai.Checked = True
         If LblLokasi.Text = "TOKO" Then
-            CmbRekening.SelectedItem = nama_rek_Jual_Toko
-            LblKodeAkun.Text = Kode_rek_Jual_Toko
+            CmbRekening.SelectedItem = nama_rek_Retur_Pembelian_Toko
+            LblKodeAkun.Text = Kode_rek_Retur_Pembelian_Toko
         ElseIf LblLokasi.Text = "GUDANG" Then
-            CmbRekening.SelectedItem = nama_rek_Jual_Gudang
-            LblKodeAkun.Text = Kode_rek_Jual_Gudang
+            CmbRekening.SelectedItem = nama_rek_Retur_Pembelian_Gudang
+            LblKodeAkun.Text = Kode_rek_Retur_Pembelian_Gudang
         End If
 
         TxtNotaBeli.Focus()
     End Sub
 
     Private Sub GenerateNomorReturPembelian()
-
-        Dim cekTanggal As String = DTPRetur.Value.ToString("yyMMdd")
-        Dim UrutKOde As String = ""
-        Dim cekNomor As String = "RB-" & cekTanggal
-
-        ' Query untuk mendapatkan nomor maksimum berdasarkan format
-        Using cmd As New MySqlCommand("SELECT MAX(ID_RETUR_PEMBELIAN) FROM retur_pembelian WHERE ID_RETUR_PEMBELIAN LIKE @ceknomor", conn)
-            cmd.Parameters.AddWithValue("@ceknomor", cekNomor & "%")
-
-            ' Gunakan ExecuteScalar untuk mendapatkan nilai maksimum
-            Dim maxKode As Object = cmd.ExecuteScalar()
-
-            If Not IsDBNull(maxKode) AndAlso maxKode IsNot Nothing Then
-                Dim MaxNilaiKode As String = maxKode.ToString()
-                If Microsoft.VisualBasic.Left(MaxNilaiKode, 9) = "RB-" & cekTanggal Then
-                    ' Hitung nomor berikutnya
-                    Dim Hitung As Integer = CInt(Microsoft.VisualBasic.Right(MaxNilaiKode, 4)) + 1
-                    UrutKOde = "RB-" & cekTanggal & Microsoft.VisualBasic.Right("0000" & Hitung.ToString(), 4)
-                End If
-            End If
+        Using cmd As New MySqlCommand(
+            "CALL sp_hlp_faktur_generate(@prefix, @tgl, @tabel, @kolom, @nomor)", conn)
+            cmd.Parameters.AddWithValue("@prefix", "RB")
+            cmd.Parameters.AddWithValue("@tgl", DTPRetur.Value.Date)
+            cmd.Parameters.AddWithValue("@tabel", "retur_pembelian")
+            cmd.Parameters.AddWithValue("@kolom", "ID_RETUR_PEMBELIAN")
+            Dim pNomor = cmd.Parameters.Add("@nomor", MySqlDbType.VarChar, 30)
+            pNomor.Direction = ParameterDirection.Output
+            cmd.ExecuteNonQuery()
+            LblNoNotaRetur.Text = pNomor.Value?.ToString()
         End Using
-
-        ' Jika UrutKOde masih kosong, buat nomor pertama
-        If String.IsNullOrEmpty(UrutKOde) Then
-            UrutKOde = "RB-" & cekTanggal & "0001"
-        End If
-
-        ' Tampilkan nomor pada label
-        LblNoNotaRetur.Text = UrutKOde
-
     End Sub
 
     Private Sub CenterPanel6()
@@ -296,10 +281,12 @@ Public Class FormReturPembelian
                 .Columns(1).FillWeight = 150
                 .Columns(2).FillWeight = 100
                 .Columns(2).DefaultCellStyle.FormatProvider = cultureIndonesia
-                .Columns(2).DefaultCellStyle.Format = "N0"
                 .Columns(2).DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight
             End If
         End With
+        If DGVPilihBarang.Columns.Count >= 3 Then
+            ModuleAngka.TerapkanFormatKolomAngka(DGVPilihBarang, DGVPilihBarang.Columns(2).Name)
+        End If
     End Sub
 
     Private Sub TxtCariRetur_TextChanged(sender As Object, e As EventArgs) Handles TxtCariRetur.TextChanged
@@ -354,10 +341,6 @@ Public Class FormReturPembelian
         ' Set DataGridView properties
         With DGVPembelian
             .Columns("TGL_BELI").DefaultCellStyle.Format = "dd/MM/yyyy"
-            .Columns("PEMBAYARAN").DefaultCellStyle.Format = "N0"
-            .Columns("PEMBAYARAN").DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight
-            .Columns("TAGIHAN").DefaultCellStyle.Format = "N0"
-            .Columns("TAGIHAN").DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight
             .Columns("ID_PEMBELIAN").HeaderText = "No Nota"
             .Columns("TGL_BELI").HeaderText = "Tanggal"
             .Columns("NAMA_SUPLIYER").HeaderText = "Supplier"
@@ -365,6 +348,7 @@ Public Class FormReturPembelian
             .Columns("TAGIHAN").HeaderText = "Hutang"
             .Columns("STATUS_TRANSAKSI_BELI").HeaderText = "Status"
         End With
+        ModuleAngka.TerapkanFormatKolomAngka(DGVPembelian, "PEMBAYARAN", "TAGIHAN")
     End Sub
 
 
@@ -687,15 +671,36 @@ Public Class FormReturPembelian
             Dim isiCell As DataGridViewCell = DGVReturPembelian.Rows(rowIndex).Cells("ISI_SATUAN")
             Dim totalHargaCell As DataGridViewCell = DGVReturPembelian.Rows(rowIndex).Cells("TOTAL")
 
-            Dim qtyValue As Decimal = Convert.ToDecimal(qtyCell.Value)
+            Dim qtyValue As Decimal = ModuleAngka.ParseDecimal(qtyCell.Value)
+            Dim isiValue As Decimal = ModuleAngka.ParseDecimal(isiCell.Value)
+            Dim qtySatValue As Decimal = qtyValue * isiValue
+
+            ' Validasi Stok (Parity dengan FormReturBeli)
+            If SettingIzinkanBarangMinus = "TIDAK" Then
+                Dim idBarang As String = DGVReturPembelian.Rows(rowIndex).Cells("ID_BARANG").Value?.ToString()
+                If Not String.IsNullOrEmpty(idBarang) Then
+                    Dim stokTersedia As Decimal = BacaStokSaatIni(idBarang, LblLokasi.Text, Nothing)
+                    If qtySatValue > stokTersedia Then
+                        MessageBox.Show($"Stok tidak mencukupi untuk retur!{vbCrLf}Tersedia: {stokTersedia}{vbCrLf}Diminta (Total Satuan Kecil): {qtySatValue}",
+                                        "Peringatan Stok", MessageBoxButtons.OK, MessageBoxIcon.Warning)
+                        ' Revert ke qty minimal atau sisa stok
+                        qtyValue = Math.Floor(stokTersedia / If(isiValue <= 0, 1, isiValue))
+                        If qtyValue < 0 Then qtyValue = 0
+                        qtyCell.Value = qtyValue
+                        qtySatValue = qtyValue * isiValue
+                    End If
+                End If
+            End If
 
             If qtyValue <= 0 Then
                 MessageBox.Show("Qty harus lebih besar dari 0.", "Peringatan", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
                 qtyCell.Value = 1
+                qtyValue = 1
+                qtySatValue = qtyValue * isiValue
             End If
 
-            qtySatCell.Value = qtyValue * CDec(isiCell.Value)
-            totalHargaCell.Value = CDec(hargaBeliCell.Value) * CDec(qtySatCell.Value)
+            qtySatCell.Value = qtySatValue
+            totalHargaCell.Value = ModuleAngka.ParseDecimal(hargaBeliCell.Value) * qtySatValue
 
             ' Matikan penggambaran ulang DataGridView untuk efisiensi.
             DGVReturPembelian.SuspendLayout()
@@ -712,17 +717,12 @@ Public Class FormReturPembelian
     End Sub
     Private Sub Datagrid()
         With DGVReturPembelian
-            .Columns("HARGA_BELI").DefaultCellStyle.Format = "###,###"
-            .Columns("HARGA_BELI").DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight
-            .Columns("HARGA_BELI_SATUAN").DefaultCellStyle.Format = "###,###"
-            .Columns("HARGA_BELI_SATUAN").DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight
-            .Columns("TOTAL").DefaultCellStyle.Format = "###,###"
-            .Columns("TOTAL").DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight
             .AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill
             .AllowUserToOrderColumns = False
             .AllowUserToResizeColumns = False
             .AllowUserToResizeRows = False
         End With
+        ModuleAngka.TerapkanFormatKolomAngka(DGVReturPembelian, "HARGA_BELI", "HARGA_BELI_SATUAN", "TOTAL")
     End Sub
 
 
@@ -752,10 +752,24 @@ Public Class FormReturPembelian
     Public Sub Grand_total()
         Dim jumlah As Decimal = 0
         For i As Integer = 0 To DGVReturPembelian.Rows.Count - 1
-            jumlah += Convert.ToDecimal(DGVReturPembelian.Rows(i).Cells("TOTAL").Value)
+            If DGVReturPembelian.Rows(i).Cells("TOTAL").Value IsNot Nothing Then
+                jumlah += ModuleAngka.ParseDecimal(DGVReturPembelian.Rows(i).Cells("TOTAL").Value)
+            End If
         Next
         TxtTotalRupiah.Text = jumlah.ToString()
         LblTotalRupiah.Text = "Rp. " & jumlah.ToString("N0")
+        UpdateStatusHutang()
+    End Sub
+
+    Private Sub UpdateStatusHutang()
+        If CbPotongHutang.Checked Then
+            Dim sisaBayar As Decimal = ModuleAngka.ParseDecimal(TxtSisaBayar.Text)
+            Dim totalRupiah As Decimal = ModuleAngka.ParseDecimal(TxtTotalRupiah.Text)
+            ' Jika retur >= sisa hutang, maka lunas
+            LblStatusHutang.Text = If(totalRupiah >= sisaBayar, "Lunas", "Belum Lunas")
+        Else
+            LblStatusHutang.Text = "Status"
+        End If
     End Sub
 
     Private Sub Hitungbarang()
@@ -767,7 +781,9 @@ Public Class FormReturPembelian
     Private Sub Hitungqty()
         Dim jumlah As Decimal = 0
         For i As Integer = 0 To DGVReturPembelian.Rows.Count - 1
-            jumlah += Convert.ToDecimal(DGVReturPembelian.Rows(i).Cells("QTY_SAT").Value)
+            If DGVReturPembelian.Rows(i).Cells("QTY_SAT").Value IsNot Nothing Then
+                jumlah += ModuleAngka.ParseDecimal(DGVReturPembelian.Rows(i).Cells("QTY_SAT").Value)
+            End If
         Next
         TxtTotalQTY.Text = jumlah.ToString()
         LblTotalQTY.Text = jumlah.ToString("N0")
@@ -790,14 +806,13 @@ Public Class FormReturPembelian
         If CbTunai.Checked Then
             LblKodeAkun.Text = ""
             CbPotongHutang.Checked = False
-            Rekeningkasbank()
 
             If LblLokasi.Text = "TOKO" Then
-                CmbRekening.SelectedItem = nama_rek_Jual_Toko
-                LblKodeAkun.Text = Kode_rek_Jual_Toko
+                CmbRekening.SelectedItem = nama_rek_Retur_Pembelian_Toko
+                LblKodeAkun.Text = Kode_rek_Retur_Pembelian_Toko
             ElseIf LblLokasi.Text = "GUDANG" Then
-                CmbRekening.SelectedItem = nama_rek_Jual_Gudang
-                LblKodeAkun.Text = Kode_rek_Jual_Gudang
+                CmbRekening.SelectedItem = nama_rek_Retur_Pembelian_Gudang
+                LblKodeAkun.Text = Kode_rek_Retur_Pembelian_Gudang
             End If
         End If
     End Sub
@@ -809,17 +824,7 @@ Public Class FormReturPembelian
             CmbRekening.Items.Add(nama_rek_Hutang_Beli)
             CmbRekening.SelectedIndex = 0
             LblKodeAkun.Text = Kode_rek_Hutang_Beli
-
-            Dim sisaBayar As Decimal
-            Dim totalRupiah As Decimal
-
-            If Decimal.TryParse(TxtSisaBayar.Text, sisaBayar) AndAlso Decimal.TryParse(TxtTotalRupiah.Text, totalRupiah) Then
-                If sisaBayar = totalRupiah Then
-                    LblStatusHutang.Text = "Lunas"
-                Else
-                    LblStatusHutang.Text = "Belum Lunas"
-                End If
-            End If
+            UpdateStatusHutang()
         End If
     End Sub
 
@@ -857,23 +862,103 @@ Public Class FormReturPembelian
         Try
             transaction = conn.BeginTransaction()
 
-            Simpanreturpembelian(transaction)
-            SimpanUpdateHutangpembelian(transaction)
-            HistoryBarang(transaction)
-            Simpanreturpembeliandetail(transaction)
-            Simpanjurnal(transaction)
+            ' Audit: inisialisasi dictionary
+            Dim auditDGV As New Dictionary(Of String, Decimal)()
+            Dim auditHistory As New Dictionary(Of String, Decimal)()
+            Dim auditDetail As New Dictionary(Of String, Decimal)()
+            Dim auditStokDelta As New Dictionary(Of String, Decimal)()
 
-            ' Commit transaksi jika berhasil
-            transaction.Commit()
-            ' Jika semuanya berhasil, kembalikan kondisi awal
+            ' Audit A + C: baca qty dari DGV (kolom 7 = QTY_SAT)
             For Each row As DataGridViewRow In DGVReturPembelian.Rows
                 If Not row.IsNewRow AndAlso row.Cells(0).Value IsNot Nothing AndAlso row.Cells(0).Value.ToString() <> "" Then
-                    HitungByKode(row.Cells(0).Value)
+                    Dim kodeA As String = row.Cells(0).Value.ToString()
+                    Dim qtyA As Decimal = ModuleAngka.ParseDecimal(row.Cells(7).Value)
+                    If auditDGV.ContainsKey(kodeA) Then auditDGV(kodeA) += qtyA Else auditDGV(kodeA) = qtyA
+                    If auditDetail.ContainsKey(kodeA) Then auditDetail(kodeA) += qtyA Else auditDetail(kodeA) = qtyA
                 End If
             Next
 
-            DatabaseModule.CatatanAksiHistory("Simpan retur pembelian " & LblNoNotaRetur.Text)
+            ' ========================================
+            ' START: Audit Trail - Retur Pembelian
+            ' ========================================
+            ModuleAuditTrail.CatatAudit(LblNoNotaRetur.Text, "TAMBAH", "Retur Pembelian", ket:="Retur pembelian baru", trans:=transaction)
+            ' ========================================
+            ' END: Audit Trail - Retur Pembelian
+            ' ========================================
+
+            Simpanreturpembelian(transaction)
+            CatatReturKeHutangDetail(transaction)
+            SimpanUpdateHutangpembelian(transaction)
+            HistoryBarang(transaction, auditHistory)   ' mengisi B
+            Simpanreturpembeliandetail(transaction)
+            Simpanjurnal(transaction)
+
+            If CbPotongHutang.Checked Then
+                UpdateHutangSupliyer(LblKodeSupplier.Text, transaction)
+            End If
+
+            ' Recalculate stok + Audit D
+            For Each row As DataGridViewRow In DGVReturPembelian.Rows
+                If Not row.IsNewRow AndAlso row.Cells(0).Value IsNot Nothing AndAlso row.Cells(0).Value.ToString() <> "" Then
+                    Dim kodeD As String = row.Cells(0).Value.ToString()
+                    Dim stokSebelum As Decimal = BacaStokSaatIni(kodeD, LblLokasi.Text, transaction)
+                    HitungStokPerubahan(kodeD, transaction)
+                    Dim stokSesudah As Decimal = BacaStokSaatIni(kodeD, LblLokasi.Text, transaction)
+                    Dim delta As Decimal = stokSebelum - stokSesudah  ' retur beli mengurangi stok
+                    If auditStokDelta.ContainsKey(kodeD) Then auditStokDelta(kodeD) += delta Else auditStokDelta(kodeD) = delta
+                End If
+            Next
+
+            AuditStokTransaksi(LblNoNotaRetur.Text, "Retur Pembelian", auditDGV, auditHistory, auditDetail, auditStokDelta, transaction)
+
+
+            Dim akunTerlibat As New HashSet(Of String)(StringComparer.OrdinalIgnoreCase)
+            Using cmdAkun As New MySqlCommand(
+                "SELECT DISTINCT NOMOR_AKUN_D FROM JurnalUmum WHERE NO_TRANSAKSI = @fk AND NOMOR_AKUN_D <> '' " &
+                "UNION " &
+                "SELECT DISTINCT NOMOR_AKUN_K FROM JurnalUmum WHERE NO_TRANSAKSI = @fk AND NOMOR_AKUN_K <> ''",
+                conn, transaction)
+                cmdAkun.Parameters.AddWithValue("@fk", LblNoNotaRetur.Text)
+                Using rd = cmdAkun.ExecuteReader()
+                    While rd.Read()
+                        Dim kode As String = rd(0).ToString().Trim()
+                        If kode <> "" Then akunTerlibat.Add(kode)
+                    End While
+                End Using
+            End Using
+            Debug.WriteLine($"[INFO] Akun terlibat: {akunTerlibat.Count}")
+            For Each kodeAkun As String In akunTerlibat
+                UpdateSaldoAkun(kodeAkun, transaction)
+            Next
+            UpdateHutangSupliyer(LblKodeSupplier.Text, transaction)
+
+            ' Commit transaksi jika berhasil
+            transaction.Commit()
+
+            Dim rpNominal As Decimal = ModuleAngka.ParseDecimal(TxtTotalRupiah.Text)
+            CatatJurnalTidakSeimbang(LblNoNotaRetur.Text, rpNominal, rpNominal, "Retur Pembelian",
+                {"ReturBeli"})
+
+            ' Cetak setelah simpan
+            Dim noRetur As String = LblNoNotaRetur.Text
             Kondisiawalretur()
+
+            Try
+                Select Case BacaPengaturanPrinter("ReturBeli", "CetakOtomatis", "IYA").Trim().ToUpper()
+                    Case "IYA"
+                        LakukanCetakReturBeli(noRetur)
+                    Case "SELALU TANYA"
+                        If MessageBox.Show("Apakah Anda ingin mencetak nota retur pembelian?",
+                                           "Konfirmasi Cetak", MessageBoxButtons.YesNo, MessageBoxIcon.Question) = DialogResult.Yes Then
+                            LakukanCetakReturBeli(noRetur)
+                        End If
+                    Case "TAMPILKAN DI MONITOR"
+                        ModulePrinterReturBeli.PreviewReturBeli(noRetur)
+                End Select
+            Catch ex As Exception
+                MessageBox.Show("Gagal mencetak retur pembelian." & vbCrLf & "Detail: " & ex.Message,
+                                "Peringatan", MessageBoxButtons.OK, MessageBoxIcon.Warning)
+            End Try
 
         Catch ex As Exception
             transaction.Rollback()
@@ -883,28 +968,43 @@ Public Class FormReturPembelian
         End Try
     End Sub
 
-    Private Sub SimpanUpdateHutangpembelian(ByVal transaction As MySqlTransaction)
-        Dim updateQuery As String
-
-        If CbPotongHutang.Checked Then
-            updateQuery = "UPDATE pembelian SET TGL_RETUR = ?, RETUR = RETUR + ?, TAGIHAN = TAGIHAN - ?, STATUS_TRANSAKSI_BELI = ? WHERE ID_PEMBELIAN = ?"
+    Private Sub LakukanCetakReturBeli(noRetur As String)
+        If BacaPengaturanPrinter("ReturBeli", "PilihPrinter", "LANGSUNG CETAK") = "TANYA PILIH PRINTER" Then
+            ModulePrinterReturBeli.TanyaPilihPrinterReturBeli(noRetur)
         Else
-            updateQuery = "UPDATE pembelian SET TGL_RETUR = ?, RETUR = RETUR + ? WHERE ID_PEMBELIAN = ?"
+            ModulePrinterReturBeli.CetakReturBeli(noRetur)
+        End If
+    End Sub
+
+    Private Sub SimpanUpdateHutangpembelian(ByVal transaction As MySqlTransaction)
+        Dim sql As String
+        Dim returValue As Decimal = ModuleAngka.ParseDecimal(TxtTotalRupiah.Text)
+        
+        If CbPotongHutang.Checked Then
+            ' Potong Hutang: Update RETUR, TAGIHAN, dan STATUS
+            sql = "UPDATE pembelian SET " &
+                  "TGL_RETUR = @TGL, " &
+                  "RETUR = RETUR + @RETUR, " &
+                  "TAGIHAN = CASE WHEN TAGIHAN < @POTONGAN THEN 0 ELSE TAGIHAN - @POTONGAN END, " &
+                  "STATUS_TRANSAKSI_BELI = @STATUS " &
+                  "WHERE ID_PEMBELIAN = @ID"
+        Else
+            ' Normal/Tunai: Hanya update RETUR
+            sql = "UPDATE pembelian SET " &
+                  "TGL_RETUR = @TGL, " &
+                  "RETUR = RETUR + @RETUR " &
+                  "WHERE ID_PEMBELIAN = @ID"
         End If
 
-        Using cmdUpdate As New MySqlCommand(updateQuery, conn, transaction)
-            cmdUpdate.Parameters.AddWithValue("@TGL_RETUR", DTPRetur.Value.ToString("yyyy-MM-dd HH:mm:ss"))
-            cmdUpdate.Parameters.AddWithValue("@RETUR", Convert.ToDecimal(TxtTotalRupiah.Text))
-
+        Using cmd As New MySqlCommand(sql, conn, transaction)
+            cmd.Parameters.AddWithValue("@TGL", DTPRetur.Value.ToString("yyyy-MM-dd HH:mm:ss"))
+            cmd.Parameters.AddWithValue("@RETUR", returValue)
             If CbPotongHutang.Checked Then
-                ' Pastikan nilai di TxtSisaBayar bersifat numerik sebelum menggunakannya
-                Dim tagihanSaatIni As Decimal = Convert.ToDecimal(TxtSisaBayar.Text)
-                cmdUpdate.Parameters.AddWithValue("@TAGIHAN", tagihanSaatIni - Convert.ToDecimal(TxtTotalRupiah.Text))
-                cmdUpdate.Parameters.AddWithValue("@STATUS_TRANSAKSI_BELI", LblStatusHutang.Text)
+                cmd.Parameters.AddWithValue("@POTONGAN", returValue)
+                cmd.Parameters.AddWithValue("@STATUS", LblStatusHutang.Text)
             End If
-
-            cmdUpdate.Parameters.AddWithValue("@ID_PEMBELIAN", TxtNotaBeli.Text)
-            cmdUpdate.ExecuteNonQuery()
+            cmd.Parameters.AddWithValue("@ID", TxtNotaBeli.Text)
+            cmd.ExecuteNonQuery()
         End Using
     End Sub
 
@@ -922,16 +1022,16 @@ Public Class FormReturPembelian
             cmd.Parameters.AddWithValue("@TGL_PEMBELIAN", DTPtglBeli.Value.ToString("yyyy-MM-dd HH:mm:ss"))
             cmd.Parameters.AddWithValue("@STATUS_PEMBELIAN", LblStatusBeli.Text)
             cmd.Parameters.AddWithValue("@PENYIMPANAN", LblLokasi.Text)
-            cmd.Parameters.AddWithValue("@BAYAR_PEMBELIAN", Convert.ToDecimal(TxtBayarBeli.Text))
-            cmd.Parameters.AddWithValue("@SISA_PEMBELIAN", Convert.ToDecimal(TxtSisaBayar.Text))
-            cmd.Parameters.AddWithValue("@TOTAL_BARANG", Convert.ToDecimal(TxtTotalBarang.Text))
-            cmd.Parameters.AddWithValue("@TOTAL_QTY", Convert.ToDecimal(TxtTotalQTY.Text))
-            cmd.Parameters.AddWithValue("@TOTAL_RUPIAH", Convert.ToDecimal(TxtTotalRupiah.Text))
+            cmd.Parameters.AddWithValue("@BAYAR_PEMBELIAN", ModuleAngka.ParseDecimal(TxtBayarBeli.Text))
+            cmd.Parameters.AddWithValue("@SISA_PEMBELIAN", ModuleAngka.ParseDecimal(TxtSisaBayar.Text))
+            cmd.Parameters.AddWithValue("@TOTAL_BARANG", ModuleAngka.ParseDecimal(TxtTotalBarang.Text))
+            cmd.Parameters.AddWithValue("@TOTAL_QTY", ModuleAngka.ParseDecimal(TxtTotalQTY.Text))
+            cmd.Parameters.AddWithValue("@TOTAL_RUPIAH", ModuleAngka.ParseDecimal(TxtTotalRupiah.Text))
             cmd.Parameters.AddWithValue("@NAMA_REKENING", CmbRekening.Text)
             cmd.Parameters.AddWithValue("@KODE_REKENING", LblKodeAkun.Text)
             cmd.Parameters.AddWithValue("@ALASAN_RETUR", RTBAlasanRetur.Text)
-            cmd.Parameters.AddWithValue("@ID_USER", FormUtama.SLogin.Text)
-            cmd.Parameters.AddWithValue("@ID_KOMPUTER", FormUtama.Comp.Text)
+            cmd.Parameters.AddWithValue("@ID_USER", FormUtama.StatusNamaUser.Text)
+            cmd.Parameters.AddWithValue("@ID_KOMPUTER", FormUtama.StatusNamaPC.Text)
 
             cmd.ExecuteNonQuery()
         End Using
@@ -950,16 +1050,16 @@ Public Class FormReturPembelian
                     cmd.Parameters.AddWithValue("@NAMA_SUPLIYER", CmbSupplier.Text)
                     cmd.Parameters.AddWithValue("@ID_BARANG", row.Cells(0).Value)
                     cmd.Parameters.AddWithValue("@NAMA_BARANG", row.Cells(1).Value)
-                    cmd.Parameters.AddWithValue("@HARGA_BELI", Convert.ToDecimal(row.Cells(2).Value))
-                    cmd.Parameters.AddWithValue("@QTY", Convert.ToDecimal(row.Cells(3).Value))
+                    cmd.Parameters.AddWithValue("@HARGA_BELI", ModuleAngka.ParseDecimal(row.Cells(2).Value))
+                    cmd.Parameters.AddWithValue("@QTY", ModuleAngka.ParseDecimal(row.Cells(3).Value))
                     cmd.Parameters.AddWithValue("@SATUAN", row.Cells(4).Value)
-                    cmd.Parameters.AddWithValue("@ISI_SATUAN", Convert.ToDecimal(row.Cells(5).Value))
-                    cmd.Parameters.AddWithValue("@HARGA_BELI_SATUAN", Convert.ToDecimal(row.Cells(6).Value))
-                    cmd.Parameters.AddWithValue("@QTY_SAT", Convert.ToDecimal(row.Cells(7).Value))
-                    cmd.Parameters.AddWithValue("@TOTAL", Convert.ToDecimal(row.Cells(8).Value))
+                    cmd.Parameters.AddWithValue("@ISI_SATUAN", ModuleAngka.ParseDecimal(row.Cells(5).Value))
+                    cmd.Parameters.AddWithValue("@HARGA_BELI_SATUAN", ModuleAngka.ParseDecimal(row.Cells(6).Value))
+                    cmd.Parameters.AddWithValue("@QTY_SAT", ModuleAngka.ParseDecimal(row.Cells(7).Value))
+                    cmd.Parameters.AddWithValue("@TOTAL", ModuleAngka.ParseDecimal(row.Cells(8).Value))
                     cmd.Parameters.AddWithValue("@PENYIMPANAN", LblLokasi.Text)
-                    cmd.Parameters.AddWithValue("@ID_USER", FormUtama.SLogin.Text)
-                    cmd.Parameters.AddWithValue("@ID_KOMPUTER", FormUtama.Comp.Text)
+                    cmd.Parameters.AddWithValue("@ID_USER", FormUtama.StatusNamaUser.Text)
+                    cmd.Parameters.AddWithValue("@ID_KOMPUTER", FormUtama.StatusNamaPC.Text)
                     cmd.ExecuteNonQuery()
                 End Using
 
@@ -979,7 +1079,7 @@ Public Class FormReturPembelian
                 Dim kodeBarang As String = row.Cells(0).Value.ToString()
 
                 If Not String.IsNullOrEmpty(kodeBarang) Then
-                    Dim stokPengurangan As Decimal = If(row.Cells(7).Value IsNot Nothing, Convert.ToDecimal(row.Cells(7).Value), 0D)
+                    Dim stokPengurangan As Decimal = ModuleAngka.ParseDecimal(row.Cells(7).Value)
 
                     Using cmd As New MySqlCommand(updateQuery, conn, transaction)
                         cmd.Parameters.AddWithValue("@StokPengurangan", stokPengurangan)
@@ -992,7 +1092,7 @@ Public Class FormReturPembelian
     End Sub
 
 
-    Private Sub HistoryBarang(ByVal transaction As MySqlTransaction)
+    Private Sub HistoryBarang(ByVal transaction As MySqlTransaction, ByRef auditHistory As Dictionary(Of String, Decimal))
         ' Simpan data rincian barang dari gridview ke tbl_rinci_BELI
         For Each row As DataGridViewRow In DGVReturPembelian.Rows
             If Not row.IsNewRow AndAlso row.Cells(0).Value IsNot Nothing AndAlso row.Cells(0).Value.ToString() <> "" Then
@@ -1005,15 +1105,21 @@ Public Class FormReturPembelian
                     cmd.Parameters.AddWithValue("@LOKASI", LblLokasi.Text)
                     cmd.Parameters.AddWithValue("@ID_BARANG", row.Cells(0).Value)
                     cmd.Parameters.AddWithValue("@NAMA_BARANG", row.Cells(1).Value)
-                    cmd.Parameters.AddWithValue("@QTY", Convert.ToDecimal(row.Cells(3).Value))
+                    cmd.Parameters.AddWithValue("@QTY", ModuleAngka.ParseDecimal(row.Cells(3).Value))
                     cmd.Parameters.AddWithValue("@SATUAN", row.Cells(4).Value)
-                    cmd.Parameters.AddWithValue("@ISI_SATUAN", Convert.ToDecimal(row.Cells(5).Value))
-                    cmd.Parameters.AddWithValue("@TOTAL_QTY", Convert.ToDecimal(row.Cells(7).Value))
-                    cmd.Parameters.AddWithValue("@TOTAL_RUPIAH", Convert.ToDecimal(row.Cells(8).Value))
-                    cmd.Parameters.AddWithValue("@ID_USER", FormUtama.SLogin.Text)
-                    cmd.Parameters.AddWithValue("@ID_KOMPUTER", FormUtama.Comp.Text)
+                    cmd.Parameters.AddWithValue("@ISI_SATUAN", ModuleAngka.ParseDecimal(row.Cells(5).Value))
+                    Dim totalQty As Decimal = ModuleAngka.ParseDecimal(row.Cells(7).Value)
+                    cmd.Parameters.AddWithValue("@TOTAL_QTY", totalQty)
+                    cmd.Parameters.AddWithValue("@TOTAL_RUPIAH", ModuleAngka.ParseDecimal(row.Cells(8).Value))
+                    cmd.Parameters.AddWithValue("@ID_USER", FormUtama.StatusNamaUser.Text)
+                    cmd.Parameters.AddWithValue("@ID_KOMPUTER", FormUtama.StatusNamaPC.Text)
                     cmd.ExecuteNonQuery()
                 End Using
+
+                ' Audit B
+                Dim kodeB As String = row.Cells(0).Value.ToString()
+                Dim qtyB As Decimal = ModuleAngka.ParseDecimal(row.Cells(7).Value)
+                If auditHistory.ContainsKey(kodeB) Then auditHistory(kodeB) += qtyB Else auditHistory(kodeB) = qtyB
             End If
         Next
     End Sub
@@ -1041,11 +1147,11 @@ Public Class FormReturPembelian
             End If
 
             ' Konversi nominal menjadi decimal dengan validasi
-            cmd.Parameters.AddWithValue("@NOMINAL", Convert.ToDecimal(TxtTotalRupiah.Text))
-            cmd.Parameters.AddWithValue("@JENIS_TRANSAKSI", "Retur Pembelian")
+            cmd.Parameters.AddWithValue("@NOMINAL", ModuleAngka.ParseDecimal(TxtTotalRupiah.Text))
+            cmd.Parameters.AddWithValue("@JENIS_TRANSAKSI", "RETUR PEMBELIAN")
             cmd.Parameters.AddWithValue("@LOKASI", LblLokasi.Text)
-            cmd.Parameters.AddWithValue("@ID_USER", FormUtama.SLogin.Text)
-            cmd.Parameters.AddWithValue("@ID_KOMPUTER", FormUtama.Comp.Text)
+            cmd.Parameters.AddWithValue("@ID_USER", FormUtama.StatusNamaUser.Text)
+            cmd.Parameters.AddWithValue("@ID_KOMPUTER", FormUtama.StatusNamaPC.Text)
 
             ' Eksekusi perintah SQL
             cmd.ExecuteNonQuery()
@@ -1074,6 +1180,9 @@ Public Class FormReturPembelian
 
     Private Sub FormReturPembelian_KeyDown(ByVal sender As System.Object, ByVal e As System.Windows.Forms.KeyEventArgs) Handles MyBase.KeyDown
         Select Case e.KeyCode
+            Case Keys.F1
+                e.SuppressKeyPress = True
+                TampilkanBantuan()
             Case Keys.F8
                 BtnSimpan.PerformClick()
             Case Keys.Escape
@@ -1082,17 +1191,100 @@ Public Class FormReturPembelian
                 ElseIf Panelcaribarang.Visible = True Then
                     BtnKeluarBarang.PerformClick()
                 Else
-                    BtnClose.PerformClick()
+                    BtnKeluarForm.PerformClick()
                 End If
 
         End Select
     End Sub
 
-    Private Sub BtnClose_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles BtnClose.Click
+    Private Sub BtnClose_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles BtnKeluarForm.Click
         FormUtama.GBTransaksi.Visible = True
         FormUtama.Refresdatagridview()
         Close()
     End Sub
 
+
+    Private Sub BtnSettingPrinter_Click(sender As Object, e As EventArgs) Handles BtnSettingPrinter.Click
+        Using frm As New FormPengaturanPrinter() With {.FilterTab = "ReturBeli"}
+            frm.ShowDialog()
+        End Using
+        MuatSemuaPengaturan()
+    End Sub
+
+    ' ============================================
+    ' FUNGSI: TAMPILKAN BANTUAN SHORTCUT
+    ' ============================================
+    Private Sub TampilkanBantuan()
+        Dim helpText As String = "SHORTCUT KEYBOARD:" & vbCrLf & vbCrLf &
+                           "F1      : Tampilkan bantuan ini" & vbCrLf &
+                           "F8      : Simpan retur pembelian" & vbCrLf &
+                           "ESC     : Tutup panel / Keluar"
+        MessageBox.Show(helpText, "Bantuan - Shortcut Keyboard",
+                        MessageBoxButtons.OK, MessageBoxIcon.Information)
+    End Sub
+
+    ' ── Catat retur ke hutang_detail (hanya Mode Normal + PotongHutang) ──────
+    ' Dipanggil setelah INSERT retur_pembelian, dalam transaksi yang sama.
+    ' Kondisi: CbJenisRetur.Checked = False (Mode Normal) DAN CbPotongHutang.Checked = True
+    Private Sub CatatReturKeHutangDetail(ByVal transaction As MySqlTransaction)
+        If Not CbJenisRetur.Checked AndAlso CbPotongHutang.Checked Then
+            Dim totalRupiahRetur As Decimal = ModuleAngka.ParseDecimal(TxtTotalRupiah.Text)
+            Dim idPembelianAsal As String = TxtNotaBeli.Text
+
+            ' Ambil data faktur asal: GRAND_TOTAL_BELI dan JATUH_TEMPO dari tabel pembelian
+            Dim totalHutangAsal As Decimal = 0
+            Dim jatuhTempoAsal As String = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")
+
+            Using cmdFaktur As New MySqlCommand(
+                "SELECT GRAND_TOTAL_BELI, JATUH_TEMPO FROM pembelian WHERE ID_PEMBELIAN = @ID_PEMBELIAN",
+                conn, transaction)
+                cmdFaktur.Parameters.AddWithValue("@ID_PEMBELIAN", idPembelianAsal)
+                Using rd As MySqlDataReader = cmdFaktur.ExecuteReader()
+                    If rd.Read() Then
+                        totalHutangAsal = If(rd.IsDBNull(0), 0D, Convert.ToDecimal(rd(0)))
+                        jatuhTempoAsal = If(rd.IsDBNull(1), DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"),
+                                           Convert.ToDateTime(rd(1)).ToString("yyyy-MM-dd HH:mm:ss"))
+                    End If
+                End Using
+            End Using
+
+            ' INSERT baris RETUR ke hutang_detail
+            Using cmdRetur As New MySqlCommand(
+                "INSERT INTO hutang_detail (ID_BAYAR, TANGGAL_BAYAR, LOKASI, ID_BELI, KODE, NAMA, " &
+                "JENIS, TANGGAL_BELI, TOTAL_HUTANG, DIBAYAR, RETUR, HUTANG, JATUH_TEMPO, " &
+                "PEMBAYARAN, STATUS, ID_USER, ID_KOMPUTER) " &
+                "VALUES (@ID_BAYAR, @TANGGAL_BAYAR, @LOKASI, @ID_BELI, @KODE, @NAMA, " &
+                "'RETUR', @TANGGAL_BELI, @TOTAL_HUTANG, 0, @RETUR_NILAI, 0, @JATUH_TEMPO, " &
+                "@PEMBAYARAN, 'Belum Lunas', @ID_USER, @ID_KOMPUTER)", conn, transaction)
+                cmdRetur.Parameters.AddWithValue("@ID_BAYAR", "RETUR-" & LblNoNotaRetur.Text)
+                cmdRetur.Parameters.AddWithValue("@TANGGAL_BAYAR", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"))
+                cmdRetur.Parameters.AddWithValue("@LOKASI", FormUtama.StatusLokasi.Text)
+                cmdRetur.Parameters.AddWithValue("@ID_BELI", idPembelianAsal)
+                cmdRetur.Parameters.AddWithValue("@KODE", LblKodeSupplier.Text)
+                cmdRetur.Parameters.AddWithValue("@NAMA", CmbSupplier.Text)
+                cmdRetur.Parameters.AddWithValue("@TANGGAL_BELI", DTPtglBeli.Value.ToString("yyyy-MM-dd HH:mm:ss"))
+                cmdRetur.Parameters.AddWithValue("@TOTAL_HUTANG", totalHutangAsal)
+                cmdRetur.Parameters.AddWithValue("@RETUR_NILAI", totalRupiahRetur)
+                cmdRetur.Parameters.AddWithValue("@JATUH_TEMPO", jatuhTempoAsal)
+                cmdRetur.Parameters.AddWithValue("@PEMBAYARAN", totalRupiahRetur)
+                cmdRetur.Parameters.AddWithValue("@ID_USER", FormUtama.StatusNamaUser.Text)
+                cmdRetur.Parameters.AddWithValue("@ID_KOMPUTER", FormUtama.StatusNamaPC.Text)
+                cmdRetur.ExecuteNonQuery()
+            End Using
+
+            ' Perbarui baris BELI — kurangi HUTANG, tambah RETUR
+            ' Jika baris BELI tidak ditemukan (faktur lama), tidak error — lanjutkan
+            Using cmdUpdateTimbul As New MySqlCommand(
+                "UPDATE hutang_detail SET " &
+                "HUTANG = HUTANG - @RETUR, " &
+                "RETUR = RETUR + @RETUR, " &
+                "STATUS = CASE WHEN (HUTANG - @RETUR) <= 0 THEN 'Lunas' ELSE 'Belum Lunas' END " &
+                "WHERE ID_BELI = @ID_BELI AND JENIS = 'BELI'", conn, transaction)
+                cmdUpdateTimbul.Parameters.AddWithValue("@RETUR", totalRupiahRetur)
+                cmdUpdateTimbul.Parameters.AddWithValue("@ID_BELI", idPembelianAsal)
+                cmdUpdateTimbul.ExecuteNonQuery()
+            End Using
+        End If
+    End Sub
 
 End Class

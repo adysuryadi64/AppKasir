@@ -24,23 +24,23 @@ Partial Class FormPenjualan
     Private Sub InitializeComponent()
         Me.components = New System.ComponentModel.Container()
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(FormPenjualan))
-        Dim DataGridViewCellStyle18 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
-        Dim DataGridViewCellStyle32 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
-        Dim DataGridViewCellStyle33 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
-        Dim DataGridViewCellStyle34 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
-        Dim DataGridViewCellStyle19 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
-        Dim DataGridViewCellStyle20 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
-        Dim DataGridViewCellStyle21 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
-        Dim DataGridViewCellStyle22 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
-        Dim DataGridViewCellStyle23 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
-        Dim DataGridViewCellStyle24 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
-        Dim DataGridViewCellStyle25 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
-        Dim DataGridViewCellStyle26 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
-        Dim DataGridViewCellStyle27 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
-        Dim DataGridViewCellStyle28 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
-        Dim DataGridViewCellStyle29 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
-        Dim DataGridViewCellStyle30 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
-        Dim DataGridViewCellStyle31 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
+        Dim DataGridViewCellStyle1 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
+        Dim DataGridViewCellStyle15 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
+        Dim DataGridViewCellStyle16 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
+        Dim DataGridViewCellStyle17 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
+        Dim DataGridViewCellStyle2 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
+        Dim DataGridViewCellStyle3 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
+        Dim DataGridViewCellStyle4 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
+        Dim DataGridViewCellStyle5 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
+        Dim DataGridViewCellStyle6 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
+        Dim DataGridViewCellStyle7 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
+        Dim DataGridViewCellStyle8 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
+        Dim DataGridViewCellStyle9 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
+        Dim DataGridViewCellStyle10 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
+        Dim DataGridViewCellStyle11 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
+        Dim DataGridViewCellStyle12 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
+        Dim DataGridViewCellStyle13 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
+        Dim DataGridViewCellStyle14 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
         Me.GroupBox1 = New System.Windows.Forms.GroupBox()
         Me.Label7 = New System.Windows.Forms.Label()
         Me.TxtLevelSat = New System.Windows.Forms.TextBox()
@@ -78,6 +78,7 @@ Partial Class FormPenjualan
         Me.BtnCari = New System.Windows.Forms.Button()
         Me.TxtNama = New System.Windows.Forms.TextBox()
         Me.Panel1 = New System.Windows.Forms.Panel()
+        Me.ChkTampilSN = New System.Windows.Forms.CheckBox()
         Me.LblJualSblDiskon = New System.Windows.Forms.Label()
         Me.Label12 = New System.Windows.Forms.Label()
         Me.rtbPetunjuk = New System.Windows.Forms.RichTextBox()
@@ -102,6 +103,9 @@ Partial Class FormPenjualan
         Me.TxtPajakPersen = New System.Windows.Forms.TextBox()
         Me.Label6 = New System.Windows.Forms.Label()
         Me.LblPajakRp = New System.Windows.Forms.Label()
+        Me.TxtBiayaKirim = New System.Windows.Forms.TextBox()
+        Me.Label31 = New System.Windows.Forms.Label()
+        Me.LblBiayaKirim = New System.Windows.Forms.Label()
         Me.TxtJmlhQty = New System.Windows.Forms.TextBox()
         Me.TxtJmlhQtySatuan = New System.Windows.Forms.TextBox()
         Me.DgvData = New System.Windows.Forms.DataGridView()
@@ -123,15 +127,22 @@ Partial Class FormPenjualan
         Me.Stok = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.SerialNumber = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.GBBayar = New System.Windows.Forms.GroupBox()
+        Me.TxtKodeBayarBank = New System.Windows.Forms.TextBox()
+        Me.Label13 = New System.Windows.Forms.Label()
+        Me.LblBayarTransfer = New System.Windows.Forms.Label()
+        Me.CmbBayarTransfer = New System.Windows.Forms.ComboBox()
+        Me.Label19 = New System.Windows.Forms.Label()
+        Me.TxtNominalBayarTransfer = New System.Windows.Forms.TextBox()
         Me.TxtJmlhItem = New System.Windows.Forms.TextBox()
         Me.TxtTotalHpp = New System.Windows.Forms.TextBox()
         Me.LblStatusTrans = New System.Windows.Forms.Label()
+        Me.BtnBatal = New System.Windows.Forms.Button()
+        Me.BtnSimpann = New System.Windows.Forms.Button()
         Me.TxtKomputer = New System.Windows.Forms.TextBox()
         Me.TxtLogin = New System.Windows.Forms.TextBox()
-        Me.TxtTypeAkun = New System.Windows.Forms.TextBox()
         Me.PanelTFPelanggan = New System.Windows.Forms.Panel()
+        Me.CmbBank = New System.Windows.Forms.ComboBox()
         Me.Label27 = New System.Windows.Forms.Label()
-        Me.TxtBank = New System.Windows.Forms.TextBox()
         Me.Label28 = New System.Windows.Forms.Label()
         Me.TxtNoReff = New System.Windows.Forms.TextBox()
         Me.TxtNamaRek = New System.Windows.Forms.TextBox()
@@ -143,32 +154,24 @@ Partial Class FormPenjualan
         Me.Label22 = New System.Windows.Forms.Label()
         Me.Label21 = New System.Windows.Forms.Label()
         Me.LblKembali = New System.Windows.Forms.Label()
-        Me.LblBayar = New System.Windows.Forms.Label()
+        Me.LblBayarTunai = New System.Windows.Forms.Label()
         Me.LblTotalStlPajak = New System.Windows.Forms.Label()
         Me.Label17 = New System.Windows.Forms.Label()
-        Me.TxtKodeRef = New System.Windows.Forms.TextBox()
+        Me.TxtKodeBayarTunai = New System.Windows.Forms.TextBox()
         Me.LblStatus = New System.Windows.Forms.Label()
         Me.LblJatuhTempo = New System.Windows.Forms.Label()
         Me.DTPJatuhTempo = New System.Windows.Forms.DateTimePicker()
-        Me.CmbJenisBayar = New System.Windows.Forms.ComboBox()
+        Me.CmbBayarTunai = New System.Windows.Forms.ComboBox()
         Me.Label2 = New System.Windows.Forms.Label()
         Me.TxtTotaljualStlPajak = New System.Windows.Forms.TextBox()
-        Me.BtnBatal = New System.Windows.Forms.Button()
-        Me.BtnSimpann = New System.Windows.Forms.Button()
-        Me.Label5 = New System.Windows.Forms.Label()
-        Me.TxtNominalBayar = New System.Windows.Forms.TextBox()
+        Me.TxtNominalBayarTunai = New System.Windows.Forms.TextBox()
         Me.TxtKembaliHutang = New System.Windows.Forms.TextBox()
         Me.LblPembayaran = New System.Windows.Forms.Label()
-        Me.Label29 = New System.Windows.Forms.Label()
-        Me.LblBiayaKirim = New System.Windows.Forms.Label()
-        Me.Label31 = New System.Windows.Forms.Label()
-        Me.TxtBiayaKirim = New System.Windows.Forms.TextBox()
         Me.ContextMenuStrip1 = New System.Windows.Forms.ContextMenuStrip(Me.components)
         Me.HapusToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.HitungUlangBarisIniToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolTip1 = New System.Windows.Forms.ToolTip(Me.components)
         Me.LstBarang = New System.Windows.Forms.ListBox()
-        Me.ChkTampilSN = New System.Windows.Forms.CheckBox()
         Me.GroupBox1.SuspendLayout()
         Me.GroupBox3.SuspendLayout()
         Me.GroupBox2.SuspendLayout()
@@ -676,11 +679,24 @@ Partial Class FormPenjualan
         Me.Panel1.Controls.Add(Me.TxtPajakPersen)
         Me.Panel1.Controls.Add(Me.Label6)
         Me.Panel1.Controls.Add(Me.LblPajakRp)
+        Me.Panel1.Controls.Add(Me.TxtBiayaKirim)
+        Me.Panel1.Controls.Add(Me.Label31)
+        Me.Panel1.Controls.Add(Me.LblBiayaKirim)
         Me.Panel1.Dock = System.Windows.Forms.DockStyle.Bottom
         Me.Panel1.Location = New System.Drawing.Point(0, 530)
         Me.Panel1.Name = "Panel1"
         Me.Panel1.Size = New System.Drawing.Size(1291, 100)
         Me.Panel1.TabIndex = 3
+        '
+        'ChkTampilSN
+        '
+        Me.ChkTampilSN.AutoSize = True
+        Me.ChkTampilSN.Location = New System.Drawing.Point(634, 42)
+        Me.ChkTampilSN.Name = "ChkTampilSN"
+        Me.ChkTampilSN.Size = New System.Drawing.Size(129, 17)
+        Me.ChkTampilSN.TabIndex = 154
+        Me.ChkTampilSN.Text = "Barang Serial Number"
+        Me.ChkTampilSN.UseVisualStyleBackColor = True
         '
         'LblJualSblDiskon
         '
@@ -688,12 +704,13 @@ Partial Class FormPenjualan
         Me.LblJualSblDiskon.BackColor = System.Drawing.Color.Transparent
         Me.LblJualSblDiskon.Font = New System.Drawing.Font("Century Gothic", 9.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.LblJualSblDiskon.ForeColor = System.Drawing.Color.Black
-        Me.LblJualSblDiskon.Location = New System.Drawing.Point(1020, 6)
+        Me.LblJualSblDiskon.Location = New System.Drawing.Point(1008, 84)
         Me.LblJualSblDiskon.Name = "LblJualSblDiskon"
         Me.LblJualSblDiskon.Size = New System.Drawing.Size(153, 16)
         Me.LblJualSblDiskon.TabIndex = 153
         Me.LblJualSblDiskon.Text = "0"
         Me.LblJualSblDiskon.TextAlign = System.Drawing.ContentAlignment.MiddleRight
+        Me.LblJualSblDiskon.Visible = False
         '
         'Label12
         '
@@ -702,18 +719,19 @@ Partial Class FormPenjualan
         Me.Label12.BackColor = System.Drawing.Color.Transparent
         Me.Label12.Font = New System.Drawing.Font("Century Gothic", 9.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.Label12.ForeColor = System.Drawing.Color.Black
-        Me.Label12.Location = New System.Drawing.Point(897, 6)
+        Me.Label12.Location = New System.Drawing.Point(885, 84)
         Me.Label12.Name = "Label12"
         Me.Label12.Size = New System.Drawing.Size(123, 16)
         Me.Label12.TabIndex = 152
         Me.Label12.Text = "Jumlah harga Rp."
+        Me.Label12.Visible = False
         '
         'rtbPetunjuk
         '
-        Me.rtbPetunjuk.Location = New System.Drawing.Point(0, 0)
+        Me.rtbPetunjuk.Location = New System.Drawing.Point(0, 64)
         Me.rtbPetunjuk.Name = "rtbPetunjuk"
         Me.rtbPetunjuk.ReadOnly = True
-        Me.rtbPetunjuk.Size = New System.Drawing.Size(760, 36)
+        Me.rtbPetunjuk.Size = New System.Drawing.Size(800, 36)
         Me.rtbPetunjuk.TabIndex = 11
         Me.rtbPetunjuk.Text = ""
         '
@@ -723,7 +741,7 @@ Partial Class FormPenjualan
         Me.Label11.BackColor = System.Drawing.Color.Transparent
         Me.Label11.Font = New System.Drawing.Font("Century Gothic", 9.75!)
         Me.Label11.ForeColor = System.Drawing.Color.Black
-        Me.Label11.Location = New System.Drawing.Point(764, 10)
+        Me.Label11.Location = New System.Drawing.Point(631, 11)
         Me.Label11.Name = "Label11"
         Me.Label11.Size = New System.Drawing.Size(83, 17)
         Me.Label11.TabIndex = 151
@@ -735,7 +753,7 @@ Partial Class FormPenjualan
         Me.CmbCetak.Font = New System.Drawing.Font("Century Gothic", 9.75!)
         Me.CmbCetak.FormattingEnabled = True
         Me.CmbCetak.Items.AddRange(New Object() {"Iya", "Tidak", "Tanya"})
-        Me.CmbCetak.Location = New System.Drawing.Point(851, 6)
+        Me.CmbCetak.Location = New System.Drawing.Point(718, 7)
         Me.CmbCetak.Name = "CmbCetak"
         Me.CmbCetak.Size = New System.Drawing.Size(82, 25)
         Me.CmbCetak.TabIndex = 150
@@ -746,7 +764,7 @@ Partial Class FormPenjualan
         Me.Label10.BackColor = System.Drawing.Color.Transparent
         Me.Label10.Font = New System.Drawing.Font("Century Gothic", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.Label10.ForeColor = System.Drawing.Color.Black
-        Me.Label10.Location = New System.Drawing.Point(160, 77)
+        Me.Label10.Location = New System.Drawing.Point(146, 42)
         Me.Label10.Name = "Label10"
         Me.Label10.Size = New System.Drawing.Size(139, 17)
         Me.Label10.TabIndex = 143
@@ -758,7 +776,7 @@ Partial Class FormPenjualan
         Me.LblRecord.BackColor = System.Drawing.Color.Transparent
         Me.LblRecord.Font = New System.Drawing.Font("Century Gothic", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.LblRecord.ForeColor = System.Drawing.Color.Black
-        Me.LblRecord.Location = New System.Drawing.Point(20, 77)
+        Me.LblRecord.Location = New System.Drawing.Point(6, 42)
         Me.LblRecord.Name = "LblRecord"
         Me.LblRecord.Size = New System.Drawing.Size(97, 17)
         Me.LblRecord.TabIndex = 142
@@ -771,7 +789,7 @@ Partial Class FormPenjualan
         Me.LblDiskonRp.BackColor = System.Drawing.Color.Transparent
         Me.LblDiskonRp.Font = New System.Drawing.Font("Century Gothic", 9.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.LblDiskonRp.ForeColor = System.Drawing.Color.Black
-        Me.LblDiskonRp.Location = New System.Drawing.Point(1175, 34)
+        Me.LblDiskonRp.Location = New System.Drawing.Point(1166, 7)
         Me.LblDiskonRp.Name = "LblDiskonRp"
         Me.LblDiskonRp.Size = New System.Drawing.Size(39, 16)
         Me.LblDiskonRp.TabIndex = 141
@@ -782,7 +800,7 @@ Partial Class FormPenjualan
         Me.TxtTahan.BackColor = System.Drawing.Color.LightSteelBlue
         Me.TxtTahan.BorderStyle = System.Windows.Forms.BorderStyle.None
         Me.TxtTahan.Font = New System.Drawing.Font("Century Gothic", 9.75!)
-        Me.TxtTahan.Location = New System.Drawing.Point(300, 77)
+        Me.TxtTahan.Location = New System.Drawing.Point(286, 42)
         Me.TxtTahan.Name = "TxtTahan"
         Me.TxtTahan.ReadOnly = True
         Me.TxtTahan.Size = New System.Drawing.Size(64, 16)
@@ -800,7 +818,7 @@ Partial Class FormPenjualan
         Me.BtnPelanggan.ForeColor = System.Drawing.Color.Black
         Me.BtnPelanggan.Image = CType(resources.GetObject("BtnPelanggan.Image"), System.Drawing.Image)
         Me.BtnPelanggan.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft
-        Me.BtnPelanggan.Location = New System.Drawing.Point(477, 40)
+        Me.BtnPelanggan.Location = New System.Drawing.Point(463, 3)
         Me.BtnPelanggan.Name = "BtnPelanggan"
         Me.BtnPelanggan.Size = New System.Drawing.Size(138, 32)
         Me.BtnPelanggan.TabIndex = 7
@@ -819,7 +837,7 @@ Partial Class FormPenjualan
         Me.BtnBarang.ForeColor = System.Drawing.Color.Black
         Me.BtnBarang.Image = CType(resources.GetObject("BtnBarang.Image"), System.Drawing.Image)
         Me.BtnBarang.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft
-        Me.BtnBarang.Location = New System.Drawing.Point(360, 40)
+        Me.BtnBarang.Location = New System.Drawing.Point(346, 3)
         Me.BtnBarang.Name = "BtnBarang"
         Me.BtnBarang.Size = New System.Drawing.Size(111, 32)
         Me.BtnBarang.TabIndex = 5
@@ -834,7 +852,7 @@ Partial Class FormPenjualan
         Me.Label9.BackColor = System.Drawing.Color.Transparent
         Me.Label9.Font = New System.Drawing.Font("Century Gothic", 9.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.Label9.ForeColor = System.Drawing.Color.Black
-        Me.Label9.Location = New System.Drawing.Point(959, 34)
+        Me.Label9.Location = New System.Drawing.Point(950, 7)
         Me.Label9.Name = "Label9"
         Me.Label9.Size = New System.Drawing.Size(58, 16)
         Me.Label9.TabIndex = 74
@@ -845,7 +863,7 @@ Partial Class FormPenjualan
         Me.TxtTotalJualSblDiskonPajak.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
         Me.TxtTotalJualSblDiskonPajak.Enabled = False
         Me.TxtTotalJualSblDiskonPajak.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.TxtTotalJualSblDiskonPajak.Location = New System.Drawing.Point(767, 67)
+        Me.TxtTotalJualSblDiskonPajak.Location = New System.Drawing.Point(373, 39)
         Me.TxtTotalJualSblDiskonPajak.Name = "TxtTotalJualSblDiskonPajak"
         Me.TxtTotalJualSblDiskonPajak.ReadOnly = True
         Me.TxtTotalJualSblDiskonPajak.Size = New System.Drawing.Size(169, 22)
@@ -858,7 +876,7 @@ Partial Class FormPenjualan
         Me.TxtDiskonRp.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.TxtDiskonRp.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
         Me.TxtDiskonRp.Font = New System.Drawing.Font("Century Gothic", 9.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.TxtDiskonRp.Location = New System.Drawing.Point(1087, 31)
+        Me.TxtDiskonRp.Location = New System.Drawing.Point(1078, 4)
         Me.TxtDiskonRp.Name = "TxtDiskonRp"
         Me.TxtDiskonRp.Size = New System.Drawing.Size(86, 23)
         Me.TxtDiskonRp.TabIndex = 9
@@ -870,7 +888,7 @@ Partial Class FormPenjualan
         Me.TxtDiskonPersen.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.TxtDiskonPersen.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
         Me.TxtDiskonPersen.Font = New System.Drawing.Font("Century Gothic", 9.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.TxtDiskonPersen.Location = New System.Drawing.Point(1020, 31)
+        Me.TxtDiskonPersen.Location = New System.Drawing.Point(1011, 4)
         Me.TxtDiskonPersen.Name = "TxtDiskonPersen"
         Me.TxtDiskonPersen.Size = New System.Drawing.Size(47, 23)
         Me.TxtDiskonPersen.TabIndex = 8
@@ -888,7 +906,7 @@ Partial Class FormPenjualan
         Me.BtnBayar.ForeColor = System.Drawing.Color.Black
         Me.BtnBayar.Image = CType(resources.GetObject("BtnBayar.Image"), System.Drawing.Image)
         Me.BtnBayar.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft
-        Me.BtnBayar.Location = New System.Drawing.Point(21, 40)
+        Me.BtnBayar.Location = New System.Drawing.Point(7, 3)
         Me.BtnBayar.Name = "BtnBayar"
         Me.BtnBayar.Size = New System.Drawing.Size(103, 32)
         Me.BtnBayar.TabIndex = 2
@@ -907,7 +925,7 @@ Partial Class FormPenjualan
         Me.BtnPanggil.ForeColor = System.Drawing.Color.Black
         Me.BtnPanggil.Image = CType(resources.GetObject("BtnPanggil.Image"), System.Drawing.Image)
         Me.BtnPanggil.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft
-        Me.BtnPanggil.Location = New System.Drawing.Point(241, 40)
+        Me.BtnPanggil.Location = New System.Drawing.Point(227, 3)
         Me.BtnPanggil.Name = "BtnPanggil"
         Me.BtnPanggil.Size = New System.Drawing.Size(113, 32)
         Me.BtnPanggil.TabIndex = 4
@@ -926,7 +944,7 @@ Partial Class FormPenjualan
         Me.BtnTahan.ForeColor = System.Drawing.Color.Black
         Me.BtnTahan.Image = CType(resources.GetObject("BtnTahan.Image"), System.Drawing.Image)
         Me.BtnTahan.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft
-        Me.BtnTahan.Location = New System.Drawing.Point(129, 40)
+        Me.BtnTahan.Location = New System.Drawing.Point(115, 3)
         Me.BtnTahan.Name = "BtnTahan"
         Me.BtnTahan.Size = New System.Drawing.Size(107, 32)
         Me.BtnTahan.TabIndex = 3
@@ -941,7 +959,7 @@ Partial Class FormPenjualan
         Me.Label8.BackColor = System.Drawing.Color.Transparent
         Me.Label8.Font = New System.Drawing.Font("Century Gothic", 9.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.Label8.ForeColor = System.Drawing.Color.Black
-        Me.Label8.Location = New System.Drawing.Point(1067, 34)
+        Me.Label8.Location = New System.Drawing.Point(1058, 7)
         Me.Label8.Name = "Label8"
         Me.Label8.Size = New System.Drawing.Size(18, 16)
         Me.Label8.TabIndex = 71
@@ -954,7 +972,7 @@ Partial Class FormPenjualan
         Me.TxtPajakRp.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
         Me.TxtPajakRp.Font = New System.Drawing.Font("Century Gothic", 9.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.TxtPajakRp.ForeColor = System.Drawing.SystemColors.ActiveCaptionText
-        Me.TxtPajakRp.Location = New System.Drawing.Point(1087, 57)
+        Me.TxtPajakRp.Location = New System.Drawing.Point(1078, 30)
         Me.TxtPajakRp.Name = "TxtPajakRp"
         Me.TxtPajakRp.Size = New System.Drawing.Size(86, 23)
         Me.TxtPajakRp.TabIndex = 11
@@ -968,7 +986,7 @@ Partial Class FormPenjualan
         Me.Label14.BackColor = System.Drawing.Color.Transparent
         Me.Label14.Font = New System.Drawing.Font("Century Gothic", 9.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.Label14.ForeColor = System.Drawing.Color.Black
-        Me.Label14.Location = New System.Drawing.Point(1067, 60)
+        Me.Label14.Location = New System.Drawing.Point(1058, 33)
         Me.Label14.Name = "Label14"
         Me.Label14.Size = New System.Drawing.Size(18, 16)
         Me.Label14.TabIndex = 24
@@ -981,7 +999,7 @@ Partial Class FormPenjualan
         Me.TxtPajakPersen.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
         Me.TxtPajakPersen.Font = New System.Drawing.Font("Century Gothic", 9.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.TxtPajakPersen.ForeColor = System.Drawing.SystemColors.ActiveCaptionText
-        Me.TxtPajakPersen.Location = New System.Drawing.Point(1020, 57)
+        Me.TxtPajakPersen.Location = New System.Drawing.Point(1011, 30)
         Me.TxtPajakPersen.Name = "TxtPajakPersen"
         Me.TxtPajakPersen.Size = New System.Drawing.Size(47, 23)
         Me.TxtPajakPersen.TabIndex = 10
@@ -995,7 +1013,7 @@ Partial Class FormPenjualan
         Me.Label6.BackColor = System.Drawing.Color.Transparent
         Me.Label6.Font = New System.Drawing.Font("Century Gothic", 9.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.Label6.ForeColor = System.Drawing.Color.Black
-        Me.Label6.Location = New System.Drawing.Point(965, 60)
+        Me.Label6.Location = New System.Drawing.Point(956, 33)
         Me.Label6.Name = "Label6"
         Me.Label6.Size = New System.Drawing.Size(52, 16)
         Me.Label6.TabIndex = 12
@@ -1008,18 +1026,59 @@ Partial Class FormPenjualan
         Me.LblPajakRp.BackColor = System.Drawing.Color.Transparent
         Me.LblPajakRp.Font = New System.Drawing.Font("Century Gothic", 9.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.LblPajakRp.ForeColor = System.Drawing.Color.Black
-        Me.LblPajakRp.Location = New System.Drawing.Point(1175, 60)
+        Me.LblPajakRp.Location = New System.Drawing.Point(1166, 33)
         Me.LblPajakRp.Name = "LblPajakRp"
         Me.LblPajakRp.Size = New System.Drawing.Size(39, 16)
         Me.LblPajakRp.TabIndex = 114
         Me.LblPajakRp.Text = "Rp. 0"
         Me.LblPajakRp.TextAlign = System.Drawing.ContentAlignment.MiddleRight
         '
+        'TxtBiayaKirim
+        '
+        Me.TxtBiayaKirim.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.TxtBiayaKirim.BackColor = System.Drawing.Color.White
+        Me.TxtBiayaKirim.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
+        Me.TxtBiayaKirim.Font = New System.Drawing.Font("Century Gothic", 9.75!, System.Drawing.FontStyle.Bold)
+        Me.TxtBiayaKirim.ForeColor = System.Drawing.SystemColors.ActiveCaptionText
+        Me.TxtBiayaKirim.Location = New System.Drawing.Point(1011, 59)
+        Me.TxtBiayaKirim.Name = "TxtBiayaKirim"
+        Me.TxtBiayaKirim.Size = New System.Drawing.Size(156, 23)
+        Me.TxtBiayaKirim.TabIndex = 3
+        Me.TxtBiayaKirim.Text = "0"
+        Me.TxtBiayaKirim.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
+        '
+        'Label31
+        '
+        Me.Label31.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.Label31.BackColor = System.Drawing.Color.Transparent
+        Me.Label31.Font = New System.Drawing.Font("Century Gothic", 9.75!, System.Drawing.FontStyle.Bold)
+        Me.Label31.ForeColor = System.Drawing.Color.Black
+        Me.Label31.Location = New System.Drawing.Point(864, 61)
+        Me.Label31.Name = "Label31"
+        Me.Label31.Size = New System.Drawing.Size(144, 18)
+        Me.Label31.TabIndex = 127
+        Me.Label31.Text = "Biaya Kirim / Lain :"
+        Me.Label31.TextAlign = System.Drawing.ContentAlignment.MiddleRight
+        '
+        'LblBiayaKirim
+        '
+        Me.LblBiayaKirim.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.LblBiayaKirim.AutoSize = True
+        Me.LblBiayaKirim.BackColor = System.Drawing.Color.Transparent
+        Me.LblBiayaKirim.Font = New System.Drawing.Font("Century Gothic", 9.75!, System.Drawing.FontStyle.Bold)
+        Me.LblBiayaKirim.ForeColor = System.Drawing.Color.Black
+        Me.LblBiayaKirim.Location = New System.Drawing.Point(1166, 62)
+        Me.LblBiayaKirim.Name = "LblBiayaKirim"
+        Me.LblBiayaKirim.Size = New System.Drawing.Size(39, 16)
+        Me.LblBiayaKirim.TabIndex = 129
+        Me.LblBiayaKirim.Text = "Rp. 0"
+        Me.LblBiayaKirim.TextAlign = System.Drawing.ContentAlignment.MiddleRight
+        '
         'TxtJmlhQty
         '
         Me.TxtJmlhQty.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
         Me.TxtJmlhQty.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.TxtJmlhQty.Location = New System.Drawing.Point(106, 247)
+        Me.TxtJmlhQty.Location = New System.Drawing.Point(28, 243)
         Me.TxtJmlhQty.Name = "TxtJmlhQty"
         Me.TxtJmlhQty.ReadOnly = True
         Me.TxtJmlhQty.Size = New System.Drawing.Size(72, 22)
@@ -1031,7 +1090,7 @@ Partial Class FormPenjualan
         '
         Me.TxtJmlhQtySatuan.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
         Me.TxtJmlhQtySatuan.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.TxtJmlhQtySatuan.Location = New System.Drawing.Point(184, 247)
+        Me.TxtJmlhQtySatuan.Location = New System.Drawing.Point(28, 271)
         Me.TxtJmlhQtySatuan.Name = "TxtJmlhQtySatuan"
         Me.TxtJmlhQtySatuan.ReadOnly = True
         Me.TxtJmlhQtySatuan.Size = New System.Drawing.Size(108, 22)
@@ -1049,38 +1108,38 @@ Partial Class FormPenjualan
         Me.DgvData.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill
         Me.DgvData.BackgroundColor = System.Drawing.Color.White
         Me.DgvData.CellBorderStyle = System.Windows.Forms.DataGridViewCellBorderStyle.Raised
-        DataGridViewCellStyle18.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter
-        DataGridViewCellStyle18.BackColor = System.Drawing.SystemColors.Control
-        DataGridViewCellStyle18.Font = New System.Drawing.Font("Century Gothic", 9.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        DataGridViewCellStyle18.ForeColor = System.Drawing.SystemColors.WindowText
-        DataGridViewCellStyle18.SelectionBackColor = System.Drawing.SystemColors.Highlight
-        DataGridViewCellStyle18.SelectionForeColor = System.Drawing.SystemColors.HighlightText
-        DataGridViewCellStyle18.WrapMode = System.Windows.Forms.DataGridViewTriState.[True]
-        Me.DgvData.ColumnHeadersDefaultCellStyle = DataGridViewCellStyle18
+        DataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter
+        DataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Control
+        DataGridViewCellStyle1.Font = New System.Drawing.Font("Century Gothic", 9.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        DataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.WindowText
+        DataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight
+        DataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText
+        DataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.[True]
+        Me.DgvData.ColumnHeadersDefaultCellStyle = DataGridViewCellStyle1
         Me.DgvData.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
         Me.DgvData.Columns.AddRange(New System.Windows.Forms.DataGridViewColumn() {Me.Kode, Me.NamaBarang, Me.HargaBeli, Me.QTY, Me.Satuan, Me.Isi, Me.Totalhargabeli, Me.Harga, Me.QtySat, Me.DiskonPersen, Me.DiskonRp, Me.TotalDiskon, Me.TotalHarga, Me.StokToko, Me.StokGudang, Me.Stok, Me.SerialNumber})
-        DataGridViewCellStyle32.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft
-        DataGridViewCellStyle32.BackColor = System.Drawing.SystemColors.Window
-        DataGridViewCellStyle32.Font = New System.Drawing.Font("Microsoft Sans Serif", 11.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        DataGridViewCellStyle32.ForeColor = System.Drawing.SystemColors.ControlText
-        DataGridViewCellStyle32.SelectionBackColor = System.Drawing.SystemColors.Highlight
-        DataGridViewCellStyle32.SelectionForeColor = System.Drawing.SystemColors.HighlightText
-        DataGridViewCellStyle32.WrapMode = System.Windows.Forms.DataGridViewTriState.[False]
-        Me.DgvData.DefaultCellStyle = DataGridViewCellStyle32
+        DataGridViewCellStyle15.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft
+        DataGridViewCellStyle15.BackColor = System.Drawing.SystemColors.Window
+        DataGridViewCellStyle15.Font = New System.Drawing.Font("Microsoft Sans Serif", 11.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        DataGridViewCellStyle15.ForeColor = System.Drawing.SystemColors.ControlText
+        DataGridViewCellStyle15.SelectionBackColor = System.Drawing.SystemColors.Highlight
+        DataGridViewCellStyle15.SelectionForeColor = System.Drawing.SystemColors.HighlightText
+        DataGridViewCellStyle15.WrapMode = System.Windows.Forms.DataGridViewTriState.[False]
+        Me.DgvData.DefaultCellStyle = DataGridViewCellStyle15
         Me.DgvData.EditMode = System.Windows.Forms.DataGridViewEditMode.EditOnKeystroke
         Me.DgvData.GridColor = System.Drawing.Color.Black
         Me.DgvData.Location = New System.Drawing.Point(3, 170)
         Me.DgvData.Name = "DgvData"
-        DataGridViewCellStyle33.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft
-        DataGridViewCellStyle33.BackColor = System.Drawing.SystemColors.Control
-        DataGridViewCellStyle33.Font = New System.Drawing.Font("Century Gothic", 11.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        DataGridViewCellStyle33.ForeColor = System.Drawing.SystemColors.WindowText
-        DataGridViewCellStyle33.SelectionBackColor = System.Drawing.SystemColors.Highlight
-        DataGridViewCellStyle33.SelectionForeColor = System.Drawing.SystemColors.HighlightText
-        DataGridViewCellStyle33.WrapMode = System.Windows.Forms.DataGridViewTriState.[True]
-        Me.DgvData.RowHeadersDefaultCellStyle = DataGridViewCellStyle33
-        DataGridViewCellStyle34.Font = New System.Drawing.Font("Bookman Old Style", 11.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.DgvData.RowsDefaultCellStyle = DataGridViewCellStyle34
+        DataGridViewCellStyle16.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft
+        DataGridViewCellStyle16.BackColor = System.Drawing.SystemColors.Control
+        DataGridViewCellStyle16.Font = New System.Drawing.Font("Century Gothic", 11.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        DataGridViewCellStyle16.ForeColor = System.Drawing.SystemColors.WindowText
+        DataGridViewCellStyle16.SelectionBackColor = System.Drawing.SystemColors.Highlight
+        DataGridViewCellStyle16.SelectionForeColor = System.Drawing.SystemColors.HighlightText
+        DataGridViewCellStyle16.WrapMode = System.Windows.Forms.DataGridViewTriState.[True]
+        Me.DgvData.RowHeadersDefaultCellStyle = DataGridViewCellStyle16
+        DataGridViewCellStyle17.Font = New System.Drawing.Font("Bookman Old Style", 11.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.DgvData.RowsDefaultCellStyle = DataGridViewCellStyle17
         Me.DgvData.ScrollBars = System.Windows.Forms.ScrollBars.Vertical
         Me.DgvData.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.CellSelect
         Me.DgvData.Size = New System.Drawing.Size(1285, 360)
@@ -1101,19 +1160,19 @@ Partial Class FormPenjualan
         '
         'HargaBeli
         '
-        DataGridViewCellStyle19.Format = "#,0.#"
-        DataGridViewCellStyle19.NullValue = Nothing
-        Me.HargaBeli.DefaultCellStyle = DataGridViewCellStyle19
+        DataGridViewCellStyle2.Format = "#,0.#"
+        DataGridViewCellStyle2.NullValue = Nothing
+        Me.HargaBeli.DefaultCellStyle = DataGridViewCellStyle2
         Me.HargaBeli.HeaderText = "Harga Beli"
         Me.HargaBeli.Name = "HargaBeli"
         Me.HargaBeli.Visible = False
         '
         'QTY
         '
-        DataGridViewCellStyle20.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight
-        DataGridViewCellStyle20.Format = "#,0.#"
-        DataGridViewCellStyle20.NullValue = Nothing
-        Me.QTY.DefaultCellStyle = DataGridViewCellStyle20
+        DataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight
+        DataGridViewCellStyle3.Format = "#,0.#"
+        DataGridViewCellStyle3.NullValue = Nothing
+        Me.QTY.DefaultCellStyle = DataGridViewCellStyle3
         Me.QTY.FillWeight = 40.0!
         Me.QTY.HeaderText = "QTY"
         Me.QTY.Name = "QTY"
@@ -1127,8 +1186,8 @@ Partial Class FormPenjualan
         '
         'Isi
         '
-        DataGridViewCellStyle21.Format = "#,0.#"
-        Me.Isi.DefaultCellStyle = DataGridViewCellStyle21
+        DataGridViewCellStyle4.Format = "#,0.#"
+        Me.Isi.DefaultCellStyle = DataGridViewCellStyle4
         Me.Isi.FillWeight = 30.0!
         Me.Isi.HeaderText = "Isi"
         Me.Isi.Name = "Isi"
@@ -1136,52 +1195,52 @@ Partial Class FormPenjualan
         '
         'Totalhargabeli
         '
-        DataGridViewCellStyle22.Format = "#,0.#"
-        Me.Totalhargabeli.DefaultCellStyle = DataGridViewCellStyle22
+        DataGridViewCellStyle5.Format = "#,0.#"
+        Me.Totalhargabeli.DefaultCellStyle = DataGridViewCellStyle5
         Me.Totalhargabeli.HeaderText = "Total Harga Beli"
         Me.Totalhargabeli.Name = "Totalhargabeli"
         Me.Totalhargabeli.Visible = False
         '
         'Harga
         '
-        DataGridViewCellStyle23.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight
-        DataGridViewCellStyle23.Format = "#,0.#"
-        Me.Harga.DefaultCellStyle = DataGridViewCellStyle23
+        DataGridViewCellStyle6.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight
+        DataGridViewCellStyle6.Format = "#,0.#"
+        Me.Harga.DefaultCellStyle = DataGridViewCellStyle6
         Me.Harga.FillWeight = 70.0!
         Me.Harga.HeaderText = "Harga Jual"
         Me.Harga.Name = "Harga"
         '
         'QtySat
         '
-        DataGridViewCellStyle24.Format = "#,0.#"
-        Me.QtySat.DefaultCellStyle = DataGridViewCellStyle24
+        DataGridViewCellStyle7.Format = "#,0.#"
+        Me.QtySat.DefaultCellStyle = DataGridViewCellStyle7
         Me.QtySat.HeaderText = "QtySat"
         Me.QtySat.Name = "QtySat"
         Me.QtySat.Visible = False
         '
         'DiskonPersen
         '
-        DataGridViewCellStyle25.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight
-        DataGridViewCellStyle25.Format = "#,0.#"
-        Me.DiskonPersen.DefaultCellStyle = DataGridViewCellStyle25
+        DataGridViewCellStyle8.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight
+        DataGridViewCellStyle8.Format = "#,0.#"
+        Me.DiskonPersen.DefaultCellStyle = DataGridViewCellStyle8
         Me.DiskonPersen.FillWeight = 60.0!
         Me.DiskonPersen.HeaderText = "Diskon%"
         Me.DiskonPersen.Name = "DiskonPersen"
         '
         'DiskonRp
         '
-        DataGridViewCellStyle26.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight
-        DataGridViewCellStyle26.Format = "#,0.#"
-        Me.DiskonRp.DefaultCellStyle = DataGridViewCellStyle26
+        DataGridViewCellStyle9.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight
+        DataGridViewCellStyle9.Format = "#,0.#"
+        Me.DiskonRp.DefaultCellStyle = DataGridViewCellStyle9
         Me.DiskonRp.FillWeight = 80.0!
         Me.DiskonRp.HeaderText = "Diskon Rp"
         Me.DiskonRp.Name = "DiskonRp"
         '
         'TotalDiskon
         '
-        DataGridViewCellStyle27.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight
-        DataGridViewCellStyle27.Format = "#,0.#"
-        Me.TotalDiskon.DefaultCellStyle = DataGridViewCellStyle27
+        DataGridViewCellStyle10.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight
+        DataGridViewCellStyle10.Format = "#,0.#"
+        Me.TotalDiskon.DefaultCellStyle = DataGridViewCellStyle10
         Me.TotalDiskon.FillWeight = 80.0!
         Me.TotalDiskon.HeaderText = "Total Diskon"
         Me.TotalDiskon.Name = "TotalDiskon"
@@ -1189,19 +1248,19 @@ Partial Class FormPenjualan
         '
         'TotalHarga
         '
-        DataGridViewCellStyle28.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight
-        DataGridViewCellStyle28.Format = "#,0.#"
-        Me.TotalHarga.DefaultCellStyle = DataGridViewCellStyle28
+        DataGridViewCellStyle11.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight
+        DataGridViewCellStyle11.Format = "#,0.#"
+        Me.TotalHarga.DefaultCellStyle = DataGridViewCellStyle11
         Me.TotalHarga.HeaderText = "Total Harga"
         Me.TotalHarga.Name = "TotalHarga"
         Me.TotalHarga.ReadOnly = True
         '
         'StokToko
         '
-        DataGridViewCellStyle29.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight
-        DataGridViewCellStyle29.BackColor = System.Drawing.Color.LightBlue
-        DataGridViewCellStyle29.Format = "#,0.#"
-        Me.StokToko.DefaultCellStyle = DataGridViewCellStyle29
+        DataGridViewCellStyle12.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight
+        DataGridViewCellStyle12.BackColor = System.Drawing.Color.LightBlue
+        DataGridViewCellStyle12.Format = "#,0.#"
+        Me.StokToko.DefaultCellStyle = DataGridViewCellStyle12
         Me.StokToko.FillWeight = 60.0!
         Me.StokToko.HeaderText = " S Toko"
         Me.StokToko.Name = "StokToko"
@@ -1209,10 +1268,10 @@ Partial Class FormPenjualan
         '
         'StokGudang
         '
-        DataGridViewCellStyle30.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight
-        DataGridViewCellStyle30.BackColor = System.Drawing.Color.LightBlue
-        DataGridViewCellStyle30.Format = "#,0.#"
-        Me.StokGudang.DefaultCellStyle = DataGridViewCellStyle30
+        DataGridViewCellStyle13.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight
+        DataGridViewCellStyle13.BackColor = System.Drawing.Color.LightBlue
+        DataGridViewCellStyle13.Format = "#,0.#"
+        Me.StokGudang.DefaultCellStyle = DataGridViewCellStyle13
         Me.StokGudang.FillWeight = 70.0!
         Me.StokGudang.HeaderText = "S Gudang"
         Me.StokGudang.Name = "StokGudang"
@@ -1220,10 +1279,10 @@ Partial Class FormPenjualan
         '
         'Stok
         '
-        DataGridViewCellStyle31.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight
-        DataGridViewCellStyle31.Format = "#,0.#"
-        DataGridViewCellStyle31.NullValue = Nothing
-        Me.Stok.DefaultCellStyle = DataGridViewCellStyle31
+        DataGridViewCellStyle14.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight
+        DataGridViewCellStyle14.Format = "#,0.#"
+        DataGridViewCellStyle14.NullValue = Nothing
+        Me.Stok.DefaultCellStyle = DataGridViewCellStyle14
         Me.Stok.FillWeight = 30.0!
         Me.Stok.HeaderText = "Stok"
         Me.Stok.Name = "Stok"
@@ -1238,12 +1297,19 @@ Partial Class FormPenjualan
         'GBBayar
         '
         Me.GBBayar.BackColor = System.Drawing.Color.YellowGreen
+        Me.GBBayar.Controls.Add(Me.TxtKodeBayarBank)
+        Me.GBBayar.Controls.Add(Me.Label13)
+        Me.GBBayar.Controls.Add(Me.LblBayarTransfer)
+        Me.GBBayar.Controls.Add(Me.CmbBayarTransfer)
+        Me.GBBayar.Controls.Add(Me.Label19)
+        Me.GBBayar.Controls.Add(Me.TxtNominalBayarTransfer)
         Me.GBBayar.Controls.Add(Me.TxtJmlhItem)
         Me.GBBayar.Controls.Add(Me.TxtTotalHpp)
         Me.GBBayar.Controls.Add(Me.LblStatusTrans)
+        Me.GBBayar.Controls.Add(Me.BtnBatal)
+        Me.GBBayar.Controls.Add(Me.BtnSimpann)
         Me.GBBayar.Controls.Add(Me.TxtKomputer)
         Me.GBBayar.Controls.Add(Me.TxtLogin)
-        Me.GBBayar.Controls.Add(Me.TxtTypeAkun)
         Me.GBBayar.Controls.Add(Me.PanelTFPelanggan)
         Me.GBBayar.Controls.Add(Me.Label23)
         Me.GBBayar.Controls.Add(Me.Label22)
@@ -1251,44 +1317,112 @@ Partial Class FormPenjualan
         Me.GBBayar.Controls.Add(Me.Label21)
         Me.GBBayar.Controls.Add(Me.TxtJmlhQtySatuan)
         Me.GBBayar.Controls.Add(Me.LblKembali)
-        Me.GBBayar.Controls.Add(Me.LblBayar)
+        Me.GBBayar.Controls.Add(Me.LblBayarTunai)
         Me.GBBayar.Controls.Add(Me.LblTotalStlPajak)
         Me.GBBayar.Controls.Add(Me.Label17)
-        Me.GBBayar.Controls.Add(Me.TxtKodeRef)
+        Me.GBBayar.Controls.Add(Me.TxtKodeBayarTunai)
         Me.GBBayar.Controls.Add(Me.LblStatus)
         Me.GBBayar.Controls.Add(Me.LblJatuhTempo)
         Me.GBBayar.Controls.Add(Me.DTPJatuhTempo)
-        Me.GBBayar.Controls.Add(Me.CmbJenisBayar)
+        Me.GBBayar.Controls.Add(Me.CmbBayarTunai)
         Me.GBBayar.Controls.Add(Me.Label2)
         Me.GBBayar.Controls.Add(Me.TxtTotaljualStlPajak)
-        Me.GBBayar.Controls.Add(Me.BtnBatal)
-        Me.GBBayar.Controls.Add(Me.BtnSimpann)
-        Me.GBBayar.Controls.Add(Me.Label5)
-        Me.GBBayar.Controls.Add(Me.TxtNominalBayar)
+        Me.GBBayar.Controls.Add(Me.TxtNominalBayarTunai)
         Me.GBBayar.Controls.Add(Me.TxtKembaliHutang)
         Me.GBBayar.Controls.Add(Me.LblPembayaran)
-        Me.GBBayar.Controls.Add(Me.Label29)
-        Me.GBBayar.Controls.Add(Me.LblBiayaKirim)
-        Me.GBBayar.Controls.Add(Me.Label31)
-        Me.GBBayar.Controls.Add(Me.TxtBiayaKirim)
         Me.GBBayar.FlatStyle = System.Windows.Forms.FlatStyle.Flat
         Me.GBBayar.Font = New System.Drawing.Font("Microsoft Sans Serif", 24.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.GBBayar.ForeColor = System.Drawing.Color.Black
-        Me.GBBayar.Location = New System.Drawing.Point(163, 217)
+        Me.GBBayar.Location = New System.Drawing.Point(292, 111)
         Me.GBBayar.Name = "GBBayar"
-        Me.GBBayar.Size = New System.Drawing.Size(933, 280)
+        Me.GBBayar.Size = New System.Drawing.Size(600, 413)
         Me.GBBayar.TabIndex = 4
         Me.GBBayar.TabStop = False
         Me.GBBayar.Visible = False
+        '
+        'TxtKodeBayarBank
+        '
+        Me.TxtKodeBayarBank.BackColor = System.Drawing.Color.White
+        Me.TxtKodeBayarBank.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
+        Me.TxtKodeBayarBank.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.TxtKodeBayarBank.ForeColor = System.Drawing.Color.Black
+        Me.TxtKodeBayarBank.Location = New System.Drawing.Point(445, 174)
+        Me.TxtKodeBayarBank.Name = "TxtKodeBayarBank"
+        Me.TxtKodeBayarBank.ReadOnly = True
+        Me.TxtKodeBayarBank.Size = New System.Drawing.Size(73, 22)
+        Me.TxtKodeBayarBank.TabIndex = 152
+        Me.TxtKodeBayarBank.Text = "01.02.001"
+        Me.TxtKodeBayarBank.Visible = False
+        '
+        'Label13
+        '
+        Me.Label13.AutoSize = True
+        Me.Label13.BackColor = System.Drawing.Color.Transparent
+        Me.Label13.Font = New System.Drawing.Font("Microsoft Sans Serif", 11.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.Label13.ForeColor = System.Drawing.Color.Black
+        Me.Label13.Location = New System.Drawing.Point(435, 93)
+        Me.Label13.Name = "Label13"
+        Me.Label13.Size = New System.Drawing.Size(34, 18)
+        Me.Label13.TabIndex = 151
+        Me.Label13.Text = "Rp."
+        Me.Label13.TextAlign = System.Drawing.ContentAlignment.MiddleRight
+        '
+        'LblBayarTransfer
+        '
+        Me.LblBayarTransfer.BackColor = System.Drawing.Color.Transparent
+        Me.LblBayarTransfer.Font = New System.Drawing.Font("Microsoft Sans Serif", 11.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.LblBayarTransfer.ForeColor = System.Drawing.Color.Black
+        Me.LblBayarTransfer.Location = New System.Drawing.Point(478, 90)
+        Me.LblBayarTransfer.Name = "LblBayarTransfer"
+        Me.LblBayarTransfer.Size = New System.Drawing.Size(91, 25)
+        Me.LblBayarTransfer.TabIndex = 150
+        Me.LblBayarTransfer.Text = "0"
+        Me.LblBayarTransfer.TextAlign = System.Drawing.ContentAlignment.MiddleRight
+        '
+        'CmbBayarTransfer
+        '
+        Me.CmbBayarTransfer.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
+        Me.CmbBayarTransfer.Font = New System.Drawing.Font("Microsoft Sans Serif", 11.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.CmbBayarTransfer.FormattingEnabled = True
+        Me.CmbBayarTransfer.Location = New System.Drawing.Point(114, 89)
+        Me.CmbBayarTransfer.Name = "CmbBayarTransfer"
+        Me.CmbBayarTransfer.Size = New System.Drawing.Size(156, 26)
+        Me.CmbBayarTransfer.TabIndex = 146
+        '
+        'Label19
+        '
+        Me.Label19.AutoSize = True
+        Me.Label19.BackColor = System.Drawing.Color.Transparent
+        Me.Label19.Font = New System.Drawing.Font("Microsoft Sans Serif", 11.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.Label19.ForeColor = System.Drawing.Color.Black
+        Me.Label19.Location = New System.Drawing.Point(6, 93)
+        Me.Label19.Name = "Label19"
+        Me.Label19.Size = New System.Drawing.Size(102, 18)
+        Me.Label19.TabIndex = 149
+        Me.Label19.Text = "Transfer (F5) :"
+        Me.Label19.TextAlign = System.Drawing.ContentAlignment.MiddleRight
+        '
+        'TxtNominalBayarTransfer
+        '
+        Me.TxtNominalBayarTransfer.BackColor = System.Drawing.Color.White
+        Me.TxtNominalBayarTransfer.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
+        Me.TxtNominalBayarTransfer.Font = New System.Drawing.Font("Microsoft Sans Serif", 11.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.TxtNominalBayarTransfer.ForeColor = System.Drawing.SystemColors.ActiveCaptionText
+        Me.TxtNominalBayarTransfer.Location = New System.Drawing.Point(276, 90)
+        Me.TxtNominalBayarTransfer.Name = "TxtNominalBayarTransfer"
+        Me.TxtNominalBayarTransfer.Size = New System.Drawing.Size(156, 24)
+        Me.TxtNominalBayarTransfer.TabIndex = 147
+        Me.TxtNominalBayarTransfer.Text = "0"
+        Me.TxtNominalBayarTransfer.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
         '
         'TxtJmlhItem
         '
         Me.TxtJmlhItem.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
         Me.TxtJmlhItem.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.TxtJmlhItem.Location = New System.Drawing.Point(302, 247)
+        Me.TxtJmlhItem.Location = New System.Drawing.Point(28, 300)
         Me.TxtJmlhItem.Name = "TxtJmlhItem"
         Me.TxtJmlhItem.ReadOnly = True
-        Me.TxtJmlhItem.Size = New System.Drawing.Size(108, 22)
+        Me.TxtJmlhItem.Size = New System.Drawing.Size(66, 22)
         Me.TxtJmlhItem.TabIndex = 145
         Me.TxtJmlhItem.Text = "JmlahItem"
         Me.TxtJmlhItem.Visible = False
@@ -1298,7 +1432,7 @@ Partial Class FormPenjualan
         Me.TxtTotalHpp.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
         Me.TxtTotalHpp.Enabled = False
         Me.TxtTotalHpp.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.TxtTotalHpp.Location = New System.Drawing.Point(28, 247)
+        Me.TxtTotalHpp.Location = New System.Drawing.Point(28, 214)
         Me.TxtTotalHpp.Name = "TxtTotalHpp"
         Me.TxtTotalHpp.ReadOnly = True
         Me.TxtTotalHpp.Size = New System.Drawing.Size(72, 22)
@@ -1310,21 +1444,57 @@ Partial Class FormPenjualan
         '
         Me.LblStatusTrans.BackColor = System.Drawing.Color.Transparent
         Me.LblStatusTrans.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
-        Me.LblStatusTrans.Font = New System.Drawing.Font("Microsoft Sans Serif", 11.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.LblStatusTrans.Font = New System.Drawing.Font("Microsoft Sans Serif", 11.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.LblStatusTrans.ForeColor = System.Drawing.Color.Black
-        Me.LblStatusTrans.Location = New System.Drawing.Point(195, 167)
+        Me.LblStatusTrans.Location = New System.Drawing.Point(276, 146)
         Me.LblStatusTrans.Name = "LblStatusTrans"
         Me.LblStatusTrans.Size = New System.Drawing.Size(156, 24)
         Me.LblStatusTrans.TabIndex = 143
         Me.LblStatusTrans.Text = "Status"
         Me.LblStatusTrans.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
         '
+        'BtnBatal
+        '
+        Me.BtnBatal.BackColor = System.Drawing.Color.LightSteelBlue
+        Me.BtnBatal.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Blue
+        Me.BtnBatal.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Blue
+        Me.BtnBatal.FlatStyle = System.Windows.Forms.FlatStyle.Flat
+        Me.BtnBatal.Font = New System.Drawing.Font("Bookman Old Style", 12.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.BtnBatal.ForeColor = System.Drawing.Color.Black
+        Me.BtnBatal.Image = CType(resources.GetObject("BtnBatal.Image"), System.Drawing.Image)
+        Me.BtnBatal.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft
+        Me.BtnBatal.Location = New System.Drawing.Point(398, 361)
+        Me.BtnBatal.Name = "BtnBatal"
+        Me.BtnBatal.Size = New System.Drawing.Size(158, 39)
+        Me.BtnBatal.TabIndex = 10
+        Me.BtnBatal.Text = "BATAL (F11)"
+        Me.BtnBatal.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText
+        Me.BtnBatal.UseVisualStyleBackColor = False
+        '
+        'BtnSimpann
+        '
+        Me.BtnSimpann.BackColor = System.Drawing.Color.LightSteelBlue
+        Me.BtnSimpann.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Blue
+        Me.BtnSimpann.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Blue
+        Me.BtnSimpann.FlatStyle = System.Windows.Forms.FlatStyle.Flat
+        Me.BtnSimpann.Font = New System.Drawing.Font("Bookman Old Style", 12.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.BtnSimpann.ForeColor = System.Drawing.Color.Black
+        Me.BtnSimpann.Image = CType(resources.GetObject("BtnSimpann.Image"), System.Drawing.Image)
+        Me.BtnSimpann.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft
+        Me.BtnSimpann.Location = New System.Drawing.Point(190, 361)
+        Me.BtnSimpann.Name = "BtnSimpann"
+        Me.BtnSimpann.Size = New System.Drawing.Size(171, 39)
+        Me.BtnSimpann.TabIndex = 9
+        Me.BtnSimpann.Text = "SIMPAN (F10)"
+        Me.BtnSimpann.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText
+        Me.BtnSimpann.UseVisualStyleBackColor = False
+        '
         'TxtKomputer
         '
         Me.TxtKomputer.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
         Me.TxtKomputer.Enabled = False
         Me.TxtKomputer.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.TxtKomputer.Location = New System.Drawing.Point(588, 177)
+        Me.TxtKomputer.Location = New System.Drawing.Point(101, 361)
         Me.TxtKomputer.Name = "TxtKomputer"
         Me.TxtKomputer.ReadOnly = True
         Me.TxtKomputer.Size = New System.Drawing.Size(74, 22)
@@ -1337,7 +1507,7 @@ Partial Class FormPenjualan
         Me.TxtLogin.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
         Me.TxtLogin.Enabled = False
         Me.TxtLogin.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.TxtLogin.Location = New System.Drawing.Point(525, 177)
+        Me.TxtLogin.Location = New System.Drawing.Point(28, 361)
         Me.TxtLogin.Name = "TxtLogin"
         Me.TxtLogin.ReadOnly = True
         Me.TxtLogin.Size = New System.Drawing.Size(57, 22)
@@ -1345,26 +1515,11 @@ Partial Class FormPenjualan
         Me.TxtLogin.Text = "Login"
         Me.TxtLogin.Visible = False
         '
-        'TxtTypeAkun
-        '
-        Me.TxtTypeAkun.BackColor = System.Drawing.Color.White
-        Me.TxtTypeAkun.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
-        Me.TxtTypeAkun.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.TxtTypeAkun.ForeColor = System.Drawing.Color.Black
-        Me.TxtTypeAkun.Location = New System.Drawing.Point(756, 177)
-        Me.TxtTypeAkun.Name = "TxtTypeAkun"
-        Me.TxtTypeAkun.ReadOnly = True
-        Me.TxtTypeAkun.Size = New System.Drawing.Size(70, 22)
-        Me.TxtTypeAkun.TabIndex = 131
-        Me.TxtTypeAkun.Tag = ""
-        Me.TxtTypeAkun.Text = "Type akun"
-        Me.TxtTypeAkun.Visible = False
-        '
         'PanelTFPelanggan
         '
         Me.PanelTFPelanggan.BackColor = System.Drawing.Color.White
+        Me.PanelTFPelanggan.Controls.Add(Me.CmbBank)
         Me.PanelTFPelanggan.Controls.Add(Me.Label27)
-        Me.PanelTFPelanggan.Controls.Add(Me.TxtBank)
         Me.PanelTFPelanggan.Controls.Add(Me.Label28)
         Me.PanelTFPelanggan.Controls.Add(Me.TxtNoReff)
         Me.PanelTFPelanggan.Controls.Add(Me.TxtNamaRek)
@@ -1372,10 +1527,20 @@ Partial Class FormPenjualan
         Me.PanelTFPelanggan.Controls.Add(Me.Label18)
         Me.PanelTFPelanggan.Controls.Add(Me.Label25)
         Me.PanelTFPelanggan.Controls.Add(Me.Label26)
-        Me.PanelTFPelanggan.Location = New System.Drawing.Point(518, 31)
+        Me.PanelTFPelanggan.Location = New System.Drawing.Point(172, 215)
         Me.PanelTFPelanggan.Name = "PanelTFPelanggan"
-        Me.PanelTFPelanggan.Size = New System.Drawing.Size(377, 140)
+        Me.PanelTFPelanggan.Size = New System.Drawing.Size(397, 140)
         Me.PanelTFPelanggan.TabIndex = 126
+        '
+        'CmbBank
+        '
+        Me.CmbBank.Font = New System.Drawing.Font("Microsoft Sans Serif", 11.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.CmbBank.FormattingEnabled = True
+        Me.CmbBank.Items.AddRange(New Object() {"", "Allo", "Amar", "BCA", "BJB", "BJB Syariah", "BNI", "BRI", "BTN", "BTN Syariah", "BSI", "CIMB Niaga", "Danamon", "Hana", "HSBC", "Jago", "KB Bukopin", "Mandiri", "Maybank", "Mega", "Mega Syariah", "Muamalat", "OCBC NISP", "Panin", "Panin Dubai Syariah", "Permata", "QNB", "Sinarmas", "Standard Chartered", "UOB"})
+        Me.CmbBank.Location = New System.Drawing.Point(122, 29)
+        Me.CmbBank.Name = "CmbBank"
+        Me.CmbBank.Size = New System.Drawing.Size(186, 26)
+        Me.CmbBank.TabIndex = 147
         '
         'Label27
         '
@@ -1390,26 +1555,13 @@ Partial Class FormPenjualan
         Me.Label27.Text = "Bank :"
         Me.Label27.TextAlign = System.Drawing.ContentAlignment.MiddleRight
         '
-        'TxtBank
-        '
-        Me.TxtBank.BackColor = System.Drawing.Color.White
-        Me.TxtBank.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
-        Me.TxtBank.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper
-        Me.TxtBank.Font = New System.Drawing.Font("Arial Narrow", 11.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.TxtBank.ForeColor = System.Drawing.Color.Black
-        Me.TxtBank.Location = New System.Drawing.Point(122, 30)
-        Me.TxtBank.Name = "TxtBank"
-        Me.TxtBank.Size = New System.Drawing.Size(110, 25)
-        Me.TxtBank.TabIndex = 5
-        Me.TxtBank.Tag = ""
-        '
         'Label28
         '
         Me.Label28.AutoSize = True
         Me.Label28.BackColor = System.Drawing.Color.Transparent
         Me.Label28.Font = New System.Drawing.Font("Century Gothic", 11.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.Label28.ForeColor = System.Drawing.Color.Black
-        Me.Label28.Location = New System.Drawing.Point(104, 6)
+        Me.Label28.Location = New System.Drawing.Point(57, 3)
         Me.Label28.Name = "Label28"
         Me.Label28.Size = New System.Drawing.Size(216, 18)
         Me.Label28.TabIndex = 125
@@ -1424,7 +1576,7 @@ Partial Class FormPenjualan
         Me.TxtNoReff.ForeColor = System.Drawing.Color.Black
         Me.TxtNoReff.Location = New System.Drawing.Point(122, 108)
         Me.TxtNoReff.Name = "TxtNoReff"
-        Me.TxtNoReff.Size = New System.Drawing.Size(248, 25)
+        Me.TxtNoReff.Size = New System.Drawing.Size(186, 25)
         Me.TxtNoReff.TabIndex = 8
         Me.TxtNoReff.Tag = ""
         '
@@ -1437,7 +1589,7 @@ Partial Class FormPenjualan
         Me.TxtNamaRek.ForeColor = System.Drawing.Color.Black
         Me.TxtNamaRek.Location = New System.Drawing.Point(122, 82)
         Me.TxtNamaRek.Name = "TxtNamaRek"
-        Me.TxtNamaRek.Size = New System.Drawing.Size(248, 25)
+        Me.TxtNamaRek.Size = New System.Drawing.Size(186, 25)
         Me.TxtNamaRek.TabIndex = 7
         Me.TxtNamaRek.Tag = ""
         '
@@ -1449,7 +1601,7 @@ Partial Class FormPenjualan
         Me.TxtNoRek.ForeColor = System.Drawing.Color.Black
         Me.TxtNoRek.Location = New System.Drawing.Point(122, 56)
         Me.TxtNoRek.Name = "TxtNoRek"
-        Me.TxtNoRek.Size = New System.Drawing.Size(248, 25)
+        Me.TxtNoRek.Size = New System.Drawing.Size(186, 25)
         Me.TxtNoRek.TabIndex = 6
         Me.TxtNoRek.Tag = ""
         '
@@ -1498,7 +1650,7 @@ Partial Class FormPenjualan
         Me.Label23.BackColor = System.Drawing.Color.Transparent
         Me.Label23.Font = New System.Drawing.Font("Microsoft Sans Serif", 11.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.Label23.ForeColor = System.Drawing.Color.Black
-        Me.Label23.Location = New System.Drawing.Point(354, 143)
+        Me.Label23.Location = New System.Drawing.Point(435, 122)
         Me.Label23.Name = "Label23"
         Me.Label23.Size = New System.Drawing.Size(34, 18)
         Me.Label23.TabIndex = 122
@@ -1511,7 +1663,7 @@ Partial Class FormPenjualan
         Me.Label22.BackColor = System.Drawing.Color.Transparent
         Me.Label22.Font = New System.Drawing.Font("Microsoft Sans Serif", 11.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.Label22.ForeColor = System.Drawing.Color.Black
-        Me.Label22.Location = New System.Drawing.Point(354, 114)
+        Me.Label22.Location = New System.Drawing.Point(435, 63)
         Me.Label22.Name = "Label22"
         Me.Label22.Size = New System.Drawing.Size(34, 18)
         Me.Label22.TabIndex = 121
@@ -1524,7 +1676,7 @@ Partial Class FormPenjualan
         Me.Label21.BackColor = System.Drawing.Color.Transparent
         Me.Label21.Font = New System.Drawing.Font("Microsoft Sans Serif", 11.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.Label21.ForeColor = System.Drawing.Color.Black
-        Me.Label21.Location = New System.Drawing.Point(354, 86)
+        Me.Label21.Location = New System.Drawing.Point(435, 35)
         Me.Label21.Name = "Label21"
         Me.Label21.Size = New System.Drawing.Size(34, 18)
         Me.Label21.TabIndex = 120
@@ -1536,31 +1688,31 @@ Partial Class FormPenjualan
         Me.LblKembali.BackColor = System.Drawing.Color.Transparent
         Me.LblKembali.Font = New System.Drawing.Font("Microsoft Sans Serif", 11.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.LblKembali.ForeColor = System.Drawing.Color.Black
-        Me.LblKembali.Location = New System.Drawing.Point(397, 140)
+        Me.LblKembali.Location = New System.Drawing.Point(478, 119)
         Me.LblKembali.Name = "LblKembali"
         Me.LblKembali.Size = New System.Drawing.Size(91, 25)
         Me.LblKembali.TabIndex = 117
         Me.LblKembali.Text = "0"
         Me.LblKembali.TextAlign = System.Drawing.ContentAlignment.MiddleRight
         '
-        'LblBayar
+        'LblBayarTunai
         '
-        Me.LblBayar.BackColor = System.Drawing.Color.Transparent
-        Me.LblBayar.Font = New System.Drawing.Font("Microsoft Sans Serif", 11.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.LblBayar.ForeColor = System.Drawing.Color.Black
-        Me.LblBayar.Location = New System.Drawing.Point(397, 111)
-        Me.LblBayar.Name = "LblBayar"
-        Me.LblBayar.Size = New System.Drawing.Size(91, 25)
-        Me.LblBayar.TabIndex = 116
-        Me.LblBayar.Text = "0"
-        Me.LblBayar.TextAlign = System.Drawing.ContentAlignment.MiddleRight
+        Me.LblBayarTunai.BackColor = System.Drawing.Color.Transparent
+        Me.LblBayarTunai.Font = New System.Drawing.Font("Microsoft Sans Serif", 11.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.LblBayarTunai.ForeColor = System.Drawing.Color.Black
+        Me.LblBayarTunai.Location = New System.Drawing.Point(478, 60)
+        Me.LblBayarTunai.Name = "LblBayarTunai"
+        Me.LblBayarTunai.Size = New System.Drawing.Size(91, 25)
+        Me.LblBayarTunai.TabIndex = 116
+        Me.LblBayarTunai.Text = "0"
+        Me.LblBayarTunai.TextAlign = System.Drawing.ContentAlignment.MiddleRight
         '
         'LblTotalStlPajak
         '
         Me.LblTotalStlPajak.BackColor = System.Drawing.Color.Transparent
         Me.LblTotalStlPajak.Font = New System.Drawing.Font("Microsoft Sans Serif", 11.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.LblTotalStlPajak.ForeColor = System.Drawing.Color.Black
-        Me.LblTotalStlPajak.Location = New System.Drawing.Point(397, 83)
+        Me.LblTotalStlPajak.Location = New System.Drawing.Point(478, 32)
         Me.LblTotalStlPajak.Name = "LblTotalStlPajak"
         Me.LblTotalStlPajak.Size = New System.Drawing.Size(91, 25)
         Me.LblTotalStlPajak.TabIndex = 115
@@ -1569,83 +1721,87 @@ Partial Class FormPenjualan
         '
         'Label17
         '
+        Me.Label17.AutoSize = True
         Me.Label17.BackColor = System.Drawing.Color.Transparent
-        Me.Label17.Font = New System.Drawing.Font("Microsoft Sans Serif", 11.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.Label17.Font = New System.Drawing.Font("Microsoft Sans Serif", 11.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.Label17.ForeColor = System.Drawing.Color.Black
-        Me.Label17.Location = New System.Drawing.Point(75, 86)
+        Me.Label17.Location = New System.Drawing.Point(169, 35)
         Me.Label17.Name = "Label17"
-        Me.Label17.Size = New System.Drawing.Size(116, 18)
+        Me.Label17.Size = New System.Drawing.Size(101, 18)
         Me.Label17.TabIndex = 110
         Me.Label17.Text = "Total Belanja :"
         Me.Label17.TextAlign = System.Drawing.ContentAlignment.MiddleRight
         '
-        'TxtKodeRef
+        'TxtKodeBayarTunai
         '
-        Me.TxtKodeRef.BackColor = System.Drawing.Color.White
-        Me.TxtKodeRef.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
-        Me.TxtKodeRef.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.TxtKodeRef.ForeColor = System.Drawing.Color.Black
-        Me.TxtKodeRef.Location = New System.Drawing.Point(670, 177)
-        Me.TxtKodeRef.Name = "TxtKodeRef"
-        Me.TxtKodeRef.ReadOnly = True
-        Me.TxtKodeRef.Size = New System.Drawing.Size(80, 22)
-        Me.TxtKodeRef.TabIndex = 108
-        Me.TxtKodeRef.Text = "111.111"
-        Me.TxtKodeRef.Visible = False
+        Me.TxtKodeBayarTunai.BackColor = System.Drawing.Color.White
+        Me.TxtKodeBayarTunai.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
+        Me.TxtKodeBayarTunai.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.TxtKodeBayarTunai.ForeColor = System.Drawing.Color.Black
+        Me.TxtKodeBayarTunai.Location = New System.Drawing.Point(445, 147)
+        Me.TxtKodeBayarTunai.Name = "TxtKodeBayarTunai"
+        Me.TxtKodeBayarTunai.ReadOnly = True
+        Me.TxtKodeBayarTunai.Size = New System.Drawing.Size(73, 22)
+        Me.TxtKodeBayarTunai.TabIndex = 108
+        Me.TxtKodeBayarTunai.Text = "01.01.001"
+        Me.TxtKodeBayarTunai.Visible = False
         '
         'LblStatus
         '
+        Me.LblStatus.AutoSize = True
         Me.LblStatus.BackColor = System.Drawing.Color.Transparent
-        Me.LblStatus.Font = New System.Drawing.Font("Microsoft Sans Serif", 11.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.LblStatus.Font = New System.Drawing.Font("Microsoft Sans Serif", 11.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.LblStatus.ForeColor = System.Drawing.Color.Black
-        Me.LblStatus.Location = New System.Drawing.Point(96, 168)
+        Me.LblStatus.Location = New System.Drawing.Point(187, 149)
         Me.LblStatus.Name = "LblStatus"
-        Me.LblStatus.Size = New System.Drawing.Size(95, 18)
+        Me.LblStatus.Size = New System.Drawing.Size(83, 18)
         Me.LblStatus.TabIndex = 107
         Me.LblStatus.Text = "Status Trx :"
         Me.LblStatus.TextAlign = System.Drawing.ContentAlignment.MiddleRight
         '
         'LblJatuhTempo
         '
+        Me.LblJatuhTempo.AutoSize = True
         Me.LblJatuhTempo.BackColor = System.Drawing.Color.Transparent
-        Me.LblJatuhTempo.Font = New System.Drawing.Font("Microsoft Sans Serif", 11.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.LblJatuhTempo.Font = New System.Drawing.Font("Microsoft Sans Serif", 11.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.LblJatuhTempo.ForeColor = System.Drawing.Color.Black
-        Me.LblJatuhTempo.Location = New System.Drawing.Point(75, 199)
+        Me.LblJatuhTempo.Location = New System.Drawing.Point(167, 178)
         Me.LblJatuhTempo.Name = "LblJatuhTempo"
-        Me.LblJatuhTempo.Size = New System.Drawing.Size(116, 18)
+        Me.LblJatuhTempo.Size = New System.Drawing.Size(103, 18)
         Me.LblJatuhTempo.TabIndex = 106
         Me.LblJatuhTempo.Text = "Jatuh Tempo :"
         Me.LblJatuhTempo.TextAlign = System.Drawing.ContentAlignment.MiddleRight
         '
         'DTPJatuhTempo
         '
-        Me.DTPJatuhTempo.Font = New System.Drawing.Font("Microsoft Sans Serif", 11.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.DTPJatuhTempo.Font = New System.Drawing.Font("Microsoft Sans Serif", 11.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.DTPJatuhTempo.Format = System.Windows.Forms.DateTimePickerFormat.[Short]
-        Me.DTPJatuhTempo.Location = New System.Drawing.Point(195, 195)
+        Me.DTPJatuhTempo.Location = New System.Drawing.Point(276, 174)
         Me.DTPJatuhTempo.Name = "DTPJatuhTempo"
         Me.DTPJatuhTempo.Size = New System.Drawing.Size(156, 24)
         Me.DTPJatuhTempo.TabIndex = 4
         '
-        'CmbJenisBayar
+        'CmbBayarTunai
         '
-        Me.CmbJenisBayar.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
-        Me.CmbJenisBayar.Font = New System.Drawing.Font("Microsoft Sans Serif", 11.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.CmbJenisBayar.FormattingEnabled = True
-        Me.CmbJenisBayar.Location = New System.Drawing.Point(195, 21)
-        Me.CmbJenisBayar.Name = "CmbJenisBayar"
-        Me.CmbJenisBayar.Size = New System.Drawing.Size(293, 26)
-        Me.CmbJenisBayar.TabIndex = 1
+        Me.CmbBayarTunai.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
+        Me.CmbBayarTunai.Font = New System.Drawing.Font("Microsoft Sans Serif", 11.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.CmbBayarTunai.FormattingEnabled = True
+        Me.CmbBayarTunai.Location = New System.Drawing.Point(114, 59)
+        Me.CmbBayarTunai.Name = "CmbBayarTunai"
+        Me.CmbBayarTunai.Size = New System.Drawing.Size(156, 26)
+        Me.CmbBayarTunai.TabIndex = 1
         '
         'Label2
         '
+        Me.Label2.AutoSize = True
         Me.Label2.BackColor = System.Drawing.Color.Transparent
-        Me.Label2.Font = New System.Drawing.Font("Microsoft Sans Serif", 11.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.Label2.Font = New System.Drawing.Font("Microsoft Sans Serif", 11.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.Label2.ForeColor = System.Drawing.Color.Black
-        Me.Label2.Location = New System.Drawing.Point(67, 24)
+        Me.Label2.Location = New System.Drawing.Point(25, 63)
         Me.Label2.Name = "Label2"
-        Me.Label2.Size = New System.Drawing.Size(124, 18)
+        Me.Label2.Size = New System.Drawing.Size(83, 18)
         Me.Label2.TabIndex = 24
-        Me.Label2.Text = "Rekening (F9) :"
+        Me.Label2.Text = "Tunai (F9) :"
         Me.Label2.TextAlign = System.Drawing.ContentAlignment.MiddleRight
         '
         'TxtTotaljualStlPajak
@@ -1654,7 +1810,7 @@ Partial Class FormPenjualan
         Me.TxtTotaljualStlPajak.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
         Me.TxtTotaljualStlPajak.Font = New System.Drawing.Font("Microsoft Sans Serif", 11.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.TxtTotaljualStlPajak.ForeColor = System.Drawing.SystemColors.ActiveCaptionText
-        Me.TxtTotaljualStlPajak.Location = New System.Drawing.Point(195, 82)
+        Me.TxtTotaljualStlPajak.Location = New System.Drawing.Point(276, 32)
         Me.TxtTotaljualStlPajak.Name = "TxtTotaljualStlPajak"
         Me.TxtTotaljualStlPajak.ReadOnly = True
         Me.TxtTotaljualStlPajak.Size = New System.Drawing.Size(156, 24)
@@ -1662,66 +1818,18 @@ Partial Class FormPenjualan
         Me.TxtTotaljualStlPajak.Text = "0"
         Me.TxtTotaljualStlPajak.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
         '
-        'BtnBatal
+        'TxtNominalBayarTunai
         '
-        Me.BtnBatal.BackColor = System.Drawing.Color.LightSteelBlue
-        Me.BtnBatal.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Blue
-        Me.BtnBatal.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Blue
-        Me.BtnBatal.FlatStyle = System.Windows.Forms.FlatStyle.Flat
-        Me.BtnBatal.Font = New System.Drawing.Font("Bookman Old Style", 12.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.BtnBatal.ForeColor = System.Drawing.Color.Black
-        Me.BtnBatal.Image = CType(resources.GetObject("BtnBatal.Image"), System.Drawing.Image)
-        Me.BtnBatal.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft
-        Me.BtnBatal.Location = New System.Drawing.Point(737, 230)
-        Me.BtnBatal.Name = "BtnBatal"
-        Me.BtnBatal.Size = New System.Drawing.Size(158, 39)
-        Me.BtnBatal.TabIndex = 10
-        Me.BtnBatal.Text = "BATAL (F11)"
-        Me.BtnBatal.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText
-        Me.BtnBatal.UseVisualStyleBackColor = False
-        '
-        'BtnSimpann
-        '
-        Me.BtnSimpann.BackColor = System.Drawing.Color.LightSteelBlue
-        Me.BtnSimpann.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Blue
-        Me.BtnSimpann.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Blue
-        Me.BtnSimpann.FlatStyle = System.Windows.Forms.FlatStyle.Flat
-        Me.BtnSimpann.Font = New System.Drawing.Font("Bookman Old Style", 12.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.BtnSimpann.ForeColor = System.Drawing.Color.Black
-        Me.BtnSimpann.Image = CType(resources.GetObject("BtnSimpann.Image"), System.Drawing.Image)
-        Me.BtnSimpann.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft
-        Me.BtnSimpann.Location = New System.Drawing.Point(536, 230)
-        Me.BtnSimpann.Name = "BtnSimpann"
-        Me.BtnSimpann.Size = New System.Drawing.Size(171, 39)
-        Me.BtnSimpann.TabIndex = 9
-        Me.BtnSimpann.Text = "SIMPAN (F10)"
-        Me.BtnSimpann.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText
-        Me.BtnSimpann.UseVisualStyleBackColor = False
-        '
-        'Label5
-        '
-        Me.Label5.BackColor = System.Drawing.Color.Transparent
-        Me.Label5.Font = New System.Drawing.Font("Microsoft Sans Serif", 11.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label5.ForeColor = System.Drawing.Color.Black
-        Me.Label5.Location = New System.Drawing.Point(116, 114)
-        Me.Label5.Name = "Label5"
-        Me.Label5.Size = New System.Drawing.Size(75, 18)
-        Me.Label5.TabIndex = 3
-        Me.Label5.Text = "Dibayar :"
-        Me.Label5.TextAlign = System.Drawing.ContentAlignment.MiddleRight
-        '
-        'TxtNominalBayar
-        '
-        Me.TxtNominalBayar.BackColor = System.Drawing.Color.White
-        Me.TxtNominalBayar.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
-        Me.TxtNominalBayar.Font = New System.Drawing.Font("Microsoft Sans Serif", 11.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.TxtNominalBayar.ForeColor = System.Drawing.SystemColors.ActiveCaptionText
-        Me.TxtNominalBayar.Location = New System.Drawing.Point(195, 110)
-        Me.TxtNominalBayar.Name = "TxtNominalBayar"
-        Me.TxtNominalBayar.Size = New System.Drawing.Size(156, 24)
-        Me.TxtNominalBayar.TabIndex = 2
-        Me.TxtNominalBayar.Text = "0"
-        Me.TxtNominalBayar.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
+        Me.TxtNominalBayarTunai.BackColor = System.Drawing.Color.White
+        Me.TxtNominalBayarTunai.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
+        Me.TxtNominalBayarTunai.Font = New System.Drawing.Font("Microsoft Sans Serif", 11.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.TxtNominalBayarTunai.ForeColor = System.Drawing.SystemColors.ActiveCaptionText
+        Me.TxtNominalBayarTunai.Location = New System.Drawing.Point(276, 60)
+        Me.TxtNominalBayarTunai.Name = "TxtNominalBayarTunai"
+        Me.TxtNominalBayarTunai.Size = New System.Drawing.Size(156, 24)
+        Me.TxtNominalBayarTunai.TabIndex = 2
+        Me.TxtNominalBayarTunai.Text = "0"
+        Me.TxtNominalBayarTunai.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
         '
         'TxtKembaliHutang
         '
@@ -1729,7 +1837,7 @@ Partial Class FormPenjualan
         Me.TxtKembaliHutang.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
         Me.TxtKembaliHutang.Font = New System.Drawing.Font("Microsoft Sans Serif", 11.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.TxtKembaliHutang.ForeColor = System.Drawing.SystemColors.ActiveCaptionText
-        Me.TxtKembaliHutang.Location = New System.Drawing.Point(195, 139)
+        Me.TxtKembaliHutang.Location = New System.Drawing.Point(276, 119)
         Me.TxtKembaliHutang.Name = "TxtKembaliHutang"
         Me.TxtKembaliHutang.ReadOnly = True
         Me.TxtKembaliHutang.Size = New System.Drawing.Size(156, 24)
@@ -1740,64 +1848,14 @@ Partial Class FormPenjualan
         'LblPembayaran
         '
         Me.LblPembayaran.BackColor = System.Drawing.Color.Transparent
-        Me.LblPembayaran.Font = New System.Drawing.Font("Microsoft Sans Serif", 11.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.LblPembayaran.Font = New System.Drawing.Font("Microsoft Sans Serif", 11.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.LblPembayaran.ForeColor = System.Drawing.Color.Black
-        Me.LblPembayaran.Location = New System.Drawing.Point(25, 138)
+        Me.LblPembayaran.Location = New System.Drawing.Point(149, 117)
         Me.LblPembayaran.Name = "LblPembayaran"
-        Me.LblPembayaran.Size = New System.Drawing.Size(166, 29)
+        Me.LblPembayaran.Size = New System.Drawing.Size(121, 29)
         Me.LblPembayaran.TabIndex = 3
         Me.LblPembayaran.Text = "Kembalian :"
         Me.LblPembayaran.TextAlign = System.Drawing.ContentAlignment.MiddleRight
-        '
-        'Label29
-        '
-        Me.Label29.AutoSize = True
-        Me.Label29.BackColor = System.Drawing.Color.Transparent
-        Me.Label29.Font = New System.Drawing.Font("Microsoft Sans Serif", 11.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label29.ForeColor = System.Drawing.Color.Black
-        Me.Label29.Location = New System.Drawing.Point(354, 57)
-        Me.Label29.Name = "Label29"
-        Me.Label29.Size = New System.Drawing.Size(34, 18)
-        Me.Label29.TabIndex = 130
-        Me.Label29.Text = "Rp."
-        Me.Label29.TextAlign = System.Drawing.ContentAlignment.MiddleRight
-        '
-        'LblBiayaKirim
-        '
-        Me.LblBiayaKirim.BackColor = System.Drawing.Color.Transparent
-        Me.LblBiayaKirim.Font = New System.Drawing.Font("Microsoft Sans Serif", 11.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.LblBiayaKirim.ForeColor = System.Drawing.Color.Black
-        Me.LblBiayaKirim.Location = New System.Drawing.Point(397, 54)
-        Me.LblBiayaKirim.Name = "LblBiayaKirim"
-        Me.LblBiayaKirim.Size = New System.Drawing.Size(91, 25)
-        Me.LblBiayaKirim.TabIndex = 129
-        Me.LblBiayaKirim.Text = "0"
-        Me.LblBiayaKirim.TextAlign = System.Drawing.ContentAlignment.MiddleRight
-        '
-        'Label31
-        '
-        Me.Label31.BackColor = System.Drawing.Color.Transparent
-        Me.Label31.Font = New System.Drawing.Font("Microsoft Sans Serif", 11.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label31.ForeColor = System.Drawing.Color.Black
-        Me.Label31.Location = New System.Drawing.Point(47, 59)
-        Me.Label31.Name = "Label31"
-        Me.Label31.Size = New System.Drawing.Size(144, 18)
-        Me.Label31.TabIndex = 127
-        Me.Label31.Text = "Jasa Kirim / Lain :"
-        Me.Label31.TextAlign = System.Drawing.ContentAlignment.MiddleRight
-        '
-        'TxtBiayaKirim
-        '
-        Me.TxtBiayaKirim.BackColor = System.Drawing.Color.White
-        Me.TxtBiayaKirim.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
-        Me.TxtBiayaKirim.Font = New System.Drawing.Font("Microsoft Sans Serif", 11.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.TxtBiayaKirim.ForeColor = System.Drawing.SystemColors.ActiveCaptionText
-        Me.TxtBiayaKirim.Location = New System.Drawing.Point(195, 53)
-        Me.TxtBiayaKirim.Name = "TxtBiayaKirim"
-        Me.TxtBiayaKirim.Size = New System.Drawing.Size(156, 24)
-        Me.TxtBiayaKirim.TabIndex = 3
-        Me.TxtBiayaKirim.Text = "0"
-        Me.TxtBiayaKirim.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
         '
         'ContextMenuStrip1
         '
@@ -1827,16 +1885,6 @@ Partial Class FormPenjualan
         Me.LstBarang.Name = "LstBarang"
         Me.LstBarang.Size = New System.Drawing.Size(531, 304)
         Me.LstBarang.TabIndex = 2
-        '
-        'ChkTampilSN
-        '
-        Me.ChkTampilSN.AutoSize = True
-        Me.ChkTampilSN.Location = New System.Drawing.Point(767, 49)
-        Me.ChkTampilSN.Name = "ChkTampilSN"
-        Me.ChkTampilSN.Size = New System.Drawing.Size(75, 17)
-        Me.ChkTampilSN.TabIndex = 154
-        Me.ChkTampilSN.Text = "Tampil SN"
-        Me.ChkTampilSN.UseVisualStyleBackColor = True
         '
         'FormPenjualan
         '
@@ -1893,9 +1941,8 @@ Partial Class FormPenjualan
     Friend WithEvents DTPTgl As System.Windows.Forms.DateTimePicker
     Friend WithEvents Label4 As System.Windows.Forms.Label
     Friend WithEvents TxtTotaljualStlPajak As System.Windows.Forms.TextBox
-    Friend WithEvents Label5 As System.Windows.Forms.Label
-    Friend WithEvents TxtNominalBayar As System.Windows.Forms.TextBox
-    Friend WithEvents CmbJenisBayar As System.Windows.Forms.ComboBox
+    Friend WithEvents TxtNominalBayarTunai As System.Windows.Forms.TextBox
+    Friend WithEvents CmbBayarTunai As System.Windows.Forms.ComboBox
     Friend WithEvents Label2 As System.Windows.Forms.Label
     Friend WithEvents Panel1 As System.Windows.Forms.Panel
     Friend WithEvents BtnBayar As System.Windows.Forms.Button
@@ -1923,7 +1970,7 @@ Partial Class FormPenjualan
     Friend WithEvents Label6 As System.Windows.Forms.Label
     Friend WithEvents TxtPajakRp As System.Windows.Forms.TextBox
     Friend WithEvents TxtPajakPersen As System.Windows.Forms.TextBox
-    Friend WithEvents TxtKodeRef As System.Windows.Forms.TextBox
+    Friend WithEvents TxtKodeBayarTunai As System.Windows.Forms.TextBox
     Friend WithEvents LbLKodePel As System.Windows.Forms.Label
     Friend WithEvents TxtTahan As System.Windows.Forms.TextBox
     Friend WithEvents TxtJenistransaksi As System.Windows.Forms.TextBox
@@ -1934,7 +1981,7 @@ Partial Class FormPenjualan
     Friend WithEvents Label17 As System.Windows.Forms.Label
     Friend WithEvents Label18 As System.Windows.Forms.Label
     Friend WithEvents LblKembali As System.Windows.Forms.Label
-    Friend WithEvents LblBayar As System.Windows.Forms.Label
+    Friend WithEvents LblBayarTunai As System.Windows.Forms.Label
     Friend WithEvents LblTotalStlPajak As System.Windows.Forms.Label
     Friend WithEvents LblPajakRp As System.Windows.Forms.Label
     Friend WithEvents Label23 As System.Windows.Forms.Label
@@ -1947,13 +1994,10 @@ Partial Class FormPenjualan
     Friend WithEvents TxtNamaRek As System.Windows.Forms.TextBox
     Friend WithEvents PanelTFPelanggan As System.Windows.Forms.Panel
     Friend WithEvents Label28 As System.Windows.Forms.Label
-    Friend WithEvents TxtBank As System.Windows.Forms.TextBox
     Friend WithEvents Label27 As System.Windows.Forms.Label
-    Friend WithEvents Label29 As System.Windows.Forms.Label
     Friend WithEvents LblBiayaKirim As System.Windows.Forms.Label
     Friend WithEvents Label31 As System.Windows.Forms.Label
     Friend WithEvents TxtBiayaKirim As System.Windows.Forms.TextBox
-    Friend WithEvents TxtTypeAkun As System.Windows.Forms.TextBox
     Friend WithEvents TxtKomputer As System.Windows.Forms.TextBox
     Friend WithEvents TxtLogin As System.Windows.Forms.TextBox
     Friend WithEvents LstBarang As System.Windows.Forms.ListBox
@@ -2006,4 +2050,11 @@ Partial Class FormPenjualan
     Friend WithEvents Stok As DataGridViewTextBoxColumn
     Friend WithEvents SerialNumber As DataGridViewTextBoxColumn
     Friend WithEvents ChkTampilSN As CheckBox
+    Friend WithEvents Label13 As Label
+    Friend WithEvents LblBayarTransfer As Label
+    Friend WithEvents CmbBayarTransfer As ComboBox
+    Friend WithEvents Label19 As Label
+    Friend WithEvents TxtNominalBayarTransfer As TextBox
+    Friend WithEvents CmbBank As ComboBox
+    Friend WithEvents TxtKodeBayarBank As TextBox
 End Class

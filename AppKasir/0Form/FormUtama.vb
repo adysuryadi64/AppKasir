@@ -1,464 +1,363 @@
-﻿Imports System.IO
-Imports System.Reflection
+Imports System.IO
 Imports System.Text.Json
 
 
 Public Class FormUtama
-    Private ReadOnly originalColor As Color
-    Private ReadOnly originalColor1 As Color
 
-    Private TanyakanKertas As String = "Tidak"
+    ' ── WebBrowser Dashboard ─────────────────────────────────────────────────
+    ' WbDashboard sudah didefinisikan di designer — posisi dan anchor sama dengan GBTransaksi
+    ' Toggle visibility keduanya untuk berganti tampilan
 
+    ''' <summary>Inisialisasi dashboard — dipanggil sekali saat form load</summary>
+    Private Sub InisDashboard()
+        ' Tidak perlu setup dinamis — WbDashboard sudah ada di designer
+        ' Langsung tampilkan jika GBTransaksi sedang hidden
+        If Not GBTransaksi.Visible Then TampilDashboard()
+    End Sub
+
+    ''' <summary>Tampilkan dashboard HTML di WebBrowser</summary>
+    Public Sub TampilDashboard()
+        If WbDashboard Is Nothing OrElse WbDashboard.IsDisposed Then Return
+        Try
+            Dim lokasi As String = If(StatusLokasi IsNot Nothing, StatusLokasi.Text, "TOKO")
+            Dim html As String = ModuleDashboard.BangunHTML(lokasi)
+            Dim tmpPath As String = IO.Path.Combine(Application.StartupPath, "_dashboard_tmp.html")
+            IO.File.WriteAllText(tmpPath, html, System.Text.Encoding.UTF8)
+            WbDashboard.Visible = True
+            WbDashboard.Navigate(New Uri(tmpPath))
+        Catch
+        End Try
+    End Sub
+
+    ''' <summary>Toggle dashboard/GBTransaksi saat visibility berubah</summary>
+    Private Sub GBTransaksi_VisibleChanged(sender As Object, e As EventArgs) Handles GBTransaksi.VisibleChanged
+        ' Saat GBTransaksi tampil, sembunyikan WbDashboard
+        If GBTransaksi.Visible Then WbDashboard.Visible = False
+    End Sub
+
+
+
+    ' Timer untuk cek perubahan general setting dari client lain (setiap 60 detik)
+    Private WithEvents TimerCekSetting As New System.Windows.Forms.Timer()
+
+    ' Tracking button nav yang sedang aktif — untuk restore setelah TerapkanModeSemua
+    Private _activeNavButton As Button = Nothing
+
+    ''' <summary>
+    ''' Dipanggil dari FormCompany saat logo/background perusahaan diubah.
+    ''' Dashboard WebView2 di-refresh agar perubahan langsung terlihat.
+    ''' BackgroundImage tidak dipakai lagi sejak dashboard beralih ke WebView2.
+    ''' </summary>
     Public Sub ChangeBackgroundImage(ByVal imageFileName As String)
-        Dim exePath As String = System.IO.Path.GetDirectoryName(Application.ExecutablePath)
-        Dim imagePath As String = System.IO.Path.Combine(exePath, imageFileName)
-        If System.IO.File.Exists(imagePath) Then
-            Me.BackgroundImage = Image.FromFile(imagePath)
+        ' Refresh dashboard — gambar background tidak dipakai lagi
+        If Not GBTransaksi.Visible Then TampilDashboard()
+    End Sub
+
+
+
+
+    ' ==================== HELPER METHODS ====================
+    ''' <summary>Buka form sebagai MDI child dengan Dock Fill</summary>
+    Private Sub BukaFormMdi(frm As Form)
+        ' Sembunyikan dashboard sebelum form MDI tampil
+        WbDashboard.Visible = False
+        frm.MdiParent = Me
+        frm.BringToFront()
+        frm.Dock = DockStyle.Fill
+        frm.Show()
+    End Sub
+
+    ''' <summary>Tutup semua MDI children</summary>
+    Private Sub TutupSemuaForm()
+        For Each frm As Form In MdiChildren
+            frm.Close()
+        Next
+        ' Tampilkan dashboard jika tidak ada GBTransaksi dan tidak ada MDI child tersisa
+        If Not GBTransaksi.Visible AndAlso MdiChildren.Length = 0 Then
+            TampilDashboard()
         End If
     End Sub
 
+    ''' <summary>Reset panel dan sembunyikan GBTransaksi</summary>
+    Private Sub ResetPanelMenu()
+        GBTransaksi.Visible = False
+        WbDashboard.Visible = False
+        DGVTransaksi.Columns.Clear()
+        PanelMaster.Visible = False
+        PanelTransaksi.Visible = False
+    End Sub
 
+    ''' <summary>Inisialisasi panel transaksi saat tombol transaksi diklik</summary>
+    Private Sub IniTransaksiPanel(btn As Button, namaTransaksi As String, Optional showDetail As Boolean = True)
+        SetButtonBackgroundColor(btn)
+        TutupSemuaForm()
+        DtpTransaksi.Value = Now
+        TxtTransaksi.Text = namaTransaksi
+        SplitTransaksi.Panel2Collapsed = Not showDetail
+        LblDetailTransaksi.Visible = showDetail
+        GBTransaksi.Visible = True
+        TxtFakturTransaksi.Clear()
+    End Sub
 
+    ''' <summary>Terapkan hak akses ke tombol CRUD dari cache</summary>
+    Private Sub TerapkanHakAkses(namaMenu As String,
+                                  Optional showEdit As Boolean = True,
+                                  Optional showPrint As Boolean = True)
+        Dim ha As Boolean() = ModulHakAkses.BacaHakAksesDariCache(namaMenu)
+        BtnTambah.Visible = ha(1)
+        BTNEdit.Visible = If(showEdit, ha(2), False)
+        BtnHapus.Visible = ha(3)
+        BtnPrint.Visible = If(showPrint, ha(1), False)
+    End Sub
+
+    ''' <summary>Terapkan hak akses ke context menu strip dari cache</summary>
+    Private Sub TerapkanHakAksesContextMenu(namaMenu As String,
+                                             Optional showEdit As Boolean = True,
+                                             Optional showCetak As Boolean = True,
+                                             Optional showEditBayar As Boolean = False)
+        Dim ha As Boolean() = ModulHakAkses.BacaHakAksesDariCache(namaMenu)
+        TambahToolStripMenuItem.Visible = ha(1)
+        EditToolStripMenuItem.Visible = If(showEdit, ha(2), False)
+        HapusToolStripMenuItem.Visible = ha(3)
+        CetakToolStripMenuItem.Visible = showCetak
+        EditPembayaranToolStripMenuItem.Visible = showEditBayar
+    End Sub
+
+    ''' <summary>Set teks tombol CRUD sesuai nama transaksi</summary>
+    Private Sub AturTombolTransaksi(nama As String)
+        BtnTambah.Text = "Tambah " & nama & " (F2)"
+        BTNEdit.Text = "Edit " & nama & " (F3)"
+        BtnHapus.Text = "Hapus " & nama & " (F4)"
+        BtnPrint.Text = "Cetak " & nama & " (F5)"
+        LblDetailTransaksi.Text = "Detail " & nama & " : "
+        SusunTombolPanel1()
+    End Sub
+
+    ''' <summary>Susun posisi button Panel1 secara dinamis sesuai lebar teks masing-masing.</summary>
+    Private Sub SusunTombolPanel1()
+        Const GAP As Integer = 4
+        Const Y As Integer = 1
+
+        ' Reset Size ke Empty dulu agar AutoSize recalculate dari nol
+        ' (AutoSize tidak mengecil jika Size pernah di-set eksplisit)
+        For Each btn As Button In {BtnTambah, BTNEdit, BtnHapus, BtnPrint}
+            btn.AutoSize = False
+            btn.Size = btn.GetPreferredSize(Size.Empty)
+            btn.AutoSize = True
+        Next
+
+        Dim x As Integer = 2
+        BtnTambah.Location = New Point(x, Y)
+        x += BtnTambah.Width + GAP
+
+        BTNEdit.Location = New Point(x, Y)
+        x += BTNEdit.Width + GAP
+
+        BtnHapus.Location = New Point(x, Y)
+        x += BtnHapus.Width + GAP
+
+        BtnPrint.Location = New Point(x, Y)
+        x += BtnPrint.Width + GAP + 12
+
+        LblRangkuman.Location = New Point(x, 6)
+    End Sub
+
+    ''' <summary>Hitung rangkuman record dan total, tampilkan di LblRangkuman</summary>
+    Private Sub HitungRangkuman(queryJumlah As String, labelTotal As String,
+                                 tanggalAwal As Date, tanggalAkhir As Date,
+                                 searchFilter As String)
+        Using cmd As New MySqlCommand(queryJumlah, conn)
+            cmd.Parameters.AddWithValue("@tanggalAwal", tanggalAwal.ToString("yyyy-MM-dd HH:mm:ss"))
+            cmd.Parameters.AddWithValue("@tanggalAkhir", tanggalAkhir.ToString("yyyy-MM-dd HH:mm:ss"))
+            cmd.Parameters.AddWithValue("@SearchText", searchFilter)
+            Using rd As MySqlDataReader = cmd.ExecuteReader()
+                If rd.Read() Then
+                    LblRangkuman.Text = "Jumlah Record: " & CInt(rd("RECORD")).ToString("N0") &
+                                        Environment.NewLine & labelTotal & ": Rp. " & CDec(rd("TOTAL")).ToString("N0")
+                Else
+                    LblRangkuman.Text = "0"
+                End If
+            End Using
+        End Using
+    End Sub
+
+    ''' <summary>Load data ke DGVTransaksi dari query dengan filter tanggal dan search</summary>
+    Private Sub LoadDataTransaksi(queryString As String, namaTable As String,
+                                   tanggalAwal As Date, tanggalAkhir As Date,
+                                   searchFilter As String)
+        DGVTransaksi.Columns.Clear()
+        DGVDetail.Columns.Clear()
+        Using da As New MySqlDataAdapter(queryString, conn)
+            da.SelectCommand.Parameters.AddWithValue("@tanggalAwal", tanggalAwal.ToString("yyyy-MM-dd HH:mm:ss"))
+            da.SelectCommand.Parameters.AddWithValue("@tanggalAkhir", tanggalAkhir.ToString("yyyy-MM-dd HH:mm:ss"))
+            da.SelectCommand.Parameters.AddWithValue("@SearchText", searchFilter)
+            Using ds As New DataSet
+                da.Fill(ds, namaTable)
+                DGVTransaksi.DataSource = ds.Tables(namaTable)
+            End Using
+        End Using
+    End Sub
+
+    ''' <summary>Set alignment kanan + format angka pada satu atau lebih kolom DGV</summary>
+    Private Sub AturKolomAngka(dgv As DataGridView, ParamArray kolom() As Object)
+        Dim cs As New DataGridViewCellStyle With {
+            .Alignment = DataGridViewContentAlignment.MiddleRight,
+            .Format = "#,0.##"
+        }
+        For Each k In kolom
+            dgv.Columns(k).DefaultCellStyle = cs
+        Next
+    End Sub
+
+    ''' <summary>Bersihkan kontrol setelah load data transaksi</summary>
+    Private Sub BersihkanKontrolTransaksi(Optional labelDetail As String = "")
+        TxtFakturTransaksi.Clear()
+        TxtLokasiUntukEdit.Clear()
+        DGVDetail.Columns.Clear()
+        If labelDetail <> "" Then LblDetailTransaksi.Text = labelDetail
+    End Sub
+
+    ''' <summary>Jalankan proses posting dengan konfirmasi</summary>
+    Private Sub JalankanPosting(jenis As String)
+        ResetPanelMenu()
+        TutupSemuaForm()
+        Dim result As DialogResult = MessageBox.Show(
+            "Penting! Jangan lupa untuk sering melakukan posting data agar sinkronisasi data tetap terjaga dan tidak terjadi perbedaan data antara sistem dan realita.",
+            "Pesan Penting: Posting Data", MessageBoxButtons.YesNo, MessageBoxIcon.Information)
+        If result = DialogResult.No Then Exit Sub
+        With FormLoading
+            .Label1.Text = "Proses posting! Silahkan menunggu konfigurasi data"
+            .BringToFront()
+            .Show()
+            .MulaiPosting(jenis)
+        End With
+        PanelTransaksi.Visible = True
+    End Sub
+
+    ' ==================== END HELPER METHODS ====================
 
     Private Sub SetMenuBackgroundColor(ByVal clickedMenu As ToolStripMenuItem)
-        ' Reset semua warna menu ke warna asli (originalColor1)
         For Each menu As ToolStripMenuItem In {FileToolStripMenuItem, MenuMaster, MenuTransaksi, MenuJurnal, MenuKaryawan, MenuLaporan, MenuUtility, MenuPosting, HelpToolStripMenuItem, WindowToolStripMenuItem}
-            menu.BackColor = originalColor1
+            menu.BackColor = ModuleTheme.C(ModuleTheme.L_Toolbar, ModuleTheme.D_Toolbar)
         Next
-        ' Setel warna latar belakang menu yang diklik
-        clickedMenu.BackColor = Color.SandyBrown
+        clickedMenu.BackColor = ModuleTheme.C(ModuleTheme.L_MenuActive, ModuleTheme.D_MenuActive)
     End Sub
 
     Private Sub SetButtonBackgroundColor(ByVal clickedButton As Button)
-
         Dim buttons As Button() = {
-        BtnToko, BtnBarang, BTnPelanggan, BtnSupliyer, BtnUser, BtnTabelRef, BtnHakAksesUser, BtnGeneralSetting, BtnKaryawan, BtnArmada,
+        BtnToko, BtnBarang, BTnPelanggan, BtnSupliyer, BtnUser, BtnTabelRef, BtnKirimCabang, BtnHakAksesUser, BtnGeneralSetting, BtnKaryawan, BtnArmada,
         BtnBelanja, BtnPenjualan, BtnRetuBelanja, BtnReturPenjualan, BtnBayarHutang, BtnBayarPiutang, BtnStokOpname, BtnPindahStok, BtnTransferBarang,
-        BtnSuratJalan
-}
-
-        ' Reset semua warna tombol ke warna asli (originalColor)
+        BtnSuratJalan, BtnMasterCabang
+        }
         For Each button As Button In buttons
-            button.BackColor = originalColor
+            ModuleTheme.SetNavButtonIdle(button)
         Next
-
-        ' Setel warna latar belakang tombol yang diklik
-        clickedButton.BackColor = Color.White
+        ModuleTheme.SetNavButtonActive(clickedButton)
+        _activeNavButton = clickedButton
     End Sub
 
     Private Sub FormUtama_Load(ByVal sender As Object, ByVal e As EventArgs) Handles MyBase.Load
+        ModuleTheme.LoadFromConfig()
+        TerapkanModeSemua()
+
+
         AturTooltip()
         Terkunci()
 
         OpenConnection()
 
-        'DatabaseFile()
-        CekaktivasiProgram()
+        WbDashboard.Visible = False
 
         With FormLogin
-            '.MdiParent = Nothing
             .BringToFront()
             .ShowDialog()
         End With
+        If String.IsNullOrWhiteSpace(StatusNamaUser.Text) Then
+            Close()
+            Return
+        End If
 
+        InisDashboard()
 
-        With FormMasuk
-            '.MdiParent = Nothing
-            .BringToFront()
-            .ShowDialog()
-        End With
+        Dim pilihanMasuk As String = AppConfig.Instance.GetValue(Of String)("PilihanMasuk", "").ToUpperInvariant()
+        If pilihanMasuk = "TOKO" OrElse pilihanMasuk = "GUDANG" Then
+            FormMasuk.TerapkanLokasiKeFormUtama(pilihanMasuk)
+        Else
+            With FormMasuk
+                .BringToFront()
+                .ShowDialog()
+            End With
+        End If
+        If String.IsNullOrWhiteSpace(StatusLokasi.Text) Then
+            Close()
+            Return
+        End If
+
+        ' === CACHE HAK AKSES USER SETELAH LOGIN BERHASIL ===
+        If Not String.IsNullOrEmpty(StatusNamaUser.Text) Then
+            ModulHakAkses.CacheHakAksesUser(StatusLevelUser.Text)
+        End If
 
         With FormLoading
             .Label1.Text = "Selamat datang! Aplikasi saat ini dalam proses inisialisasi dan menunggu konfigurasi data"
-            '.MdiParent = Nothing
             .BringToFront()
             .Show()
             .MulaiLoading()
         End With
 
-        ' Panggil untuk mengambil data rekening KAS dan BANK
-        Rekeningkasbank()
-        ' Panggil untuk mengambil data rekening KAS dan BANK dan MODAL
-        AmbilAkunKasBankEkuitas()
+        ' Update title setelah NAMA_PERUSAHAAN sudah diisi oleh MulaiLoading
+        If Not String.IsNullOrEmpty(NAMA_PERUSAHAAN) Then
+            Me.Text = "KASIR LANCAR " & StatusLokasi.Text & " " & NAMA_PERUSAHAAN
+        End If
 
+        'Rekeningkasbank()
+        'AmbilAkunKasBankEkuitas()
 
         DtpTransaksi.Value = DateTime.Today
         DtpTransaksi.Format = DateTimePickerFormat.Custom
         DtpTransaksi.CustomFormat = "dd/MM/yyyy"
         GBTransaksi.Visible = False
         DGVTransaksi.Columns.Clear()
+
+        If Not String.IsNullOrEmpty(StatusNamaUser.Text) Then
+            TimerCekSetting.Interval = 60000
+            TimerCekSetting.Start()
+        End If
+
+        ' Pilih Penjualan sebagai tampilan default setelah loading selesai
+        ' Cek hak akses dulu — jika tidak ada akses Penjualan, coba Pembelian
+        If BtnPenjualan.Visible Then
+            BtnPenjualan.PerformClick()
+        ElseIf BtnBelanja.Visible Then
+            BtnBelanja.PerformClick()
+        End If
+
+        ' Jalankan arsip audit trail otomatis untuk Master/Owner (sekali per hari)
+        If StatusLevelUser.Text = "Master" OrElse StatusLevelUser.Text = "Owner" Then
+            ModuleAuditTrail.JalankanArsipJikaPerlu()
+        End If
+    End Sub
+
+    Private Sub FormUtama_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
+        ' Re-apply theme setelah semua handle selesai dibuat
+        TerapkanModeSemua()
+        ' Restore warna button nav aktif yang di-reset oleh TerapkanFormUtama
+        If _activeNavButton IsNot Nothing Then
+            ModuleTheme.SetNavButtonActive(_activeNavButton)
+        End If
+    End Sub
+
+    Private Sub FormUtama_MdiChildActivate(sender As Object, e As EventArgs) Handles MyBase.MdiChildActivate
+        ' Setiap kali MDI child dibuka atau diaktifkan, terapkan theme otomatis
+        If ActiveMdiChild IsNot Nothing Then
+            ModuleTheme.TerapkanTheme(ActiveMdiChild)
+        End If
     End Sub
 
 
     Private Sub AturTooltip()
-        ' Atur tampilan tooltip
-        ToolTip1.IsBalloon = True
-        ToolTip1.ToolTipIcon = ToolTipIcon.Info
-        ToolTip1.ToolTipTitle = "Keterangan Menu"
-
-
-        ToolTip1.SetToolTip(BtnToko,
-    "🏢 DATA PERUSAHAAN / TOKO" & Environment.NewLine &
-    "Isi informasi dasar perusahaan atau toko seperti nama, alamat, kontak, dan logo." & Environment.NewLine &
-    "Data ini akan muncul di laporan dan nota transaksi.")
-
-        ToolTip1.SetToolTip(BtnBarang,
-    "📦 DATA BARANG" & Environment.NewLine &
-    "Kelola semua informasi barang yang dijual atau digunakan." & Environment.NewLine &
-    "Termasuk kode barang, nama, harga jual & beli, stok minimum, dan satuan." & Environment.NewLine &
-    "Wajib diisi sebelum melakukan transaksi.")
-
-        ToolTip1.SetToolTip(BTnPelanggan,
-    "🧑‍💼 DATA PELANGGAN" & Environment.NewLine &
-    "Simpan data pelanggan seperti nama, alamat, dan nomor HP." & Environment.NewLine &
-    "Digunakan saat melakukan penjualan (cash atau kredit)." & Environment.NewLine &
-    "Juga digunakan untuk laporan piutang dan riwayat pembelian.")
-
-        ToolTip1.SetToolTip(BtnSupliyer,
-    "🏬 DATA SUPPLIER" & Environment.NewLine &
-    "Catat data pemasok barang seperti nama perusahaan, alamat, dan kontak." & Environment.NewLine &
-    "Wajib diisi sebelum melakukan pembelian barang.")
-
-        ToolTip1.SetToolTip(BtnTabelRef,
-    "📚 TABEL REFERENSI AKUN NERACA" & Environment.NewLine &
-    "Digunakan untuk mengatur daftar akun keuangan seperti Aktiva, Pasiva, Modal, dan lainnya." & Environment.NewLine &
-    "Menjadi dasar pencatatan jurnal dan laporan keuangan seperti Neraca & Laba Rugi." & Environment.NewLine &
-    "Wajib diisi dengan benar agar semua transaksi bisa tercatat secara akuntansi.")
-
-
-        ToolTip1.SetToolTip(BtnArmada,
-    "🚚 DATA ARMADA PENGIRIMAN" & Environment.NewLine &
-    "Simpan informasi kendaraan dan driver yang digunakan untuk pengiriman barang." & Environment.NewLine &
-    "Berguna saat mencetak surat jalan dan kontrol pengiriman.")
-
-        ToolTip1.SetToolTip(BtnKaryawan,
-    "👨‍🔧 DATA KARYAWAN" & Environment.NewLine &
-    "Catat semua karyawan toko atau perusahaan: nama, jabatan, alamat, dan kontak." & Environment.NewLine &
-    "Digunakan untuk absensi, gaji, shift kerja, dan bon karyawan.")
-
-        ToolTip1.SetToolTip(BtnUser,
-    "👤 DATA USER (PENGGUNA SISTEM)" & Environment.NewLine &
-    "Kelola pengguna aplikasi: username, nama, dan hak akses." & Environment.NewLine &
-    "Setiap user akan login sesuai hak aksesnya masing-masing.")
-
-        ToolTip1.SetToolTip(BtnHakAksesUser,
-    "🔐 HAK AKSES" & Environment.NewLine &
-    "Atur menu dan fitur apa saja yang boleh diakses oleh setiap level user." & Environment.NewLine &
-    "Contoh: kasir hanya boleh akses penjualan, supervisor boleh lihat laporan.")
-
-        ' pengaturan ini untuk mengatur apakah suatu fungsi bisa di akses oleh semua user atau tidak // general setting
-        ToolTip1.SetToolTip(BtnGeneralSetting,
-            "⚙️ PENGATURAN UMUM" & Environment.NewLine &
-            "Atur preferensi sistem seperti mengatur apakah fungsi tertentu bisa diakses oleh semua user atau tidak." & Environment.NewLine &
-            "Contoh: apakah kasir boleh mengedit harga jual barang.")
-
-
-
-        ' Tooltip kompleks (multi-line + ikon)
-        ToolTip1.SetToolTip(BtnBelanja,
-            "📦 PEMBELIAN" & Environment.NewLine &
-            "Transaksi pembelian barang dari supplier." & Environment.NewLine &
-            "Stok akan bertambah secara otomatis.")
-
-        ToolTip1.SetToolTip(BtnPenjualan,
-            "🧾 PENJUALAN" & Environment.NewLine &
-            "Catat penjualan ke pelanggan, baik cash maupun kredit." & Environment.NewLine &
-            "Stok akan dikurangi sesuai barang yang terjual.")
-
-        ToolTip1.SetToolTip(BtnRetuBelanja,
-            "🔁 RETUR BELI" & Environment.NewLine &
-            "Kembalikan barang ke supplier jika rusak/salah kirim." & Environment.NewLine &
-            "Mengurangi stok dan hutang.")
-
-        ToolTip1.SetToolTip(BtnReturPenjualan,
-            "🔄 RETUR JUAL" & Environment.NewLine &
-            "Barang dikembalikan oleh pelanggan." & Environment.NewLine &
-            "Stok akan bertambah dan piutang disesuaikan.")
-
-        ToolTip1.SetToolTip(BtnBayarHutang,
-            "💸 BAYAR HUTANG" & Environment.NewLine &
-            "Bayar hutang ke supplier berdasarkan transaksi sebelumnya." & Environment.NewLine &
-            "Mencatat pengeluaran ke jurnal.")
-
-        ToolTip1.SetToolTip(BtnBayarPiutang,
-            "💰 BAYAR PIUTANG" & Environment.NewLine &
-            "Terima pembayaran dari pelanggan atas penjualan kredit." & Environment.NewLine &
-            "Masuk ke kas dan jurnal keuangan.")
-
-        ToolTip1.SetToolTip(BtnPindahStok,
-            "📤 TRANSFER STOK" & Environment.NewLine &
-            "Pindahkan stok antar lokasi, seperti dari gudang ke toko.")
-
-        ToolTip1.SetToolTip(BtnTransferBarang,
-            "🔁 TRANSFER BARANG" & Environment.NewLine &
-            "Mutasi barang antar jenis atau kode baru.")
-
-        ToolTip1.SetToolTip(BtnStokOpname,
-            "📊 STOK OPNAME" & Environment.NewLine &
-            "Cocokkan stok fisik dengan sistem dan sesuaikan bila berbeda.")
-
-        ToolTip1.SetToolTip(BtnSuratJalan,
-            "🚚 SURAT JALAN" & Environment.NewLine &
-            "Dokumen pengiriman barang ke pelanggan atau cabang.")
-        ToolTip1.SetToolTip(BtnRakit,
-            "🛠️ PERAKITAN BARANG" & Environment.NewLine &
-            "Gunakan menu ini untuk merakit barang baru dari bahan-bahan dasar." & Environment.NewLine &
-            "Cocok untuk membuat paket produk atau proses produksi sederhana." & Environment.NewLine &
-            "Stok bahan akan berkurang, dan stok produk jadi akan bertambah.")
-
-        ' ==================== MODUL GAJI & BONUS ====================
-        MasterGajiToolStripMenuItem.ToolTipText =
-        "💰 MASTER GAJI" & Environment.NewLine &
-        "Proses penggajian bulanan untuk seluruh karyawan." & Environment.NewLine &
-        "Termasuk: Hitung gaji bersih, slip gaji, dan arsip pembayaran."
-
-        BonKaryawanToolStripMenuItem.ToolTipText =
-        "💵 BON KARYAWAN" & Environment.NewLine &
-        "Pencatatan uang muka atau pinjaman sementara karyawan." & Environment.NewLine &
-        "Termasuk pencatatan dan pelunasan per periode."
-
-        BayarBonDiluarGajiToolStripMenuItem.ToolTipText =
-        "💸 BAYAR BON DILUAR GAJI" & Environment.NewLine &
-        "Pembayaran bonus khusus di luar siklus gaji normal." & Environment.NewLine &
-        "Dicatat terpisah untuk pelacakan keuangan."
-
-        LaporanGajiToolStripMenuItem.ToolTipText =
-        "📈 LAPORAN GAJI" & Environment.NewLine &
-        "Analisis komprehensif pengeluaran gaji perusahaan." & Environment.NewLine &
-        "Termasuk: Per departemen, posisi, dan periode waktu."
-
-        'LaporanBonusToolStripMenuItem.ToolTipText =
-        '"📊 LAPORAN BONUS" & Environment.NewLine &
-        '"Rekapitulasi seluruh pembayaran bonus karyawan." & Environment.NewLine &
-        '"Dapat difilter berdasarkan periode dan jenis bonus."
-
-        '' ==================== MODUL LAPORAN ====================
-        'LaporanPostingToolStripMenuItem.ToolTipText =
-        '"📤 LAPORAN POSTING" & Environment.NewLine &
-        '"Rekapitulasi seluruh proses posting transaksi ke sistem." & Environment.NewLine &
-        '"Menampilkan: Tanggal posting, user, dan transaksi terkait."
-
-        'MutasiSaldoToolStripMenuItem.ToolTipText =
-        '"🔄 MUTASI SALDO" & Environment.NewLine &
-        '"Laporan perubahan saldo akun per periode." & Environment.NewLine &
-        '"Format: Awal periode + Mutasi = Saldo Akhir"
-
-        'MutasiBarangToolStripMenuItem.ToolTipText =
-        '"📊 MUTASI BARANG" & Environment.NewLine &
-        '"Histori pergerakan stok per item barang." & Environment.NewLine &
-        '"Detail: Stok awal, masuk, keluar, dan sisa."
-
-        'JurnalUmumToolStripMenuItem.ToolTipText =
-        '"📝 JURNAL UMUM" & Environment.NewLine &
-        '"Cetak seluruh jurnal akuntansi periode berjalan." & Environment.NewLine &
-        '"Filter tersedia per tipe jurnal/tanggal."
-
-        'NeracaLabaRugiToolStripMenuItem.ToolTipText =
-        '"⚖️ NERACA / LABA RUGI" & Environment.NewLine &
-        '"Laporan posisi keuangan dan kinerja perusahaan." & Environment.NewLine &
-        '"Komponen: Aset, Kewajiban, Ekuitas, Pendapatan, Biaya."
-
-        'BukuBesarToolStripMenuItem.ToolTipText =
-        '"📒 BUKU BESAR" & Environment.NewLine &
-        '"Laporan transaksi kronologis per akun." & Environment.NewLine &
-        '"Menampilkan debit/kredit dan saldo berjalan."
-
-        'BukuBesarPembantuToolStripMenuItem.ToolTipText =
-        '"📑 BUKU BESAR PEMBANTU" & Environment.NewLine &
-        '"Detail transaksi per akun tertentu." & Environment.NewLine &
-        '"Contoh: Hutang per vendor atau Piutang per pelanggan."
-
-        'LaporanPembelianToolStripMenuItem.ToolTipText =
-        '"🛒 LAPORAN PEMBELIAN" & Environment.NewLine &
-        '"Analisis pembelian per supplier/item." & Environment.NewLine &
-        '"Termasuk: Total nilai, diskon, dan PPN."
-
-        'LaporanPenjualanToolStripMenuItem.ToolTipText =
-        '"🏷️ LAPORAN PENJUALAN" & Environment.NewLine &
-        '"Statistik penjualan per produk/pelanggan." & Environment.NewLine &
-        '"Dapat dikelompokkan harian/mingguan/bulanan."
-
-        'LaporanPPNToolStripMenuItem.ToolTipText =
-        '"🧾 LAP. PENJUALAN PPN/NON PPN" & Environment.NewLine &
-        '"Rekap transaksi taxable dan non-taxable." & Environment.NewLine &
-        '"Untuk pelaporan pajak keluaran."
-
-        'ReturPembelianToolStripMenuItem.ToolTipText =
-        '"🔄 LAP. RETUR PEMBELIAN" & Environment.NewLine &
-        '"Rekap barang yang dikembalikan ke supplier." & Environment.NewLine &
-        '"Termasuk alasan retur dan nilai pengembalian."
-
-        'ReturPenjualanToolStripMenuItem.ToolTipText =
-        '"🔄 LAP. RETUR PENJUALAN" & Environment.NewLine &
-        '"Statistik produk yang sering dikembalikan." & Environment.NewLine &
-        '"Analisis penyebab retur pelanggan."
-
-        'LaporanHutangToolStripMenuItem.ToolTipText =
-        '"📉 LAPORAN HUTANG" & Environment.NewLine &
-        '"Analisis aging hutang ke vendor." & Environment.NewLine &
-        '"Kategori: 30/60/90 hari jatuh tempo."
-
-        'LaporanPiutangToolStripMenuItem.ToolTipText =
-        '"📈 LAPORAN PIUTANG" & Environment.NewLine &
-        '"Analisis tagihan belum tertagih." & Environment.NewLine &
-        '"Prioritas penagihan berdasarkan aging."
-
-        'LaporanKasPenjualanToolStripMenuItem.ToolTipText =
-        '"💵 LAP. KAS PENJUALAN" & Environment.NewLine &
-        '"Rekonsiliasi harian kasir." & Environment.NewLine &
-        '"Pencocokan fisik uang dengan sistem."
-
-        'TransferStokToolStripMenuItem.ToolTipText =
-        '"🚛 LAP. TRANSFER STOK" & Environment.NewLine &
-        '"Tracking perpindahan barang antar gudang." & Environment.NewLine &
-        '"Audit trail untuk kontrol inventory."
-
-        'StokOpnameToolStripMenuItem.ToolTipText =
-        '"🔍 LAP. STOK OPNAME" & Environment.NewLine &
-        '"Hasil penghitungan fisik vs sistem." & Environment.NewLine &
-        '"Menampilkan selisih dan penyesuaian."
-
-        'StokBarangToolStripMenuItem.ToolTipText =
-        '"📦 LAP. STOK BARANG" & Environment.NewLine &
-        '"Kondisi persediaan current." & Environment.NewLine &
-        '"Dapat difilter per kategori/lokasi."
-
-        'LaporanGrafikToolStripMenuItem.ToolTipText =
-        '"📊 LAP. GRAFIK" & Environment.NewLine &
-        '"Visualisasi data dalam bentuk chart." & Environment.NewLine &
-        '"Opsi: Trend penjualan, komparasi bulanan."
-
-        'LaporanHistoryToolStripMenuItem.ToolTipText =
-        '"🕰️ LAP. HISTORY" & Environment.NewLine &
-        '"Audit trail seluruh aktivitas sistem." & Environment.NewLine &
-        '"Mencatat: User, aksi, dan timestamp."
-
-        '' ==================== PENGATURAN SISTEM ====================
-        'TutupBulanToolStripMenuItem.ToolTipText =
-        '"📅 TUTUP BULAN" & Environment.NewLine &
-        '"Proses akuntansi untuk menutup periode bulanan." & Environment.NewLine &
-        '"Termasuk: Penyusutan, pembukuan, dan reset transaksi sementara."
-
-        'BackupDBToolStripMenuItem.ToolTipText =
-        '"💾 BACKUP DATABASE" & Environment.NewLine &
-        '"Membuat cadangan seluruh data sistem ke file eksternal." & Environment.NewLine &
-        '"Direkomendasikan dilakukan secara berkala untuk keamanan data."
-
-        'RestoreDBToolStripMenuItem.ToolTipText =
-        '"🔄 RESTORE DATABASE" & Environment.NewLine &
-        '"Mengembalikan data dari file backup sebelumnya." & Environment.NewLine &
-        '"Digunakan saat terjadi kerusakan data atau migrasi sistem."
-
-        'PerbaikiDBToolStripMenuItem.ToolTipText =
-        '"🔧 PERBAIKI DATABASE" & Environment.NewLine &
-        '"Tools untuk memperbaiki kerusakan atau error pada database." & Environment.NewLine &
-        '"Mengoptimalkan performa dan konsistensi data."
-
-        'UpdateTabelToolStripMenuItem.ToolTipText =
-        '"🛠️ UPDATE TABEL DATABASE" & Environment.NewLine &
-        '"Memperbarui struktur tabel database ke versi terbaru." & Environment.NewLine &
-        '"Diperlukan saat ada perubahan skema data."
-
-        'QueryDBToolStripMenuItem.ToolTipText =
-        '"📊 QUERY DATABASE" & Environment.NewLine &
-        '"Interface untuk mengeksekusi perintah SQL langsung." & Environment.NewLine &
-        '"Hanya untuk pengguna tingkat lanjut/administrator."
-
-        'SettingPrinterToolStripMenuItem.ToolTipText =
-        '"🖨️ SETTING PRINTER" & Environment.NewLine &
-        '"Mengkonfigurasi perangkat cetak dan format dokumen." & Environment.NewLine &
-        '"Termasuk: Ukuran kertas, margin, dan printer default."
-
-        'HapusTransaksiTokoToolStripMenuItem.ToolTipText =
-        '"🗑️ HAPUS TRANSAKSI TOKO" & Environment.NewLine &
-        '"Membersihkan data transaksi penjualan di level toko." & Environment.NewLine &
-        '"PERHATIAN: Operasi ini tidak dapat dibatalkan!"
-
-        'HapusTransaksiGudangToolStripMenuItem.ToolTipText =
-        '"🗑️ HAPUS TRANSAKSI GUDANG" & Environment.NewLine &
-        '"Membersihkan data transaksi inventory di level gudang." & Environment.NewLine &
-        '"PERHATIAN: Pastikan sudah ada backup data!"
-
-        'UpdateAplikasiToolStripMenuItem.ToolTipText =
-        '"🔄 PERIKSA UPDATE APLIKASI" & Environment.NewLine &
-        '"Memeriksa dan menginstall pembaruan versi aplikasi." & Environment.NewLine &
-        '"Memastikan sistem selalu up-to-date dengan fitur terbaru."
-
-        '' ==================== WINDOW MANAGEMENT ====================
-        'CascadeWindowsToolStripMenuItem.ToolTipText =
-        '"🪟 CASCADE WINDOWS" & Environment.NewLine &
-        '"Menata jendela aplikasi secara bertumpuk." & Environment.NewLine &
-        '"Memudahkan navigasi multi-dokumen."
-
-        'TileHorizontalToolStripMenuItem.ToolTipText =
-        '"⏸️ TILE HORIZONTAL" & Environment.NewLine &
-        '"Mengatur jendela dalam layout horizontal." & Environment.NewLine &
-        '"Untuk komparasi data side-by-side."
-
-        'TileVerticalToolStripMenuItem.ToolTipText =
-        '"⏯️ TILE VERTICAL" & Environment.NewLine &
-        '"Mengatur jendela dalam layout vertikal." & Environment.NewLine &
-        '"Optimal untuk dokumen berorientasi portrait."
-
-        'ArrangeIconsToolStripMenuItem.ToolTipText =
-        '"🗄️ ARRANGE ICONS" & Environment.NewLine &
-        '"Merapikan ikon minimized windows." & Environment.NewLine &
-        '"Membersihkan area kerja yang berantakan."
-
-        'CloseAllWindowsToolStripMenuItem.ToolTipText =
-        '"❌ CLOSE ALL WINDOWS" & Environment.NewLine &
-        '"Menutup seluruh jendela yang terbuka." & Environment.NewLine &
-        '"Reset workspace ke kondisi awal."
-
-
+        ModuleTooltip.AturTooltip(Me)
     End Sub
-
-    Public Sub AmbilKomputer()
-        Dim filePath As String = "printer.ini"
-
-        If File.Exists(filePath) Then
-            Using reader As New StreamReader(filePath)
-                Do While Not reader.EndOfStream
-                    Dim parts As String() = reader.ReadLine().Split("="c)
-                    If parts.Length = 2 Then
-                        Select Case parts(0).Trim()
-                            Case "StatusComp"
-                                Comp.Text = parts(1).Trim()
-                            Case "JenisPrinterJual"
-                                TxtJenisPrinter.Text = parts(1).Trim()
-                        End Select
-                    End If
-                Loop
-            End Using
-        Else
-            Comp.Text = "Server"
-            TxtJenisPrinter.Text = "Printer Thermal"
-        End If
-    End Sub
-
-    Private Function GetIniValue(ByVal filePath As String, ByVal key As String) As String
-        Dim value As String = ""
-        If File.Exists(filePath) Then
-            Using reader As New StreamReader(filePath)
-                Dim line As String = reader.ReadLine()
-                While line IsNot Nothing
-                    Dim parts As String() = line.Split("="c)
-                    If parts.Length = 2 Then
-                        Dim iniKey As String = parts(0)
-                        Dim iniValue As String = parts(1)
-
-                        If iniKey = key Then
-                            value = iniValue
-                            Exit While
-                        End If
-                    End If
-                    line = reader.ReadLine()
-                End While
-            End Using
-        End If
-
-        Return value
-    End Function
 
     Public Sub Terkunci()
         BtnNotif.Visible = False
@@ -474,14 +373,16 @@ Public Class FormUtama
         MenuPosting.Visible = False
         'HelpToolStripMenuItem.Visible = False
         WindowToolStripMenuItem.Visible = False
-        SServer1.Text = "DB :"
-        SServer.Text = ""
-        STanggal.Text = ""
-        SJam.Text = ""
-        SVersi.Text = ""
-        SServer.Text = ""
-        SLogin.Text = ""
-        SLevel.Text = ""
+        LblServer.Text = "DB :"
+        LblServerDb.Text = ""
+        StatusTanggal.Text = ""
+        LblJamSekarang.Text = ""
+        LblVersiApp.Text = ""
+        LblServerDb.Text = ""
+        StatusNamaUser.Text = ""
+        StatusLevelUser.Text = ""
+        StatusLokasi.Text = ""
+        StatusLokasi.Image = Nothing
         PanelMaster.Visible = False
         PanelTransaksi.Visible = False
         PanelTransaksi.Location = New Point(0, 31)
@@ -490,60 +391,30 @@ Public Class FormUtama
 
 
     Public Sub CekaktivasiProgram()
-        Dim serial As Long
-        Dim sm As New SecurityManager
-        Dim temp As String
-        Dim pjg As Integer
-        Dim newSerial As String = ""
-        serial = sm.GetSerial
-        temp = serial
-        pjg = temp.Length
-        For i As Integer = 1 To pjg
-            Dim a As String
-            Dim b As Integer
-            a = Mid(temp, i, 1)
-            b = Asc(a)
-            newSerial = newSerial & a & b Mod 2
-        Next
-        serialTextBox.Text = newSerial
-
-        CheckLicense()
-
-        Dim kg As New KeyGenerator
-        Dim key As String = kg.GenerateKey(serialTextBox.Text)
-
-        If activationKeyTextBox.Text <> key Then
-            statusLabel.ForeColor = Color.Red
-            statusLabel.Text = "Not Activated/invalid key"
+        ' Delegasikan sepenuhnya ke ACTIVATION_FORM yang ada di 7Reg
+        If Not ACTIVATION_FORM.IsActivated() Then
             RegristerToolStripMenuItem.Enabled = True
-
-            With ACTIVATION_FORM
-                .Activate()
-                .BringToFront()
-                .ShowDialog()
-            End With
-
+            ACTIVATION_FORM.ShowDialog()
         Else
-            statusLabel.ForeColor = Color.DarkGreen
-            statusLabel.Text = "Activated"
             RegristerToolStripMenuItem.Enabled = False
         End If
     End Sub
 
     Public Sub CheckLicense()
-        Dim kg As New KeyGenerator
-        Dim key As String = kg.GenerateKey(serialTextBox.Text)
-        If System.IO.File.Exists(bejoLicenseFile) Then
-            BejoWriteSettings(bejoLicenseFile, "LICENSE", "serial", serialTextBox.Text)
-            activationKeyTextBox.Text = BejoReadSettings(bejoLicenseFile, "LICENSE", "activation_key", "")
-        Else
-            BejoWriteSettings(bejoLicenseFile, "LICENSE", "serial", serialTextBox.Text)
-            activationKeyTextBox.Text = ""
-        End If
+        ' Delegasikan ke ACTIVATION_FORM
+        ACTIVATION_FORM.CheckLicense()
     End Sub
 
     Private Sub Timer2_Tick(ByVal sender As Object, ByVal e As EventArgs) Handles Timer2.Tick
-        SJam.Text = TimeOfDay
+        LblJamSekarang.Text = TimeOfDay
+    End Sub
+
+    Private Sub TimerCekSetting_Tick(sender As Object, e As EventArgs) Handles TimerCekSetting.Tick
+        ' Cek apakah ada perubahan general setting dari client lain
+        ' Query ringan: hanya MAX(updated_at), bukan load semua data
+        If Not String.IsNullOrEmpty(StatusNamaUser.Text) Then
+            ModulHakAkses.CekDanRefreshGeneralSetting()
+        End If
     End Sub
 
     '----------------------------------------- MAIN MENU ---------------------------------------------------------------------------
@@ -554,182 +425,65 @@ Public Class FormUtama
 
     Private Sub MenuMaster_Click(ByVal sender As Object, ByVal e As EventArgs) Handles MenuMaster.Click
         SetMenuBackgroundColor(MenuMaster)
-
-        GBTransaksi.Visible = False
-        DGVTransaksi.Columns.Clear()
+        ResetPanelMenu()
+        TutupSemuaForm()
         PanelMaster.Visible = True
-        PanelTransaksi.Visible = False
         PanelMaster.Location = New Point(0, 31)
         PanelMaster.Dock = System.Windows.Forms.DockStyle.Top
-
-        For Each frm As Form In MdiChildren
-            frm.Close()
-        Next
-
     End Sub
 
     Private Sub MenuTransaksi_Click(ByVal sender As Object, ByVal e As EventArgs) Handles MenuTransaksi.Click
         SetMenuBackgroundColor(MenuTransaksi)
-
-        GBTransaksi.Visible = False
-        DGVTransaksi.Columns.Clear()
-        PanelMaster.Visible = False
+        ResetPanelMenu()
+        TutupSemuaForm()
         PanelTransaksi.Visible = True
         PanelTransaksi.Location = New Point(0, 31)
         PanelTransaksi.Dock = System.Windows.Forms.DockStyle.Top
-
-        For Each frm As Form In MdiChildren
-            frm.Close()
-        Next
-
     End Sub
 
     Private Sub MenuJurnal_Click(ByVal sender As Object, ByVal e As EventArgs) Handles MenuJurnal.Click
         SetMenuBackgroundColor(MenuJurnal)
-
-        GBTransaksi.Visible = False
-        DGVTransaksi.Columns.Clear()
-        PanelMaster.Visible = False
-        PanelTransaksi.Visible = False
-
-        For Each frm As Form In MdiChildren
-            frm.Close()
-        Next
-
-        With FormKeuangan
-            .MdiParent = Me
-            .BringToFront()
-            .Dock = DockStyle.Fill
-            .Show()
-        End With
+        ResetPanelMenu()
+        TutupSemuaForm()
+        BukaFormMdi(My.Forms.FormKeuangan)
     End Sub
-
 
     Private Sub MenuKaryawan_Click(ByVal sender As Object, ByVal e As EventArgs) Handles MenuKaryawan.Click
         SetMenuBackgroundColor(MenuKaryawan)
-
-        GBTransaksi.Visible = False
-        DGVTransaksi.Columns.Clear()
-        PanelMaster.Visible = False
-        PanelTransaksi.Visible = False
-
-        For Each frm As Form In MdiChildren
-            frm.Close()
-        Next
-
+        ResetPanelMenu()
+        TutupSemuaForm()
     End Sub
 
     Private Sub MenuLaporan_Click(ByVal sender As Object, ByVal e As EventArgs) Handles MenuLaporan.Click
         SetMenuBackgroundColor(MenuLaporan)
-
-        GBTransaksi.Visible = False
-        DGVTransaksi.Columns.Clear()
-        PanelMaster.Visible = False
-        PanelTransaksi.Visible = False
+        ResetPanelMenu()
     End Sub
 
     Private Sub MenuUtility_Click(ByVal sender As Object, ByVal e As EventArgs) Handles MenuUtility.Click
         SetMenuBackgroundColor(MenuUtility)
-
-        GBTransaksi.Visible = False
-        DGVTransaksi.Columns.Clear()
-        PanelMaster.Visible = False
-        PanelTransaksi.Visible = False
-
-        For Each frm As Form In MdiChildren
-            frm.Close()
-        Next
+        ResetPanelMenu()
+        TutupSemuaForm()
     End Sub
 
 
     Private Sub PostingTokoToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles PostingTokoToolStripMenuItem.Click
-        GBTransaksi.Visible = False
-        DGVTransaksi.Columns.Clear()
-        PanelMaster.Visible = False
-        PanelTransaksi.Visible = False
-
-        For Each frm As Form In MdiChildren
-            frm.Close()
-        Next
-
-        ' Tampilkan pesan untuk memastikan sinkronisasi data
-        Dim result As DialogResult = MessageBox.Show("Penting! Jangan lupa untuk sering melakukan posting data agar sinkronisasi data tetap terjaga dan tidak terjadi perbedaan data antara sistem dan realita.",
-                                                       "Pesan Penting: Posting Data",
-                                                       MessageBoxButtons.YesNo,
-                                                       MessageBoxIcon.Information)
-
-        If result = DialogResult.No Then
-            Exit Sub
-        End If
-
-        With FormLoading
-            .Label1.Text = "Proses posting! Silahkan menunggu konfigurasi data"
-            '.MdiParent = Nothing
-            .BringToFront()
-            .Show()
-            .MulaiPosting("Toko")
-        End With
-        PanelTransaksi.Visible = True
+        JalankanPosting("Toko")
     End Sub
 
     Private Sub PostingGudangToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles PostingGudangToolStripMenuItem.Click
-        GBTransaksi.Visible = False
-        DGVTransaksi.Columns.Clear()
-        PanelMaster.Visible = False
-        PanelTransaksi.Visible = False
-
-        For Each frm As Form In MdiChildren
-            frm.Close()
-        Next
-
-        ' Tampilkan pesan untuk memastikan sinkronisasi data
-        Dim result As DialogResult = MessageBox.Show("Penting! Jangan lupa untuk sering melakukan posting data agar sinkronisasi data tetap terjaga dan tidak terjadi perbedaan data antara sistem dan realita.",
-                                                       "Pesan Penting: Posting Data",
-                                                       MessageBoxButtons.YesNo,
-                                                       MessageBoxIcon.Information)
-
-        If result = DialogResult.No Then
-            Exit Sub
-        End If
-
-        With FormLoading
-            .Label1.Text = "Proses posting! Silahkan menunggu konfigurasi data"
-            '.MdiParent = Nothing
-            .BringToFront()
-            .Show()
-            .MulaiPosting("Gudang")
-        End With
-        PanelTransaksi.Visible = True
+        JalankanPosting("Gudang")
     End Sub
 
     Private Sub PostingSemuaToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles PostingSemuaToolStripMenuItem.Click
-        GBTransaksi.Visible = False
-        DGVTransaksi.Columns.Clear()
-        PanelMaster.Visible = False
-        PanelTransaksi.Visible = False
+        JalankanPosting("Semua")
+    End Sub
 
-        For Each frm As Form In MdiChildren
-            frm.Close()
-        Next
+    Private Sub AuditTrailToolStripMenuItem1_Click(sender As Object, e As EventArgs) Handles AuditTrailToolStripMenuItem1.Click
+        TutupSemuaForm() : BukaFormMdi(My.Forms.FormAuditTrail)
+    End Sub
 
-        ' Tampilkan pesan untuk memastikan sinkronisasi data
-        Dim result As DialogResult = MessageBox.Show("Penting! Jangan lupa untuk sering melakukan posting data agar sinkronisasi data tetap terjaga dan tidak terjadi perbedaan data antara sistem dan realita.",
-                                                       "Pesan Penting: Posting Data",
-                                                       MessageBoxButtons.YesNo,
-                                                       MessageBoxIcon.Information)
-
-        If result = DialogResult.No Then
-            Exit Sub
-        End If
-
-        With FormLoading
-            .Label1.Text = "Proses posting! Silahkan menunggu konfigurasi data"
-            '.MdiParent = Nothing
-            .BringToFront()
-            .Show()
-            .MulaiPosting("Semua")
-        End With
-        PanelTransaksi.Visible = True
+    Private Sub AuditTrailArsipToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles AuditTrailArsipToolStripMenuItem.Click
+        TutupSemuaForm() : BukaFormMdi(My.Forms.FormAuditTrailArsip)
     End Sub
 
     Private Sub MenuPosting_Click(ByVal sender As Object, ByVal e As EventArgs) Handles MenuPosting.Click
@@ -737,33 +491,15 @@ Public Class FormUtama
     End Sub
 
     Private Sub WindowToolStripMenuItem_Click(ByVal sender As Object, ByVal e As EventArgs) Handles WindowToolStripMenuItem.Click
-        GBTransaksi.Visible = False
-        DGVTransaksi.Columns.Clear()
-        PanelMaster.Visible = False
-        PanelTransaksi.Visible = False
-
-        For Each frm As Form In MdiChildren
-            frm.Close()
-        Next
+        ResetPanelMenu()
+        TutupSemuaForm()
         SetMenuBackgroundColor(WindowToolStripMenuItem)
-
-
     End Sub
 
     Private Sub HelpToolStripMenuItem_Click(ByVal sender As Object, ByVal e As EventArgs) Handles HelpToolStripMenuItem.Click
-        GBTransaksi.Visible = False
-        DGVTransaksi.Columns.Clear()
-        PanelMaster.Visible = False
-        PanelTransaksi.Visible = False
-
-        For Each frm As Form In MdiChildren
-            frm.Close()
-        Next
-
-        SetMenuBackgroundColor(HelpToolStripMenuItem)
-
-        Dim message As String = "TERIMA KASIH ... !!!" & vbCrLf & "UNTUK INFORMASI LEBIH LANJUT TENTANG PROGRAM INI HUBUNGI : 082 335 314 336 / ADI"
-        MessageBox.Show(message, "Informasi", MessageBoxButtons.OK, MessageBoxIcon.Information)
+        ResetPanelMenu()
+        TutupSemuaForm()
+        TutupSemuaForm() : BukaFormMdi(My.Forms.FormAbout)
     End Sub
 
     '----------------------------------------- FILE ---------------------------------------------------------------------------
@@ -789,6 +525,10 @@ Public Class FormUtama
     End Sub
 
     Private Sub LogOutToolStripMenuItem_Click(ByVal sender As Object, ByVal e As EventArgs) Handles LogOutToolStripMenuItem.Click
+        ' === CLEAR CACHE SAAT LOGOUT ===
+        ModulHakAkses.ClearHakAksesCache()
+        TimerCekSetting.Stop()
+
         For Each frm As Form In MdiChildren
             frm.Close()
         Next
@@ -804,12 +544,30 @@ Public Class FormUtama
             .BringToFront()
             .ShowDialog()
         End With
+        If String.IsNullOrWhiteSpace(StatusNamaUser.Text) Then
+            Close()
+            Return
+        End If
 
-        With FormMasuk
-            .MdiParent = Nothing
-            .BringToFront()
-            .ShowDialog()
-        End With
+        Dim pilihanMasuk As String = AppConfig.Instance.GetValue(Of String)("PilihanMasuk", "").ToUpperInvariant()
+        If pilihanMasuk = "TOKO" OrElse pilihanMasuk = "GUDANG" Then
+            FormMasuk.TerapkanLokasiKeFormUtama(pilihanMasuk)
+        Else
+            With FormMasuk
+                .MdiParent = Nothing
+                .BringToFront()
+                .ShowDialog()
+            End With
+        End If
+        If String.IsNullOrWhiteSpace(StatusLokasi.Text) Then
+            Close()
+            Return
+        End If
+
+        ' === RE-CACHE HAK AKSES SETELAH LOGIN KEMBALI ===
+        If Not String.IsNullOrEmpty(StatusNamaUser.Text) Then
+            ModulHakAkses.CacheHakAksesUser(StatusLevelUser.Text)
+        End If
 
         With FormLoading
             .MdiParent = Nothing
@@ -817,12 +575,17 @@ Public Class FormUtama
             .Show()
             .MulaiLoading()
         End With
+
+        ' Pilih Penjualan sebagai tampilan default setelah re-login
+        If BtnPenjualan.Visible Then
+            BtnPenjualan.PerformClick()
+        ElseIf BtnBelanja.Visible Then
+            BtnBelanja.PerformClick()
+        End If
     End Sub
 
     Private Sub RegristerToolStripMenuItem_Click(ByVal sender As Object, ByVal e As EventArgs) Handles RegristerToolStripMenuItem.Click
-        For Each frm As Form In MdiChildren
-            frm.Close()
-        Next
+        TutupSemuaForm()
         With ACTIVATION_FORM
             .MdiParent = Me
             .BringToFront()
@@ -836,186 +599,90 @@ Public Class FormUtama
     Private Sub BtnToko_Click(ByVal sender As Object, ByVal e As EventArgs) Handles BtnToko.Click
         CekaktivasiProgram()
         SetButtonBackgroundColor(BtnToko)
-        For Each frm As Form In MdiChildren
-            frm.Close()
-        Next
-
-
-        With FormCompany
-            .MdiParent = Me
-            .BringToFront()
-            .Dock = DockStyle.Fill
-            .Show()
-        End With
+        TutupSemuaForm()
+        BukaFormMdi(My.Forms.FormCompany)
     End Sub
 
     Private Sub BtnBarang_Click(ByVal sender As Object, ByVal e As EventArgs) Handles BtnBarang.Click
-
         SetButtonBackgroundColor(BtnBarang)
-        For Each frm As Form In MdiChildren
-            frm.Close()
-        Next
-
-        With FormBarang
-            .MdiParent = Me
-            .BringToFront()
-            .Dock = DockStyle.Fill
-            .Show()
-        End With
-
+        TutupSemuaForm()
+        BukaFormMdi(My.Forms.FormBarang)
     End Sub
 
     Private Sub BtnSupliyer_Click(ByVal sender As Object, ByVal e As EventArgs) Handles BtnSupliyer.Click
-
         SetButtonBackgroundColor(BtnSupliyer)
-        For Each frm As Form In MdiChildren
-            frm.Close()
-        Next
-
-        With TambahSupliyer
-            .MdiParent = Me
-            .BringToFront()
-            .Dock = DockStyle.Fill
-            .Show()
-        End With
-
+        TutupSemuaForm()
+        BukaFormMdi(TambahSupliyer)
     End Sub
 
     Private Sub BTnPelanggan_Click(ByVal sender As Object, ByVal e As EventArgs) Handles BTnPelanggan.Click
-
         SetButtonBackgroundColor(BTnPelanggan)
-        For Each frm As Form In MdiChildren
-            frm.Close()
-        Next
-
-        With TambahPelanggan
-            .MdiParent = Me
-            .BringToFront()
-            .Dock = DockStyle.Fill
-            .Show()
-        End With
+        TutupSemuaForm()
+        BukaFormMdi(TambahPelanggan)
     End Sub
 
     Private Sub BtnUser_Click(ByVal sender As Object, ByVal e As EventArgs) Handles BtnUser.Click
-
         SetButtonBackgroundColor(BtnUser)
-        For Each frm As Form In MdiChildren
-            frm.Close()
-        Next
-
-        With FormUser
-            .MdiParent = Me
-            .BringToFront()
-            .Dock = DockStyle.Fill
-            .Show()
-        End With
+        TutupSemuaForm()
+        BukaFormMdi(My.Forms.FormUser)
     End Sub
 
     Private Sub BtnTabelRef_Click(ByVal sender As Object, ByVal e As EventArgs) Handles BtnTabelRef.Click
-
         SetButtonBackgroundColor(BtnTabelRef)
-        For Each frm As Form In MdiChildren
-            frm.Close()
-        Next
-
-        With FormTabelReferensi
-            .MdiParent = Me
-            .BringToFront()
-            .Dock = DockStyle.Fill
-            .Show()
-        End With
+        TutupSemuaForm()
+        BukaFormMdi(My.Forms.FormTabelReferensi)
     End Sub
 
     Private Sub BtnArmada_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles BtnArmada.Click
-
         SetButtonBackgroundColor(BtnArmada)
-        For Each frm As Form In MdiChildren
-            frm.Close()
-        Next
-
-        With FormArmada
-            .MdiParent = Me
-            .BringToFront()
-            .Dock = DockStyle.Fill
-            .Show()
-        End With
+        TutupSemuaForm()
+        BukaFormMdi(My.Forms.FormArmada)
     End Sub
 
     Private Sub BtnKaryawan_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles BtnKaryawan.Click
-
         SetButtonBackgroundColor(BtnKaryawan)
-        For Each frm As Form In MdiChildren
-            frm.Close()
-        Next
+        TutupSemuaForm()
+        BukaFormMdi(My.Forms.FormKaryawan)
+    End Sub
 
-        With FormKaryawan
-            .MdiParent = Me
-            .BringToFront()
-            .Dock = DockStyle.Fill
-            .Show()
-        End With
+    Private Sub BtnCabang_Click(sender As Object, e As EventArgs) Handles BtnKirimCabang.Click
+        IniTransaksiPanel(BtnKirimCabang, "Transfer Cabang")
+        TerapkanHakAkses("Transfer Cabang")
+        AturTombolTransaksi("Transfer Cabang")
+        BtnTambah.Text = "Transfer Antar Cabang (F2)"
+        BtnPrint.Text = "Cetak Nota Transfer Cabang (F5)"
+        AturTombolSettingPrinter()
+        DataTransferCabang()
+    End Sub
+
+    Private Sub BtnMasterCabang_Click(sender As Object, e As EventArgs) Handles BtnMasterCabang.Click
+        SetButtonBackgroundColor(BtnMasterCabang)
+        TutupSemuaForm()
+        BukaFormMdi(My.Forms.FormCabang)
     End Sub
 
     Private Sub BtnHakAksesUser_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles BtnHakAksesUser.Click
-
         SetButtonBackgroundColor(BtnHakAksesUser)
-        For Each frm As Form In MdiChildren
-            frm.Close()
-        Next
-
-        With FormHakUser
-            .MdiParent = Me
-            .BringToFront()
-            .Dock = DockStyle.Fill
-            .Show()
-        End With
+        TutupSemuaForm()
+        BukaFormMdi(My.Forms.FormHakUser)
     End Sub
 
-
     Private Sub BtnGeneralSetting_Click(sender As Object, e As EventArgs) Handles BtnGeneralSetting.Click
-
         SetButtonBackgroundColor(BtnGeneralSetting)
-        For Each frm As Form In MdiChildren
-            frm.Close()
-        Next
-
-        With FormGeneralSetting
-            .MdiParent = Me
-            .BringToFront()
-            .Dock = DockStyle.Fill
-            .Show()
-        End With
+        TutupSemuaForm()
+        BukaFormMdi(My.Forms.FormGeneralSetting)
     End Sub
 
 
     '----------------------------------------- TRANSAKSI ---------------------------------------------------------------------------
 
     Private Sub BtnBelanja_Click(ByVal sender As Object, ByVal e As EventArgs) Handles BtnBelanja.Click
-        SetButtonBackgroundColor(BtnBelanja)
-        For Each frm As Form In MdiChildren
-            frm.Close()
-        Next
-
-        DtpTransaksi.Value = Now
-        TxtTransaksi.Text = "Pembelian"
-        Panel2.Width = 893
-        DGVDetail.Visible = True
-        LblDetailTransaksi.Visible = True
-        GBTransaksi.Visible = True
-        TxtFakturTransaksi.Clear()
-
+        IniTransaksiPanel(BtnBelanja, "Pembelian")
+        TerapkanHakAkses("Pembelian")
+        AturTombolTransaksi("Pembelian")
         BtnTambah.Text = "Tambah Pembelian (F2)"
-        BTNEdit.Text = "Edit Pembelian (F3)"
-        BtnHapus.Text = "Hapus Pembelian (F4)"
         BtnPrint.Text = "Cetak Nota Beli (F5)"
-        LblDetailTransaksi.Text = "Detail Pembelian : "
-
-        Dim HakAkses As Boolean() = ModulHakAkses.BacaHakAkses(SLevel.Text, "Pembelian", conn)
-        ' Terapkan nilai hak akses ke tombol-tombol
-        BtnTambah.Visible = HakAkses(1) ' CanAdd 
-        BTNEdit.Visible = HakAkses(2) ' CanEdit 
-        BtnHapus.Visible = HakAkses(3) ' CanDelete 
-        BtnPrint.Visible = HakAkses(1) ' CanAdd 
+        AturTombolSettingPrinter()
         Datapembelian()
     End Sub
 
@@ -1026,995 +693,347 @@ Public Class FormUtama
             .AllowUserToOrderColumns = False
             .AllowUserToResizeColumns = False
             .AllowUserToResizeRows = False
-
-
-            .EnableHeadersVisualStyles = False
-            .ColumnHeadersDefaultCellStyle.BackColor = Color.Gray
-            ' Set alternating row style
-            .AlternatingRowsDefaultCellStyle.BackColor = Color.LightGray
-
-            ' Set visual style
             .BorderStyle = BorderStyle.FixedSingle
-            .GridColor = Color.Silver
-            .BackgroundColor = Color.White
-
-            ' Enable double buffering to reduce flickering
-            DataGridViewExtension.EnableDoubleBuffering(DGVTransaksi)
         End With
+        ModuleTheme.ApplyThemeDataGridView(DGVTransaksi)
     End Sub
 
-    Public Class DataGridViewExtension
-        Public Shared Sub EnableDoubleBuffering(ByVal dataGridView As DataGridView)
-            dataGridView.GetType().InvokeMember("DoubleBuffered", BindingFlags.NonPublic Or BindingFlags.Instance Or BindingFlags.SetProperty, Nothing, dataGridView, New Object() {True})
-        End Sub
-    End Class
+    Private Function GetFilterTabPrinter(namaTransaksi As String) As String
+        Select Case namaTransaksi
+            Case "Pembelian"
+                Return "Beli"
+            Case "Penjualan"
+                Return "Jual"
+            Case "Retur Pembelian"
+                Return "ReturBeli"
+            Case "Retur Penjualan"
+                Return "ReturJual"
+            Case "Bayar Hutang"
+                Return "BayarHutang"
+            Case "Bayar Piutang"
+                Return "BayarPiutang"
+            Case "Surat Jalan"
+                Return "SuratJalan"
+            Case "Transfer Barang"
+                Return "TransferBarang"
+            Case "Transfer Cabang"
+                Return "TransferCabang"
+            Case Else
+                Return ""
+        End Select
+    End Function
+
+    Private Sub AturTombolSettingPrinter()
+        Dim trxKey As String = GetFilterTabPrinter(TxtTransaksi.Text)
+        Dim ada As Boolean = Not String.IsNullOrEmpty(trxKey)
+        BtnSettingPrinter.Visible = ada
+        CmbPilihCetak.Visible = ada
+        CmbProsesCetak.Visible = ada
+        If ada Then
+            ' Muat nilai dari file tanpa trigger SelectedIndexChanged
+            RemoveHandler CmbPilihCetak.SelectedIndexChanged, AddressOf CmbPilihCetak_SelectedIndexChanged
+            RemoveHandler CmbProsesCetak.SelectedIndexChanged, AddressOf CmbProsesCetak_SelectedIndexChanged
+            CmbPilihCetak.Text = BacaPengaturanPrinter(trxKey, "CetakOtomatis", "IYA")
+            CmbProsesCetak.Text = BacaPengaturanPrinter(trxKey, "PilihPrinter", "LANGSUNG CETAK")
+            AddHandler CmbPilihCetak.SelectedIndexChanged, AddressOf CmbPilihCetak_SelectedIndexChanged
+            AddHandler CmbProsesCetak.SelectedIndexChanged, AddressOf CmbProsesCetak_SelectedIndexChanged
+        End If
+    End Sub
+
+    Private Sub CmbPilihCetak_SelectedIndexChanged(sender As Object, e As EventArgs)
+        Dim trxKey As String = GetFilterTabPrinter(TxtTransaksi.Text)
+        If Not String.IsNullOrEmpty(trxKey) Then
+            TulisPengaturanPrinter(trxKey, "CetakOtomatis", CmbPilihCetak.Text)
+        End If
+    End Sub
+
+    Private Sub CmbProsesCetak_SelectedIndexChanged(sender As Object, e As EventArgs)
+        Dim trxKey As String = GetFilterTabPrinter(TxtTransaksi.Text)
+        If Not String.IsNullOrEmpty(trxKey) Then
+            TulisPengaturanPrinter(trxKey, "PilihPrinter", CmbProsesCetak.Text)
+        End If
+    End Sub
 
 
 
     Public Sub Datapembelian()
-        Dim searchTextfilter As String = "%" & TxtFilter.Text & "%"
-        Dim tanggalAwal As Date = DtpTransaksi.Value.Date
-        Dim tanggalAkhir As Date = DtpTransaksi.Value.Date.AddDays(1).AddTicks(-1)
-
-
-        Dim queryJumlah As String = "SELECT COUNT(*) AS RECORD, SUM(GRAND_TOTAL_BELI) AS TOTAL FROM pembelian WHERE TGL_BELI >= @tanggalAwal AND TGL_BELI <= @tanggalAkhir AND ID_PEMBELIAN LIKE @SearchText"
-        Using cmdHitungJumlah As New MySqlCommand(queryJumlah, conn)
-            cmdHitungJumlah.Parameters.AddWithValue("@tanggalAwal", tanggalAwal.ToString("yyyy-MM-dd HH:mm:ss"))
-            cmdHitungJumlah.Parameters.AddWithValue("@tanggalAkhir", tanggalAkhir.ToString("yyyy-MM-dd HH:mm:ss"))
-            cmdHitungJumlah.Parameters.AddWithValue("@SearchText", searchTextfilter)
-            Using rdJumlah As MySqlDataReader = cmdHitungJumlah.ExecuteReader()
-                If rdJumlah.Read() Then
-                    Dim jumlahRecord As Integer = If(Not Convert.IsDBNull(rdJumlah("RECORD")), CInt(rdJumlah("RECORD")), 0)
-                    Dim totalBelanja As Decimal = If(Not Convert.IsDBNull(rdJumlah("TOTAL")), CDec(rdJumlah("TOTAL")), 0.0)
-
-                    LblRangkuman.Text = "Jumlah Record: " & jumlahRecord.ToString("N0") & Environment.NewLine & "Total Belanja: Rp. " & totalBelanja.ToString("N0")
-                Else
-                    LblRangkuman.Text = "0"
-                End If
-            End Using
-        End Using
-
-        DGVTransaksi.Columns.Clear()
-        DGVDetail.Columns.Clear()
-        Dim queryString As String = "SELECT ID_PEMBELIAN, NAMA_SUPLIYER, LOKASI, JENIS_BAYAR, GRAND_TOTAL_BELI, PEMBAYARAN, RETUR, TAGIHAN, STATUS_TRANSAKSI_BELI, ID_USER FROM pembelian WHERE TGL_BELI >= @tanggalAwal AND TGL_BELI <= @tanggalAkhir  AND ID_PEMBELIAN LIKE @SearchText ORDER BY ID_PEMBELIAN ASC"
-
-        Using da As New MySqlDataAdapter(queryString, conn)
-            da.SelectCommand.Parameters.AddWithValue("@tanggalAwal", tanggalAwal.ToString("yyyy-MM-dd HH:mm:ss"))
-            da.SelectCommand.Parameters.AddWithValue("@tanggalAkhir", tanggalAkhir.ToString("yyyy-MM-dd HH:mm:ss"))
-            da.SelectCommand.Parameters.AddWithValue("@SearchText", searchTextfilter)
-            Using ds As New DataSet
-                da.Fill(ds, "pembelian")
-                DGVTransaksi.DataSource = ds.Tables("pembelian")
-            End Using
-        End Using
-
+        Dim sf As String = "%" & TxtFilter.Text & "%"
+        Dim tAwal As Date = DtpTransaksi.Value.Date
+        Dim tAkhir As Date = tAwal.AddDays(1).AddTicks(-1)
+        HitungRangkuman("SELECT COUNT(*) AS RECORD, COALESCE(SUM(GRAND_TOTAL_BELI), 0) AS TOTAL FROM pembelian WHERE TGL_BELI >= @tanggalAwal AND TGL_BELI <= @tanggalAkhir AND ID_PEMBELIAN LIKE @SearchText", "Total Belanja", tAwal, tAkhir, sf)
+        LoadDataTransaksi("SELECT ID_PEMBELIAN, NAMA_SUPLIYER, LOKASI, JENIS_BAYAR, GRAND_TOTAL_BELI, PEMBAYARAN, RETUR, TAGIHAN, STATUS_TRANSAKSI_BELI, ID_USER FROM pembelian WHERE TGL_BELI >= @tanggalAwal AND TGL_BELI <= @tanggalAkhir AND ID_PEMBELIAN LIKE @SearchText ORDER BY ID_PEMBELIAN ASC", "pembelian", tAwal, tAkhir, sf)
         With DGVTransaksi
-            ' Pengaturan teks header kolom
-            .Columns(0).HeaderText = "NOTA"
-            .Columns(1).HeaderText = "SUPLIYER"
-            .Columns(2).HeaderText = "LOKASI"
-            .Columns(3).HeaderText = "R KREDIT"
-            .Columns(4).HeaderText = "TOTAL"
-            .Columns(5).HeaderText = "PEMBAYARAN"
-            .Columns(6).HeaderText = "RETUR"
-            .Columns(7).HeaderText = "HUTANG"
-            .Columns(8).HeaderText = "STATUS"
-            .Columns(9).HeaderText = "USER"
-
-            ' Pengaturan format dan alignment kolom yang relevan
-            .Columns(4).DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight
-            .Columns(4).DefaultCellStyle.Format = "#,0.##"
-            .Columns(5).DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight
-            .Columns(5).DefaultCellStyle.Format = "#,0.##"
-            .Columns(6).DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight
-            .Columns(6).DefaultCellStyle.Format = "#,0.##"
-            .Columns(7).DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight
-            .Columns(7).DefaultCellStyle.Format = "#,0.##"
-
-            UbahTampilanDataTransaksi()
-            .ClearSelection()
+            .Columns(0).HeaderText = "NOTA" : .Columns(1).HeaderText = "SUPLIYER" : .Columns(2).HeaderText = "LOKASI"
+            .Columns(3).HeaderText = "R KREDIT" : .Columns(4).HeaderText = "TOTAL" : .Columns(5).HeaderText = "PEMBAYARAN"
+            .Columns(6).HeaderText = "RETUR" : .Columns(7).HeaderText = "HUTANG" : .Columns(8).HeaderText = "STATUS" : .Columns(9).HeaderText = "USER"
+            AturKolomAngka(DGVTransaksi, 4, 5, 6, 7)
+            UbahTampilanDataTransaksi() : .ClearSelection()
         End With
-        TxtFakturTransaksi.Clear()
-        TxtLokasiUntukEdit.Clear()
-        DGVDetail.Columns.Clear()
-        LblDetailTransaksi.Text = "Detail Pembelian : "
+        BersihkanKontrolTransaksi("Detail Pembelian : ")
     End Sub
 
     Private Sub BtnPenjualan_Click(ByVal sender As Object, ByVal e As EventArgs) Handles BtnPenjualan.Click
-        SetButtonBackgroundColor(BtnPenjualan)
-        For Each frm As Form In MdiChildren
-            frm.Close()
-        Next
-        DtpTransaksi.Value = Now
-        TxtTransaksi.Text = "Penjualan"
-        Panel2.Width = 893
-        DGVDetail.Visible = True
-        LblDetailTransaksi.Visible = True
-        GBTransaksi.Visible = True
-        TxtFakturTransaksi.Clear()
-
-        Dim HakAkses As Boolean() = ModulHakAkses.BacaHakAkses(SLevel.Text, "Penjualan", conn)
-        ' Terapkan nilai hak akses ke tombol-tombol
-        BtnTambah.Visible = HakAkses(1) ' CanAdd 
-        BTNEdit.Visible = HakAkses(2) ' CanEdit 
-        BtnHapus.Visible = HakAkses(3) ' CanDelete 
-        BtnPrint.Visible = HakAkses(1) ' CanAdd 
-
-        BtnTambah.Text = "Tambah Penjualan (F2)"
-        BTNEdit.Text = "Edit Penjualan (F3)"
-        BtnHapus.Text = "Hapus Penjualan (F4)"
+        IniTransaksiPanel(BtnPenjualan, "Penjualan")
+        TerapkanHakAkses("Penjualan")
+        AturTombolTransaksi("Penjualan")
         BtnPrint.Text = "Cetak Struk Jual (F5)"
-        LblDetailTransaksi.Text = "Detail Penjualan : "
+        AturTombolSettingPrinter()
         Datapenjualan()
     End Sub
 
     Public Sub Datapenjualan()
-        Dim searchTextfilter As String = "%" & TxtFilter.Text & "%"
-        Dim tanggalAwal As Date = DtpTransaksi.Value.Date
-        Dim tanggalAkhir As Date = DtpTransaksi.Value.Date.AddDays(1).AddTicks(-1)
-
-
-        Dim queryJumlah As String = "SELECT COUNT(*) AS RECORD, SUM(GRAND_TOTAL_STL_PAJAK) AS TOTAL FROM penjualan WHERE TGL_TRANSAKSI >= @tanggalAwal AND TGL_TRANSAKSI <= @tanggalAkhir AND ID_PENJUALAN LIKE @SearchText"
-        Using cmdHitungJumlah As New MySqlCommand(queryJumlah, conn)
-            cmdHitungJumlah.Parameters.AddWithValue("@tanggalAwal", tanggalAwal.ToString("yyyy-MM-dd HH:mm:ss"))
-            cmdHitungJumlah.Parameters.AddWithValue("@tanggalAkhir", tanggalAkhir.ToString("yyyy-MM-dd HH:mm:ss"))
-            cmdHitungJumlah.Parameters.AddWithValue("@SearchText", searchTextfilter)
-            Using rdJumlah As MySqlDataReader = cmdHitungJumlah.ExecuteReader()
-                If rdJumlah.Read() Then
-                    Dim jumlahRecord As Integer = If(Not Convert.IsDBNull(rdJumlah("RECORD")), CInt(rdJumlah("RECORD")), 0)
-                    Dim totalBelanja As Decimal = If(Not Convert.IsDBNull(rdJumlah("TOTAL")), CDec(rdJumlah("TOTAL")), 0.0)
-
-                    LblRangkuman.Text = "Jumlah Record: " & jumlahRecord.ToString("N0") & Environment.NewLine & "Total Penjualan: Rp. " & totalBelanja.ToString("N0")
-                Else
-                    LblRangkuman.Text = "0"
-                End If
-            End Using
-        End Using
-
-        DGVTransaksi.Columns.Clear()
-        DGVDetail.Columns.Clear()
-        Dim queryString As String = "SELECT ID_PENJUALAN, NAMA_PELANGGAN, LOKASIBARANG, JENIS_PEMBAYARAN, GRAND_TOTAL_STL_PAJAK, BAYAR, KEMBALI, NILAI_RETUR, SISA_TAGIHAN, STATUS_TRANSAKSI, ID_USER FROM penjualan WHERE TGL_TRANSAKSI >= @tanggalAwal AND TGL_TRANSAKSI <= @tanggalAkhir AND ID_PENJUALAN LIKE @SearchText ORDER BY ID_PENJUALAN ASC"
-
-        Using da As New MySqlDataAdapter(queryString, conn)
-            da.SelectCommand.Parameters.AddWithValue("@tanggalAwal", tanggalAwal.ToString("yyyy-MM-dd HH:mm:ss"))
-            da.SelectCommand.Parameters.AddWithValue("@tanggalAkhir", tanggalAkhir.ToString("yyyy-MM-dd HH:mm:ss"))
-            da.SelectCommand.Parameters.AddWithValue("@SearchText", searchTextfilter)
-            Using ds As New DataSet
-                da.Fill(ds, "penjualan")
-                DGVTransaksi.DataSource = ds.Tables("penjualan")
-            End Using
-        End Using
-
+        Dim sf As String = "%" & TxtFilter.Text & "%"
+        Dim tAwal As Date = DtpTransaksi.Value.Date
+        Dim tAkhir As Date = tAwal.AddDays(1).AddTicks(-1)
+        HitungRangkuman("SELECT COUNT(*) AS RECORD, COALESCE(SUM(GRAND_TOTAL_STL_PAJAK), 0) AS TOTAL FROM penjualan WHERE TGL_TRANSAKSI >= @tanggalAwal AND TGL_TRANSAKSI <= @tanggalAkhir AND ID_PENJUALAN LIKE @SearchText", "Total Penjualan", tAwal, tAkhir, sf)
+        LoadDataTransaksi("SELECT ID_PENJUALAN, NAMA_PELANGGAN, LOKASIBARANG, JENIS_PEMBAYARAN, GRAND_TOTAL_STL_PAJAK, BAYAR, NOMINAL_TRANSFER, KEMBALI, NILAI_RETUR, SISA_TAGIHAN, STATUS_TRANSAKSI, ID_USER FROM penjualan WHERE TGL_TRANSAKSI >= @tanggalAwal AND TGL_TRANSAKSI <= @tanggalAkhir AND ID_PENJUALAN LIKE @SearchText ORDER BY ID_PENJUALAN ASC", "penjualan", tAwal, tAkhir, sf)
         With DGVTransaksi
-            ' Nama kolom yang sesuai
-            .Columns("ID_PENJUALAN").HeaderText = "NOTA"
-            .Columns(0).FillWeight = 130
-            .Columns("NAMA_PELANGGAN").HeaderText = "PELANGGAN"
-            .Columns("LOKASIBARANG").HeaderText = "LOKASI"
-            .Columns("JENIS_PEMBAYARAN").HeaderText = "R DEBET"
-            .Columns("GRAND_TOTAL_STL_PAJAK").HeaderText = "TOTAL"
-            .Columns("BAYAR").HeaderText = "BAYAR"
-            .Columns("KEMBALI").HeaderText = "KEMBALI"
-            .Columns("NILAI_RETUR").HeaderText = "RETUR"
-            .Columns("SISA_TAGIHAN").HeaderText = "PIUTANG"
-            .Columns("STATUS_TRANSAKSI").HeaderText = "STATUS"
-            .Columns("ID_USER").HeaderText = "USER"
-
-            Dim currencyStyle As New DataGridViewCellStyle With {
-            .Alignment = DataGridViewContentAlignment.MiddleRight,
-            .Format = "#,0.##"
-        }
-
-            ' Menggunakan nama kolom yang sesuai
-            .Columns("GRAND_TOTAL_STL_PAJAK").DefaultCellStyle = currencyStyle
-            .Columns("BAYAR").DefaultCellStyle = currencyStyle
-            .Columns("NILAI_RETUR").DefaultCellStyle = currencyStyle
-            .Columns("KEMBALI").DefaultCellStyle = currencyStyle
-            .Columns("SISA_TAGIHAN").DefaultCellStyle = currencyStyle
-
-            UbahTampilanDataTransaksi()
-            .ClearSelection()
+            .Columns("ID_PENJUALAN").HeaderText = "NOTA" : .Columns(0).FillWeight = 130
+            .Columns("NAMA_PELANGGAN").HeaderText = "PELANGGAN" : .Columns("LOKASIBARANG").HeaderText = "LOKASI"
+            .Columns("JENIS_PEMBAYARAN").HeaderText = "R DEBET" : .Columns("GRAND_TOTAL_STL_PAJAK").HeaderText = "TOTAL"
+            .Columns("BAYAR").HeaderText = "BAYAR" : .Columns("NOMINAL_TRANSFER").HeaderText = "TRANSFER"
+            .Columns("KEMBALI").HeaderText = "KEMBALI" : .Columns("NILAI_RETUR").HeaderText = "RETUR"
+            .Columns("SISA_TAGIHAN").HeaderText = "PIUTANG" : .Columns("STATUS_TRANSAKSI").HeaderText = "STATUS" : .Columns("ID_USER").HeaderText = "USER"
+            AturKolomAngka(DGVTransaksi, "GRAND_TOTAL_STL_PAJAK", "BAYAR", "NOMINAL_TRANSFER", "NILAI_RETUR", "KEMBALI", "SISA_TAGIHAN")
+            UbahTampilanDataTransaksi() : .ClearSelection()
         End With
-        TxtFakturTransaksi.Clear()
-        TxtLokasiUntukEdit.Clear()
-        DGVDetail.Columns.Clear()
-        LblDetailTransaksi.Text = "Detail Penjualan : "
+        BersihkanKontrolTransaksi("Detail Penjualan : ")
     End Sub
 
     Private Sub BtnRetuBelanja_Click(ByVal sender As Object, ByVal e As EventArgs) Handles BtnRetuBelanja.Click
-        SetButtonBackgroundColor(BtnRetuBelanja)
-        For Each frm As Form In MdiChildren
-            frm.Close()
-        Next
-        DtpTransaksi.Value = Now
-        TxtTransaksi.Text = "Retur Pembelian"
-        Panel2.Width = 893
-        DGVDetail.Visible = True
-        LblDetailTransaksi.Visible = True
-        GBTransaksi.Visible = True
-        TxtFakturTransaksi.Clear()
-
-        Dim HakAkses As Boolean() = ModulHakAkses.BacaHakAkses(SLevel.Text, "Retur Pembelian", conn)
-        ' Terapkan nilai hak akses ke tombol-tombol
-        BtnTambah.Visible = HakAkses(1) ' CanAdd 
-        BTNEdit.Visible = HakAkses(2) ' CanEdit 
-        BtnHapus.Visible = HakAkses(3) ' CanDelete 
-
-
-        BtnTambah.Text = "Tambah Retur Beli (F2)"
-        BTNEdit.Text = "Edit Retur Beli (F3)"
-        BtnHapus.Text = "Hapus Retur Beli (F4)"
+        IniTransaksiPanel(BtnRetuBelanja, "Retur Pembelian")
+        TerapkanHakAkses("Retur Pembelian", showPrint:=False)
+        AturTombolTransaksi("Retur Beli")
         BtnPrint.Text = "Cetak Nota Retur Beli (F5)"
-        LblDetailTransaksi.Text = "Detail Retur Pembelian : "
+        AturTombolSettingPrinter()
         DatareturPembelian()
     End Sub
 
     Public Sub DatareturPembelian()
-        Dim searchTextfilter As String = "%" & TxtFilter.Text & "%"
-        Dim tanggalAwal As Date = DtpTransaksi.Value.Date
-        Dim tanggalAkhir As Date = DtpTransaksi.Value.Date.AddDays(1).AddTicks(-1)
-
-
-        Dim queryJumlah As String = "SELECT COUNT(*) AS RECORD, SUM(TOTAL_RUPIAH) AS TOTAL FROM retur_pembelian WHERE TGL_RETUR_BELI >= @tanggalAwal AND TGL_RETUR_BELI <= @tanggalAkhir AND ID_RETUR_PEMBELIAN LIKE @SearchText"
-        Using cmdHitungJumlah As New MySqlCommand(queryJumlah, conn)
-            cmdHitungJumlah.Parameters.AddWithValue("@tanggalAwal", tanggalAwal.ToString("yyyy-MM-dd HH:mm:ss"))
-            cmdHitungJumlah.Parameters.AddWithValue("@tanggalAkhir", tanggalAkhir.ToString("yyyy-MM-dd HH:mm:ss"))
-            cmdHitungJumlah.Parameters.AddWithValue("@SearchText", searchTextfilter)
-            Using rdJumlah As MySqlDataReader = cmdHitungJumlah.ExecuteReader()
-                If rdJumlah.Read() Then
-                    Dim jumlahRecord As Integer = If(Not Convert.IsDBNull(rdJumlah("RECORD")), CInt(rdJumlah("RECORD")), 0)
-                    Dim totalBelanja As Decimal = If(Not Convert.IsDBNull(rdJumlah("TOTAL")), CDec(rdJumlah("TOTAL")), 0.0)
-
-                    LblRangkuman.Text = "Jumlah Record: " & jumlahRecord.ToString("N0") & Environment.NewLine & "Total Retur Beli: Rp. " & totalBelanja.ToString("N0")
-                Else
-                    LblRangkuman.Text = "0"
-                End If
-            End Using
-        End Using
-
-
-        DGVTransaksi.Columns.Clear()
-        DGVDetail.Columns.Clear()
-        Dim queryString As String = "SELECT ID_RETUR_PEMBELIAN, NAMA_SUPPLIER, ID_PEMBELIAN, TGL_PEMBELIAN, PENYIMPANAN, TOTAL_BARANG, TOTAL_RUPIAH, NAMA_REKENING, KODE_REKENING, ID_USER FROM retur_pembelian WHERE TGL_RETUR_BELI >= @tanggalAwal AND TGL_RETUR_BELI <= @tanggalAkhir AND ID_RETUR_PEMBELIAN LIKE @SearchText ORDER BY ID_RETUR_PEMBELIAN ASC"
-
-        Using da As New MySqlDataAdapter(queryString, conn)
-            da.SelectCommand.Parameters.AddWithValue("@tanggalAwal", tanggalAwal.ToString("yyyy-MM-dd HH:mm:ss"))
-            da.SelectCommand.Parameters.AddWithValue("@tanggalAkhir", tanggalAkhir.ToString("yyyy-MM-dd HH:mm:ss"))
-            da.SelectCommand.Parameters.AddWithValue("@SearchText", searchTextfilter)
-            Using ds As New DataSet
-                da.Fill(ds, "retur_pembelian")
-                DGVTransaksi.DataSource = ds.Tables("retur_pembelian")
-            End Using
-        End Using
-
+        Dim sf As String = "%" & TxtFilter.Text & "%"
+        Dim tAwal As Date = DtpTransaksi.Value.Date
+        Dim tAkhir As Date = tAwal.AddDays(1).AddTicks(-1)
+        HitungRangkuman("SELECT COUNT(*) AS RECORD, COALESCE(SUM(TOTAL_RUPIAH), 0) AS TOTAL FROM retur_pembelian WHERE TGL_RETUR_BELI >= @tanggalAwal AND TGL_RETUR_BELI <= @tanggalAkhir AND ID_RETUR_PEMBELIAN LIKE @SearchText", "Total Retur Beli", tAwal, tAkhir, sf)
+        LoadDataTransaksi("SELECT ID_RETUR_PEMBELIAN, NAMA_SUPPLIER, ID_PEMBELIAN, TGL_PEMBELIAN, PENYIMPANAN, TOTAL_BARANG, TOTAL_RUPIAH, NAMA_REKENING, KODE_REKENING, ID_USER FROM retur_pembelian WHERE TGL_RETUR_BELI >= @tanggalAwal AND TGL_RETUR_BELI <= @tanggalAkhir AND ID_RETUR_PEMBELIAN LIKE @SearchText ORDER BY ID_RETUR_PEMBELIAN ASC", "retur_pembelian", tAwal, tAkhir, sf)
         With DGVTransaksi
-            ' Pengaturan teks header kolom
-            .Columns(0).HeaderText = "NOTA"
-            .Columns(1).HeaderText = "SUPLIYER"
-            .Columns(2).HeaderText = "NO BELI"
-            .Columns(3).HeaderText = "TGL BELI"
-            .Columns(4).HeaderText = "LOKASI"
-            .Columns(5).HeaderText = "BARANG"
-            .Columns(6).HeaderText = "TOTAL"
-            .Columns(7).HeaderText = "REKENING"
-            .Columns(8).Visible = False
-            .Columns(9).HeaderText = "USER"
-
-            ' Pengaturan format dan alignment kolom yang relevan
-            .Columns(6).DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight
-            .Columns(6).DefaultCellStyle.Format = "#,0.##"
-
-            UbahTampilanDataTransaksi()
-            .ClearSelection()
+            .Columns(0).HeaderText = "NOTA" : .Columns(1).HeaderText = "SUPLIYER" : .Columns(2).HeaderText = "NO BELI"
+            .Columns(3).HeaderText = "TGL BELI" : .Columns(4).HeaderText = "LOKASI" : .Columns(5).HeaderText = "BARANG"
+            .Columns(6).HeaderText = "TOTAL" : .Columns(7).HeaderText = "REKENING" : .Columns(8).Visible = False : .Columns(9).HeaderText = "USER"
+            AturKolomAngka(DGVTransaksi, 6)
+            UbahTampilanDataTransaksi() : .ClearSelection()
         End With
-        TxtFakturTransaksi.Clear()
-        TxtLokasiUntukEdit.Clear()
-        DGVDetail.Columns.Clear()
-        LblDetailTransaksi.Text = "Detail Retur Pembelian : "
+        BersihkanKontrolTransaksi("Detail Retur Pembelian : ")
     End Sub
 
     Private Sub BtnReturPenjualan_Click(ByVal sender As Object, ByVal e As EventArgs) Handles BtnReturPenjualan.Click
-        SetButtonBackgroundColor(BtnReturPenjualan)
-        For Each frm As Form In MdiChildren
-            frm.Close()
-        Next
-        DtpTransaksi.Value = Now
-        TxtTransaksi.Text = "Retur Penjualan"
-        Panel2.Width = 893
-        DGVDetail.Visible = True
-        LblDetailTransaksi.Visible = True
-        GBTransaksi.Visible = True
-        TxtFakturTransaksi.Clear()
-
-        Dim HakAkses As Boolean() = ModulHakAkses.BacaHakAkses(SLevel.Text, "Retur Penjualan", conn)
-        ' Terapkan nilai hak akses ke tombol-tombol
-        BtnTambah.Visible = HakAkses(1) ' CanAdd 
-        BTNEdit.Visible = HakAkses(2) ' CanEdit 
-        BtnHapus.Visible = HakAkses(3) ' CanDelete 
-        BTNEdit.Visible = False
-        BtnPrint.Visible = HakAkses(1) ' CanAdd 
-
-        BtnTambah.Text = "Tambah Retur Jual (F2)"
-        BTNEdit.Text = "Edit Retur Jual (F3)"
-        BtnHapus.Text = "Hapus Retur Jual (F4)"
+        IniTransaksiPanel(BtnReturPenjualan, "Retur Penjualan")
+        TerapkanHakAkses("Retur Penjualan", showEdit:=False)
+        AturTombolTransaksi("Retur Jual")
         BtnPrint.Text = "Cetak Nota Retur Jual (F5)"
-        LblDetailTransaksi.Text = "Detail Retur Penjualan : "
+        AturTombolSettingPrinter()
         DataReturPenjualan()
     End Sub
 
     Public Sub DataReturPenjualan()
-        Dim searchTextfilter As String = "%" & TxtFilter.Text & "%"
-        Dim tanggalAwal As Date = DtpTransaksi.Value.Date
-        Dim tanggalAkhir As Date = DtpTransaksi.Value.Date.AddDays(1).AddTicks(-1)
-
-        Dim queryJumlah As String = "SELECT COUNT(*) AS RECORD, SUM(TOTAL_RUPIAH) AS TOTAL FROM retur_penjualan WHERE TGL_RETUR_JUAL >= @tanggalAwal AND TGL_RETUR_JUAL <= @tanggalAkhir AND ID_RETUR_PENJUALAN LIKE @SearchText"
-        Using cmdHitungJumlah As New MySqlCommand(queryJumlah, conn)
-            cmdHitungJumlah.Parameters.AddWithValue("@tanggalAwal", tanggalAwal.ToString("yyyy-MM-dd HH:mm:ss"))
-            cmdHitungJumlah.Parameters.AddWithValue("@tanggalAkhir", tanggalAkhir.ToString("yyyy-MM-dd HH:mm:ss"))
-            cmdHitungJumlah.Parameters.AddWithValue("@SearchText", searchTextfilter)
-            Using rdJumlah As MySqlDataReader = cmdHitungJumlah.ExecuteReader()
-                If rdJumlah.Read() Then
-                    Dim jumlahRecord As Integer = If(Not Convert.IsDBNull(rdJumlah("RECORD")), CInt(rdJumlah("RECORD")), 0)
-                    Dim totalBelanja As Decimal = If(Not Convert.IsDBNull(rdJumlah("TOTAL")), CDec(rdJumlah("TOTAL")), 0.0)
-
-                    LblRangkuman.Text = "Jumlah Record: " & jumlahRecord.ToString("N0") & Environment.NewLine & "Total Retur Jual: Rp. " & totalBelanja.ToString("N0")
-                Else
-                    LblRangkuman.Text = "0"
-                End If
-            End Using
-        End Using
-
-
-        DGVTransaksi.Columns.Clear()
-        DGVDetail.Columns.Clear()
-        Dim queryString As String = "SELECT ID_RETUR_PENJUALAN, NAMA_PELANGGAN, ID_PENJUALAN, TGL_PENJUALAN, PENYIMPANAN, TOTAL_BARANG, TOTAL_RUPIAH, NAMA_REKENING, ID_USER FROM retur_penjualan WHERE TGL_RETUR_JUAL >= @tanggalAwal AND TGL_RETUR_JUAL <= @tanggalAkhir AND ID_RETUR_PENJUALAN LIKE @SearchText ORDER BY ID_RETUR_PENJUALAN ASC"
-
-        Using da As New MySqlDataAdapter(queryString, conn)
-            da.SelectCommand.Parameters.AddWithValue("@tanggalAwal", tanggalAwal.ToString("yyyy-MM-dd HH:mm:ss"))
-            da.SelectCommand.Parameters.AddWithValue("@tanggalAkhir", tanggalAkhir.ToString("yyyy-MM-dd HH:mm:ss"))
-            da.SelectCommand.Parameters.AddWithValue("@SearchText", searchTextfilter)
-            Using ds As New DataSet
-                da.Fill(ds, "retur_penjualan")
-                DGVTransaksi.DataSource = ds.Tables("retur_penjualan")
-            End Using
-        End Using
-
+        Dim sf As String = "%" & TxtFilter.Text & "%"
+        Dim tAwal As Date = DtpTransaksi.Value.Date
+        Dim tAkhir As Date = tAwal.AddDays(1).AddTicks(-1)
+        HitungRangkuman("SELECT COUNT(*) AS RECORD, COALESCE(SUM(TOTAL_RUPIAH), 0) AS TOTAL FROM retur_penjualan WHERE TGL_RETUR_JUAL >= @tanggalAwal AND TGL_RETUR_JUAL <= @tanggalAkhir AND ID_RETUR_PENJUALAN LIKE @SearchText", "Total Retur Jual", tAwal, tAkhir, sf)
+        LoadDataTransaksi("SELECT ID_RETUR_PENJUALAN, NAMA_PELANGGAN, ID_PENJUALAN, TGL_PENJUALAN, PENYIMPANAN, TOTAL_BARANG, TOTAL_RUPIAH, NAMA_REKENING, ID_USER FROM retur_penjualan WHERE TGL_RETUR_JUAL >= @tanggalAwal AND TGL_RETUR_JUAL <= @tanggalAkhir AND ID_RETUR_PENJUALAN LIKE @SearchText ORDER BY ID_RETUR_PENJUALAN ASC", "retur_penjualan", tAwal, tAkhir, sf)
         With DGVTransaksi
-            ' Pengaturan teks header kolom
-            .Columns(0).HeaderText = "NOTA"
-            .Columns(1).HeaderText = "PELANGGAN"
-            .Columns(2).HeaderText = "NO JUAL"
-            .Columns(3).HeaderText = "TGL JUAL"
-            .Columns(4).HeaderText = "LOKASI"
-            .Columns(5).HeaderText = "BARANG"
-            .Columns(6).HeaderText = "TOTAL"
-            .Columns(7).HeaderText = "REKENING"
-            .Columns(8).HeaderText = "USER"
-
-            ' Pengaturan format dan alignment kolom yang relevan
-            .Columns(6).DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight
-            .Columns(6).DefaultCellStyle.Format = "#,0.##"
-
-            UbahTampilanDataTransaksi()
-            .ClearSelection()
+            .Columns(0).HeaderText = "NOTA" : .Columns(1).HeaderText = "PELANGGAN" : .Columns(2).HeaderText = "NO JUAL"
+            .Columns(3).HeaderText = "TGL JUAL" : .Columns(4).HeaderText = "LOKASI" : .Columns(5).HeaderText = "BARANG"
+            .Columns(6).HeaderText = "TOTAL" : .Columns(7).HeaderText = "REKENING" : .Columns(8).HeaderText = "USER"
+            AturKolomAngka(DGVTransaksi, 6)
+            UbahTampilanDataTransaksi() : .ClearSelection()
         End With
-        TxtFakturTransaksi.Clear()
-        TxtLokasiUntukEdit.Clear()
-        DGVDetail.Columns.Clear()
-        LblDetailTransaksi.Text = "Detail Retur Penjualan : "
+        BersihkanKontrolTransaksi("Detail Retur Penjualan : ")
     End Sub
 
     Private Sub BtnBayarHutang_Click(ByVal sender As Object, ByVal e As EventArgs) Handles BtnBayarHutang.Click
-        SetButtonBackgroundColor(BtnBayarHutang)
-        For Each frm As Form In MdiChildren
-            frm.Close()
-        Next
-        DtpTransaksi.Value = Now
-        TxtTransaksi.Text = "Bayar Hutang"
-        Panel2.Width = 893
-        DGVDetail.Visible = True
-        LblDetailTransaksi.Visible = True
-        GBTransaksi.Visible = True
-        TxtFakturTransaksi.Clear()
-
-        Dim HakAkses As Boolean() = ModulHakAkses.BacaHakAkses(SLevel.Text, "Bayar Hutang", conn)
-        ' Terapkan nilai hak akses ke tombol-tombol
-        BtnTambah.Visible = HakAkses(1) ' CanAdd 
-        BTNEdit.Visible = HakAkses(2) ' CanEdit 
-        BtnHapus.Visible = HakAkses(3) ' CanDelete 
-        BTNEdit.Visible = False
-        BtnPrint.Visible = False
-
-        BtnTambah.Text = "Tambah Bayar Hutang (F2)"
-        BTNEdit.Text = "Edit Bayar Hutang (F3)"
-        BtnHapus.Text = "Hapus Bayar Hutang (F4)"
+        IniTransaksiPanel(BtnBayarHutang, "Bayar Hutang")
+        TerapkanHakAkses("Bayar Hutang", showEdit:=False)
+        AturTombolTransaksi("Bayar Hutang")
         BtnPrint.Text = "Cetak Nota Bayar Hutang (F5)"
-        LblDetailTransaksi.Text = "Detail Bayar Hutang : "
+        AturTombolSettingPrinter()
         DataBayarHutang()
     End Sub
 
     Public Sub DataBayarHutang()
-        Dim searchTextfilter As String = "%" & TxtFilter.Text & "%"
-        Dim tanggalAwal As Date = DtpTransaksi.Value.Date
-        Dim tanggalAkhir As Date = DtpTransaksi.Value.Date.AddDays(1).AddTicks(-1)
-
-
-        Dim queryJumlah As String = "SELECT COUNT(*) AS RECORD, SUM(NOMINALBAYAR) AS TOTAL FROM hutang WHERE TGLPEMBAYARAN >= @tanggalAwal AND TGLPEMBAYARAN <= @tanggalAkhir AND NOBAYARHUTANG LIKE @SearchText"
-        Using cmdHitungJumlah As New MySqlCommand(queryJumlah, conn)
-            cmdHitungJumlah.Parameters.AddWithValue("@tanggalAwal", tanggalAwal.ToString("yyyy-MM-dd HH:mm:ss"))
-            cmdHitungJumlah.Parameters.AddWithValue("@tanggalAkhir", tanggalAkhir.ToString("yyyy-MM-dd HH:mm:ss"))
-            cmdHitungJumlah.Parameters.AddWithValue("@SearchText", searchTextfilter)
-            Using rdJumlah As MySqlDataReader = cmdHitungJumlah.ExecuteReader()
-                If rdJumlah.Read() Then
-                    Dim jumlahRecord As Integer = If(Not Convert.IsDBNull(rdJumlah("RECORD")), CInt(rdJumlah("RECORD")), 0)
-                    Dim totalBelanja As Decimal = If(Not Convert.IsDBNull(rdJumlah("TOTAL")), CDec(rdJumlah("TOTAL")), 0.0)
-
-                    LblRangkuman.Text = "Jumlah Record: " & jumlahRecord.ToString("N0") & Environment.NewLine & "Total Bayar Hutang: Rp. " & totalBelanja.ToString("N0")
-                Else
-                    LblRangkuman.Text = "0"
-                End If
-            End Using
-        End Using
-
-        DGVTransaksi.Columns.Clear()
-        DGVDetail.Columns.Clear()
-        Dim queryString As String = "SELECT NOBAYARHUTANG, NAMASUPLIYER, TGLPEMBAYARAN, TOTALHUTANG, NOMINALBAYAR, SISAHUTANG, ID_USER_BAYAR FROM hutang WHERE TGLPEMBAYARAN >= @tanggalAwal AND TGLPEMBAYARAN <= @tanggalAkhir AND NOBAYARHUTANG LIKE @SearchText ORDER BY NOBAYARHUTANG ASC"
-
-        Using da As New MySqlDataAdapter(queryString, conn)
-            da.SelectCommand.Parameters.AddWithValue("@tanggalAwal", tanggalAwal.ToString("yyyy-MM-dd HH:mm:ss"))
-            da.SelectCommand.Parameters.AddWithValue("@tanggalAkhir", tanggalAkhir.ToString("yyyy-MM-dd HH:mm:ss"))
-            da.SelectCommand.Parameters.AddWithValue("@SearchText", searchTextfilter)
-            Using ds As New DataSet
-                da.Fill(ds, "hutang")
-                DGVTransaksi.DataSource = ds.Tables("hutang")
-            End Using
-        End Using
-
+        Dim sf As String = "%" & TxtFilter.Text & "%"
+        Dim tAwal As Date = DtpTransaksi.Value.Date
+        Dim tAkhir As Date = tAwal.AddDays(1).AddTicks(-1)
+        HitungRangkuman("SELECT COUNT(*) AS RECORD, COALESCE(SUM(NOMINALBAYAR), 0) AS TOTAL FROM hutang WHERE TGLPEMBAYARAN >= @tanggalAwal AND TGLPEMBAYARAN <= @tanggalAkhir AND NOBAYARHUTANG LIKE @SearchText", "Total Bayar Hutang", tAwal, tAkhir, sf)
+        LoadDataTransaksi("SELECT NOBAYARHUTANG, NAMASUPLIYER, TGLPEMBAYARAN, TOTALHUTANG, NOMINALBAYAR, SISAHUTANG, ID_USER_BAYAR FROM hutang WHERE TGLPEMBAYARAN >= @tanggalAwal AND TGLPEMBAYARAN <= @tanggalAkhir AND NOBAYARHUTANG LIKE @SearchText ORDER BY NOBAYARHUTANG ASC", "hutang", tAwal, tAkhir, sf)
         With DGVTransaksi
-            ' Pengaturan teks header kolom
-            .Columns(0).HeaderText = "NOTA"
-            .Columns(1).HeaderText = "SUPPLIER"
-            .Columns(2).HeaderText = "TGL BAYAR"
-            .Columns(3).HeaderText = "TOTAL"
-            .Columns(4).HeaderText = "BAYAR"
-            .Columns(5).HeaderText = "SISA"
-            .Columns(6).HeaderText = "USER"
-
-            ' Pengaturan format dan alignment kolom yang relevan
-            .Columns(3).DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight
-            .Columns(3).DefaultCellStyle.Format = "#,0.##"
-            .Columns(4).DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight
-            .Columns(4).DefaultCellStyle.Format = "#,0.##"
-            .Columns(5).DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight
-            .Columns(5).DefaultCellStyle.Format = "#,0.##"
-
-            UbahTampilanDataTransaksi()
-            .ClearSelection()
+            .Columns(0).HeaderText = "NOTA" : .Columns(1).HeaderText = "SUPPLIER" : .Columns(2).HeaderText = "TGL BAYAR"
+            .Columns(3).HeaderText = "TOTAL" : .Columns(4).HeaderText = "BAYAR" : .Columns(5).HeaderText = "SISA" : .Columns(6).HeaderText = "USER"
+            AturKolomAngka(DGVTransaksi, 3, 4, 5)
+            UbahTampilanDataTransaksi() : .ClearSelection()
         End With
-        TxtFakturTransaksi.Clear()
-        TxtLokasiUntukEdit.Clear()
-        DGVDetail.Columns.Clear()
-        LblDetailTransaksi.Text = "Detail Bayar Hutang : "
+        BersihkanKontrolTransaksi("Detail Bayar Hutang : ")
     End Sub
 
     Private Sub BtnBayarPiutang_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles BtnBayarPiutang.Click
-        SetButtonBackgroundColor(BtnBayarPiutang)
-        For Each frm As Form In MdiChildren
-            frm.Close()
-        Next
-        DtpTransaksi.Value = Now
-        TxtTransaksi.Text = "Bayar Piutang"
-        Panel2.Width = 893
-        DGVDetail.Visible = True
-        LblDetailTransaksi.Visible = True
-        GBTransaksi.Visible = True
-        TxtFakturTransaksi.Clear()
-
-        Dim HakAkses As Boolean() = ModulHakAkses.BacaHakAkses(SLevel.Text, "Bayar Piutang", conn)
-        ' Terapkan nilai hak akses ke tombol-tombol
-        BtnTambah.Visible = HakAkses(1) ' CanAdd 
-        BTNEdit.Visible = HakAkses(2) ' CanEdit 
-        BtnHapus.Visible = HakAkses(3) ' CanDelete 
-        BTNEdit.Visible = False
-        BtnPrint.Visible = HakAkses(1) ' CanAdd 
-
-        BtnTambah.Text = "Tambah Bayar Piutang (F2)"
-        BTNEdit.Text = "Edit Bayar Piutang (F3)"
-        BtnHapus.Text = "Hapus Bayar Piutang (F4)"
+        IniTransaksiPanel(BtnBayarPiutang, "Bayar Piutang")
+        TerapkanHakAkses("Bayar Piutang", showEdit:=False)
+        AturTombolTransaksi("Bayar Piutang")
         BtnPrint.Text = "Cetak Nota Bayar Piutang (F5)"
-        LblDetailTransaksi.Text = "Detail Bayar Piutang : "
+        AturTombolSettingPrinter()
         DataBayarPiutang()
     End Sub
 
     Public Sub DataBayarPiutang()
-        Dim searchTextfilter As String = "%" & TxtFilter.Text & "%"
-        Dim tanggalAwal As Date = DtpTransaksi.Value.Date
-        Dim tanggalAkhir As Date = DtpTransaksi.Value.Date.AddDays(1).AddTicks(-1)
-
-        Dim queryJumlah As String = "SELECT COUNT(*) AS RECORD, SUM(NOMINAL_BAYAR) AS TOTAL FROM Piutang WHERE TGL_BAYAR >= @tanggalAwal AND TGL_BAYAR <= @tanggalAkhir AND ID_BAYAR_PIUTANG LIKE @SearchText"
-        Using cmdHitungJumlah As New MySqlCommand(queryJumlah, conn)
-            cmdHitungJumlah.Parameters.AddWithValue("@tanggalAwal", tanggalAwal.ToString("yyyy-MM-dd HH:mm:ss"))
-            cmdHitungJumlah.Parameters.AddWithValue("@tanggalAkhir", tanggalAkhir.ToString("yyyy-MM-dd HH:mm:ss"))
-            cmdHitungJumlah.Parameters.AddWithValue("@SearchText", searchTextfilter)
-            Using rdJumlah As MySqlDataReader = cmdHitungJumlah.ExecuteReader()
-                If rdJumlah.Read() Then
-                    Dim jumlahRecord As Integer = If(Not Convert.IsDBNull(rdJumlah("RECORD")), CInt(rdJumlah("RECORD")), 0)
-                    Dim totalBelanja As Decimal = If(Not Convert.IsDBNull(rdJumlah("TOTAL")), CDec(rdJumlah("TOTAL")), 0.0)
-
-                    LblRangkuman.Text = "Jumlah Record: " & jumlahRecord.ToString("N0") & Environment.NewLine & "Total Bayar Piutang: Rp. " & totalBelanja.ToString("N0")
-                Else
-                    LblRangkuman.Text = "0"
-                End If
-            End Using
-        End Using
-
-        DGVTransaksi.Columns.Clear()
-        DGVDetail.Columns.Clear()
-        Dim queryString As String = "SELECT ID_BAYAR_PIUTANG, NAMA_PELANGGAN, TGL_BAYAR, TOTAL_PIUTANG, NOMINAL_BAYAR, SISA_PIUTANG, ID_USER_BAYAR FROM Piutang WHERE TGL_BAYAR >= @tanggalAwal AND TGL_BAYAR <= @tanggalAkhir AND ID_BAYAR_PIUTANG LIKE @SearchText ORDER BY ID_BAYAR_PIUTANG ASC"
-
-        Using da As New MySqlDataAdapter(queryString, conn)
-            da.SelectCommand.Parameters.AddWithValue("@tanggalAwal", tanggalAwal.ToString("yyyy-MM-dd HH:mm:ss"))
-            da.SelectCommand.Parameters.AddWithValue("@tanggalAkhir", tanggalAkhir.ToString("yyyy-MM-dd HH:mm:ss"))
-            da.SelectCommand.Parameters.AddWithValue("@SearchText", searchTextfilter)
-            Using ds As New DataSet
-                da.Fill(ds, "Piutang")
-                DGVTransaksi.DataSource = ds.Tables("Piutang")
-            End Using
-        End Using
-
+        Dim sf As String = "%" & TxtFilter.Text & "%"
+        Dim tAwal As Date = DtpTransaksi.Value.Date
+        Dim tAkhir As Date = tAwal.AddDays(1).AddTicks(-1)
+        HitungRangkuman("SELECT COUNT(*) AS RECORD, COALESCE(SUM(NOMINAL_BAYAR), 0) AS TOTAL FROM Piutang WHERE TGL_BAYAR >= @tanggalAwal AND TGL_BAYAR <= @tanggalAkhir AND ID_BAYAR_PIUTANG LIKE @SearchText", "Total Bayar Piutang", tAwal, tAkhir, sf)
+        LoadDataTransaksi("SELECT ID_BAYAR_PIUTANG, NAMA_PELANGGAN, TGL_BAYAR, TOTAL_PIUTANG, NOMINAL_BAYAR, SISA_PIUTANG, ID_USER_BAYAR FROM Piutang WHERE TGL_BAYAR >= @tanggalAwal AND TGL_BAYAR <= @tanggalAkhir AND ID_BAYAR_PIUTANG LIKE @SearchText ORDER BY ID_BAYAR_PIUTANG ASC", "Piutang", tAwal, tAkhir, sf)
         With DGVTransaksi
-            ' Pengaturan teks header kolom
-            .Columns(0).HeaderText = "NOTA"
-            .Columns(1).HeaderText = "PELANGGAN"
-            .Columns(2).HeaderText = "TGL BAYAR"
-            .Columns(3).HeaderText = "TOTAL"
-            .Columns(4).HeaderText = "BAYAR"
-            .Columns(5).HeaderText = "SISA"
-            .Columns(6).HeaderText = "USER"
-
-            ' Pengaturan format dan alignment kolom yang relevan
-            .Columns(3).DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight
-            .Columns(3).DefaultCellStyle.Format = "#,0.##"
-            .Columns(4).DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight
-            .Columns(4).DefaultCellStyle.Format = "#,0.##"
-            .Columns(5).DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight
-            .Columns(5).DefaultCellStyle.Format = "#,0.##"
-
-            UbahTampilanDataTransaksi()
-            .ClearSelection()
+            .Columns(0).HeaderText = "NOTA" : .Columns(1).HeaderText = "PELANGGAN" : .Columns(2).HeaderText = "TGL BAYAR"
+            .Columns(3).HeaderText = "TOTAL" : .Columns(4).HeaderText = "BAYAR" : .Columns(5).HeaderText = "SISA" : .Columns(6).HeaderText = "USER"
+            AturKolomAngka(DGVTransaksi, 3, 4, 5)
+            UbahTampilanDataTransaksi() : .ClearSelection()
         End With
-        TxtFakturTransaksi.Clear()
-        TxtLokasiUntukEdit.Clear()
-        DGVDetail.Columns.Clear()
-        LblDetailTransaksi.Text = "Detail Bayar Piutang : "
+        BersihkanKontrolTransaksi("Detail Bayar Piutang : ")
     End Sub
 
     Private Sub BtnStokOpname_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles BtnStokOpname.Click
-        SetButtonBackgroundColor(BtnStokOpname)
-        For Each frm As Form In MdiChildren
-            frm.Close()
-        Next
-        DtpTransaksi.Value = Now
-        TxtTransaksi.Text = "Stok Opname"
-        Panel2.Width = GBTransaksi.Width - 5
-        DGVDetail.Visible = False
-        LblDetailTransaksi.Visible = False
-        GBTransaksi.Visible = True
-        TxtFakturTransaksi.Clear()
-
-        Dim HakAkses As Boolean() = ModulHakAkses.BacaHakAkses(SLevel.Text, "Stok Opname", conn)
-        ' Terapkan nilai hak akses ke tombol-tombol
-        BtnTambah.Visible = HakAkses(1) ' CanAdd 
-        BTNEdit.Visible = HakAkses(2) ' CanEdit 
-        BtnHapus.Visible = HakAkses(3) ' CanDelete 
-        BtnPrint.Visible = HakAkses(1) ' CanAdd 
-
-        BtnTambah.Text = "Tambah Stok Opname (F2)"
-        BTNEdit.Text = "Edit Stok Opname (F3)"
-        BtnHapus.Text = "Hapus Stok Opname (F4)"
+        IniTransaksiPanel(BtnStokOpname, "Stok Opname", showDetail:=False)
+        TerapkanHakAkses("Stok Opname")
+        AturTombolTransaksi("Stok Opname")
         BtnPrint.Text = "Cetak Nota Stok Opname (F5)"
-        LblDetailTransaksi.Text = "Detail Stok Opname : "
+        AturTombolSettingPrinter()
         DataStokOpname()
     End Sub
 
     Public Sub DataStokOpname()
-        Dim searchTextfilter As String = "%" & TxtFilter.Text & "%"
-        Dim tanggalAwal As Date = DtpTransaksi.Value.Date
-        Dim tanggalAkhir As Date = DtpTransaksi.Value.Date.AddDays(1).AddTicks(-1)
-
-        Dim queryJumlah As String = "SELECT COUNT(*) AS RECORD, SUM((TOTAL_QTY)) AS TOTAL FROM stok_opname WHERE TANGGAL >= @tanggalAwal AND TANGGAL <= @tanggalAkhir AND ID_STOK_OPNAME LIKE @SearchText"
-        Using cmdHitungJumlah As New MySqlCommand(queryJumlah, conn)
-            cmdHitungJumlah.Parameters.AddWithValue("@tanggalAwal", tanggalAwal.ToString("yyyy-MM-dd HH:mm:ss"))
-            cmdHitungJumlah.Parameters.AddWithValue("@tanggalAkhir", tanggalAkhir.ToString("yyyy-MM-dd HH:mm:ss"))
-            cmdHitungJumlah.Parameters.AddWithValue("@SearchText", searchTextfilter)
-            Using rdJumlah As MySqlDataReader = cmdHitungJumlah.ExecuteReader()
-                If rdJumlah.Read() Then
-                    Dim jumlahRecord As Integer = If(Not Convert.IsDBNull(rdJumlah("RECORD")), CInt(rdJumlah("RECORD")), 0)
-                    Dim totalBelanja As Decimal = If(Not Convert.IsDBNull(rdJumlah("TOTAL")), CDec(rdJumlah("TOTAL")), 0.0)
-
-                    LblRangkuman.Text = "Jumlah Record: " & jumlahRecord.ToString("N0") & Environment.NewLine & "Total Selisih: Rp. " & totalBelanja.ToString("N0")
-                Else
-                    LblRangkuman.Text = "0"
-                End If
-            End Using
-        End Using
-
-
-        DGVTransaksi.Columns.Clear()
-        DGVDetail.Columns.Clear()
-
-        Dim queryString As String = "SELECT ID_STOK_OPNAME, LOKASI, ID_BARANG, NAMA_BARANG, KATEGORI, STOK_SYSTEM, STOK_NYATA, STOK_SELISIH, TOTAL_QTY, SATUAN, KETERANGAN, ID_USER FROM stok_opname WHERE TANGGAL >= @tanggalAwal AND TANGGAL <= @tanggalAkhir AND ID_STOK_OPNAME LIKE @SearchText ORDER BY ID_STOK_OPNAME ASC"
-
-        Using da As New MySqlDataAdapter(queryString, conn)
-            da.SelectCommand.Parameters.AddWithValue("@tanggalAwal", tanggalAwal.ToString("yyyy-MM-dd HH:mm:ss"))
-            da.SelectCommand.Parameters.AddWithValue("@tanggalAkhir", tanggalAkhir.ToString("yyyy-MM-dd HH:mm:ss"))
-            da.SelectCommand.Parameters.AddWithValue("@SearchText", searchTextfilter)
-            Using ds As New DataSet
-                da.Fill(ds, "stok_opname")
-                DGVTransaksi.DataSource = ds.Tables("stok_opname")
-            End Using
-        End Using
-
+        Dim sf As String = "%" & TxtFilter.Text & "%"
+        Dim tAwal As Date = DtpTransaksi.Value.Date
+        Dim tAkhir As Date = tAwal.AddDays(1).AddTicks(-1)
+        HitungRangkuman("SELECT COUNT(*) AS RECORD, COALESCE(SUM(TOTAL_QTY), 0) AS TOTAL FROM stok_opname WHERE TANGGAL >= @tanggalAwal AND TANGGAL <= @tanggalAkhir AND ID_STOK_OPNAME LIKE @SearchText", "Total Selisih", tAwal, tAkhir, sf)
+        LoadDataTransaksi("SELECT ID_STOK_OPNAME, LOKASI, ID_BARANG, NAMA_BARANG, KATEGORI, STOK_SYSTEM, STOK_NYATA, STOK_SELISIH, TOTAL_QTY, SATUAN, KETERANGAN, ID_USER FROM stok_opname WHERE TANGGAL >= @tanggalAwal AND TANGGAL <= @tanggalAkhir AND ID_STOK_OPNAME LIKE @SearchText ORDER BY ID_STOK_OPNAME ASC", "stok_opname", tAwal, tAkhir, sf)
         With DGVTransaksi
-            ' Pengaturan teks header kolom
-            .Columns(0).HeaderText = "NOTA"
-            .Columns(1).HeaderText = "LOKASI"
-            .Columns(2).HeaderText = "KODE"
-            .Columns(3).HeaderText = "NAMA BARANG"
-            .Columns(4).HeaderText = "KATEGORI"
-            .Columns(5).HeaderText = "S SYSTEM"
-            .Columns(6).HeaderText = "S NYATA"
-            .Columns(7).HeaderText = "SELISIH"
-            .Columns(8).Visible = False
-            .Columns(9).HeaderText = "SATUAN"
-            .Columns(10).HeaderText = "KETERANGAN"
-            .Columns(11).HeaderText = "ID USER"
-
-            ' Pengaturan FillWeight untuk kolom stok
-            .Columns(5).FillWeight = 60 ' STOK_SYSTEM
-            .Columns(6).FillWeight = 60 ' STOK_NYATA
-            .Columns(7).FillWeight = 60 ' STOK_SELISIH
-
-            UbahTampilanDataTransaksi()
-            .ClearSelection()
+            .Columns(0).HeaderText = "NOTA" : .Columns(1).HeaderText = "LOKASI" : .Columns(2).HeaderText = "KODE"
+            .Columns(3).HeaderText = "NAMA BARANG" : .Columns(4).HeaderText = "KATEGORI"
+            .Columns(5).HeaderText = "S SYSTEM" : .Columns(5).FillWeight = 60
+            .Columns(6).HeaderText = "S NYATA" : .Columns(6).FillWeight = 60
+            .Columns(7).HeaderText = "SELISIH" : .Columns(7).FillWeight = 60
+            .Columns(8).Visible = False : .Columns(9).HeaderText = "SATUAN"
+            .Columns(10).HeaderText = "KETERANGAN" : .Columns(11).HeaderText = "ID USER"
+            UbahTampilanDataTransaksi() : .ClearSelection()
         End With
-        TxtFakturTransaksi.Clear()
-        TxtLokasiUntukEdit.Clear()
-        DGVDetail.Columns.Clear()
+        BersihkanKontrolTransaksi()
     End Sub
 
     Private Sub BtnSuratJalan_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles BtnSuratJalan.Click
-        SetButtonBackgroundColor(BtnSuratJalan)
-        For Each frm As Form In MdiChildren
-            frm.Close()
-        Next
-        DtpTransaksi.Value = Now
-        TxtTransaksi.Text = "Surat Jalan"
-        Panel2.Width = 893
-        DGVDetail.Visible = True
-        LblDetailTransaksi.Visible = True
-        GBTransaksi.Visible = True
-        TxtFakturTransaksi.Clear()
-
-        Dim HakAkses As Boolean() = ModulHakAkses.BacaHakAkses(SLevel.Text, "Surat Jalan", conn)
-        ' Terapkan nilai hak akses ke tombol-tombol
-        BtnTambah.Visible = HakAkses(1) ' CanAdd 
-        BTNEdit.Visible = HakAkses(2) ' CanEdit 
-        BtnHapus.Visible = HakAkses(3) ' CanDelete 
-        BtnPrint.Visible = HakAkses(1) ' CanAdd 
-
-        BtnTambah.Text = "Tambah Surat Jalan (F2)"
-        BTNEdit.Text = "Edit Surat Jalan (F3)"
-        BtnHapus.Text = "Hapus Surat Jalan (F4)"
+        IniTransaksiPanel(BtnSuratJalan, "Surat Jalan")
+        TerapkanHakAkses("Surat Jalan")
+        AturTombolTransaksi("Surat Jalan")
         BtnPrint.Text = "Cetak Surat Jalan (F5)"
-        LblDetailTransaksi.Text = "Detail Surat Jalan : "
+        AturTombolSettingPrinter()
         DataSuratjalan()
     End Sub
 
     Public Sub DataSuratjalan()
-        Dim searchTextfilter As String = "%" & TxtFilter.Text & "%"
-        Dim tanggalAwal As Date = DtpTransaksi.Value.Date
-        Dim tanggalAkhir As Date = DtpTransaksi.Value.Date.AddDays(1).AddTicks(-1)
-
-
-        Dim queryJumlah As String = "SELECT COUNT(*) AS RECORD, SUM(TOTAL_RUPIAH) AS TOTAL FROM Surat_Jalan WHERE TGL_PENGIRIMAN >= @tanggalAwal AND TGL_PENGIRIMAN <= @tanggalAkhir AND NOTA LIKE @SearchText"
-        Using cmdHitungJumlah As New MySqlCommand(queryJumlah, conn)
-            cmdHitungJumlah.Parameters.AddWithValue("@tanggalAwal", tanggalAwal.ToString("yyyy-MM-dd HH:mm:ss"))
-            cmdHitungJumlah.Parameters.AddWithValue("@tanggalAkhir", tanggalAkhir.ToString("yyyy-MM-dd HH:mm:ss"))
-            cmdHitungJumlah.Parameters.AddWithValue("@SearchText", searchTextfilter)
-            Using rdJumlah As MySqlDataReader = cmdHitungJumlah.ExecuteReader()
-                If rdJumlah.Read() Then
-                    Dim jumlahRecord As Integer = If(Not Convert.IsDBNull(rdJumlah("RECORD")), CInt(rdJumlah("RECORD")), 0)
-                    Dim totalBelanja As Decimal = If(Not Convert.IsDBNull(rdJumlah("TOTAL")), CDec(rdJumlah("TOTAL")), 0.0)
-
-                    LblRangkuman.Text = "Jumlah Record: " & jumlahRecord.ToString("N0") & Environment.NewLine & "Total Pengiriman: Rp. " & totalBelanja.ToString("N0")
-                Else
-                    LblRangkuman.Text = "0"
-                End If
-            End Using
-        End Using
-
-
-
-        DGVTransaksi.Columns.Clear()
-        DGVDetail.Columns.Clear()
-        Dim queryString As String = "SELECT NOTA, TOTAL_PELANGGAN, TOTAL_RUPIAH, ARMADA, JENIS_ARMADA, SUPIR, HELPER1, HELPER2, ID_USER FROM Surat_Jalan WHERE TGL_PENGIRIMAN >= @tanggalAwal AND TGL_PENGIRIMAN <= @tanggalAkhir AND NOTA LIKE @SearchText ORDER BY NOTA ASC"
-
-        Using da As New MySqlDataAdapter(queryString, conn)
-            da.SelectCommand.Parameters.AddWithValue("@tanggalAwal", tanggalAwal.ToString("yyyy-MM-dd HH:mm:ss"))
-            da.SelectCommand.Parameters.AddWithValue("@tanggalAkhir", tanggalAkhir.ToString("yyyy-MM-dd HH:mm:ss"))
-            da.SelectCommand.Parameters.AddWithValue("@SearchText", searchTextfilter)
-
-            Using ds As New DataSet()
-                da.Fill(ds, "SuratJalan")
-                DGVTransaksi.DataSource = ds.Tables("SuratJalan")
-            End Using
-        End Using
-
+        Dim sf As String = "%" & TxtFilter.Text & "%"
+        Dim tAwal As Date = DtpTransaksi.Value.Date
+        Dim tAkhir As Date = tAwal.AddDays(1).AddTicks(-1)
+        HitungRangkuman("SELECT COUNT(*) AS RECORD, COALESCE(SUM(TOTAL_RUPIAH), 0) AS TOTAL FROM Surat_Jalan WHERE TGL_PENGIRIMAN >= @tanggalAwal AND TGL_PENGIRIMAN <= @tanggalAkhir AND NOTA LIKE @SearchText", "Total Pengiriman", tAwal, tAkhir, sf)
+        LoadDataTransaksi("SELECT NOTA, TOTAL_PELANGGAN, TOTAL_RUPIAH, ARMADA, JENIS_ARMADA, SUPIR, HELPER1, HELPER2, ID_USER FROM Surat_Jalan WHERE TGL_PENGIRIMAN >= @tanggalAwal AND TGL_PENGIRIMAN <= @tanggalAkhir AND NOTA LIKE @SearchText ORDER BY NOTA ASC", "SuratJalan", tAwal, tAkhir, sf)
         With DGVTransaksi
-            ' Set appropriate column headers and formats
-            .Columns("NOTA").HeaderText = "NOTA"
-            .Columns("TOTAL_PELANGGAN").HeaderText = "PELANGGAN"
-            .Columns("TOTAL_RUPIAH").HeaderText = "RUPIAH"
-            .Columns("ARMADA").HeaderText = "ARMADA"
-            .Columns("JENIS_ARMADA").HeaderText = "ARMADA"
-            .Columns("SUPIR").HeaderText = "SUPIR"
-            .Columns("HELPER1").HeaderText = "HELPER 1"
-            .Columns("HELPER2").HeaderText = "HELPER 2"
-            .Columns("ID_USER").HeaderText = "USER"
-
-            ' Set the width for some columns
-            .Columns("NOTA").FillWeight = 130
-
-            ' Create a currency style for numeric columns
-            Dim currencyStyle As New DataGridViewCellStyle With {
-                .Alignment = DataGridViewContentAlignment.MiddleRight,
-                .Format = "#,0.##"
-            }
-
-            ' Apply the currency style to relevant columns
-            .Columns("TOTAL_RUPIAH").DefaultCellStyle = currencyStyle
-
-            UbahTampilanDataTransaksi()
-            .ClearSelection()
+            .Columns("NOTA").HeaderText = "NOTA" : .Columns("NOTA").FillWeight = 130
+            .Columns("TOTAL_PELANGGAN").HeaderText = "PELANGGAN" : .Columns("TOTAL_RUPIAH").HeaderText = "RUPIAH"
+            .Columns("ARMADA").HeaderText = "ARMADA" : .Columns("JENIS_ARMADA").HeaderText = "ARMADA"
+            .Columns("SUPIR").HeaderText = "SUPIR" : .Columns("HELPER1").HeaderText = "HELPER 1"
+            .Columns("HELPER2").HeaderText = "HELPER 2" : .Columns("ID_USER").HeaderText = "USER"
+            AturKolomAngka(DGVTransaksi, "TOTAL_RUPIAH")
+            UbahTampilanDataTransaksi() : .ClearSelection()
         End With
-        TxtFakturTransaksi.Clear()
-        TxtLokasiUntukEdit.Clear()
-        DGVDetail.Columns.Clear()
-        LblDetailTransaksi.Text = "Detail Surat Jalan : "
+        BersihkanKontrolTransaksi("Detail Surat Jalan : ")
     End Sub
 
     Private Sub BtnTransferBarang_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles BtnTransferBarang.Click
-        SetButtonBackgroundColor(BtnTransferBarang)
-        For Each frm As Form In MdiChildren
-            frm.Close()
-        Next
-        DtpTransaksi.Value = Now
-        TxtTransaksi.Text = "Transfer Barang"
-        Panel2.Width = 893
-        DGVDetail.Visible = True
-        LblDetailTransaksi.Visible = True
-        GBTransaksi.Visible = True
-        TxtFakturTransaksi.Clear()
-
-        Dim HakAkses As Boolean() = ModulHakAkses.BacaHakAkses(SLevel.Text, "Transfer Barang", conn)
-        ' Terapkan nilai hak akses ke tombol-tombol
-        BtnTambah.Visible = HakAkses(1) ' CanAdd 
-        BTNEdit.Visible = HakAkses(2) ' CanEdit 
-        BtnHapus.Visible = HakAkses(3) ' CanDelete 
-        BtnPrint.Visible = HakAkses(1) ' CanAdd 
-
-        BtnTambah.Text = "Tambah Transfer Barang (F2)"
-        BTNEdit.Text = "Edit Transfer Barang (F3)"
-        BtnHapus.Text = "Hapus Transfer Barang (F4)"
+        IniTransaksiPanel(BtnTransferBarang, "Transfer Barang")
+        TerapkanHakAkses("Transfer Barang")
+        AturTombolTransaksi("Transfer Barang")
         BtnPrint.Text = "Cetak Transfer Barang (F5)"
-        LblDetailTransaksi.Text = "Detail Transfer Barang : "
+        AturTombolSettingPrinter()
         DataTransferBarang()
     End Sub
 
     Public Sub DataTransferBarang()
-        Dim searchTextfilter As String = "%" & TxtFilter.Text & "%"
-        Dim tanggalAwal As Date = DtpTransaksi.Value.Date
-        Dim tanggalAkhir As Date = DtpTransaksi.Value.Date.AddDays(1).AddTicks(-1)
-
-        Dim queryJumlah As String = "SELECT COUNT(*) AS RECORD, SUM(TOTAL_RUPIAH) AS TOTAL " &
-                                    "FROM Transfer_Barang " &
-                                    "WHERE TGL_TRANSFER >= @tanggalAwal AND TGL_TRANSFER <= @tanggalAkhir AND ID_TRANSFER LIKE @SearchText"
-
-        Using cmdHitungJumlah As New MySqlCommand(queryJumlah, conn)
-            cmdHitungJumlah.Parameters.AddWithValue("@tanggalAwal", tanggalAwal.ToString("yyyy-MM-dd HH:mm:ss"))
-            cmdHitungJumlah.Parameters.AddWithValue("@tanggalAkhir", tanggalAkhir.ToString("yyyy-MM-dd HH:mm:ss"))
-            cmdHitungJumlah.Parameters.AddWithValue("@SearchText", searchTextfilter)
-
-            Using rdJumlah As MySqlDataReader = cmdHitungJumlah.ExecuteReader()
-                If rdJumlah.Read() Then
-                    Dim jumlahRecord As Integer = If(Not IsDBNull(rdJumlah("RECORD")), CInt(rdJumlah("RECORD")), 0)
-                    Dim totalBelanja As Decimal = If(Not IsDBNull(rdJumlah("TOTAL")), CDec(rdJumlah("TOTAL")), 0.0)
-                    LblRangkuman.Text = "Jumlah Record: " & jumlahRecord.ToString("N0") & Environment.NewLine & "Total transfer barang: Rp. " & totalBelanja.ToString("N0")
-                Else
-                    LblRangkuman.Text = "0"
-                End If
-            End Using
-        End Using
-
-        DGVTransaksi.Columns.Clear()
-        DGVDetail.Columns.Clear()
-
-        Dim queryString As String = "SELECT ID_TRANSFER, LOKASI, TOTAL_QTY, TOTAL_BARANG, TOTAL_RUPIAH, ID_USER " &
-                                    "FROM Transfer_Barang " &
-                                    "WHERE TGL_TRANSFER >= @tanggalAwal AND TGL_TRANSFER <= @tanggalAkhir " &
-                                    "AND ID_TRANSFER LIKE @SearchText ORDER BY ID_TRANSFER ASC"
-
-        Using da As New MySqlDataAdapter(queryString, conn)
-            da.SelectCommand.Parameters.AddWithValue("@tanggalAwal", tanggalAwal.ToString("yyyy-MM-dd HH:mm:ss"))
-            da.SelectCommand.Parameters.AddWithValue("@tanggalAkhir", tanggalAkhir.ToString("yyyy-MM-dd HH:mm:ss"))
-            da.SelectCommand.Parameters.AddWithValue("@SearchText", searchTextfilter)
-
-            Using ds As New DataSet()
-                da.Fill(ds, "TransferBarang")
-                DGVTransaksi.DataSource = ds.Tables("TransferBarang")
-            End Using
-        End Using
-
+        Dim sf As String = "%" & TxtFilter.Text & "%"
+        Dim tAwal As Date = DtpTransaksi.Value.Date
+        Dim tAkhir As Date = tAwal.AddDays(1).AddTicks(-1)
+        HitungRangkuman("SELECT COUNT(*) AS RECORD, COALESCE(SUM(TOTAL_RUPIAH), 0) AS TOTAL FROM Transfer_Barang WHERE TGL_TRANSFER >= @tanggalAwal AND TGL_TRANSFER <= @tanggalAkhir AND ID_TRANSFER LIKE @SearchText", "Total transfer barang", tAwal, tAkhir, sf)
+        LoadDataTransaksi("SELECT ID_TRANSFER, LOKASI, TOTAL_QTY, TOTAL_BARANG, TOTAL_RUPIAH, ID_USER FROM Transfer_Barang WHERE TGL_TRANSFER >= @tanggalAwal AND TGL_TRANSFER <= @tanggalAkhir AND ID_TRANSFER LIKE @SearchText ORDER BY ID_TRANSFER ASC", "TransferBarang", tAwal, tAkhir, sf)
         With DGVTransaksi
-            ' Set appropriate column headers and formats
-            .Columns("ID_TRANSFER").HeaderText = "ID Transfer"
-            .Columns("LOKASI").HeaderText = "Lokasi"
-            .Columns("TOTAL_QTY").HeaderText = "Total Qty"
-            .Columns("TOTAL_BARANG").HeaderText = "Total Barang"
-            .Columns("TOTAL_RUPIAH").HeaderText = "Total Rupiah"
-            .Columns("ID_USER").HeaderText = "User"
-
-            ' Set the width for some columns
-            .Columns("ID_TRANSFER").FillWeight = 130
-
-            ' Create a currency style for numeric columns
-            Dim currencyStyle As New DataGridViewCellStyle With {
-                .Alignment = DataGridViewContentAlignment.MiddleRight,
-                .Format = "#,0.##"
-            }
-
-            ' Apply the currency style to relevant columns
-            .Columns("TOTAL_QTY").DefaultCellStyle = currencyStyle
-            .Columns("TOTAL_BARANG").DefaultCellStyle = currencyStyle
-            .Columns("TOTAL_RUPIAH").DefaultCellStyle = currencyStyle
-
-            UbahTampilanDataTransaksi()
-            .ClearSelection()
+            .Columns("ID_TRANSFER").HeaderText = "ID Transfer" : .Columns("ID_TRANSFER").FillWeight = 130
+            .Columns("LOKASI").HeaderText = "Lokasi" : .Columns("TOTAL_QTY").HeaderText = "Total Qty"
+            .Columns("TOTAL_BARANG").HeaderText = "Total Barang" : .Columns("TOTAL_RUPIAH").HeaderText = "Total Rupiah" : .Columns("ID_USER").HeaderText = "User"
+            AturKolomAngka(DGVTransaksi, "TOTAL_QTY", "TOTAL_BARANG", "TOTAL_RUPIAH")
+            UbahTampilanDataTransaksi() : .ClearSelection()
         End With
+        BersihkanKontrolTransaksi("Detail Transfer Barang : ")
+    End Sub
 
-        TxtFakturTransaksi.Clear()
-        TxtLokasiUntukEdit.Clear()
-        DGVDetail.Columns.Clear()
-        LblDetailTransaksi.Text = "Detail Transfer Barang : "
+    Public Sub DataTransferCabang()
+        Dim sf As String = "%" & TxtFilter.Text & "%"
+        Dim tAwal As Date = DtpTransaksi.Value.Date
+        Dim tAkhir As Date = tAwal.AddDays(1).AddTicks(-1)
+        HitungRangkuman("SELECT COUNT(*) AS RECORD, COALESCE(SUM(TOTAL_RUPIAH), 0) AS TOTAL FROM transfer_cabang WHERE TGL_TRANSFER >= @tanggalAwal AND TGL_TRANSFER <= @tanggalAkhir AND ID_TRANSFER LIKE @SearchText", "Total nilai", tAwal, tAkhir, sf)
+        LoadDataTransaksi("SELECT ID_TRANSFER, TGL_TRANSFER, DARI_CABANG, KE_CABANG, MODE_KIRIM, TOTAL_QTY, TOTAL_BARANG, TOTAL_RUPIAH, STATUS_TRANSFER, ID_USER FROM transfer_cabang WHERE TGL_TRANSFER >= @tanggalAwal AND TGL_TRANSFER <= @tanggalAkhir AND ID_TRANSFER LIKE @SearchText ORDER BY ID_TRANSFER ASC", "TransferCabang", tAwal, tAkhir, sf)
+        With DGVTransaksi
+            .Columns("ID_TRANSFER").HeaderText = "ID Transfer" : .Columns("ID_TRANSFER").FillWeight = 120
+            .Columns("TGL_TRANSFER").HeaderText = "Tanggal" : .Columns("TGL_TRANSFER").FillWeight = 110
+            .Columns("DARI_CABANG").HeaderText = "Dari Cabang" : .Columns("KE_CABANG").HeaderText = "Ke Cabang"
+            .Columns("MODE_KIRIM").HeaderText = "Mode" : .Columns("TOTAL_QTY").HeaderText = "Total Qty"
+            .Columns("TOTAL_BARANG").HeaderText = "Jml Item" : .Columns("TOTAL_RUPIAH").HeaderText = "Total Nilai"
+            .Columns("STATUS_TRANSFER").HeaderText = "Status" : .Columns("ID_USER").HeaderText = "User"
+            AturKolomAngka(DGVTransaksi, "TOTAL_QTY", "TOTAL_BARANG", "TOTAL_RUPIAH")
+            UbahTampilanDataTransaksi() : .ClearSelection()
+        End With
+        BersihkanKontrolTransaksi("Detail Transfer Cabang : ")
     End Sub
 
     Private Sub BtnPindahStok_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles BtnPindahStok.Click
-        SetButtonBackgroundColor(BtnPindahStok)
-        For Each frm As Form In MdiChildren
-            frm.Close()
-        Next
-        DtpTransaksi.Value = Now
-        TxtTransaksi.Text = "Transfer Stok"
-        Panel2.Width = GBTransaksi.Width - 5
-        DGVDetail.Visible = False
-        LblDetailTransaksi.Visible = False
-        GBTransaksi.Visible = True
-        TxtFakturTransaksi.Clear()
-
-        Dim HakAkses As Boolean() = ModulHakAkses.BacaHakAkses(SLevel.Text, "Transfer Stok", conn)
-        ' Terapkan nilai hak akses ke tombol-tombol
-        BtnTambah.Visible = HakAkses(1) ' CanAdd 
-        BTNEdit.Visible = HakAkses(2) ' CanEdit 
-        BtnHapus.Visible = HakAkses(3) ' CanDelete 
-        BtnPrint.Visible = False
+        IniTransaksiPanel(BtnPindahStok, "Transfer Stok", showDetail:=False)
+        Dim ha As Boolean() = ModulHakAkses.BacaHakAksesDariCache("Transfer Stok")
+        BtnTambah.Visible = ha(1)
         BTNEdit.Visible = False
-
-        BtnTambah.Text = "Tambah Transfer Stok (F2)"
-        BTNEdit.Text = "Edit Transfer Stok (F3)"
-        BtnHapus.Text = "Hapus Transfer Stok (F4)"
+        BtnHapus.Visible = ha(3)
+        BtnPrint.Visible = False
+        AturTombolTransaksi("Transfer Stok")
         BtnPrint.Text = "Cetak Nota Transfer Stok (F5)"
-        LblDetailTransaksi.Text = "Detail Transfer Stok : "
+        AturTombolSettingPrinter()
         Datatransferstok()
-
     End Sub
 
     Public Sub Datatransferstok()
-        Dim searchTextfilter As String = "%" & TxtFilter.Text & "%"
-        Dim tanggalAwal As Date = DtpTransaksi.Value.Date
-        Dim tanggalAkhir As Date = DtpTransaksi.Value.Date.AddDays(1).AddTicks(-1)
-
-        Dim queryJumlah As String = "SELECT COUNT(*) AS RECORD, SUM(Selisih) AS TOTAL FROM Transfer_stok WHERE TANGGAL >= @tanggalAwal AND TANGGAL <= @tanggalAkhir AND ID_TRANSFER LIKE @SearchText"
-        Using cmdHitungJumlah As New MySqlCommand(queryJumlah, conn)
-            cmdHitungJumlah.Parameters.AddWithValue("@tanggalAwal", tanggalAwal.ToString("yyyy-MM-dd HH:mm:ss"))
-            cmdHitungJumlah.Parameters.AddWithValue("@tanggalAkhir", tanggalAkhir.ToString("yyyy-MM-dd HH:mm:ss"))
-            cmdHitungJumlah.Parameters.AddWithValue("@SearchText", searchTextfilter)
-
-            Using rdJumlah As MySqlDataReader = cmdHitungJumlah.ExecuteReader()
-                If rdJumlah.Read() Then
-                    Dim jumlahRecord As Integer = If(Not Convert.IsDBNull(rdJumlah("RECORD")), CInt(rdJumlah("RECORD")), 0)
-                    Dim totalBelanja As Decimal = If(Not Convert.IsDBNull(rdJumlah("TOTAL")), CDec(rdJumlah("TOTAL")), 0.0)
-
-                    LblRangkuman.Text = "Jumlah Record: " & jumlahRecord.ToString("N0") & Environment.NewLine & "Total Selisih: Rp. " & totalBelanja.ToString("N0")
-                Else
-                    LblRangkuman.Text = "0"
-                End If
-            End Using
-        End Using
-
-        DGVTransaksi.Columns.Clear()
-        DGVDetail.Columns.Clear()
-        Dim queryString As String = "SELECT ID_TRANSFER, JENIS_TRANSFER, URAIAN, TANGGAL, ID_BARANG_M, NAMA_BARANG_M, QTY_M, SATUAN_M, ISI_M, QTY_SAT_M, HARGA_SAT_M, TOTAL_HARGA_M, ID_BARANG_K, NAMA_BARANG_K, QTY_K, SATUAN_K, ISI_K, QTY_SAT_K, HARGA_SAT_K, TOTAL_HARGA_K, Selisih, ID_USER FROM Transfer_stok WHERE TANGGAL >= @tanggalAwal AND TANGGAL <= @tanggalAkhir AND ID_TRANSFER LIKE @SearchText ORDER BY ID_TRANSFER ASC"
-
-        Using da As New MySqlDataAdapter(queryString, conn)
-            da.SelectCommand.Parameters.AddWithValue("@tanggalAwal", tanggalAwal.ToString("yyyy-MM-dd HH:mm:ss"))
-            da.SelectCommand.Parameters.AddWithValue("@tanggalAkhir", tanggalAkhir.ToString("yyyy-MM-dd HH:mm:ss"))
-            da.SelectCommand.Parameters.AddWithValue("@SearchText", searchTextfilter)
-
-            Using ds As New DataSet
-                da.Fill(ds, "Transfer_stok")
-                DGVTransaksi.DataSource = ds.Tables("Transfer_stok")
-            End Using
-        End Using
-
+        Dim sf As String = "%" & TxtFilter.Text & "%"
+        Dim tAwal As Date = DtpTransaksi.Value.Date
+        Dim tAkhir As Date = tAwal.AddDays(1).AddTicks(-1)
+        HitungRangkuman("SELECT COUNT(*) AS RECORD, COALESCE(SUM(Selisih), 0) AS TOTAL FROM Transfer_stok WHERE TANGGAL >= @tanggalAwal AND TANGGAL <= @tanggalAkhir AND ID_TRANSFER LIKE @SearchText", "Total Selisih", tAwal, tAkhir, sf)
+        LoadDataTransaksi("SELECT ID_TRANSFER, JENIS_TRANSFER, URAIAN, TANGGAL, ID_BARANG_M, NAMA_BARANG_M, QTY_M, SATUAN_M, ISI_M, QTY_SAT_M, HARGA_SAT_M, TOTAL_HARGA_M, ID_BARANG_K, NAMA_BARANG_K, QTY_K, SATUAN_K, ISI_K, QTY_SAT_K, HARGA_SAT_K, TOTAL_HARGA_K, Selisih, ID_USER FROM Transfer_stok WHERE TANGGAL >= @tanggalAwal AND TANGGAL <= @tanggalAkhir AND ID_TRANSFER LIKE @SearchText ORDER BY ID_TRANSFER ASC", "Transfer_stok", tAwal, tAkhir, sf)
         With DGVTransaksi
-            ' Pengaturan teks header kolom
-            .Columns(0).HeaderText = "NOTA"
-            .Columns(1).Visible = False ' JENIS_TRANSFER
-            .Columns(2).HeaderText = "URAIAN"
-            .Columns(2).FillWeight = 170
-            .Columns(3).Visible = False ' "TANGGAL"
-            .Columns(4).Visible = False ' ID_BARANG_M
-            .Columns(5).HeaderText = "BARANG MASUK"
-            .Columns(5).FillWeight = 170
-            .Columns(6).HeaderText = "QTY"
-            .Columns(6).FillWeight = 50
-            .Columns(7).HeaderText = "SAT"
-            .Columns(7).FillWeight = 60
-            .Columns(8).Visible = False ' ISI_M
-            .Columns(9).Visible = False ' QTY_SAT_M
-            .Columns(10).Visible = False ' HARGA_SAT_M
-            .Columns(11).HeaderText = "HARGA MASUK"
-            .Columns(12).Visible = False ' ID_BARANG_K
-            .Columns(13).HeaderText = "BARANG KELUAR"
-            .Columns(13).FillWeight = 170
-            .Columns(14).HeaderText = "QTY"
-            .Columns(14).FillWeight = 50
-            .Columns(15).HeaderText = "SAT"
-            .Columns(15).FillWeight = 60
-            .Columns(16).Visible = False ' ISI_K
-            .Columns(17).Visible = False ' QTY_SAT_K
-            .Columns(18).Visible = False ' HARGA_SAT_K
-            .Columns(19).HeaderText = "HARGA KELUAR"
-            .Columns(20).HeaderText = "SELISIH"
-            .Columns(20).FillWeight = 80
-            .Columns(21).HeaderText = "USER"
-
-
-            ' Pengaturan format dan alignment kolom yang relevan
-            .Columns(6).DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight
-            .Columns(6).DefaultCellStyle.Format = "#,0.##"
-            '.Columns(13).DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight
-            '.Columns(13).DefaultCellStyle.Format = "N0"
-            .Columns(11).DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight
-            .Columns(11).DefaultCellStyle.Format = "#,0.##"
-            .Columns(19).DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight
-            .Columns(19).DefaultCellStyle.Format = "#,0.##"
-            .Columns(20).DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight
-            .Columns(20).DefaultCellStyle.Format = "#,0.##"
-
-            UbahTampilanDataTransaksi()
-            .ClearSelection()
+            .Columns(0).HeaderText = "NOTA" : .Columns(1).Visible = False : .Columns(2).HeaderText = "URAIAN" : .Columns(2).FillWeight = 170
+            .Columns(3).Visible = False : .Columns(4).Visible = False
+            .Columns(5).HeaderText = "BARANG MASUK" : .Columns(5).FillWeight = 170
+            .Columns(6).HeaderText = "QTY" : .Columns(6).FillWeight = 50 : .Columns(7).HeaderText = "SAT" : .Columns(7).FillWeight = 60
+            .Columns(8).Visible = False : .Columns(9).Visible = False : .Columns(10).Visible = False
+            .Columns(11).HeaderText = "HARGA MASUK" : .Columns(12).Visible = False
+            .Columns(13).HeaderText = "BARANG KELUAR" : .Columns(13).FillWeight = 170
+            .Columns(14).HeaderText = "QTY" : .Columns(14).FillWeight = 50 : .Columns(15).HeaderText = "SAT" : .Columns(15).FillWeight = 60
+            .Columns(16).Visible = False : .Columns(17).Visible = False : .Columns(18).Visible = False
+            .Columns(19).HeaderText = "HARGA KELUAR" : .Columns(20).HeaderText = "SELISIH" : .Columns(20).FillWeight = 80 : .Columns(21).HeaderText = "USER"
+            AturKolomAngka(DGVTransaksi, 6, 11, 19, 20)
+            UbahTampilanDataTransaksi() : .ClearSelection()
         End With
-
-        TxtFakturTransaksi.Clear()
-        TxtLokasiUntukEdit.Clear()
-        DGVDetail.Columns.Clear()
+        BersihkanKontrolTransaksi()
     End Sub
 
-    Private Sub BtnRakit_Click(sender As Object, e As EventArgs) Handles BtnRakit.Click
 
-    End Sub
 
     Private Sub DtpTransaksi_ValueChanged(ByVal sender As Object, ByVal e As EventArgs) Handles DtpTransaksi.ValueChanged, TxtFilter.TextChanged
         Select Case TxtTransaksi.Text
@@ -2038,6 +1057,8 @@ Public Class FormUtama
                 DataSuratjalan()
             Case "Transfer Barang"
                 DataTransferBarang()
+            Case "Transfer Cabang"
+                DataTransferCabang()
         End Select
     End Sub
 
@@ -2064,6 +1085,13 @@ Public Class FormUtama
         End Select
     End Sub
 
+    Private Sub DGVTransaksi_SelectionChanged(sender As Object, e As EventArgs) Handles DGVTransaksi.SelectionChanged
+        ' Navigasi keyboard (panah atas/bawah) tidak memicu CellClick,
+        ' jadi kita panggil ulang logika yang sama saat baris aktif berubah.
+        If DGVTransaksi.CurrentRow Is Nothing OrElse DGVTransaksi.CurrentRow.Cells(0).Value Is Nothing Then Return
+        DGVTransaksi_CellClick(sender, New DataGridViewCellEventArgs(0, DGVTransaksi.CurrentRow.Index))
+    End Sub
+
     Private Sub DGVTransaksi_CellMouseUp(ByVal sender As System.Object, ByVal e As System.Windows.Forms.DataGridViewCellMouseEventArgs) Handles DGVTransaksi.CellMouseUp
         If e.Button = MouseButtons.Right AndAlso e.RowIndex >= 0 AndAlso e.ColumnIndex >= 0 Then
             ' Memastikan bahwa baris yang diklik valid
@@ -2072,89 +1100,31 @@ Public Class FormUtama
                 ' Memanggil event CellClick untuk baris yang valid
                 DGVTransaksi_CellClick(sender, New System.Windows.Forms.DataGridViewCellEventArgs(0, e.RowIndex))
 
-                Dim HakAkses As Boolean()
+                ' === OPTIMASI: Baca hak akses dari CACHE (instant, tanpa DB query) ===
+                EditPembayaranToolStripMenuItem.Visible = False
                 Select Case TxtTransaksi.Text
                     Case "Pembelian"
-                        HakAkses = ModulHakAkses.BacaHakAkses(SLevel.Text, "Pembelian", conn)
-                        ' Terapkan nilai hak akses ke tombol-tombol
-                        TambahToolStripMenuItem.Visible = HakAkses(1) ' CanAdd 
-                        EditToolStripMenuItem.Visible = HakAkses(2) ' CanEdit 
-                        HapusToolStripMenuItem.Visible = HakAkses(3) ' CanDelete 
-                        CetakToolStripMenuItem.Visible = True
-
+                        TerapkanHakAksesContextMenu("Pembelian")
                     Case "Penjualan"
-                        HakAkses = ModulHakAkses.BacaHakAkses(SLevel.Text, "Penjualan", conn)
-                        ' Terapkan nilai hak akses ke tombol-tombol
-                        TambahToolStripMenuItem.Visible = HakAkses(1) ' CanAdd 
-                        EditToolStripMenuItem.Visible = HakAkses(2) ' CanEdit 
-                        HapusToolStripMenuItem.Visible = HakAkses(3) ' CanDelete 
-                        CetakToolStripMenuItem.Visible = True
-
+                        TerapkanHakAksesContextMenu("Penjualan", showEditBayar:=True)
                     Case "Retur Pembelian"
-                        HakAkses = ModulHakAkses.BacaHakAkses(SLevel.Text, "Retur Pembelian", conn)
-                        ' Terapkan nilai hak akses ke tombol-tombol
-                        TambahToolStripMenuItem.Visible = HakAkses(1) ' CanAdd 
-                        EditToolStripMenuItem.Visible = HakAkses(2) ' CanEdit 
-                        HapusToolStripMenuItem.Visible = HakAkses(3) ' CanDelete 
-
-
+                        TerapkanHakAksesContextMenu("Retur Pembelian", showEdit:=False)
                     Case "Retur Penjualan"
-                        HakAkses = ModulHakAkses.BacaHakAkses(SLevel.Text, "Retur Penjualan", conn)
-                        ' Terapkan nilai hak akses ke tombol-tombol
-                        TambahToolStripMenuItem.Visible = HakAkses(1) ' CanAdd 
-                        EditToolStripMenuItem.Visible = HakAkses(2) ' CanEdit 
-                        HapusToolStripMenuItem.Visible = HakAkses(3) ' CanDelete 
-                        EditToolStripMenuItem.Visible = False
-                        CetakToolStripMenuItem.Visible = True
-
+                        TerapkanHakAksesContextMenu("Retur Penjualan", showEdit:=False)
                     Case "Bayar Hutang"
-                        HakAkses = ModulHakAkses.BacaHakAkses(SLevel.Text, "Bayar Hutang", conn)
-                        ' Terapkan nilai hak akses ke tombol-tombol
-                        TambahToolStripMenuItem.Visible = HakAkses(1) ' CanAdd 
-                        EditToolStripMenuItem.Visible = HakAkses(2) ' CanEdit 
-                        HapusToolStripMenuItem.Visible = HakAkses(3) ' CanDelete 
-                        EditToolStripMenuItem.Visible = False
-                        CetakToolStripMenuItem.Visible = False
-
+                        TerapkanHakAksesContextMenu("Bayar Hutang", showEdit:=False)
                     Case "Bayar Piutang"
-                        HakAkses = ModulHakAkses.BacaHakAkses(SLevel.Text, "Bayar Piutang", conn)
-                        ' Terapkan nilai hak akses ke tombol-tombol
-                        TambahToolStripMenuItem.Visible = HakAkses(1) ' CanAdd 
-                        EditToolStripMenuItem.Visible = HakAkses(2) ' CanEdit 
-                        HapusToolStripMenuItem.Visible = HakAkses(3) ' CanDelete 
-                        EditToolStripMenuItem.Visible = False
-                        CetakToolStripMenuItem.Visible = True
-
+                        TerapkanHakAksesContextMenu("Bayar Piutang", showEdit:=False)
                     Case "Stok Opname"
-                        HakAkses = ModulHakAkses.BacaHakAkses(SLevel.Text, "Stok Opname", conn)
-                        ' Terapkan nilai hak akses ke tombol-tombol
-                        TambahToolStripMenuItem.Visible = HakAkses(1) ' CanAdd 
-                        EditToolStripMenuItem.Visible = HakAkses(2) ' CanEdit 
-                        HapusToolStripMenuItem.Visible = HakAkses(3) ' CanDelete 
-                        CetakToolStripMenuItem.Visible = True
-
+                        TerapkanHakAksesContextMenu("Stok Opname")
                     Case "Transfer Stok"
-                        HakAkses = ModulHakAkses.BacaHakAkses(SLevel.Text, "Transfer Stok", conn)
-                        ' Terapkan nilai hak akses ke tombol-tombol
-                        TambahToolStripMenuItem.Visible = HakAkses(1) ' CanAdd 
-                        EditToolStripMenuItem.Visible = HakAkses(2) ' CanEdit 
-                        HapusToolStripMenuItem.Visible = HakAkses(3) ' CanDelete 
-                        CetakToolStripMenuItem.Visible = False
-                        EditToolStripMenuItem.Visible = False
+                        TerapkanHakAksesContextMenu("Transfer Stok", showEdit:=False, showCetak:=False)
                     Case "Transfer Barang"
-                        HakAkses = ModulHakAkses.BacaHakAkses(SLevel.Text, "Transfer Barang", conn)
-                        ' Terapkan nilai hak akses ke tombol-tombol
-                        TambahToolStripMenuItem.Visible = HakAkses(1) ' CanAdd 
-                        EditToolStripMenuItem.Visible = HakAkses(2) ' CanEdit 
-                        HapusToolStripMenuItem.Visible = HakAkses(3) ' CanDelete 
-                        CetakToolStripMenuItem.Visible = True
+                        TerapkanHakAksesContextMenu("Transfer Barang")
+                    Case "Transfer Cabang"
+                        TerapkanHakAksesContextMenu("Transfer Cabang")
                     Case "Surat Jalan"
-                        HakAkses = ModulHakAkses.BacaHakAkses(SLevel.Text, "Surat Jalan", conn)
-                        ' Terapkan nilai hak akses ke tombol-tombol
-                        TambahToolStripMenuItem.Visible = HakAkses(1) ' CanAdd 
-                        EditToolStripMenuItem.Visible = HakAkses(2) ' CanEdit 
-                        HapusToolStripMenuItem.Visible = HakAkses(3) ' CanDelete 
-                        CetakToolStripMenuItem.Visible = True
+                        TerapkanHakAksesContextMenu("Surat Jalan")
                 End Select
                 Dim cursorPosition As Point = System.Windows.Forms.Cursor.Position
                 CMSTransaksi.Show(cursorPosition)
@@ -2197,29 +1167,30 @@ Public Class FormUtama
         Select Case TxtTransaksi.Text
             Case "Pembelian"
                 With FormPembelian
-                    .LblUtama.Text = "T A M B A H  P E M B E L I A N"
+                    IsiComboBoxAkun(.CmbAkunTunai, "KAS", "EKUITAS")
+                    IsiComboBoxAkun(.CmbAkunTransfer, "BANK")
+                    .LblHeader.Text = "T A M B A H  P E M B E L I A N"
                     .TxtJenisTrans.Text = "TambahPembelian"
                     .DgvData.Rows.Clear()
                     .BringToFront()
-                    .ShowDialog()
+                    .ShowDialog(Me)
                 End With
 
             Case "Penjualan"
-                With FormPenjualan
+                With FormJual
+
                     .TxtJenistransaksi.Text = "TambahPenjualan"
-                    .DgvData.Rows.Clear()
+                    .DgvDataTransaksi.Rows.Clear()
                     .BringToFront()
-                    .ShowDialog()
+                    .ShowDialog(Me)
                 End With
 
             Case "Retur Pembelian"
-                GBTransaksi.Visible = False
                 With FormReturBeli
                     .LblJenisTrans.Text = "TambahReturBeli"
-                    .MdiParent = Me
+                    .DgvData.Rows.Clear()
                     .BringToFront()
-                    .Dock = DockStyle.Fill
-                    .Show()
+                    .ShowDialog(Me)
                 End With
 
             Case "Retur Penjualan"
@@ -2263,7 +1234,7 @@ Public Class FormUtama
                 GBTransaksi.Visible = False
 
                 With FormTransferStok
-                    .LblUtama.Text = "TRANSFER STOK ANTAR BARANG DI " & SLokasi.Text
+                    .LblHeaderForm.Text = "TRANSFER STOK ANTAR BARANG DI " & StatusLokasi.Text
                     .MdiParent = Me
                     .BringToFront()
                     .Dock = DockStyle.Fill
@@ -2272,17 +1243,27 @@ Public Class FormUtama
 
             Case "Transfer Barang"
                 With FormTransferBarang
-                    If SLokasi.Text = "TOKO" Then
+                    If StatusLokasi.Text = "TOKO" Then
                         .LblLokasiBarang.Text = "TOKO"
                         .LblUtama.Text = "TRANSFER STOK DARI TOKO KE GUDANG"
-                    ElseIf SLokasi.Text = "GUDANG" Then
+                    ElseIf StatusLokasi.Text = "GUDANG" Then
                         .LblLokasiBarang.Text = "GUDANG"
                         .LblUtama.Text = "TRANSFER STOK DARI GUDANG KE TOKO"
                     End If
                     .LblJenisTrans.Text = "TambahTransfer"
                     .DgvData.Rows.Clear()
                     .BringToFront()
-                    .ShowDialog() 'Surat Jalan
+                    .ShowDialog()
+                End With
+
+            Case "Transfer Cabang"
+                GBTransaksi.Visible = False
+                With FormTransferCabang
+                    .LokasiBarang = StatusLokasi.Text
+                    .MdiParent = Me
+                    .BringToFront()
+                    .Dock = DockStyle.Fill
+                    .Show()
                 End With
 
             Case "Surat Jalan" '
@@ -2316,10 +1297,10 @@ Public Class FormUtama
         Select Case TxtTransaksi.Text
             Case "Pembelian"
 
-                If SLokasi.Text <> TxtLokasiUntukEdit.Text Then
+                If StatusLokasi.Text <> TxtLokasiUntukEdit.Text Then
                     ' Pesan kesalahan jika pengguna tidak memiliki hak untuk menghapus
                     Dim pesan As String = "Oops! Tidak ada hak untuk edit pembelian ini." & Environment.NewLine &
-                                          "User " & SLokasi.Text & " tidak berhak edit transaksi pembelian " & TxtLokasiUntukEdit.Text
+                                          "User " & StatusLokasi.Text & " tidak berhak edit transaksi pembelian " & TxtLokasiUntukEdit.Text
 
                     ' Tampilkan MessageBox dengan ikon peringatan
                     MessageBox.Show(pesan, "Peringatan", MessageBoxButtons.OK, MessageBoxIcon.Warning)
@@ -2333,20 +1314,19 @@ Public Class FormUtama
                     Dim rowCount As Integer = cmdCheck.ExecuteScalar()
 
                     If rowCount = 0 Then
-                        ' Record tidak ditemukan, lakukan tindakan dengan Form_Pembelian
+                        ' Record tidak ditemukan, buka FormPembelian untuk edit
 
 
                         With FormPembelian
-                            .CmbJenisBayar.Items.Clear()
-                            ' Isi ComboBox dengan data dari list
-                            .CmbJenisBayar.Items.AddRange(GetDaftarAkun().ToArray())
+                            IsiComboBoxAkun(.CmbAkunTunai, "KAS", "EKUITAS")
+                            IsiComboBoxAkun(.CmbAkunTransfer, "BANK")
 
-                            .LblUtama.Text = "E D I T  P E M B E L I A N"
+                            .LblHeader.Text = "E D I T  P E M B E L I A N"
                             .TxtJenisTrans.Text = "EditPembelian"
-                            .TxtFaktur.Text = idPembelian
+                            .TxtIdPembelian.Text = idPembelian
                             .AmbilDataSupplier()
                             .BringToFront()
-                            .ShowDialog()
+                            .ShowDialog(Me)
                         End With
                     Else
                         ' Record ditemukan, tampilkan pesan keren
@@ -2360,10 +1340,10 @@ Public Class FormUtama
 
             Case "Penjualan"
 
-                If SLokasi.Text <> TxtLokasiUntukEdit.Text Then
+                If StatusLokasi.Text <> TxtLokasiUntukEdit.Text Then
                     ' Pesan kesalahan jika pengguna tidak memiliki hak untuk menghapus
                     Dim pesan As String = "Oops! Tidak ada hak untuk edit penjualan ini." & Environment.NewLine &
-                                          "User " & SLokasi.Text & " tidak berhak edit transaksi penjualan " & TxtLokasiUntukEdit.Text
+                                          "User " & StatusLokasi.Text & " tidak berhak edit transaksi penjualan " & TxtLokasiUntukEdit.Text
 
                     ' Tampilkan MessageBox dengan ikon peringatan
                     MessageBox.Show(pesan, "Peringatan", MessageBoxButtons.OK, MessageBoxIcon.Warning)
@@ -2379,13 +1359,13 @@ Public Class FormUtama
 
                     If rowCount = 0 Then
                         ' Record tidak ditemukan, lakukan tindakan dengan Form_Penjualan
-                        With FormPenjualan
+                        With FormJual
                             .TxtJenistransaksi.Text = "EditPenjualan"
                             .TxtFaktur.Text = idpenjualan
                             .TampilPelanggan()
                             .AmbilDataKaryawan()
                             .BringToFront()
-                            .ShowDialog()
+                            .ShowDialog(Me)
                         End With
                     Else
                         ' Record ditemukan, tampilkan pesan keren
@@ -2398,12 +1378,10 @@ Public Class FormUtama
                 End Using
 
             Case "Retur Pembelian"
-                GBTransaksi.Visible = False
-
-                If SLokasi.Text <> TxtLokasiUntukEdit.Text Then
+                If StatusLokasi.Text <> TxtLokasiUntukEdit.Text Then
                     ' Pesan kesalahan jika pengguna tidak memiliki hak untuk menghapus
                     Dim pesan As String = "Oops! Tidak ada hak untuk edit retur pembelian ini." & Environment.NewLine &
-                                          "User " & SLokasi.Text & " tidak berhak edit transaksi retur pembelian " & TxtLokasiUntukEdit.Text
+                                          "User " & StatusLokasi.Text & " tidak berhak edit transaksi retur pembelian " & TxtLokasiUntukEdit.Text
 
                     ' Tampilkan MessageBox dengan ikon peringatan
                     MessageBox.Show(pesan, "Peringatan", MessageBoxButtons.OK, MessageBoxIcon.Warning)
@@ -2414,10 +1392,8 @@ Public Class FormUtama
                 With FormReturBeli
                     .LblJenisTrans.Text = "EditReturBeli"
                     .TxtFaktur.Text = idretrubeli
-                    .MdiParent = Me
                     .BringToFront()
-                    .Dock = DockStyle.Fill
-                    .Show()
+                    .ShowDialog(Me)
                 End With
 
 
@@ -2443,10 +1419,10 @@ Public Class FormUtama
                 ' tidak membuat edit
 
             Case "Transfer Barang"
-                If SLokasi.Text <> TxtLokasiUntukEdit.Text Then
+                If StatusLokasi.Text <> TxtLokasiUntukEdit.Text Then
                     ' Pesan kesalahan jika pengguna tidak memiliki hak untuk menghapus
                     Dim pesan As String = "Oops! Tidak ada hak untuk edit transfer barang ini." & Environment.NewLine &
-                                          "User " & SLokasi.Text & " tidak berhak edit transaksi edit barang " & TxtLokasiUntukEdit.Text
+                                          "User " & StatusLokasi.Text & " tidak berhak edit transaksi edit barang " & TxtLokasiUntukEdit.Text
 
                     ' Tampilkan MessageBox dengan ikon peringatan
                     MessageBox.Show(pesan, "Peringatan", MessageBoxButtons.OK, MessageBoxIcon.Warning)
@@ -2467,6 +1443,10 @@ Public Class FormUtama
                     .BringToFront()
                     .ShowDialog()
                 End With
+            Case "Transfer Cabang"
+                ' Transfer Cabang tidak mendukung edit — hanya bisa hapus dan buat ulang
+                MessageBox.Show("Edit Transfer Cabang tidak tersedia. Hapus transaksi ini dan buat yang baru.",
+                                "Info", MessageBoxButtons.OK, MessageBoxIcon.Information)
             Case "Surat Jalan"
                 ' Mengedit data Surat Jalan
                 With FormSuratJalan
@@ -2518,17 +1498,15 @@ Public Class FormUtama
         End Try
     End Sub
 
-    Private Sub CekLokasiBarang()
-        If SLokasi.Text <> TxtLokasiUntukEdit.Text Then
-            ' Pesan kesalahan jika pengguna tidak memiliki hak untuk menghapus
+    Private Function CekLokasiBarang() As Boolean
+        If StatusLokasi.Text <> TxtLokasiUntukEdit.Text Then
             Dim pesan As String = "Oops! Tidak ada hak untuk menghapus transaksi ini." & Environment.NewLine &
-                                  "Karena login di " & SLokasi.Text & " tidak berhak menghapus/edit transaksi " & TxtLokasiUntukEdit.Text
-
-            ' Tampilkan MessageBox dengan ikon peringatan
+                                  "Karena login di " & StatusLokasi.Text & " tidak berhak menghapus/edit transaksi " & TxtLokasiUntukEdit.Text
             MessageBox.Show(pesan, "Peringatan", MessageBoxButtons.OK, MessageBoxIcon.Warning)
-            Exit Sub
+            Return False
         End If
-    End Sub
+        Return True
+    End Function
 
     Private Sub Hapustransaksi()
         If TxtFakturTransaksi.Text = "" Then
@@ -2539,7 +1517,7 @@ Public Class FormUtama
         Select Case TxtTransaksi.Text
             Case "Pembelian"
 
-                CekLokasiBarang()
+                If Not CekLokasiBarang() Then Exit Sub
 
                 Dim idPembelian As String = DGVTransaksi.CurrentRow.Cells("ID_PEMBELIAN").Value.ToString()
 
@@ -2565,7 +1543,7 @@ Public Class FormUtama
 
             Case "Penjualan"
 
-                CekLokasiBarang()
+                If Not CekLokasiBarang() Then Exit Sub
 
                 Dim idpenjualan As String = DGVTransaksi.CurrentRow.Cells("ID_PENJUALAN").Value.ToString()
 
@@ -2589,12 +1567,12 @@ Public Class FormUtama
 
             Case "Retur Pembelian"
 
-                CekLokasiBarang()
+                If Not CekLokasiBarang() Then Exit Sub
 
                 Dim idPembelian As String = DGVTransaksi.CurrentRow.Cells("ID_PEMBELIAN").Value.ToString()
 
-                ' Query untuk mendapatkan NOBAYARHUTANG
-                Dim queryNobayar As String = "SELECT ID_BAYAR FROM Hutang_Detail WHERE ID_BELI = @ID_BELI"
+                ' Query untuk mendapatkan NOBAYARHUTANG — filter JENIS='BAYAR' agar baris TIMBUL tidak ikut
+                Dim queryNobayar As String = "SELECT ID_BAYAR FROM Hutang_Detail WHERE ID_BELI = @ID_BELI AND JENIS = 'BAYAR'"
                 Using cmdNobayar As New MySqlCommand(queryNobayar, conn)
                     cmdNobayar.Parameters.AddWithValue("@ID_BELI", idPembelian)
 
@@ -2616,12 +1594,12 @@ Public Class FormUtama
                 End Using
 
             Case "Retur Penjualan"
-                CekLokasiBarang()
+                If Not CekLokasiBarang() Then Exit Sub
 
                 Dim idpenjualan As String = DGVTransaksi.CurrentRow.Cells("ID_PENJUALAN").Value.ToString()
 
-                ' Query untuk mendapatkan NOBAYARHUTANG
-                Dim queryNobayar As String = "SELECT ID_BAYAR FROM Piutang_Detail WHERE ID_JUAL = @ID_JUAL"
+                ' Query untuk mendapatkan NOBAYARHUTANG — filter JENIS='BAYAR' agar baris TIMBUL tidak ikut
+                Dim queryNobayar As String = "SELECT ID_BAYAR FROM Piutang_Detail WHERE ID_JUAL = @ID_JUAL AND JENIS = 'BAYAR'"
                 Using cmdNobayar As New MySqlCommand(queryNobayar, conn)
                     cmdNobayar.Parameters.AddWithValue("@ID_JUAL", idpenjualan)
 
@@ -2646,16 +1624,18 @@ Public Class FormUtama
             Case "Bayar Piutang"
                 HapusbayarPiutang()
             Case "Stok Opname"
-                CekLokasiBarang()
+                If Not CekLokasiBarang() Then Exit Sub
                 Hapusstokopname()
             Case "Transfer Stok"
-                CekLokasiBarang()
+                If Not CekLokasiBarang() Then Exit Sub
                 Hapustransferstok()
             Case "Surat Jalan"
                 HapusSuratJalan()
             Case "Transfer Barang"
-                CekLokasiBarang()
+                If Not CekLokasiBarang() Then Exit Sub
                 HapusTransferBarang()
+            Case "Transfer Cabang"
+                HapusTransferCabang()
         End Select
 
     End Sub
@@ -2664,59 +1644,19 @@ Public Class FormUtama
 
         Dim transaction As MySqlTransaction = conn.BeginTransaction()
         Try
-            Dim updateStokField As String = String.Empty
+            ' ========================================
+            ' START: Audit Trail - Hapus Pembelian
+            ' ========================================
+            ModuleAuditTrail.CatatAudit(TxtFakturTransaksi.Text, "HAPUS", "Pembelian", trans:=transaction)
+            ' ========================================
+            ' END: Audit Trail - Hapus Pembelian
+            ' ========================================
 
-            Select Case TxtLokasiUntukEdit.Text
-                Case "TOKO"
-                    updateStokField = "PEMBELIAN_TOKO"
-                Case "GUDANG"
-                    updateStokField = "PEMBELIAN_GUDANG"
-            End Select
-
-            Dim updateQuery As String = "UPDATE tbl_barang SET HARGA_BELI = ?, HARGA_BELI_TERAKHIR = ?, " & updateStokField & " = " & updateStokField & " - ? WHERE ID_BARANG = ?"
-
-
-            For Each row As DataGridViewRow In DGVDetail.Rows
-                If Not row.IsNewRow AndAlso row.Cells("ID_BARANG").Value IsNot Nothing Then
-                    Dim kodeBarang As String = row.Cells("ID_BARANG").Value.ToString()
-                    Dim stokPengurangan As Decimal = If(row.Cells("QTY_SAT").Value IsNot Nothing, CDec(row.Cells("QTY_SAT").Value), 0)
-                    Dim Hargabeli As Decimal = If(IsDBNull(row.Cells("HARGA_AVERAGE").Value), 0, CDec(row.Cells("HARGA_AVERAGE").Value))
-                    Dim HARGA_BELI_SEBELUMNYA As Decimal = If(IsDBNull(row.Cells("HARGA_BELI_SEBELUMNYA").Value), 0, CDec(row.Cells("HARGA_BELI_SEBELUMNYA").Value))
-
-
-                    Using cmd As New MySqlCommand(updateQuery, conn, transaction)
-                        cmd.Parameters.AddWithValue("@Hargabeli", Hargabeli)
-                        cmd.Parameters.AddWithValue("@HARGA_BELI_SEBELUMNYA", HARGA_BELI_SEBELUMNYA)
-                        cmd.Parameters.AddWithValue("@StokPengurangan", stokPengurangan)
-                        cmd.Parameters.AddWithValue("@KodeBarang", kodeBarang)
-                        cmd.ExecuteNonQuery()
-                    End Using
-                End If
-            Next
-
-            Dim deleteQueries As String() = {
-            "DELETE FROM pembelian WHERE ID_PEMBELIAN = @FakturPembelian",
-            "DELETE FROM pembelian_detail WHERE FAKTUR_BELI = @FakturPembelian",
-            "DELETE FROM JurnalUmum WHERE NO_TRANSAKSI = @FakturPembelian",
-            "DELETE FROM HistoryBarang WHERE FAKTUR = @FakturPembelian"
-        }
-
-            For Each query As String In deleteQueries
-                Using cmd As New MySqlCommand(query, conn, transaction)
-                    cmd.Parameters.AddWithValue("@FakturPembelian", TxtFakturTransaksi.Text)
-                    cmd.ExecuteNonQuery()
-                End Using
-            Next
+            ModuleHapusTransaksi.HapusPembelian(TxtFakturTransaksi.Text, TxtLokasiUntukEdit.Text, transaction)
             transaction.Commit()
 
-            DatabaseModule.CatatanAksiHistory("Hapus Pembelian " & TxtFakturTransaksi.Text)
-
-            For Each row As DataGridViewRow In DGVDetail.Rows
-                If Not row.IsNewRow AndAlso row.Cells("ID_BARANG").Value IsNot Nothing Then
-                    HitungByKode(row.Cells(0).Value)
-                End If
-            Next
-
+        Catch ex As OperationCanceledException
+            transaction.Rollback()
         Catch ex As Exception
             transaction.Rollback()
             MessageBox.Show("Oh tidak! Transaksi dibatalkan karena terjadi kesalahan." & vbCrLf &
@@ -2724,271 +1664,65 @@ Public Class FormUtama
                                                 "Oops! Ada masalah...", MessageBoxButtons.OK, MessageBoxIcon.Error)
         End Try
 
-
     End Sub
 
     Public Sub Hapuspenjualan()
         If MessageBox.Show("Apakah data ini akan dihapus ...???", "", MessageBoxButtons.YesNo) = DialogResult.Yes Then
-            Dim updateStokField As String = ""
-
-            Select Case TxtLokasiUntukEdit.Text
-                Case "TOKO" : updateStokField = "PENJUALAN_TOKO"
-                Case "GUDANG" : updateStokField = "PENJUALAN_GUDANG"
-            End Select
-
-            Dim updateQuery As String = "UPDATE tbl_barang SET " & updateStokField & " = " & updateStokField & " - ? WHERE ID_BARANG = ?"
             Dim transaction As MySqlTransaction = conn.BeginTransaction()
-
             Try
-                For Each row As DataGridViewRow In DGVDetail.Rows
-                    If Not row.IsNewRow AndAlso row.Cells("ID_BARANG").Value IsNot Nothing Then
-                        Dim kodeBarang As String = row.Cells("ID_BARANG").Value.ToString()
-                        Dim stokPengurangan As Decimal = If(row.Cells("QTY_SATUAN").Value IsNot Nothing, CDec(row.Cells("QTY_SATUAN").Value), 0)
+                ' 1. Catat Audit Trail
+                ModuleAuditTrail.CatatAudit(TxtFakturTransaksi.Text, "HAPUS", "Penjualan", trans:=transaction)
 
-                        Using cmd As New MySqlCommand(updateQuery, conn, transaction)
-                            cmd.Parameters.AddWithValue("@StokPengurangan", stokPengurangan)
-                            cmd.Parameters.AddWithValue("@KodeBarang", kodeBarang)
-                            cmd.ExecuteNonQuery()
-                        End Using
-                    End If
-                Next
-
-                Dim deleteQueries As String() = {
-                    "DELETE FROM penjualan WHERE ID_PENJUALAN = @FakturPenjualan",
-                    "DELETE FROM penjualan_detail WHERE FAKTUR_JUAL = @FakturPenjualan",
-                    "DELETE FROM JurnalUmum WHERE NO_TRANSAKSI = @FakturPenjualan",
-                    "DELETE FROM HistoryBarang WHERE FAKTUR = @FakturPenjualan"
-                }
-
-                For Each query As String In deleteQueries
-                    Using cmd As New MySqlCommand(query, conn, transaction)
-                        cmd.Parameters.AddWithValue("@FakturPenjualan", TxtFakturTransaksi.Text)
-                        cmd.ExecuteNonQuery()
-                    End Using
-                Next
+                ' 2. Panggil fungsi pusat (logika reversal stok, piutang, jurnal, saldo 100% akurat)
+                ModuleHapusTransaksi.HapusPenjualan(TxtFakturTransaksi.Text, TxtLokasiUntukEdit.Text, transaction)
 
                 transaction.Commit()
-
-                DatabaseModule.CatatanAksiHistory("Hapus penjualan " & TxtFakturTransaksi.Text)
-
-                For Each row As DataGridViewRow In DGVDetail.Rows
-                    If Not row.IsNewRow AndAlso row.Cells("ID_BARANG").Value IsNot Nothing Then
-                        HitungByKode(row.Cells(0).Value)
-                    End If
-                Next
-
+                ' Refresdatagridview() dipanggil otomatis oleh BtnHapus_Click
             Catch ex As Exception
                 transaction.Rollback()
-                MessageBox.Show("Oh tidak! Transaksi dibatalkan karena terjadi kesalahan." & vbCrLf &
-                                "Detail kesalahan: " & ex.Message,
-                                "Oops! Ada masalah...", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                MessageBox.Show("Terjadi kesalahan saat menghapus penjualan: " & ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
             End Try
         End If
     End Sub
 
     Private Sub Hapusreturpembelian()
         If MessageBox.Show("Apakah data ini akan dihapus ...???", "", MessageBoxButtons.YesNo) = DialogResult.Yes Then
-            Dim updateStokField As String
-
-            Select Case TxtLokasiUntukEdit.Text
-                Case "TOKO" : updateStokField = "RETUR_BELI_TOKO"
-                Case "GUDANG" : updateStokField = "RETUR_BELI_GUDANG"
-                Case Else
-                    Throw New InvalidOperationException("Lokasi barang tidak valid.")
-            End Select
-
-            Dim updateQuery As String = "UPDATE tbl_barang SET " & updateStokField & " = " & updateStokField & " - ? WHERE ID_BARANG = ?"
-
             Dim transaction As MySqlTransaction = conn.BeginTransaction()
-
             Try
-                ' Update stok barang untuk setiap item penjualan
-                For Each row As DataGridViewRow In DGVDetail.Rows
-                    If Not row.IsNewRow AndAlso row.Cells("ID_BARANG").Value IsNot Nothing Then
-                        Dim kodeBarang As String = row.Cells("ID_BARANG").Value.ToString()
-                        Dim stokPengurangan As Decimal = If(row.Cells("QTY_SAT").Value IsNot Nothing, CDec(row.Cells("QTY_SAT").Value), 0)
+                ' 1. Catat Audit Trail
+                ModuleAuditTrail.CatatAudit(TxtFakturTransaksi.Text, "HAPUS", "Retur Pembelian", trans:=transaction)
 
-                        Using cmd As New MySqlCommand(updateQuery, conn, transaction)
-                            cmd.Parameters.AddWithValue("@StokPengurangan", stokPengurangan)
-                            cmd.Parameters.AddWithValue("@KodeBarang", kodeBarang)
-                            cmd.ExecuteNonQuery()
-                        End Using
-                    End If
-                Next
+                ' 2. Panggil fungsi pusat (logika reversal stok, hutang, jurnal, saldo 100% akurat)
+                ModuleHapusTransaksi.HapusReturPembelian(TxtFakturTransaksi.Text, TxtLokasiUntukEdit.Text, transaction)
 
-                Dim kodeRekening As String = DGVTransaksi.CurrentRow.Cells("KODE_REKENING").Value.ToString()
-                Dim totalRupiah As Decimal = DGVTransaksi.CurrentRow.Cells("TOTAL_RUPIAH").Value
-                Dim idPembelian As String = DGVTransaksi.CurrentRow.Cells("ID_PEMBELIAN").Value.ToString()
-
-                ' Update pembelian untuk retur
-                Dim updateReturQuery As String = If(kodeRekening = Kode_rek_Hutang_Beli, "UPDATE pembelian SET RETUR = RETUR - ?, TAGIHAN = TAGIHAN + ? WHERE ID_PEMBELIAN = ?", "UPDATE pembelian SET RETUR = RETUR - ? WHERE ID_PEMBELIAN = ?")
-
-                Using cmdUpdateRetur As New MySqlCommand(updateReturQuery, conn, transaction)
-                    cmdUpdateRetur.Parameters.AddWithValue("@RETUR", totalRupiah)
-
-                    If kodeRekening = Kode_rek_Hutang_Beli Then
-                        cmdUpdateRetur.Parameters.AddWithValue("@TAGIHAN", totalRupiah)
-                    End If
-
-                    cmdUpdateRetur.Parameters.AddWithValue("@ID_PEMBELIAN", idPembelian)
-                    cmdUpdateRetur.ExecuteNonQuery()
-                End Using
-
-                ' Hapus data retur_pembelian
-                Dim deleteQueries As String() = {
-                    "DELETE FROM retur_pembelian WHERE ID_RETUR_PEMBELIAN = @FAKTUR",
-                    "DELETE FROM retur_pembelian_detail WHERE ID_RETUR_PEMBELIAN = @FAKTUR",
-                    "DELETE FROM JurnalUmum WHERE NO_TRANSAKSI = @FAKTUR",
-                    "DELETE FROM HistoryBarang WHERE FAKTUR = @FAKTUR"
-                }
-
-                For Each query As String In deleteQueries
-                    Using cmd As New MySqlCommand(query, conn, transaction)
-                        cmd.Parameters.AddWithValue("@FAKTUR", TxtFakturTransaksi.Text)
-                        cmd.ExecuteNonQuery()
-                    End Using
-                Next
-
-                ' Commit transaksi jika berhasil
                 transaction.Commit()
-
-                DatabaseModule.CatatanAksiHistory("Hapus retur pembelian " & TxtFakturTransaksi.Text)
-
-                For Each row As DataGridViewRow In DGVDetail.Rows
-                    If Not row.IsNewRow AndAlso row.Cells("ID_BARANG").Value IsNot Nothing Then
-                        HitungByKode(row.Cells(0).Value)
-                    End If
-                Next
-
+                ' Refresdatagridview() dipanggil otomatis oleh BtnHapus_Click
             Catch ex As Exception
-                ' Rollback transaksi jika terjadi kesalahan
                 transaction.Rollback()
-                MessageBox.Show("Oh tidak! Transaksi dibatalkan karena terjadi kesalahan." & vbCrLf &
-                                 "Detail kesalahan: " & ex.Message,
-                  "Oops! Ada masalah...", MessageBoxButtons.OK, MessageBoxIcon.Error)
-
+                MessageBox.Show("Terjadi kesalahan saat menghapus retur: " & ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
             End Try
         End If
     End Sub
 
     Private Sub Hapusreturpenjualan()
         If MessageBox.Show("Apakah data ini akan dihapus ...???", "", MessageBoxButtons.YesNo) = DialogResult.Yes Then
-            Dim updateStokField As String = If(TxtLokasiUntukEdit.Text = "TOKO", "RETUR_JUAL_TOKO", If(TxtLokasiUntukEdit.Text = "GUDANG", "RETUR_JUAL_GUDANG", ""))
-
-            Dim updateQuery As String = "UPDATE tbl_barang SET " & updateStokField & " = " & updateStokField & " - ? WHERE ID_BARANG = ?"
-
             Dim transaction As MySqlTransaction = conn.BeginTransaction()
-
             Try
-                For Each row As DataGridViewRow In DGVDetail.Rows
-                    If Not row.IsNewRow AndAlso row.Cells("ID_BARANG").Value IsNot Nothing Then
-                        Dim kodeBarang As String = row.Cells("ID_BARANG").Value.ToString()
+                ' 1. Catat Audit Trail
+                ModuleAuditTrail.CatatAudit(TxtFakturTransaksi.Text, "HAPUS", "Retur Penjualan", trans:=transaction)
 
-                        If Not String.IsNullOrEmpty(kodeBarang) Then
-                            Dim cellValue = row.Cells("QTY_SATUAN").Value
-                            Dim stokPengurangan As Decimal = If(cellValue IsNot Nothing, cellValue.ToString(), "0")
+                ' 2. Panggil fungsi pusat (logika reversal stok, piutang, jurnal, saldo 100% akurat)
+                ModuleHapusTransaksi.HapusReturPenjualan(TxtFakturTransaksi.Text, TxtLokasiUntukEdit.Text, transaction)
 
-
-                            Using cmd As New MySqlCommand(updateQuery, conn, transaction)
-                                cmd.Parameters.AddWithValue("@StokPengurangan", stokPengurangan)
-                                cmd.Parameters.AddWithValue("@KodeBarang", kodeBarang)
-                                cmd.ExecuteNonQuery()
-                            End Using
-                        End If
-                    End If
-                Next
-
-                Dim idPenjualan As String = DGVTransaksi.CurrentRow.Cells("ID_PENJUALAN").Value.ToString()
-                Dim nilaiRetur As Decimal = DGVTransaksi.CurrentRow.Cells("TOTAL_RUPIAH").Value
-
-
-                Dim tglReturJual As DateTime? = Nothing ' Variabel untuk menyimpan TGL_RETUR_JUAL
-
-                ' Query untuk mengambil TGL_RETUR_JUAL terbaru dan kedua berdasarkan ID_PENJUALAN
-                Dim query As String = "SELECT TGL_RETUR_JUAL FROM retur_penjualan WHERE ID_PENJUALAN = @ID_PENJUALAN ORDER BY TGL_RETUR_JUAL DESC LIMIT 2"
-
-                Using cmd As New MySqlCommand(query, conn, transaction)
-                    cmd.Parameters.AddWithValue("@ID_PENJUALAN", idPenjualan)
-
-                    Using reader As MySqlDataReader = cmd.ExecuteReader()
-                        ' Cek apakah ada hasil
-                        If reader.HasRows Then
-                            ' Membaca baris pertama (terbaru)
-                            reader.Read()
-
-                            ' Cek apakah ada baris kedua
-                            If reader.Read() Then
-                                ' Simpan nilai TGL_RETUR_JUAL dalam variabel dari baris kedua
-                                tglReturJual = reader.GetDateTime(0)
-                            End If
-                        End If
-                    End Using
-                End Using
-
-
-                Dim updatePenjualanQuery As String
-
-                If DGVTransaksi.CurrentRow.Cells(7).Value = "TAGIHAN / SALDO PIUTANG" Then
-                    updatePenjualanQuery = "UPDATE penjualan SET TGL_RETUR = @TGL_RETUR, NILAI_RETUR = NILAI_RETUR - @NILAI_RETUR, SISA_TAGIHAN = SISA_TAGIHAN + @SISA_TAGIHAN WHERE ID_PENJUALAN = @ID_PENJUALAN"
-                Else
-                    updatePenjualanQuery = "UPDATE penjualan SET TGL_RETUR = @TGL_RETUR, NILAI_RETUR = NILAI_RETUR - @NILAI_RETUR WHERE ID_PENJUALAN = @ID_PENJUALAN"
-                End If
-
-                Using updatePenjualanCmd As New MySqlCommand(updatePenjualanQuery, conn, transaction)
-                    If tglReturJual.HasValue Then
-                        updatePenjualanCmd.Parameters.AddWithValue("@TGL_RETUR", tglReturJual.Value.ToString("yyyy-MM-dd HH:mm:ss"))
-                    Else
-                        updatePenjualanCmd.Parameters.AddWithValue("@TGL_RETUR", DBNull.Value)
-                    End If
-
-                    updatePenjualanCmd.Parameters.AddWithValue("@NILAI_RETUR", nilaiRetur)
-
-                    If DGVTransaksi.CurrentRow.Cells(7).Value = "TAGIHAN / SALDO PIUTANG" Then
-                        updatePenjualanCmd.Parameters.AddWithValue("@SISA_TAGIHAN", nilaiRetur)
-                    End If
-
-                    updatePenjualanCmd.Parameters.AddWithValue("@ID_PENJUALAN", idPenjualan)
-                    ' Eksekusi query
-                    updatePenjualanCmd.ExecuteNonQuery()
-                End Using
-
-
-                Dim deleteQueries As String() = {
-      "DELETE FROM retur_penjualan WHERE ID_RETUR_PENJUALAN = @FAKTUR",
-      "DELETE FROM retur_penjualan_detail WHERE ID_RETUR_PENJUALAN = @FAKTUR",
-      "DELETE FROM JurnalUmum WHERE NO_TRANSAKSI = @FAKTUR",
-      "DELETE FROM HistoryBarang WHERE FAKTUR = @FAKTUR"
-  }
-
-                For Each sqlQuery As String In deleteQueries
-                    Using cmd As New MySqlCommand(sqlQuery, conn, transaction)
-                        cmd.Parameters.AddWithValue("@FAKTUR", TxtFakturTransaksi.Text)
-                        cmd.ExecuteNonQuery()
-                    End Using
-                Next
-
-
-                ' Commit transaksi jika berhasil
                 transaction.Commit()
-
-                DatabaseModule.CatatanAksiHistory("Hapus retur penjualan " & TxtFakturTransaksi.Text)
-
-                For Each row As DataGridViewRow In DGVDetail.Rows
-                    If Not row.IsNewRow AndAlso row.Cells("ID_BARANG").Value IsNot Nothing Then
-                        HitungByKode(row.Cells(0).Value)
-                    End If
-                Next
-
+                ' Refresdatagridview() dipanggil otomatis oleh BtnHapus_Click
             Catch ex As Exception
-                ' Rollback transaksi jika terjadi kesalahan
                 transaction.Rollback()
-                MessageBox.Show("Oh tidak! Transaksi dibatalkan karena terjadi kesalahan." & vbCrLf &
-                                 "Detail kesalahan: " & ex.Message,
-                  "Oops! Ada masalah...", MessageBoxButtons.OK, MessageBoxIcon.Error)
-
+                MessageBox.Show("Terjadi kesalahan saat menghapus retur jual: " & ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
             End Try
         End If
     End Sub
+
 
     Private Sub Hapusbayarhutang()
         If MessageBox.Show("Apakah data ini akan dihapus ...???", "", MessageBoxButtons.YesNo) = DialogResult.Yes Then
@@ -3011,6 +1745,29 @@ Public Class FormUtama
                     End Using
                 Next
 
+                ' ========================================
+                ' START: Audit Trail - Hapus Bayar Hutang
+                ' ========================================
+                ModuleAuditTrail.CatatAudit(TxtFakturTransaksi.Text, "HAPUS", "Bayar Hutang", trans:=transaction)
+                ' ========================================
+                ' END: Audit Trail - Hapus Bayar Hutang
+                ' ========================================
+
+                ' SEBELUM menghapus JurnalUmum: SIMPAN daftar akun terlibat terlebih dahulu!
+                Dim akunTerlibat As New HashSet(Of String)(StringComparer.OrdinalIgnoreCase)
+                Using cmdAkun As New MySqlCommand(
+                    "SELECT DISTINCT NOMOR_AKUN_D FROM JurnalUmum WHERE NO_TRANSAKSI = @fk AND NOMOR_AKUN_D <> '' " &
+                    "UNION " &
+                    "SELECT DISTINCT NOMOR_AKUN_K FROM JurnalUmum WHERE NO_TRANSAKSI = @fk AND NOMOR_AKUN_K <> ''",
+                    conn, transaction)
+                    cmdAkun.Parameters.AddWithValue("@fk", TxtFakturTransaksi.Text)
+                    Using rd = cmdAkun.ExecuteReader()
+                        While rd.Read()
+                            Dim kode As String = rd(0).ToString().Trim()
+                            If kode <> "" Then akunTerlibat.Add(kode)
+                        End While
+                    End Using
+                End Using
 
                 Dim deleteQueries As String() = {
                     "DELETE FROM hutang WHERE NOBAYARHUTANG = @NO_TRANSAKSI",
@@ -3025,10 +1782,11 @@ Public Class FormUtama
                     End Using
                 Next
 
-                ' Commit transaksi jika berhasil
+                ' Panggil UpdateSaldoAkun per akun yang disimpan SEBELUM delete JurnalUmum
+                For Each kodeAkun As String In akunTerlibat
+                    UpdateSaldoAkun(kodeAkun, transaction)
+                Next
                 transaction.Commit()
-
-                DatabaseModule.CatatanAksiHistory("Hapus bayar hutang " & TxtFakturTransaksi.Text)
 
             Catch ex As Exception
                 ' Rollback transaksi jika terjadi kesalahan
@@ -3065,6 +1823,30 @@ Public Class FormUtama
 
                 Next
 
+                ' ========================================
+                ' START: Audit Trail - Hapus Bayar Piutang
+                ' ========================================
+                ModuleAuditTrail.CatatAudit(TxtFakturTransaksi.Text, "HAPUS", "Bayar Piutang", trans:=transaction)
+                ' ========================================
+                ' END: Audit Trail - Hapus Bayar Piutang
+                ' ========================================
+
+                ' SEBELUM menghapus JurnalUmum: SIMPAN daftar akun terlibat terlebih dahulu!
+                Dim akunTerlibat As New HashSet(Of String)(StringComparer.OrdinalIgnoreCase)
+                Using cmdAkun As New MySqlCommand(
+                    "SELECT DISTINCT NOMOR_AKUN_D FROM JurnalUmum WHERE NO_TRANSAKSI = @fk AND NOMOR_AKUN_D <> '' " &
+                    "UNION " &
+                    "SELECT DISTINCT NOMOR_AKUN_K FROM JurnalUmum WHERE NO_TRANSAKSI = @fk AND NOMOR_AKUN_K <> ''",
+                    conn, transaction)
+                    cmdAkun.Parameters.AddWithValue("@fk", TxtFakturTransaksi.Text)
+                    Using rd = cmdAkun.ExecuteReader()
+                        While rd.Read()
+                            Dim kode As String = rd(0).ToString().Trim()
+                            If kode <> "" Then akunTerlibat.Add(kode)
+                        End While
+                    End Using
+                End Using
+
                 Dim deleteQueries As String() = {
                     "DELETE FROM Piutang WHERE ID_BAYAR_PIUTANG = @NO_TRANSAKSI",
                     "DELETE FROM JurnalUmum WHERE NO_TRANSAKSI = @NO_TRANSAKSI",
@@ -3078,10 +1860,11 @@ Public Class FormUtama
                     End Using
                 Next
 
-                ' Commit transaksi jika berhasil
+                ' Panggil UpdateSaldoAkun per akun yang disimpan SEBELUM delete JurnalUmum
+                For Each kodeAkun As String In akunTerlibat
+                    UpdateSaldoAkun(kodeAkun, transaction)
+                Next
                 transaction.Commit()
-
-                DatabaseModule.CatatanAksiHistory("Hapus bayar piutang " & TxtFakturTransaksi.Text)
 
             Catch ex As Exception
                 ' Rollback transaksi jika terjadi kesalahan
@@ -3120,6 +1903,47 @@ Public Class FormUtama
                     cmd.ExecuteNonQuery()
                 End Using
 
+                ' ========================================
+                ' START: Audit Trail - Hapus Stok Opname
+                ' ========================================
+                Dim idStokOpname As String = TxtFakturTransaksi.Text
+                Dim idBarang As String = DGVTransaksi.CurrentRow.Cells(2).Value.ToString()
+                Dim namaBarang As String = If(DGVTransaksi.CurrentRow.Cells(3).Value IsNot Nothing, DGVTransaksi.CurrentRow.Cells(3).Value.ToString(), "")
+                Dim stokOpname As Decimal = CDec(DGVTransaksi.CurrentRow.Cells(8).Value)
+                Dim lokasi As String = TxtLokasiUntukEdit.Text
+
+                Dim snapshot As New System.Text.StringBuilder()
+                snapshot.AppendLine(idStokOpname & " | " & DateTime.Now.ToString("yyyy-MM-dd HH:mm"))
+                snapshot.AppendLine("Barang: " & idBarang & " — " & namaBarang)
+                snapshot.AppendLine("Lokasi: " & lokasi & " | Qty: " & stokOpname.ToString("N0"))
+
+                ModuleAuditTrail.CatatAuditMaster(
+                    "OPN:" & idStokOpname,
+                    "HAPUS",
+                    "Stok Opname",
+                    snapshot.ToString(),
+                    "Hapus stok opname",
+                    transaction
+                )
+                ' ========================================
+                ' END: Audit Trail - Hapus Stok Opname
+                ' ========================================
+
+                ' SEBELUM menghapus JurnalUmum: SIMPAN daftar akun terlibat terlebih dahulu!
+                Dim akunTerlibat As New HashSet(Of String)(StringComparer.OrdinalIgnoreCase)
+                Using cmdAkun As New MySqlCommand(
+                    "SELECT DISTINCT NOMOR_AKUN_D FROM JurnalUmum WHERE NO_TRANSAKSI = @fk AND NOMOR_AKUN_D <> '' " &
+                    "UNION " &
+                    "SELECT DISTINCT NOMOR_AKUN_K FROM JurnalUmum WHERE NO_TRANSAKSI = @fk AND NOMOR_AKUN_K <> ''",
+                    conn, transaction)
+                    cmdAkun.Parameters.AddWithValue("@fk", TxtFakturTransaksi.Text)
+                    Using rd = cmdAkun.ExecuteReader()
+                        While rd.Read()
+                            Dim kode As String = rd(0).ToString().Trim()
+                            If kode <> "" Then akunTerlibat.Add(kode)
+                        End While
+                    End Using
+                End Using
 
                 Dim deleteQueries As String() = {
                           "DELETE FROM Stok_Opname WHERE ID_STOK_OPNAME = @ID_STOK_OPNAME",
@@ -3134,16 +1958,22 @@ Public Class FormUtama
                     End Using
                 Next
 
-                ' Commit transaksi jika berhasil
+                ' Recalculate stok + audit delta (hapus stok opname)
+                Dim kodeOpname As String = DGVTransaksi.CurrentRow.Cells(2).Value.ToString()
+                Dim sebelumOpname As Decimal = BacaStokSaatIni(kodeOpname, TxtLokasiUntukEdit.Text, transaction)
+                HitungStokPerubahan(kodeOpname, transaction)
+                Dim sesudahOpname As Decimal = BacaStokSaatIni(kodeOpname, TxtLokasiUntukEdit.Text, transaction)
+                Dim auditHapusOpname As New Dictionary(Of String, Decimal)() From {{kodeOpname, Math.Abs(sesudahOpname - sebelumOpname)}}
+                AuditStokTransaksi(TxtFakturTransaksi.Text, "Hapus Stok Opname", Nothing, Nothing, Nothing, auditHapusOpname, transaction)
+
+                ' Panggil UpdateSaldoAkun per akun yang disimpan SEBELUM delete JurnalUmum
+                For Each kodeAkun As String In akunTerlibat
+                    UpdateSaldoAkun(kodeAkun, transaction)
+                Next
                 transaction.Commit()
-
-                DatabaseModule.CatatanAksiHistory("Hapus stok opname " & TxtFakturTransaksi.Text)
-
-                HitungByKode(DGVTransaksi.CurrentRow.Cells(2).Value.ToString())
 
             Catch ex As Exception
                 transaction.Rollback()
-
                 MessageBox.Show("Oh tidak! Transaksi dibatalkan karena terjadi kesalahan." & vbCrLf &
                                 "Detail kesalahan: " & ex.Message,
                                 "Oops! Ada masalah...", MessageBoxButtons.OK, MessageBoxIcon.Error)
@@ -3191,6 +2021,47 @@ Public Class FormUtama
                     cmdUpdateKeluar.ExecuteNonQuery()
                 End Using
 
+                ' ========================================
+                ' START: Audit Trail - Hapus Transfer Stok
+                ' ========================================
+                Dim idTransfer As String = TxtFakturTransaksi.Text
+                Dim namaBarangMasuk As String = If(DGVTransaksi.CurrentRow.Cells(5).Value IsNot Nothing, DGVTransaksi.CurrentRow.Cells(5).Value.ToString(), "")
+                Dim namaBarangKeluar As String = If(DGVTransaksi.CurrentRow.Cells(13).Value IsNot Nothing, DGVTransaksi.CurrentRow.Cells(13).Value.ToString(), "")
+                Dim lokasi As String = TxtLokasiUntukEdit.Text
+
+                Dim snapshot As New System.Text.StringBuilder()
+                snapshot.AppendLine(idTransfer & " | " & DateTime.Now.ToString("yyyy-MM-dd HH:mm"))
+                snapshot.AppendLine("Barang Masuk: " & idBarangMasuk & " — " & namaBarangMasuk & " | Qty: " & qtySatMasuk.ToString("N0"))
+                snapshot.AppendLine("Barang Keluar: " & idBarangKeluar & " — " & namaBarangKeluar & " | Qty: " & qtySatKeluar.ToString("N0"))
+                snapshot.AppendLine("Lokasi: " & lokasi)
+
+                ModuleAuditTrail.CatatAuditMaster(
+                    "TRF-STK:" & idTransfer,
+                    "HAPUS",
+                    "Transfer Stok",
+                    snapshot.ToString(),
+                    "Hapus transfer stok",
+                    transaction
+                )
+                ' ========================================
+                ' END: Audit Trail - Hapus Transfer Stok
+                ' ========================================
+
+                ' SEBELUM menghapus JurnalUmum: SIMPAN daftar akun terlibat terlebih dahulu!
+                Dim akunTerlibat As New HashSet(Of String)(StringComparer.OrdinalIgnoreCase)
+                Using cmdAkun As New MySqlCommand(
+                    "SELECT DISTINCT NOMOR_AKUN_D FROM JurnalUmum WHERE NO_TRANSAKSI = @fk AND NOMOR_AKUN_D <> '' " &
+                    "UNION " &
+                    "SELECT DISTINCT NOMOR_AKUN_K FROM JurnalUmum WHERE NO_TRANSAKSI = @fk AND NOMOR_AKUN_K <> ''",
+                    conn, transaction)
+                    cmdAkun.Parameters.AddWithValue("@fk", TxtFakturTransaksi.Text)
+                    Using rd = cmdAkun.ExecuteReader()
+                        While rd.Read()
+                            Dim kode As String = rd(0).ToString().Trim()
+                            If kode <> "" Then akunTerlibat.Add(kode)
+                        End While
+                    End Using
+                End Using
 
                 Dim deleteQueries As String() = {
                   "DELETE FROM Transfer_stok WHERE ID_TRANSFER = @ID_TRANSFER",
@@ -3205,16 +2076,26 @@ Public Class FormUtama
                     End Using
                 Next
 
+                ' Recalculate stok + audit delta (hapus transfer stok)
+                Dim sebelumMsk As Decimal = BacaStokSaatIni(idBarangMasuk, TxtLokasiUntukEdit.Text, transaction)
+                HitungStokPerubahan(idBarangMasuk, transaction)
+                Dim sesudahMsk As Decimal = BacaStokSaatIni(idBarangMasuk, TxtLokasiUntukEdit.Text, transaction)
 
-                ' Commit transaksi jika berhasil
+                Dim sebelumKlr As Decimal = BacaStokSaatIni(idBarangKeluar, TxtLokasiUntukEdit.Text, transaction)
+                HitungStokPerubahan(idBarangKeluar, transaction)
+                Dim sesudahKlr As Decimal = BacaStokSaatIni(idBarangKeluar, TxtLokasiUntukEdit.Text, transaction)
+
+                Dim auditHapusTS As New Dictionary(Of String, Decimal)() From {
+                    {idBarangMasuk, sebelumMsk - sesudahMsk},
+                    {idBarangKeluar, sesudahKlr - sebelumKlr}
+                }
+                AuditStokTransaksi(TxtFakturTransaksi.Text, "Hapus Transfer Stok", Nothing, Nothing, Nothing, auditHapusTS, transaction)
+
+                ' Panggil UpdateSaldoAkun per akun yang disimpan SEBELUM delete JurnalUmum
+                For Each kodeAkun As String In akunTerlibat
+                    UpdateSaldoAkun(kodeAkun, transaction)
+                Next
                 transaction.Commit()
-
-
-                DatabaseModule.CatatanAksiHistory("Hapus transfer stok " & TxtFakturTransaksi.Text)
-
-                HitungByKode(idBarangMasuk)
-                HitungByKode(idBarangKeluar)
-
 
             Catch ex As Exception
                 ' Rollback transaksi jika terjadi kesalahan
@@ -3237,6 +2118,35 @@ Public Class FormUtama
 
             Try
 
+                ' ========================================
+                ' START: Audit Trail - Hapus Surat Jalan
+                ' ========================================
+                Dim notaSJ As String = TxtFakturTransaksi.Text
+                Dim snapshot As New System.Text.StringBuilder()
+                snapshot.AppendLine(notaSJ & " | " & DateTime.Now.ToString("yyyy-MM-dd HH:mm"))
+
+                If DGVTransaksi.CurrentRow IsNot Nothing Then
+                    Dim colIdx As Integer = 0
+                    For Each col As DataGridViewColumn In DGVTransaksi.Columns
+                        If col.Visible AndAlso DGVTransaksi.CurrentRow.Cells(colIdx).Value IsNot Nothing Then
+                            snapshot.AppendLine(col.HeaderText & ": " & DGVTransaksi.CurrentRow.Cells(colIdx).Value.ToString())
+                        End If
+                        colIdx += 1
+                    Next
+                End If
+
+                ModuleAuditTrail.CatatAuditMaster(
+                    "SJ:" & notaSJ,
+                    "HAPUS",
+                    "Surat Jalan",
+                    snapshot.ToString(),
+                    "Hapus surat jalan",
+                    transaction
+                )
+                ' ========================================
+                ' END: Audit Trail - Hapus Surat Jalan
+                ' ========================================
+
                 Dim deleteQueries As String() = {
                   "DELETE FROM Surat_Jalan WHERE NOTA = @NOTA",
                   "DELETE FROM Surat_Jalan_Detail WHERE NOTA = @NOTA"
@@ -3244,15 +2154,13 @@ Public Class FormUtama
 
                 For Each query As String In deleteQueries
                     Using cmd As New MySqlCommand(query, conn, transaction)
-                        cmd.Parameters.AddWithValue("@NOTA", TxtFakturTransaksi.Text)
+                        cmd.Parameters.AddWithValue("@NOTA", notaSJ)
                         cmd.ExecuteNonQuery()
                     End Using
                 Next
 
                 ' Commit transaksi jika berhasil
                 transaction.Commit()
-
-                DatabaseModule.CatatanAksiHistory("Hapus surat jalan " & TxtFakturTransaksi.Text)
 
             Catch ex As Exception
                 ' Rollback transaksi jika terjadi kesalahan
@@ -3305,6 +2213,56 @@ Public Class FormUtama
                     End If
                 Next
 
+                ' ========================================
+                ' START: Audit Trail - Hapus Transfer Barang
+                ' ========================================
+                Dim idTransferBarang As String = TxtFakturTransaksi.Text
+                Dim lokasi As String = TxtLokasiUntukEdit.Text
+
+                Dim snapshot As New System.Text.StringBuilder()
+                snapshot.AppendLine(idTransferBarang & " | " & DateTime.Now.ToString("yyyy-MM-dd HH:mm"))
+                snapshot.AppendLine("Lokasi: " & lokasi)
+                snapshot.AppendLine("Daftar Barang:")
+
+                Dim noItem As Integer = 0
+                For Each row As DataGridViewRow In DGVDetail.Rows
+                    If Not row.IsNewRow AndAlso row.Cells("ID_BARANG").Value IsNot Nothing Then
+                        noItem += 1
+                        Dim kode As String = row.Cells("ID_BARANG").Value.ToString()
+                        Dim nama As String = If(row.Cells("NAMA_BARANG").Value IsNot Nothing, row.Cells("NAMA_BARANG").Value.ToString(), "")
+                        Dim qty As Decimal = If(row.Cells("TOTAL_QTY").Value IsNot Nothing AndAlso Not IsDBNull(row.Cells("TOTAL_QTY").Value), CDec(row.Cells("TOTAL_QTY").Value), 0D)
+                        snapshot.AppendLine($"  {noItem}. {kode} — {nama} | Qty: {qty:N0}")
+                    End If
+                Next
+
+                ModuleAuditTrail.CatatAuditMaster(
+                    "TRF:" & idTransferBarang,
+                    "HAPUS",
+                    "Transfer Barang",
+                    snapshot.ToString(),
+                    "Hapus transfer barang",
+                    transaction
+                )
+                ' ========================================
+                ' END: Audit Trail - Hapus Transfer Barang
+                ' ========================================
+
+                ' SEBELUM menghapus JurnalUmum: SIMPAN daftar akun terlibat terlebih dahulu!
+                Dim akunTerlibat As New HashSet(Of String)(StringComparer.OrdinalIgnoreCase)
+                Using cmdAkun As New MySqlCommand(
+                    "SELECT DISTINCT NOMOR_AKUN_D FROM JurnalUmum WHERE NO_TRANSAKSI = @fk AND NOMOR_AKUN_D <> '' " &
+                    "UNION " &
+                    "SELECT DISTINCT NOMOR_AKUN_K FROM JurnalUmum WHERE NO_TRANSAKSI = @fk AND NOMOR_AKUN_K <> ''",
+                    conn, transaction)
+                    cmdAkun.Parameters.AddWithValue("@fk", TxtFakturTransaksi.Text)
+                    Using rd = cmdAkun.ExecuteReader()
+                        While rd.Read()
+                            Dim kode As String = rd(0).ToString().Trim()
+                            If kode <> "" Then akunTerlibat.Add(kode)
+                        End While
+                    End Using
+                End Using
+
                 Dim deleteQueries As String() = {
                     "DELETE FROM Transfer_Barang WHERE ID_TRANSFER = @ID_TRANSFER",
                     "DELETE FROM Transfer_Barang_Detail WHERE ID_TRANSFER = @ID_TRANSFER",
@@ -3319,16 +2277,29 @@ Public Class FormUtama
                     End Using
                 Next
 
-                ' Commit transaksi jika berhasil
-                transaction.Commit()
-
-                DatabaseModule.CatatanAksiHistory("Hapus transfer barang " & TxtFakturTransaksi.Text)
-
+                ' Recalculate stok + audit delta (hapus transfer barang)
+                ' Audit A: qty dari DGVDetail (kolom TOTAL_QTY dari Transfer_Barang_Detail)
+                Dim auditHapusTB As New Dictionary(Of String, Decimal)()
+                Dim auditDGVHapusTB As New Dictionary(Of String, Decimal)()
                 For Each row As DataGridViewRow In DGVDetail.Rows
                     If Not row.IsNewRow AndAlso row.Cells("ID_BARANG").Value IsNot Nothing Then
-                        HitungByKode(row.Cells(0).Value)
+                        Dim kode As String = row.Cells("ID_BARANG").Value.ToString()
+                        Dim qtyA As Decimal = If(row.Cells("TOTAL_QTY").Value IsNot Nothing AndAlso Not IsDBNull(row.Cells("TOTAL_QTY").Value), CDec(row.Cells("TOTAL_QTY").Value), 0D)
+                        If auditDGVHapusTB.ContainsKey(kode) Then auditDGVHapusTB(kode) += qtyA Else auditDGVHapusTB(kode) = qtyA
+                        Dim sebelum As Decimal = BacaStokSaatIni(kode, TxtLokasiUntukEdit.Text, transaction)
+                        HitungStokPerubahan(kode, transaction)
+                        Dim sesudah As Decimal = BacaStokSaatIni(kode, TxtLokasiUntukEdit.Text, transaction)
+                        auditHapusTB(kode) = sesudah - sebelum  ' hapus transfer barang mengembalikan stok asal
                     End If
                 Next
+                AuditStokTransaksi(TxtFakturTransaksi.Text, "Hapus Transfer Barang", auditDGVHapusTB, Nothing, Nothing, auditHapusTB, transaction)
+
+                ' Panggil UpdateSaldoAkun per akun yang disimpan SEBELUM delete JurnalUmum
+                For Each kodeAkun As String In akunTerlibat
+                    UpdateSaldoAkun(kodeAkun, transaction)
+                Next
+                transaction.Commit()
+
             Catch ex As Exception
                 ' Rollback transaksi jika terjadi kesalahan
                 transaction.Rollback()
@@ -3338,6 +2309,123 @@ Public Class FormUtama
 
             End Try
         End If
+    End Sub
+
+    Private Sub HapusTransferCabang()
+        If MessageBox.Show("Apakah data transfer cabang ini akan dihapus?", "Konfirmasi Hapus",
+                           MessageBoxButtons.YesNo, MessageBoxIcon.Question) <> DialogResult.Yes Then Return
+
+        Dim faktur As String = TxtFakturTransaksi.Text
+        Dim transaction As MySqlTransaction = conn.BeginTransaction()
+        Try
+            ' 1. Baca lokasi asal dari HistoryBarang (LOKASI = LokasiBarang saat transaksi dibuat)
+            Dim lokasiAsal As String = "TOKO"
+            Using cmdLok As New MySqlCommand(
+                "SELECT LOKASI FROM HistoryBarang WHERE FAKTUR = @id AND JENIS = 'TRANSFER_CABANG_KELUAR' LIMIT 1", conn, transaction)
+                cmdLok.Parameters.AddWithValue("@id", faktur)
+                Dim val = cmdLok.ExecuteScalar()
+                If val IsNot Nothing AndAlso Not IsDBNull(val) Then
+                    If val.ToString().ToUpper() = "GUDANG" Then lokasiAsal = "GUDANG"
+                End If
+            End Using
+            Dim kolomKeluar As String = If(lokasiAsal = "GUDANG",
+                "TRANSFER_CABANG_KELUAR_GUDANG", "TRANSFER_CABANG_KELUAR_TOKO")
+
+            ' 2. Ambil item dari DGVDetail yang sudah terisi saat row diklik
+            Dim kodeItems As New List(Of String)()
+            For Each row As DataGridViewRow In DGVDetail.Rows
+                If row.IsNewRow OrElse row.Cells("ID_BARANG").Value Is Nothing Then Continue For
+                Dim kode As String = row.Cells("ID_BARANG").Value.ToString()
+                Dim qtySat As Decimal = CDec(If(row.Cells("TOTAL_QTY").Value, 0))
+                If String.IsNullOrEmpty(kode) Then Continue For
+
+                Using cmdStok As New MySqlCommand(
+                    $"UPDATE tbl_barang SET {kolomKeluar} = {kolomKeluar} - @qty WHERE ID_BARANG = @kode",
+                    conn, transaction)
+                    cmdStok.Parameters.AddWithValue("@qty", qtySat)
+                    cmdStok.Parameters.AddWithValue("@kode", kode)
+                    cmdStok.ExecuteNonQuery()
+                End Using
+                kodeItems.Add(kode)
+            Next
+
+            ' ========================================
+            ' START: Audit Trail - Hapus Transfer Cabang
+            ' ========================================
+            Dim snapshot As New System.Text.StringBuilder()
+            snapshot.AppendLine(faktur & " | " & DateTime.Now.ToString("yyyy-MM-dd HH:mm"))
+            snapshot.AppendLine("Lokasi Asal: " & lokasiAsal)
+            snapshot.AppendLine("Daftar Barang:")
+
+            Dim noItemCabang As Integer = 0
+            For Each row As DataGridViewRow In DGVDetail.Rows
+                If Not row.IsNewRow AndAlso row.Cells("ID_BARANG").Value IsNot Nothing Then
+                    noItemCabang += 1
+                    Dim kode As String = row.Cells("ID_BARANG").Value.ToString()
+                    Dim nama As String = If(row.Cells("NAMA_BARANG").Value IsNot Nothing, row.Cells("NAMA_BARANG").Value.ToString(), "")
+                    Dim qty As Decimal = CDec(If(row.Cells("TOTAL_QTY").Value, 0))
+                    snapshot.AppendLine($"  {noItemCabang}. {kode} — {nama} | Qty: {qty:N0}")
+                End If
+            Next
+
+            ModuleAuditTrail.CatatAuditMaster(
+                "TRF-CAB:" & faktur,
+                "HAPUS",
+                "Transfer Cabang",
+                snapshot.ToString(),
+                "Hapus transfer cabang",
+                transaction
+            )
+            ' ========================================
+            ' END: Audit Trail - Hapus Transfer Cabang
+            ' ========================================
+
+            ' 2. SEBELUM menghapus JurnalUmum: SIMPAN daftar akun terlibat terlebih dahulu!
+            Dim akunTerlibat As New HashSet(Of String)(StringComparer.OrdinalIgnoreCase)
+            Using cmdAkun As New MySqlCommand(
+                "SELECT DISTINCT NOMOR_AKUN_D FROM JurnalUmum WHERE NO_TRANSAKSI = @fk AND NOMOR_AKUN_D <> '' " &
+                "UNION " &
+                "SELECT DISTINCT NOMOR_AKUN_K FROM JurnalUmum WHERE NO_TRANSAKSI = @fk AND NOMOR_AKUN_K <> ''",
+                conn, transaction)
+                cmdAkun.Parameters.AddWithValue("@fk", faktur)
+                Using rd = cmdAkun.ExecuteReader()
+                    While rd.Read()
+                        Dim kode As String = rd(0).ToString().Trim()
+                        If kode <> "" Then akunTerlibat.Add(kode)
+                    End While
+                End Using
+            End Using
+
+            ' 3. Hapus HistoryBarang, JurnalUmum, detail, header
+            For Each q As String In {
+                "DELETE FROM HistoryBarang WHERE FAKTUR = @id",
+                "DELETE FROM JurnalUmum WHERE NO_TRANSAKSI = @id",
+                "DELETE FROM transfer_cabang_detail WHERE ID_TRANSFER = @id",
+                "DELETE FROM transfer_cabang WHERE ID_TRANSFER = @id"
+            }
+                Using cmd As New MySqlCommand(q, conn, transaction)
+                    cmd.Parameters.AddWithValue("@id", faktur)
+                    cmd.ExecuteNonQuery()
+                End Using
+            Next
+
+            ' 4. Recalculate STOK dari semua kolom mutasi (setelah HistoryBarang dihapus)
+            For Each kode As String In kodeItems
+                HitungStokPerubahan(kode, transaction)
+            Next
+
+            ' 5. Update saldo akun jurnal (hanya akun yang terlibat)
+            For Each kodeAkun As String In akunTerlibat
+                UpdateSaldoAkun(kodeAkun, transaction)
+            Next
+
+            transaction.Commit()
+            MessageBox.Show("Data transfer cabang berhasil dihapus.", "Sukses", MessageBoxButtons.OK, MessageBoxIcon.Information)
+            DataTransferCabang()
+        Catch ex As Exception
+            transaction.Rollback()
+            MessageBox.Show("Hapus gagal: " & ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
+        End Try
     End Sub
 
     Private Sub BtnPrint_Click(ByVal sender As Object, ByVal e As EventArgs) Handles BtnPrint.Click
@@ -3350,78 +2438,148 @@ Public Class FormUtama
         End If
     End Sub
 
+    Private Sub EksekusiCetakJual(noFaktur As String)
+        If BacaPengaturanPrinter("Jual", "PilihPrinter", "LANGSUNG CETAK") = "TANYA PILIH PRINTER" Then
+            ModulePrinterJual.TanyaPilihPrinter(noFaktur)
+        Else
+            ModulePrinterJual.CetakPenjualan(noFaktur)
+        End If
+    End Sub
+
     Private Sub Cetaktransaksi()
+        Dim faktur As String = TxtFakturTransaksi.Text
+        If String.IsNullOrEmpty(faktur) Then Return
+
         Select Case TxtTransaksi.Text
             Case "Pembelian"
-                NotaPembelian.TxtIdPembelian.Text = TxtFakturTransaksi.Text
-                NotaPembelian.ShowDialog()
+                Select Case BacaPengaturanPrinter("Beli", "CetakOtomatis", "IYA").Trim().ToUpper()
+                    Case "IYA"
+                        LakukanCetakUlang("Beli", faktur)
+                    Case "SELALU TANYA"
+                        If MessageBox.Show("Apakah Anda ingin mencetak nota pembelian?",
+                                           "Konfirmasi Cetak", MessageBoxButtons.YesNo, MessageBoxIcon.Question) = DialogResult.Yes Then
+                            LakukanCetakUlang("Beli", faktur)
+                        End If
+                End Select
 
             Case "Penjualan"
-                TanyakanKertas = ModulHakAkses.BacaHakAksesSemua(FormGeneralSetting.LblJualJenisKertasCetak.Text)
-                'If TxtJenisPrinter.Text = "Printer Thermal" Then
-                With PrintJual
-                    .TxtFaktur.Text = TxtFakturTransaksi.Text
-                    If TanyakanKertas = "Iya" Then
-                        Dim result As DialogResult = MessageBox.Show("Pilih jenis printer untuk mencetak:" & vbCrLf & vbCrLf & "Yes = Printer Thermal" & vbCrLf & "No = Printer Dot Matrix",
-                                              "Pilih Jenis Printer",
-                                              MessageBoxButtons.YesNo,
-                                              MessageBoxIcon.Question)
-
-                        If result = DialogResult.Yes Then
-                            ' Cetak dengan Printer Thermal
-                            .ProsesCetak("Printer Thermal")
-                        ElseIf result = DialogResult.No Then
-                            ' Cetak dengan Printer Dot Matrix
-                            .ProsesCetak("Printer Dot Matrix")
+                Select Case BacaPengaturanPrinter("Jual", "CetakOtomatis", "IYA").Trim().ToUpper()
+                    Case "IYA"
+                        EksekusiCetakJual(faktur)
+                    Case "SELALU TANYA"
+                        If MessageBox.Show("Apakah Anda ingin mencetak nota penjualan?",
+                                           "Konfirmasi Cetak", MessageBoxButtons.YesNo, MessageBoxIcon.Question) = DialogResult.Yes Then
+                            EksekusiCetakJual(faktur)
                         End If
+                    Case "TAMPILKAN DI MONITOR"
+                        ModulePrinterJual.PreviewPenjualan(faktur)
+                End Select
 
-                    Else
-                        .ProsesCetak("")
-                    End If
-                End With
-                'Else
-
-                'ModuleCetakJual.PrintReport(TxtFakturTransaksi.Text)
-                'End If
             Case "Retur Pembelian"
-                Dim result As DialogResult = MessageBox.Show("Apakah Anda ingin mencetak retur barang?",
-                                                       "Konfirmasi Cetak",
-                                                       MessageBoxButtons.YesNo, MessageBoxIcon.Question)
-                If result = DialogResult.Yes Then
-                    With PrintReturBeli
-                        .TxtFaktur.Text = TxtFakturTransaksi.Text
-                        .ProsesCetak()
-                    End With
-                End If
+                Select Case BacaPengaturanPrinter("ReturBeli", "CetakOtomatis", "IYA").Trim().ToUpper()
+                    Case "IYA"
+                        LakukanCetakUlang("ReturBeli", faktur)
+                    Case "SELALU TANYA"
+                        If MessageBox.Show("Apakah Anda ingin mencetak nota retur pembelian?",
+                                           "Konfirmasi Cetak", MessageBoxButtons.YesNo, MessageBoxIcon.Question) = DialogResult.Yes Then
+                            LakukanCetakUlang("ReturBeli", faktur)
+                        End If
+                End Select
 
             Case "Retur Penjualan"
-                If TxtJenisPrinter.Text = "Printer Thermal" Then
-                    With PrintReturJual
-                        .TxtFaktur.Text = TxtFakturTransaksi.Text
-                    End With
-                Else
-                End If
+                Select Case BacaPengaturanPrinter("ReturJual", "CetakOtomatis", "IYA").Trim().ToUpper()
+                    Case "IYA"
+                        LakukanCetakUlang("ReturJual", faktur)
+                    Case "SELALU TANYA"
+                        If MessageBox.Show("Apakah Anda ingin mencetak nota retur penjualan?",
+                                           "Konfirmasi Cetak", MessageBoxButtons.YesNo, MessageBoxIcon.Question) = DialogResult.Yes Then
+                            LakukanCetakUlang("ReturJual", faktur)
+                        End If
+                    Case "TAMPILKAN DI MONITOR"
+                        ModulePrinterReturJual.PreviewReturJual(faktur)
+                End Select
 
             Case "Bayar Hutang"
-
+                Select Case BacaPengaturanPrinter("BayarHutang", "CetakOtomatis", "IYA").Trim().ToUpper()
+                    Case "IYA"
+                        LakukanCetakUlang("BayarHutang", faktur)
+                    Case "SELALU TANYA"
+                        If MessageBox.Show("Apakah Anda ingin mencetak bukti bayar hutang?",
+                                           "Konfirmasi Cetak", MessageBoxButtons.YesNo, MessageBoxIcon.Question) = DialogResult.Yes Then
+                            LakukanCetakUlang("BayarHutang", faktur)
+                        End If
+                End Select
 
             Case "Bayar Piutang"
-
-            Case "Stok Opname"
-                FormLapTransferStok.ShowDialog()
-            Case "Transfer Stok"
+                Select Case BacaPengaturanPrinter("BayarPiutang", "CetakOtomatis", "IYA").Trim().ToUpper()
+                    Case "IYA"
+                        LakukanCetakUlang("BayarPiutang", faktur)
+                    Case "SELALU TANYA"
+                        If MessageBox.Show("Apakah Anda ingin mencetak bukti bayar piutang?",
+                                           "Konfirmasi Cetak", MessageBoxButtons.YesNo, MessageBoxIcon.Question) = DialogResult.Yes Then
+                            LakukanCetakUlang("BayarPiutang", faktur)
+                        End If
+                End Select
 
             Case "Surat Jalan"
-                With PrinterSuratJalan
-                    .TxtNota.Text = TxtFakturTransaksi.Text
-                    .ProsesCetak()
-                End With
+                Select Case BacaPengaturanPrinter("SuratJalan", "CetakOtomatis", "IYA").Trim().ToUpper()
+                    Case "IYA"
+                        LakukanCetakUlang("SuratJalan", faktur)
+                    Case "SELALU TANYA"
+                        If MessageBox.Show("Apakah Anda ingin mencetak surat jalan?",
+                                           "Konfirmasi Cetak", MessageBoxButtons.YesNo, MessageBoxIcon.Question) = DialogResult.Yes Then
+                            LakukanCetakUlang("SuratJalan", faktur)
+                        End If
+                End Select
 
             Case "Transfer Barang"
-                With PrintTransferBarang
-                    .TxtNota.Text = TxtFakturTransaksi.Text
-                    .ProsesCetak()
-                End With
+                Select Case BacaPengaturanPrinter("TransferBarang", "CetakOtomatis", "IYA").Trim().ToUpper()
+                    Case "IYA"
+                        LakukanCetakUlang("TransferBarang", faktur)
+                    Case "SELALU TANYA"
+                        If MessageBox.Show("Apakah Anda ingin mencetak nota transfer barang?",
+                                           "Konfirmasi Cetak", MessageBoxButtons.YesNo, MessageBoxIcon.Question) = DialogResult.Yes Then
+                            LakukanCetakUlang("TransferBarang", faktur)
+                        End If
+                End Select
+
+            Case "Transfer Cabang"
+                Select Case BacaPengaturanPrinter("TransferCabang", "CetakOtomatis", "IYA").Trim().ToUpper()
+                    Case "IYA"
+                        LakukanCetakUlang("TransferCabang", faktur)
+                    Case "SELALU TANYA"
+                        If MessageBox.Show("Apakah Anda ingin mencetak nota transfer cabang?",
+                                           "Konfirmasi Cetak", MessageBoxButtons.YesNo, MessageBoxIcon.Question) = DialogResult.Yes Then
+                            LakukanCetakUlang("TransferCabang", faktur)
+                        End If
+                End Select
+
+            Case "Stok Opname", "Transfer Stok"
+                MessageBox.Show("Cetak ulang tidak tersedia untuk transaksi ini.",
+                                "Info", MessageBoxButtons.OK, MessageBoxIcon.Information)
+        End Select
+    End Sub
+
+    ' Cetak ulang nota — pakai ModulePrinter sesuai transaksi, respek PilihPrinter
+    Private Sub LakukanCetakUlang(transaksi As String, faktur As String)
+        Dim tanya As Boolean = BacaPengaturanPrinter(transaksi, "PilihPrinter", "LANGSUNG CETAK") = "TANYA PILIH PRINTER"
+        Select Case transaksi
+            Case "Beli"
+                If tanya Then ModulePrinterBeli.TanyaPilihPrinterBeli(faktur) Else ModulePrinterBeli.CetakPembelian(faktur)
+            Case "ReturBeli"
+                If tanya Then ModulePrinterReturBeli.TanyaPilihPrinterReturBeli(faktur) Else ModulePrinterReturBeli.CetakReturBeli(faktur)
+            Case "ReturJual"
+                If tanya Then ModulePrinterReturJual.TanyaPilihPrinterReturJual(faktur) Else ModulePrinterReturJual.CetakReturJual(faktur)
+            Case "BayarHutang"
+                If tanya Then ModulePrinterBayarHutang.TanyaPilihPrinterBayarHutang(faktur) Else ModulePrinterBayarHutang.CetakBayarHutang(faktur)
+            Case "BayarPiutang"
+                If tanya Then ModulePrinterBayarPiutang.TanyaPilihPrinterBayarPiutang(faktur) Else ModulePrinterBayarPiutang.CetakBayarPiutang(faktur)
+            Case "SuratJalan"
+                If tanya Then ModulePrinterSuratJalan.TanyaPilihPrinterSuratJalan(faktur) Else ModulePrinterSuratJalan.CetakSuratJalan(faktur)
+            Case "TransferBarang"
+                If tanya Then ModulePrinterTransferBarang.TanyaPilihPrinterTransferBarang(faktur) Else ModulePrinterTransferBarang.CetakTransferBarang(faktur)
+            Case "TransferCabang"
+                If tanya Then ModulePrinterTransferCabang.TanyaPilihPrinterTransferCabang(faktur) Else ModulePrinterTransferCabang.CetakTransferCabang(faktur)
         End Select
     End Sub
 
@@ -3456,14 +2614,11 @@ Public Class FormUtama
                                     .Columns("QTY_SAT").Visible = False
                                     .Columns("TOTAL").HeaderText = "TOTAL"
 
-                                    .Columns("HARGA_BELI").DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight
-                                    .Columns("HARGA_BELI").DefaultCellStyle.Format = "#,0.##"
+                                    AturKolomAngka(DGVDetail, "HARGA_BELI")
 
-                                    .Columns("HARGA_BELI_SATUAN").DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight
-                                    .Columns("HARGA_BELI_SATUAN").DefaultCellStyle.Format = "#,0.##"
+                                    AturKolomAngka(DGVDetail, "HARGA_BELI_SATUAN")
 
-                                    .Columns("TOTAL").DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight
-                                    .Columns("TOTAL").DefaultCellStyle.Format = "#,0.##"
+                                    AturKolomAngka(DGVDetail, "TOTAL")
 
                                     .Columns("NAMA_BARANG").FillWeight = 150
                                     .Columns("HARGA_BELI").FillWeight = 60
@@ -3503,17 +2658,13 @@ Public Class FormUtama
                                     .Columns("TOTAL_DISKON").HeaderText = "DISKON"
                                     .Columns("TOTAL_HARGA").HeaderText = "TOTAL"
 
-                                    .Columns("QTY").DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight
-                                    .Columns("QTY").DefaultCellStyle.Format = "#,0.##"
+                                    AturKolomAngka(DGVDetail, "QTY")
 
-                                    .Columns("HARGA_JUAL").DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight
-                                    .Columns("HARGA_JUAL").DefaultCellStyle.Format = "#,0.##"
+                                    AturKolomAngka(DGVDetail, "HARGA_JUAL")
 
-                                    .Columns("TOTAL_DISKON").DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight
-                                    .Columns("TOTAL_DISKON").DefaultCellStyle.Format = "#,0.##"
+                                    AturKolomAngka(DGVDetail, "TOTAL_DISKON")
 
-                                    .Columns("TOTAL_HARGA").DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight
-                                    .Columns("TOTAL_HARGA").DefaultCellStyle.Format = "#,0.##"
+                                    AturKolomAngka(DGVDetail, "TOTAL_HARGA")
 
                                     .Columns("NAMA_BARANG").FillWeight = 150
                                     .Columns("QTY").FillWeight = 30
@@ -3549,13 +2700,11 @@ Public Class FormUtama
                                     .Columns("SATUAN").HeaderText = "SATUAN"
                                     .Columns("TOTAL").HeaderText = "TOTAL"
 
-                                    .Columns("QTY").DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight
-                                    .Columns("QTY").DefaultCellStyle.Format = "#,0.##"
+                                    AturKolomAngka(DGVDetail, "QTY")
 
                                     .Columns("QTY_SAT").Visible = False
 
-                                    .Columns("TOTAL").DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight
-                                    .Columns("TOTAL").DefaultCellStyle.Format = "#,0.##"
+                                    AturKolomAngka(DGVDetail, "TOTAL")
 
                                     .Columns("NAMA_BARANG").FillWeight = 150
                                     .Columns("QTY").FillWeight = 30
@@ -3593,17 +2742,13 @@ Public Class FormUtama
                                     .Columns("TOTAL_DISKON").HeaderText = "DISKON"
                                     .Columns("TOTAL_HARGA").HeaderText = "TOTAL"
 
-                                    .Columns("QTY").DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight
-                                    .Columns("QTY").DefaultCellStyle.Format = "#,0.##"
+                                    AturKolomAngka(DGVDetail, "QTY")
 
-                                    .Columns("HARGA_JUAL").DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight
-                                    .Columns("HARGA_JUAL").DefaultCellStyle.Format = "#,0.##"
+                                    AturKolomAngka(DGVDetail, "HARGA_JUAL")
 
-                                    .Columns("TOTAL_DISKON").DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight
-                                    .Columns("TOTAL_DISKON").DefaultCellStyle.Format = "#,0.##"
+                                    AturKolomAngka(DGVDetail, "TOTAL_DISKON")
 
-                                    .Columns("TOTAL_HARGA").DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight
-                                    .Columns("TOTAL_HARGA").DefaultCellStyle.Format = "#,0.##"
+                                    AturKolomAngka(DGVDetail, "TOTAL_HARGA")
 
                                     .Columns("NAMA_BARANG").FillWeight = 150
                                     .Columns("QTY").FillWeight = 30
@@ -3646,8 +2791,7 @@ Public Class FormUtama
                                     .Columns("PEMBAYARAN").HeaderText = "NOMINAL"
                                     .Columns("STATUS").HeaderText = "STATUS"
 
-                                    .Columns("PEMBAYARAN").DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight
-                                    .Columns("PEMBAYARAN").DefaultCellStyle.Format = "#,0.##"
+                                    AturKolomAngka(DGVDetail, "PEMBAYARAN")
 
                                     .Columns("NAMA").FillWeight = 150
                                 End With
@@ -3688,8 +2832,7 @@ Public Class FormUtama
                                     .Columns("STATUS").HeaderText = "STATUS"
 
                                     ' Format dan pengaturan alignment untuk kolom NOMINAL
-                                    .Columns("PEMBAYARAN").DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight
-                                    .Columns("PEMBAYARAN").DefaultCellStyle.Format = "#,0.##"
+                                    AturKolomAngka(DGVDetail, "PEMBAYARAN")
 
                                     ' Mengatur ukuran kolom NAMA_PELANGGAN
                                     .Columns("NAMA").FillWeight = 150
@@ -3747,8 +2890,7 @@ Public Class FormUtama
                                     .Columns("LOKASI").HeaderText = "LOKASI"
 
                                     ' Align and format columns
-                                    .Columns("NILAI_BELANJA").DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight
-                                    .Columns("NILAI_BELANJA").DefaultCellStyle.Format = "#,0.##"
+                                    AturKolomAngka(DGVDetail, "NILAI_BELANJA")
 
                                     ' Set column widths
                                     .Columns("NAMA_PELANGGAN").FillWeight = 150
@@ -3799,8 +2941,7 @@ Public Class FormUtama
                                     .Columns("TOTAL").HeaderText = "TOTAL"
 
                                     ' Ratakan dan format kolom
-                                    .Columns("TOTAL").DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight
-                                    .Columns("TOTAL").DefaultCellStyle.Format = "#,0.##"
+                                    AturKolomAngka(DGVDetail, "TOTAL")
 
                                     ' Set lebar kolom
                                     .Columns("NAMA_BARANG").FillWeight = 150
@@ -3818,6 +2959,52 @@ Public Class FormUtama
                     TxtLokasiUntukEdit.Text = DGVTransaksi.CurrentRow.Cells(1).Value.ToString()
                     LblDetailTransaksi.Text = "Detail transfer barang: " & DGVTransaksi.CurrentRow.Cells(0).Value.ToString()
 
+                Case "Transfer Cabang"
+                    DGVDetail.DataSource = Nothing
+                    DGVDetail.Rows.Clear()
+
+                    ' Baca lokasi asal dari HistoryBarang untuk TxtLokasiUntukEdit
+                    Dim lokasiAsal As String = "TOKO"
+                    Using cmdLokasi As New MySqlCommand(
+                        "SELECT LOKASI FROM HistoryBarang WHERE FAKTUR = @id AND JENIS = 'TRANSFER_CABANG_KELUAR' LIMIT 1", conn)
+                        cmdLokasi.Parameters.AddWithValue("@id", DGVTransaksi.CurrentRow.Cells(0).Value)
+                        Dim lokVal = cmdLokasi.ExecuteScalar()
+                        If lokVal IsNot Nothing AndAlso Not IsDBNull(lokVal) Then
+                            If lokVal.ToString().ToUpper() = "GUDANG" Then lokasiAsal = "GUDANG"
+                        End If
+                    End Using
+
+                    Using cmdSelect As New MySqlCommand(
+                        "SELECT ID_BARANG, NAMA_BARANG, QTY, SATUAN, ISI_SATUAN, TOTAL_QTY, TOTAL " &
+                        "FROM transfer_cabang_detail WHERE ID_TRANSFER = @id ORDER BY NAMA_BARANG", conn)
+                        cmdSelect.Parameters.AddWithValue("@id", DGVTransaksi.CurrentRow.Cells(0).Value)
+                        Using da As New MySqlDataAdapter(cmdSelect)
+                            Using ds As New DataSet()
+                                da.Fill(ds, "transfer_cabang_detail")
+                                DGVDetail.DataSource = ds.Tables("transfer_cabang_detail")
+                            End Using
+                        End Using
+                    End Using
+                    With DGVDetail
+                        .Columns("ID_BARANG").Visible = False
+                        .Columns("NAMA_BARANG").HeaderText = "Barang"
+                        .Columns("QTY").HeaderText = "Qty"
+                        .Columns("SATUAN").HeaderText = "Satuan"
+                        .Columns("ISI_SATUAN").HeaderText = "Isi"
+                        .Columns("TOTAL_QTY").HeaderText = "Total Qty"
+                        .Columns("TOTAL").HeaderText = "Total Nilai"
+                        Dim angka As New DataGridViewCellStyle With {
+                            .Alignment = DataGridViewContentAlignment.MiddleRight,
+                            .Format = "#,0.##"
+                        }
+                        .Columns("QTY").DefaultCellStyle = angka
+                        .Columns("TOTAL_QTY").DefaultCellStyle = angka
+                        .Columns("TOTAL").DefaultCellStyle = angka
+                    End With
+                    TxtFakturTransaksi.Text = DGVTransaksi.CurrentRow.Cells(0).Value.ToString()
+                    TxtLokasiUntukEdit.Text = lokasiAsal
+                    LblDetailTransaksi.Text = "Detail Transfer Cabang: " & DGVTransaksi.CurrentRow.Cells(0).Value.ToString()
+
             End Select
 
             With DGVDetail
@@ -3826,26 +3013,17 @@ Public Class FormUtama
                 .AllowUserToOrderColumns = False
                 .AllowUserToResizeColumns = False
                 .AllowUserToResizeRows = False
-
-
-                .EnableHeadersVisualStyles = False
-                .ColumnHeadersDefaultCellStyle.BackColor = Color.Gray
-                ' Set alternating row style
-                .AlternatingRowsDefaultCellStyle.BackColor = Color.LightGray
-
-                ' Set visual style
                 .BorderStyle = BorderStyle.FixedSingle
-                .GridColor = Color.Silver
-                .BackgroundColor = Color.White
-
-                ' Enable double buffering to reduce flickering
-                DataGridViewExtension.EnableDoubleBuffering(DGVDetail)
             End With
+            ModuleTheme.ApplyThemeDataGridView(DGVDetail)
+
         End If
     End Sub
 
     Private Sub BTNKeluar_Click(ByVal sender As Object, ByVal e As EventArgs) Handles BTNKeluar.Click
+        WbDashboard.Visible = True
         GBTransaksi.Hide()
+
     End Sub
 
     Public Sub Refresdatagridview()
@@ -3870,631 +3048,269 @@ Public Class FormUtama
                 DataSuratjalan()
             Case "Transfer Barang"
                 DataTransferBarang()
+            Case "Transfer Cabang"
+                DataTransferCabang()
         End Select
     End Sub
 
     '----------------------------------------- KARYAWAN ---------------------------------------------------------------------------
     Private Sub MasterGajiToolStripMenuItem_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MasterGajiToolStripMenuItem.Click
-        For Each frm As Form In MdiChildren
-            frm.Close()
-        Next
-
-        With FormMasterGaji
-            .MdiParent = Me
-            .BringToFront()
-            .Dock = DockStyle.Fill
-            .Show()
-        End With
+        TutupSemuaForm() : BukaFormMdi(My.Forms.FormMasterGaji)
     End Sub
 
-
-
     Private Sub BonKaryawanToolStripMenuItem_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles BonKaryawanToolStripMenuItem.Click
-        For Each frm As Form In MdiChildren
-            frm.Close()
-        Next
-
+        TutupSemuaForm()
         With FormBon
-            .LblUtama.Text = "BON KARYAWAN"
-            .LblJenis.Text = "BON"
-            '.LblDaftar.Text = "Daftar bon pada tanggal "
-            .MdiParent = Me
-            .BringToFront()
-            .Dock = DockStyle.Fill
-            .Show()
+            .LblUtama.Text = "BON KARYAWAN" : .LblJenis.Text = "BON"
+            BukaFormMdi(My.Forms.FormBon)
         End With
     End Sub
 
     Private Sub BayarBonDiluarGajiToolStripMenuItem_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles BayarBonDiluarGajiToolStripMenuItem.Click
-        For Each frm As Form In MdiChildren
-            frm.Close()
-        Next
-
+        TutupSemuaForm()
         With FormBon
-            .LblUtama.Text = "BAYAR BON KARYAWAN DILUAR POTONGAN GAJI"
-            .LblJenis.Text = "BAYAR"
-            '.LblDaftar.Text = "Daftar pembayaran bon pada tanggal "
-            .MdiParent = Me
-            .BringToFront()
-            .Dock = DockStyle.Fill
-            .Show()
+            .LblUtama.Text = "BAYAR BON KARYAWAN DILUAR POTONGAN GAJI" : .LblJenis.Text = "BAYAR"
+            BukaFormMdi(My.Forms.FormBon)
         End With
     End Sub
 
     Private Sub LaporanBonToolStripMenuItem_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles LaporanBonToolStripMenuItem.Click
-        For Each frm As Form In MdiChildren
-            frm.Close()
-        Next
-
-        With FormLapBon
-            .MdiParent = Me
-            .BringToFront()
-            .Dock = DockStyle.Fill
-            .Show()
-        End With
+        TutupSemuaForm() : BukaFormMdi(My.Forms.FormLapBon)
     End Sub
 
     Private Sub LaporanBonPerKaryawanToolStripMenuItem_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles LaporanBonPerKaryawanToolStripMenuItem.Click
-        For Each frm As Form In MdiChildren
-            frm.Close()
-        Next
-
-        With FormLapBonPerorang
-            .MdiParent = Me
-            .BringToFront()
-            .Dock = DockStyle.Fill
-            .Show()
-        End With
+        TutupSemuaForm() : BukaFormMdi(My.Forms.FormLapBonPerorang)
     End Sub
 
     Private Sub GajiKaryawanToolStripMenuItem_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles GajiKaryawanToolStripMenuItem.Click
-        For Each frm As Form In MdiChildren
-            frm.Close()
-        Next
-
-        With FormGaji
-            .MdiParent = Me
-            .BringToFront()
-            .Dock = DockStyle.Fill
-            .Show()
-        End With
+        TutupSemuaForm() : BukaFormMdi(My.Forms.FormGaji)
     End Sub
 
-
     Private Sub LaporanGajiToolStripMenuItem_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles LaporanGajiToolStripMenuItem.Click
-        For Each frm As Form In MdiChildren
-            frm.Close()
-        Next
-
-        With FormLaporanGaji
-            .MdiParent = Me
-            .BringToFront()
-            .Dock = DockStyle.Fill
-            .Show()
-        End With
+        TutupSemuaForm() : BukaFormMdi(My.Forms.FormLaporanGaji)
     End Sub
     '----------------------------------------- LAPORAN ---------------------------------------------------------------------------
 
     Private Sub MutasiSaldoToolStripMenuItem_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MutasiSaldoToolStripMenuItem.Click
-        For Each frm As Form In MdiChildren
-            frm.Close()
-        Next
-
-        Using cmdUpdateMasuk As New MySqlCommand("UPDATE JurnalUmum SET NOMOR_AKUN_D = @NOMOR_AKUN_D WHERE NAMA_AKUN_D = @NAMA_AKUN_D", conn)
-            cmdUpdateMasuk.Parameters.AddWithValue("@NOMOR_AKUN_D", "01.01.001")
-            cmdUpdateMasuk.Parameters.AddWithValue("@NAMA_AKUN_D", "KAS DI TOKO")
-            cmdUpdateMasuk.ExecuteNonQuery()
-        End Using
-
-
-        With FormLapSaldo
-            .MdiParent = Me
-            .BringToFront()
-            .Dock = DockStyle.Fill
-            .Show()
-        End With
+        TutupSemuaForm() : BukaFormMdi(My.Forms.FormLapMutasiKeuangan)
     End Sub
 
     Private Sub MutasiBarangToolStripMenuItem_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MutasiBarangToolStripMenuItem.Click
-        For Each frm As Form In MdiChildren
-            frm.Close()
-        Next
-
-        With FormLapMutasiBarang
-            .MdiParent = Me
-            .BringToFront()
-            .Dock = DockStyle.Fill
-            .Show()
-        End With
+        TutupSemuaForm() : BukaFormMdi(My.Forms.FormLapMutasiBarang)
     End Sub
 
     Private Sub JurnalUmumToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles JurnalUmumToolStripMenuItem.Click
-        For Each frm As Form In MdiChildren
-            frm.Close()
-        Next
-        With FormLapJurnal
-            .MdiParent = Me
-            .BringToFront()
-            .Dock = DockStyle.Fill
-            .Show()
-        End With
+        TutupSemuaForm() : BukaFormMdi(My.Forms.FormLapJurnal)
     End Sub
 
     Private Sub NeracaToolStripMenuItem_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles NeracaToolStripMenuItem.Click
-        For Each frm As Form In MdiChildren
-            frm.Close()
-        Next
-        With FormLapNeracaLR
-            .MdiParent = Me
-            .BringToFront()
-            .Dock = DockStyle.Fill
-            .Show()
-        End With
+        TutupSemuaForm() : BukaFormMdi(My.Forms.FormLapNeracaLR)
     End Sub
 
     Private Sub BukuBesarToolStripMenuItem_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles BukuBesarToolStripMenuItem.Click
-        For Each frm As Form In MdiChildren
-            frm.Close()
-        Next
-        With FormLapBB
-            .MdiParent = Me
-            .BringToFront()
-            .Dock = DockStyle.Fill
-            .Show()
-        End With
+        TutupSemuaForm() : BukaFormMdi(My.Forms.FormLapBB)
     End Sub
 
+    Private Sub BukuBesarPembantuToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles BukuBesarPembantuToolStripMenuItem.Click
+        TutupSemuaForm()
+        My.Forms.FormLapBBPembantu.JenisLaporan = "Piutang"
+        BukaFormMdi(My.Forms.FormLapBBPembantu)
+    End Sub
 
+    Private Sub LabaRugiBerjalanToolStripMenuItem1_Click(sender As Object, e As EventArgs) Handles LabaRugiBerjalanToolStripMenuItem.Click
+        TutupSemuaForm() : BukaFormMdi(My.Forms.FormLapLabaRugi)
+    End Sub
     Private Sub PembelianToolStripMenuItem1_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles PembelianToolStripMenuItem1.Click
-        For Each frm As Form In MdiChildren
-            frm.Close()
-        Next
-
-        With FormLapPembelian
-            .LabelJudul.Text = "LAPORAN PEMBELIAN"
-            .MdiParent = Me
-            .BringToFront()
-            .Dock = DockStyle.Fill
-            .Show()
-        End With
+        TutupSemuaForm() : My.Forms.FormLapPembelian.LblHeaderForm.Text = "LAPORAN PEMBELIAN" : BukaFormMdi(My.Forms.FormLapPembelian)
     End Sub
 
     Private Sub PembelianDetailToolStripMenuItem_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles PembelianDetailToolStripMenuItem.Click
-        For Each frm As Form In MdiChildren
-            frm.Close()
-        Next
-
-        With FormLapPembelian
-            .LabelJudul.Text = "LAPORAN PEMBELIAN DETAIL"
-            .MdiParent = Me
-            .BringToFront()
-            .Dock = DockStyle.Fill
-            .Show()
-        End With
+        TutupSemuaForm() : My.Forms.FormLapPembelian.LblHeaderForm.Text = "LAPORAN PEMBELIAN DETAIL" : BukaFormMdi(My.Forms.FormLapPembelian)
     End Sub
 
     Private Sub PembelianBarangToolStripMenuItem_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles PembelianBarangToolStripMenuItem.Click
-        For Each frm As Form In MdiChildren
-            frm.Close()
-        Next
-
-        With FormLapPembelian
-            .LabelJudul.Text = "LAPORAN BARANG PEMBELIAN"
-            .MdiParent = Me
-            .BringToFront()
-            .Dock = DockStyle.Fill
-            .Show()
-        End With
+        TutupSemuaForm() : My.Forms.FormLapPembelian.LblHeaderForm.Text = "LAPORAN BARANG PEMBELIAN" : BukaFormMdi(My.Forms.FormLapPembelian)
     End Sub
 
     Private Sub PembelianDihutangToolStripMenuItem_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles PembelianDihutangToolStripMenuItem.Click
-        For Each frm As Form In MdiChildren
-            frm.Close()
-        Next
-
-        With FormLapPembelian
-            .LabelJudul.Text = "LAPORAN PEMBELIAN DIHUTANG"
-            .MdiParent = Me
-            .BringToFront()
-            .Dock = DockStyle.Fill
-            .Show()
-        End With
+        TutupSemuaForm() : My.Forms.FormLapPembelian.LblHeaderForm.Text = "LAPORAN PEMBELIAN DIHUTANG" : BukaFormMdi(My.Forms.FormLapPembelian)
     End Sub
 
     Private Sub RekapPenjualanByNotaToolStripMenuItem_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles RekapPenjualanByNotaToolStripMenuItem.Click
-        For Each frm As Form In MdiChildren
-            frm.Close()
-        Next
-
-        With FormLapPenjualanBaru
-            .LabelJudul.Text = "LAPORAN REKAP PENJUALAN NOTA"
-            .MdiParent = Me
-            .BringToFront()
-            .Dock = DockStyle.Fill
-            .Show()
-        End With
+        TutupSemuaForm() : My.Forms.FormLapPenjualanBaru.LblHeaderForm.Text = "LAPORAN REKAP PENJUALAN NOTA" : BukaFormMdi(My.Forms.FormLapPenjualanBaru)
     End Sub
 
-
     Private Sub RekapPenjualanToolStripMenuItem_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles RekapPenjualanToolStripMenuItem.Click
-        For Each frm As Form In MdiChildren
-            frm.Close()
-        Next
-
-        With FormLapPenjualanBaru
-            .LabelJudul.Text = "LAPORAN REKAP PENJUALAN BARANG"
-            .MdiParent = Me
-            .BringToFront()
-            .Dock = DockStyle.Fill
-            .Show()
-        End With
+        TutupSemuaForm() : My.Forms.FormLapPenjualanBaru.LblHeaderForm.Text = "LAPORAN REKAP PENJUALAN BARANG" : BukaFormMdi(My.Forms.FormLapPenjualanBaru)
     End Sub
 
     Private Sub PenjualanToolStripMenuItem1_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles PenjualanToolStripMenuItem1.Click
-        For Each frm As Form In MdiChildren
-            frm.Close()
-        Next
-
-        With FormLapPenjualanBaru
-            .LabelJudul.Text = "LAPORAN PENJUALAN"
-            .MdiParent = Me
-            .BringToFront()
-            .Dock = DockStyle.Fill
-            .Show()
-        End With
+        TutupSemuaForm() : My.Forms.FormLapPenjualanBaru.LblHeaderForm.Text = "LAPORAN PENJUALAN" : BukaFormMdi(My.Forms.FormLapPenjualanBaru)
     End Sub
 
     Private Sub PenjualanDetailToolStripMenuItem_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles PenjualanDetailToolStripMenuItem.Click
-        For Each frm As Form In MdiChildren
-            frm.Close()
-        Next
-
-        With FormLapPenjualanBaru
-            .LabelJudul.Text = "LAPORAN PENJUALAN DETAIL"
-            .MdiParent = Me
-            .BringToFront()
-            .Dock = DockStyle.Fill
-            .Show()
-        End With
+        TutupSemuaForm() : My.Forms.FormLapPenjualanBaru.LblHeaderForm.Text = "LAPORAN PENJUALAN DETAIL" : BukaFormMdi(My.Forms.FormLapPenjualanBaru)
     End Sub
 
     Private Sub PenjualanBarangToolStripMenuItem_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles PenjualanBarangToolStripMenuItem.Click
-        For Each frm As Form In MdiChildren
-            frm.Close()
-        Next
-
-        With FormLapPenjualanBaru
-            .LabelJudul.Text = "LAPORAN BARANG PENJUALAN"
-            .MdiParent = Me
-            .BringToFront()
-            .Dock = DockStyle.Fill
-            .Show()
-        End With
+        TutupSemuaForm() : My.Forms.FormLapPenjualanBaru.LblHeaderForm.Text = "LAPORAN BARANG PENJUALAN" : BukaFormMdi(My.Forms.FormLapPenjualanBaru)
     End Sub
 
     Private Sub PenjualanTerhutangToolStripMenuItem_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles PenjualanTerhutangToolStripMenuItem.Click
-        For Each frm As Form In MdiChildren
-            frm.Close()
-        Next
-
-        With FormLapPenjualanBaru
-            .LabelJudul.Text = "LAPORAN PENJUALAN DIHUTANG"
-            .MdiParent = Me
-            .BringToFront()
-            .Dock = DockStyle.Fill
-            .Show()
-        End With
+        TutupSemuaForm() : My.Forms.FormLapPenjualanBaru.LblHeaderForm.Text = "LAPORAN PENJUALAN DIHUTANG" : BukaFormMdi(My.Forms.FormLapPenjualanBaru)
     End Sub
 
     Private Sub PenjualanSalesToolStripMenuItem_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles PenjualanSalesToolStripMenuItem.Click
-        For Each frm As Form In MdiChildren
-            frm.Close()
-        Next
-
-        With FormLapPenjualanSales
-            .MdiParent = Me
-            .BringToFront()
-            .Dock = DockStyle.Fill
-            .Show()
-        End With
+        TutupSemuaForm() : BukaFormMdi(My.Forms.FormLapPenjualanSales)
     End Sub
 
     Private Sub PenjualanQtyToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles PenjualanQtyToolStripMenuItem.Click
-        For Each frm As Form In MdiChildren
-            frm.Close()
-        Next
-
-        With FormRopertJual
-            .MdiParent = Me
-            .BringToFront()
-            .Dock = DockStyle.Fill
-            .Show()
-        End With
+        TutupSemuaForm() : BukaFormMdi(My.Forms.FormRopertJual)
     End Sub
 
     Private Sub PenjualanPPNNonPPNToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles PenjualanPPNNonPPNToolStripMenuItem.Click
-        For Each frm As Form In MdiChildren
-            frm.Close()
-        Next
-
-        With FormPenjualanPPn
-            .MdiParent = Me
-            .BringToFront()
-            .Dock = DockStyle.Fill
-            .Show()
-        End With
+        TutupSemuaForm() : BukaFormMdi(My.Forms.FormPenjualanPPn)
     End Sub
     Private Sub ReturPembelianToolStripMenuItem1_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles ReturPembelianToolStripMenuItem1.Click
-        For Each frm As Form In MdiChildren
-            frm.Close()
-        Next
-
-        With FormLapReturBeli
-            .LabelJudul.Text = "LAPORAN RETUR PEMBELIAN"
-            .MdiParent = Me
-            .BringToFront()
-            .Dock = DockStyle.Fill
-            .Show()
-        End With
+        TutupSemuaForm() : My.Forms.FormLapReturBeli.LblHeaderForm.Text = "LAPORAN RETUR PEMBELIAN" : BukaFormMdi(My.Forms.FormLapReturBeli)
     End Sub
 
     Private Sub ReturPembelianDetailToolStripMenuItem_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles ReturPembelianDetailToolStripMenuItem.Click
-        For Each frm As Form In MdiChildren
-            frm.Close()
-        Next
-
-        With FormLapReturBeli
-            .LabelJudul.Text = "LAPORAN RETUR PEMBELIAN DETAIL"
-            .MdiParent = Me
-            .BringToFront()
-            .Dock = DockStyle.Fill
-            .Show()
-        End With
+        TutupSemuaForm() : My.Forms.FormLapReturBeli.LblHeaderForm.Text = "LAPORAN RETUR PEMBELIAN DETAIL" : BukaFormMdi(My.Forms.FormLapReturBeli)
     End Sub
 
     Private Sub ReturPembelianBarangToolStripMenuItem_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles ReturPembelianBarangToolStripMenuItem.Click
-        For Each frm As Form In MdiChildren
-            frm.Close()
-        Next
-
-        With FormLapReturBeli
-            .LabelJudul.Text = "LAPORAN BARANG RETUR PEMBELIAN"
-            .MdiParent = Me
-            .BringToFront()
-            .Dock = DockStyle.Fill
-            .Show()
-        End With
+        TutupSemuaForm() : My.Forms.FormLapReturBeli.LblHeaderForm.Text = "LAPORAN BARANG RETUR PEMBELIAN" : BukaFormMdi(My.Forms.FormLapReturBeli)
     End Sub
 
-
     Private Sub ReturPenjualanToolStripMenuItem1_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles ReturPenjualanToolStripMenuItem1.Click
-        For Each frm As Form In MdiChildren
-            frm.Close()
-        Next
-
-        With FormLapReturJual
-            .LabelJudul.Text = "LAPORAN RETUR PENJUALAN"
-            .MdiParent = Me
-            .BringToFront()
-            .Dock = DockStyle.Fill
-            .Show()
-        End With
+        TutupSemuaForm() : My.Forms.FormLapReturJual.LblHeaderForm.Text = "LAPORAN RETUR PENJUALAN" : BukaFormMdi(My.Forms.FormLapReturJual)
     End Sub
 
     Private Sub ReturPenjualanDetailToolStripMenuItem_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles ReturPenjualanDetailToolStripMenuItem.Click
-        For Each frm As Form In MdiChildren
-            frm.Close()
-        Next
-
-        With FormLapReturJual
-            .LabelJudul.Text = "LAPORAN RETUR PENJUALAN DETAIL"
-            .MdiParent = Me
-            .BringToFront()
-            .Dock = DockStyle.Fill
-            .Show()
-        End With
+        TutupSemuaForm() : My.Forms.FormLapReturJual.LblHeaderForm.Text = "LAPORAN RETUR PENJUALAN DETAIL" : BukaFormMdi(My.Forms.FormLapReturJual)
     End Sub
 
     Private Sub ReturPenjualanBarangToolStripMenuItem_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles ReturPenjualanBarangToolStripMenuItem.Click
-        For Each frm As Form In MdiChildren
-            frm.Close()
-        Next
-
-        With FormLapReturJual
-            .LabelJudul.Text = "LAPORAN BARANG RETUR PENJUALAN"
-            .MdiParent = Me
-            .BringToFront()
-            .Dock = DockStyle.Fill
-            .Show()
-        End With
+        TutupSemuaForm() : My.Forms.FormLapReturJual.LblHeaderForm.Text = "LAPORAN BARANG RETUR PENJUALAN" : BukaFormMdi(My.Forms.FormLapReturJual)
     End Sub
 
     Private Sub ByTanggalBelanjaToolStripMenuItem_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles ByTanggalBelanjaToolStripMenuItem.Click
-        For Each frm As Form In MdiChildren
-            frm.Close()
-        Next
-
-        With FormLapHutang
-            .LabelJudul.Text = "LAPORAN HUTANG KE SUPPLIER BY PEMBELIAN"
-            .MdiParent = Me
-            .BringToFront()
-            .Dock = DockStyle.Fill
-            .Show()
-        End With
+        TutupSemuaForm() : My.Forms.FormLapHutang.LblHeaderForm.Text = "LAPORAN HUTANG KE SUPPLIER BY PEMBELIAN" : BukaFormMdi(My.Forms.FormLapHutang)
     End Sub
 
     Private Sub ByTanggalPelunasanToolStripMenuItem_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles ByTanggalPelunasanToolStripMenuItem.Click
-        For Each frm As Form In MdiChildren
-            frm.Close()
-        Next
-
-        With FormLapHutang
-            .LabelJudul.Text = "LAPORAN HUTANG KE SUPPLIER BY PELUNASAN"
-            .MdiParent = Me
-            .BringToFront()
-            .Dock = DockStyle.Fill
-            .Show()
-        End With
+        TutupSemuaForm() : My.Forms.FormLapHutang.LblHeaderForm.Text = "LAPORAN HUTANG KE SUPPLIER BY PELUNASAN" : BukaFormMdi(My.Forms.FormLapHutang)
     End Sub
 
     Private Sub ByTanggalJatuhTempoToolStripMenuItem_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles ByTanggalJatuhTempoToolStripMenuItem.Click
-        For Each frm As Form In MdiChildren
-            frm.Close()
-        Next
-
-        With FormLapHutang
-            .LabelJudul.Text = "LAPORAN HUTANG KE SUPPLIER BY JATUH TEMPO"
-            .MdiParent = Me
-            .BringToFront()
-            .Dock = DockStyle.Fill
-            .Show()
-        End With
+        TutupSemuaForm() : My.Forms.FormLapHutang.LblHeaderForm.Text = "LAPORAN HUTANG KE SUPPLIER BY JATUH TEMPO" : BukaFormMdi(My.Forms.FormLapHutang)
     End Sub
 
     Private Sub ByTanggalPenjualanToolStripMenuItem_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles ByTanggalPenjualanToolStripMenuItem.Click
-        For Each frm As Form In MdiChildren
-            frm.Close()
-        Next
-
-        With FormLapPiutang
-            .LabelJudul.Text = "LAPORAN PIUTANG PELANGGAN BY PENJUALAN"
-            .MdiParent = Me
-            .BringToFront()
-            .Dock = DockStyle.Fill
-            .Show()
-        End With
+        TutupSemuaForm() : My.Forms.FormLapPiutang.LblHeaderForm.Text = "LAPORAN PIUTANG PELANGGAN BY PENJUALAN" : BukaFormMdi(My.Forms.FormLapPiutang)
     End Sub
 
     Private Sub ByTanggalPelunasanToolStripMenuItem1_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles ByTanggalPelunasanToolStripMenuItem1.Click
-        For Each frm As Form In MdiChildren
-            frm.Close()
-        Next
-
-        With FormLapPiutang
-            .LabelJudul.Text = "LAPORAN PIUTANG PELANGGAN BY PELUNASAN"
-            .MdiParent = Me
-            .BringToFront()
-            .Dock = DockStyle.Fill
-            .Show()
-        End With
+        TutupSemuaForm() : My.Forms.FormLapPiutang.LblHeaderForm.Text = "LAPORAN PIUTANG PELANGGAN BY PELUNASAN" : BukaFormMdi(My.Forms.FormLapPiutang)
     End Sub
 
     Private Sub ByTanggalJatuhTempoToolStripMenuItem1_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles ByTanggalJatuhTempoToolStripMenuItem1.Click
-        For Each frm As Form In MdiChildren
-            frm.Close()
-        Next
-
-        With FormLapPiutang
-            .LabelJudul.Text = "LAPORAN PIUTANG PELANGGAN BY JATUH TEMPO"
-            .MdiParent = Me
-            .BringToFront()
-            .Dock = DockStyle.Fill
-            .Show()
-        End With
+        TutupSemuaForm() : My.Forms.FormLapPiutang.LblHeaderForm.Text = "LAPORAN PIUTANG PELANGGAN BY JATUH TEMPO" : BukaFormMdi(My.Forms.FormLapPiutang)
     End Sub
 
-
     Private Sub KasPenjualanToolStripMenuItem_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles KasPenjualanToolStripMenuItem.Click
-        For Each frm As Form In MdiChildren
-            frm.Close()
-        Next
-        With FormLapkAS
-            .MdiParent = Me
-            .BringToFront()
-            .Dock = DockStyle.Fill
-            .Show()
-        End With
+        TutupSemuaForm() : BukaFormMdi(My.Forms.FormLapkAS)
     End Sub
 
     Private Sub TransferStokToolStripMenuItem_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles TransferStokToolStripMenuItem.Click
-        For Each frm As Form In MdiChildren
-            frm.Close()
-        Next
-        With FormLapTransferStok
-            .MdiParent = Me
-            .BringToFront()
-            .Dock = DockStyle.Fill
-            .Show()
-        End With
+        TutupSemuaForm() : BukaFormMdi(My.Forms.FormLapTransferStok)
     End Sub
 
     Private Sub TransferBarangToolStripMenuItem1_Click(sender As Object, e As EventArgs) Handles TransferBarangToolStripMenuItem1.Click
-        For Each frm As Form In MdiChildren
-            frm.Close()
-        Next
-        With FormLapTransferBarang
-            .LabelJudul.Text = "LAPORAN TRANSFER BARANG"
-            .MdiParent = Me
-            .BringToFront()
-            .Dock = DockStyle.Fill
-            .Show()
-        End With
+        TutupSemuaForm() : My.Forms.FormLapTransferBarang.LblHeaderForm.Text = "LAPORAN TRANSFER BARANG" : BukaFormMdi(My.Forms.FormLapTransferBarang)
     End Sub
 
     Private Sub TransferBarangDetailToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles TransferBarangDetailToolStripMenuItem.Click
-        For Each frm As Form In MdiChildren
-            frm.Close()
-        Next
-        With FormLapTransferBarang
-            .LabelJudul.Text = "LAPORAN TRANSFER BARANG DETAIL"
-            .MdiParent = Me
-            .BringToFront()
-            .Dock = DockStyle.Fill
-            .Show()
-        End With
+        TutupSemuaForm() : My.Forms.FormLapTransferBarang.LblHeaderForm.Text = "LAPORAN TRANSFER BARANG DETAIL" : BukaFormMdi(My.Forms.FormLapTransferBarang)
     End Sub
 
     Private Sub StokOpnameToolStripMenuItem_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles StokOpnameToolStripMenuItem.Click
-        For Each frm As Form In MdiChildren
-            frm.Close()
-        Next
-        With NotaStokOpname
-            .MdiParent = Me
-            .BringToFront()
-            .Dock = DockStyle.Fill
-            .Show()
-        End With
+        TutupSemuaForm() : BukaFormMdi(NotaStokOpname)
     End Sub
-
-    Private Sub StokBarangToolStripMenuItem_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles StokBarangToolStripMenuItem.Click
-        For Each frm As Form In MdiChildren
-            frm.Close()
-        Next
-
-        With FormLapBarang
-            .MdiParent = Me
-            .BringToFront()
-            .Dock = DockStyle.Fill
-            .Show()
-        End With
-    End Sub
-
 
     Private Sub GrafikToolStripMenuItem_Click(ByVal sender As Object, ByVal e As EventArgs) Handles GrafikToolStripMenuItem.Click
-        For Each frm As Form In MdiChildren
-            frm.Close()
-        Next
-
-        With FormGrafikLaba
-            .MdiParent = Me
-            .BringToFront()
-            .Dock = DockStyle.Fill
-            .Show()
-        End With
+        TutupSemuaForm() : BukaFormMdi(My.Forms.FormGrafikLaba)
     End Sub
 
     Private Sub HistoryToolStripMenuItem_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles HistoryToolStripMenuItem.Click
-        For Each frm As Form In MdiChildren
-            frm.Close()
-        Next
-
-        With FormHistory
-            .MdiParent = Me
-            .BringToFront()
-            .Dock = DockStyle.Fill
-            .Show()
-        End With
+        TutupSemuaForm() : BukaFormMdi(My.Forms.FormHistory)
     End Sub
+
+    Private Sub StokBarangToolStripMenuItem1_Click(sender As Object, e As EventArgs) Handles StokBarangToolStripMenuItem1.Click
+        TutupSemuaForm() : BukaFormMdi(My.Forms.FormLapBarang)
+    End Sub
+
+    Private Sub KartuStokToolStripMenuItem1_Click(sender As Object, e As EventArgs) Handles KartuStokToolStripMenuItem1.Click
+        TutupSemuaForm() : BukaFormMdi(My.Forms.FormKartuStok)
+    End Sub
+
+    Private Sub StokBarangTerlarisToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles StokBarangTerlarisToolStripMenuItem.Click
+        TutupSemuaForm() : BukaFormMdi(My.Forms.FormLapBarangTerlaris)
+    End Sub
+
+    Private Sub StokBarangTakBergerakToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles StokBarangTakBergerakToolStripMenuItem.Click
+        TutupSemuaForm() : My.Forms.FormLapStokMinim_takGerak.JenisLaporan = "BarangTidakBergerak" : BukaFormMdi(My.Forms.FormLapStokMinim_takGerak)
+    End Sub
+
+    Private Sub StokMinimumToolStripMenuItem1_Click(sender As Object, e As EventArgs) Handles StokMinimumToolStripMenuItem1.Click
+        TutupSemuaForm() : My.Forms.FormLapStokMinim_takGerak.JenisLaporan = "StokMinimum" : BukaFormMdi(My.Forms.FormLapStokMinim_takGerak)
+    End Sub
+
+    Private Sub StokLampauToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles StokLampauToolStripMenuItem.Click
+        TutupSemuaForm() : BukaFormMdi(My.Forms.FormLapStokLampau)
+    End Sub
+
+    Private Sub RekapBayarHutangToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles RekapBayarHutangToolStripMenuItem.Click
+        TutupSemuaForm() : My.Forms.FormLapRekapBayar.JenisLaporan = "Hutang" : BukaFormMdi(My.Forms.FormLapRekapBayar)
+    End Sub
+
+    Private Sub RekapBayarPiutangToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles RekapBayarPiutangToolStripMenuItem.Click
+        TutupSemuaForm() : My.Forms.FormLapRekapBayar.JenisLaporan = "Piutang" : BukaFormMdi(My.Forms.FormLapRekapBayar)
+    End Sub
+
+    Private Sub RankingSupplierToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles RankingSupplierToolStripMenuItem.Click
+        TutupSemuaForm() : My.Forms.FormLapRanking.JenisLaporan = "Supplier" : BukaFormMdi(My.Forms.FormLapRanking)
+    End Sub
+
+    Private Sub RankingKasirUserPenjualanToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles RankingKasirUserPenjualanToolStripMenuItem.Click
+        TutupSemuaForm() : My.Forms.FormLapRanking.JenisLaporan = "Kasir" : BukaFormMdi(My.Forms.FormLapRanking)
+    End Sub
+
+    Private Sub RankingBarangTerbanyakDibeliToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles RankingBarangTerbanyakDibeliToolStripMenuItem.Click
+        TutupSemuaForm() : My.Forms.FormLapRanking.JenisLaporan = "BarangBeli" : BukaFormMdi(My.Forms.FormLapRanking)
+    End Sub
+
+    Private Sub RankingPelangganPiutangTerbesarToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles RankingPelangganPiutangTerbesarToolStripMenuItem.Click
+        TutupSemuaForm() : My.Forms.FormLapRankingTagihan.JenisLaporan = "Piutang" : BukaFormMdi(My.Forms.FormLapRankingTagihan)
+    End Sub
+
+    Private Sub RankingSupplierHutangTerbesarToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles RankingSupplierHutangTerbesarToolStripMenuItem.Click
+        TutupSemuaForm() : My.Forms.FormLapRankingTagihan.JenisLaporan = "Hutang" : BukaFormMdi(My.Forms.FormLapRankingTagihan)
+    End Sub
+
+    Private Sub OmsetPerPelangganToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles OmsetPerPelangganToolStripMenuItem.Click
+        TutupSemuaForm() : My.Forms.FormLapOmset.JenisLaporan = "Pelanggan" : BukaFormMdi(My.Forms.FormLapOmset)
+    End Sub
+
+    Private Sub OmsetPerKategoriToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles OmsetPerKategoriToolStripMenuItem.Click
+        TutupSemuaForm() : My.Forms.FormLapOmset.JenisLaporan = "Kategori" : BukaFormMdi(My.Forms.FormLapOmset)
+    End Sub
+
+    Private Sub ProfiMarginToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ProfiMarginToolStripMenuItem.Click
+        TutupSemuaForm() : BukaFormMdi(My.Forms.FormLapMarginProfit)
+    End Sub
+
 
     '----------------------------------------- UTILITY ---------------------------------------------------------------------------
 
@@ -4508,12 +3324,8 @@ Public Class FormUtama
     End Sub
 
     Private Sub PilihanSaatMasukAplikasiToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles PilihanSaatMasukAplikasiToolStripMenuItem.Click
-        For Each frm As Form In MdiChildren
-            frm.Close()
-        Next
-
+        TutupSemuaForm()
         With FormPilihanMasuk
-            '.MdiParent = Me
             .BringToFront()
             .Dock = DockStyle.Fill
             .ShowDialog()
@@ -4521,12 +3333,8 @@ Public Class FormUtama
     End Sub
 
     Private Sub DatabaseToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles DatabaseToolStripMenuItem.Click
-        For Each frm As Form In MdiChildren
-            frm.Close()
-        Next
-
+        TutupSemuaForm()
         With SettingDatabase
-            '.MdiParent = Me
             .BringToFront()
             .Dock = DockStyle.Fill
             .ShowDialog()
@@ -4534,22 +3342,16 @@ Public Class FormUtama
     End Sub
 
     Private Sub FormatSqlToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles FormatSqlToolStripMenuItem.Click
-        For Each frm As Form In MdiChildren
-            frm.Close()
-        Next
+        TutupSemuaForm()
         Cursor = Cursors.WaitCursor
-        Dim typesql As String = "SQL"
-        BackupDatabase(typesql)
+        BackupDatabase("SQL")
         Cursor = Cursors.Default
     End Sub
 
     Private Sub FormatZipToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles FormatZipToolStripMenuItem.Click
-        For Each frm As Form In MdiChildren
-            frm.Close()
-        Next
+        TutupSemuaForm()
         Cursor = Cursors.WaitCursor
-        Dim typesql As String = "ZIP"
-        BackupDatabase(typesql)
+        BackupDatabase("ZIP")
         Cursor = Cursors.Default
     End Sub
 
@@ -4577,251 +3379,71 @@ Public Class FormUtama
     End Sub
 
     Private Sub FormatZipToolStripMenuItem1_Click(sender As Object, e As EventArgs) Handles FormatZipToolStripMenuItem1.Click
+        Using openFileDialog As New OpenFileDialog()
+            openFileDialog.Filter = "ZIP Files (*.zip)|*.zip|All Files (*.*)|*.*"
+            openFileDialog.Title = "Pilih File Backup ZIP"
 
+            If openFileDialog.ShowDialog() = DialogResult.OK Then
+                Dim backupFilePath As String = openFileDialog.FileName
+
+                Using stream As New FileStream(configFilePath, FileMode.Open, FileAccess.Read)
+                    Dim json As String = File.ReadAllText(configFilePath)
+                    Dim konfigurasi As DatabaseConfiguration = JsonSerializer.Deserialize(Of DatabaseConfiguration)(json)
+                    konfigurasi.Password = DecryptPassword(konfigurasi.Password)
+
+                    Cursor = Cursors.WaitCursor
+                    DatabaseRestore.RestoreDatabase(konfigurasi, backupFilePath)
+                    Cursor = Cursors.Default
+                End Using
+            End If
+        End Using
     End Sub
 
-    Private Sub PerbaikiDatabaseToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles PerbaikiDatabaseToolStripMenuItem.Click
-        For Each frm As Form In MdiChildren
-            frm.Close()
-        Next
 
-        With FormPerbaikanDatabase
-            .MdiParent = Me
-            .BringToFront()
-            .Dock = DockStyle.Fill
-            .Show()
-        End With
+    Private Sub PerbaikiDatabaseToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles PerbaikiDatabaseToolStripMenuItem.Click
+        TutupSemuaForm() : BukaFormMdi(My.Forms.FormPerbaikanDatabase)
     End Sub
 
     Private Sub UpdateTabelDatabaseToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles UpdateTabelDatabaseToolStripMenuItem.Click
-        For Each frm As Form In MdiChildren
-            frm.Close()
-        Next
-
-        With FormUpdateTabelDb
-            .MdiParent = Me
-            .BringToFront()
-            .Dock = DockStyle.Fill
-            .Show()
-        End With
+        TutupSemuaForm() : BukaFormMdi(My.Forms.FormUpdateTabelDb)
     End Sub
 
     Private Sub QueryDatabaseToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles QueryDatabaseToolStripMenuItem.Click
-        For Each frm As Form In MdiChildren
-            frm.Close()
-        Next
+        TutupSemuaForm() : BukaFormMdi(My.Forms.FormQuery)
+    End Sub
 
-        With FormQuery
-            .MdiParent = Me
-            .BringToFront()
-            .Dock = DockStyle.Fill
-            .Show()
-        End With
+    Private Sub MigrasiDatabaseToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles MigrasiDatabaseToolStripMenuItem.Click
+        TutupSemuaForm() : BukaFormMdi(My.Forms.FormMigrasiDB)
     End Sub
 
     Private Sub SettingPrinterToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles SettingPrinterToolStripMenuItem.Click
-        For Each frm As Form In MdiChildren
-            frm.Close()
-        Next
-
-        With FormDefauldPrinter
-            .MdiParent = Me
-            .BringToFront()
-            .Dock = DockStyle.Fill
-            .Show()
-        End With
+        TutupSemuaForm() : BukaFormMdi(My.Forms.FormPengaturanPrinter)
     End Sub
 
     Private Sub HapusTransaksiTokoToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles HapusTransaksiTokoToolStripMenuItem.Click
-        ' Tampilkan peringatan pertama
-        Dim result1 As DialogResult = MessageBox.Show("Anda akan menghapus semua data yang terkait dengan TOKO. Apakah Anda yakin ingin melanjutkan?",
-                                                       "Peringatan: Operasi Berbahaya",
-                                                       MessageBoxButtons.YesNo,
-                                                       MessageBoxIcon.Warning)
-
-        If result1 = DialogResult.No Then
-            ' Jika pengguna memilih No, hentikan operasi
-            MessageBox.Show("Operasi dibatalkan oleh pengguna.", "Informasi", MessageBoxButtons.OK, MessageBoxIcon.Information)
-            Exit Sub
-        End If
-
-        ' Tampilkan peringatan kedua untuk memastikan
-        Dim result2 As DialogResult = MessageBox.Show("PERINGATAN KEDUA! Ini adalah operasi yang sangat berbahaya. Anda akan menghapus semua data TOKO secara permanen. Apakah Anda benar-benar yakin?",
-                                                       "Peringatan Keras: Operasi Berbahaya",
-                                                       MessageBoxButtons.YesNo,
-                                                       MessageBoxIcon.Warning)
-
-        If result2 = DialogResult.No Then
-            ' Jika pengguna memilih No pada peringatan kedua, hentikan operasi
-            MessageBox.Show("Operasi dibatalkan oleh pengguna setelah peringatan kedua.", "Informasi", MessageBoxButtons.OK, MessageBoxIcon.Information)
-            Exit Sub
-        End If
-
-        ' Mulai transaksi
-        Dim transaction As MySqlTransaction = conn.BeginTransaction()
-
-        Try
-            AmbilNilaiBarang(transaction, "TOKO")
-            ' Array yang berisi semua query delete
-            Dim deleteQueries As String() = {
-                "UPDATE tbl_barang SET AWAL_TOKO='0'",
-                "DELETE FROM Bon_karyawan WHERE LOKASI = 'TOKO'",
-                "DELETE FROM Gaji_karyawan WHERE LOKASI = 'TOKO'",
-                "DELETE FROM HistoryBarang WHERE LOKASI = 'TOKO'",
-                "DELETE FROM hutang WHERE LOKASI = 'TOKO'",
-                "DELETE FROM Hutang_Detail WHERE LOKASI = 'TOKO'",
-                "DELETE FROM JurnalUmum WHERE LOKASI = 'TOKO'",
-                "DELETE FROM pembelian WHERE LOKASI = 'TOKO'",
-                "DELETE FROM pembelian_detail WHERE LOKASI = 'TOKO'",
-                "DELETE FROM pembelian_ditahan WHERE LOKASI = 'TOKO'",
-                "DELETE FROM pembelian_ditahan_detail WHERE LOKASI = 'TOKO'",
-                "DELETE FROM penjualan WHERE LOKASIBARANG = 'TOKO'",
-                "DELETE FROM penjualan_detail WHERE LOKASIBARANG = 'TOKO'",
-                "DELETE FROM Piutang WHERE LOKASI = 'TOKO'",
-                "DELETE FROM Piutang_Detail WHERE LOKASI = 'TOKO'",
-                "DELETE FROM retur_pembelian WHERE PENYIMPANAN = 'TOKO'",
-                "DELETE FROM retur_pembelian_detail WHERE PENYIMPANAN = 'TOKO'",
-                "DELETE FROM retur_penjualan WHERE PENYIMPANAN = 'TOKO'",
-                "DELETE FROM retur_penjualan_detail WHERE LOKASI = 'TOKO'",
-                "DELETE FROM Stok_Opname WHERE LOKASI = 'TOKO'",
-                "DELETE FROM StokTambahKurang WHERE LOKASI = 'TOKO'",
-                "DELETE FROM Surat_Jalan WHERE LOKASI = 'TOKO'",
-                "DELETE FROM Surat_Jalan_Detail WHERE LOKASI = 'TOKO'",
-                "DELETE FROM Transfer_Barang WHERE LOKASI = 'TOKO'",
-                "DELETE FROM Transfer_Barang_Detail WHERE LOKASI = 'TOKO'",
-                "DELETE FROM Transfer_stok WHERE JENIS_TRANSFER = 'TOKO'"
-            }
-
-            ' Jalankan setiap query delete dalam loop
-            For Each query As String In deleteQueries
-                Using cmd As New MySqlCommand(query, conn, transaction)
-                    cmd.ExecuteNonQuery()
-                End Using
-            Next
-
-            ' Query khusus untuk menghapus data di tabel History dengan wildcard yang dipisahkan
-            Dim aksiParam As String = "TOKO" & "%" ' Menambahkan wildcard % ke variabel
-            Using cmd As New MySqlCommand("DELETE FROM History WHERE Aksi LIKE ?", conn, transaction)
-                cmd.Parameters.AddWithValue("@Aksi", aksiParam)
-                cmd.ExecuteNonQuery()
-            End Using
-
-            'JurnalEksekusiTransaksi(transaction, "TOKO")
-
-            ' Commit transaksi jika semua perintah berhasil
-            transaction.Commit()
-
-            MessageBox.Show("Semua transaksi TOKO berhasil di hapus!", "Informasi", MessageBoxButtons.OK, MessageBoxIcon.Information)
-
-            ' Catat aksi di history
-            DatabaseModule.CatatanAksiHistory("Berhasil menghapus transaksi toko")
-        Catch ex As Exception
-            ' Rollback transaksi jika terjadi kesalahan
-
-            MessageBox.Show("Transaksi dibatalkan karena terjadi kesalahan." & vbCrLf &
-                            "Detail kesalahan: " & ex.Message,
-                            "Oops! Ada masalah...", MessageBoxButtons.OK, MessageBoxIcon.Error)
-            transaction.Rollback()
-        End Try
+        TutupSemuaForm()
+        Using f As New FormHapusTransaksi With {.Mode = "TOKO"}
+            f.ShowDialog()
+        End Using
     End Sub
 
     Private Sub HapusTransaksiGudangToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles HapusTransaksiGudangToolStripMenuItem.Click
-        ' Tampilkan peringatan pertama
-        Dim result1 As DialogResult = MessageBox.Show("Anda akan menghapus semua data yang terkait dengan TOKO. Apakah Anda yakin ingin melanjutkan?",
-                                                       "Peringatan: Operasi Berbahaya",
-                                                       MessageBoxButtons.YesNo,
-                                                       MessageBoxIcon.Warning)
-
-        If result1 = DialogResult.No Then
-            ' Jika pengguna memilih No, hentikan operasi
-            MessageBox.Show("Operasi dibatalkan oleh pengguna.", "Informasi", MessageBoxButtons.OK, MessageBoxIcon.Information)
-            Exit Sub
-        End If
-
-        ' Tampilkan peringatan kedua untuk memastikan
-        Dim result2 As DialogResult = MessageBox.Show("PERINGATAN KEDUA! Ini adalah operasi yang sangat berbahaya. Anda akan menghapus semua data TOKO secara permanen. Apakah Anda benar-benar yakin?",
-                                                       "Peringatan Keras: Operasi Berbahaya",
-                                                       MessageBoxButtons.YesNo,
-                                                       MessageBoxIcon.Warning)
-
-        If result2 = DialogResult.No Then
-            ' Jika pengguna memilih No pada peringatan kedua, hentikan operasi
-            MessageBox.Show("Operasi dibatalkan oleh pengguna setelah peringatan kedua.", "Informasi", MessageBoxButtons.OK, MessageBoxIcon.Information)
-            Exit Sub
-        End If
-
-        ' Mulai transaksi
-        Dim transaction As MySqlTransaction = conn.BeginTransaction()
-
-        Try
-            AmbilNilaiBarang(transaction, "GUDANG")
-            ' Array yang berisi semua query delete
-            Dim deleteQueries As String() = {
-                "UPDATE tbl_barang SET AWAL_GUDANG='0'",
-                "DELETE FROM Bon_karyawan WHERE LOKASI = 'GUDANG'",
-                "DELETE FROM Gaji_karyawan WHERE LOKASI = 'GUDANG'",
-                "DELETE FROM HistoryBarang WHERE LOKASI = 'GUDANG'",
-                "DELETE FROM hutang WHERE LOKASI = 'GUDANG'",
-                "DELETE FROM Hutang_Detail WHERE LOKASI = 'GUDANG'",
-                "DELETE FROM JurnalUmum WHERE LOKASI = 'GUDANG'",
-                "DELETE FROM pembelian WHERE LOKASI = 'GUDANG'",
-                "DELETE FROM pembelian_detail WHERE LOKASI = 'GUDANG'",
-                "DELETE FROM pembelian_ditahan WHERE LOKASI = 'GUDANG'",
-                "DELETE FROM pembelian_ditahan_detail WHERE LOKASI = 'GUDANG'",
-                "DELETE FROM penjualan WHERE LOKASIBARANG = 'GUDANG'",
-                "DELETE FROM penjualan_detail WHERE LOKASIBARANG = 'GUDANG'",
-                "DELETE FROM Piutang WHERE LOKASI = 'GUDANG'",
-                "DELETE FROM Piutang_Detail WHERE LOKASI = 'GUDANG'",
-                "DELETE FROM retur_pembelian WHERE PENYIMPANAN = 'GUDANG'",
-                "DELETE FROM retur_pembelian_detail WHERE PENYIMPANAN = 'GUDANG'",
-                "DELETE FROM retur_penjualan WHERE PENYIMPANAN = 'GUDANG'",
-                "DELETE FROM retur_penjualan_detail WHERE LOKASI = 'GUDANG'",
-                "DELETE FROM Stok_Opname WHERE LOKASI = 'GUDANG'",
-                "DELETE FROM StokTambahKurang WHERE LOKASI = 'GUDANG'",
-                "DELETE FROM Surat_Jalan WHERE LOKASI = 'GUDANG'",
-                "DELETE FROM Surat_Jalan_Detail WHERE LOKASI = 'GUDANG'",
-                "DELETE FROM Transfer_Barang WHERE LOKASI = 'GUDANG'",
-                "DELETE FROM Transfer_Barang_Detail WHERE LOKASI = 'GUDANG'",
-                "DELETE FROM Transfer_stok WHERE JENIS_TRANSFER = 'GUDANG'"
-            }
-
-            ' Jalankan setiap query delete dalam loop
-            For Each query As String In deleteQueries
-                Using cmd As New MySqlCommand(query, conn, transaction)
-                    cmd.ExecuteNonQuery()
-                End Using
-            Next
-
-            ' Query khusus untuk menghapus data di tabel History dengan wildcard yang dipisahkan
-            Dim aksiParam As String = "GUDANG" & "%" ' Menambahkan wildcard % ke variabel
-            Using cmd As New MySqlCommand("DELETE FROM History WHERE Aksi LIKE ?", conn, transaction)
-                cmd.Parameters.AddWithValue("@Aksi", aksiParam)
-                cmd.ExecuteNonQuery()
-            End Using
-
-            'JurnalEksekusiTransaksi(transaction, "GUDANG")
-
-            ' Commit transaksi jika semua perintah berhasil
-            transaction.Commit()
-
-            MessageBox.Show("Semua transaksi GUDANG berhasil di hapus!", "Informasi", MessageBoxButtons.OK, MessageBoxIcon.Information)
-
-            ' Catat aksi di history
-            DatabaseModule.CatatanAksiHistory("Berhasil menghapus transaksi GUDANG")
-        Catch ex As Exception
-            ' Rollback transaksi jika terjadi kesalahan
-            transaction.Rollback()
-            MessageBox.Show("Transaksi dibatalkan karena terjadi kesalahan." & vbCrLf &
-                            "Detail kesalahan: " & ex.Message,
-                            "Oops! Ada masalah...", MessageBoxButtons.OK, MessageBoxIcon.Error)
-        End Try
+        TutupSemuaForm()
+        Using f As New FormHapusTransaksi With {.Mode = "GUDANG"}
+            f.ShowDialog()
+        End Using
     End Sub
 
-    Private Sub PeriksaUpdateAplikasiToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles PeriksaUpdateAplikasiToolStripMenuItem.Click
-        For Each frm As Form In MdiChildren
-            frm.Close()
-        Next
+    Private Sub HapusTransaksiSemuaToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles HapusTransaksiSemuaToolStripMenuItem.Click
+        TutupSemuaForm()
+        Using f As New FormHapusTransaksi With {.Mode = "SEMUA"}
+            f.ShowDialog()
+        End Using
+    End Sub
 
+
+    Private Sub PeriksaUpdateAplikasiToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles PeriksaUpdateAplikasiToolStripMenuItem.Click
+        TutupSemuaForm()
         With FormCekUpdate
             .BringToFront()
             .Dock = DockStyle.Fill
@@ -4830,10 +3452,7 @@ Public Class FormUtama
     End Sub
 
     Private Sub CekIpKomputerToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles CekIpKomputerToolStripMenuItem.Click
-        For Each frm As Form In MdiChildren
-            frm.Close()
-        Next
-
+        TutupSemuaForm()
         With Formipkomputer
             .BringToFront()
             .Dock = DockStyle.Fill
@@ -4906,10 +3525,10 @@ Public Class FormUtama
             cmdInsert.Parameters.AddWithValue("@NAMA_AKUN_K", NAMA_REK_BARANG)
             cmdInsert.Parameters.AddWithValue("@NOMOR_AKUN_K", KODE_REK_BARANG)
             cmdInsert.Parameters.AddWithValue("@NOMINAL", Rupiah)
-            cmdInsert.Parameters.AddWithValue("@JENIS_TRANSAKSI", "Hapus Barang")
+            cmdInsert.Parameters.AddWithValue("@JENIS_TRANSAKSI", "HAPUS BARANG")
             cmdInsert.Parameters.AddWithValue("@LOKASI", "")
-            cmdInsert.Parameters.AddWithValue("@ID_USER", SLogin.Text)
-            cmdInsert.Parameters.AddWithValue("@ID_KOMPUTER", Comp.Text)
+            cmdInsert.Parameters.AddWithValue("@ID_USER", StatusNamaUser.Text)
+            cmdInsert.Parameters.AddWithValue("@ID_KOMPUTER", StatusNamaPC.Text)
 
             ' Eksekusi perintah INSERT
             cmdInsert.ExecuteNonQuery()
@@ -4940,15 +3559,12 @@ Public Class FormUtama
     Private Sub CloseAllToolStripMenuItem_Click(ByVal sender As Object, ByVal e As EventArgs) Handles CloseAllToolStripMenuItem.Click
         GBTransaksi.Visible = False
         DGVTransaksi.Columns.Clear()
-        For Each frm As Form In MdiChildren
-            frm.Close()
-        Next
+        TutupSemuaForm()
     End Sub
 
     '----------------------------------------- KELUAR ---------------------------------------------------------------------------
 
     Private Sub KeluarToolStripMenuItem_Click(ByVal sender As Object, ByVal e As EventArgs) Handles KeluarToolStripMenuItem.Click
-        DatabaseModule.CatatanAksiHistory("Keluar aplikasi")
         Close()
     End Sub
 
@@ -4958,7 +3574,7 @@ Public Class FormUtama
         If MessageBox.Show("BACKUP DATA ?", "Konfirmasi Backup", MessageBoxButtons.YesNo) = DialogResult.Yes Then
             ' Panggil metode BackupDatabase jika pengguna memilih "Yes"
             Me.Cursor = Cursors.WaitCursor
-            Dim typesql As String = "SQL"
+            Dim typesql As String = "ZIP"
             BackupDatabase(typesql)
             Me.Cursor = Cursors.Default
         End If
@@ -4969,7 +3585,6 @@ Public Class FormUtama
             e.Cancel = True
         Else
             ' CATATAN HISTORY jika pengguna memilih "Yes"
-            DatabaseModule.CatatanAksiHistory("Keluar aplikasi")
         End If
     End Sub
 
@@ -5011,5 +3626,100 @@ Public Class FormUtama
 
 
 
+    Private Sub BtnSettingPrinter_Click(sender As Object, e As EventArgs) Handles BtnSettingPrinter.Click
+        Using frm As New FormPengaturanPrinter()
+            frm.FilterTab = GetFilterTabPrinter(TxtTransaksi.Text)
 
+            frm.ShowDialog()
+        End Using
+        MuatSemuaPengaturan()
+    End Sub
+
+    ' ==================== DARK / LIGHT MODE ====================
+
+    Private Sub BtnMode_Click(sender As Object, e As EventArgs) Handles BtnMode.Click
+        ModuleTheme.Toggle()
+        TerapkanModeSemua()
+    End Sub
+
+    ''' <summary>Terapkan theme ke FormUtama dan semua MDI children</summary>
+    Public Sub TerapkanModeSemua()
+        ' Update icon & tooltip BtnMode
+        Dim oldImg As Image = BtnMode.Image
+        BtnMode.Image = ModuleTheme.GetModeIcon(16)
+        oldImg?.Dispose()
+        ToolTip1.SetToolTip(BtnMode, ModuleTheme.GetModeTooltip())
+
+        ' BtnMode warna — ikut toolbar
+        BtnMode.BackColor = ModuleTheme.C(ModuleTheme.L_NavIdle, ModuleTheme.D_NavIdle)
+        BtnMode.ForeColor = ModuleTheme.C(ModuleTheme.L_NavIdleFore, ModuleTheme.D_NavIdleFore)
+        BtnMode.FlatStyle = FlatStyle.Flat
+        BtnMode.FlatAppearance.BorderSize = 0
+        BtnMode.FlatAppearance.MouseOverBackColor = ModuleTheme.C(ModuleTheme.L_NavHover, ModuleTheme.D_NavHover)
+        BtnMode.FlatAppearance.MouseDownBackColor = ModuleTheme.C(ModuleTheme.L_NavDown, ModuleTheme.D_NavDown)
+
+        ' Terapkan ke FormUtama
+        ModuleTheme.TerapkanTheme(Me)
+
+        ' Terapkan ke semua MDI children
+        For Each frm As Form In MdiChildren
+            ModuleTheme.TerapkanTheme(frm)
+        Next
+
+        ' Restore warna button nav aktif yang di-reset oleh TerapkanFormUtama
+        If _activeNavButton IsNot Nothing Then
+            _activeNavButton.BackColor = ModuleTheme.C(ModuleTheme.L_NavActive, ModuleTheme.D_NavActive)
+            _activeNavButton.ForeColor = ModuleTheme.C(ModuleTheme.L_NavActiveFore, ModuleTheme.D_NavActiveFore)
+        End If
+
+        ' Refresh Dashboard jika sedang tampil
+        If WbDashboard.Visible Then TampilDashboard()
+
+        Me.Refresh()
+    End Sub
+
+    ' ==================== END DARK / LIGHT MODE ====================
+
+    Private Sub EditPembayaranToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles EditPembayaranToolStripMenuItem.Click
+        If TxtTransaksi.Text <> "Penjualan" Then
+            MessageBox.Show("Untuk sementara edit pembayaran hanya tersedia untuk transaksi penjualan.", "Informasi", MessageBoxButtons.OK, MessageBoxIcon.Information)
+            Exit Sub
+        End If
+
+        If String.IsNullOrWhiteSpace(TxtFakturTransaksi.Text) Then
+            MessageBox.Show("Pilih transaksi penjualan yang akan diedit pembayarannya.", "Peringatan", MessageBoxButtons.OK, MessageBoxIcon.Warning)
+            Exit Sub
+        End If
+
+        If StatusLokasi.Text <> TxtLokasiUntukEdit.Text Then
+            Dim pesan As String = "Oops! Tidak ada hak untuk edit pembayaran penjualan ini." & Environment.NewLine &
+                                  "User " & StatusLokasi.Text & " tidak berhak edit transaksi penjualan " & TxtLokasiUntukEdit.Text
+            MessageBox.Show(pesan, "Peringatan", MessageBoxButtons.OK, MessageBoxIcon.Warning)
+            Exit Sub
+        End If
+
+        Using cmdCheck As New MySqlCommand("SELECT COUNT(*) FROM retur_penjualan WHERE ID_PENJUALAN = @ID_PENJUALAN", conn)
+            cmdCheck.Parameters.AddWithValue("@ID_PENJUALAN", TxtFakturTransaksi.Text)
+            Dim rowCount As Integer = Convert.ToInt32(cmdCheck.ExecuteScalar())
+
+            If rowCount > 0 Then
+                Dim pesan As String = "Oops! Pembayaran tidak dapat diedit karena transaksi ini sudah memiliki retur penjualan." & Environment.NewLine &
+                                      "Silakan sesuaikan retur terlebih dahulu jika ingin mengubah pembayaran."
+                MessageBox.Show(pesan, "Peringatan", MessageBoxButtons.OK, MessageBoxIcon.Warning)
+                Exit Sub
+            End If
+        End Using
+
+        Using frm As New FormEditBayarJual()
+            frm.IdPenjualan = TxtFakturTransaksi.Text
+            If frm.ShowDialog() = DialogResult.OK Then
+                Refresdatagridview()
+            End If
+        End Using
+    End Sub
+
+    Private Sub LabaRugiBerjalanToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles LabaRugiBerjalanToolStripMenuItem.Click
+
+    End Sub
 End Class
+

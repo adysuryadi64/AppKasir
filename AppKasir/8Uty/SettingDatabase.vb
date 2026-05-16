@@ -113,8 +113,6 @@ Public Class SettingDatabase
             SaveConfiguration()
             CloseConnection()
             OpenConnection()
-            Rekeningkasbank()
-            AmbilAkunKasBankEkuitas()
             Me.Close()
             FormUtama.Terkunci()
             FormLogin.BringToFront()

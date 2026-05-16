@@ -14,7 +14,7 @@ Public Class FormHakUser
     Private Sub FormHakUser_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
         Me.Cursor = Cursors.WaitCursor
 
-        Dim HAAkses As Boolean() = ModulHakAkses.BacaHakAkses(FormUtama.SLevel.Text, "Hak Akses", conn)
+        Dim HAAkses As Boolean() = ModulHakAkses.BacaHakAksesDariCache("Hak Akses")
         BtnSimpan.Visible = HAAkses(2)
 
         labels = New List(Of Label) From {LblMasterData, LblTransaksi, LblJurnal, LblKaryawan, LblLaporan, LblUtility, LblPosting}
@@ -545,6 +545,10 @@ Public Class FormHakUser
             transaksi.Commit()
             MessageBox.Show("Perubahan telah disimpan.", "Informasi", MessageBoxButtons.OK, MessageBoxIcon.Information)
             DatabaseModule.CatatanAksiHistory("Update hak akses user")
+
+            ' === REFRESH CACHE SETELAH UPDATE ===
+            ModulHakAkses.RefreshHakAksesCache()
+
         Catch ex As Exception
             transaksi.Rollback()
             MessageBox.Show("Terjadi kesalahan: " & ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)

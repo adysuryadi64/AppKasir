@@ -5,10 +5,8 @@ Imports System.IO
 Public Class FormLapSaldo
 
     Private Sub FormLapSaldo_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
-        ' Panggil untuk mengambil data rekening KAS dan BANK
-        Rekeningkasbank()
         ' Isi ComboBox dengan data dari list
-        CmbRekening.Items.AddRange(GetAkunList().ToArray())
+        IsiComboBoxAkun(CmbRekening, "KAS", "BANK", "EKUITAS")
 
         CmbRekening.SelectedIndex = 0
         CbTanggal.Checked = True

@@ -70,7 +70,7 @@ Public Class FormBarang
         PAnelTambahKurang.Visible = False
         PanelDetailBarang.Visible = False
 
-        Dim HABarang As Boolean() = ModulHakAkses.BacaHakAkses(FormUtama.SLevel.Text, "Barang", conn)
+        Dim HABarang As Boolean() = ModulHakAkses.BacaHakAksesDariCache("Barang")
         ' Terapkan nilai hak akses ke tombol-tombol
         BtnTambah.Visible = HABarang(1) ' CanAdd 
         TambahToolStripMenuItem.Visible = HABarang(1)
@@ -79,19 +79,19 @@ Public Class FormBarang
         BtnHapus.Visible = HABarang(3) ' CanDelete 
         HapusStokToolStripMenuItem.Visible = HABarang(3)
 
-        Dim KurangStok As Boolean() = ModulHakAkses.BacaHakAkses(FormUtama.SLevel.Text, "Kurang Stok", conn)
+        Dim KurangStok As Boolean() = ModulHakAkses.BacaHakAksesDariCache("Kurang Stok")
         ' Terapkan nilai hak akses ke tombol-tombol
         KurangiStokToolStripMenuItem.Visible = KurangStok(2) ' CanEdit 
 
-        Dim TambahStok As Boolean() = ModulHakAkses.BacaHakAkses(FormUtama.SLevel.Text, "Tambah Stok", conn)
+        Dim TambahStok As Boolean() = ModulHakAkses.BacaHakAksesDariCache("Tambah Stok")
         ' Terapkan nilai hak akses ke tombol-tombol
         TambahStokToolStripMenuItem.Visible = TambahStok(2) ' CanEdit 
 
-        Dim PerbaikiDataBarang As Boolean() = ModulHakAkses.BacaHakAkses(FormUtama.SLevel.Text, "Perbaiki Data Barang", conn)
+        Dim PerbaikiDataBarang As Boolean() = ModulHakAkses.BacaHakAksesDariCache("Perbaiki Data Barang")
         ' Terapkan nilai hak akses ke tombol-tombol
         PerbaikiDatabase.Visible = PerbaikiDataBarang(2) ' CanEdit 
 
-        Dim Perbaikiisisatuan As Boolean() = ModulHakAkses.BacaHakAkses(FormUtama.SLevel.Text, "Perbaiki isi satuan", conn)
+        Dim Perbaikiisisatuan As Boolean() = ModulHakAkses.BacaHakAksesDariCache("Perbaiki isi satuan")
         ' Terapkan nilai hak akses ke tombol-tombol
         PerbaruiStokBarangToolStripMenuItem.Visible = Perbaikiisisatuan(2) ' CanEdit 
 
@@ -213,7 +213,7 @@ Public Class FormBarang
             ' Enable double buffering to reduce flickering
             DataGridViewExtension.EnableDoubleBuffering(DGBarang)
 
-            Dim HargaBeli As Boolean() = ModulHakAkses.BacaHakAkses(FormUtama.SLevel.Text, "Harga Beli", conn)
+            Dim HargaBeli As Boolean() = ModulHakAkses.BacaHakAksesDariCache("Harga Beli")
             ' Terapkan nilai hak akses ke tombol-tombol
             .Columns("HARGA_BELI").Visible = HargaBeli(0)
         End With
@@ -334,7 +334,7 @@ Public Class FormBarang
             End Using
         End Using
 
-        Dim HargaBeli As Boolean() = ModulHakAkses.BacaHakAkses(FormUtama.SLevel.Text, "Harga Beli", conn)
+        Dim HargaBeli As Boolean() = ModulHakAkses.BacaHakAksesDariCache("Harga Beli")
         ' Terapkan nilai hak akses ke tombol-tombol
         Label32.Visible = HargaBeli(0) ' CanEdit 
 

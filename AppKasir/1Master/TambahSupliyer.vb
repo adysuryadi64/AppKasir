@@ -4,7 +4,7 @@ Class TambahSupliyer
     Private Sub TambahSupliyer_Load(ByVal sender As Object, ByVal e As EventArgs) Handles MyBase.Load
         Me.Cursor = Cursors.WaitCursor
 
-        Dim Supplier As Boolean() = ModulHakAkses.BacaHakAkses(FormUtama.SLevel.Text, "Supplier", conn)
+        Dim Supplier As Boolean() = ModulHakAkses.BacaHakAksesDariCache("Supplier")
         ' Terapkan nilai hak akses ke tombol-tombol
         BTNSimpan.Visible = Supplier(1) ' CanAdd 
         'BTNSimpan.Visible = Supplier(2) ' CanEdit 
@@ -218,7 +218,7 @@ Class TambahSupliyer
         BTNSimpan.Text = "EDIT (F2)"
 
         If BTNSimpan.Text = "EDIT (F2)" Then
-            Dim Supplier As Boolean() = ModulHakAkses.BacaHakAkses(FormUtama.SLevel.Text, "Supplier", conn)
+            Dim Supplier As Boolean() = ModulHakAkses.BacaHakAksesDariCache("Supplier")
             ' Terapkan nilai hak akses ke tombol-tombol
             BTNSimpan.Visible = Supplier(2) ' CanEdit 
         End If

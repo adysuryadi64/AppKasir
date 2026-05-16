@@ -49,7 +49,7 @@
 
     Private Sub TambahBarang_Load(ByVal sender As Object, ByVal e As EventArgs) Handles MyBase.Load
         Me.Cursor = Cursors.WaitCursor
-        CBSatuanSama.Checked = My.Settings.CbSatuansama
+        CBSatuanSama.Checked = AppConfig.Instance.GetValue(Of Boolean)("CbSatuansama", False)
         LblJudulStok.Text = "INFORMASI STOK " & FormUtama.SLokasi.Text
         Label22.Text = "Lokasi Rak " & FormUtama.SLokasi.Text
 
@@ -242,8 +242,8 @@
 
 
     Private Sub CBSatuanSama_CheckedChanged(ByVal sender As Object, ByVal e As EventArgs) Handles CBSatuanSama.CheckedChanged
-        My.Settings.CbSatuansama = CBSatuanSama.Checked
-        My.Settings.Save()
+        AppConfig.Instance.SetValue("CbSatuansama", CBSatuanSama.Checked)
+        AppConfig.Instance.Save()
     End Sub
 
     Public Sub Ubahhargabeli()

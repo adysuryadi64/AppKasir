@@ -24,8 +24,13 @@ Partial Class FormGeneralSetting
     Private Sub InitializeComponent()
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(FormGeneralSetting))
         Me.Panel1 = New System.Windows.Forms.Panel()
+        Me.Button1 = New System.Windows.Forms.Button()
+        Me.BtnSimpan = New System.Windows.Forms.Button()
         Me.LblTextJalanAtas = New System.Windows.Forms.Label()
         Me.Panel2 = New System.Windows.Forms.Panel()
+        Me.GroupBox7 = New System.Windows.Forms.GroupBox()
+        Me.LblTransaksiTanggalLampau = New System.Windows.Forms.Label()
+        Me.CmbTransaksiTanggalLampau = New System.Windows.Forms.ComboBox()
         Me.GroupBox3 = New System.Windows.Forms.GroupBox()
         Me.LblTransferMinus = New System.Windows.Forms.Label()
         Me.CmbTransferMinus = New System.Windows.Forms.ComboBox()
@@ -43,6 +48,11 @@ Partial Class FormGeneralSetting
         Me.LblReturBeliFokus = New System.Windows.Forms.Label()
         Me.CmbReturBeliFokus = New System.Windows.Forms.ComboBox()
         Me.GroupBox2 = New System.Windows.Forms.GroupBox()
+        Me.CmbbeliNominal0 = New System.Windows.Forms.ComboBox()
+        Me.LblbeliNominal0 = New System.Windows.Forms.Label()
+        Me.CmbbeliIsiNominal = New System.Windows.Forms.ComboBox()
+        Me.LblbeliIsiNominal = New System.Windows.Forms.Label()
+        Me.CmbBeliTanpaSupplier = New System.Windows.Forms.ComboBox()
         Me.LblBeliTanpaSupplier = New System.Windows.Forms.Label()
         Me.LblBeliMuculJual = New System.Windows.Forms.Label()
         Me.CmbBeliMuculJual = New System.Windows.Forms.ComboBox()
@@ -98,18 +108,9 @@ Partial Class FormGeneralSetting
         Me.CmbJualSatuan = New System.Windows.Forms.ComboBox()
         Me.LblJualFokus = New System.Windows.Forms.Label()
         Me.CmbJualFokus = New System.Windows.Forms.ComboBox()
-        Me.BtnSimpan = New System.Windows.Forms.Button()
-        Me.Button1 = New System.Windows.Forms.Button()
-        Me.GroupBox7 = New System.Windows.Forms.GroupBox()
-        Me.LblTransaksiTanggalLampau = New System.Windows.Forms.Label()
-        Me.CmbTransaksiTanggalLampau = New System.Windows.Forms.ComboBox()
-        Me.CmbBeliTanpaSupplier = New System.Windows.Forms.ComboBox()
-        Me.CmbbeliNominal0 = New System.Windows.Forms.ComboBox()
-        Me.CmbbeliIsiNominal = New System.Windows.Forms.ComboBox()
-        Me.LblbeliNominal0 = New System.Windows.Forms.Label()
-        Me.LblbeliIsiNominal = New System.Windows.Forms.Label()
         Me.Panel1.SuspendLayout()
         Me.Panel2.SuspendLayout()
+        Me.GroupBox7.SuspendLayout()
         Me.GroupBox3.SuspendLayout()
         Me.GroupBox4.SuspendLayout()
         Me.GroupBox2.SuspendLayout()
@@ -117,7 +118,6 @@ Partial Class FormGeneralSetting
         Me.GroupBox6.SuspendLayout()
         Me.GroupBox5.SuspendLayout()
         Me.GroupBox1.SuspendLayout()
-        Me.GroupBox7.SuspendLayout()
         Me.SuspendLayout()
         '
         'Panel1
@@ -130,6 +130,48 @@ Partial Class FormGeneralSetting
         Me.Panel1.Name = "Panel1"
         Me.Panel1.Size = New System.Drawing.Size(1253, 47)
         Me.Panel1.TabIndex = 0
+        '
+        'Button1
+        '
+        Me.Button1.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
+        Me.Button1.AutoSize = True
+        Me.Button1.BackColor = System.Drawing.Color.SandyBrown
+        Me.Button1.FlatAppearance.BorderSize = 0
+        Me.Button1.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(CType(CType(128, Byte), Integer), CType(CType(128, Byte), Integer), CType(CType(255, Byte), Integer))
+        Me.Button1.FlatAppearance.MouseOverBackColor = System.Drawing.Color.MidnightBlue
+        Me.Button1.Font = New System.Drawing.Font("Century Gothic", 11.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.Button1.ForeColor = System.Drawing.Color.Black
+        Me.Button1.Image = CType(resources.GetObject("Button1.Image"), System.Drawing.Image)
+        Me.Button1.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft
+        Me.Button1.Location = New System.Drawing.Point(1090, 8)
+        Me.Button1.Margin = New System.Windows.Forms.Padding(4)
+        Me.Button1.Name = "Button1"
+        Me.Button1.Size = New System.Drawing.Size(140, 32)
+        Me.Button1.TabIndex = 39
+        Me.Button1.Text = "Restore (F3)"
+        Me.Button1.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText
+        Me.Button1.UseVisualStyleBackColor = False
+        '
+        'BtnSimpan
+        '
+        Me.BtnSimpan.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
+        Me.BtnSimpan.AutoSize = True
+        Me.BtnSimpan.BackColor = System.Drawing.Color.SandyBrown
+        Me.BtnSimpan.FlatAppearance.BorderSize = 0
+        Me.BtnSimpan.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(CType(CType(128, Byte), Integer), CType(CType(128, Byte), Integer), CType(CType(255, Byte), Integer))
+        Me.BtnSimpan.FlatAppearance.MouseOverBackColor = System.Drawing.Color.MidnightBlue
+        Me.BtnSimpan.Font = New System.Drawing.Font("Century Gothic", 11.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.BtnSimpan.ForeColor = System.Drawing.Color.Black
+        Me.BtnSimpan.Image = CType(resources.GetObject("BtnSimpan.Image"), System.Drawing.Image)
+        Me.BtnSimpan.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft
+        Me.BtnSimpan.Location = New System.Drawing.Point(942, 8)
+        Me.BtnSimpan.Margin = New System.Windows.Forms.Padding(4)
+        Me.BtnSimpan.Name = "BtnSimpan"
+        Me.BtnSimpan.Size = New System.Drawing.Size(140, 32)
+        Me.BtnSimpan.TabIndex = 38
+        Me.BtnSimpan.Text = "Simpan (F2)"
+        Me.BtnSimpan.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText
+        Me.BtnSimpan.UseVisualStyleBackColor = False
         '
         'LblTextJalanAtas
         '
@@ -156,6 +198,42 @@ Partial Class FormGeneralSetting
         Me.Panel2.Name = "Panel2"
         Me.Panel2.Size = New System.Drawing.Size(618, 801)
         Me.Panel2.TabIndex = 1
+        '
+        'GroupBox7
+        '
+        Me.GroupBox7.Controls.Add(Me.LblTransaksiTanggalLampau)
+        Me.GroupBox7.Controls.Add(Me.CmbTransaksiTanggalLampau)
+        Me.GroupBox7.Dock = System.Windows.Forms.DockStyle.Top
+        Me.GroupBox7.Font = New System.Drawing.Font("Century Gothic", 9.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.GroupBox7.Location = New System.Drawing.Point(0, 657)
+        Me.GroupBox7.Name = "GroupBox7"
+        Me.GroupBox7.Size = New System.Drawing.Size(618, 143)
+        Me.GroupBox7.TabIndex = 138
+        Me.GroupBox7.TabStop = False
+        Me.GroupBox7.Text = "Berlaku semua transaksi"
+        '
+        'LblTransaksiTanggalLampau
+        '
+        Me.LblTransaksiTanggalLampau.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
+        Me.LblTransaksiTanggalLampau.Font = New System.Drawing.Font("Century Gothic", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.LblTransaksiTanggalLampau.Location = New System.Drawing.Point(6, 26)
+        Me.LblTransaksiTanggalLampau.Name = "LblTransaksiTanggalLampau"
+        Me.LblTransaksiTanggalLampau.Size = New System.Drawing.Size(374, 28)
+        Me.LblTransaksiTanggalLampau.TabIndex = 129
+        Me.LblTransaksiTanggalLampau.Text = "Semua transaksi boleh menggunakan tanggal lampau"
+        Me.LblTransaksiTanggalLampau.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
+        '
+        'CmbTransaksiTanggalLampau
+        '
+        Me.CmbTransaksiTanggalLampau.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
+        Me.CmbTransaksiTanggalLampau.Font = New System.Drawing.Font("Century Gothic", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.CmbTransaksiTanggalLampau.FormattingEnabled = True
+        Me.CmbTransaksiTanggalLampau.Items.AddRange(New Object() {"Iya", "Tidak"})
+        Me.CmbTransaksiTanggalLampau.Location = New System.Drawing.Point(387, 28)
+        Me.CmbTransaksiTanggalLampau.Margin = New System.Windows.Forms.Padding(4)
+        Me.CmbTransaksiTanggalLampau.Name = "CmbTransaksiTanggalLampau"
+        Me.CmbTransaksiTanggalLampau.Size = New System.Drawing.Size(196, 25)
+        Me.CmbTransaksiTanggalLampau.TabIndex = 128
         '
         'GroupBox3
         '
@@ -385,6 +463,64 @@ Partial Class FormGeneralSetting
         Me.GroupBox2.TabStop = False
         Me.GroupBox2.Text = "Pembelian"
         '
+        'CmbbeliNominal0
+        '
+        Me.CmbbeliNominal0.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
+        Me.CmbbeliNominal0.Font = New System.Drawing.Font("Century Gothic", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.CmbbeliNominal0.FormattingEnabled = True
+        Me.CmbbeliNominal0.Items.AddRange(New Object() {"Iya", "Tidak"})
+        Me.CmbbeliNominal0.Location = New System.Drawing.Point(389, 300)
+        Me.CmbbeliNominal0.Margin = New System.Windows.Forms.Padding(4)
+        Me.CmbbeliNominal0.Name = "CmbbeliNominal0"
+        Me.CmbbeliNominal0.Size = New System.Drawing.Size(196, 25)
+        Me.CmbbeliNominal0.TabIndex = 141
+        '
+        'LblbeliNominal0
+        '
+        Me.LblbeliNominal0.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
+        Me.LblbeliNominal0.Font = New System.Drawing.Font("Century Gothic", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.LblbeliNominal0.Location = New System.Drawing.Point(7, 298)
+        Me.LblbeliNominal0.Name = "LblbeliNominal0"
+        Me.LblbeliNominal0.Size = New System.Drawing.Size(375, 28)
+        Me.LblbeliNominal0.TabIndex = 140
+        Me.LblbeliNominal0.Text = "Izinkan pembelian dengan nominal 0"
+        Me.LblbeliNominal0.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
+        '
+        'CmbbeliIsiNominal
+        '
+        Me.CmbbeliIsiNominal.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
+        Me.CmbbeliIsiNominal.Font = New System.Drawing.Font("Century Gothic", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.CmbbeliIsiNominal.FormattingEnabled = True
+        Me.CmbbeliIsiNominal.Items.AddRange(New Object() {"Iya", "Tidak"})
+        Me.CmbbeliIsiNominal.Location = New System.Drawing.Point(388, 268)
+        Me.CmbbeliIsiNominal.Margin = New System.Windows.Forms.Padding(4)
+        Me.CmbbeliIsiNominal.Name = "CmbbeliIsiNominal"
+        Me.CmbbeliIsiNominal.Size = New System.Drawing.Size(196, 25)
+        Me.CmbbeliIsiNominal.TabIndex = 139
+        '
+        'LblbeliIsiNominal
+        '
+        Me.LblbeliIsiNominal.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
+        Me.LblbeliIsiNominal.Font = New System.Drawing.Font("Century Gothic", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.LblbeliIsiNominal.Location = New System.Drawing.Point(6, 266)
+        Me.LblbeliIsiNominal.Name = "LblbeliIsiNominal"
+        Me.LblbeliIsiNominal.Size = New System.Drawing.Size(375, 28)
+        Me.LblbeliIsiNominal.TabIndex = 138
+        Me.LblbeliIsiNominal.Text = "Langsung isi nominal total pembelian"
+        Me.LblbeliIsiNominal.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
+        '
+        'CmbBeliTanpaSupplier
+        '
+        Me.CmbBeliTanpaSupplier.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
+        Me.CmbBeliTanpaSupplier.Font = New System.Drawing.Font("Century Gothic", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.CmbBeliTanpaSupplier.FormattingEnabled = True
+        Me.CmbBeliTanpaSupplier.Items.AddRange(New Object() {"Iya", "Tidak"})
+        Me.CmbBeliTanpaSupplier.Location = New System.Drawing.Point(388, 234)
+        Me.CmbBeliTanpaSupplier.Margin = New System.Windows.Forms.Padding(4)
+        Me.CmbBeliTanpaSupplier.Name = "CmbBeliTanpaSupplier"
+        Me.CmbBeliTanpaSupplier.Size = New System.Drawing.Size(196, 25)
+        Me.CmbBeliTanpaSupplier.TabIndex = 136
+        '
         'LblBeliTanpaSupplier
         '
         Me.LblBeliTanpaSupplier.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
@@ -563,7 +699,7 @@ Partial Class FormGeneralSetting
         Me.Panel3.Controls.Add(Me.GroupBox6)
         Me.Panel3.Controls.Add(Me.GroupBox5)
         Me.Panel3.Controls.Add(Me.GroupBox1)
-        Me.Panel3.Dock = System.Windows.Forms.DockStyle.Top
+        Me.Panel3.Dock = System.Windows.Forms.DockStyle.Left
         Me.Panel3.Location = New System.Drawing.Point(618, 47)
         Me.Panel3.Name = "Panel3"
         Me.Panel3.Size = New System.Drawing.Size(635, 801)
@@ -1052,142 +1188,6 @@ Partial Class FormGeneralSetting
         Me.CmbJualFokus.Size = New System.Drawing.Size(196, 25)
         Me.CmbJualFokus.TabIndex = 128
         '
-        'BtnSimpan
-        '
-        Me.BtnSimpan.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
-        Me.BtnSimpan.AutoSize = True
-        Me.BtnSimpan.BackColor = System.Drawing.Color.SandyBrown
-        Me.BtnSimpan.FlatAppearance.BorderSize = 0
-        Me.BtnSimpan.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(CType(CType(128, Byte), Integer), CType(CType(128, Byte), Integer), CType(CType(255, Byte), Integer))
-        Me.BtnSimpan.FlatAppearance.MouseOverBackColor = System.Drawing.Color.MidnightBlue
-        Me.BtnSimpan.Font = New System.Drawing.Font("Century Gothic", 11.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.BtnSimpan.ForeColor = System.Drawing.Color.Black
-        Me.BtnSimpan.Image = CType(resources.GetObject("BtnSimpan.Image"), System.Drawing.Image)
-        Me.BtnSimpan.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft
-        Me.BtnSimpan.Location = New System.Drawing.Point(942, 8)
-        Me.BtnSimpan.Margin = New System.Windows.Forms.Padding(4)
-        Me.BtnSimpan.Name = "BtnSimpan"
-        Me.BtnSimpan.Size = New System.Drawing.Size(140, 32)
-        Me.BtnSimpan.TabIndex = 38
-        Me.BtnSimpan.Text = "Simpan (F2)"
-        Me.BtnSimpan.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText
-        Me.BtnSimpan.UseVisualStyleBackColor = False
-        '
-        'Button1
-        '
-        Me.Button1.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
-        Me.Button1.AutoSize = True
-        Me.Button1.BackColor = System.Drawing.Color.SandyBrown
-        Me.Button1.FlatAppearance.BorderSize = 0
-        Me.Button1.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(CType(CType(128, Byte), Integer), CType(CType(128, Byte), Integer), CType(CType(255, Byte), Integer))
-        Me.Button1.FlatAppearance.MouseOverBackColor = System.Drawing.Color.MidnightBlue
-        Me.Button1.Font = New System.Drawing.Font("Century Gothic", 11.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Button1.ForeColor = System.Drawing.Color.Black
-        Me.Button1.Image = CType(resources.GetObject("Button1.Image"), System.Drawing.Image)
-        Me.Button1.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft
-        Me.Button1.Location = New System.Drawing.Point(1090, 8)
-        Me.Button1.Margin = New System.Windows.Forms.Padding(4)
-        Me.Button1.Name = "Button1"
-        Me.Button1.Size = New System.Drawing.Size(140, 32)
-        Me.Button1.TabIndex = 39
-        Me.Button1.Text = "Restore (F3)"
-        Me.Button1.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText
-        Me.Button1.UseVisualStyleBackColor = False
-        '
-        'GroupBox7
-        '
-        Me.GroupBox7.Controls.Add(Me.LblTransaksiTanggalLampau)
-        Me.GroupBox7.Controls.Add(Me.CmbTransaksiTanggalLampau)
-        Me.GroupBox7.Dock = System.Windows.Forms.DockStyle.Top
-        Me.GroupBox7.Font = New System.Drawing.Font("Century Gothic", 9.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.GroupBox7.Location = New System.Drawing.Point(0, 657)
-        Me.GroupBox7.Name = "GroupBox7"
-        Me.GroupBox7.Size = New System.Drawing.Size(618, 143)
-        Me.GroupBox7.TabIndex = 138
-        Me.GroupBox7.TabStop = False
-        Me.GroupBox7.Text = "Berlaku semua transaksi"
-        '
-        'LblTransaksiTanggalLampau
-        '
-        Me.LblTransaksiTanggalLampau.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
-        Me.LblTransaksiTanggalLampau.Font = New System.Drawing.Font("Century Gothic", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.LblTransaksiTanggalLampau.Location = New System.Drawing.Point(6, 26)
-        Me.LblTransaksiTanggalLampau.Name = "LblTransaksiTanggalLampau"
-        Me.LblTransaksiTanggalLampau.Size = New System.Drawing.Size(374, 28)
-        Me.LblTransaksiTanggalLampau.TabIndex = 129
-        Me.LblTransaksiTanggalLampau.Text = "Semua transaksi boleh menggunakan tanggal lampau"
-        Me.LblTransaksiTanggalLampau.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
-        '
-        'CmbTransaksiTanggalLampau
-        '
-        Me.CmbTransaksiTanggalLampau.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
-        Me.CmbTransaksiTanggalLampau.Font = New System.Drawing.Font("Century Gothic", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.CmbTransaksiTanggalLampau.FormattingEnabled = True
-        Me.CmbTransaksiTanggalLampau.Items.AddRange(New Object() {"Iya", "Tidak"})
-        Me.CmbTransaksiTanggalLampau.Location = New System.Drawing.Point(387, 28)
-        Me.CmbTransaksiTanggalLampau.Margin = New System.Windows.Forms.Padding(4)
-        Me.CmbTransaksiTanggalLampau.Name = "CmbTransaksiTanggalLampau"
-        Me.CmbTransaksiTanggalLampau.Size = New System.Drawing.Size(196, 25)
-        Me.CmbTransaksiTanggalLampau.TabIndex = 128
-        '
-        'CmbBeliTanpaSupplier
-        '
-        Me.CmbBeliTanpaSupplier.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
-        Me.CmbBeliTanpaSupplier.Font = New System.Drawing.Font("Century Gothic", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.CmbBeliTanpaSupplier.FormattingEnabled = True
-        Me.CmbBeliTanpaSupplier.Items.AddRange(New Object() {"Iya", "Tidak"})
-        Me.CmbBeliTanpaSupplier.Location = New System.Drawing.Point(388, 234)
-        Me.CmbBeliTanpaSupplier.Margin = New System.Windows.Forms.Padding(4)
-        Me.CmbBeliTanpaSupplier.Name = "CmbBeliTanpaSupplier"
-        Me.CmbBeliTanpaSupplier.Size = New System.Drawing.Size(196, 25)
-        Me.CmbBeliTanpaSupplier.TabIndex = 136
-        '
-        'CmbbeliNominal0
-        '
-        Me.CmbbeliNominal0.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
-        Me.CmbbeliNominal0.Font = New System.Drawing.Font("Century Gothic", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.CmbbeliNominal0.FormattingEnabled = True
-        Me.CmbbeliNominal0.Items.AddRange(New Object() {"Iya", "Tidak"})
-        Me.CmbbeliNominal0.Location = New System.Drawing.Point(389, 300)
-        Me.CmbbeliNominal0.Margin = New System.Windows.Forms.Padding(4)
-        Me.CmbbeliNominal0.Name = "CmbbeliNominal0"
-        Me.CmbbeliNominal0.Size = New System.Drawing.Size(196, 25)
-        Me.CmbbeliNominal0.TabIndex = 141
-        '
-        'CmbbeliIsiNominal
-        '
-        Me.CmbbeliIsiNominal.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
-        Me.CmbbeliIsiNominal.Font = New System.Drawing.Font("Century Gothic", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.CmbbeliIsiNominal.FormattingEnabled = True
-        Me.CmbbeliIsiNominal.Items.AddRange(New Object() {"Iya", "Tidak"})
-        Me.CmbbeliIsiNominal.Location = New System.Drawing.Point(388, 268)
-        Me.CmbbeliIsiNominal.Margin = New System.Windows.Forms.Padding(4)
-        Me.CmbbeliIsiNominal.Name = "CmbbeliIsiNominal"
-        Me.CmbbeliIsiNominal.Size = New System.Drawing.Size(196, 25)
-        Me.CmbbeliIsiNominal.TabIndex = 139
-        '
-        'LblbeliNominal0
-        '
-        Me.LblbeliNominal0.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
-        Me.LblbeliNominal0.Font = New System.Drawing.Font("Century Gothic", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.LblbeliNominal0.Location = New System.Drawing.Point(7, 298)
-        Me.LblbeliNominal0.Name = "LblbeliNominal0"
-        Me.LblbeliNominal0.Size = New System.Drawing.Size(375, 28)
-        Me.LblbeliNominal0.TabIndex = 140
-        Me.LblbeliNominal0.Text = "Izinkan pembelian dengan nominal 0"
-        Me.LblbeliNominal0.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
-        '
-        'LblbeliIsiNominal
-        '
-        Me.LblbeliIsiNominal.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
-        Me.LblbeliIsiNominal.Font = New System.Drawing.Font("Century Gothic", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.LblbeliIsiNominal.Location = New System.Drawing.Point(6, 266)
-        Me.LblbeliIsiNominal.Name = "LblbeliIsiNominal"
-        Me.LblbeliIsiNominal.Size = New System.Drawing.Size(375, 28)
-        Me.LblbeliIsiNominal.TabIndex = 138
-        Me.LblbeliIsiNominal.Text = "Langsung isi nominal total pembelian"
-        Me.LblbeliIsiNominal.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
-        '
         'FormGeneralSetting
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
@@ -1205,6 +1205,7 @@ Partial Class FormGeneralSetting
         Me.Panel1.ResumeLayout(False)
         Me.Panel1.PerformLayout()
         Me.Panel2.ResumeLayout(False)
+        Me.GroupBox7.ResumeLayout(False)
         Me.GroupBox3.ResumeLayout(False)
         Me.GroupBox4.ResumeLayout(False)
         Me.GroupBox2.ResumeLayout(False)
@@ -1212,7 +1213,6 @@ Partial Class FormGeneralSetting
         Me.GroupBox6.ResumeLayout(False)
         Me.GroupBox5.ResumeLayout(False)
         Me.GroupBox1.ResumeLayout(False)
-        Me.GroupBox7.ResumeLayout(False)
         Me.ResumeLayout(False)
 
     End Sub

@@ -178,8 +178,8 @@
     <Reference Include="Microsoft.Bcl.HashCode, Version=1.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Bcl.HashCode.1.1.1\lib\net461\Microsoft.Bcl.HashCode.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.Bcl.Memory, Version=9.0.0.5, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.Bcl.Memory.9.0.5\lib\net462\Microsoft.Bcl.Memory.dll</HintPath>
+    <Reference Include="Microsoft.Bcl.Memory, Version=10.0.0.5, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Bcl.Memory.10.0.5\lib\net462\Microsoft.Bcl.Memory.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Bcl.TimeProvider, Version=9.0.0.5, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Bcl.TimeProvider.9.0.5\lib\net462\Microsoft.Bcl.TimeProvider.dll</HintPath>
@@ -912,6 +912,7 @@
     <Compile Include="8Uty\SettingDatabase.vb">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="AppConfig.vb" />
     <Compile Include="ApplicationEvents.vb" />
     <Compile Include="BilanganTerbilang.vb" />
     <Compile Include="DatabaseModule.vb" />
@@ -936,13 +937,8 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="My Project\Settings.Designer.vb">
-      <AutoGen>True</AutoGen>
-      <DependentUpon>Settings.settings</DependentUpon>
-      <DesignTimeSharedInput>True</DesignTimeSharedInput>
-    </Compile>
+    <Compile Include="My Project\Settings.Designer.vb" />
     <Compile Include="MySqlBackup.vb" />
-    <Compile Include="Settings.vb" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="0Form\FormCekUpdate.resx">
@@ -1265,8 +1261,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="AppKasir_TemporaryKey.pfx" />
-    <None Include="AUDIT_SUMMARY_FINAL.md" />
-    <None Include="DATABASE_SCHEMA.md" />
     <None Include="DataSetKL.xsc">
       <DependentUpon>DataSetKL.xsd</DependentUpon>
     </None>
@@ -1278,17 +1272,10 @@
     <None Include="DataSetKL.xss">
       <DependentUpon>DataSetKL.xsd</DependentUpon>
     </None>
-    <None Include="DEVELOPER_GUIDE.md" />
-    <None Include="DOCUMENTATION_AUDIT_FIXES.md" />
     <None Include="My Project\app.manifest" />
     <None Include="My Project\Application.myapp">
       <Generator>MyApplicationCodeGenerator</Generator>
       <LastGenOutput>Application.Designer.vb</LastGenOutput>
-    </None>
-    <None Include="My Project\Settings.settings">
-      <Generator>SettingsSingleFileGenerator</Generator>
-      <CustomToolNamespace>My</CustomToolNamespace>
-      <LastGenOutput>Settings.Designer.vb</LastGenOutput>
     </None>
     <None Include="App.config" />
     <None Include="packages.config" />
@@ -1322,6 +1309,12 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Kasir lancar.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Database\" />
+    <Folder Include="Modules\" />
+    <Folder Include="Utilities\" />
+    <Folder Include="Utils\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.VisualBasic.targets" />
   <Import Project="..\packages\Microsoft.Data.SqlClient.SNI.6.0.2\build\net462\Microsoft.Data.SqlClient.SNI.targets" Condition="Exists('..\packages\Microsoft.Data.SqlClient.SNI.6.0.2\build\net462\Microsoft.Data.SqlClient.SNI.targets')" />

@@ -6,13 +6,11 @@ Public Class FormGaji
     Private Sub FormGaji_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
         Panel2.Visible = False
 
-        Dim GAJI As Boolean() = ModulHakAkses.BacaHakAkses(FormUtama.SLevel.Text, "GAJI", conn)
+        Dim GAJI As Boolean() = ModulHakAkses.BacaHakAksesDariCache("GAJI")
         ' Terapkan nilai hak akses ke tombol-tombol
         BtnSimpann.Visible = GAJI(1) ' CanAdd 
 
-        CmbRekening.Items.Clear()
-        ' Isi ComboBox dengan data dari list
-        CmbRekening.Items.AddRange(GetDaftarAkun().ToArray())
+        IsiComboBoxAkun(CmbRekening, "KAS", "BANK", "EKUITAS")
 
         ResetControls()
         AmbilDataKaryawan()
@@ -735,7 +733,7 @@ Public Class FormGaji
 
 
         ' Terapkan hak akses ke tombol-tombol
-        Dim GAJI As Boolean() = ModulHakAkses.BacaHakAkses(FormUtama.SLevel.Text, "GAJI", conn)
+        Dim GAJI As Boolean() = ModulHakAkses.BacaHakAksesDariCache("GAJI")
         DGVGaji.Columns("BtnEdit").Visible = GAJI(2) ' CanEdit 
         DGVGaji.Columns("BtnHapus").Visible = GAJI(3) ' CanDelete 
 

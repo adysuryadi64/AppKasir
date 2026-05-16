@@ -22,9 +22,9 @@ Public Class FormTabelReferensi
 
         TampilAkun()
         ' Panggil untuk mengambil data rekening KAS dan BANK
-        Rekeningkasbank()
-        ' Panggil untuk mengambil data rekening KAS dan BANK dan MODAL
-        AmbilAkunKasBankEkuitas()
+        'Rekeningkasbank()
+        '' Panggil untuk mengambil data rekening KAS dan BANK dan MODAL
+        'AmbilAkunKasBankEkuitas()
 
         Me.Cursor = Cursors.Default
     End Sub
@@ -33,7 +33,7 @@ Public Class FormTabelReferensi
     Private Sub FormTabelReferensi_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
         Call KOndisiAwal()
 
-        Dim TabelReferensi As Boolean() = ModulHakAkses.BacaHakAkses(FormUtama.SLevel.Text, "Tabel Referensi", conn)
+        Dim TabelReferensi As Boolean() = ModulHakAkses.BacaHakAksesDariCache("Tabel Referensi")
         ' Terapkan nilai hak akses ke tombol-tombol
         BtnSimpan.Visible = TabelReferensi(1) ' CanAdd 
         'BtnSimpan.Visible = TabelReferensi(2) ' CanEdit 

@@ -1,6 +1,6 @@
 ﻿Public Class FormMasuk
     Private Sub FormMasuk_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
-        Select Case My.Settings.PilihanMasuk?.ToUpper()
+        Select Case AppConfig.Instance.GetValue(Of String)("PilihanMasuk", "").ToUpper()
             Case "TOKO"
                 HandleButtonClick("Toko.jpg", "TOKO")
             Case "GUDANG"

@@ -6,19 +6,17 @@ Imports System.IO
 Public Class FormCompany
     Private Sub FormProfilPerusahaan_Load(ByVal sender As Object, ByVal e As EventArgs) Handles MyBase.Load
         Me.Cursor = Cursors.WaitCursor
-        Dim Toko As Boolean() = ModulHakAkses.BacaHakAkses(FormUtama.SLevel.Text, "Toko", conn)
+        Dim Toko As Boolean() = ModulHakAkses.BacaHakAksesDariCache("Toko")
         ' Terapkan nilai hak akses ke tombol-tombol
         BtnSimpan.Visible = Toko(2) ' CanEdit 
         BtnHapus.Visible = Toko(3) ' CanDelete 
 
-        ' Panggil untuk mengambil data rekening KAS dan BANK
-        Rekeningkasbank()
         ' Isi ComboBox dengan data dari list
-        CmbJualToko.Items.AddRange(GetAkunList().ToArray())
-        CmbJualGudang.Items.AddRange(GetAkunList().ToArray())
+        IsiComboBoxAkun(CmbJualToko, "KAS")
+        IsiComboBoxAkun(CmbJualGudang, "KAS")
 
         Kosongdataperusahaan()
-        IsiComboBoxAkun()
+        IsiComboBoxAkunDefault()
         Ambildataperusahaan()
 
 
@@ -65,7 +63,7 @@ Public Class FormCompany
 
 
 
-    Public Sub IsiComboBoxAkun()
+    Public Sub IsiComboBoxAkunDefault()
         CmbRekBarang.Items.Clear()
         CmbLawanRekBarang.Items.Clear()
         CmbJualToko.Items.Clear()
