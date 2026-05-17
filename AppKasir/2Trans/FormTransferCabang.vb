@@ -796,7 +796,8 @@ Public Class FormTransferCabang
 
         Dim satuanCol = TryCast(DgvDetail.Columns("Satuan"), DataGridViewComboBoxColumn)
         If satuanCol IsNot Nothing Then
-            satuanCol.DisplayStyle = DataGridViewComboBoxDisplayStyle.DropDownButton
+            satuanCol.DisplayStyle = DataGridViewComboBoxDisplayStyle.ComboBox
+            satuanCol.DisplayStyleForCurrentCellOnly = True
             satuanCol.FlatStyle = FlatStyle.Flat
         End If
     End Sub
@@ -822,7 +823,7 @@ Public Class FormTransferCabang
     End Sub
 
     Private Sub DgvDetail_EditingControlShowing(sender As Object, e As DataGridViewEditingControlShowingEventArgs) Handles DgvDetail.EditingControlShowing
-        If DgvDetail.CurrentCell.ColumnIndex = DgvDetail.Columns("NamaBarang").Index Then
+        If DgvDetail.CurrentCell IsNot Nothing AndAlso DgvDetail.CurrentCell.ColumnIndex = DgvDetail.Columns("NamaBarang").Index Then
             Dim autoText As TextBox = TryCast(e.Control, TextBox)
             If autoText IsNot Nothing Then
                 autoText.AutoCompleteMode = AutoCompleteMode.None
@@ -843,7 +844,7 @@ Public Class FormTransferCabang
                 LstBarang.Items.Clear()
             End If
         End If
-        If DgvDetail.CurrentCell.ColumnIndex = DgvDetail.Columns("Satuan").Index Then
+        If DgvDetail.CurrentCell IsNot Nothing AndAlso DgvDetail.CurrentCell.ColumnIndex = DgvDetail.Columns("Satuan").Index Then
             If TypeOf e.Control Is ComboBox Then
                 Dim cmb As ComboBox = DirectCast(e.Control, ComboBox)
                 RemoveHandler cmb.SelectedIndexChanged, AddressOf DgvDetail_SatuanChanged
@@ -873,6 +874,20 @@ Public Class FormTransferCabang
         If e.RowIndex < 0 Then Return
         If e.ColumnIndex = DgvDetail.Columns("NamaBarang").Index Then
             UpdateWarnaKodeBarang(e.RowIndex)
+        End If
+        ' Auto-open dropdown saat fokus masuk ke kolom Satuan
+        If e.ColumnIndex = DgvDetail.Columns("Satuan").Index Then
+            Dim kode As String = Convert.ToString(DgvDetail.Rows(e.RowIndex).Cells("Kode").Value).Trim()
+            If Not String.IsNullOrWhiteSpace(kode) Then
+                Me.BeginInvoke(New Action(Sub()
+                    Try
+                        DgvDetail.BeginEdit(True)
+                        Dim cmb As ComboBox = TryCast(DgvDetail.EditingControl, ComboBox)
+                        If cmb IsNot Nothing Then cmb.DroppedDown = True
+                    Catch
+                    End Try
+                End Sub))
+            End If
         End If
     End Sub
 

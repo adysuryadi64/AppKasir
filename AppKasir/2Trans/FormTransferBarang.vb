@@ -31,6 +31,13 @@ Public Class FormTransferBarang
             TxtHarga.ReadOnly = False
         End If
 
+        ' Tampilkan ComboBox hanya di cell aktif agar tidak membingungkan
+        Dim satuanColTB = TryCast(DgvData.Columns("Satuan"), DataGridViewComboBoxColumn)
+        If satuanColTB IsNot Nothing Then
+            satuanColTB.DisplayStyle = DataGridViewComboBoxDisplayStyle.ComboBox
+            satuanColTB.DisplayStyleForCurrentCellOnly = True
+        End If
+
         If LblJenisTrans.Text = "TambahTransfer" Then
             Kondisiawal()
         Else
@@ -206,8 +213,8 @@ Public Class FormTransferBarang
     Private Sub Kondisiawal()
         DgvData.Rows.Clear()
         TxtTotalQTY.Text = 0
-        TxtGrandtotal.Text = ""
-        TxtGrandtotal.Text = 0
+        TxtTotalRupiah.Text = ""
+        TxtTotalRupiah.Text = 0
 
 
         ModulHakAkses.ResetDTPKeTanggalHariIni(DTPTgl)
@@ -267,8 +274,8 @@ Public Class FormTransferBarang
         Next
 
         ' Tampilkan hasil ke UI
-        TxtGrandtotal.Text = grandTotal.ToString("N0")
-        Txtlihattotal.Text = "Rp. " & grandTotal.ToString("N0")
+        TxtTotalRupiah.Text = grandTotal.ToString("N0")
+        TxtGrandtotal.Text = "Rp. " & grandTotal.ToString("N0")
         TxtTotalQTY.Text = totalQty.ToString("N0")
         LblRecord.Text = totalRows.ToString()
 
@@ -1427,9 +1434,9 @@ Public Class FormTransferBarang
         Call Hapusbaris()
     End Sub
 
-    Private Sub TxtGrandtotal_TextChanged(ByVal sender As Object, ByVal e As EventArgs) Handles TxtGrandtotal.TextChanged
-        Dim grandTotal As Decimal = ModuleAngka.ParseDecimal(TxtGrandtotal.Text)
-        Txtlihattotal.Text = ModuleAngka.FormatRupiah(grandTotal)
+    Private Sub TxtGrandtotal_TextChanged(ByVal sender As Object, ByVal e As EventArgs) Handles TxtTotalRupiah.TextChanged
+        Dim grandTotal As Decimal = ModuleAngka.ParseDecimal(TxtTotalRupiah.Text)
+        TxtGrandtotal.Text = ModuleAngka.FormatRupiah(grandTotal)
     End Sub
 
     Private Sub Form_Pembelian_KeyDown(ByVal sender As Object, ByVal e As System.Windows.Forms.KeyEventArgs) Handles MyBase.KeyDown
@@ -1546,7 +1553,7 @@ Public Class FormTransferBarang
 
     Public Sub Tekansimpan()
         ' Cek apakah belum ada transaksi pembelian
-        If TxtGrandtotal.Text = "0" OrElse DgvData.RowCount = 0 Then
+        If TxtTotalRupiah.Text = "0" OrElse DgvData.RowCount = 0 Then
             MessageBox.Show("Belum ada transaksi Pembelian", "Kesalahan", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
 
             If DgvData.Rows.Count > 0 AndAlso DgvData.Columns.Count > 1 Then
@@ -1761,7 +1768,7 @@ Public Class FormTransferBarang
             ' Commit transaksi jika tidak ada kesalahan
             transaction.Commit()
 
-            Dim tbNominal As Decimal = ModuleAngka.ParseDecimal(TxtGrandtotal.Text)
+            Dim tbNominal As Decimal = ModuleAngka.ParseDecimal(TxtTotalRupiah.Text)
             CatatJurnalTidakSeimbang(TxtFaktur.Text, tbNominal, tbNominal, "Transfer Barang",
                 {"TransferBarang"})
 
@@ -1825,7 +1832,7 @@ Public Class FormTransferBarang
             cmd.Parameters.AddWithValue("@LOKASI", LblLokasiBarang.Text)
             cmd.Parameters.AddWithValue("@TOTAL_QTY", ModuleAngka.ParseDecimal(TxtTotalQTY.Text))
             cmd.Parameters.AddWithValue("@TOTAL_BARANG", ModuleAngka.ParseDecimal(LblRecord.Text))
-            cmd.Parameters.AddWithValue("@TOTAL_RUPIAH", ModuleAngka.ParseDecimal(TxtGrandtotal.Text))
+            cmd.Parameters.AddWithValue("@TOTAL_RUPIAH", ModuleAngka.ParseDecimal(TxtTotalRupiah.Text))
             cmd.Parameters.AddWithValue("@ID_USER", If(LblJenisTrans.Text = "TambahTransfer", FormUtama.StatusNamaUser.Text, TxtLogin.Text))
             cmd.Parameters.AddWithValue("@ID_KOMPUTER", If(LblJenisTrans.Text = "TambahTransfer", FormUtama.StatusNamaPC.Text, TxtKomputer.Text))
             cmd.ExecuteNonQuery()
@@ -1969,7 +1976,7 @@ Public Class FormTransferBarang
             cmd.Parameters.AddWithValue("@NOMOR_AKUN_K", KODE_REK_BARANG)
 
             ' Konversi nilai grand total ke Decimal
-            cmd.Parameters.AddWithValue("@NOMINAL", ModuleAngka.ParseDecimal(TxtGrandtotal.Text))
+            cmd.Parameters.AddWithValue("@NOMINAL", ModuleAngka.ParseDecimal(TxtTotalRupiah.Text))
             cmd.Parameters.AddWithValue("@JENIS_TRANSAKSI", "TRANSFER BARANG")
             cmd.Parameters.AddWithValue("@LOKASI", LblLokasiBarang.Text)
 

@@ -117,7 +117,7 @@ Public Class FormReturPenjualan
         DGVPenjualan.DataSource = Nothing
         DGVPenjualan.Rows.Clear()
         RTBAlasanRetur.Text = ""
-        PanelDatagridview.Visible = False
+        PanelInput1.Visible = False
         LblTotalBarang.Text = "Rp. 0"
         LblTotalQTY.Text = "Rp. 0"
         LblTotalRupiah.Text = "Rp. 0"
@@ -134,18 +134,18 @@ Public Class FormReturPenjualan
         ' Sesuaikan visibility berdasarkan mode retur
         If CbJenisRetur.Checked Then
             CbPotongHutang.Visible = False
-            PanelRetur.Visible = False
-            PanelDataPel.Visible = True
+            PanelInput2.Visible = False
+            PanelInput.Visible = True
             DGVReturjual.Visible = True
             DGVReturjual.ReadOnly = False
-            PanelSimpan.Visible = True
+            PanelFooter.Visible = True
         Else
             CbPotongHutang.Visible = True
-            PanelRetur.Visible = True
-            PanelDataPel.Visible = False
+            PanelInput2.Visible = True
+            PanelInput.Visible = False
             DGVReturjual.Visible = True
             DGVReturjual.ReadOnly = True
-            PanelSimpan.Visible = False
+            PanelFooter.Visible = False
         End If
         LstBarang.Visible = False
         LstBarang.Items.Clear()
@@ -178,9 +178,9 @@ Public Class FormReturPenjualan
 
 
     Private Sub CenterPanelPencarian()
-        Dim x As Integer = (ClientSize.Width - PanelDatagridview.Width) \ 2
-        Dim y As Integer = (Me.ClientSize.Height - PanelDatagridview.Height) \ 2
-        PanelDatagridview.Location = New Point(x, y)
+        Dim x As Integer = (ClientSize.Width - PanelInput1.Width) \ 2
+        Dim y As Integer = (Me.ClientSize.Height - PanelInput1.Height) \ 2
+        PanelInput1.Location = New Point(x, y)
     End Sub
 
     Private Sub PBcariNotaBeli_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles PBcariNotaJual.Click, TxtNotaJual.Click
@@ -190,12 +190,12 @@ Public Class FormReturPenjualan
         DateTimePicker1.CustomFormat = "dd/MM/yyyy"
 
         CenterPanelPencarian()
-        PanelDatagridview.Visible = True
+        PanelInput1.Visible = True
 
     End Sub
 
     Private Sub BtnHidePilihTanggal_Click(sender As Object, e As EventArgs) Handles BtnHidePilihTanggal.Click
-        PanelDatagridview.Visible = False
+        PanelInput1.Visible = False
     End Sub
 
     Private Sub DateTimePicker1_ValueChanged(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles DateTimePicker1.ValueChanged
@@ -380,29 +380,29 @@ Public Class FormReturPenjualan
             If Not Decimal.TryParse(DGVPenjualan.Item(6, DGVPenjualan.CurrentRow.Index).Value.ToString(), total) Then
                 total = 0D
             End If
-            TxtTotalJual.Text = total
+            TxtTotalJual.Text = total.ToString("0.##", Globalization.CultureInfo.InvariantCulture)
             LblTotalJual.Text = "Rp. " & total.ToString("#,0.##", cultureIndonesia)
 
             Dim tagihan As Decimal
             If Not Decimal.TryParse(DGVPenjualan.Item(7, DGVPenjualan.CurrentRow.Index).Value.ToString(), tagihan) Then
                 tagihan = 0D
             End If
-            TxtBayarJual.Text = tagihan
+            TxtBayarJual.Text = tagihan.ToString("0.##", Globalization.CultureInfo.InvariantCulture)
             LblBayarJual.Text = "Rp. " & tagihan.ToString("#,0.##", cultureIndonesia)
 
             Dim sisaBayar As Decimal
             If Not Decimal.TryParse(DGVPenjualan.Item(8, DGVPenjualan.CurrentRow.Index).Value.ToString(), sisaBayar) Then
                 sisaBayar = 0D
             End If
-            TxtSisaJual.Text = sisaBayar
+            TxtSisaJual.Text = sisaBayar.ToString("0.##", Globalization.CultureInfo.InvariantCulture)
             LblSisaJual.Text = "Rp. " & sisaBayar.ToString("#,0.##", cultureIndonesia)
 
             LblStatusJual.Text = DGVPenjualan.Item(9, DGVPenjualan.CurrentRow.Index).Value
-            PanelDataPel.Visible = True
+            PanelInput.Visible = True
             DGVReturjual.Visible = True
             DGVReturjual.ReadOnly = False
-            PanelSimpan.Visible = True
-            PanelDatagridview.Visible = False
+            PanelFooter.Visible = True
+            PanelInput1.Visible = False
             ' Muat cache barang dari nota ini agar pencarian tidak baca DB berulang
             MuatCacheBarangNota(TxtNotaJual.Text)
         Else
@@ -451,7 +451,7 @@ Public Class FormReturPenjualan
             End If
         End If
 
-        If DGVReturjual.CurrentCell.ColumnIndex = 4 Then
+        If DGVReturjual.CurrentCell IsNot Nothing AndAlso DGVReturjual.CurrentCell.ColumnIndex = 4 Then
             If TypeOf e.Control Is ComboBox Then
                 Dim cmb As ComboBox = DirectCast(e.Control, ComboBox)
                 RemoveHandler cmb.SelectedIndexChanged, AddressOf DGVReturjual_SatuanChanged
@@ -570,6 +570,20 @@ Public Class FormReturPenjualan
         If e.ColumnIndex = 1 Then
             UpdateWarnaKodeBarang(e.RowIndex)
         End If
+        ' Auto-open dropdown saat fokus masuk ke kolom SATUAN
+        If e.ColumnIndex = 4 Then
+            Dim kode As String = Convert.ToString(DGVReturjual.Rows(e.RowIndex).Cells("ID_BARANG").Value).Trim()
+            If Not String.IsNullOrWhiteSpace(kode) Then
+                Me.BeginInvoke(New Action(Sub()
+                    Try
+                        DGVReturjual.BeginEdit(True)
+                        Dim cmb As ComboBox = TryCast(DGVReturjual.EditingControl, ComboBox)
+                        If cmb IsNot Nothing Then cmb.DroppedDown = True
+                    Catch
+                    End Try
+                End Sub))
+            End If
+        End If
     End Sub
 
     Private Sub DGVReturjual_DataError(sender As Object, e As DataGridViewDataErrorEventArgs) Handles DGVReturjual.DataError
@@ -621,7 +635,7 @@ Public Class FormReturPenjualan
                     namaBarang = parts(1).Trim()
                     IsiBarangKeRow(e.RowIndex, namaBarang, qtyValue)
                 End If
-                
+
                 ' Update teks di cell agar bersih (hanya nama barang)
                 DGVReturjual.Rows(e.RowIndex).Cells("NAMA_BARANG").Value = namaBarang
             Else
@@ -688,6 +702,9 @@ Public Class FormReturPenjualan
             .AllowUserToResizeColumns = False
             .AllowUserToResizeRows = False
         End With
+        ' Tampilkan ComboBox hanya di cell aktif agar tidak membingungkan
+        SATUAN.DisplayStyle = DataGridViewComboBoxDisplayStyle.ComboBox
+        SATUAN.DisplayStyleForCurrentCellOnly = True
         ModuleAngka.TerapkanFormatKolomAngka(DGVReturjual, "QTY", "QTY_SATUAN", "HARGA_BELI", "HARGA_BELI_SATUAN", "HARGA_JUAL", "TOTAL_DISKON", "TOTAL_HARGA")
     End Sub
 
@@ -738,18 +755,18 @@ Public Class FormReturPenjualan
         Next
 
         ' Update hasil perhitungan ke textbox dan label
-        TxtTotalBarang.Text = totalBarang.ToString()
+        TxtTotalBarang.Text = totalBarang.ToString("0.##", Globalization.CultureInfo.InvariantCulture)
         LblTotalBarang.Text = totalBarang.ToString("#,0.##", cultureIndonesia)
 
-        TxtTotalQTY.Text = totalQty.ToString()
+        TxtTotalQTY.Text = totalQty.ToString("0.##", Globalization.CultureInfo.InvariantCulture)
         LblTotalQTY.Text = totalQty.ToString("#,0.##", cultureIndonesia)
 
-        TxtHPP.Text = totalHPP.ToString()
+        TxtHPP.Text = totalHPP.ToString("0.##", Globalization.CultureInfo.InvariantCulture)
 
-        TxtTotalRupiah.Text = grandTotal.ToString()
+        TxtTotalRupiah.Text = grandTotal.ToString("0.##", Globalization.CultureInfo.InvariantCulture)
         LblTotalRupiah.Text = "Rp. " & grandTotal.ToString("#,0.##", cultureIndonesia)
 
-        TxtTotalLaba.Text = totalLaba.ToString()
+        TxtTotalLaba.Text = totalLaba.ToString("0.##", Globalization.CultureInfo.InvariantCulture)
     End Sub
 
 
@@ -845,11 +862,8 @@ Public Class FormReturPenjualan
 
     Private Sub TxtTotalRupiah_TextChanged(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles TxtTotalRupiah.TextChanged
         If CbJenisRetur.Checked Then Return
-        Dim totalRupiah As Double = 0
-        Dim sisaJual As Double = 0
-
-        Double.TryParse(TxtTotalRupiah.Text, totalRupiah)
-        Double.TryParse(TxtSisaJual.Text, sisaJual)
+        Dim totalRupiah As Decimal = ModuleAngka.ParseDecimal(TxtTotalRupiah.Text)
+        Dim sisaJual As Decimal = ModuleAngka.ParseDecimal(TxtSisaJual.Text)
 
         If totalRupiah > sisaJual Then
             CbPotongHutang.Visible = False
@@ -1428,7 +1442,7 @@ Public Class FormReturPenjualan
                     DateTimePicker1.Format = DateTimePickerFormat.Custom
                     DateTimePicker1.CustomFormat = "dd/MM/yyyy"
                     CenterPanelPencarian()
-                    PanelDatagridview.Visible = True
+                    PanelInput1.Visible = True
                 End If
             Case Keys.F8
                 BtnSimpan.PerformClick()
@@ -1436,7 +1450,7 @@ Public Class FormReturPenjualan
                 BtnReset.PerformClick()
 
             Case Keys.Escape
-                If PanelDatagridview.Visible = True Then
+                If PanelInput1.Visible = True Then
                     BtnHidePilihTanggal.PerformClick()
                 Else
                     BtnKeluarForm.PerformClick()
@@ -1465,12 +1479,12 @@ Public Class FormReturPenjualan
         If CbJenisRetur.Checked Then
             CbPotongHutang.Visible = False
             CbTunai.Checked = True
-            PanelRetur.Visible = False
-            PanelDataPel.Visible = True
+            PanelInput2.Visible = False
+            PanelInput.Visible = True
             DGVReturjual.Visible = True
             DGVReturjual.ReadOnly = False
-            PanelSimpan.Visible = True
-            PanelDatagridview.Visible = False
+            PanelFooter.Visible = True
+            PanelInput1.Visible = False
             LstBarang.Visible = False
             LstBarang.Items.Clear()
             IsiCmbNamaPelanggan()
@@ -1479,9 +1493,9 @@ Public Class FormReturPenjualan
             HitungSemua()
         Else
             CbPotongHutang.Visible = True
-            PanelRetur.Visible = True
-            PanelDataPel.Visible = False
-            PanelSimpan.Visible = False
+            PanelInput2.Visible = True
+            PanelInput.Visible = False
+            PanelFooter.Visible = False
             LstBarang.Visible = False
             LstBarang.Items.Clear()
             DGVReturjual.Rows.Clear()
@@ -1661,8 +1675,8 @@ Public Class FormReturPenjualan
     Private Sub DgvNamaBarang_KeyDown(sender As Object, e As KeyEventArgs)
         Dim ch As Char = ChrW(e.KeyCode)
 
-        ' ── Barcode detection (hanya mode bebas) ─────────────────────────────
-        If CbJenisRetur.Checked AndAlso Not LstBarang.Visible Then
+        ' ── Barcode detection (mode bebas DAN mode normal) ───────────────────
+        If Not LstBarang.Visible Then
             If Not Char.IsControl(ch) Then
                 If ch = "*"c OrElse Char.IsLetter(ch) Then
                     ResetBarcodeDetection()
@@ -2025,6 +2039,7 @@ Public Class FormReturPenjualan
                 End If
                 ' Barcode murni dari DGV — cari langsung
                 If CbJenisRetur.Checked Then
+                    ' Mode bebas: cari dari tbl_barang
                     Dim namaBarang As String = CariNamaDariBarcode(bufferText)
                     If Not String.IsNullOrEmpty(namaBarang) Then
                         _sedangSetNilaiDariListBox = True
@@ -2036,6 +2051,24 @@ Public Class FormReturPenjualan
                         DGVReturjual.CommitEdit(DataGridViewDataErrorContexts.Commit)
                     Else
                         MessageBox.Show("Barcode '" & bufferText & "' tidak ditemukan!", "Info", MessageBoxButtons.OK, MessageBoxIcon.Information)
+                    End If
+                Else
+                    ' Mode normal: cari dari cache nota
+                    If Not String.IsNullOrEmpty(TxtNotaJual.Text) Then
+                        If _cacheNota <> TxtNotaJual.Text.Trim() OrElse _cacheBarangNota.Count = 0 Then
+                            MuatCacheBarangNota(TxtNotaJual.Text)
+                        End If
+                        Dim namaBarang As String = CariNamaDariBarcodeDiCache(bufferText)
+                        If Not String.IsNullOrEmpty(namaBarang) Then
+                            _sedangSetNilaiDariListBox = True
+                            If _dgvEditingTextBox IsNot Nothing Then _dgvEditingTextBox.Text = namaBarang
+                            _sedangSetNilaiDariListBox = False
+                            LstBarang.Visible = False
+                            LstBarang.Items.Clear()
+                            DGVReturjual.CommitEdit(DataGridViewDataErrorContexts.Commit)
+                        Else
+                            MessageBox.Show("Barcode '" & bufferText & "' tidak ditemukan dalam nota '" & TxtNotaJual.Text & "'!", "Info", MessageBoxButtons.OK, MessageBoxIcon.Information)
+                        End If
                     End If
                 End If
                 ResetBarcodeDetection()
@@ -2056,6 +2089,33 @@ Public Class FormReturPenjualan
             Using cmd As New MySqlCommand(
                 "SELECT NAMA_BARANG FROM tbl_barang WHERE STATUS='Aktif' AND " &
                 "(BARCODE_KECIL=@bc OR BARCODE_SEDANG=@bc OR BARCODE_BESAR=@bc) LIMIT 1", conn)
+                cmd.Parameters.AddWithValue("@bc", barcodeText)
+                Using rd As MySqlDataReader = cmd.ExecuteReader()
+                    If rd.Read() Then Return rd("NAMA_BARANG").ToString()
+                End Using
+            End Using
+        Catch
+        End Try
+        Return ""
+    End Function
+
+    ''' <summary>Cari nama barang dari barcode di dalam cache nota (mode normal).
+    ''' Tidak baca DB — hanya cocokkan ID_BARANG dari cache dengan barcode di tbl_barang.</summary>
+    Private Function CariNamaDariBarcodeDiCache(barcodeText As String) As String
+        If _cacheBarangNota.Count = 0 Then Return ""
+        Try
+            ' Kumpulkan semua ID_BARANG dari cache
+            Dim idList As New List(Of String)()
+            For Each item In _cacheBarangNota
+                If Not idList.Contains(item.IdBarang) Then idList.Add(item.IdBarang)
+            Next
+            If idList.Count = 0 Then Return ""
+
+            ' Cari barcode yang cocok di antara barang-barang dalam nota
+            Using cmd As New MySqlCommand(
+                "SELECT ID_BARANG, NAMA_BARANG FROM tbl_barang WHERE STATUS='Aktif' AND " &
+                "(BARCODE_KECIL=@bc OR BARCODE_SEDANG=@bc OR BARCODE_BESAR=@bc) AND " &
+                "ID_BARANG IN (" & String.Join(",", idList.Select(Function(x) "'" & x.Replace("'", "''") & "'")) & ") LIMIT 1", conn)
                 cmd.Parameters.AddWithValue("@bc", barcodeText)
                 Using rd As MySqlDataReader = cmd.ExecuteReader()
                     If rd.Read() Then Return rd("NAMA_BARANG").ToString()
@@ -2333,4 +2393,7 @@ Public Class FormReturPenjualan
                         MessageBoxButtons.OK, MessageBoxIcon.Information)
     End Sub
 
+    Private Sub BtnKeluarForm_Click(sender As Object, e As EventArgs) Handles BtnKeluarForm.Click
+        Me.Close()
+    End Sub
 End Class
