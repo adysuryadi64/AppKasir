@@ -2818,6 +2818,21 @@ Public Class FormPembelian
                                                End If
                                            End Sub))
         End If
+
+        ' Kontrol read-only kolom Nama berdasarkan kolom Id — konsisten dengan FormJual
+        ' Jika Id sudah terisi → Nama read-only (abu); jika kosong → Nama bisa diedit (putih)
+        If e.RowIndex >= 0 AndAlso e.ColumnIndex = 1 Then ' Kolom Nama (index 1)
+            Dim idValue = DgvData.Rows(e.RowIndex).Cells("Id").Value
+            If idValue IsNot Nothing AndAlso Not String.IsNullOrEmpty(idValue.ToString()) Then
+                DgvData.Rows(e.RowIndex).Cells("Nama").ReadOnly = True
+                DgvData.Rows(e.RowIndex).Cells("Nama").Style.BackColor = ModuleTheme.C(ModuleTheme.L_Subtle, ModuleTheme.D_Subtle)
+                DgvData.Rows(e.RowIndex).Cells("Nama").Style.ForeColor = ModuleTheme.C(ModuleTheme.L_Text, ModuleTheme.D_Text)
+            Else
+                DgvData.Rows(e.RowIndex).Cells("Nama").ReadOnly = False
+                DgvData.Rows(e.RowIndex).Cells("Nama").Style.BackColor = ModuleTheme.C(ModuleTheme.L_Surface, ModuleTheme.D_Surface)
+                DgvData.Rows(e.RowIndex).Cells("Nama").Style.ForeColor = ModuleTheme.C(ModuleTheme.L_Text, ModuleTheme.D_Text)
+            End If
+        End If
     End Sub
 
     Private Sub DgvDataData_CellEndEdit(ByVal sender As Object, ByVal e As System.Windows.Forms.DataGridViewCellEventArgs) Handles DgvData.CellEndEdit

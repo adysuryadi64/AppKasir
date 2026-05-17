@@ -177,6 +177,8 @@ Public Class FormReturBeli
     Private _konteksLstBarang As String = "TXTNAMA"         ' Konteks: "TXTNAMA" atau "DGV"
     Private _sedangSetNilaiDariListBox As Boolean = False   ' Guard CellEndEdit saat isi dari ListBox
     Private _isLoadingForm As Boolean = False               ' Guard untuk event selama proses load data
+    Private _formSudahSiap As Boolean = False               ' Guard: form belum boleh terima fokus
+    Private _sedangSetFokusAwal As Boolean = False          ' Guard: cegah rekursi TxtNama_GotFocus
 
 #End Region
 
@@ -330,7 +332,8 @@ Public Class FormReturBeli
             End If
 
             ' Fokus awal setelah form muncul sepenuhnya
-            AturFokusAwal()
+            _formSudahSiap = True
+            SetupFocusToGrid()
 
             _isLoadingForm = False ' Point 5: Matikan guard setelah form siap sepenuhnya
 
@@ -633,14 +636,8 @@ Public Class FormReturBeli
     ' FUNGSI: ATUR FOKUS AWAL
     ' ============================================
     Private Sub AturFokusAwal()
-        If DgvData.Rows.Count > 0 Then
-            DgvData.CurrentCell = DgvData(1, DgvData.Rows.Count - 1)
-            DgvData.Rows(DgvData.Rows.Count - 1).Selected = True
-        End If
-
-        If ModulHakAkses.SettingFokusOtomatis Then
-            TxtNama.Select()
-        End If
+        ' Dipertahankan untuk kompatibilitas — delegasikan ke SetupFocusToGrid
+        SetupFocusToGrid()
     End Sub
     ' ============================================
     Private Sub Kondisiawal()
@@ -1136,6 +1133,7 @@ Public Class FormReturBeli
         DgvData.Rows(rowIndex).Cells("StokGudang").Value = barang.STOK_GUDANG
 
         UpdateSemuaTotal()
+        SetWarnaReadOnlyNama(rowIndex)
         KosongTxtboxcari()
     End Sub
 
@@ -1311,7 +1309,7 @@ Public Class FormReturBeli
     ' EVENT: LOST FOCUS UNTUK TEXTBOX NAMA
     ' ============================================
     Private Sub TxtNama_LostFocus(ByVal sender As Object, ByVal e As EventArgs) Handles TxtNama.LostFocus
-        PanelCari.BackColor = SystemColors.ActiveCaption
+        PanelCari.BackColor = ModuleTheme.C(ModuleTheme.L_Panel, ModuleTheme.D_Panel)
     End Sub
 
     ' ============================================
@@ -1808,8 +1806,7 @@ Public Class FormReturBeli
         ' Kembalikan fokus
         If _konteksLstBarang = "TXTNAMA" Then
             KosongTxtboxcari()
-            TxtNama.Focus()
-            TxtNama.SelectAll()
+            SetupFocusToGrid()
         Else
             KosongTxtboxcari()
             SetupFocusToGrid()
@@ -2010,11 +2007,21 @@ Public Class FormReturBeli
     ' Dipanggil dari: PilihSupplierLangsung, TxtSupplier_KeyDown, TambahDataLangsung
     ' ============================================
     Public Sub SetupFocusToGrid()
+        ' Guard: jika form tidak aktif atau belum siap, jangan paksa fokus
+        If Not Me.Visible OrElse Me.WindowState = FormWindowState.Minimized Then Return
+        If Not _formSudahSiap Then Return
+
+        ' MODE 1: Setting Fokus Otomatis (ke TxtNama)
         If ModulHakAkses.SettingFokusOtomatis Then
-            TxtNama.Focus()
+            _sedangSetFokusAwal = True
+            Me.BeginInvoke(New Action(Sub()
+                                          TxtNama.Focus()
+                                          _sedangSetFokusAwal = False
+                                      End Sub))
             Return
         End If
 
+        ' MODE 2: Edit Langsung (ke Grid)
         If DgvData.Rows.Count = 0 Then Return
 
         Dim targetRow As Integer = 0
@@ -2054,24 +2061,35 @@ Public Class FormReturBeli
                         Exit For
                     End If
                 Next
-                targetRow = If(isNewRowIdx >= 0, isNewRowIdx, DgvData.Rows.Add())
+                If isNewRowIdx >= 0 Then
+                    targetRow = isNewRowIdx
+                Else
+                    If DgvData.CurrentCell IsNot Nothing Then
+                        targetRow = DgvData.CurrentCell.RowIndex
+                    Else
+                        Exit Sub
+                    End If
+                End If
             End If
         Else
             targetRow = 0
         End If
 
         If targetRow < DgvData.Rows.Count Then
-            ' Set CurrentCell SYNCHRONOUS — bukan di dalam BeginInvoke
-            DgvData.CurrentCell = DgvData(1, targetRow)
+            Dim targetColumnIndex As Integer = 1 ' Kolom NAMA_BARANG
+            Dim targetRowIndex As Integer = targetRow
+
+            DgvData.CurrentCell = DgvData(targetColumnIndex, targetRowIndex)
             Me.ActiveControl = DgvData
-            ' BeginEdit ditunda via nested BeginInvoke
+
+            ' Race-condition guard: pastikan CurrentCell belum berubah sebelum BeginEdit
             DgvData.BeginInvoke(New Action(Sub()
-                                               DgvData.BeginInvoke(New Action(Sub()
-                                                                                  If DgvData.CurrentCell IsNot Nothing Then
-                                                                                      DgvData.BeginEdit(True)
-                                                                                      If DgvData.EditingControl IsNot Nothing Then DgvData.EditingControl.Focus()
-                                                                                  End If
-                                                                              End Sub))
+                                               If DgvData.CurrentCell IsNot Nothing AndAlso
+                                                  DgvData.CurrentCell.ColumnIndex = targetColumnIndex AndAlso
+                                                  DgvData.CurrentCell.RowIndex = targetRowIndex Then
+                                                   DgvData.BeginEdit(True)
+                                                   If DgvData.EditingControl IsNot Nothing Then DgvData.EditingControl.Focus()
+                                               End If
                                            End Sub))
         End If
     End Sub
@@ -2090,6 +2108,7 @@ Public Class FormReturBeli
         Dim baris As Integer = DgvData.CurrentCell.RowIndex
         DgvData.Rows.RemoveAt(baris)
         UpdateSemuaTotal()
+        SetupFocusToGrid()
     End Sub
 
     ' ============================================
@@ -2390,6 +2409,7 @@ Public Class FormReturBeli
 
         ' Update total
         UpdateSemuaTotal()
+        SetWarnaReadOnlyNama(rowIndex)
     End Sub
     ' ============================================
     ' FUNGSI: TAMPILKAN INFO STOK DI GRID
@@ -2641,6 +2661,7 @@ Public Class FormReturBeli
 
         ' Update total setelah perubahan
         UpdateSemuaTotal()
+        SetWarnaReadOnlyNama(rowIndex)
     End Sub
 
     ' ============================================
@@ -2701,6 +2722,7 @@ Public Class FormReturBeli
         If Not ModulHakAkses.SettingIzinkanSatuanBerbeda Then
             ProsesMergeBarisDuplikat(rowIndex)
         End If
+        SetWarnaReadOnlyNama(rowIndex)
     End Sub
 
     ' ============================================
@@ -2939,6 +2961,11 @@ Public Class FormReturBeli
         ' Sembunyikan ListBox saat pindah ke kolom lain
         If DgvData.Columns(e.ColumnIndex).Name <> "NAMA_BARANG" Then
             LstBarang.Visible = False
+        End If
+
+        ' Guard ReadOnly kolom NAMA_BARANG berdasarkan ID_BARANG — konsisten dengan FormJual/Pembelian
+        If e.RowIndex >= 0 AndAlso e.ColumnIndex = 1 Then ' Kolom NAMA_BARANG (index 1)
+            SetWarnaReadOnlyNama(e.RowIndex)
         End If
     End Sub
 
@@ -3232,6 +3259,31 @@ Public Class FormReturBeli
                     ContextMenuStrip1.Show(cursorPosition)
                 End If
             End If
+        End If
+    End Sub
+
+    ' ============================================
+    ' FUNGSI: SET WARNA READONLY KOLOM NAMA_BARANG
+    ' ============================================
+    ''' <summary>
+    ''' Set ReadOnly dan warna kolom NAMA_BARANG berdasarkan apakah ID_BARANG sudah terisi.
+    ''' Konsisten dengan FormJual, FormPembelian, FormReturPenjualan.
+    ''' Dipanggil dari semua fungsi yang mengisi baris DGV.
+    ''' </summary>
+    Private Sub SetWarnaReadOnlyNama(rowIndex As Integer)
+        If rowIndex < 0 OrElse rowIndex >= DgvData.Rows.Count Then Return
+        If DgvData.Rows(rowIndex).IsNewRow Then Return
+        Dim idValue = DgvData.Rows(rowIndex).Cells("ID_BARANG").Value
+        Dim adaId As Boolean = idValue IsNot Nothing AndAlso Not String.IsNullOrEmpty(idValue.ToString())
+        Dim cell = DgvData.Rows(rowIndex).Cells("NAMA_BARANG")
+        If adaId Then
+            cell.ReadOnly = True
+            cell.Style.BackColor = ModuleTheme.C(ModuleTheme.L_Subtle, ModuleTheme.D_Subtle)
+            cell.Style.ForeColor = ModuleTheme.C(ModuleTheme.L_Text, ModuleTheme.D_Text)
+        Else
+            cell.ReadOnly = False
+            cell.Style.BackColor = ModuleTheme.C(ModuleTheme.L_Surface, ModuleTheme.D_Surface)
+            cell.Style.ForeColor = ModuleTheme.C(ModuleTheme.L_Text, ModuleTheme.D_Text)
         End If
     End Sub
 
@@ -3604,11 +3656,8 @@ Public Class FormReturBeli
             End If
 
             ' Fokus berdasarkan setting
-            If ModulHakAkses.SettingFokusOtomatis Then
-                TxtNama.Select()
-                TxtNama.Focus()
-                Exit Sub
-            End If
+            SetupFocusToGrid()
+            Exit Sub
         End If
 
         ' Cek stok jika setting tidak mengizinkan minus
@@ -4169,11 +4218,11 @@ Public Class FormReturBeli
         Dim nominalTunai As Decimal = ModuleAngka.ParseDecimal(TxtNominalBayarTunai.Text)
         Dim nominalTransfer As Decimal = ModuleAngka.ParseDecimal(TxtNominalBayarTransfer.Text)
         Dim tgl As String = DTPTgl.Value.ToString("yyyy-MM-dd HH:mm:ss")
-        
+
         ' Variabel audit untuk Debug
         Dim totalDebet As Decimal = 0D
         Dim totalKredit As Decimal = 0D
-        
+
         Debug.WriteLine("")
         Debug.WriteLine("════════════════════════════ JURNAL RETUR PEMBELIAN ════════════════════════════")
         Debug.WriteLine(String.Format("{0,-4} {1,-30} {2,-25} {3,-25} {4,12} {5,12}", "ID", "KETERANGAN", "DEBET", "KREDIT", "NOMINAL_D", "NOMINAL_K"))
@@ -4432,6 +4481,14 @@ Public Class FormReturBeli
             End Using
 
             transaction.Commit()
+
+            ' Set ReadOnly kolom NAMA_BARANG untuk semua baris yang sudah terisi — konsisten dengan FormJual/Pembelian
+            For i As Integer = 0 To DgvData.Rows.Count - 1
+                If Not DgvData.Rows(i).IsNewRow Then
+                    SetWarnaReadOnlyNama(i)
+                End If
+            Next
+
             UpdateSemuaTotal()
             AturFokusAwal()
 
@@ -4467,5 +4524,9 @@ Public Class FormReturBeli
             frm.ShowDialog()
         End Using
         MuatSemuaPengaturan()
+    End Sub
+
+    Private Sub Button1_Click(sender As Object, e As EventArgs) Handles Button1.Click
+        Me.Close()
     End Sub
 End Class

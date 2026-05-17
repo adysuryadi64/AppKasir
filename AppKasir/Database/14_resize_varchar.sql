@@ -31,6 +31,7 @@ SELECT
 UNION ALL SELECT 'penjualan_detail.NAMA_BARANG',    MAX(LENGTH(NAMA_BARANG)),    100, 60 FROM penjualan_detail
 UNION ALL SELECT 'historybarang.NAMA_BARANG',       MAX(LENGTH(NAMA_BARANG)),     50, 60 FROM historybarang
 UNION ALL SELECT 'historybarang.JENIS',             MAX(LENGTH(JENIS)),           50, 30 FROM historybarang
+UNION ALL SELECT 'historybarang.FAKTUR',            MAX(LENGTH(FAKTUR)),          20, 30 FROM historybarang
 UNION ALL SELECT 'jurnalumum.AKUN_D',               MAX(LENGTH(AKUN_D)),         100, 60 FROM jurnalumum
 UNION ALL SELECT 'jurnalumum.AKUN_K',               MAX(LENGTH(AKUN_K)),         100, 60 FROM jurnalumum
 UNION ALL SELECT 'jurnalumum.NAMA_AKUN_D',          MAX(LENGTH(NAMA_AKUN_D)),     50, 40 FROM jurnalumum
@@ -54,7 +55,11 @@ ORDER BY max_aktual DESC;
 SELECT '=== STEP 2: ALTER TABLE resize VARCHAR ===' AS status;
 
 -- ── historybarang (1.1 juta baris — tabel terbesar, dampak terbesar) ──────────
+-- FAKTUR diperlebar dari varchar(20) ke varchar(30) agar konsisten dengan
+-- transfer_cabang.ID_TRANSFER varchar(30) dan transfer_stok.ID_TRANSFER varchar(20).
+-- Data aktual max 14 karakter (TS-2604010135) — aman, tidak ada data terpotong.
 ALTER TABLE historybarang
+    MODIFY COLUMN FAKTUR      VARCHAR(30)  NULL,
     MODIFY COLUMN NAMA_BARANG VARCHAR(60)  NULL,
     MODIFY COLUMN JENIS       VARCHAR(30)  NULL;
 
@@ -217,4 +222,10 @@ SELECT
 FROM information_schema.tables
 WHERE table_schema = DATABASE();
 
+-- =============================================================================
+-- Catatan perubahan:
+--   v1 (awal)   : resize NAMA_BARANG, JENIS, dan kolom lain
+--   v2 (2026-05): tambah FAKTUR varchar(20)→varchar(30) untuk konsistensi
+--                 dengan transfer_cabang.ID_TRANSFER varchar(30)
+-- =============================================================================
 SELECT '=== 14_resize_varchar selesai ===' AS status;

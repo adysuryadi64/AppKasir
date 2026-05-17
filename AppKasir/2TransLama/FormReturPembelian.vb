@@ -930,7 +930,6 @@ Public Class FormReturPembelian
             For Each kodeAkun As String In akunTerlibat
                 UpdateSaldoAkun(kodeAkun, transaction)
             Next
-            UpdateHutangSupliyer(LblKodeSupplier.Text, transaction)
 
             ' Commit transaksi jika berhasil
             transaction.Commit()

@@ -11,6 +11,25 @@ Public Class FormTransferBarang
         KosongTxtboxcari()
 
         ' Setting dibaca langsung dari ModulHakAkses property
+        If ModulHakAkses.SettingSembunyikanPencarianAtas Then
+            PanelCari.Visible = False
+        Else
+            PanelCari.Visible = True
+        End If
+
+        If Not ModulHakAkses.SettingTampilInfoStok Then
+            DgvData.Columns("Stok").Visible = False
+        Else
+            DgvData.Columns("Stok").Visible = True
+        End If
+
+        If Not ModulHakAkses.SettingIzinkanUbahHargaBeli Then
+            DgvData.Columns("Hargabeli").ReadOnly = True
+            TxtHarga.ReadOnly = True
+        Else
+            DgvData.Columns("Hargabeli").ReadOnly = False
+            TxtHarga.ReadOnly = False
+        End If
 
         If LblJenisTrans.Text = "TambahTransfer" Then
             Kondisiawal()
@@ -29,8 +48,98 @@ Public Class FormTransferBarang
             DgvData.Rows(DgvData.Rows.Count - 1).Selected = True
         End If
 
+        _formSudahSiap = False
+    End Sub
+
+    Private Sub FormTransferBarang_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
+        _formSudahSiap = True
+        SetupFocusToGrid()
+    End Sub
+
+    Public Sub SetupFocusToGrid()
+        ' Guard: jika form tidak aktif atau visible, jangan paksa fokus
+        If Not Me.Visible OrElse Me.WindowState = FormWindowState.Minimized Then Return
+        If Not _formSudahSiap Then Return
+
+        ' MODE 1: Setting Fokus Otomatis (ke TxtNama)
         If ModulHakAkses.SettingFokusOtomatis Then
-            TxtNama.Select()
+            _sedangSetFokusAwal = True
+            Me.BeginInvoke(New Action(Sub()
+                                          TxtNama.Focus()
+                                          _sedangSetFokusAwal = False
+                                      End Sub))
+            Return
+        End If
+
+        ' MODE 2: Edit Langsung (ke Grid)
+        If DgvData.Rows.Count = 0 Then Return
+
+        Dim targetRow As Integer = 0
+        Dim lastFilledRow As Integer = -1
+
+        ' Cari baris terakhir yang terisi (ada Id)
+        For i As Integer = DgvData.Rows.Count - 1 To 0 Step -1
+            If Not DgvData.Rows(i).IsNewRow Then
+                Dim idVal = Convert.ToString(DgvData.Rows(i).Cells("Id").Value).Trim()
+                If Not String.IsNullOrEmpty(idVal) Then
+                    lastFilledRow = i
+                    Exit For
+                End If
+            End If
+        Next
+
+        ' Cari baris kosong setelah baris terakhir yang terisi
+        If lastFilledRow >= 0 Then
+            Dim foundEmptyRow As Boolean = False
+            For i As Integer = lastFilledRow + 1 To DgvData.Rows.Count - 1
+                If Not DgvData.Rows(i).IsNewRow Then
+                    Dim idVal = Convert.ToString(DgvData.Rows(i).Cells("Id").Value).Trim()
+                    If String.IsNullOrEmpty(idVal) Then
+                        targetRow = i
+                        foundEmptyRow = True
+                        Exit For
+                    End If
+                End If
+            Next
+
+            If Not foundEmptyRow Then
+                Dim isNewRowIdx As Integer = -1
+                For i As Integer = lastFilledRow + 1 To DgvData.Rows.Count - 1
+                    If DgvData.Rows(i).IsNewRow Then
+                        isNewRowIdx = i
+                        Exit For
+                    End If
+                Next
+                If isNewRowIdx >= 0 Then
+                    targetRow = isNewRowIdx
+                Else
+                    If DgvData.CurrentCell IsNot Nothing Then
+                        targetRow = DgvData.CurrentCell.RowIndex
+                    Else
+                        Exit Sub
+                    End If
+                End If
+            End If
+        Else
+            targetRow = 0
+        End If
+
+        ' Set CurrentCell dan fokus ke DGV (Race Condition Guard 1 Lapis seperti FormJual)
+        If targetRow < DgvData.Rows.Count Then
+            Dim targetColumnIndex As Integer = 1 ' Kolom Nama
+            Dim targetRowIndex As Integer = targetRow
+
+            DgvData.CurrentCell = DgvData(targetColumnIndex, targetRowIndex)
+            Me.ActiveControl = DgvData
+
+            DgvData.BeginInvoke(New Action(Sub()
+                                               If DgvData.CurrentCell IsNot Nothing AndAlso
+                                                  DgvData.CurrentCell.ColumnIndex = targetColumnIndex AndAlso
+                                                  DgvData.CurrentCell.RowIndex = targetRowIndex Then
+                                                   DgvData.BeginEdit(True)
+                                                   DgvData.EditingControl?.Focus()
+                                               End If
+                                           End Sub))
         End If
     End Sub
 
@@ -54,8 +163,11 @@ Public Class FormTransferBarang
 
     ' Handler untuk event GotFocus pada TextBox
     Private Sub TxtNama_GotFocus(ByVal sender As Object, ByVal e As EventArgs) Handles TxtNama.GotFocus
+        ' Jangan ubah fokus grid saat form baru dibuka (initialization)
+        If _sedangSetFokusAwal Then Return
+
         ' Ubah warna latar belakang saat TextBox mendapatkan fokus
-        PanelCari.BackColor = Color.Yellow ' Ganti warna fokus sesuai kebutuhan
+        PanelCari.BackColor = ModuleTheme.C(ModuleTheme.L_SearchFocusBg, ModuleTheme.D_SearchFocusBg)
 
         ' Cek apakah DgvData memiliki baris
         If DgvData.Rows.Count > 0 Then
@@ -65,13 +177,12 @@ Public Class FormTransferBarang
             ' Mengatur baris terakhir sebagai baris yang dipilih
             DgvData.Rows(DgvData.Rows.Count - 1).Selected = True
         End If
-
     End Sub
 
     ' Handler untuk event LostFocus pada TextBox
     Private Sub TxtNama_LostFocus(ByVal sender As Object, ByVal e As EventArgs) Handles TxtNama.LostFocus
         ' Kembalikan warna latar belakang ke warna asli saat TextBox kehilangan fokus
-        PanelCari.BackColor = SystemColors.ActiveCaption
+        PanelCari.BackColor = ModuleTheme.C(ModuleTheme.L_Panel, ModuleTheme.D_Panel)
     End Sub
 
     Private Sub KosongTxtboxcari()
@@ -82,6 +193,8 @@ Public Class FormTransferBarang
         TxtHarga.Clear()
         TxtBarcode.Clear()
         TxtNama.Clear()
+        TutupListBox()
+        _konteksLstBarang = "TXTNAMA"
     End Sub
 
     Private Sub Kondisiawaledit()
@@ -126,6 +239,7 @@ Public Class FormTransferBarang
         Dim baris As Integer = DgvData.CurrentCell.RowIndex
         DgvData.Rows.RemoveAt(baris)
         UpdateSemuaTotal()
+        SetupFocusToGrid()
     End Sub
 
 
@@ -175,6 +289,17 @@ Public Class FormTransferBarang
     Dim isBarcodeScan As Boolean = False
     Dim suppressTextChanged As Boolean = False
 
+    ' ===== DGV INLINE EDIT + LISTBOX CONTEXT =====
+    Private _dgvEditingTextBox As TextBox = Nothing
+    Private _konteksLstBarang As String = "TXTNAMA"  ' "TXTNAMA" atau "DGV"
+    Private _sedangSetNilaiDariListBox As Boolean = False
+    Private _sedangPindahKeLstBarang As Boolean = False
+    Private _teksSebelumPindahKeLstBarang As String = ""
+    Private _listBoxDibukaDiRow As Integer = -1
+    Private _listBoxDibukaDiCol As Integer = -1
+    Private _formSudahSiap As Boolean = False
+    Private _sedangSetFokusAwal As Boolean = False
+
     Private Sub TxtNama_KeyDown(ByVal sender As Object, ByVal e As KeyEventArgs) Handles TxtNama.KeyDown
         'Deteksi kecepatan input
         Dim currentTime = DateTime.Now
@@ -200,8 +325,8 @@ Public Class FormTransferBarang
             LstBarang.SelectedIndex = 0
             e.SuppressKeyPress = True
         ElseIf e.KeyCode = Keys.Tab Then
-            DgvData.Select()
-            DgvData.Focus()
+            SetupFocusToGrid()
+            e.SuppressKeyPress = True
         End If
     End Sub
 
@@ -210,6 +335,7 @@ Public Class FormTransferBarang
             suppressTextChanged = False
             Return
         End If
+        _konteksLstBarang = "TXTNAMA"
         ProsesInput(False) 'Manual input
     End Sub
 
@@ -304,29 +430,46 @@ Public Class FormTransferBarang
 
                 While rd.Read()
                     Dim itemText As String = rd("NAMA_BARANG").ToString()
-                    Select Case LblLokasiBarang.Text
-                        Case "TOKO"
-                            ' Tambahkan stok toko setelah nama barang
-                            Dim stokToko As Decimal = ModuleAngka.ParseDecimal(rd("STOK_TOKO"))
-                            itemText &= " => " & stokToko.ToString("N0") ' Format stok dengan dua desimal
-                        Case "GUDANG"
-                            ' Tambahkan stok gudang setelah nama barang
-                            Dim stokGudang As Decimal = ModuleAngka.ParseDecimal(rd("STOK_GUDANG"))
-                            itemText &= " => " & stokGudang.ToString("N0") ' Format stok dengan dua desimal
-                    End Select
+
+                    If ModulHakAkses.SettingTampilInfoStok Then
+                        Select Case LblLokasiBarang.Text
+                            Case "TOKO"
+                                Dim stokToko As Decimal = ModuleAngka.ParseDecimal(rd("STOK_TOKO"))
+                                itemText &= " => " & stokToko.ToString("N0")
+                            Case "GUDANG"
+                                Dim stokGudang As Decimal = ModuleAngka.ParseDecimal(rd("STOK_GUDANG"))
+                                itemText &= " => " & stokGudang.ToString("N0")
+                        End Select
+                    End If
 
                     ' Check if the searchKeyword matches any barcode field
                     If searchKeyword = rd("BARCODE_SEDANG").ToString() Or searchKeyword = rd("BARCODE_BESAR").ToString() Then
-                        ' Set TxtBarcode.Text to the matched barcode value
                         TxtBarcode.Text = searchKeyword
                     End If
 
-                    ' Tambahkan item ke ListBox
                     LstBarang.Items.Add(itemText)
                 End While
 
-                ' Tampilkan ListBox hanya jika lebih dari satu hasil pencarian
-                LstBarang.Visible = LstBarang.Items.Count > 0
+                ' Tampilkan ListBox dan posisikan berdasarkan konteks
+                If LstBarang.Items.Count > 0 Then
+                    If _konteksLstBarang = "DGV" Then
+                        PosisikanLstBarangDiBawahSel()
+                        LstBarang.BringToFront()
+                    End If
+                    ' Simpan posisi sel saat ListBox dibuka — untuk guard CellLeave
+                    If _konteksLstBarang = "DGV" AndAlso DgvData.CurrentCell IsNot Nothing Then
+                        _listBoxDibukaDiRow = DgvData.CurrentCell.RowIndex
+                        _listBoxDibukaDiCol = DgvData.CurrentCell.ColumnIndex
+                    Else
+                        _listBoxDibukaDiRow = -1
+                        _listBoxDibukaDiCol = -1
+                    End If
+                    LstBarang.Visible = True
+                Else
+                    LstBarang.Visible = False
+                    _listBoxDibukaDiRow = -1
+                    _listBoxDibukaDiCol = -1
+                End If
 
             End Using
         End Using
@@ -335,48 +478,153 @@ Public Class FormTransferBarang
 
 
     Private Sub LstBarang_KeyDown(ByVal sender As Object, ByVal e As KeyEventArgs) Handles LstBarang.KeyDown
-        If e.KeyCode = Keys.Enter AndAlso LstBarang.SelectedItem IsNot Nothing Then
-            AmbilDataDariListBox()
-        End If
+        Select Case e.KeyCode
+            Case Keys.Up
+                If LstBarang.SelectedIndex <= 0 Then
+                    _sedangPindahKeLstBarang = True
+                    e.SuppressKeyPress = True
+                    If _konteksLstBarang = "DGV" Then
+                        Dim teksSimpan As String = _teksSebelumPindahKeLstBarang
+                        _teksSebelumPindahKeLstBarang = ""
+                        SetupFocusToGrid()
+                        DgvData.BeginInvoke(New Action(Sub()
+                                                           If DgvData.CurrentCell IsNot Nothing Then
+                                                               DgvData.BeginEdit(True)
+                                                               Dim editCtrl = TryCast(DgvData.EditingControl, TextBox)
+                                                               If editCtrl IsNot Nothing AndAlso Not String.IsNullOrEmpty(teksSimpan) Then
+                                                                   editCtrl.Text = teksSimpan
+                                                                   editCtrl.SelectionStart = teksSimpan.Length
+                                                                   editCtrl.SelectionLength = 0
+                                                               End If
+                                                               editCtrl?.Focus()
+                                                           End If
+                                                           _sedangPindahKeLstBarang = False
+                                                       End Sub))
+                    Else
+                        Dim teksSimpan As String = _teksSebelumPindahKeLstBarang
+                        _teksSebelumPindahKeLstBarang = ""
+                        SetupFocusToGrid()
+                        If Not String.IsNullOrEmpty(teksSimpan) Then
+                            TxtNama.Text = teksSimpan
+                            TxtNama.SelectionStart = teksSimpan.Length
+                            TxtNama.SelectionLength = 0
+                        End If
+                        _sedangPindahKeLstBarang = False
+                    End If
+                End If
+
+            Case Keys.Enter
+                If LstBarang.SelectedIndex >= 0 Then
+                    _sedangPindahKeLstBarang = True
+                    AmbilDataDariListBox()
+                    _sedangPindahKeLstBarang = False
+                End If
+                e.SuppressKeyPress = True
+
+            Case Keys.Escape
+                TutupListBox()
+                If _konteksLstBarang = "DGV" Then
+                    Dim teksSimpan As String = _teksSebelumPindahKeLstBarang
+                    _teksSebelumPindahKeLstBarang = ""
+                    SetupFocusToGrid()
+                    DgvData.BeginInvoke(New Action(Sub()
+                                                       If DgvData.CurrentCell IsNot Nothing Then
+                                                           DgvData.BeginEdit(True)
+                                                           Dim editCtrl = TryCast(DgvData.EditingControl, TextBox)
+                                                           If editCtrl IsNot Nothing AndAlso Not String.IsNullOrEmpty(teksSimpan) Then
+                                                               editCtrl.Text = teksSimpan
+                                                               editCtrl.SelectionStart = teksSimpan.Length
+                                                               editCtrl.SelectionLength = 0
+                                                           End If
+                                                           editCtrl?.Focus()
+                                                       End If
+                                                       _sedangPindahKeLstBarang = False
+                                                   End Sub))
+                Else
+                    Dim teksSimpan As String = _teksSebelumPindahKeLstBarang
+                    _teksSebelumPindahKeLstBarang = ""
+                    SetupFocusToGrid()
+                    If Not String.IsNullOrEmpty(teksSimpan) Then
+                        TxtNama.Text = teksSimpan
+                        TxtNama.SelectionStart = teksSimpan.Length
+                        TxtNama.SelectionLength = 0
+                    End If
+                    _sedangPindahKeLstBarang = False
+                End If
+                e.SuppressKeyPress = True
+        End Select
     End Sub
 
     Private Sub LstBarang_MouseClick(ByVal sender As Object, ByVal e As MouseEventArgs) Handles LstBarang.MouseClick
         If LstBarang.SelectedItem IsNot Nothing Then
+            _sedangPindahKeLstBarang = True
             AmbilDataDariListBox()
+            _sedangPindahKeLstBarang = False
         End If
     End Sub
 
     Private Sub AmbilDataDariListBox()
-        Dim namayangdiambil As String
+        ' Reset teks tersimpan
+        _teksSebelumPindahKeLstBarang = ""
 
-        If LstBarang.Items.Count = 1 OrElse (LstBarang.Items.Count > 1 AndAlso LstBarang.SelectedItem IsNot Nothing) Then
-            ' Ambil nilai dari item yang dipilih atau item pertama jika hanya satu
-            Dim selectedValue As String = If(LstBarang.Items.Count = 1, LstBarang.Items(0).ToString(), LstBarang.SelectedItem.ToString())
-
-            ' Cari posisi karakter "*" jika ada
-            Dim indexAsterisk As Integer = selectedValue.IndexOf("*")
-
-            ' Tentukan nilai namayangdiambil berdasarkan kondisi pertama
-            If indexAsterisk >= 0 Then
-                namayangdiambil = selectedValue.Substring(0, indexAsterisk).Trim()
-            Else
-                namayangdiambil = selectedValue
-            End If
-
-            ' Mencari posisi karakter " => " jika ada (mengganti - dengan => sesuai dengan kebutuhan Anda)
-            Dim indexArrow As Integer = selectedValue.IndexOf(" => ")
-
-            If indexArrow >= 0 Then
-                ' Ambil teks sebelum karakter " => "
-                namayangdiambil = selectedValue.Substring(0, indexArrow).Trim()
-            End If
-
-            ' Panggil fungsi dengan nama yang telah diproses
-            Ambildatalaindaridbbarang(namayangdiambil)
-        Else
-            ' Menampilkan pesan jika tidak ada item yang dipilih atau lebih dari satu item dan tidak ada yang dipilih
-            MessageBox.Show("Silakan pilih barang terlebih dahulu!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
+        Dim selectedValue As String = ""
+        If LstBarang.SelectedIndex >= 0 AndAlso LstBarang.SelectedIndex < LstBarang.Items.Count Then
+            selectedValue = LstBarang.Items(LstBarang.SelectedIndex).ToString()
+        ElseIf LstBarang.Items.Count = 1 Then
+            selectedValue = LstBarang.Items(0).ToString()
         End If
+
+        If String.IsNullOrEmpty(selectedValue) Then
+            Return
+        End If
+
+        ' Extract nama barang — strip stok info setelah " => "
+        Dim namayangdiambil As String = selectedValue
+        Dim indexArrow As Integer = selectedValue.IndexOf(" => ")
+        If indexArrow >= 0 Then
+            namayangdiambil = selectedValue.Substring(0, indexArrow).Trim()
+        End If
+
+        TutupListBox()
+
+        ' ===== Konteks DGV inline edit =====
+        If _konteksLstBarang = "DGV" AndAlso _dgvEditingTextBox IsNot Nothing AndAlso
+           DgvData.CurrentCell IsNot Nothing AndAlso DgvData.CurrentCell.ColumnIndex = 1 Then
+
+            Dim qtyValue As Decimal = ModuleAngka.ParseDecimal(TxtQty.Text)
+            If qtyValue <= 0 Then qtyValue = 1D
+
+            Dim barisDiisi As Integer = DgvData.CurrentCell.RowIndex
+
+            ' Guard: cari baris dengan Id kosong pertama (baris yang sedang diedit)
+            For i As Integer = 0 To DgvData.Rows.Count - 1
+                If Not DgvData.Rows(i).IsNewRow Then
+                    Dim idVal = Convert.ToString(DgvData.Rows(i).Cells("Id").Value).Trim()
+                    If String.IsNullOrEmpty(idVal) Then
+                        barisDiisi = i
+                        Exit For
+                    End If
+                End If
+            Next
+
+            ' Selesaikan edit mode dulu
+            _sedangSetNilaiDariListBox = True
+            DgvData.EndEdit(True)
+            DgvData.CurrentCell = Nothing
+
+            ' Isi baris DGV langsung
+            IsiBarangKeRowDGV(barisDiisi, namayangdiambil, qtyValue)
+
+            _sedangSetNilaiDariListBox = False
+
+            ' Kembali ke input
+            KosongTxtboxcari()
+            SetupFocusToGrid()
+            Return
+        End If
+
+        ' ===== Konteks TxtNama (alur lama) =====
+        Ambildatalaindaridbbarang(namayangdiambil)
     End Sub
 
 
@@ -443,7 +691,7 @@ Public Class FormTransferBarang
                 If row.Cells("Id").Value IsNot Nothing AndAlso row.Cells("Id").Value.ToString() = TxtKode.Text Then
                     MessageBox.Show(namayangdiambil & " sudah ada dalam daftar!", "Peringatan", MessageBoxButtons.OK, MessageBoxIcon.Warning)
                     'BersihkanPencarian()
-                    LstBarang.Select()
+                    SetupFocusToGrid()
                     Exit Sub
                 End If
             Next
@@ -513,6 +761,7 @@ Public Class FormTransferBarang
         DgvData.Rows(indeksBaris).Cells("QtySat").Value = qty * isi
         DgvData.Rows(indeksBaris).Cells("Totalharga").Value = qty * isi * hargaBeli
         DgvData.Rows(indeksBaris).Cells("Stok").Value = Stok
+        UpdateWarnaKodeBarang(indeksBaris)
 
         ' Melakukan pembaruan pada ringkasan atau operasi relevan lainnya
         UpdateSemuaTotal()
@@ -520,11 +769,16 @@ Public Class FormTransferBarang
         ' Membersihkan field input
         KosongTxtboxcari()
 
+        SetupFocusToGrid()
+
     End Sub
 
 
 
     Private Sub DgvDataData_CellEndEdit(ByVal sender As Object, ByVal e As System.Windows.Forms.DataGridViewCellEventArgs) Handles DgvData.CellEndEdit
+        ' Guard: jangan proses saat ListBox sedang set nilai ke DGV
+        If _sedangSetNilaiDariListBox Then Return
+
         '========================== Nama
         If e.ColumnIndex = 1 Then
             Dim row = DgvData.Rows(e.RowIndex)
@@ -585,6 +839,7 @@ Public Class FormTransferBarang
 
                             row.Cells("Stok").Value = If(LblLokasiBarang.Text = "TOKO", rd("STOK_TOKO"), rd("STOK_GUDANG"))
                             row.Cells("nama").Value = rd("NAMA_BARANG")
+                            UpdateWarnaKodeBarang(e.RowIndex)
                         Else
                             dataTidakDitemukan = True
                         End If
@@ -593,6 +848,7 @@ Public Class FormTransferBarang
 
                 If dataTidakDitemukan Then
                     row.Cells("nama").Value = ""
+                    UpdateWarnaKodeBarang(e.RowIndex)
                     SendKeys.Send("{down}")
                 End If
 
@@ -614,6 +870,7 @@ Public Class FormTransferBarang
             Else
                 ' Kosong atau null
                 row.Cells("nama").Value = ""
+                UpdateWarnaKodeBarang(e.RowIndex)
                 SendKeys.Send("{down}")
             End If
         End If
@@ -659,6 +916,29 @@ Public Class FormTransferBarang
         UpdateSemuaTotal()
     End Sub
 
+    ''' <summary>
+    ''' CellEnter — khusus kolom Satuan langsung BeginEdit dan buka dropdown
+    ''' agar user bisa langsung pilih satuan pakai panah atas/bawah tanpa F2 atau klik.
+    ''' Sama dengan perilaku di FormJual dan FormPembelian.
+    ''' </summary>
+    Private Sub DgvData_CellEnter(sender As Object, e As DataGridViewCellEventArgs) Handles DgvData.CellEnter
+        If e.RowIndex >= 0 AndAlso e.ColumnIndex >= 0 Then
+            If DgvData.Columns(e.ColumnIndex).Name = "Satuan" Then
+                DgvData.BeginInvoke(New Action(Sub()
+                                                   If DgvData.CurrentCell IsNot Nothing AndAlso
+                       DgvData.CurrentCell.ColumnIndex = e.ColumnIndex AndAlso
+                       DgvData.CurrentCell.RowIndex = e.RowIndex Then
+                                                       DgvData.BeginEdit(True)
+                                                       Dim combo = TryCast(DgvData.EditingControl, ComboBox)
+                                                       If combo IsNot Nothing Then
+                                                           combo.DroppedDown = True
+                                                       End If
+                                                   End If
+                                               End Sub))
+            End If
+        End If
+    End Sub
+
     Private Sub DgvData_DataError(ByVal sender As Object, ByVal e As System.Windows.Forms.DataGridViewDataErrorEventArgs) Handles DgvData.DataError
         e.Cancel = True
     End Sub
@@ -676,8 +956,8 @@ Public Class FormTransferBarang
                     If Not String.IsNullOrEmpty(DgvData.Rows(rowIndex).Cells("Nama").Value.ToString()) Then
                         ' Hapus baris jika nilai di kolom "Nama" tidak kosong
                         DgvData.Rows.RemoveAt(rowIndex)
-                        ' Setelah menghapus baris, pastikan untuk menghilangkan seleksi agar tidak ada baris yang dipilih secara default.
-                        DgvData.ClearSelection()
+                        UpdateSemuaTotal()
+                        SetupFocusToGrid()
                     Else
                         MessageBox.Show("Klik kanan pada baris yang tidak kosong.", "Peringatan", MessageBoxButtons.OK, MessageBoxIcon.Warning)
                     End If
@@ -698,27 +978,49 @@ Public Class FormTransferBarang
 
     Private Sub DgvData_EditingControlShowing(ByVal sender As Object, ByVal e As System.Windows.Forms.DataGridViewEditingControlShowingEventArgs) Handles DgvData.EditingControlShowing
 
-        Dim titleText As String = DgvData.Columns(1).HeaderText
-        If titleText.Equals("Nama") Then
+        ' ===== Kolom Nama (indeks 1): Hook TextChanged + KeyDown untuk ListBox =====
+        If DgvData.CurrentCell IsNot Nothing AndAlso DgvData.CurrentCell.ColumnIndex = 1 Then
+            ' KRITIS: skip re-attach saat sedang pindah ke ListBox
+            ' DGV BeginEdit ulang karena fokus kembali — biarkan handler lama tetap aktif
+            If _sedangPindahKeLstBarang Then Return
+
             Dim autoText As TextBox = TryCast(e.Control, TextBox)
             If autoText IsNot Nothing Then
-                autoText.AutoCompleteMode = AutoCompleteMode.Suggest
-                autoText.AutoCompleteSource = AutoCompleteSource.CustomSource
-                Dim DataCollection As New AutoCompleteStringCollection()
-                AddItems(DataCollection, autoText.Text.Trim()) ' Melewati nilai autoText.Text sebagai namaValue.
-                autoText.AutoCompleteCustomSource = DataCollection
+                ' Hapus AutoComplete bawaan — diganti ListBox
+                autoText.AutoCompleteMode = AutoCompleteMode.None
+                autoText.AutoCompleteSource = AutoCompleteSource.None
+
+                ' Remove handler lama
+                If _dgvEditingTextBox IsNot Nothing Then
+                    RemoveHandler _dgvEditingTextBox.TextChanged, AddressOf DgvNamaBarang_TextChanged
+                    RemoveHandler _dgvEditingTextBox.KeyDown, AddressOf DgvNamaBarang_KeyDown
+                End If
+                _dgvEditingTextBox = autoText
+                AddHandler _dgvEditingTextBox.TextChanged, AddressOf DgvNamaBarang_TextChanged
+                AddHandler _dgvEditingTextBox.KeyDown, AddressOf DgvNamaBarang_KeyDown
+                _konteksLstBarang = "DGV"
+                PosisikanLstBarangDiBawahSel()
+            End If
+        Else
+            ' Kolom selain Nama — hapus handler dan tutup ListBox
+            If _dgvEditingTextBox IsNot Nothing Then
+                RemoveHandler _dgvEditingTextBox.TextChanged, AddressOf DgvNamaBarang_TextChanged
+                RemoveHandler _dgvEditingTextBox.KeyDown, AddressOf DgvNamaBarang_KeyDown
+                _dgvEditingTextBox = Nothing
+            End If
+            If Not LstBarang.Focused Then
+                LstBarang.Visible = False
+                LstBarang.Items.Clear()
             End If
         End If
 
-        ' Periksa apakah kolom yang saat ini sedang diedit adalah kolom yang berisi ComboBox (misalnya, kolom dengan indeks 4)
-        If DgvData.CurrentCell.ColumnIndex = 4 Then
+        ' ===== Kolom Satuan ComboBox (indeks 4) =====
+        If DgvData.CurrentCell IsNot Nothing AndAlso DgvData.CurrentCell.ColumnIndex = 4 Then
             Dim comboBox As ComboBox = TryCast(e.Control, ComboBox)
-
-            ' Hapus penanganan event SelectedIndexChanged jika ada
-            RemoveHandler comboBox.SelectedIndexChanged, AddressOf ComboBox_SelectedIndexChanged
-
-            ' Tambahkan penanganan event SelectedIndexChanged ke ComboBox
-            AddHandler comboBox.SelectedIndexChanged, AddressOf ComboBox_SelectedIndexChanged
+            If comboBox IsNot Nothing Then
+                RemoveHandler comboBox.SelectedIndexChanged, AddressOf ComboBox_SelectedIndexChanged
+                AddHandler comboBox.SelectedIndexChanged, AddressOf ComboBox_SelectedIndexChanged
+            End If
         End If
 
     End Sub
@@ -773,6 +1075,326 @@ Public Class FormTransferBarang
                 Loop
             End Using ' rd will be properly disposed here
         End Using ' cmd will be properly disposed here
+    End Sub
+
+
+    ' ═══════════════════════════════════════════════════════════════════
+    ' REGION: DGV INLINE EDIT + LISTBOX INTEGRATION
+    ' ═══════════════════════════════════════════════════════════════════
+
+    ''' <summary>
+    ''' Tangkap keyboard saat ListBox aktif — Enter/Escape/Down dari luar.
+    ''' Sama persis dengan pattern FormJual dan FormPembelian.
+    ''' </summary>
+    Protected Overrides Function ProcessCmdKey(ByRef msg As Message, keyData As Keys) As Boolean
+        If LstBarang.Visible AndAlso LstBarang.Items.Count > 0 Then
+            Select Case keyData
+                Case Keys.Down
+                    ' Jika ListBox sudah fokus → biarkan Down diteruskan untuk navigasi normal
+                    If LstBarang.Focused Then
+                        Return MyBase.ProcessCmdKey(msg, keyData)
+                    End If
+                    ' Simpan teks sebelum pindah
+                    If _konteksLstBarang = "DGV" AndAlso _dgvEditingTextBox IsNot Nothing Then
+                        _teksSebelumPindahKeLstBarang = _dgvEditingTextBox.Text
+                    Else
+                        _teksSebelumPindahKeLstBarang = TxtNama.Text
+                    End If
+                    _sedangPindahKeLstBarang = True
+                    If LstBarang.SelectedIndex < 0 Then LstBarang.SelectedIndex = 0
+                    Me.BeginInvoke(New Action(Sub()
+                                                  Me.BeginInvoke(New Action(Sub()
+                                                                                If LstBarang.Visible Then
+                                                                                    _sedangSetNilaiDariListBox = True
+                                                                                    DgvData.EndEdit()
+                                                                                    _sedangSetNilaiDariListBox = False
+                                                                                    SetupFocusToGrid()
+                                                                                End If
+                                                                                _sedangPindahKeLstBarang = False
+                                                                            End Sub))
+                                              End Sub))
+                    Return True
+
+                Case Keys.Enter
+                    If LstBarang.SelectedIndex < 0 Then LstBarang.SelectedIndex = 0
+                    _sedangPindahKeLstBarang = True
+                    AmbilDataDariListBox()
+                    _sedangPindahKeLstBarang = False
+                    Return True
+
+                Case Keys.Escape
+                    TutupListBox()
+                    If _konteksLstBarang = "DGV" AndAlso _dgvEditingTextBox IsNot Nothing Then
+                        SetupFocusToGrid()
+                    Else
+                        SetupFocusToGrid()
+                    End If
+                    Return True
+            End Select
+        End If
+        Return MyBase.ProcessCmdKey(msg, keyData)
+    End Function
+
+    ''' <summary>
+    ''' Handler TextChanged saat user mengetik di kolom Nama DGV.
+    ''' Support format: nama, qty*nama, qty*harga*nama (sama seperti TxtNama ProsesInput)
+    ''' </summary>
+    Private Sub DgvNamaBarang_TextChanged(sender As Object, e As EventArgs)
+        If _sedangSetNilaiDariListBox Then Return
+        _konteksLstBarang = "DGV"
+
+        Dim txt As TextBox = TryCast(sender, TextBox)
+        If txt Is Nothing Then Return
+        Dim currentText = txt.Text.Trim()
+
+        If String.IsNullOrEmpty(currentText) Then
+            ' Jangan sembunyikan jika sedang transisi ke ListBox
+            If _sedangPindahKeLstBarang OrElse LstBarang.Focused OrElse LstBarang.Visible Then
+                Return
+            End If
+            LstBarang.Items.Clear()
+            LstBarang.Visible = False
+            Return
+        End If
+
+        ' Hitung jumlah huruf alfabet valid
+        Dim validLetters As String = ""
+        For Each c As Char In currentText
+            If Char.IsLetter(c) Then
+                validLetters &= c
+            End If
+        Next
+
+        ' Lanjutkan hanya jika ada setidaknya 2 huruf valid
+        If validLetters.Length < 2 Then Return
+
+        ' Parse format qty*harga*nama atau qty*nama
+        Dim indexAsteriskQty As Integer = currentText.IndexOf("*")
+        Dim indexAsteriskHarga As Integer = -1
+        If indexAsteriskQty >= 0 Then
+            indexAsteriskHarga = currentText.IndexOf("*", indexAsteriskQty + 1)
+        End If
+
+        If indexAsteriskQty >= 0 And indexAsteriskHarga > indexAsteriskQty Then
+            ' Dua * : qty*harga*nama
+            Dim angkaSebelumAsterisk As String = currentText.Substring(0, indexAsteriskQty).Trim()
+            If angkaSebelumAsterisk.Contains(".") Or angkaSebelumAsterisk.Contains(",") Then
+                angkaSebelumAsterisk = angkaSebelumAsterisk.Replace(".", ",")
+                TxtQty.Text = angkaSebelumAsterisk
+            ElseIf Decimal.TryParse(angkaSebelumAsterisk, Nothing) Then
+                TxtQty.Text = angkaSebelumAsterisk
+            Else
+                TxtQty.Text = "1"
+            End If
+
+            Dim hargaSebelumAsterisk As String = currentText.Substring(indexAsteriskQty + 1, indexAsteriskHarga - indexAsteriskQty - 1).Trim()
+            TxtHarga.Text = hargaSebelumAsterisk
+
+            Dim searchKeyword As String = currentText.Substring(indexAsteriskHarga + 1).Trim()
+            TampilkanDaftarBarang(searchKeyword)
+
+        ElseIf indexAsteriskQty >= 0 Then
+            ' Satu * : qty*nama
+            Dim angkaSebelumAsterisk As String = currentText.Substring(0, indexAsteriskQty).Trim()
+            If angkaSebelumAsterisk.Contains(".") Or angkaSebelumAsterisk.Contains(",") Then
+                angkaSebelumAsterisk = angkaSebelumAsterisk.Replace(".", ",")
+                TxtQty.Text = angkaSebelumAsterisk
+            ElseIf Decimal.TryParse(angkaSebelumAsterisk, Nothing) Then
+                TxtQty.Text = angkaSebelumAsterisk
+            Else
+                TxtQty.Text = "1"
+            End If
+
+            Dim searchKeyword As String = currentText.Substring(indexAsteriskQty + 1).Trim()
+            TampilkanDaftarBarang(searchKeyword)
+
+        Else
+            ' Tanpa * : langsung nama
+            TampilkanDaftarBarang(currentText)
+            TxtQty.Text = "1"
+        End If
+    End Sub
+
+    ''' <summary>
+    ''' Handler KeyDown saat user mengetik di kolom Nama DGV.
+    ''' Handle Down (pindah ke ListBox), Enter (ambil item), Escape (tutup ListBox).
+    ''' </summary>
+    Private Sub DgvNamaBarang_KeyDown(sender As Object, e As KeyEventArgs)
+        If Not LstBarang.Visible OrElse LstBarang.Items.Count = 0 Then Return
+
+        Select Case e.KeyCode
+            Case Keys.Down
+                If _dgvEditingTextBox IsNot Nothing Then
+                    _teksSebelumPindahKeLstBarang = _dgvEditingTextBox.Text
+                End If
+                _sedangPindahKeLstBarang = True
+                If LstBarang.SelectedIndex < 0 Then LstBarang.SelectedIndex = 0
+                Me.BeginInvoke(New Action(Sub()
+                                              Me.BeginInvoke(New Action(Sub()
+                                                                            If LstBarang.Visible Then
+                                                                                _sedangSetNilaiDariListBox = True
+                                                                                DgvData.EndEdit()
+                                                                                _sedangSetNilaiDariListBox = False
+                                                                                SetupFocusToGrid()
+                                                                            End If
+                                                                            _sedangPindahKeLstBarang = False
+                                                                        End Sub))
+                                          End Sub))
+                e.SuppressKeyPress = True
+
+            Case Keys.Enter
+                If LstBarang.SelectedIndex < 0 Then LstBarang.SelectedIndex = 0
+                _sedangPindahKeLstBarang = True
+                AmbilDataDariListBox()
+                _sedangPindahKeLstBarang = False
+                e.SuppressKeyPress = True
+
+            Case Keys.Escape
+                TutupListBox()
+                e.SuppressKeyPress = True
+        End Select
+    End Sub
+
+    ''' <summary>Warnai kolom "nama": abu (ReadOnly) jika Id sudah terisi, putih (editable) jika kosong.</summary>
+    Private Sub UpdateWarnaKodeBarang(rowIndex As Integer)
+        If rowIndex < 0 OrElse rowIndex >= DgvData.Rows.Count Then Return
+        If DgvData.Rows(rowIndex).IsNewRow Then Return
+        Dim cell = DgvData.Rows(rowIndex).Cells("nama")
+        Dim kodeValue = DgvData.Rows(rowIndex).Cells("Id").Value
+        Dim adaId As Boolean = kodeValue IsNot Nothing AndAlso Not String.IsNullOrEmpty(kodeValue.ToString().Trim())
+        If adaId Then
+            cell.ReadOnly = True
+            cell.Style.BackColor = ModuleTheme.C(ModuleTheme.L_Subtle, ModuleTheme.D_Subtle)
+            cell.Style.ForeColor = ModuleTheme.C(ModuleTheme.L_Text, ModuleTheme.D_Text)
+        Else
+            cell.ReadOnly = False
+            cell.Style.BackColor = ModuleTheme.C(ModuleTheme.L_Surface, ModuleTheme.D_Surface)
+            cell.Style.ForeColor = ModuleTheme.C(ModuleTheme.L_Text, ModuleTheme.D_Text)
+        End If
+    End Sub
+
+    ''' <summary>Tutup ListBox dan reset semua state terkait posisi.</summary>
+    Private Sub TutupListBox()
+        LstBarang.Visible = False
+        LstBarang.Items.Clear()
+        _listBoxDibukaDiRow = -1
+        _listBoxDibukaDiCol = -1
+    End Sub
+
+    ''' <summary>Posisikan ListBox tepat di bawah sel DGV yang aktif.</summary>
+    Private Sub PosisikanLstBarangDiBawahSel()
+        If DgvData.CurrentCell Is Nothing Then Return
+        Try
+            Dim cellRect = DgvData.GetCellDisplayRectangle(
+                DgvData.CurrentCell.ColumnIndex, DgvData.CurrentCell.RowIndex, True)
+            Dim ptDgv = DgvData.PointToScreen(New Point(cellRect.Left, cellRect.Bottom))
+            Dim ptForm = Me.PointToClient(ptDgv)
+            LstBarang.Location = New Point(ptForm.X, ptForm.Y)
+            LstBarang.Width = Math.Max(300, cellRect.Width)
+        Catch
+        End Try
+    End Sub
+
+    ''' <summary>
+    ''' Isi baris DGV yang sudah ada dengan data barang dari database.
+    ''' Digunakan oleh AmbilDataDariListBox konteks DGV.
+    ''' Logic sama dengan CellEndEdit kolom 1 + TambahDataLangsung tapi untuk existing row.
+    ''' </summary>
+    Private Sub IsiBarangKeRowDGV(rowIndex As Integer, namaBarang As String, qty As Decimal)
+        If rowIndex < 0 OrElse rowIndex >= DgvData.Rows.Count Then Return
+        Dim row = DgvData.Rows(rowIndex)
+
+        ' Cek duplikat jika tidak izinkan satuan berbeda
+        If Not ModulHakAkses.SettingIzinkanSatuanBerbeda Then
+            ' Cari ID_BARANG dulu untuk cek
+            Dim idBarangCek As String = ""
+            Using cmdCek As New MySqlCommand("SELECT ID_BARANG FROM tbl_barang WHERE STATUS = 'Aktif' AND NAMA_BARANG = @NAMA", conn)
+                cmdCek.Parameters.AddWithValue("@NAMA", namaBarang)
+                Dim result = cmdCek.ExecuteScalar()
+                If result IsNot Nothing Then idBarangCek = result.ToString()
+            End Using
+
+            If Not String.IsNullOrEmpty(idBarangCek) Then
+                For Each existingRow As DataGridViewRow In DgvData.Rows
+                    If existingRow.Index <> rowIndex AndAlso existingRow.Cells("Id").Value IsNot Nothing AndAlso existingRow.Cells("Id").Value.ToString() = idBarangCek Then
+                        MessageBox.Show(namaBarang & " sudah ada dalam daftar!", "Peringatan", MessageBoxButtons.OK, MessageBoxIcon.Warning)
+                        Return
+                    End If
+                Next
+            End If
+        End If
+
+        ' Query DB untuk data barang
+        Dim queryAmbilData As String = "SELECT ID_BARANG, NAMA_BARANG, HARGA_BELI, SATUAN_UMUM_KECIL, SATUAN_UMUM_SEDANG, SATUAN_UMUM_BESAR, ISI_UMUM_KECIL, ISI_UMUM_SEDANG, ISI_UMUM_BESAR, BARCODE_KECIL, BARCODE_SEDANG, BARCODE_BESAR, STOK_TOKO, STOK_GUDANG FROM tbl_barang WHERE STATUS = 'Aktif' AND NAMA_BARANG = @NAMA"
+
+        Using cmd As New MySqlCommand(queryAmbilData, conn)
+            cmd.Parameters.AddWithValue("@NAMA", namaBarang)
+            Using rd As MySqlDataReader = cmd.ExecuteReader()
+                If rd.Read() Then
+                    Dim idBarang As String = ModuleAngka.SafeGetValue(Of String)(rd, "ID_BARANG", String.Empty)
+                    Dim hargaBeli As Decimal = ModuleAngka.ParseDecimal(rd("HARGA_BELI"))
+
+                    Dim satuanUmum As String = ModuleAngka.SafeGetValue(Of String)(rd, "SATUAN_UMUM_KECIL", String.Empty)
+                    Dim isiUmum As Integer = ModuleAngka.SafeGetValue(Of Integer)(rd, "ISI_UMUM_KECIL", 0)
+
+                    ' Periksa apakah TxtBarcode tidak kosong — sesuaikan satuan berdasarkan barcode
+                    If Not String.IsNullOrEmpty(TxtBarcode.Text) Then
+                        If TxtBarcode.Text = rd("BARCODE_KECIL").ToString() Then
+                            satuanUmum = ModuleAngka.SafeGetValue(Of String)(rd, "SATUAN_UMUM_KECIL", String.Empty)
+                            isiUmum = ModuleAngka.SafeGetValue(Of Integer)(rd, "ISI_UMUM_KECIL", 0)
+                        ElseIf TxtBarcode.Text = rd("BARCODE_SEDANG").ToString() Then
+                            satuanUmum = ModuleAngka.SafeGetValue(Of String)(rd, "SATUAN_UMUM_SEDANG", String.Empty)
+                            isiUmum = ModuleAngka.SafeGetValue(Of Integer)(rd, "ISI_UMUM_SEDANG", 0)
+                        ElseIf TxtBarcode.Text = rd("BARCODE_BESAR").ToString() Then
+                            satuanUmum = ModuleAngka.SafeGetValue(Of String)(rd, "SATUAN_UMUM_BESAR", String.Empty)
+                            isiUmum = ModuleAngka.SafeGetValue(Of Integer)(rd, "ISI_UMUM_BESAR", 0)
+                        End If
+                    End If
+
+                    If isiUmum = 0 Then isiUmum = 1
+
+                    Dim StokToko As Decimal = ModuleAngka.ParseDecimal(rd("STOK_TOKO"))
+                    Dim StokGudang As Decimal = ModuleAngka.ParseDecimal(rd("STOK_GUDANG"))
+
+                    ' Harga manual dari TxtHarga (jika user input qty*harga*nama)
+                    Dim hargaManual As Decimal = ModuleAngka.ParseDecimal(TxtHarga.Text)
+                    If hargaManual > 0 Then hargaBeli = hargaManual
+
+                    ' Isi ComboBox satuan
+                    Dim kolomSatuan As DataGridViewComboBoxCell = CType(row.Cells("Satuan"), DataGridViewComboBoxCell)
+                    kolomSatuan.Items.Clear()
+
+                    Dim satuanKecil As String = ModuleAngka.SafeGetValue(Of String)(rd, "SATUAN_UMUM_KECIL", "")
+                    Dim satuanSedang As String = ModuleAngka.SafeGetValue(Of String)(rd, "SATUAN_UMUM_SEDANG", "")
+                    Dim satuanBesar As String = ModuleAngka.SafeGetValue(Of String)(rd, "SATUAN_UMUM_BESAR", "")
+
+                    If Not String.IsNullOrEmpty(satuanKecil) Then kolomSatuan.Items.Add(satuanKecil)
+                    If Not String.IsNullOrEmpty(satuanSedang) Then kolomSatuan.Items.Add(satuanSedang)
+                    If Not String.IsNullOrEmpty(satuanBesar) Then kolomSatuan.Items.Add(satuanBesar)
+
+                    ' Set nilai baris
+                    row.Cells("Id").Value = idBarang
+                    row.Cells("nama").Value = namaBarang
+                    row.Cells("Hargabeli").Value = hargaBeli
+                    row.Cells("qty").Value = qty
+                    row.Cells("Satuan").Value = satuanUmum
+                    row.Cells("isi").Value = isiUmum
+                    row.Cells("HargaBeliSat").Value = hargaBeli * isiUmum
+                    row.Cells("QtySat").Value = qty * isiUmum
+                    row.Cells("Totalharga").Value = qty * isiUmum * hargaBeli
+
+                    Select Case LblLokasiBarang.Text
+                        Case "TOKO"
+                            row.Cells("Stok").Value = StokToko
+                        Case "GUDANG"
+                            row.Cells("Stok").Value = StokGudang
+                    End Select
+
+                    UpdateWarnaKodeBarang(rowIndex)
+                    UpdateSemuaTotal()
+                End If
+            End Using
+        End Using
     End Sub
 
 
@@ -898,11 +1520,11 @@ Public Class FormTransferBarang
                         ' Menyorot baris yang bermasalah
                         dgvRow.Selected = True
                         For Each cell As DataGridViewCell In dgvRow.Cells
-                            cell.Style.BackColor = Color.Red
+                            cell.Style.BackColor = ModuleTheme.C(ModuleTheme.L_DgvRowError, ModuleTheme.D_DgvRowError)
                         Next
 
                         ' Setelah menyaring baris, pastikan bahwa baris tersebut terpilih juga
-                        dgvRow.DataGridView.Focus()
+                        SetupFocusToGrid()
                         dgvRow.DataGridView.CurrentCell = dgvRow.Cells(1) ' Pilih sel pertama atau sesuaikan dengan indeks kolom yang ingin Anda pilih
                         dgvRow.DataGridView.CurrentRow.Selected = True
 
@@ -932,17 +1554,86 @@ Public Class FormTransferBarang
                 DgvData.Rows(0).Selected = True
             End If
 
-            If ModulHakAkses.SettingFokusOtomatis Then
-                TxtNama.Select()
-                TxtNama.Focus()
-                Exit Sub
-            End If
+            SetupFocusToGrid()
+            Exit Sub
         End If
 
         If Not ModulHakAkses.SettingIzinkanBarangMinus Then
             If CekStok() Then
                 Return
             End If
+
+            ' ═══════════════════════════════════════════════════════════════
+            ' VALIDASI LEVEL 8: CEK STOK REAL-TIME VIA SP (ANTI RACE CONDITION)
+            ' ═══════════════════════════════════════════════════════════════
+            For Each dgvRow As DataGridViewRow In DgvData.Rows
+                If Not dgvRow.IsNewRow AndAlso
+                   dgvRow.Cells("Id").Value IsNot Nothing AndAlso
+                   Not String.IsNullOrEmpty(dgvRow.Cells("Id").Value.ToString()) Then
+
+                    Dim kodeBarang As String = dgvRow.Cells("Id").Value.ToString()
+                    Dim qtySat As Decimal = ModuleAngka.ParseDecimal(dgvRow.Cells("QtySat").Value)
+                    Dim namaBarang As String = Convert.ToString(dgvRow.Cells("Nama").Value)
+
+                    Dim qtyDibutuhkan As Decimal = qtySat
+                    If LblJenisTrans.Text <> "TambahTransfer" Then
+                        Try
+                            Using cmdQtyLama As New MySqlCommand(
+                                "SELECT COALESCE(SUM(TOTAL_QTY), 0) FROM Transfer_barang_Detail " &
+                                "WHERE ID_TRANSFER = @fk AND ID_BARANG = @id", conn)
+                                cmdQtyLama.Parameters.AddWithValue("@fk", TxtFaktur.Text)
+                                cmdQtyLama.Parameters.AddWithValue("@id", kodeBarang)
+                                Dim qtyLama As Decimal = ModuleAngka.ParseDecimal(cmdQtyLama.ExecuteScalar())
+                                qtyDibutuhkan = Math.Max(0D, qtySat - qtyLama)
+                            End Using
+                        Catch
+                            ' Jika gagal baca qty lama, pakai qty penuh sebagai aman
+                        End Try
+                    End If
+
+                    If qtyDibutuhkan <= 0 Then Continue For
+
+                    Try
+                        Using cmdSP As New MySqlCommand("CALL sp_hlp_stok_validasi(@kode, @qty, @lokasi, @izinkan, @errcode, @errmsg)", conn)
+                            cmdSP.Parameters.AddWithValue("@kode", kodeBarang)
+                            cmdSP.Parameters.AddWithValue("@qty", qtyDibutuhkan)
+                            cmdSP.Parameters.AddWithValue("@lokasi", LblLokasiBarang.Text)
+                            cmdSP.Parameters.AddWithValue("@izinkan", 0) ' 0 = tidak izinkan minus
+
+                            Dim pErrCode = cmdSP.Parameters.Add("@errcode", MySqlDbType.VarChar, 50)
+                            pErrCode.Direction = ParameterDirection.Output
+                            Dim pErrMsg = cmdSP.Parameters.Add("@errmsg", MySqlDbType.VarChar, 255)
+                            pErrMsg.Direction = ParameterDirection.Output
+
+                            cmdSP.ExecuteNonQuery()
+
+                            Dim errCode As String = pErrCode.Value?.ToString()
+                            If Not String.IsNullOrEmpty(errCode) Then
+                                MessageBox.Show(
+                                    "⚠️ Stok berubah sejak form dibuka!" & vbCrLf & vbCrLf &
+                                    "Barang: " & namaBarang & vbCrLf &
+                                    "Pesan: " & pErrMsg.Value?.ToString() & vbCrLf & vbCrLf &
+                                    "Silakan periksa kembali daftar barang sebelum menyimpan.",
+                                    "Stok Tidak Mencukupi (Real-time)",
+                                    MessageBoxButtons.OK,
+                                    MessageBoxIcon.Warning)
+
+                                ' Sorot baris yang bermasalah
+                                dgvRow.Selected = True
+                                For Each cell As DataGridViewCell In dgvRow.Cells
+                                    cell.Style.BackColor = ModuleTheme.C(ModuleTheme.L_DgvRowError, ModuleTheme.D_DgvRowError)
+                                Next
+                                dgvRow.DataGridView.CurrentCell = dgvRow.Cells("Nama")
+
+                                Exit Sub
+                            End If
+                        End Using
+                    Catch ex As Exception
+                        MessageBox.Show("Gagal memvalidasi stok real-time: " & ex.Message, "Error Validasi", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                        Exit Sub
+                    End Try
+                End If
+            Next
         End If
 
         ProsesSimpan()
@@ -956,26 +1647,9 @@ Public Class FormTransferBarang
 
         Try
 
-            Dim akunLama As New HashSet(Of String)(StringComparer.OrdinalIgnoreCase)
             If LblJenisTrans.Text <> "TambahTransfer" Then
                 ' ========================================
-                ' STEP 1: SELECT daftar akun LAMA SEBELUM DELETE JurnalUmum
-                ' ========================================
-                Using cmdAkunLama As New MySqlCommand(
-                    "SELECT DISTINCT NOMOR_AKUN_D FROM JurnalUmum WHERE NO_TRANSAKSI = @fk AND NOMOR_AKUN_D <> '' " &
-                    "UNION " &
-                    "SELECT DISTINCT NOMOR_AKUN_K FROM JurnalUmum WHERE NO_TRANSAKSI = @fk AND NOMOR_AKUN_K <> ''",
-                    conn, transaction)
-                    cmdAkunLama.Parameters.AddWithValue("@fk", TxtFaktur.Text)
-                    Using rd = cmdAkunLama.ExecuteReader()
-                        While rd.Read()
-                            Dim kode As String = rd(0).ToString().Trim()
-                            If kode <> "" Then akunLama.Add(kode)
-                        End While
-                    End Using
-                End Using
-                ' ========================================
-                ' START: Audit Trail - Edit Transfer Barang
+                ' START: Audit Trail - Edit Transfer Barang (snapshot SEBELUM hapus)
                 ' ========================================
                 Dim sbSnapshot As New System.Text.StringBuilder()
                 Try
@@ -1013,6 +1687,10 @@ Public Class FormTransferBarang
                 ' ========================================
                 ' END: Audit Trail - Edit Transfer Barang
                 ' ========================================
+
+                ' HapusUntukEdit memanggil ModuleHapusTransaksi.HapusTransferBarang
+                ' yang sudah menangani: reversal counter stok, HitungStokPerubahan,
+                ' AuditStokTransaksi, DELETE 4 tabel, dan UpdateSaldoAkun akun lama.
                 HapusUntukEdit(transaction)
             Else
                 If Not ModulHakAkses.SettingIzinkanTanggalLampau Then
@@ -1059,7 +1737,7 @@ Public Class FormTransferBarang
             AuditStokTransaksi(TxtFaktur.Text, "Transfer Barang", auditDGV, auditHistory, auditDetail, auditStokDelta, transaction)
 
             ' ========================================
-            ' STEP 2: SELECT daftar akun BARU
+            ' UPDATE saldo untuk akun BARU (akun lama sudah di-update oleh HapusUntukEdit)
             ' ========================================
             Dim akunBaru As New HashSet(Of String)(StringComparer.OrdinalIgnoreCase)
             Using cmdAkunBaru As New MySqlCommand(
@@ -1076,18 +1754,7 @@ Public Class FormTransferBarang
                 End Using
             End Using
 
-            ' ========================================
-            ' STEP 3: GABUNGKAN daftar akun LAMA + BARU
-            ' ========================================
-            Dim semuaAkunTerlibat As New HashSet(Of String)(akunLama, StringComparer.OrdinalIgnoreCase)
-            For Each akun In akunBaru
-                semuaAkunTerlibat.Add(akun)
-            Next
-
-            ' ========================================
-            ' STEP 4: UPDATE saldo untuk SEMUA akun yang terlibat
-            ' ========================================
-            For Each kodeAkun As String In semuaAkunTerlibat
+            For Each kodeAkun As String In akunBaru
                 UpdateSaldoAkun(kodeAkun, transaction)
             Next
 
@@ -1134,66 +1801,17 @@ Public Class FormTransferBarang
 
 
 
+    ''' <summary>
+    ''' Hapus data transfer barang lama sebagai langkah awal proses edit.
+    ''' Wrapper tipis ke ModuleHapusTransaksi.HapusTransferBarang — logika ada di modul.
+    ''' UpdateSaldoAkun untuk akun lama sudah ditangani di ProsesSimpan (akunLama + akunBaru).
+    ''' </summary>
     Private Sub HapusUntukEdit(ByVal transaction As MySqlTransaction)
-        Dim stokKeluarField As String
-        Dim stokMasukField As String
-
-        Select Case LblLokasiBarang.Text
-            Case "TOKO"
-                stokKeluarField = "TRANSFER_BARANG_KELUAR_TOKO"
-                stokMasukField = "TRANSFER_BARANG_MASUK_GUDANG"
-            Case "GUDANG"
-                stokKeluarField = "TRANSFER_BARANG_KELUAR_GUDANG"
-                stokMasukField = "TRANSFER_BARANG_MASUK_TOKO"
-            Case Else
-                Throw New Exception("Lokasi barang tidak valid.")
-        End Select
-
-        Dim updateQuery As String = "UPDATE tbl_barang SET " & stokKeluarField & " = " & stokKeluarField & " - @QtySatKeluar, " & stokMasukField & " = " & stokMasukField & " - @QtySatMasuk WHERE ID_BARANG = @KodeBarang"
-
-        ' Audit hapus lama: A dari DGVDetail, D dari delta stok
-        Dim auditDGVHapusTB As New Dictionary(Of String, Decimal)()
-        Dim auditDeltaHapusTB As New Dictionary(Of String, Decimal)()
-
-        For Each row As DataGridViewRow In FormUtama.DGVDetail.Rows
-            If Not row.IsNewRow AndAlso row.Cells("ID_BARANG").Value IsNot Nothing Then
-                Dim kodeBarang As String = row.Cells("ID_BARANG").Value.ToString()
-
-                If Not String.IsNullOrEmpty(kodeBarang) Then
-                    Dim qtySat As Decimal = If(row.Cells("TOTAL_QTY").Value IsNot Nothing, Convert.ToDecimal(row.Cells("TOTAL_QTY").Value), 0D)
-                    If auditDGVHapusTB.ContainsKey(kodeBarang) Then auditDGVHapusTB(kodeBarang) += qtySat Else auditDGVHapusTB(kodeBarang) = qtySat
-
-                    Using cmd As New MySqlCommand(updateQuery, conn, transaction)
-                        cmd.Parameters.AddWithValue("@QtySatKeluar", qtySat)
-                        cmd.Parameters.AddWithValue("@QtySatMasuk", qtySat)
-                        cmd.Parameters.AddWithValue("@KodeBarang", kodeBarang)
-                        cmd.ExecuteNonQuery()
-                    End Using
-
-                    Dim sebelumEditTB As Decimal = BacaStokSaatIni(kodeBarang, LblLokasiBarang.Text, transaction)
-                    HitungStokPerubahan(kodeBarang, transaction)
-                    Dim sesudahEditTB As Decimal = BacaStokSaatIni(kodeBarang, LblLokasiBarang.Text, transaction)
-                    Dim deltaTB As Decimal = sesudahEditTB - sebelumEditTB  ' hapus transfer lama mengembalikan stok asal
-                    If auditDeltaHapusTB.ContainsKey(kodeBarang) Then auditDeltaHapusTB(kodeBarang) += deltaTB Else auditDeltaHapusTB(kodeBarang) = deltaTB
-                End If
-            End If
-        Next
-
-        AuditStokTransaksi(TxtFaktur.Text & " [HAPUS-EDIT]", "Edit Transfer Barang (hapus lama)", auditDGVHapusTB, Nothing, Nothing, auditDeltaHapusTB, transaction)
-
-        Dim deleteQueries As String() = {
-            "DELETE FROM Transfer_Barang WHERE ID_TRANSFER = @ID_TRANSFER",
-            "DELETE FROM Transfer_Barang_Detail WHERE ID_TRANSFER = @ID_TRANSFER",
-            "DELETE FROM JurnalUmum WHERE NO_TRANSAKSI = @ID_TRANSFER",
-            "DELETE FROM HistoryBarang WHERE FAKTUR = @ID_TRANSFER"
-        }
-
-        For Each query As String In deleteQueries
-            Using cmd As New MySqlCommand(query, conn, transaction)
-                cmd.Parameters.AddWithValue("@ID_TRANSFER", TxtFaktur.Text)
-                cmd.ExecuteNonQuery()
-            End Using
-        Next
+        ModuleHapusTransaksi.HapusTransferBarang(
+            TxtFaktur.Text,
+            LblLokasiBarang.Text,
+            TxtFaktur.Text & " [HAPUS-EDIT]",
+            transaction)
     End Sub
 
 
@@ -1428,6 +2046,8 @@ Public Class FormTransferBarang
                             If Not String.IsNullOrEmpty(satuanTuple.Item2) Then comboCell.Items.Add(satuanTuple.Item2)
                             If Not String.IsNullOrEmpty(satuanTuple.Item3) Then comboCell.Items.Add(satuanTuple.Item3)
                         End If
+
+                        UpdateWarnaKodeBarang(row.Index)
                     Loop
                 End Using
             End Using
@@ -1447,9 +2067,7 @@ Public Class FormTransferBarang
                 DgvData.Rows(DgvData.Rows.Count - 1).Selected = True
             End If
 
-            If ModulHakAkses.SettingFokusOtomatis Then
-                TxtNama.Select()
-            End If
+            SetupFocusToGrid()
 
         Catch ex As Exception
             ' Rollback transaksi jika terjadi kesalahan

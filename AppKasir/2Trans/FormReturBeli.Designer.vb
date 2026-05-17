@@ -23,19 +23,19 @@ Partial Class FormReturBeli
     <System.Diagnostics.DebuggerStepThrough()>
     Private Sub InitializeComponent()
         Me.components = New System.ComponentModel.Container()
+        Dim DataGridViewCellStyle1 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
+        Dim DataGridViewCellStyle2 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
+        Dim DataGridViewCellStyle11 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
+        Dim DataGridViewCellStyle12 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
+        Dim DataGridViewCellStyle3 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
+        Dim DataGridViewCellStyle4 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
+        Dim DataGridViewCellStyle5 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
+        Dim DataGridViewCellStyle6 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
+        Dim DataGridViewCellStyle7 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
+        Dim DataGridViewCellStyle8 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
+        Dim DataGridViewCellStyle9 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
+        Dim DataGridViewCellStyle10 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(FormReturBeli))
-        Dim DataGridViewCellStyle13 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
-        Dim DataGridViewCellStyle14 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
-        Dim DataGridViewCellStyle23 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
-        Dim DataGridViewCellStyle24 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
-        Dim DataGridViewCellStyle15 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
-        Dim DataGridViewCellStyle16 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
-        Dim DataGridViewCellStyle17 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
-        Dim DataGridViewCellStyle18 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
-        Dim DataGridViewCellStyle19 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
-        Dim DataGridViewCellStyle20 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
-        Dim DataGridViewCellStyle21 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
-        Dim DataGridViewCellStyle22 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
         Me.PanelHeader = New System.Windows.Forms.Panel()
         Me.LblHeader = New System.Windows.Forms.Label()
         Me.BtnKeluarForm = New System.Windows.Forms.Button()
@@ -113,6 +113,7 @@ Partial Class FormReturBeli
         Me.BtnSimpan = New System.Windows.Forms.Button()
         Me.listSupplier = New System.Windows.Forms.ListBox()
         Me.LstBarang = New System.Windows.Forms.ListBox()
+        Me.Button1 = New System.Windows.Forms.Button()
         Me.PanelHeader.SuspendLayout()
         Me.GroupBox1.SuspendLayout()
         Me.PanelCari.SuspendLayout()
@@ -128,6 +129,7 @@ Partial Class FormReturBeli
         '
         Me.PanelHeader.BackColor = System.Drawing.Color.SandyBrown
         Me.PanelHeader.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D
+        Me.PanelHeader.Controls.Add(Me.Button1)
         Me.PanelHeader.Controls.Add(Me.LblHeader)
         Me.PanelHeader.Controls.Add(Me.BtnKeluarForm)
         Me.PanelHeader.Dock = System.Windows.Forms.DockStyle.Top
@@ -535,33 +537,33 @@ Partial Class FormReturBeli
         '
         Me.DgvData.AllowUserToResizeColumns = False
         Me.DgvData.AllowUserToResizeRows = False
-        DataGridViewCellStyle13.ForeColor = System.Drawing.Color.Black
-        Me.DgvData.AlternatingRowsDefaultCellStyle = DataGridViewCellStyle13
+        DataGridViewCellStyle1.ForeColor = System.Drawing.Color.Black
+        Me.DgvData.AlternatingRowsDefaultCellStyle = DataGridViewCellStyle1
         Me.DgvData.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
             Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.DgvData.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill
         Me.DgvData.AutoSizeRowsMode = System.Windows.Forms.DataGridViewAutoSizeRowsMode.DisplayedCells
-        DataGridViewCellStyle14.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter
-        DataGridViewCellStyle14.Font = New System.Drawing.Font("Century Gothic", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        DataGridViewCellStyle14.WrapMode = System.Windows.Forms.DataGridViewTriState.[True]
-        Me.DgvData.ColumnHeadersDefaultCellStyle = DataGridViewCellStyle14
+        DataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter
+        DataGridViewCellStyle2.Font = New System.Drawing.Font("Century Gothic", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        DataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.[True]
+        Me.DgvData.ColumnHeadersDefaultCellStyle = DataGridViewCellStyle2
         Me.DgvData.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
         Me.DgvData.Columns.AddRange(New System.Windows.Forms.DataGridViewColumn() {Me.ID_BARANG, Me.NAMA_BARANG, Me.HARGA_BELI_TERAKHIR, Me.QTY, Me.SATUAN, Me.ISI_SATUAN, Me.HARGA_BELI_SATUAN, Me.QTY_SAT, Me.TOTAL, Me.StokToko, Me.StokGudang})
-        DataGridViewCellStyle23.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft
-        DataGridViewCellStyle23.BackColor = System.Drawing.SystemColors.Window
-        DataGridViewCellStyle23.Font = New System.Drawing.Font("Century Gothic", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        DataGridViewCellStyle23.ForeColor = System.Drawing.SystemColors.ControlText
-        DataGridViewCellStyle23.SelectionBackColor = System.Drawing.SystemColors.Highlight
-        DataGridViewCellStyle23.SelectionForeColor = System.Drawing.SystemColors.HighlightText
-        DataGridViewCellStyle23.WrapMode = System.Windows.Forms.DataGridViewTriState.[False]
-        Me.DgvData.DefaultCellStyle = DataGridViewCellStyle23
+        DataGridViewCellStyle11.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft
+        DataGridViewCellStyle11.BackColor = System.Drawing.SystemColors.Window
+        DataGridViewCellStyle11.Font = New System.Drawing.Font("Century Gothic", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        DataGridViewCellStyle11.ForeColor = System.Drawing.SystemColors.ControlText
+        DataGridViewCellStyle11.SelectionBackColor = System.Drawing.SystemColors.Highlight
+        DataGridViewCellStyle11.SelectionForeColor = System.Drawing.SystemColors.HighlightText
+        DataGridViewCellStyle11.WrapMode = System.Windows.Forms.DataGridViewTriState.[False]
+        Me.DgvData.DefaultCellStyle = DataGridViewCellStyle11
         Me.DgvData.Location = New System.Drawing.Point(6, 180)
         Me.DgvData.Name = "DgvData"
-        DataGridViewCellStyle24.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft
-        DataGridViewCellStyle24.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        DataGridViewCellStyle24.WrapMode = System.Windows.Forms.DataGridViewTriState.[True]
-        Me.DgvData.RowHeadersDefaultCellStyle = DataGridViewCellStyle24
+        DataGridViewCellStyle12.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft
+        DataGridViewCellStyle12.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        DataGridViewCellStyle12.WrapMode = System.Windows.Forms.DataGridViewTriState.[True]
+        Me.DgvData.RowHeadersDefaultCellStyle = DataGridViewCellStyle12
         Me.DgvData.RowHeadersWidthSizeMode = System.Windows.Forms.DataGridViewRowHeadersWidthSizeMode.DisableResizing
         Me.DgvData.ScrollBars = System.Windows.Forms.ScrollBars.Vertical
         Me.DgvData.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.CellSelect
@@ -577,28 +579,28 @@ Partial Class FormReturBeli
         '
         'NAMA_BARANG
         '
-        DataGridViewCellStyle15.ForeColor = System.Drawing.Color.Black
-        Me.NAMA_BARANG.DefaultCellStyle = DataGridViewCellStyle15
+        DataGridViewCellStyle3.ForeColor = System.Drawing.Color.Black
+        Me.NAMA_BARANG.DefaultCellStyle = DataGridViewCellStyle3
         Me.NAMA_BARANG.FillWeight = 200.0!
         Me.NAMA_BARANG.HeaderText = "NAMA BARANG"
         Me.NAMA_BARANG.Name = "NAMA_BARANG"
         '
         'HARGA_BELI_TERAKHIR
         '
-        DataGridViewCellStyle16.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight
-        DataGridViewCellStyle16.Format = "N0"
-        DataGridViewCellStyle16.NullValue = Nothing
-        Me.HARGA_BELI_TERAKHIR.DefaultCellStyle = DataGridViewCellStyle16
+        DataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight
+        DataGridViewCellStyle4.Format = "N0"
+        DataGridViewCellStyle4.NullValue = Nothing
+        Me.HARGA_BELI_TERAKHIR.DefaultCellStyle = DataGridViewCellStyle4
         Me.HARGA_BELI_TERAKHIR.FillWeight = 60.0!
         Me.HARGA_BELI_TERAKHIR.HeaderText = "HARGA BELI"
         Me.HARGA_BELI_TERAKHIR.Name = "HARGA_BELI_TERAKHIR"
         '
         'QTY
         '
-        DataGridViewCellStyle17.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight
-        DataGridViewCellStyle17.Format = "N0"
-        DataGridViewCellStyle17.NullValue = Nothing
-        Me.QTY.DefaultCellStyle = DataGridViewCellStyle17
+        DataGridViewCellStyle5.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight
+        DataGridViewCellStyle5.Format = "N0"
+        DataGridViewCellStyle5.NullValue = Nothing
+        Me.QTY.DefaultCellStyle = DataGridViewCellStyle5
         Me.QTY.FillWeight = 30.0!
         Me.QTY.HeaderText = "QTY"
         Me.QTY.Name = "QTY"
@@ -624,10 +626,10 @@ Partial Class FormReturBeli
         '
         'HARGA_BELI_SATUAN
         '
-        DataGridViewCellStyle18.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight
-        DataGridViewCellStyle18.Format = "N0"
-        DataGridViewCellStyle18.NullValue = Nothing
-        Me.HARGA_BELI_SATUAN.DefaultCellStyle = DataGridViewCellStyle18
+        DataGridViewCellStyle6.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight
+        DataGridViewCellStyle6.Format = "N0"
+        DataGridViewCellStyle6.NullValue = Nothing
+        Me.HARGA_BELI_SATUAN.DefaultCellStyle = DataGridViewCellStyle6
         Me.HARGA_BELI_SATUAN.HeaderText = "HARGA BELI SATUAN"
         Me.HARGA_BELI_SATUAN.Name = "HARGA_BELI_SATUAN"
         Me.HARGA_BELI_SATUAN.Resizable = System.Windows.Forms.DataGridViewTriState.[True]
@@ -636,10 +638,10 @@ Partial Class FormReturBeli
         '
         'QTY_SAT
         '
-        DataGridViewCellStyle19.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight
-        DataGridViewCellStyle19.Format = "N0"
-        DataGridViewCellStyle19.NullValue = Nothing
-        Me.QTY_SAT.DefaultCellStyle = DataGridViewCellStyle19
+        DataGridViewCellStyle7.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight
+        DataGridViewCellStyle7.Format = "N0"
+        DataGridViewCellStyle7.NullValue = Nothing
+        Me.QTY_SAT.DefaultCellStyle = DataGridViewCellStyle7
         Me.QTY_SAT.FillWeight = 40.0!
         Me.QTY_SAT.HeaderText = "QTY SAT"
         Me.QTY_SAT.Name = "QTY_SAT"
@@ -647,10 +649,10 @@ Partial Class FormReturBeli
         '
         'TOTAL
         '
-        DataGridViewCellStyle20.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight
-        DataGridViewCellStyle20.Format = "N0"
-        DataGridViewCellStyle20.NullValue = Nothing
-        Me.TOTAL.DefaultCellStyle = DataGridViewCellStyle20
+        DataGridViewCellStyle8.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight
+        DataGridViewCellStyle8.Format = "N0"
+        DataGridViewCellStyle8.NullValue = Nothing
+        Me.TOTAL.DefaultCellStyle = DataGridViewCellStyle8
         Me.TOTAL.FillWeight = 80.0!
         Me.TOTAL.HeaderText = "TOTAL"
         Me.TOTAL.Name = "TOTAL"
@@ -660,18 +662,18 @@ Partial Class FormReturBeli
         '
         'StokToko
         '
-        DataGridViewCellStyle21.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight
-        DataGridViewCellStyle21.Format = "#,0.#"
-        Me.StokToko.DefaultCellStyle = DataGridViewCellStyle21
+        DataGridViewCellStyle9.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight
+        DataGridViewCellStyle9.Format = "#,0.#"
+        Me.StokToko.DefaultCellStyle = DataGridViewCellStyle9
         Me.StokToko.FillWeight = 40.0!
         Me.StokToko.HeaderText = "S TOKO"
         Me.StokToko.Name = "StokToko"
         '
         'StokGudang
         '
-        DataGridViewCellStyle22.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight
-        DataGridViewCellStyle22.Format = "#,0.#"
-        Me.StokGudang.DefaultCellStyle = DataGridViewCellStyle22
+        DataGridViewCellStyle10.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight
+        DataGridViewCellStyle10.Format = "#,0.#"
+        Me.StokGudang.DefaultCellStyle = DataGridViewCellStyle10
         Me.StokGudang.FillWeight = 40.0!
         Me.StokGudang.HeaderText = "S GUDANG"
         Me.StokGudang.Name = "StokGudang"
@@ -1165,6 +1167,30 @@ Partial Class FormReturBeli
         Me.LstBarang.Size = New System.Drawing.Size(533, 302)
         Me.LstBarang.TabIndex = 143
         '
+        'Button1
+        '
+        Me.Button1.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.Button1.AutoSize = True
+        Me.Button1.BackColor = System.Drawing.Color.White
+        Me.Button1.Cursor = System.Windows.Forms.Cursors.Hand
+        Me.Button1.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(CType(CType(220, Byte), Integer), CType(CType(38, Byte), Integer), CType(CType(38, Byte), Integer))
+        Me.Button1.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(CType(CType(252, Byte), Integer), CType(CType(165, Byte), Integer), CType(CType(165, Byte), Integer))
+        Me.Button1.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(CType(CType(254, Byte), Integer), CType(CType(226, Byte), Integer), CType(CType(226, Byte), Integer))
+        Me.Button1.FlatStyle = System.Windows.Forms.FlatStyle.Flat
+        Me.Button1.Font = New System.Drawing.Font("Segoe UI", 9.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.Button1.ForeColor = System.Drawing.Color.FromArgb(CType(CType(220, Byte), Integer), CType(CType(38, Byte), Integer), CType(CType(38, Byte), Integer))
+        Me.Button1.Image = CType(resources.GetObject("Button1.Image"), System.Drawing.Image)
+        Me.Button1.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft
+        Me.Button1.Location = New System.Drawing.Point(1323, 3)
+        Me.Button1.Margin = New System.Windows.Forms.Padding(4, 3, 4, 3)
+        Me.Button1.Name = "Button1"
+        Me.Button1.Size = New System.Drawing.Size(112, 31)
+        Me.Button1.TabIndex = 78
+        Me.Button1.Text = "Keluar (Esc)"
+        Me.Button1.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
+        Me.Button1.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText
+        Me.Button1.UseVisualStyleBackColor = False
+        '
         'FormReturBeli
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
@@ -1282,6 +1308,7 @@ Partial Class FormReturBeli
     Friend WithEvents TOTAL As DataGridViewTextBoxColumn
     Friend WithEvents StokToko As DataGridViewTextBoxColumn
     Friend WithEvents StokGudang As DataGridViewTextBoxColumn
+    Friend WithEvents Button1 As Button
 End Class
 
 

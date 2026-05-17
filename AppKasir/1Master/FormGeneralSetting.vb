@@ -137,6 +137,9 @@ Public Class FormGeneralSetting
         ' Pasang event handler untuk show/hide batas satuan
         AddHandler CmbJualAutoLevelSatuan.SelectedIndexChanged, AddressOf CmbJualAutoLevelSatuan_SelectedIndexChanged
 
+        ' Pasang event handler untuk validasi konflik Mode Pencarian vs Sembunyikan Pencarian
+        AddHandler CmbGlobalFokus.SelectedIndexChanged, AddressOf CmbGlobalFokus_SelectedIndexChanged
+
         ' Terapkan visibilitas awal sesuai nilai yang sudah dibaca dari DB
         TerapkanVisibilitasBatasSatuan()
     End Sub
@@ -154,6 +157,23 @@ Public Class FormGeneralSetting
 
     Private Sub CmbJualAutoLevelSatuan_SelectedIndexChanged(sender As Object, e As EventArgs)
         TerapkanVisibilitasBatasSatuan()
+    End Sub
+
+    ''' <summary>
+    ''' Saat Mode Pencarian diubah ke "Pencarian", pastikan Sembunyikan Pencarian tidak aktif.
+    ''' Konflik: TxtNama.Focus() gagal diam-diam jika PanelCari tidak visible.
+    ''' </summary>
+    Private Sub CmbGlobalFokus_SelectedIndexChanged(sender As Object, e As EventArgs)
+        If CmbGlobalFokus.Text.Trim() = "Pencarian" AndAlso CmbHidePencarianAtas.Text.Trim() = "Iya" Then
+            MessageBox.Show(
+                "Konflik Setting Terdeteksi:" & vbCrLf & vbCrLf &
+                "  Mode pencarian   : Pencarian" & vbCrLf &
+                "  Sembunyikan panel: Iya" & vbCrLf & vbCrLf &
+                "Panel pencarian tidak bisa disembunyikan saat mode fokus adalah 'Pencarian'." & vbCrLf &
+                "'Sembunyikan pencarian' otomatis direset ke 'Tidak'.",
+                "Konflik Setting", MessageBoxButtons.OK, MessageBoxIcon.Warning)
+            CmbHidePencarianAtas.Text = "Tidak"
+        End If
     End Sub
 
     Public Sub SinkronkanHakAksesTanpaDuplikat()
@@ -264,6 +284,22 @@ Public Class FormGeneralSetting
     End Sub
 
     Private Sub BtnSimpan_Click(sender As Object, e As EventArgs) Handles BtnSimpan.Click
+
+        ' ─── Validasi Konflik: Mode Pencarian vs Sembunyikan Pencarian ───
+        ' Jika Mode fokus = "Pencarian", panel pencarian TIDAK BOLEH disembunyikan.
+        ' Sebab TxtNama.Focus() akan gagal diam-diam jika PanelCari tidak visible.
+        If CmbGlobalFokus.Text.Trim() = "Pencarian" AndAlso CmbHidePencarianAtas.Text.Trim() = "Iya" Then
+            MessageBox.Show(
+                "Konflik Setting Terdeteksi:" & vbCrLf & vbCrLf &
+                "  Mode pencarian   : Pencarian" & vbCrLf &
+                "  Sembunyikan panel: Iya" & vbCrLf & vbCrLf &
+                "Panel pencarian tidak bisa disembunyikan saat mode fokus adalah 'Pencarian'." & vbCrLf &
+                "'Sembunyikan pencarian' otomatis direset ke 'Tidak'.",
+                "Konflik Setting", MessageBoxButtons.OK, MessageBoxIcon.Warning)
+            CmbHidePencarianAtas.Text = "Tidak"
+        End If
+        ' ──────────────────────────────────────────────────────────────────
+
         Dim transaksi As MySqlTransaction = Nothing
         Try
             transaksi = conn.BeginTransaction()

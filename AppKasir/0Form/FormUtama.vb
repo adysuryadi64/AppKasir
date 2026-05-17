@@ -1727,74 +1727,15 @@ Public Class FormUtama
     Private Sub Hapusbayarhutang()
         If MessageBox.Show("Apakah data ini akan dihapus ...???", "", MessageBoxButtons.YesNo) = DialogResult.Yes Then
             Dim transaction As MySqlTransaction = conn.BeginTransaction()
-
             Try
-                For Each row As DataGridViewRow In DGVDetail.Rows
-                    Using cmdUpdateBeli As New MySqlCommand("UPDATE pembelian SET PEMBAYARAN = PEMBAYARAN - @PEMBAYARAN, TAGIHAN = TAGIHAN + @TAGIHAN, TGL_BAYAR = NULL, NOMINALBAYAR = NOMINALBAYAR - @NOMINALBAYAR, STATUS_TRANSAKSI_BELI = 'Belum Lunas' WHERE ID_PEMBELIAN = @ID_PEMBELIAN", conn, transaction)
-
-                        ' Menggunakan default 0 jika nilai tidak valid
-                        Dim nominalBayar As Decimal = If(IsDBNull(row.Cells("PEMBAYARAN").Value) OrElse row.Cells("PEMBAYARAN").Value Is Nothing, 0D, Convert.ToDecimal(row.Cells("PEMBAYARAN").Value))
-
-                        cmdUpdateBeli.Parameters.AddWithValue("@PEMBAYARAN", nominalBayar)
-                        cmdUpdateBeli.Parameters.AddWithValue("@TAGIHAN", nominalBayar)
-                        cmdUpdateBeli.Parameters.AddWithValue("@NOMINALBAYAR", nominalBayar)
-                        cmdUpdateBeli.Parameters.AddWithValue("@ID_PEMBELIAN", row.Cells("ID_BELI").Value)
-
-                        ' Eksekusi perintah
-                        cmdUpdateBeli.ExecuteNonQuery()
-                    End Using
-                Next
-
-                ' ========================================
-                ' START: Audit Trail - Hapus Bayar Hutang
-                ' ========================================
                 ModuleAuditTrail.CatatAudit(TxtFakturTransaksi.Text, "HAPUS", "Bayar Hutang", trans:=transaction)
-                ' ========================================
-                ' END: Audit Trail - Hapus Bayar Hutang
-                ' ========================================
-
-                ' SEBELUM menghapus JurnalUmum: SIMPAN daftar akun terlibat terlebih dahulu!
-                Dim akunTerlibat As New HashSet(Of String)(StringComparer.OrdinalIgnoreCase)
-                Using cmdAkun As New MySqlCommand(
-                    "SELECT DISTINCT NOMOR_AKUN_D FROM JurnalUmum WHERE NO_TRANSAKSI = @fk AND NOMOR_AKUN_D <> '' " &
-                    "UNION " &
-                    "SELECT DISTINCT NOMOR_AKUN_K FROM JurnalUmum WHERE NO_TRANSAKSI = @fk AND NOMOR_AKUN_K <> ''",
-                    conn, transaction)
-                    cmdAkun.Parameters.AddWithValue("@fk", TxtFakturTransaksi.Text)
-                    Using rd = cmdAkun.ExecuteReader()
-                        While rd.Read()
-                            Dim kode As String = rd(0).ToString().Trim()
-                            If kode <> "" Then akunTerlibat.Add(kode)
-                        End While
-                    End Using
-                End Using
-
-                Dim deleteQueries As String() = {
-                    "DELETE FROM hutang WHERE NOBAYARHUTANG = @NO_TRANSAKSI",
-                    "DELETE FROM Hutang_Detail WHERE ID_BAYAR = @NO_TRANSAKSI",
-                    "DELETE FROM JurnalUmum WHERE NO_TRANSAKSI = @NO_TRANSAKSI"
-                }
-
-                For Each query As String In deleteQueries
-                    Using cmd As New MySqlCommand(query, conn, transaction)
-                        cmd.Parameters.AddWithValue("@NO_TRANSAKSI", TxtFakturTransaksi.Text)
-                        cmd.ExecuteNonQuery()
-                    End Using
-                Next
-
-                ' Panggil UpdateSaldoAkun per akun yang disimpan SEBELUM delete JurnalUmum
-                For Each kodeAkun As String In akunTerlibat
-                    UpdateSaldoAkun(kodeAkun, transaction)
-                Next
+                ModuleHapusTransaksi.HapusBayarHutang(TxtFakturTransaksi.Text, transaction)
                 transaction.Commit()
-
             Catch ex As Exception
-                ' Rollback transaksi jika terjadi kesalahan
                 transaction.Rollback()
                 MessageBox.Show("Oh tidak! Transaksi dibatalkan karena terjadi kesalahan." & vbCrLf &
                                 "Detail kesalahan: " & ex.Message,
-                  "Oops! Ada masalah...", MessageBoxButtons.OK, MessageBoxIcon.Error)
-
+                                "Oops! Ada masalah...", MessageBoxButtons.OK, MessageBoxIcon.Error)
             End Try
         End If
     End Sub
@@ -1802,110 +1743,24 @@ Public Class FormUtama
     Private Sub HapusbayarPiutang()
         If MessageBox.Show("Apakah data ini akan dihapus ...???", "", MessageBoxButtons.YesNo) = DialogResult.Yes Then
             Dim transaction As MySqlTransaction = conn.BeginTransaction()
-
-            Try 'SELECT ID_JUAL, KODE, NAMA, DIBAYAR, PIUTANG, TANGGAL_BAYAR, PEMBAYARAN, STATUS FROM Piutang_Detail
-                For Each row As DataGridViewRow In DGVDetail.Rows
-
-                    Using cmdUpdatePembelian As New MySqlCommand("UPDATE penjualan SET BAYAR = BAYAR - @BAYAR, SISA_TAGIHAN = SISA_TAGIHAN + @SISA_TAGIHAN, TGL_PEMBAYARAN = NULL, NOMINALBAYARPIUTANG = NOMINALBAYARPIUTANG - @NOMINALBAYARPIUTANG, STATUS_TRANSAKSI = 'Belum Lunas' WHERE ID_PENJUALAN = @ID_PENJUALAN", conn, transaction)
-
-                        ' Menggunakan variabel untuk nilai BAYAR
-                        Dim bayar As Decimal = If(IsDBNull(row.Cells(6).Value) OrElse row.Cells(6).Value Is Nothing, 0D, CDec(row.Cells(6).Value))
-
-                        ' Menambahkan parameter dengan nilai yang sudah dicek
-                        cmdUpdatePembelian.Parameters.AddWithValue("@BAYAR", bayar)
-                        cmdUpdatePembelian.Parameters.AddWithValue("@SISA_TAGIHAN", bayar) ' Menggunakan nilai yang sama untuk SISA_TAGIHAN
-                        cmdUpdatePembelian.Parameters.AddWithValue("@NOMINALBAYARPIUTANG", bayar) ' Menggunakan nilai yang sama untuk NOMINALBAYARPIUTANG
-                        cmdUpdatePembelian.Parameters.AddWithValue("@ID_PENJUALAN", row.Cells(0).Value)
-
-                        ' Eksekusi perintah
-                        cmdUpdatePembelian.ExecuteNonQuery()
-                    End Using
-
-                Next
-
-                ' ========================================
-                ' START: Audit Trail - Hapus Bayar Piutang
-                ' ========================================
+            Try
                 ModuleAuditTrail.CatatAudit(TxtFakturTransaksi.Text, "HAPUS", "Bayar Piutang", trans:=transaction)
-                ' ========================================
-                ' END: Audit Trail - Hapus Bayar Piutang
-                ' ========================================
-
-                ' SEBELUM menghapus JurnalUmum: SIMPAN daftar akun terlibat terlebih dahulu!
-                Dim akunTerlibat As New HashSet(Of String)(StringComparer.OrdinalIgnoreCase)
-                Using cmdAkun As New MySqlCommand(
-                    "SELECT DISTINCT NOMOR_AKUN_D FROM JurnalUmum WHERE NO_TRANSAKSI = @fk AND NOMOR_AKUN_D <> '' " &
-                    "UNION " &
-                    "SELECT DISTINCT NOMOR_AKUN_K FROM JurnalUmum WHERE NO_TRANSAKSI = @fk AND NOMOR_AKUN_K <> ''",
-                    conn, transaction)
-                    cmdAkun.Parameters.AddWithValue("@fk", TxtFakturTransaksi.Text)
-                    Using rd = cmdAkun.ExecuteReader()
-                        While rd.Read()
-                            Dim kode As String = rd(0).ToString().Trim()
-                            If kode <> "" Then akunTerlibat.Add(kode)
-                        End While
-                    End Using
-                End Using
-
-                Dim deleteQueries As String() = {
-                    "DELETE FROM Piutang WHERE ID_BAYAR_PIUTANG = @NO_TRANSAKSI",
-                    "DELETE FROM JurnalUmum WHERE NO_TRANSAKSI = @NO_TRANSAKSI",
-                    "DELETE FROM Piutang_Detail WHERE ID_BAYAR = @NO_TRANSAKSI"
-                }
-
-                For Each query As String In deleteQueries
-                    Using cmd As New MySqlCommand(query, conn, transaction)
-                        cmd.Parameters.AddWithValue("@NO_TRANSAKSI", TxtFakturTransaksi.Text)
-                        cmd.ExecuteNonQuery()
-                    End Using
-                Next
-
-                ' Panggil UpdateSaldoAkun per akun yang disimpan SEBELUM delete JurnalUmum
-                For Each kodeAkun As String In akunTerlibat
-                    UpdateSaldoAkun(kodeAkun, transaction)
-                Next
+                ModuleHapusTransaksi.HapusBayarPiutang(TxtFakturTransaksi.Text, transaction)
                 transaction.Commit()
-
             Catch ex As Exception
-                ' Rollback transaksi jika terjadi kesalahan
                 transaction.Rollback()
                 MessageBox.Show("Oh tidak! Transaksi dibatalkan karena terjadi kesalahan." & vbCrLf &
                                 "Detail kesalahan: " & ex.Message,
-                  "Oops! Ada masalah...", MessageBoxButtons.OK, MessageBoxIcon.Error)
-
+                                "Oops! Ada masalah...", MessageBoxButtons.OK, MessageBoxIcon.Error)
             End Try
         End If
     End Sub
 
     Public Sub Hapusstokopname()
         If MessageBox.Show("Apakah data ini akan dihapus ...???", "", MessageBoxButtons.YesNo) = DialogResult.Yes Then
-            Dim transaction As MySqlTransaction = Nothing
-
+            Dim transaction As MySqlTransaction = conn.BeginTransaction()
             Try
-                ' Mulai transaksi
-                transaction = conn.BeginTransaction()
-
-                Dim updateQuery As String = ""
-                Dim stokField As String = ""
-
-                Select Case TxtLokasiUntukEdit.Text
-                    Case "TOKO"
-                        stokField = "OPNAME_TOKO"
-                    Case "GUDANG"
-                        stokField = "OPNAME_GUDANG"
-                End Select
-
-                updateQuery = "UPDATE tbl_barang SET " & stokField & " = " & stokField & " - ? WHERE ID_BARANG = ?"
-
-                Using cmd As New MySqlCommand(updateQuery, conn, transaction)
-                    cmd.Parameters.AddWithValue("@STOK_OPNAME", CDec(DGVTransaksi.CurrentRow.Cells(8).Value))
-                    cmd.Parameters.AddWithValue("@ID_BARANG", DGVTransaksi.CurrentRow.Cells(2).Value.ToString())
-                    cmd.ExecuteNonQuery()
-                End Using
-
-                ' ========================================
-                ' START: Audit Trail - Hapus Stok Opname
-                ' ========================================
+                ' Snapshot dari DGVTransaksi sebelum hapus
                 Dim idStokOpname As String = TxtFakturTransaksi.Text
                 Dim idBarang As String = DGVTransaksi.CurrentRow.Cells(2).Value.ToString()
                 Dim namaBarang As String = If(DGVTransaksi.CurrentRow.Cells(3).Value IsNot Nothing, DGVTransaksi.CurrentRow.Cells(3).Value.ToString(), "")
@@ -1918,60 +1773,15 @@ Public Class FormUtama
                 snapshot.AppendLine("Lokasi: " & lokasi & " | Qty: " & stokOpname.ToString("N0"))
 
                 ModuleAuditTrail.CatatAuditMaster(
-                    "OPN:" & idStokOpname,
-                    "HAPUS",
-                    "Stok Opname",
-                    snapshot.ToString(),
-                    "Hapus stok opname",
-                    transaction
-                )
-                ' ========================================
-                ' END: Audit Trail - Hapus Stok Opname
-                ' ========================================
+                    "OPN:" & idStokOpname, "HAPUS", "Stok Opname",
+                    snapshot.ToString(), "Hapus stok opname", transaction)
 
-                ' SEBELUM menghapus JurnalUmum: SIMPAN daftar akun terlibat terlebih dahulu!
-                Dim akunTerlibat As New HashSet(Of String)(StringComparer.OrdinalIgnoreCase)
-                Using cmdAkun As New MySqlCommand(
-                    "SELECT DISTINCT NOMOR_AKUN_D FROM JurnalUmum WHERE NO_TRANSAKSI = @fk AND NOMOR_AKUN_D <> '' " &
-                    "UNION " &
-                    "SELECT DISTINCT NOMOR_AKUN_K FROM JurnalUmum WHERE NO_TRANSAKSI = @fk AND NOMOR_AKUN_K <> ''",
-                    conn, transaction)
-                    cmdAkun.Parameters.AddWithValue("@fk", TxtFakturTransaksi.Text)
-                    Using rd = cmdAkun.ExecuteReader()
-                        While rd.Read()
-                            Dim kode As String = rd(0).ToString().Trim()
-                            If kode <> "" Then akunTerlibat.Add(kode)
-                        End While
-                    End Using
-                End Using
+                ' Panggil fungsi pusat — logika reversal stok, jurnal, saldo 100% akurat
+                ModuleHapusTransaksi.HapusStokOpname(
+                    idStokOpname, idBarang, stokOpname, lokasi,
+                    "Hapus Stok Opname", transaction)
 
-                Dim deleteQueries As String() = {
-                          "DELETE FROM Stok_Opname WHERE ID_STOK_OPNAME = @ID_STOK_OPNAME",
-                          "DELETE FROM JurnalUmum WHERE NO_TRANSAKSI = @ID_STOK_OPNAME",
-                          "DELETE FROM HistoryBarang WHERE FAKTUR = @ID_STOK_OPNAME"
-                      }
-
-                For Each query As String In deleteQueries
-                    Using cmd As New MySqlCommand(query, conn, transaction)
-                        cmd.Parameters.AddWithValue("@ID_STOK_OPNAME", TxtFakturTransaksi.Text)
-                        cmd.ExecuteNonQuery()
-                    End Using
-                Next
-
-                ' Recalculate stok + audit delta (hapus stok opname)
-                Dim kodeOpname As String = DGVTransaksi.CurrentRow.Cells(2).Value.ToString()
-                Dim sebelumOpname As Decimal = BacaStokSaatIni(kodeOpname, TxtLokasiUntukEdit.Text, transaction)
-                HitungStokPerubahan(kodeOpname, transaction)
-                Dim sesudahOpname As Decimal = BacaStokSaatIni(kodeOpname, TxtLokasiUntukEdit.Text, transaction)
-                Dim auditHapusOpname As New Dictionary(Of String, Decimal)() From {{kodeOpname, Math.Abs(sesudahOpname - sebelumOpname)}}
-                AuditStokTransaksi(TxtFakturTransaksi.Text, "Hapus Stok Opname", Nothing, Nothing, Nothing, auditHapusOpname, transaction)
-
-                ' Panggil UpdateSaldoAkun per akun yang disimpan SEBELUM delete JurnalUmum
-                For Each kodeAkun As String In akunTerlibat
-                    UpdateSaldoAkun(kodeAkun, transaction)
-                Next
                 transaction.Commit()
-
             Catch ex As Exception
                 transaction.Rollback()
                 MessageBox.Show("Oh tidak! Transaksi dibatalkan karena terjadi kesalahan." & vbCrLf &
@@ -1984,143 +1794,48 @@ Public Class FormUtama
     Private Sub Hapustransferstok()
         If MessageBox.Show("Apakah data ini akan dihapus ...???", "", MessageBoxButtons.YesNo) = DialogResult.Yes Then
 
-            Dim idBarangMasuk As String = DGVTransaksi.CurrentRow.Cells(4).Value.ToString()
-            Dim idBarangKeluar As String = DGVTransaksi.CurrentRow.Cells(12).Value.ToString()
+            ' ========================================
+            ' Audit Trail - Hapus Transfer Stok (snapshot SEBELUM hapus, dari DGVTransaksi)
+            ' ========================================
+            Dim idTransfer As String = TxtFakturTransaksi.Text
+            Dim lokasi As String = TxtLokasiUntukEdit.Text
+            Dim idBarangMasuk As String  = If(DGVTransaksi.CurrentRow.Cells(4).Value IsNot Nothing, DGVTransaksi.CurrentRow.Cells(4).Value.ToString(), "")
+            Dim namaBarangMasuk As String = If(DGVTransaksi.CurrentRow.Cells(5).Value IsNot Nothing, DGVTransaksi.CurrentRow.Cells(5).Value.ToString(), "")
+            Dim idBarangKeluar As String  = If(DGVTransaksi.CurrentRow.Cells(12).Value IsNot Nothing, DGVTransaksi.CurrentRow.Cells(12).Value.ToString(), "")
+            Dim namaBarangKeluar As String = If(DGVTransaksi.CurrentRow.Cells(13).Value IsNot Nothing, DGVTransaksi.CurrentRow.Cells(13).Value.ToString(), "")
+            Dim qtySatMasuk As Decimal = ModuleAngka.ParseDecimal(DGVTransaksi.CurrentRow.Cells(9).Value)
+            Dim qtySatKeluar As Decimal = ModuleAngka.ParseDecimal(DGVTransaksi.CurrentRow.Cells(17).Value)
 
-            ' Mulai transaksi
+            Dim snapshot As New System.Text.StringBuilder()
+            snapshot.AppendLine(idTransfer & " | " & DateTime.Now.ToString("yyyy-MM-dd HH:mm"))
+            snapshot.AppendLine("Barang Masuk: " & idBarangMasuk & " — " & namaBarangMasuk & " | Qty: " & qtySatMasuk.ToString("N0"))
+            snapshot.AppendLine("Barang Keluar: " & idBarangKeluar & " — " & namaBarangKeluar & " | Qty: " & qtySatKeluar.ToString("N0"))
+            snapshot.AppendLine("Lokasi: " & lokasi)
+
             Dim transaction As MySqlTransaction = conn.BeginTransaction()
-
             Try
-                Dim qtySatMasuk As Decimal = If(String.IsNullOrEmpty(DGVTransaksi.CurrentRow.Cells(9).Value.ToString()), 0, Decimal.Parse(DGVTransaksi.CurrentRow.Cells(9).Value.ToString()))
-                Dim qtySatKeluar As Decimal = If(String.IsNullOrEmpty(DGVTransaksi.CurrentRow.Cells(17).Value.ToString()), 0, Decimal.Parse(DGVTransaksi.CurrentRow.Cells(17).Value.ToString()))
-
-                Dim queryUpdateStokMasuk As String = String.Empty
-                Dim queryUpdateStokKeluar As String = String.Empty
-
-                ' Tentukan query berdasarkan lokasi
-                Select Case TxtLokasiUntukEdit.Text
-                    Case "GUDANG"
-                        queryUpdateStokMasuk = "UPDATE tbl_barang SET TRANSFER_STOK_MASUK_GUDANG = TRANSFER_STOK_MASUK_GUDANG - ? WHERE ID_BARANG = ?"
-                        queryUpdateStokKeluar = "UPDATE tbl_barang SET TRANSFER_STOK_KELUAR_GUDANG = TRANSFER_STOK_KELUAR_GUDANG - ? WHERE ID_BARANG = ?"
-                    Case "TOKO"
-                        queryUpdateStokMasuk = "UPDATE tbl_barang SET TRANSFER_STOK_MASUK_TOKO = TRANSFER_STOK_MASUK_TOKO - ? WHERE ID_BARANG = ?"
-                        queryUpdateStokKeluar = "UPDATE tbl_barang SET TRANSFER_STOK_KELUAR_TOKO = TRANSFER_STOK_KELUAR_TOKO - ? WHERE ID_BARANG = ?"
-                End Select
-
-                ' Update stok masuk
-                Using cmdUpdateStok As New MySqlCommand(queryUpdateStokMasuk, conn, transaction)
-                    cmdUpdateStok.Parameters.AddWithValue("@QtySat", qtySatMasuk)
-                    cmdUpdateStok.Parameters.AddWithValue("@ID_BARANG", idBarangMasuk)
-                    cmdUpdateStok.ExecuteNonQuery()
-                End Using
-
-                ' Update stok keluar
-                Using cmdUpdateKeluar As New MySqlCommand(queryUpdateStokKeluar, conn, transaction)
-                    cmdUpdateKeluar.Parameters.AddWithValue("@QtySat", qtySatKeluar)
-                    cmdUpdateKeluar.Parameters.AddWithValue("@ID_BARANG", idBarangKeluar)
-                    cmdUpdateKeluar.ExecuteNonQuery()
-                End Using
-
-                ' ========================================
-                ' START: Audit Trail - Hapus Transfer Stok
-                ' ========================================
-                Dim idTransfer As String = TxtFakturTransaksi.Text
-                Dim namaBarangMasuk As String = If(DGVTransaksi.CurrentRow.Cells(5).Value IsNot Nothing, DGVTransaksi.CurrentRow.Cells(5).Value.ToString(), "")
-                Dim namaBarangKeluar As String = If(DGVTransaksi.CurrentRow.Cells(13).Value IsNot Nothing, DGVTransaksi.CurrentRow.Cells(13).Value.ToString(), "")
-                Dim lokasi As String = TxtLokasiUntukEdit.Text
-
-                Dim snapshot As New System.Text.StringBuilder()
-                snapshot.AppendLine(idTransfer & " | " & DateTime.Now.ToString("yyyy-MM-dd HH:mm"))
-                snapshot.AppendLine("Barang Masuk: " & idBarangMasuk & " — " & namaBarangMasuk & " | Qty: " & qtySatMasuk.ToString("N0"))
-                snapshot.AppendLine("Barang Keluar: " & idBarangKeluar & " — " & namaBarangKeluar & " | Qty: " & qtySatKeluar.ToString("N0"))
-                snapshot.AppendLine("Lokasi: " & lokasi)
-
                 ModuleAuditTrail.CatatAuditMaster(
-                    "TRF-STK:" & idTransfer,
-                    "HAPUS",
-                    "Transfer Stok",
-                    snapshot.ToString(),
-                    "Hapus transfer stok",
-                    transaction
-                )
-                ' ========================================
-                ' END: Audit Trail - Hapus Transfer Stok
-                ' ========================================
+                    "TRF-STK:" & idTransfer, "HAPUS", "Transfer Stok",
+                    snapshot.ToString(), "Hapus transfer stok", transaction)
 
-                ' SEBELUM menghapus JurnalUmum: SIMPAN daftar akun terlibat terlebih dahulu!
-                Dim akunTerlibat As New HashSet(Of String)(StringComparer.OrdinalIgnoreCase)
-                Using cmdAkun As New MySqlCommand(
-                    "SELECT DISTINCT NOMOR_AKUN_D FROM JurnalUmum WHERE NO_TRANSAKSI = @fk AND NOMOR_AKUN_D <> '' " &
-                    "UNION " &
-                    "SELECT DISTINCT NOMOR_AKUN_K FROM JurnalUmum WHERE NO_TRANSAKSI = @fk AND NOMOR_AKUN_K <> ''",
-                    conn, transaction)
-                    cmdAkun.Parameters.AddWithValue("@fk", TxtFakturTransaksi.Text)
-                    Using rd = cmdAkun.ExecuteReader()
-                        While rd.Read()
-                            Dim kode As String = rd(0).ToString().Trim()
-                            If kode <> "" Then akunTerlibat.Add(kode)
-                        End While
-                    End Using
-                End Using
+                ' Panggil fungsi pusat — logika reversal stok, jurnal, saldo 100% akurat
+                ModuleHapusTransaksi.HapusTransferStok(idTransfer, lokasi, transaction)
 
-                Dim deleteQueries As String() = {
-                  "DELETE FROM Transfer_stok WHERE ID_TRANSFER = @ID_TRANSFER",
-                  "DELETE FROM JurnalUmum WHERE NO_TRANSAKSI = @ID_TRANSFER",
-                  "DELETE FROM HistoryBarang WHERE FAKTUR = @ID_TRANSFER"
-              }
-
-                For Each query As String In deleteQueries
-                    Using cmd As New MySqlCommand(query, conn, transaction)
-                        cmd.Parameters.AddWithValue("@ID_TRANSFER", TxtFakturTransaksi.Text)
-                        cmd.ExecuteNonQuery()
-                    End Using
-                Next
-
-                ' Recalculate stok + audit delta (hapus transfer stok)
-                Dim sebelumMsk As Decimal = BacaStokSaatIni(idBarangMasuk, TxtLokasiUntukEdit.Text, transaction)
-                HitungStokPerubahan(idBarangMasuk, transaction)
-                Dim sesudahMsk As Decimal = BacaStokSaatIni(idBarangMasuk, TxtLokasiUntukEdit.Text, transaction)
-
-                Dim sebelumKlr As Decimal = BacaStokSaatIni(idBarangKeluar, TxtLokasiUntukEdit.Text, transaction)
-                HitungStokPerubahan(idBarangKeluar, transaction)
-                Dim sesudahKlr As Decimal = BacaStokSaatIni(idBarangKeluar, TxtLokasiUntukEdit.Text, transaction)
-
-                Dim auditHapusTS As New Dictionary(Of String, Decimal)() From {
-                    {idBarangMasuk, sebelumMsk - sesudahMsk},
-                    {idBarangKeluar, sesudahKlr - sebelumKlr}
-                }
-                AuditStokTransaksi(TxtFakturTransaksi.Text, "Hapus Transfer Stok", Nothing, Nothing, Nothing, auditHapusTS, transaction)
-
-                ' Panggil UpdateSaldoAkun per akun yang disimpan SEBELUM delete JurnalUmum
-                For Each kodeAkun As String In akunTerlibat
-                    UpdateSaldoAkun(kodeAkun, transaction)
-                Next
                 transaction.Commit()
-
             Catch ex As Exception
-                ' Rollback transaksi jika terjadi kesalahan
                 transaction.Rollback()
                 MessageBox.Show("Oh tidak! Transaksi dibatalkan karena terjadi kesalahan." & vbCrLf &
-                                 "Detail kesalahan: " & ex.Message,
-                  "Oops! Ada masalah...", MessageBoxButtons.OK, MessageBoxIcon.Error)
-
+                                "Detail kesalahan: " & ex.Message,
+                                "Oops! Ada masalah...", MessageBoxButtons.OK, MessageBoxIcon.Error)
             End Try
-
-
         End If
     End Sub
 
     Private Sub HapusSuratJalan()
         If MessageBox.Show("Apakah data ini akan dihapus ...???", "", MessageBoxButtons.YesNo) = DialogResult.Yes Then
-
-            ' Mulai transaksi
             Dim transaction As MySqlTransaction = conn.BeginTransaction()
-
             Try
-
-                ' ========================================
-                ' START: Audit Trail - Hapus Surat Jalan
-                ' ========================================
+                ' Snapshot dari DGVTransaksi sebelum hapus
                 Dim notaSJ As String = TxtFakturTransaksi.Text
                 Dim snapshot As New System.Text.StringBuilder()
                 snapshot.AppendLine(notaSJ & " | " & DateTime.Now.ToString("yyyy-MM-dd HH:mm"))
@@ -2136,85 +1851,30 @@ Public Class FormUtama
                 End If
 
                 ModuleAuditTrail.CatatAuditMaster(
-                    "SJ:" & notaSJ,
-                    "HAPUS",
-                    "Surat Jalan",
-                    snapshot.ToString(),
-                    "Hapus surat jalan",
-                    transaction
-                )
-                ' ========================================
-                ' END: Audit Trail - Hapus Surat Jalan
-                ' ========================================
+                    "SJ:" & notaSJ, "HAPUS", "Surat Jalan",
+                    snapshot.ToString(), "Hapus surat jalan", transaction)
 
-                Dim deleteQueries As String() = {
-                  "DELETE FROM Surat_Jalan WHERE NOTA = @NOTA",
-                  "DELETE FROM Surat_Jalan_Detail WHERE NOTA = @NOTA"
-              }
+                ' Panggil fungsi pusat
+                ModuleHapusTransaksi.HapusSuratJalan(notaSJ, transaction)
 
-                For Each query As String In deleteQueries
-                    Using cmd As New MySqlCommand(query, conn, transaction)
-                        cmd.Parameters.AddWithValue("@NOTA", notaSJ)
-                        cmd.ExecuteNonQuery()
-                    End Using
-                Next
-
-                ' Commit transaksi jika berhasil
                 transaction.Commit()
-
             Catch ex As Exception
-                ' Rollback transaksi jika terjadi kesalahan
                 transaction.Rollback()
                 MessageBox.Show("Oh tidak! Transaksi dibatalkan karena terjadi kesalahan." & vbCrLf &
-                                 "Detail kesalahan: " & ex.Message,
-                                 "Oops! Ada masalah...", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                                "Detail kesalahan: " & ex.Message,
+                                "Oops! Ada masalah...", MessageBoxButtons.OK, MessageBoxIcon.Error)
             End Try
-
         End If
     End Sub
 
     Private Sub HapusTransferBarang()
         If MessageBox.Show("Apakah data ini akan dihapus ...???", "", MessageBoxButtons.YesNo) = DialogResult.Yes Then
 
-            ' Mulai transaksi
             Dim transaction As MySqlTransaction = conn.BeginTransaction()
 
             Try
-                Dim stokKeluarField As String
-                Dim stokMasukField As String
-
-                Select Case TxtLokasiUntukEdit.Text
-                    Case "TOKO"
-                        stokKeluarField = "TRANSFER_BARANG_KELUAR_TOKO"
-                        stokMasukField = "TRANSFER_BARANG_MASUK_GUDANG"
-                    Case "GUDANG"
-                        stokKeluarField = "TRANSFER_BARANG_KELUAR_GUDANG"
-                        stokMasukField = "TRANSFER_BARANG_MASUK_TOKO"
-                    Case Else
-                        Throw New Exception("Lokasi barang tidak valid.")
-                End Select
-
-                Dim updateQuery As String = "UPDATE tbl_barang SET " & stokKeluarField & " = " & stokKeluarField & " - ?, " & stokMasukField & " = " & stokMasukField & " - ? WHERE ID_BARANG = ?"
-
-                For Each row As DataGridViewRow In DGVDetail.Rows
-                    If Not row.IsNewRow AndAlso row.Cells("ID_BARANG").Value IsNot Nothing Then
-                        Dim kodeBarang As String = row.Cells("ID_BARANG").Value.ToString()
-
-                        If Not String.IsNullOrEmpty(kodeBarang) Then
-                            Dim qtySat As Decimal = If(row.Cells("TOTAL_QTY").Value IsNot Nothing, Convert.ToDecimal(row.Cells("TOTAL_QTY").Value), 0D)
-
-                            Using cmd As New MySqlCommand(updateQuery, conn, transaction)
-                                cmd.Parameters.AddWithValue("@QtySatKeluar", qtySat)
-                                cmd.Parameters.AddWithValue("@QtySatMasuk", qtySat)
-                                cmd.Parameters.AddWithValue("@KodeBarang", kodeBarang)
-                                cmd.ExecuteNonQuery()
-                            End Using
-                        End If
-                    End If
-                Next
-
                 ' ========================================
-                ' START: Audit Trail - Hapus Transfer Barang
+                ' Audit Trail - Hapus Transfer Barang (snapshot SEBELUM hapus)
                 ' ========================================
                 Dim idTransferBarang As String = TxtFakturTransaksi.Text
                 Dim lokasi As String = TxtLokasiUntukEdit.Text
@@ -2243,70 +1903,21 @@ Public Class FormUtama
                     "Hapus transfer barang",
                     transaction
                 )
-                ' ========================================
-                ' END: Audit Trail - Hapus Transfer Barang
-                ' ========================================
 
-                ' SEBELUM menghapus JurnalUmum: SIMPAN daftar akun terlibat terlebih dahulu!
-                Dim akunTerlibat As New HashSet(Of String)(StringComparer.OrdinalIgnoreCase)
-                Using cmdAkun As New MySqlCommand(
-                    "SELECT DISTINCT NOMOR_AKUN_D FROM JurnalUmum WHERE NO_TRANSAKSI = @fk AND NOMOR_AKUN_D <> '' " &
-                    "UNION " &
-                    "SELECT DISTINCT NOMOR_AKUN_K FROM JurnalUmum WHERE NO_TRANSAKSI = @fk AND NOMOR_AKUN_K <> ''",
-                    conn, transaction)
-                    cmdAkun.Parameters.AddWithValue("@fk", TxtFakturTransaksi.Text)
-                    Using rd = cmdAkun.ExecuteReader()
-                        While rd.Read()
-                            Dim kode As String = rd(0).ToString().Trim()
-                            If kode <> "" Then akunTerlibat.Add(kode)
-                        End While
-                    End Using
-                End Using
+                ' Panggil fungsi pusat — logika reversal stok, jurnal, saldo 100% akurat
+                ModuleHapusTransaksi.HapusTransferBarang(
+                    idTransferBarang,
+                    lokasi,
+                    "Hapus Transfer Barang",
+                    transaction)
 
-                Dim deleteQueries As String() = {
-                    "DELETE FROM Transfer_Barang WHERE ID_TRANSFER = @ID_TRANSFER",
-                    "DELETE FROM Transfer_Barang_Detail WHERE ID_TRANSFER = @ID_TRANSFER",
-                    "DELETE FROM JurnalUmum WHERE NO_TRANSAKSI = @ID_TRANSFER",
-                    "DELETE FROM HistoryBarang WHERE FAKTUR = @ID_TRANSFER"
-                }
-
-                For Each query As String In deleteQueries
-                    Using cmd As New MySqlCommand(query, conn, transaction)
-                        cmd.Parameters.AddWithValue("@ID_TRANSFER", TxtFakturTransaksi.Text)
-                        cmd.ExecuteNonQuery()
-                    End Using
-                Next
-
-                ' Recalculate stok + audit delta (hapus transfer barang)
-                ' Audit A: qty dari DGVDetail (kolom TOTAL_QTY dari Transfer_Barang_Detail)
-                Dim auditHapusTB As New Dictionary(Of String, Decimal)()
-                Dim auditDGVHapusTB As New Dictionary(Of String, Decimal)()
-                For Each row As DataGridViewRow In DGVDetail.Rows
-                    If Not row.IsNewRow AndAlso row.Cells("ID_BARANG").Value IsNot Nothing Then
-                        Dim kode As String = row.Cells("ID_BARANG").Value.ToString()
-                        Dim qtyA As Decimal = If(row.Cells("TOTAL_QTY").Value IsNot Nothing AndAlso Not IsDBNull(row.Cells("TOTAL_QTY").Value), CDec(row.Cells("TOTAL_QTY").Value), 0D)
-                        If auditDGVHapusTB.ContainsKey(kode) Then auditDGVHapusTB(kode) += qtyA Else auditDGVHapusTB(kode) = qtyA
-                        Dim sebelum As Decimal = BacaStokSaatIni(kode, TxtLokasiUntukEdit.Text, transaction)
-                        HitungStokPerubahan(kode, transaction)
-                        Dim sesudah As Decimal = BacaStokSaatIni(kode, TxtLokasiUntukEdit.Text, transaction)
-                        auditHapusTB(kode) = sesudah - sebelum  ' hapus transfer barang mengembalikan stok asal
-                    End If
-                Next
-                AuditStokTransaksi(TxtFakturTransaksi.Text, "Hapus Transfer Barang", auditDGVHapusTB, Nothing, Nothing, auditHapusTB, transaction)
-
-                ' Panggil UpdateSaldoAkun per akun yang disimpan SEBELUM delete JurnalUmum
-                For Each kodeAkun As String In akunTerlibat
-                    UpdateSaldoAkun(kodeAkun, transaction)
-                Next
                 transaction.Commit()
 
             Catch ex As Exception
-                ' Rollback transaksi jika terjadi kesalahan
                 transaction.Rollback()
                 MessageBox.Show("Oh tidak! Transaksi dibatalkan karena terjadi kesalahan." & vbCrLf &
                                  "Detail kesalahan: " & ex.Message,
                   "Oops! Ada masalah...", MessageBoxButtons.OK, MessageBoxIcon.Error)
-
             End Try
         End If
     End Sub
@@ -2316,108 +1927,38 @@ Public Class FormUtama
                            MessageBoxButtons.YesNo, MessageBoxIcon.Question) <> DialogResult.Yes Then Return
 
         Dim faktur As String = TxtFakturTransaksi.Text
+
+        ' ========================================
+        ' Audit Trail - Hapus Transfer Cabang (snapshot dari DGVDetail yang masih tampil)
+        ' ========================================
+        Dim snapshot As New System.Text.StringBuilder()
+        snapshot.AppendLine(faktur & " | " & DateTime.Now.ToString("yyyy-MM-dd HH:mm"))
+
+        If DGVTransaksi.CurrentRow IsNot Nothing Then
+            snapshot.AppendLine("Dari: " & If(DGVTransaksi.CurrentRow.Cells("DARI_CABANG").Value IsNot Nothing, DGVTransaksi.CurrentRow.Cells("DARI_CABANG").Value.ToString(), ""))
+            snapshot.AppendLine("Ke  : " & If(DGVTransaksi.CurrentRow.Cells("KE_CABANG").Value IsNot Nothing, DGVTransaksi.CurrentRow.Cells("KE_CABANG").Value.ToString(), ""))
+        End If
+
+        snapshot.AppendLine("Daftar Barang:")
+        Dim noItem As Integer = 0
+        For Each row As DataGridViewRow In DGVDetail.Rows
+            If Not row.IsNewRow AndAlso row.Cells("ID_BARANG").Value IsNot Nothing Then
+                noItem += 1
+                Dim kode As String = row.Cells("ID_BARANG").Value.ToString()
+                Dim nama As String = If(row.Cells("NAMA_BARANG").Value IsNot Nothing, row.Cells("NAMA_BARANG").Value.ToString(), "")
+                Dim qty As Decimal = CDec(If(row.Cells("TOTAL_QTY").Value, 0))
+                snapshot.AppendLine($"  {noItem}. {kode} — {nama} | Qty: {qty:N0}")
+            End If
+        Next
+
         Dim transaction As MySqlTransaction = conn.BeginTransaction()
         Try
-            ' 1. Baca lokasi asal dari HistoryBarang (LOKASI = LokasiBarang saat transaksi dibuat)
-            Dim lokasiAsal As String = "TOKO"
-            Using cmdLok As New MySqlCommand(
-                "SELECT LOKASI FROM HistoryBarang WHERE FAKTUR = @id AND JENIS = 'TRANSFER_CABANG_KELUAR' LIMIT 1", conn, transaction)
-                cmdLok.Parameters.AddWithValue("@id", faktur)
-                Dim val = cmdLok.ExecuteScalar()
-                If val IsNot Nothing AndAlso Not IsDBNull(val) Then
-                    If val.ToString().ToUpper() = "GUDANG" Then lokasiAsal = "GUDANG"
-                End If
-            End Using
-            Dim kolomKeluar As String = If(lokasiAsal = "GUDANG",
-                "TRANSFER_CABANG_KELUAR_GUDANG", "TRANSFER_CABANG_KELUAR_TOKO")
-
-            ' 2. Ambil item dari DGVDetail yang sudah terisi saat row diklik
-            Dim kodeItems As New List(Of String)()
-            For Each row As DataGridViewRow In DGVDetail.Rows
-                If row.IsNewRow OrElse row.Cells("ID_BARANG").Value Is Nothing Then Continue For
-                Dim kode As String = row.Cells("ID_BARANG").Value.ToString()
-                Dim qtySat As Decimal = CDec(If(row.Cells("TOTAL_QTY").Value, 0))
-                If String.IsNullOrEmpty(kode) Then Continue For
-
-                Using cmdStok As New MySqlCommand(
-                    $"UPDATE tbl_barang SET {kolomKeluar} = {kolomKeluar} - @qty WHERE ID_BARANG = @kode",
-                    conn, transaction)
-                    cmdStok.Parameters.AddWithValue("@qty", qtySat)
-                    cmdStok.Parameters.AddWithValue("@kode", kode)
-                    cmdStok.ExecuteNonQuery()
-                End Using
-                kodeItems.Add(kode)
-            Next
-
-            ' ========================================
-            ' START: Audit Trail - Hapus Transfer Cabang
-            ' ========================================
-            Dim snapshot As New System.Text.StringBuilder()
-            snapshot.AppendLine(faktur & " | " & DateTime.Now.ToString("yyyy-MM-dd HH:mm"))
-            snapshot.AppendLine("Lokasi Asal: " & lokasiAsal)
-            snapshot.AppendLine("Daftar Barang:")
-
-            Dim noItemCabang As Integer = 0
-            For Each row As DataGridViewRow In DGVDetail.Rows
-                If Not row.IsNewRow AndAlso row.Cells("ID_BARANG").Value IsNot Nothing Then
-                    noItemCabang += 1
-                    Dim kode As String = row.Cells("ID_BARANG").Value.ToString()
-                    Dim nama As String = If(row.Cells("NAMA_BARANG").Value IsNot Nothing, row.Cells("NAMA_BARANG").Value.ToString(), "")
-                    Dim qty As Decimal = CDec(If(row.Cells("TOTAL_QTY").Value, 0))
-                    snapshot.AppendLine($"  {noItemCabang}. {kode} — {nama} | Qty: {qty:N0}")
-                End If
-            Next
-
             ModuleAuditTrail.CatatAuditMaster(
-                "TRF-CAB:" & faktur,
-                "HAPUS",
-                "Transfer Cabang",
-                snapshot.ToString(),
-                "Hapus transfer cabang",
-                transaction
-            )
-            ' ========================================
-            ' END: Audit Trail - Hapus Transfer Cabang
-            ' ========================================
+                "TRF-CAB:" & faktur, "HAPUS", "Transfer Cabang",
+                snapshot.ToString(), "Hapus transfer cabang", transaction)
 
-            ' 2. SEBELUM menghapus JurnalUmum: SIMPAN daftar akun terlibat terlebih dahulu!
-            Dim akunTerlibat As New HashSet(Of String)(StringComparer.OrdinalIgnoreCase)
-            Using cmdAkun As New MySqlCommand(
-                "SELECT DISTINCT NOMOR_AKUN_D FROM JurnalUmum WHERE NO_TRANSAKSI = @fk AND NOMOR_AKUN_D <> '' " &
-                "UNION " &
-                "SELECT DISTINCT NOMOR_AKUN_K FROM JurnalUmum WHERE NO_TRANSAKSI = @fk AND NOMOR_AKUN_K <> ''",
-                conn, transaction)
-                cmdAkun.Parameters.AddWithValue("@fk", faktur)
-                Using rd = cmdAkun.ExecuteReader()
-                    While rd.Read()
-                        Dim kode As String = rd(0).ToString().Trim()
-                        If kode <> "" Then akunTerlibat.Add(kode)
-                    End While
-                End Using
-            End Using
-
-            ' 3. Hapus HistoryBarang, JurnalUmum, detail, header
-            For Each q As String In {
-                "DELETE FROM HistoryBarang WHERE FAKTUR = @id",
-                "DELETE FROM JurnalUmum WHERE NO_TRANSAKSI = @id",
-                "DELETE FROM transfer_cabang_detail WHERE ID_TRANSFER = @id",
-                "DELETE FROM transfer_cabang WHERE ID_TRANSFER = @id"
-            }
-                Using cmd As New MySqlCommand(q, conn, transaction)
-                    cmd.Parameters.AddWithValue("@id", faktur)
-                    cmd.ExecuteNonQuery()
-                End Using
-            Next
-
-            ' 4. Recalculate STOK dari semua kolom mutasi (setelah HistoryBarang dihapus)
-            For Each kode As String In kodeItems
-                HitungStokPerubahan(kode, transaction)
-            Next
-
-            ' 5. Update saldo akun jurnal (hanya akun yang terlibat)
-            For Each kodeAkun As String In akunTerlibat
-                UpdateSaldoAkun(kodeAkun, transaction)
-            Next
+            ' Panggil fungsi pusat — logika reversal stok, jurnal, saldo 100% akurat
+            ModuleHapusTransaksi.HapusTransferCabang(faktur, transaction)
 
             transaction.Commit()
             MessageBox.Show("Data transfer cabang berhasil dihapus.", "Sukses", MessageBoxButtons.OK, MessageBoxIcon.Information)

@@ -124,7 +124,7 @@ Partial Class FormGeneralSetting
         Me.BtnRestore.ForeColor = System.Drawing.Color.Black
         Me.BtnRestore.Image = CType(resources.GetObject("BtnRestore.Image"), System.Drawing.Image)
         Me.BtnRestore.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft
-        Me.BtnRestore.Location = New System.Drawing.Point(179, 282)
+        Me.BtnRestore.Location = New System.Drawing.Point(169, 430)
         Me.BtnRestore.Margin = New System.Windows.Forms.Padding(4)
         Me.BtnRestore.Name = "BtnRestore"
         Me.BtnRestore.Size = New System.Drawing.Size(114, 32)
@@ -146,7 +146,7 @@ Partial Class FormGeneralSetting
         Me.BtnSimpan.ForeColor = System.Drawing.Color.FromArgb(CType(CType(22, Byte), Integer), CType(CType(163, Byte), Integer), CType(CType(74, Byte), Integer))
         Me.BtnSimpan.Image = CType(resources.GetObject("BtnSimpan.Image"), System.Drawing.Image)
         Me.BtnSimpan.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft
-        Me.BtnSimpan.Location = New System.Drawing.Point(37, 282)
+        Me.BtnSimpan.Location = New System.Drawing.Point(27, 430)
         Me.BtnSimpan.Margin = New System.Windows.Forms.Padding(4)
         Me.BtnSimpan.Name = "BtnSimpan"
         Me.BtnSimpan.Size = New System.Drawing.Size(114, 32)
@@ -613,7 +613,7 @@ Partial Class FormGeneralSetting
         Me.BtnClose.ForeColor = System.Drawing.Color.FromArgb(CType(CType(220, Byte), Integer), CType(CType(38, Byte), Integer), CType(CType(38, Byte), Integer))
         Me.BtnClose.Image = CType(resources.GetObject("BtnClose.Image"), System.Drawing.Image)
         Me.BtnClose.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft
-        Me.BtnClose.Location = New System.Drawing.Point(323, 281)
+        Me.BtnClose.Location = New System.Drawing.Point(313, 429)
         Me.BtnClose.Name = "BtnClose"
         Me.BtnClose.Size = New System.Drawing.Size(112, 32)
         Me.BtnClose.TabIndex = 140
@@ -642,7 +642,7 @@ Partial Class FormGeneralSetting
         Me.GbGlobalTransaksi.Font = New System.Drawing.Font("Century Gothic", 9.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.GbGlobalTransaksi.Location = New System.Drawing.Point(0, 0)
         Me.GbGlobalTransaksi.Name = "GbGlobalTransaksi"
-        Me.GbGlobalTransaksi.Size = New System.Drawing.Size(597, 275)
+        Me.GbGlobalTransaksi.Size = New System.Drawing.Size(597, 423)
         Me.GbGlobalTransaksi.TabIndex = 139
         Me.GbGlobalTransaksi.TabStop = False
         Me.GbGlobalTransaksi.Text = "Berlaku semua transaksi"
@@ -651,7 +651,7 @@ Partial Class FormGeneralSetting
         '
         Me.LblHidePencarianAtas.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
         Me.LblHidePencarianAtas.Font = New System.Drawing.Font("Century Gothic", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.LblHidePencarianAtas.Location = New System.Drawing.Point(6, 226)
+        Me.LblHidePencarianAtas.Location = New System.Drawing.Point(6, 125)
         Me.LblHidePencarianAtas.Name = "LblHidePencarianAtas"
         Me.LblHidePencarianAtas.Size = New System.Drawing.Size(374, 28)
         Me.LblHidePencarianAtas.TabIndex = 141
@@ -664,7 +664,7 @@ Partial Class FormGeneralSetting
         Me.CmbHidePencarianAtas.Font = New System.Drawing.Font("Century Gothic", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.CmbHidePencarianAtas.FormattingEnabled = True
         Me.CmbHidePencarianAtas.Items.AddRange(New Object() {"Iya", "Tidak"})
-        Me.CmbHidePencarianAtas.Location = New System.Drawing.Point(386, 228)
+        Me.CmbHidePencarianAtas.Location = New System.Drawing.Point(386, 127)
         Me.CmbHidePencarianAtas.Margin = New System.Windows.Forms.Padding(4)
         Me.CmbHidePencarianAtas.Name = "CmbHidePencarianAtas"
         Me.CmbHidePencarianAtas.Size = New System.Drawing.Size(196, 25)
@@ -674,7 +674,7 @@ Partial Class FormGeneralSetting
         '
         Me.LblGlobalInfoStok.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
         Me.LblGlobalInfoStok.Font = New System.Drawing.Font("Century Gothic", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.LblGlobalInfoStok.Location = New System.Drawing.Point(6, 193)
+        Me.LblGlobalInfoStok.Location = New System.Drawing.Point(6, 223)
         Me.LblGlobalInfoStok.Name = "LblGlobalInfoStok"
         Me.LblGlobalInfoStok.Size = New System.Drawing.Size(374, 28)
         Me.LblGlobalInfoStok.TabIndex = 139
@@ -687,7 +687,7 @@ Partial Class FormGeneralSetting
         Me.CmbGlobalInfoStok.Font = New System.Drawing.Font("Century Gothic", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.CmbGlobalInfoStok.FormattingEnabled = True
         Me.CmbGlobalInfoStok.Items.AddRange(New Object() {"Iya", "Tidak"})
-        Me.CmbGlobalInfoStok.Location = New System.Drawing.Point(386, 195)
+        Me.CmbGlobalInfoStok.Location = New System.Drawing.Point(386, 225)
         Me.CmbGlobalInfoStok.Margin = New System.Windows.Forms.Padding(4)
         Me.CmbGlobalInfoStok.Name = "CmbGlobalInfoStok"
         Me.CmbGlobalInfoStok.Size = New System.Drawing.Size(196, 25)
@@ -743,7 +743,7 @@ Partial Class FormGeneralSetting
         '
         Me.LblGlobalSatuan.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
         Me.LblGlobalSatuan.Font = New System.Drawing.Font("Century Gothic", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.LblGlobalSatuan.Location = New System.Drawing.Point(6, 128)
+        Me.LblGlobalSatuan.Location = New System.Drawing.Point(6, 158)
         Me.LblGlobalSatuan.Name = "LblGlobalSatuan"
         Me.LblGlobalSatuan.Size = New System.Drawing.Size(374, 28)
         Me.LblGlobalSatuan.TabIndex = 135
@@ -756,7 +756,7 @@ Partial Class FormGeneralSetting
         Me.CmbGlobalSatuan.Font = New System.Drawing.Font("Century Gothic", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.CmbGlobalSatuan.FormattingEnabled = True
         Me.CmbGlobalSatuan.Items.AddRange(New Object() {"Iya", "Tidak"})
-        Me.CmbGlobalSatuan.Location = New System.Drawing.Point(386, 130)
+        Me.CmbGlobalSatuan.Location = New System.Drawing.Point(386, 160)
         Me.CmbGlobalSatuan.Margin = New System.Windows.Forms.Padding(4)
         Me.CmbGlobalSatuan.Name = "CmbGlobalSatuan"
         Me.CmbGlobalSatuan.Size = New System.Drawing.Size(196, 25)
@@ -766,7 +766,7 @@ Partial Class FormGeneralSetting
         '
         Me.LblGlobalIsiNominal.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
         Me.LblGlobalIsiNominal.Font = New System.Drawing.Font("Century Gothic", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.LblGlobalIsiNominal.Location = New System.Drawing.Point(6, 162)
+        Me.LblGlobalIsiNominal.Location = New System.Drawing.Point(6, 192)
         Me.LblGlobalIsiNominal.Name = "LblGlobalIsiNominal"
         Me.LblGlobalIsiNominal.Size = New System.Drawing.Size(374, 28)
         Me.LblGlobalIsiNominal.TabIndex = 137
@@ -779,7 +779,7 @@ Partial Class FormGeneralSetting
         Me.CmbGlobalIsiNominal.Font = New System.Drawing.Font("Century Gothic", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.CmbGlobalIsiNominal.FormattingEnabled = True
         Me.CmbGlobalIsiNominal.Items.AddRange(New Object() {"Iya", "Tidak"})
-        Me.CmbGlobalIsiNominal.Location = New System.Drawing.Point(386, 164)
+        Me.CmbGlobalIsiNominal.Location = New System.Drawing.Point(386, 194)
         Me.CmbGlobalIsiNominal.Margin = New System.Windows.Forms.Padding(4)
         Me.CmbGlobalIsiNominal.Name = "CmbGlobalIsiNominal"
         Me.CmbGlobalIsiNominal.Size = New System.Drawing.Size(196, 25)

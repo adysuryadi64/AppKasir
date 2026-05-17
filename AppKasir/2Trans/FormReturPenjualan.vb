@@ -8,6 +8,8 @@ Public Class FormReturPenjualan
     Private _sedangSetNilaiDariListBox As Boolean = False
     Private _sedangAmbilDariListBox As Boolean = False  ' blok CellEndEdit saat AmbilDataDariListBox berjalan
     Private _selectedQty As Decimal = 1D
+    Private _formSudahSiap As Boolean = False           ' Guard: form belum boleh terima fokus
+    Private _sedangSetFokusAwal As Boolean = False      ' Guard: cegah rekursi GotFocus
 
     ' ── Cache data barang dari nota penjualan (mode normal) ───────────────────
     Private Structure CacheBarangNota
@@ -51,7 +53,37 @@ Public Class FormReturPenjualan
         AddHandler barcodeTimer.Tick, AddressOf BarcodeTimer_Tick
     End Sub
 
+    Private Sub FormReturPenjualan_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
+        _formSudahSiap = True
+        SetupFocusToGrid()
+    End Sub
 
+    ''' <summary>
+    ''' Pusat kendali fokus — dipanggil dari Form_Shown, MuatSemuaPengaturan, Hapusbaris.
+    ''' Smart focus: mempertimbangkan SettingFokusOtomatis DAN mode form (Normal vs Bebas).
+    ''' </summary>
+    Public Sub SetupFocusToGrid()
+        ' Guard: form belum siap atau tidak visible
+        If Not Me.Visible OrElse Me.WindowState = FormWindowState.Minimized Then Return
+        If Not _formSudahSiap Then Return
+
+        ' MODE 1: Fokus Otomatis — arahkan ke kontrol input header yang relevan
+        If ModulHakAkses.SettingFokusOtomatis Then
+            _sedangSetFokusAwal = True
+            Me.BeginInvoke(New Action(Sub()
+                                          If CbJenisRetur.Checked Then
+                                              CmbNamaPel.Focus()  ' Mode bebas: langsung ke pelanggan
+                                          Else
+                                              TxtNotaJual.Focus() ' Mode normal: pilih nota dulu
+                                          End If
+                                          _sedangSetFokusAwal = False
+                                      End Sub))
+            Return
+        End If
+
+        ' MODE 2: Edit Langsung — fokus ke baris kosong di DGVReturjual
+        NavigasiKeBarisDgvKosong()
+    End Sub
 
     Private Sub Kondisiawalretur()
         Using newFontheader As New Font("Microsoft Sans Serif", 10, FontStyle.Bold)
@@ -680,6 +712,7 @@ Public Class FormReturPenjualan
 
         ' Panggil fungsi-fungsi lainnya
         HitungSemua()
+        SetupFocusToGrid()
     End Sub
 
     Private Sub HitungSemua()
@@ -1479,14 +1512,8 @@ Public Class FormReturPenjualan
                 DGVReturjual.Columns("SATUAN").ReadOnly = Not ModulHakAkses.SettingIzinkanSatuanBerbeda
             End If
 
-            ' 4. Fokus Otomatis
-            If ModulHakAkses.SettingFokusOtomatis Then
-                If CbJenisRetur.Checked Then
-                    CmbNamaPel.Focus()
-                Else
-                    TxtNotaJual.Focus()
-                End If
-            End If
+            ' 4. Fokus Otomatis — delegasi ke SetupFocusToGrid
+            SetupFocusToGrid()
         Catch ex As Exception
             Debug.WriteLine("Error MuatSemuaPengaturan: " & ex.Message)
         End Try
@@ -1961,12 +1988,12 @@ Public Class FormReturPenjualan
         If adaKode Then
             ' Identik FormTransferCabang: ReadOnly=True agar CancelEdit tidak trigger CellEndEdit
             cell.ReadOnly = True
-            cell.Style.BackColor = Color.FromArgb(144, 238, 144)
-            cell.Style.ForeColor = Color.DarkGreen
+            cell.Style.BackColor = ModuleTheme.C(ModuleTheme.L_Subtle, ModuleTheme.D_Subtle)
+            cell.Style.ForeColor = ModuleTheme.C(ModuleTheme.L_Text, ModuleTheme.D_Text)
         Else
             cell.ReadOnly = False
-            cell.Style.BackColor = Color.White
-            cell.Style.ForeColor = Color.Black
+            cell.Style.BackColor = ModuleTheme.C(ModuleTheme.L_Surface, ModuleTheme.D_Surface)
+            cell.Style.ForeColor = ModuleTheme.C(ModuleTheme.L_Text, ModuleTheme.D_Text)
         End If
     End Sub
 

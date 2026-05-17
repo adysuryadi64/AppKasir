@@ -41,27 +41,25 @@ Public Class FormTransferStok
     ' Handler untuk event GotFocus pada TextBox
     Private Sub TxtCariMsk_GotFocus(ByVal sender As Object, ByVal e As EventArgs) Handles TxtCariMsk.GotFocus
         ' Ubah warna latar belakang saat TextBox mendapatkan fokus
-        PanelCariMasuk.BackColor = Color.Yellow ' Ganti warna fokus sesuai kebutuhan
-
+        PanelCariMasuk.BackColor = ModuleTheme.C(ModuleTheme.L_SearchFocusBg, ModuleTheme.D_SearchFocusBg)
     End Sub
 
     ' Handler untuk event LostFocus pada TextBox
     Private Sub TxtCariMsk_LostFocus(ByVal sender As Object, ByVal e As EventArgs) Handles TxtCariMsk.LostFocus
         ' Kembalikan warna latar belakang ke warna asli saat TextBox kehilangan fokus
-        PanelCariMasuk.BackColor = Color.White
+        PanelCariMasuk.BackColor = ModuleTheme.C(ModuleTheme.L_Panel, ModuleTheme.D_Panel)
     End Sub
 
     ' Handler untuk event GotFocus pada TextBox
     Private Sub TxtCariKlr_GotFocus(ByVal sender As Object, ByVal e As EventArgs) Handles TxtCariKlr.GotFocus
         ' Ubah warna latar belakang saat TextBox mendapatkan fokus
-        PanelCariKeluar.BackColor = Color.Yellow ' Ganti warna fokus sesuai kebutuhan
-
+        PanelCariKeluar.BackColor = ModuleTheme.C(ModuleTheme.L_SearchFocusBg, ModuleTheme.D_SearchFocusBg)
     End Sub
 
     ' Handler untuk event LostFocus pada TextBox
     Private Sub TxtCariKlr_LostFocus(ByVal sender As Object, ByVal e As EventArgs) Handles TxtCariKlr.LostFocus
         ' Kembalikan warna latar belakang ke warna asli saat TextBox kehilangan fokus
-        PanelCariKeluar.BackColor = Color.White
+        PanelCariKeluar.BackColor = ModuleTheme.C(ModuleTheme.L_Panel, ModuleTheme.D_Panel)
     End Sub
 
     Private Sub Kondisiawal()

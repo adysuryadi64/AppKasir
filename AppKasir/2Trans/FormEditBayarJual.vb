@@ -301,11 +301,11 @@ Public Class FormEditBayarJual
 
         If selisih < 0 Then
             lblStatusValue.Text = "Belum Lunas"
-            lblStatusValue.ForeColor = Color.FromArgb(192, 57, 43)
+            ModuleTheme.SetWarnaStatusTransaksi(lblStatusValue, False)
             lblHasilCaption.Text = "Hutang :"
             lblHasilValue.Text = Math.Abs(selisih).ToString("#,0.##", cultureId)
-            lblHasilValue.BackColor = Color.FromArgb(255, 235, 235)
-            lblHasilValue.ForeColor = Color.FromArgb(192, 57, 43)
+            lblHasilValue.BackColor = ModuleTheme.C(ModuleTheme.L_NotifDanger, ModuleTheme.D_NotifDanger)
+            lblHasilValue.ForeColor = ModuleTheme.C(ModuleTheme.L_Danger, ModuleTheme.D_Danger)
             lblJatuhTempo.Visible = True
             dtpJatuhTempo.Visible = True
             If TablePembayaran.RowStyles.Count > rowJatuhTempo Then
@@ -314,11 +314,11 @@ Public Class FormEditBayarJual
             SesuaikanTinggiForm()
         Else
             lblStatusValue.Text = "Lunas"
-            lblStatusValue.ForeColor = Color.FromArgb(39, 174, 96)
+            ModuleTheme.SetWarnaStatusTransaksi(lblStatusValue, True)
             lblHasilCaption.Text = "Kembalian :"
             lblHasilValue.Text = selisih.ToString("#,0.##", cultureId)
-            lblHasilValue.BackColor = Color.FromArgb(230, 250, 235)
-            lblHasilValue.ForeColor = Color.FromArgb(39, 174, 96)
+            lblHasilValue.BackColor = ModuleTheme.C(Color.FromArgb(220, 252, 231), Color.FromArgb(20, 83, 45))  ' Green-100 / Green-900
+            lblHasilValue.ForeColor = ModuleTheme.C(ModuleTheme.L_Success, ModuleTheme.D_Success)
             lblJatuhTempo.Visible = False
             dtpJatuhTempo.Visible = False
             If TablePembayaran.RowStyles.Count > rowJatuhTempo Then

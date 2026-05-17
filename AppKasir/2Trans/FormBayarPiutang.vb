@@ -294,13 +294,13 @@ Public Class FormBayarPiutang
             Dim pembayaran As Decimal = If(IsDBNull(row.Cells(11).Value), 0, Convert.ToDecimal(row.Cells(11).Value))
 
             If pembayaran > hutang Then
-                ' Mewarnai sel kolom 11 dengan warna merah
-                row.Cells(11).Style.BackColor = Color.Red
+                ' Mewarnai sel kolom 11 dengan warna error
+                row.Cells(11).Style.BackColor = ModuleTheme.C(ModuleTheme.L_DgvRowError, ModuleTheme.D_DgvRowError)
                 DgvData.ClearSelection()
                 adaKesalahan = True
             Else
                 ' Reset warna jika tidak ada kesalahan
-                row.Cells(11).Style.BackColor = Color.White
+                row.Cells(11).Style.BackColor = Color.Empty
             End If
         Next
 

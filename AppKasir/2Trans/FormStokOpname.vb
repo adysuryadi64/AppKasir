@@ -24,13 +24,13 @@ Public Class FormStokOpname
     ' Handler untuk event GotFocus pada TextBox
     Private Sub TxtCari_GotFocus(ByVal sender As Object, ByVal e As EventArgs) Handles TxtNama.GotFocus
         ' Ubah warna latar belakang saat TextBox mendapatkan fokus
-        PanelCari.BackColor = Color.Yellow ' Ganti warna fokus sesuai kebutuhan
+        PanelCari.BackColor = ModuleTheme.C(ModuleTheme.L_SearchFocusBg, ModuleTheme.D_SearchFocusBg)
     End Sub
 
     ' Handler untuk event LostFocus pada TextBox
     Private Sub TxtCari_LostFocus(ByVal sender As Object, ByVal e As EventArgs) Handles TxtNama.LostFocus
         ' Kembalikan warna latar belakang ke warna asli saat TextBox kehilangan fokus
-        PanelCari.BackColor = BackColor
+        PanelCari.BackColor = ModuleTheme.C(ModuleTheme.L_Panel, ModuleTheme.D_Panel)
     End Sub
 
     Public Sub Kondisiawaltambah()
@@ -812,47 +812,15 @@ Public Class FormStokOpname
     End Sub
 
     Public Sub Hapusstokopname(ByVal transaction As MySqlTransaction)
-
-        Dim updateQuery As String
-        Dim stokField As String = ""
-
-        Select Case TxtLokasi.Text
-            Case "TOKO"
-                stokField = "OPNAME_TOKO"
-            Case "GUDANG"
-                stokField = "OPNAME_GUDANG"
-        End Select
-
-        updateQuery = "UPDATE tbl_barang SET " & stokField & " = " & stokField & " - ? WHERE ID_BARANG = ?"
-
-        Using cmd As New MySqlCommand(updateQuery, conn, transaction)
-            cmd.Parameters.AddWithValue("@STOK_OPNAME", ModuleAngka.ParseDecimal(TxtQtyUntukEdit.Text))
-            cmd.Parameters.AddWithValue("@ID_BARANG", TxtKode.Text)
-            cmd.ExecuteNonQuery()
-        End Using
-
-        ' Audit hapus lama (hanya saat edit, bukan hapus permanen)
-        Dim qtyLama As Decimal = ModuleAngka.ParseDecimal(TxtQtyUntukEdit.Text)
-        Dim sebelumHapus As Decimal = BacaStokSaatIni(TxtKode.Text, TxtLokasi.Text, transaction)
-        HitungStokPerubahan(TxtKode.Text, transaction)
-        Dim sesudahHapus As Decimal = BacaStokSaatIni(TxtKode.Text, TxtLokasi.Text, transaction)
-        Dim auditDGVSO As New Dictionary(Of String, Decimal)() From {{TxtKode.Text, qtyLama}}
-        Dim auditDeltaSO As New Dictionary(Of String, Decimal)() From {{TxtKode.Text, Math.Abs(sesudahHapus - sebelumHapus)}}
-        AuditStokTransaksi(TxtFaktur.Text & " [HAPUS-EDIT]", "Edit Stok Opname (hapus lama)", auditDGVSO, Nothing, Nothing, auditDeltaSO, transaction)
-
-        Dim deleteQueries As String() = {
-                  "DELETE FROM Stok_Opname WHERE ID_STOK_OPNAME = @ID_STOK_OPNAME",
-                  "DELETE FROM JurnalUmum WHERE NO_TRANSAKSI = @ID_STOK_OPNAME",
-                  "DELETE FROM HistoryBarang WHERE FAKTUR = @ID_STOK_OPNAME"
-              }
-
-        For Each query As String In deleteQueries
-            Using cmd As New MySqlCommand(query, conn, transaction)
-                cmd.Parameters.AddWithValue("@ID_STOK_OPNAME", TxtFaktur.Text)
-                cmd.ExecuteNonQuery()
-            End Using
-        Next
-
+        ' Wrapper ke ModuleHapusTransaksi.HapusStokOpname — logika ada di modul.
+        ' Label "[HAPUS-EDIT]" membedakan dari hapus permanen di FormUtama.
+        ModuleHapusTransaksi.HapusStokOpname(
+            TxtFaktur.Text,
+            TxtKode.Text,
+            ModuleAngka.ParseDecimal(TxtQtyUntukEdit.Text),
+            TxtLokasi.Text,
+            TxtFaktur.Text & " [HAPUS-EDIT]",
+            transaction)
     End Sub
 
 

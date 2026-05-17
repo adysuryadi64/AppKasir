@@ -139,7 +139,7 @@ Public Class FormTransferCabang
         ConfigureAutoCompleteTxtNama()
         TxtNamaBarang.Clear()
 
-        PanelCari.BackColor = SystemColors.ActiveCaption
+        PanelCari.BackColor = ModuleTheme.C(ModuleTheme.L_Panel, ModuleTheme.D_Panel)
         SetStatus("Status: siap input transfer antar cabang.")
     End Sub
 
@@ -345,7 +345,7 @@ Public Class FormTransferCabang
         TxtNamaBarang.Location = New Point(TxtNamaBarang.Left, 5)
         BtnCari.Location = New Point(BtnCari.Left, 5)
         PanelCari.Height = 35
-        PanelCari.BackColor = If(isTerima, Color.SteelBlue, SystemColors.ActiveCaption)
+        PanelCari.BackColor = If(isTerima, Color.SteelBlue, ModuleTheme.C(ModuleTheme.L_Panel, ModuleTheme.D_Panel))
 
         ' Tombol TERIMA
         _btnTerima.Visible = isTerima
@@ -385,7 +385,7 @@ Public Class FormTransferCabang
 #Region "TxtNamaBarang & Barcode"
     Private Sub TxtNamaBarang_GotFocus(sender As Object, e As EventArgs) Handles TxtNamaBarang.GotFocus
         If CmbMode.SelectedItem?.ToString() = "TERIMA" Then Return
-        PanelCari.BackColor = Color.Yellow
+        PanelCari.BackColor = ModuleTheme.C(ModuleTheme.L_SearchFocusBg, ModuleTheme.D_SearchFocusBg)
         If DgvDetail.Rows.Count > 0 AndAlso DgvDetail.Columns.Count > 1 Then
             Try
                 DgvDetail.CurrentCell = DgvDetail(1, DgvDetail.Rows.Count - 1)
@@ -397,7 +397,7 @@ Public Class FormTransferCabang
 
     Private Sub TxtNamaBarang_LostFocus(sender As Object, e As EventArgs) Handles TxtNamaBarang.LostFocus
         If CmbMode.SelectedItem?.ToString() = "TERIMA" Then Return
-        PanelCari.BackColor = SystemColors.ActiveCaption
+        PanelCari.BackColor = ModuleTheme.C(ModuleTheme.L_Panel, ModuleTheme.D_Panel)
     End Sub
 
     Private Sub ConfigureAutoCompleteTxtNama()
@@ -788,9 +788,7 @@ Public Class FormTransferCabang
         ModuleAngka.TerapkanFormatKolomAngka(DgvDetail, kolomAngka)
 
         DgvDetail.EnableHeadersVisualStyles = False
-        DgvDetail.ColumnHeadersDefaultCellStyle.BackColor = Color.Gray
-        DgvDetail.ColumnHeadersDefaultCellStyle.ForeColor = Color.White
-        DgvDetail.AlternatingRowsDefaultCellStyle.BackColor = Color.LightGray
+        ModuleTheme.ApplyThemeDataGridView(DgvDetail)
         DgvDetail.RowHeadersVisible = True
         DgvDetail.GetType().InvokeMember("DoubleBuffered",
             Reflection.BindingFlags.NonPublic Or Reflection.BindingFlags.Instance Or Reflection.BindingFlags.SetProperty,
@@ -862,12 +860,12 @@ Public Class FormTransferCabang
         Dim cell = DgvDetail.Rows(rowIndex).Cells("NamaBarang")
         If adaKode Then
             cell.ReadOnly = True
-            cell.Style.BackColor = Color.FromArgb(144, 238, 144) ' LightGreen — jelas terisi
-            cell.Style.ForeColor = Color.DarkGreen
+            cell.Style.BackColor = ModuleTheme.C(ModuleTheme.L_Subtle, ModuleTheme.D_Subtle)
+            cell.Style.ForeColor = ModuleTheme.C(ModuleTheme.L_Text, ModuleTheme.D_Text)
         Else
             cell.ReadOnly = False
-            cell.Style.BackColor = Color.White
-            cell.Style.ForeColor = Color.Black
+            cell.Style.BackColor = ModuleTheme.C(ModuleTheme.L_Surface, ModuleTheme.D_Surface)
+            cell.Style.ForeColor = ModuleTheme.C(ModuleTheme.L_Text, ModuleTheme.D_Text)
         End If
     End Sub
 
@@ -1049,8 +1047,9 @@ Public Class FormTransferCabang
         If DgvDetail.Columns("StokToko") IsNot Nothing AndAlso DgvDetail.Columns("StokGudang") IsNot Nothing Then
             If e.ColumnIndex = DgvDetail.Columns("StokToko").Index OrElse e.ColumnIndex = DgvDetail.Columns("StokGudang").Index Then
                 If e.Value IsNot Nothing AndAlso ModuleAngka.ParseDecimal(e.Value) < 1 Then
-                    e.CellStyle.BackColor = Color.Red
-                    e.CellStyle.ForeColor = Color.White
+                    ' Stok 0 — warna informasi (amber), bukan merah — konsisten dengan FormJual/FormPembelian
+                    e.CellStyle.BackColor = ModuleTheme.C(ModuleTheme.L_DgvRowStokHabis, ModuleTheme.D_DgvRowStokHabis)
+                    e.CellStyle.ForeColor = ModuleTheme.C(ModuleTheme.L_Text, ModuleTheme.D_Text)
                 End If
             End If
         End If
@@ -2060,10 +2059,7 @@ Public Class FormTransferCabang
             _dgvMasuk.RowHeadersVisible = False
             _dgvMasuk.SelectionMode = DataGridViewSelectionMode.FullRowSelect
             _dgvMasuk.MultiSelect = True
-            _dgvMasuk.EnableHeadersVisualStyles = False
-            _dgvMasuk.ColumnHeadersDefaultCellStyle.BackColor = Color.Gray
-            _dgvMasuk.ColumnHeadersDefaultCellStyle.ForeColor = Color.White
-            _dgvMasuk.AlternatingRowsDefaultCellStyle.BackColor = Color.LightGray
+            ModuleTheme.ApplyThemeDataGridView(_dgvMasuk)
             SetStatus($"Status: {dt.Rows.Count} transfer masuk pending.")
         Catch ex As Exception
             SetStatus("Status: gagal muat transfer masuk — " & ex.Message)
@@ -2779,13 +2775,14 @@ Public Class FormTransferCabang
         Using trx = conn.BeginTransaction()
             Try
                 Using cmd As New MySqlCommand(
-                    "INSERT INTO transfer_cabang (ID_TRANSFER, TGL_TRANSFER, LOKASI, DARI_CABANG, KE_CABANG, MODE_KIRIM,
+                    "INSERT INTO transfer_cabang (ID_TRANSFER, TGL_TRANSFER, LOKASI, LOKASI_ASAL, DARI_CABANG, KE_CABANG, MODE_KIRIM,
                      STATUS_TRANSFER, ID_CLOUD_TRANSFER, FILE_MANUAL, TOTAL_QTY, TOTAL_BARANG, TOTAL_RUPIAH, ID_USER, ID_KOMPUTER)
-                     VALUES (@id, @tgl, @lokasi, @dariCabang, @keCabang, @modeKirim, @statusTransfer, @idCloudTransfer,
+                     VALUES (@id, @tgl, @lokasi, @lokasiAsal, @dariCabang, @keCabang, @modeKirim, @statusTransfer, @idCloudTransfer,
                      @fileManual, @qty, @totBarang, @totRupiah, @idUser, @idKomputer)", conn, trx)
                     cmd.Parameters.AddWithValue("@id", idTransfer)
                     cmd.Parameters.AddWithValue("@tgl", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"))
                     cmd.Parameters.AddWithValue("@lokasi", $"ANTAR_CABANG:{AmbilKodeCabangTujuan()} [{modeKirim}]")
+                    cmd.Parameters.AddWithValue("@lokasiAsal", LokasiBarang)  ' "TOKO" atau "GUDANG" — dipakai saat hapus
                     cmd.Parameters.AddWithValue("@dariCabang", SyncConfig.KodeCabang)
                     cmd.Parameters.AddWithValue("@keCabang", AmbilKodeCabangTujuan())
                     cmd.Parameters.AddWithValue("@modeKirim", modeKirim)

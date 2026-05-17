@@ -538,40 +538,47 @@ Public Module ModuleTheme
         Dim gbName As String = gb.Name
 
         Select Case True
-            ' ── Area input user (biru muda) ─────────────────────────────
+            ' ── Area input user (biru — mencolok, beda dari background) ─
             Case gbName.StartsWith("GBInput")
-                gb.BackColor = C(L_TransInput, D_TransInput)
-                gb.ForeColor = C(L_TransInputFore, D_TransInputFore)
+                gb.BackColor = C(Color.FromArgb(147, 197, 253), Color.FromArgb(30, 58, 138))  ' Blue-300 / Blue-900
+                gb.ForeColor = C(L_Text, Color.FromArgb(191, 219, 254))                        ' Slate-900 / Blue-200
                 TerapkanKontrol(gb.Controls)
-               ' TerapkanBingkaiGroupBox(gb, C(L_Text, Color.White))
 
-            ' ── Area bayar (hijau muda) ──────────────────────────────────
+            ' ── Area bayar (hijau — mencolok) ───────────────────────────
             Case gbName = "GBBayar"
-                gb.BackColor = C(Color.FromArgb(220, 252, 231), Color.FromArgb(30, 41, 59))  ' Green-100 / Slate-800
-                gb.ForeColor = C(L_Text, D_Text)
+                gb.BackColor = C(Color.FromArgb(134, 239, 172), Color.FromArgb(20, 83, 45))   ' Green-300 / Green-900
+                gb.ForeColor = C(L_Text, Color.FromArgb(187, 247, 208))                        ' Slate-900 / Green-200
                 TerapkanKontrol(gb.Controls)
-               ' TerapkanBingkaiGroupBox(gb, C(L_Text, Color.White))
 
-            ' ── Area total/ringkasan (hitam pekat + teks putih — kedua mode sama) ──
+            ' ── Area info/detail (hijau muda — beda dari GBBayar) ───────
+            Case gbName.StartsWith("GBInfo")
+                gb.BackColor = C(Color.FromArgb(167, 243, 208), Color.FromArgb(6, 78, 59))    ' Emerald-200 / Emerald-900
+                gb.ForeColor = C(L_Text, Color.FromArgb(167, 243, 208))                        ' Slate-900 / Emerald-200
+                TerapkanKontrol(gb.Controls)
+
+            ' ── Area total/ringkasan (kuning — mencolok) ─────────────────
+            Case gbName.StartsWith("GBTotal")
+                gb.BackColor = C(Color.FromArgb(253, 224, 71), Color.FromArgb(113, 63, 18))   ' Yellow-300 / Yellow-900
+                gb.ForeColor = C(L_Text, Color.FromArgb(254, 240, 138))                        ' Slate-900 / Yellow-200
+                TerapkanKontrol(gb.Controls)
+
+            ' ── Area grand total (hitam pekat + teks putih — kedua mode sama) ──
             Case gbName.StartsWith("GBGrantotal")
-                gb.BackColor = Color.FromArgb(15, 23, 42)  ' #0F172A Slate-900 — hitam pekat
+                gb.BackColor = Color.FromArgb(15, 23, 42)   ' #0F172A Slate-900 — hitam pekat
                 gb.ForeColor = Color.White
                 TerapkanKontrol(gb.Controls)
-                'TerapkanBingkaiGroupBox(gb, Color.White)
 
-            ' ── Area aksi/tombol (ungu muda) ────────────────────────────
+            ' ── Area aksi/tombol (ungu — mencolok) ──────────────────────
             Case gbName.StartsWith("GBAction")
-                gb.BackColor = C(Color.FromArgb(237, 233, 254), Color.FromArgb(30, 41, 59))  ' Violet-100 / Slate-800
-                gb.ForeColor = C(L_Text, D_Text)
+                gb.BackColor = C(Color.FromArgb(196, 181, 253), Color.FromArgb(76, 29, 149))  ' Violet-300 / Violet-900
+                gb.ForeColor = C(L_Text, Color.FromArgb(221, 214, 254))                        ' Slate-900 / Violet-200
                 TerapkanKontrol(gb.Controls)
-                'TerapkanBingkaiGroupBox(gb, C(L_Text, Color.White))
 
-                ' ── Semua GroupBox lain ─────────────────────────────────────
+            ' ── Semua GroupBox lain ─────────────────────────────────────
             Case Else
                 gb.BackColor = C(L_Panel, D_Panel)
                 gb.ForeColor = C(L_PanelFore, D_PanelFore)
                 TerapkanKontrol(gb.Controls)
-                'TerapkanBingkaiGroupBox(gb, C(L_Text, Color.White))
 
         End Select
     End Sub
@@ -669,8 +676,8 @@ Public Module ModuleTheme
 
             ' ── Area input user (bukan pencarian) ──────────────────────
             Case panelName.StartsWith("PanelInput")
-                pnl.BackColor = C(L_TransInput, D_TransInput)
-                pnl.ForeColor = C(L_TransInputFore, D_TransInputFore)
+                pnl.BackColor = C(Color.FromArgb(147, 197, 253), Color.FromArgb(30, 58, 138))  ' Blue-300 / Blue-900
+                pnl.ForeColor = C(L_Text, Color.FromArgb(191, 219, 254))                        ' Slate-900 / Blue-200
                 TerapkanKontrol(pnl.Controls)
                 TerapkanBingkaiPanel(pnl, C(L_Text, Color.White))
 
@@ -695,8 +702,8 @@ Public Module ModuleTheme
 
             ' ── Tombol aksi di bawah ────────────────────────────────────
             Case panelName.StartsWith("PanelFooter")
-                pnl.BackColor = C(L_TransInput, D_TransInput)
-                pnl.ForeColor = C(L_TransInputFore, D_TransInputFore)
+                pnl.BackColor = C(Color.FromArgb(196, 181, 253), Color.FromArgb(76, 29, 149))  ' Violet-300 / Violet-900
+                pnl.ForeColor = C(L_Text, Color.FromArgb(221, 214, 254))                        ' Slate-900 / Violet-200
                 TerapkanKontrol(pnl.Controls)
                 TerapkanBingkaiPanel(pnl, C(L_Text, Color.White))
 
