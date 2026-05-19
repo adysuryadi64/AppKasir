@@ -1,10 +1,10 @@
+Imports AutoUpdaterDotNET
+
 Public Class FormCekUpdate
 
-    ' URL untuk mengakses file version.txt di Google Drive
-    Private Const urlVersiOnline As String = "https://drive.google.com/uc?export=download&id=1tbxflnu2Jh5t3PvS2Akw_4sTI3RjivUT" ' Link ini adalah link untuk mendownload file version.txt
-
-    ' Versi aplikasi lokal (gunakan versi aplikasi yang sudah didefinisikan di AssemblyInfo)
-    Private ReadOnly versiLokal As String = Application.ProductVersion
+    ' URL untuk mengakses file XML update di internet (misal: GitHub raw url, gist, dsb.)
+    ' Anda harus mengganti URL ini dengan URL file XML Anda nanti.
+    Private Const urlUpdateXML As String = "https://raw.githubusercontent.com/adysuryadi64/AppKasir/master/update.xml" 
 
     Private Sub FormCekUpdate_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         ModuleTheme.TerapkanTheme(Me)
@@ -19,45 +19,48 @@ Public Class FormCekUpdate
         ProgressBar.Visible = True
         ProgressBar.Style = ProgressBarStyle.Marquee ' Menunjukkan proses berjalan
 
+        ' Tambahkan event handler untuk mengetahui kapan proses cek selesai
+        AddHandler AutoUpdater.CheckForUpdateEvent, AddressOf AutoUpdaterOnCheckForUpdateEvent
+
         ' Mulai cek update aplikasi
-        CheckForUpdate()
+        AutoUpdater.Start(urlUpdateXML)
     End Sub
 
-    Private Sub CheckForUpdate()
-        Try
-            ' Gunakan WebClient untuk download file version.txt dari Google Drive
-            Using client As New Net.WebClient()
-                ' Men-download isi file version.txt
-                Dim versiOnline As String = client.DownloadString(urlVersiOnline).Trim()
+    Private Sub AutoUpdaterOnCheckForUpdateEvent(args As UpdateInfoEventArgs)
+        ' Hapus handler agar tidak menumpuk saat tombol diklik berkali-kali
+        RemoveHandler AutoUpdater.CheckForUpdateEvent, AddressOf AutoUpdaterOnCheckForUpdateEvent
 
-                ' Pisahkan isi file version.txt, bagian pertama adalah versi, bagian kedua adalah link download
-                Dim versiInfo() As String = versiOnline.Split(New String() {Environment.NewLine}, StringSplitOptions.None)
-                Dim versiTerbaru As String = versiInfo(0)
-                Dim linkDownload As String = versiInfo(1)
+        ' Karena event ini berjalan di background thread, kita butuh Invoke untuk memodifikasi UI (ProgressBar & lblStatus)
+        If Me.InvokeRequired Then
+            Me.Invoke(Sub() AutoUpdaterOnCheckForUpdateEvent(args))
+            Return
+        End If
 
-                ' Bandingkan versi lokal dengan versi online
-                If New Version(versiLokal) < New Version(versiTerbaru) Then
-                    lblStatus.Text = "Versi baru tersedia: " & versiTerbaru
-                    MessageBox.Show("Versi baru tersedia! Versi terbaru: " & versiTerbaru, "Update Tersedia", MessageBoxButtons.OK, MessageBoxIcon.Information)
+        ProgressBar.Visible = False ' Matikan animasi loading
 
-                    ' Arahkan user untuk download update menggunakan link yang diperoleh dari version.txt
-                    Process.Start(linkDownload) ' Ganti dengan link download
-                Else
-                    lblStatus.Text = "Aplikasi sudah versi terbaru: " & versiLokal
-                    MessageBox.Show("Aplikasi sudah versi terbaru.", "Cek Update", MessageBoxButtons.OK, MessageBoxIcon.Information)
-                End If
-            End Using
-        Catch ex As Exception
-            ' Jika terjadi error saat mengambil data (misal file tidak ditemukan atau internet bermasalah)
+        If args.Error Is Nothing Then
+            If args.IsUpdateAvailable Then
+                lblStatus.Text = "Versi baru tersedia: " & args.CurrentVersion
+                ' Memunculkan form dialog bawaan AutoUpdater.NET yang sangat profesional
+                Try
+                    If AutoUpdater.DownloadUpdate(args) Then
+                        Application.Exit()
+                    End If
+                Catch ex As Exception
+                    MessageBox.Show(ex.Message, "Error Update", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                End Try
+            Else
+                lblStatus.Text = "Aplikasi sudah versi terbaru."
+                MessageBox.Show("Aplikasi sudah berada di versi terbaru (" & args.InstalledVersion.ToString() & ").", "Cek Update", MessageBoxButtons.OK, MessageBoxIcon.Information)
+            End If
+        Else
             lblStatus.Text = "Gagal cek update!"
-            MessageBox.Show("Gagal cek update: " & ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
-        Finally
-            ' Menyembunyikan progress bar setelah selesai
-            ProgressBar.Visible = False
-        End Try
+            MessageBox.Show("Terjadi masalah saat cek update: " & args.Error.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
+        End If
     End Sub
 
     Private Sub BtnClose_Click(sender As Object, e As EventArgs) Handles BtnClose.Click
         Me.Close() ' Menutup form cek update
     End Sub
 End Class
+
