@@ -1,0 +1,4 @@
+# Installer binary — tidak di-commit ke repo (terlalu besar)
+# Simpan file .msi di folder ini secara lokal
+*.msi
+*.exe

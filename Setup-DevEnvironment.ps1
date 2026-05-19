@@ -48,9 +48,12 @@ if ($gh) {
 } else {
     Write-Host "      ✗ GitHub CLI belum terinstall!" -ForegroundColor Red
 
-    # Cari installer di Downloads
-    $msiPath = "$env:USERPROFILE\Downloads\gh_*_windows_amd64.msi" 
-    $msiFile = Get-ChildItem $msiPath -ErrorAction SilentlyContinue | Sort-Object LastWriteTime -Descending | Select-Object -First 1
+    # Cari installer — prioritas dari folder Tools\ di workspace, fallback ke Downloads
+    $scriptRoot   = Split-Path $MyInvocation.MyCommand.Path -Parent
+    $toolsDir     = Join-Path $scriptRoot "Tools"
+    $msiFromTools = Get-ChildItem "$toolsDir\gh_*_windows_amd64.msi" -ErrorAction SilentlyContinue | Sort-Object LastWriteTime -Descending | Select-Object -First 1
+    $msiFromDl    = Get-ChildItem "$env:USERPROFILE\Downloads\gh_*_windows_amd64.msi" -ErrorAction SilentlyContinue | Sort-Object LastWriteTime -Descending | Select-Object -First 1
+    $msiFile      = if ($msiFromTools) { $msiFromTools } else { $msiFromDl }
     
     if ($msiFile) {
         Write-Host "        Installer ditemukan: $($msiFile.Name)" -ForegroundColor Green
