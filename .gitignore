@@ -365,3 +365,6 @@ FodyWeavers.xsd
 # Installer output & large setup files
 AppKasir/Installer/Output/
 AppKasir/Installer/MicrosoftEdgeWebview2Setup.exe
+
+# Auto-generated build revision counter (SetVersion.ps1)
+AppKasir/.buildrev

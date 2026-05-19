@@ -1664,6 +1664,11 @@
     <Folder Include="Utilities\" />
     <Folder Include="Utils\" />
   </ItemGroup>
+  <PropertyGroup>
+  </PropertyGroup>
+  <Target Name="SetVersionBeforeBuild" BeforeTargets="BeforeBuild">
+    <Exec Command="powershell -ExecutionPolicy Bypass -NoProfile -File &quot;$(MSBuildProjectDirectory)\SetVersion.ps1&quot; -ProjectDir &quot;$(MSBuildProjectDirectory)&quot; -UpdateXmlPath &quot;$(SolutionDir)update.xml&quot;" />
+  </Target>
   <Import Project="$(MSBuildToolsPath)\Microsoft.VisualBasic.targets" />
   <Import Project="..\packages\Microsoft.Data.SqlClient.SNI.6.0.2\build\net462\Microsoft.Data.SqlClient.SNI.targets" Condition="Exists('..\packages\Microsoft.Data.SqlClient.SNI.6.0.2\build\net462\Microsoft.Data.SqlClient.SNI.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

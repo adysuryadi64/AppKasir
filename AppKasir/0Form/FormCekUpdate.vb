@@ -4,7 +4,7 @@ Public Class FormCekUpdate
 
     ' URL untuk mengakses file XML update di internet (misal: GitHub raw url, gist, dsb.)
     ' Anda harus mengganti URL ini dengan URL file XML Anda nanti.
-    Private Const urlUpdateXML As String = "https://raw.githubusercontent.com/adysuryadi64/AppKasir/master/update.xml" 
+    Private Const urlUpdateXML As String = "https://raw.githubusercontent.com/adysuryadi64/AppKasir/master/update.xml"
 
     Private Sub FormCekUpdate_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         ModuleTheme.TerapkanTheme(Me)
@@ -14,10 +14,11 @@ Public Class FormCekUpdate
     End Sub
 
     Private Sub btnCekUpdate_Click(sender As Object, e As EventArgs) Handles btnCekUpdate.Click
-        ' Ketika tombol "Cek Update" ditekan, kita akan mulai cek update
+        ' Nonaktifkan tombol agar tidak bisa diklik ganda saat proses berjalan
+        btnCekUpdate.Enabled = False
         lblStatus.Text = "Mengecek versi terbaru..."
         ProgressBar.Visible = True
-        ProgressBar.Style = ProgressBarStyle.Marquee ' Menunjukkan proses berjalan
+        ProgressBar.Style = ProgressBarStyle.Marquee
 
         ' Tambahkan event handler untuk mengetahui kapan proses cek selesai
         AddHandler AutoUpdater.CheckForUpdateEvent, AddressOf AutoUpdaterOnCheckForUpdateEvent
@@ -27,21 +28,26 @@ Public Class FormCekUpdate
     End Sub
 
     Private Sub AutoUpdaterOnCheckForUpdateEvent(args As UpdateInfoEventArgs)
-        ' Hapus handler agar tidak menumpuk saat tombol diklik berkali-kali
+        ' Hapus handler agar tidak menumpuk
         RemoveHandler AutoUpdater.CheckForUpdateEvent, AddressOf AutoUpdaterOnCheckForUpdateEvent
 
-        ' Karena event ini berjalan di background thread, kita butuh Invoke untuk memodifikasi UI (ProgressBar & lblStatus)
+        ' Jika form sudah ditutup/dispose, abaikan callback ini
+        If Me.IsDisposed Then Return
+
+        ' Karena event ini berjalan di background thread, kita butuh Invoke untuk memodifikasi UI
         If Me.InvokeRequired Then
             Me.Invoke(Sub() AutoUpdaterOnCheckForUpdateEvent(args))
             Return
         End If
 
-        ProgressBar.Visible = False ' Matikan animasi loading
+        ' Kembalikan tombol dan sembunyikan progress bar
+        btnCekUpdate.Enabled = True
+        ProgressBar.Visible = False
 
         If args.Error Is Nothing Then
             If args.IsUpdateAvailable Then
                 lblStatus.Text = "Versi baru tersedia: " & args.CurrentVersion
-                ' Memunculkan form dialog bawaan AutoUpdater.NET yang sangat profesional
+                ' Memunculkan dialog download bawaan AutoUpdater.NET
                 Try
                     If AutoUpdater.DownloadUpdate(args) Then
                         Application.Exit()
