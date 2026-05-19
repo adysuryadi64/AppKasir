@@ -11,6 +11,10 @@
 #  Install: https://cli.github.com/
 # ============================================================
 
+param(
+    [switch]$NonInteractive  # Set otomatis saat dipanggil dari MSBuild
+)
+
 Set-Location (Split-Path $PSScriptRoot -Parent)  # ke root solution
 
 # ── Baca versi dari update.xml ────────────────────────────────────
@@ -23,7 +27,7 @@ if (Test-Path $UpdateXmlPath) {
 
 if ($versi -eq "") {
     Write-Host "ERROR: Tidak bisa membaca versi dari update.xml" -ForegroundColor Red
-    Read-Host "Tekan Enter untuk keluar"
+    if (-not $NonInteractive) { Read-Host "Tekan Enter untuk keluar" }
     exit 1
 }
 
@@ -42,7 +46,7 @@ Write-Host ""
 if (-not (Test-Path $zipPath)) {
     Write-Host "ERROR: $zipPath tidak ditemukan!" -ForegroundColor Red
     Write-Host "       Pastikan Build Release sudah dijalankan." -ForegroundColor Red
-    Read-Host "Tekan Enter untuk keluar"
+    if (-not $NonInteractive) { Read-Host "Tekan Enter untuk keluar" }
     exit 1
 }
 
@@ -106,4 +110,4 @@ Write-Host "============================================================" -Foreg
 Write-Host "  SELESAI! Versi $versi sudah live." -ForegroundColor Green
 Write-Host "============================================================" -ForegroundColor Green
 Write-Host ""
-Read-Host "Tekan Enter untuk keluar"
+if (-not $NonInteractive) { Read-Host "Tekan Enter untuk keluar" }
