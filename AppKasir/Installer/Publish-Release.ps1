@@ -15,10 +15,11 @@ param(
     [switch]$NonInteractive  # Set otomatis saat dipanggil dari MSBuild
 )
 
-Set-Location (Split-Path $PSScriptRoot -Parent)  # ke root solution
+Set-Location (Split-Path (Split-Path $PSScriptRoot -Parent) -Parent)  # ke root solution (AppKasir_2026\)
 
 # ── Baca versi dari update.xml ────────────────────────────────────
 $UpdateXmlPath = "update.xml"
+$zipPath       = "AppKasir\Installer\Output\AppKasir_Update.zip"
 $versi = ""
 if (Test-Path $UpdateXmlPath) {
     $match = Select-String -Path $UpdateXmlPath -Pattern '<version>([^<]+)</version>'
@@ -31,7 +32,6 @@ if ($versi -eq "") {
     exit 1
 }
 
-$zipPath = "AppKasir\Installer\Output\AppKasir_Update.zip"
 $tag     = "v$versi"
 
 Write-Host ""
