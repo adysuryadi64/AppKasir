@@ -839,22 +839,9 @@ Public Class FormGaji
                         ' ========================================
 
                         ' ========================================
-                        ' STEP 1: SELECT daftar akun LAMA SEBELUM DELETE JurnalUmum
+                        ' STEP 1: REVERSAL saldo akun SEBELUM DELETE JurnalUmum
                         ' ========================================
-                        Dim akunTerlibat As New HashSet(Of String)(StringComparer.OrdinalIgnoreCase)
-                        Using cmdAkun As New MySqlCommand(
-                            "SELECT DISTINCT NOMOR_AKUN_D FROM JurnalUmum WHERE NO_TRANSAKSI = @fk AND NOMOR_AKUN_D <> '' " &
-                            "UNION " &
-                            "SELECT DISTINCT NOMOR_AKUN_K FROM JurnalUmum WHERE NO_TRANSAKSI = @fk AND NOMOR_AKUN_K <> ''",
-                            conn, transaction)
-                            cmdAkun.Parameters.AddWithValue("@fk", nomorTransaksi)
-                            Using rd = cmdAkun.ExecuteReader()
-                                While rd.Read()
-                                    Dim kode As String = rd(0).ToString().Trim()
-                                    If kode <> "" Then akunTerlibat.Add(kode)
-                                End While
-                            End Using
-                        End Using
+                        ReversalSaldoAkunDariFaktur(nomorTransaksi, transaction)
 
                         ' Hapus data gaji karyawan berdasarkan nomor transaksi
                         Dim queryHapusGaji As String = "DELETE FROM Gaji_karyawan WHERE NOMOR = @NomorTransaksi"
@@ -891,12 +878,7 @@ Public Class FormGaji
                         ' Update SaldoAkhir karyawan secara realtime
                         UpdateBonKaryawan(kodeKaryawan, transaction)
 
-                        ' ========================================
-                        ' STEP 2: Update saldo untuk semua akun yang terlibat
-                        ' ========================================
-                        For Each kodeAkun As String In akunTerlibat
-                            UpdateSaldoAkun(kodeAkun, transaction)
-                        Next
+                        ' Update saldo akun — sudah dilakukan sebelum DELETE di atas
 
                         ' Commit transaksi jika berhasil
                         transaction.Commit()
@@ -1009,8 +991,6 @@ Public Class FormGaji
 
                 Dim potonganlain As Decimal = potongan - potonganBon
 
-                Dim akunLama As New HashSet(Of String)(StringComparer.OrdinalIgnoreCase)
-
                 If BtnSimpann.Text = "EDIT (F8)" Then
                     ' ========================================
                     ' START: Audit Trail - Edit Slip Gaji
@@ -1058,29 +1038,15 @@ Public Class FormGaji
                     ' END: Audit Trail - Edit Slip Gaji
                     ' ========================================
 
-                    ' ========================================
-                    ' STEP 1: SELECT daftar akun LAMA SEBELUM DELETE JurnalUmum
-                    ' ========================================
-                    Using cmdAkunLama As New MySqlCommand(
-                        "SELECT DISTINCT NOMOR_AKUN_D FROM JurnalUmum WHERE NO_TRANSAKSI = @fk AND NOMOR_AKUN_D <> '' " &
-                        "UNION " &
-                        "SELECT DISTINCT NOMOR_AKUN_K FROM JurnalUmum WHERE NO_TRANSAKSI = @fk AND NOMOR_AKUN_K <> ''",
-                        conn, transaction)
-                        cmdAkunLama.Parameters.AddWithValue("@fk", LblNomor.Text)
-                        Using rd = cmdAkunLama.ExecuteReader()
-                            While rd.Read()
-                                Dim kode As String = rd(0).ToString().Trim()
-                                If kode <> "" Then akunLama.Add(kode)
-                            End While
-                        End Using
-                    End Using
-
                     ' Hapus data gaji karyawan berdasarkan nomor transaksi
                     Dim queryHapusGaji As String = "DELETE FROM Gaji_karyawan WHERE NOMOR = @NomorTransaksi"
                     Using cmdHapusGaji As New MySqlCommand(queryHapusGaji, conn, transaction)
                         cmdHapusGaji.Parameters.AddWithValue("@NomorTransaksi", LblNomor.Text)
                         cmdHapusGaji.ExecuteNonQuery()
                     End Using
+
+                    ' Reversal saldo akun SEBELUM DELETE JurnalUmum
+                    ReversalSaldoAkunDariFaktur(LblNomor.Text, transaction)
 
                     ' Hapus data jurnal umum berdasarkan nomor transaksi
                     Dim queryHapusJurnal As String = "DELETE FROM JurnalUmum WHERE NO_TRANSAKSI = @NomorTransaksi"
@@ -1145,38 +1111,8 @@ Public Class FormGaji
                 ' Update saldo bon karyawan secara realtime
                 UpdateBonKaryawan(LblKode.Text, transaction)
 
-                ' ========================================
-                ' STEP 2: SELECT daftar akun BARU
-                ' ========================================
-                Dim akunBaru As New HashSet(Of String)(StringComparer.OrdinalIgnoreCase)
-                Using cmdAkunBaru As New MySqlCommand(
-                    "SELECT DISTINCT NOMOR_AKUN_D FROM JurnalUmum WHERE NO_TRANSAKSI = @fk AND NOMOR_AKUN_D <> '' " &
-                    "UNION " &
-                    "SELECT DISTINCT NOMOR_AKUN_K FROM JurnalUmum WHERE NO_TRANSAKSI = @fk AND NOMOR_AKUN_K <> ''",
-                    conn, transaction)
-                    cmdAkunBaru.Parameters.AddWithValue("@fk", LblNomor.Text)
-                    Using rd = cmdAkunBaru.ExecuteReader()
-                        While rd.Read()
-                            Dim kode As String = rd(0).ToString().Trim()
-                            If kode <> "" Then akunBaru.Add(kode)
-                        End While
-                    End Using
-                End Using
-
-                ' ========================================
-                ' STEP 3: GABUNGKAN daftar akun LAMA + BARU
-                ' ========================================
-                Dim semuaAkunTerlibat As New HashSet(Of String)(akunLama, StringComparer.OrdinalIgnoreCase)
-                For Each akun In akunBaru
-                    semuaAkunTerlibat.Add(akun)
-                Next
-
-                ' ========================================
-                ' STEP 4: UPDATE saldo untuk SEMUA akun yang terlibat
-                ' ========================================
-                For Each kodeAkun As String In semuaAkunTerlibat
-                    UpdateSaldoAkun(kodeAkun, transaction)
-                Next
+                ' Update saldo akun — incremental delta
+                UpdateSaldoAkunDeltaDariFaktur(LblNomor.Text, transaction)
 
                 ' Commit transaksi jika berhasil
                 transaction.Commit()

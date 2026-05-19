@@ -453,10 +453,11 @@ Friend Module ModulHakAkses
         If isEditMode Then
             Dim tglEdit As DateTime = If(tanggalEdit = Nothing, DateTime.Now, tanggalEdit)
             dtp.Value = tglEdit
+            dtp.Enabled = True  ' Mode edit: selalu bisa ubah tanggal, tanggal lama bisa lampau
         Else
             dtp.Value = DateTime.Now
+            dtp.Enabled = SettingIzinkanTanggalLampau
         End If
-        dtp.Enabled = SettingIzinkanTanggalLampau
     End Sub
 
     ''' <summary>

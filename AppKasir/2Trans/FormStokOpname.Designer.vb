@@ -23,10 +23,10 @@ Partial Class FormStokOpname
     <System.Diagnostics.DebuggerStepThrough()>
     Private Sub InitializeComponent()
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(FormStokOpname))
-        Me.Panel4 = New System.Windows.Forms.Panel()
-        Me.BtNCetak = New System.Windows.Forms.Button()
+        Me.PanelHeader = New System.Windows.Forms.Panel()
         Me.BtnKeluarForm = New System.Windows.Forms.Button()
-        Me.LblUtama = New System.Windows.Forms.Label()
+        Me.LblHeader = New System.Windows.Forms.Label()
+        Me.BtNCetak = New System.Windows.Forms.Button()
         Me.lstBarang = New System.Windows.Forms.ListBox()
         Me.TxtFaktur = New System.Windows.Forms.TextBox()
         Me.TxtNama = New System.Windows.Forms.TextBox()
@@ -73,7 +73,7 @@ Partial Class FormStokOpname
         Me.DGVData = New System.Windows.Forms.DataGridView()
         Me.Label8 = New System.Windows.Forms.Label()
         Me.TxtQtyUntukEdit = New System.Windows.Forms.TextBox()
-        Me.Panel4.SuspendLayout()
+        Me.PanelHeader.SuspendLayout()
         Me.Panel1.SuspendLayout()
         Me.Panel2.SuspendLayout()
         Me.PanelCari.SuspendLayout()
@@ -81,39 +81,17 @@ Partial Class FormStokOpname
         CType(Me.DGVData, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
-        'Panel4
+        'PanelHeader
         '
-        Me.Panel4.BackColor = System.Drawing.Color.Yellow
-        Me.Panel4.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D
-        Me.Panel4.Controls.Add(Me.BtnKeluarForm)
-        Me.Panel4.Controls.Add(Me.LblUtama)
-        Me.Panel4.Dock = System.Windows.Forms.DockStyle.Top
-        Me.Panel4.Location = New System.Drawing.Point(0, 0)
-        Me.Panel4.Name = "Panel4"
-        Me.Panel4.Size = New System.Drawing.Size(1112, 45)
-        Me.Panel4.TabIndex = 5
-        '
-        'BtNCetak
-        '
-        Me.BtNCetak.AutoSize = True
-        Me.BtNCetak.BackColor = System.Drawing.Color.White
-        Me.BtNCetak.Cursor = System.Windows.Forms.Cursors.Hand
-        Me.BtNCetak.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(CType(CType(100, Byte), Integer), CType(CType(116, Byte), Integer), CType(CType(139, Byte), Integer))
-        Me.BtNCetak.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(CType(CType(226, Byte), Integer), CType(CType(232, Byte), Integer), CType(CType(240, Byte), Integer))
-        Me.BtNCetak.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(CType(CType(241, Byte), Integer), CType(CType(245, Byte), Integer), CType(CType(249, Byte), Integer))
-        Me.BtNCetak.FlatStyle = System.Windows.Forms.FlatStyle.Flat
-        Me.BtNCetak.Font = New System.Drawing.Font("Segoe UI", 9.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.BtNCetak.ForeColor = System.Drawing.Color.Black
-        Me.BtNCetak.Image = CType(resources.GetObject("BtNCetak.Image"), System.Drawing.Image)
-        Me.BtNCetak.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft
-        Me.BtNCetak.Location = New System.Drawing.Point(382, 88)
-        Me.BtNCetak.Name = "BtNCetak"
-        Me.BtNCetak.Size = New System.Drawing.Size(196, 36)
-        Me.BtNCetak.TabIndex = 79
-        Me.BtNCetak.Text = "Cetak bahan stokopname"
-        Me.BtNCetak.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
-        Me.BtNCetak.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText
-        Me.BtNCetak.UseVisualStyleBackColor = False
+        Me.PanelHeader.BackColor = System.Drawing.Color.Yellow
+        Me.PanelHeader.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D
+        Me.PanelHeader.Controls.Add(Me.BtnKeluarForm)
+        Me.PanelHeader.Controls.Add(Me.LblHeader)
+        Me.PanelHeader.Dock = System.Windows.Forms.DockStyle.Top
+        Me.PanelHeader.Location = New System.Drawing.Point(0, 0)
+        Me.PanelHeader.Name = "PanelHeader"
+        Me.PanelHeader.Size = New System.Drawing.Size(1112, 45)
+        Me.PanelHeader.TabIndex = 5
         '
         'BtnKeluarForm
         '
@@ -138,17 +116,39 @@ Partial Class FormStokOpname
         Me.BtnKeluarForm.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText
         Me.BtnKeluarForm.UseVisualStyleBackColor = False
         '
-        'LblUtama
+        'LblHeader
         '
-        Me.LblUtama.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.LblUtama.Font = New System.Drawing.Font("Century Gothic", 21.75!, System.Drawing.FontStyle.Bold)
-        Me.LblUtama.ForeColor = System.Drawing.SystemColors.ActiveCaptionText
-        Me.LblUtama.Location = New System.Drawing.Point(0, 0)
-        Me.LblUtama.Name = "LblUtama"
-        Me.LblUtama.Size = New System.Drawing.Size(1108, 41)
-        Me.LblUtama.TabIndex = 1
-        Me.LblUtama.Text = "Add Stok Opname"
-        Me.LblUtama.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
+        Me.LblHeader.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.LblHeader.Font = New System.Drawing.Font("Century Gothic", 21.75!, System.Drawing.FontStyle.Bold)
+        Me.LblHeader.ForeColor = System.Drawing.SystemColors.ActiveCaptionText
+        Me.LblHeader.Location = New System.Drawing.Point(0, 0)
+        Me.LblHeader.Name = "LblHeader"
+        Me.LblHeader.Size = New System.Drawing.Size(1108, 41)
+        Me.LblHeader.TabIndex = 1
+        Me.LblHeader.Text = "Add Stok Opname"
+        Me.LblHeader.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
+        '
+        'BtNCetak
+        '
+        Me.BtNCetak.AutoSize = True
+        Me.BtNCetak.BackColor = System.Drawing.Color.White
+        Me.BtNCetak.Cursor = System.Windows.Forms.Cursors.Hand
+        Me.BtNCetak.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(CType(CType(100, Byte), Integer), CType(CType(116, Byte), Integer), CType(CType(139, Byte), Integer))
+        Me.BtNCetak.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(CType(CType(226, Byte), Integer), CType(CType(232, Byte), Integer), CType(CType(240, Byte), Integer))
+        Me.BtNCetak.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(CType(CType(241, Byte), Integer), CType(CType(245, Byte), Integer), CType(CType(249, Byte), Integer))
+        Me.BtNCetak.FlatStyle = System.Windows.Forms.FlatStyle.Flat
+        Me.BtNCetak.Font = New System.Drawing.Font("Segoe UI", 9.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.BtNCetak.ForeColor = System.Drawing.Color.Black
+        Me.BtNCetak.Image = CType(resources.GetObject("BtNCetak.Image"), System.Drawing.Image)
+        Me.BtNCetak.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft
+        Me.BtNCetak.Location = New System.Drawing.Point(382, 88)
+        Me.BtNCetak.Name = "BtNCetak"
+        Me.BtNCetak.Size = New System.Drawing.Size(196, 36)
+        Me.BtNCetak.TabIndex = 79
+        Me.BtNCetak.Text = "Cetak bahan stokopname"
+        Me.BtNCetak.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
+        Me.BtNCetak.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText
+        Me.BtNCetak.UseVisualStyleBackColor = False
         '
         'lstBarang
         '
@@ -575,7 +575,7 @@ Partial Class FormStokOpname
         Me.LblKetTerakhir.TabIndex = 129
         Me.LblKetTerakhir.Text = "Stok Opnam terakhir pada nama barang : "
         '
-        'PanelCariNama
+        'PanelCari
         '
         Me.PanelCari.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom
         Me.PanelCari.Controls.Add(Me.BtnCari)
@@ -721,7 +721,7 @@ Partial Class FormStokOpname
         Me.Controls.Add(Me.TxtKomputer)
         Me.Controls.Add(Me.TxtIdUser)
         Me.Controls.Add(Me.BtnSimpan)
-        Me.Controls.Add(Me.Panel4)
+        Me.Controls.Add(Me.PanelHeader)
         Me.Controls.Add(Me.Panel3)
         Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None
         Me.KeyPreview = True
@@ -730,8 +730,8 @@ Partial Class FormStokOpname
         Me.ShowInTaskbar = False
         Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen
         Me.Text = "BarangStokOpnameForm"
-        Me.Panel4.ResumeLayout(False)
-        Me.Panel4.PerformLayout()
+        Me.PanelHeader.ResumeLayout(False)
+        Me.PanelHeader.PerformLayout()
         Me.Panel1.ResumeLayout(False)
         Me.Panel1.PerformLayout()
         Me.Panel2.ResumeLayout(False)
@@ -745,8 +745,8 @@ Partial Class FormStokOpname
         Me.PerformLayout()
 
     End Sub
-    Friend WithEvents Panel4 As System.Windows.Forms.Panel
-    Friend WithEvents LblUtama As System.Windows.Forms.Label
+    Friend WithEvents PanelHeader As System.Windows.Forms.Panel
+    Friend WithEvents LblHeader As System.Windows.Forms.Label
     Friend WithEvents BtnKeluarForm As System.Windows.Forms.Button
     Friend WithEvents lstBarang As System.Windows.Forms.ListBox
     Friend WithEvents TxtFaktur As System.Windows.Forms.TextBox

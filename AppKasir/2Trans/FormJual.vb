@@ -2142,7 +2142,7 @@ Public Class FormJual
         ' ISI DATAGRID
         Dim hargaBeli As Decimal = ModuleAngka.ParseDecimal(TxtHargaBeli.Text)
         Dim qty As Decimal = ModuleAngka.ParseDecimal(TxtQty.Text)
-        Dim isi As Decimal = ModuleAngka.ParseDecimal(TxtIsi.Text)
+        Dim isi As Decimal = Math.Max(1, ModuleAngka.ParseDecimal(TxtIsi.Text))  ' tidak boleh < 1
         Dim hargajual As Decimal = ModuleAngka.ParseDecimal(TxtHargaJual.Text)
         Dim stoktoko As Decimal = ModuleAngka.ParseDecimal(TxtStokToko.Text)
         Dim stokgudang As Decimal = ModuleAngka.ParseDecimal(TXtStokGudang.Text)
@@ -2187,7 +2187,7 @@ Public Class FormJual
 
         Dim hargaBeli As Decimal = ModuleAngka.ParseDecimal(row.Cells("HargaBeli").Value)
         Dim qtyBarang As Decimal = ModuleAngka.ParseDecimal(row.Cells("QTY").Value)
-        Dim isiBarang As Integer = CInt(ModuleAngka.ParseDecimal(row.Cells("Isi").Value))
+        Dim isiBarang As Integer = Math.Max(1, CInt(ModuleAngka.ParseDecimal(row.Cells("Isi").Value)))  ' guard ISI=0
         Dim hargaJual As Decimal = ModuleAngka.ParseDecimal(row.Cells("Harga").Value)
         Dim diskonRp As Decimal = ModuleAngka.ParseDecimal(row.Cells("DiskonRp").Value)
 
@@ -2304,7 +2304,7 @@ Public Class FormJual
                             DgvDataTransaksi.Rows(e.RowIndex).Cells("NamaBarang").Value = rd("NAMA_BARANG")
                             DgvDataTransaksi.Rows(e.RowIndex).Cells("HargaBeli").Value = ModuleAngka.SafeGetValue(Of Decimal)(rd, "HARGA_BELI", 0D)
                             DgvDataTransaksi.Rows(e.RowIndex).Cells("Satuan").Value = satuanValue
-                            DgvDataTransaksi.Rows(e.RowIndex).Cells("Isi").Value = ModuleAngka.SafeGetValue(Of Integer)(rd, isiField, 1)
+                            DgvDataTransaksi.Rows(e.RowIndex).Cells("Isi").Value = Math.Max(1, ModuleAngka.SafeGetValue(Of Integer)(rd, isiField, 1))
                             DgvDataTransaksi.Rows(e.RowIndex).Cells("Harga").Value = ModuleAngka.SafeGetValue(Of Decimal)(rd, hargaField, 0D)
                             DgvDataTransaksi.Rows(e.RowIndex).Cells("QTY").Value = qtyValue
                             DgvDataTransaksi.Rows(e.RowIndex).Cells("StokToko").Value = ModuleAngka.SafeGetValue(Of Decimal)(rd, "STOK_TOKO", 0D)
@@ -2812,13 +2812,13 @@ Public Class FormJual
                 Using rd As MySqlDataReader = cmd.ExecuteReader
                     If rd.Read() Then
                         If comboBox.SelectedIndex = 0 Then
-                            cell.OwningRow.Cells("Isi").Value = rd.Item("ISI_PARTAI_KECIL")
+                            cell.OwningRow.Cells("Isi").Value = Math.Max(1, If(IsDBNull(rd.Item("ISI_PARTAI_KECIL")), 1, CInt(rd.Item("ISI_PARTAI_KECIL"))))
                             cell.OwningRow.Cells("Harga").Value = rd.Item("HARGA_JUAL_PARTAI_KECIL")
                         ElseIf comboBox.SelectedIndex = 1 Then
-                            cell.OwningRow.Cells("Isi").Value = rd.Item("ISI_PARTAI_SEDANG")
+                            cell.OwningRow.Cells("Isi").Value = Math.Max(1, If(IsDBNull(rd.Item("ISI_PARTAI_SEDANG")), 1, CInt(rd.Item("ISI_PARTAI_SEDANG"))))
                             cell.OwningRow.Cells("Harga").Value = rd.Item("HARGA_JUAL_PARTAI_SEDANG")
                         Else
-                            cell.OwningRow.Cells("Isi").Value = rd.Item("ISI_PARTAI_BESAR")
+                            cell.OwningRow.Cells("Isi").Value = Math.Max(1, If(IsDBNull(rd.Item("ISI_PARTAI_BESAR")), 1, CInt(rd.Item("ISI_PARTAI_BESAR"))))
                             cell.OwningRow.Cells("Harga").Value = rd.Item("HARGA_JUAL_PARTAI_BESAR")
                         End If
                     Else
@@ -2834,13 +2834,13 @@ Public Class FormJual
                     If rd.Read() Then
                         ' Update the contents of the adjacent text box column based on the selected option in the combo box
                         If comboBox.SelectedIndex = 0 Then
-                            cell.OwningRow.Cells("Isi").Value = rd.Item("ISI_UMUM_KECIL")
+                            cell.OwningRow.Cells("Isi").Value = Math.Max(1, If(IsDBNull(rd.Item("ISI_UMUM_KECIL")), 1, CInt(rd.Item("ISI_UMUM_KECIL"))))
                             cell.OwningRow.Cells("Harga").Value = rd.Item("HARGA_JUAL_UMUM_KECIL")
                         ElseIf comboBox.SelectedIndex = 1 Then
-                            cell.OwningRow.Cells("Isi").Value = rd.Item("ISI_UMUM_SEDANG")
+                            cell.OwningRow.Cells("Isi").Value = Math.Max(1, If(IsDBNull(rd.Item("ISI_UMUM_SEDANG")), 1, CInt(rd.Item("ISI_UMUM_SEDANG"))))
                             cell.OwningRow.Cells("Harga").Value = rd.Item("HARGA_JUAL_UMUM_SEDANG")
                         Else
-                            cell.OwningRow.Cells("Isi").Value = rd.Item("ISI_UMUM_BESAR")
+                            cell.OwningRow.Cells("Isi").Value = Math.Max(1, If(IsDBNull(rd.Item("ISI_UMUM_BESAR")), 1, CInt(rd.Item("ISI_UMUM_BESAR"))))
                             cell.OwningRow.Cells("Harga").Value = rd.Item("HARGA_JUAL_UMUM_BESAR")
                         End If
                     Else
@@ -3741,7 +3741,7 @@ Public Class FormJual
                                 row.Cells(2).Value = ModuleAngka.SafeGetValue(Of Decimal)(rd, "HARGA_BELI", 0D)
                                 row.Cells(3).Value = ModuleAngka.SafeGetValue(Of Decimal)(rd, "QTY", 0D)
                                 row.Cells(4).Value = ModuleAngka.SafeGetValue(Of String)(rd, "SATUAN", "")
-                                row.Cells(5).Value = ModuleAngka.SafeGetValue(Of Integer)(rd, "ISI_SATUAN", 1)
+                                row.Cells(5).Value = Math.Max(1, ModuleAngka.SafeGetValue(Of Integer)(rd, "ISI_SATUAN", 1))
                                 row.Cells(6).Value = ModuleAngka.SafeGetValue(Of Decimal)(rd, "HARGA_BELI_SATUAN", 0D)
                                 row.Cells(7).Value = ModuleAngka.SafeGetValue(Of Decimal)(rd, "HARGA_JUAL", 0D)
                                 row.Cells(8).Value = ModuleAngka.SafeGetValue(Of Decimal)(rd, "QTY_SATUAN", 0D)
@@ -4525,21 +4525,22 @@ Public Class FormJual
 
         ' ═══════════════════════════════════════════════════════════════
         ' VALIDASI LEVEL 7: CEK TANGGAL TRANSAKSI LAMPAU
-        ' DTP sudah dikunci jika tidak diizinkan (TerapkanModeDTP),
-        ' tapi tetap validasi sebagai lapisan kedua.
+        ' Hanya berlaku untuk mode TAMBAH — mode edit boleh pakai tanggal lampau
+        ' karena transaksi yang diedit memang bisa bertanggal lampau.
         ' ═══════════════════════════════════════════════════════════════
-        If Not ModulHakAkses.ValidasiTanggalTransaksi(DTPTgl.Value) Then
-            ' Tidak seharusnya terjadi karena DTP sudah dikunci, tapi jaga-jaga
-            ResetDTPKeTanggalHariIni(DTPTgl)
-            Nomorjual()
-            MessageBox.Show(
-            "Tanggal transaksi tidak boleh tanggal lampau." & vbCrLf &
-            "Tanggal telah direset ke hari ini.",
-            "Peringatan",
-            MessageBoxButtons.OK,
-            MessageBoxIcon.Warning)
-            DTPTgl.Focus()
-            Exit Sub
+        If IsModeTambahPenjualan Then
+            If Not ModulHakAkses.ValidasiTanggalTransaksi(DTPTgl.Value) Then
+                ResetDTPKeTanggalHariIni(DTPTgl)
+                Nomorjual()
+                MessageBox.Show(
+                "Tanggal transaksi tidak boleh tanggal lampau." & vbCrLf &
+                "Tanggal telah direset ke hari ini.",
+                "Peringatan",
+                MessageBoxButtons.OK,
+                MessageBoxIcon.Warning)
+                DTPTgl.Focus()
+                Exit Sub
+            End If
         End If
 
         ' ═══════════════════════════════════════════════════════════════
@@ -4720,28 +4721,8 @@ Public Class FormJual
         Dim transaction As MySqlTransaction = conn.BeginTransaction()
 
         Try
-            ' ========================================
-            ' LANGKAH 1: SIMPAN AKUN LAMA (JIKA MODE EDIT)
-            ' ========================================
-            Dim akunTerlibatLama As New HashSet(Of String)(StringComparer.OrdinalIgnoreCase)
-            If Not IsModeTambahPenjualan Then
-                Using cmdAkunLama As New MySqlCommand(
-                "SELECT DISTINCT NOMOR_AKUN_D FROM JurnalUmum WHERE NO_TRANSAKSI = @fk AND NOMOR_AKUN_D <> '' " &
-                "UNION " &
-                "SELECT DISTINCT NOMOR_AKUN_K FROM JurnalUmum WHERE NO_TRANSAKSI = @fk AND NOMOR_AKUN_K <> ''",
-                conn, transaction)
-                    cmdAkunLama.Parameters.AddWithValue("@fk", TxtFaktur.Text)
-                    Using rd = cmdAkunLama.ExecuteReader()
-                        While rd.Read()
-                            Dim kode As String = rd(0).ToString().Trim()
-                            If kode <> "" Then akunTerlibatLama.Add(kode)
-                        End While
-                    End Using
-                End Using
-                Debug.WriteLine($"[INFO] SELECT akun lama ({akunTerlibatLama.Count} akun)")
-            End If
-
             ' Jika mode Edit: hapus dulu data lama
+            ' ReversalSaldoAkunDariFaktur dipanggil di dalam Hapusuntukedit → HapusPenjualan
             If Not IsModeTambahPenjualan Then
                 ' ========================================
                 ' START: Audit Trail - Edit Penjualan
@@ -4768,17 +4749,29 @@ Public Class FormJual
             Next
 
             ' ── Simpan transaksi ──────────────────────────────────────────────
+            Dim _sw As New System.Diagnostics.Stopwatch()
+            Dim _lap As Long = 0
+
+            _sw.Start()
             Simpanpenjualan(transaction)
+            _lap = _sw.ElapsedMilliseconds : Debug.WriteLine($"[PERF-SIMPAN] Simpanpenjualan        : {_lap} ms")
 
+            _sw.Restart()
             Simpanpenjualandetail(transaction, auditDetail)
+            _lap = _sw.ElapsedMilliseconds : Debug.WriteLine($"[PERF-SIMPAN] Simpanpenjualandetail  : {_lap} ms")
 
+            _sw.Restart()
             HistoryBarang(transaction, auditHistory)
+            _lap = _sw.ElapsedMilliseconds : Debug.WriteLine($"[PERF-SIMPAN] HistoryBarang          : {_lap} ms")
 
             ' ── Jurnal ────────────────────────────────────────────────────────
             Dim jD As Decimal = 0D, jK As Decimal = 0D
+            _sw.Restart()
             Simpanjurnal(transaction, jD, jK)
+            _lap = _sw.ElapsedMilliseconds : Debug.WriteLine($"[PERF-SIMPAN] Simpanjurnal           : {_lap} ms")
 
             ' ── Update stok & piutang ─────────────────────────────────────────
+            _sw.Restart()
             For Each row As DataGridViewRow In DgvDataTransaksi.Rows
                 If Not row.IsNewRow AndAlso row.Cells("Kode").Value IsNot Nothing AndAlso row.Cells("Kode").Value.ToString() <> "" Then
                     Dim kodeD As String = row.Cells("Kode").Value.ToString()
@@ -4789,46 +4782,29 @@ Public Class FormJual
                     If auditStokDelta.ContainsKey(kodeD) Then auditStokDelta(kodeD) += delta Else auditStokDelta(kodeD) = delta
                 End If
             Next
+            _lap = _sw.ElapsedMilliseconds : Debug.WriteLine($"[PERF-SIMPAN] HitungStokPerubahan    : {_lap} ms ({DgvDataTransaksi.Rows.Count - 1} barang)")
 
-            Dim akunTerlibatBaru As New HashSet(Of String)(StringComparer.OrdinalIgnoreCase)
-            Using cmdAkunBaru As New MySqlCommand(
-            "SELECT DISTINCT NOMOR_AKUN_D FROM JurnalUmum WHERE NO_TRANSAKSI = @fk AND NOMOR_AKUN_D <> '' " &
-            "UNION " &
-            "SELECT DISTINCT NOMOR_AKUN_K FROM JurnalUmum WHERE NO_TRANSAKSI = @fk AND NOMOR_AKUN_K <> ''",
-            conn, transaction)
-                cmdAkunBaru.Parameters.AddWithValue("@fk", TxtFaktur.Text)
-                Using rd = cmdAkunBaru.ExecuteReader()
-                    While rd.Read()
-                        Dim kode As String = rd(0).ToString().Trim()
-                        If kode <> "" Then akunTerlibatBaru.Add(kode)
-                    End While
-                End Using
-            End Using
+            ' Update saldo semua akun yang terlibat — incremental delta, tidak scan JurnalUmum
+            _sw.Restart()
+            UpdateSaldoAkunDeltaDariFaktur(TxtFaktur.Text, transaction)
+            _lap = _sw.ElapsedMilliseconds : Debug.WriteLine($"[PERF-SIMPAN] UpdateSaldoAkun        : {_lap} ms (delta, no JurnalUmum scan)")
 
-            ' Gabungkan akun lama dan baru (jika mode edit)
-            Dim semuaAkunTerlibat As New HashSet(Of String)(StringComparer.OrdinalIgnoreCase)
-            For Each kodeAkun In akunTerlibatLama
-                semuaAkunTerlibat.Add(kodeAkun)
-            Next
-            For Each kodeAkun In akunTerlibatBaru
-                semuaAkunTerlibat.Add(kodeAkun)
-            Next
-
-            ' Update saldo semua akun yang terlibat
-            For Each kodeAkun As String In semuaAkunTerlibat
-                UpdateSaldoAkun(kodeAkun, transaction)
-            Next
-
+            _sw.Restart()
             UpdatePiutangPelanggan(LbLKodePel.Text, transaction)
+            _lap = _sw.ElapsedMilliseconds : Debug.WriteLine($"[PERF-SIMPAN] UpdatePiutangPelanggan : {_lap} ms")
 
             ' ── Hapus draft jika ada ──────────────────────────────────────────
             If Not String.IsNullOrWhiteSpace(draftPenjualanAktif) Then
                 HapusDraftPenjualan(transaction, draftPenjualanAktif)
             End If
 
+            _sw.Restart()
             AuditStokTransaksi(TxtFaktur.Text, "Penjualan", auditDGV, auditHistory, auditDetail, auditStokDelta, transaction)
+            _lap = _sw.ElapsedMilliseconds : Debug.WriteLine($"[PERF-SIMPAN] AuditStokTransaksi     : {_lap} ms")
 
+            _sw.Restart()
             transaction.Commit()
+            _lap = _sw.ElapsedMilliseconds : Debug.WriteLine($"[PERF-SIMPAN] Commit                 : {_lap} ms")
 
             CatatJurnalTidakSeimbang(TxtFaktur.Text, jD, jK, "Penjualan | Grand Total=" & ModuleAngka.ParseDecimal(TxtTotaljualStlPajak.Text).ToString("N0") & " | " & CmbPelanggan.Text, {"Penjualan"})
 
@@ -4866,11 +4842,44 @@ Public Class FormJual
                 Close()
             End If
 
+        Catch ex As OperationCanceledException
+            ' Dibatalkan oleh user (misal konfirmasi piutang ditolak) — rollback tanpa pesan error
+            Try : transaction?.Rollback() : Catch : End Try
+
         Catch ex As Exception
-            transaction.Rollback()
-            MessageBox.Show("Oh tidak! Transaksi penjualan dibatalkan karena terjadi kesalahan." & vbCrLf &
-                        "Detail kesalahan: " & ex.Message,
-                        "Oops! Ada masalah simpan penjualan", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            Try : transaction?.Rollback() : Catch : End Try
+
+            ' Bangun pesan detail untuk membantu diagnosis
+            Dim mode As String = If(IsModeTambahPenjualan, "TAMBAH", "EDIT")
+            Dim faktur As String = If(String.IsNullOrEmpty(TxtFaktur.Text), "(kosong)", TxtFaktur.Text)
+            Dim lokasi As String = If(String.IsNullOrEmpty(LblLokasiBarang.Text), "(kosong)", LblLokasiBarang.Text)
+
+            Dim sb As New System.Text.StringBuilder()
+            sb.AppendLine("Transaksi penjualan dibatalkan (rollback).")
+            sb.AppendLine()
+            sb.AppendLine($"Mode    : {mode}")
+            sb.AppendLine($"Faktur  : {faktur}")
+            sb.AppendLine($"Lokasi  : {lokasi}")
+            sb.AppendLine($"User    : {FormUtama.StatusNamaUser.Text}")
+            sb.AppendLine()
+            sb.AppendLine("Error   : " & ex.GetType().Name)
+            sb.AppendLine("Pesan   : " & ex.Message)
+            If ex.InnerException IsNot Nothing Then
+                sb.AppendLine("Inner   : " & ex.InnerException.Message)
+            End If
+
+            ' Tulis ke Debug output agar bisa dilihat di Output window VS
+            Debug.WriteLine("═══════════════════════════════════════════════")
+            Debug.WriteLine("[PROSESSIMPAN ERROR] " & DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"))
+            Debug.WriteLine(sb.ToString())
+            Debug.WriteLine("StackTrace: " & ex.StackTrace)
+            Debug.WriteLine("═══════════════════════════════════════════════")
+
+            MessageBox.Show(sb.ToString(),
+                            "Gagal Simpan Penjualan",
+                            MessageBoxButtons.OK,
+                            MessageBoxIcon.Error)
+
         Finally
             System.Windows.Forms.Cursor.Current = Cursors.Default
         End Try
@@ -5187,106 +5196,158 @@ Public Class FormJual
     End Sub
 
     Private Sub HistoryBarang(ByVal transaction As MySqlTransaction, ByRef auditHistory As Dictionary(Of String, Decimal))
-        ' Simpan data rincian barang dari gridview ke tbl_rinci_BELI
+        Dim idUser As String = If(IsModeTambahPenjualan, FormUtama.StatusNamaUser.Text, TxtLogin.Text)
+        Dim idKomputer As String = If(IsModeTambahPenjualan, FormUtama.StatusNamaPC.Text, TxtKomputer.Text)
+        Dim tgl As String = DTPTgl.Value.ToString("yyyy-MM-dd HH:mm:ss")
+        Dim faktur As String = TxtFaktur.Text
+        Dim lokasi As String = LblLokasiBarang.Text
+
+        ' Kumpulkan baris valid dulu
+        Dim listIdBarang As New List(Of String)
+        Dim listNamaBarang As New List(Of String)
+        Dim listQty As New List(Of Decimal)
+        Dim listSatuan As New List(Of String)
+        Dim listIsiSatuan As New List(Of Integer)
+        Dim listTotalQty As New List(Of Decimal)
+        Dim listTotalRupiah As New List(Of Decimal)
+
         For Each row As DataGridViewRow In DgvDataTransaksi.Rows
             If Not row.IsNewRow AndAlso row.Cells(0).Value IsNot Nothing AndAlso row.Cells(0).Value.ToString() <> "" Then
-                Dim querySimpan As String = "INSERT INTO HistoryBarang (FAKTUR, TANGGAL, JENIS, LOKASI, ID_BARANG, NAMA_BARANG, QTY, SATUAN, ISI_SATUAN, TOTAL_QTY, TOTAL_RUPIAH, ID_USER, ID_KOMPUTER) " &
-                                        "VALUES (@FAKTUR, @TANGGAL, @JENIS, @LOKASI, @ID_BARANG, @NAMA_BARANG, @QTY, @SATUAN, @ISI_SATUAN, @TOTAL_QTY, @TOTAL_RUPIAH, @ID_USER, @ID_KOMPUTER)"
-                Using cmd As New MySqlCommand(querySimpan, conn, transaction)
-                    cmd.Parameters.AddWithValue("@FAKTUR", TxtFaktur.Text)
-                    cmd.Parameters.AddWithValue("@TANGGAL", DTPTgl.Value.ToString("yyyy-MM-dd HH:mm:ss"))
-                    cmd.Parameters.AddWithValue("@JENIS", "PENJUALAN")
-                    cmd.Parameters.AddWithValue("@LOKASI", LblLokasiBarang.Text)
-                    cmd.Parameters.AddWithValue("@ID_BARANG", row.Cells(0).Value)
-                    cmd.Parameters.AddWithValue("@NAMA_BARANG", row.Cells(1).Value)
-                    cmd.Parameters.AddWithValue("@QTY", If(IsDBNull(row.Cells(3).Value), 0D, ModuleAngka.ParseDecimal(row.Cells(3).Value)))
-                    cmd.Parameters.AddWithValue("@SATUAN", row.Cells(4).Value)
-                    cmd.Parameters.AddWithValue("@ISI_SATUAN", If(IsDBNull(row.Cells(5).Value), 1, ModuleAngka.ParseInteger(row.Cells(5).Value, defaultValue:=1)))
-                    Dim totalQty As Decimal = If(IsDBNull(row.Cells(8).Value), 0D, ModuleAngka.ParseDecimal(row.Cells(8).Value))
-                    cmd.Parameters.AddWithValue("@TOTAL_QTY", totalQty)
-                    cmd.Parameters.AddWithValue("@TOTAL_RUPIAH", If(IsDBNull(row.Cells(12).Value), 0D, ModuleAngka.ParseDecimal(row.Cells(12).Value)))
-                    cmd.Parameters.AddWithValue("@ID_USER", If(IsModeTambahPenjualan, FormUtama.StatusNamaUser.Text, TxtLogin.Text))
-                    cmd.Parameters.AddWithValue("@ID_KOMPUTER", If(IsModeTambahPenjualan, FormUtama.StatusNamaPC.Text, TxtKomputer.Text))
-                    cmd.ExecuteNonQuery()
-                End Using
+                Dim totalQty As Decimal = If(IsDBNull(row.Cells(8).Value), 0D, ModuleAngka.ParseDecimal(row.Cells(8).Value))
+                listIdBarang.Add(row.Cells(0).Value.ToString())
+                listNamaBarang.Add(If(row.Cells(1).Value IsNot Nothing, row.Cells(1).Value.ToString(), ""))
+                listQty.Add(If(IsDBNull(row.Cells(3).Value), 0D, ModuleAngka.ParseDecimal(row.Cells(3).Value)))
+                listSatuan.Add(If(row.Cells(4).Value IsNot Nothing, row.Cells(4).Value.ToString(), ""))
+                listIsiSatuan.Add(If(IsDBNull(row.Cells(5).Value), 1, ModuleAngka.ParseInteger(row.Cells(5).Value, defaultValue:=1)))
+                listTotalQty.Add(totalQty)
+                listTotalRupiah.Add(If(IsDBNull(row.Cells(12).Value), 0D, ModuleAngka.ParseDecimal(row.Cells(12).Value)))
 
-                ' Audit B: qty yang masuk ke HistoryBarang
                 Dim kodeB As String = row.Cells(0).Value.ToString()
-                Dim qtyB As Decimal = If(IsDBNull(row.Cells(8).Value), 0D, ModuleAngka.ParseDecimal(row.Cells(8).Value))
-                If auditHistory.ContainsKey(kodeB) Then
-                    auditHistory(kodeB) += qtyB
-                Else
-                    auditHistory(kodeB) = qtyB
-                End If
+                If auditHistory.ContainsKey(kodeB) Then auditHistory(kodeB) += totalQty Else auditHistory(kodeB) = totalQty
             End If
         Next
+
+        If listIdBarang.Count = 0 Then Return
+
+        ' Batch INSERT — satu query multi-VALUES, satu round-trip ke DB
+        Dim sbSql As New System.Text.StringBuilder(
+            "INSERT INTO HistoryBarang (FAKTUR,TANGGAL,JENIS,LOKASI,ID_BARANG,NAMA_BARANG,QTY,SATUAN,ISI_SATUAN,TOTAL_QTY,TOTAL_RUPIAH,ID_USER,ID_KOMPUTER) VALUES ")
+
+        Using cmd As New MySqlCommand("", conn, transaction)
+            For i As Integer = 0 To listIdBarang.Count - 1
+                If i > 0 Then sbSql.Append(",")
+                sbSql.Append($"(@F{i},@T{i},@J{i},@L{i},@IB{i},@NB{i},@Q{i},@S{i},@IS{i},@TQ{i},@TR{i},@U{i},@K{i})")
+                cmd.Parameters.AddWithValue($"@F{i}", faktur)
+                cmd.Parameters.AddWithValue($"@T{i}", tgl)
+                cmd.Parameters.AddWithValue($"@J{i}", "PENJUALAN")
+                cmd.Parameters.AddWithValue($"@L{i}", lokasi)
+                cmd.Parameters.AddWithValue($"@IB{i}", listIdBarang(i))
+                cmd.Parameters.AddWithValue($"@NB{i}", listNamaBarang(i))
+                cmd.Parameters.AddWithValue($"@Q{i}", listQty(i))
+                cmd.Parameters.AddWithValue($"@S{i}", listSatuan(i))
+                cmd.Parameters.AddWithValue($"@IS{i}", listIsiSatuan(i))
+                cmd.Parameters.AddWithValue($"@TQ{i}", listTotalQty(i))
+                cmd.Parameters.AddWithValue($"@TR{i}", listTotalRupiah(i))
+                cmd.Parameters.AddWithValue($"@U{i}", idUser)
+                cmd.Parameters.AddWithValue($"@K{i}", idKomputer)
+            Next
+            cmd.CommandText = sbSql.ToString()
+            cmd.ExecuteNonQuery()
+        End Using
     End Sub
 
     Public Sub Simpanpenjualandetail(ByVal transaction As MySqlTransaction, ByRef auditDetail As Dictionary(Of String, Decimal))
-        ' Simpan data rincian barang dari gridview ke tbl_rinci_jual
-        For Each row As DataGridViewRow In DgvDataTransaksi.Rows
-            If Not row.IsNewRow AndAlso row.Cells(0).Value IsNot Nothing AndAlso row.Cells(0).Value.ToString() <> "" Then
-                ' Insert data into penjualan_detail
-                Dim insertQuery As String = "INSERT INTO penjualan_detail (FAKTUR_JUAL, ID_PELANGGAN, NAMA_PELANGGAN, JENIS_PELANGGAN, LOKASIBARANG, TANGGAL_JUAL, ID_BARANG, NAMA_BARANG, SERIAL_NUMBER, HARGA_BELI, QTY, SATUAN, ISI_SATUAN, HARGA_BELI_SATUAN, HARGA_JUAL, QTY_SATUAN, DISKON_PERSEN, DISKON_RP, TOTAL_DISKON, TOTAL_HARGA, LABA, ID_USER, ID_KOMPUTER) " &
+        Dim insertQuery As String = "INSERT INTO penjualan_detail (FAKTUR_JUAL, ID_PELANGGAN, NAMA_PELANGGAN, JENIS_PELANGGAN, LOKASIBARANG, TANGGAL_JUAL, ID_BARANG, NAMA_BARANG, SERIAL_NUMBER, HARGA_BELI, QTY, SATUAN, ISI_SATUAN, HARGA_BELI_SATUAN, HARGA_JUAL, QTY_SATUAN, DISKON_PERSEN, DISKON_RP, TOTAL_DISKON, TOTAL_HARGA, LABA, ID_USER, ID_KOMPUTER) " &
                                     "VALUES (@FAKTUR_JUAL, @ID_PELANGGAN, @NAMA_PELANGGAN, @JENIS_PELANGGAN, @LOKASIBARANG, @TANGGAL_JUAL, @ID_BARANG, @NAMA_BARANG, @SERIAL_NUMBER, @HARGA_BELI, @QTY, @SATUAN, @ISI_SATUAN, @HARGA_BELI_SATUAN, @HARGA_JUAL, @QTY_SATUAN, @DISKON_PERSEN, @DISKON_RP, @TOTAL_DISKON, @TOTAL_HARGA, @LABA, @ID_USER, @ID_KOMPUTER)"
 
-                Using insertCmd As New MySqlCommand(insertQuery, conn, transaction)
-                    insertCmd.Parameters.AddWithValue("@FAKTUR_JUAL", TxtFaktur.Text)
-                    insertCmd.Parameters.AddWithValue("@ID_PELANGGAN", LbLKodePel.Text)
-                    insertCmd.Parameters.AddWithValue("@NAMA_PELANGGAN", CmbPelanggan.Text)
-                    insertCmd.Parameters.AddWithValue("@JENIS_PELANGGAN", LblJenisPl.Text)
-                    insertCmd.Parameters.AddWithValue("@LOKASIBARANG", LblLokasiBarang.Text)
-                    insertCmd.Parameters.AddWithValue("@TANGGAL_JUAL", DTPTgl.Value.ToString("yyyy-MM-dd HH:mm:ss"))
-                    insertCmd.Parameters.AddWithValue("@ID_BARANG", row.Cells(0).Value)
-                    insertCmd.Parameters.AddWithValue("@NAMA_BARANG", row.Cells(1).Value)
-                    insertCmd.Parameters.AddWithValue("@SERIAL_NUMBER", If(row.Cells(16).Value IsNot Nothing, row.Cells(16).Value.ToString(), String.Empty))
-                    insertCmd.Parameters.AddWithValue("@HARGA_BELI", If(IsDBNull(row.Cells(2).Value), 0D, ModuleAngka.ParseDecimal(row.Cells(2).Value)))
-                    insertCmd.Parameters.AddWithValue("@QTY", If(IsDBNull(row.Cells(3).Value), 0D, ModuleAngka.ParseDecimal(row.Cells(3).Value)))
-                    insertCmd.Parameters.AddWithValue("@SATUAN", row.Cells(4).Value)
-                    insertCmd.Parameters.AddWithValue("@ISI_SATUAN", If(IsDBNull(row.Cells(5).Value), 1, ModuleAngka.ParseInteger(row.Cells(5).Value, defaultValue:=1)))
-                    insertCmd.Parameters.AddWithValue("@HARGA_BELI_SATUAN", If(IsDBNull(row.Cells(6).Value), 0D, ModuleAngka.ParseDecimal(row.Cells(6).Value)))
-                    insertCmd.Parameters.AddWithValue("@HARGA_JUAL", If(IsDBNull(row.Cells(7).Value), 0D, ModuleAngka.ParseDecimal(row.Cells(7).Value)))
-                    Dim qtySatuan As Decimal = If(IsDBNull(row.Cells(8).Value), 0D, ModuleAngka.ParseDecimal(row.Cells(8).Value))
-                    insertCmd.Parameters.AddWithValue("@QTY_SATUAN", qtySatuan)
-                    insertCmd.Parameters.AddWithValue("@DISKON_PERSEN", If(IsDBNull(row.Cells(9).Value), 0D, ModuleAngka.ParseDecimal(row.Cells(9).Value)))
-                    insertCmd.Parameters.AddWithValue("@DISKON_RP", If(IsDBNull(row.Cells(10).Value), 0D, ModuleAngka.ParseDecimal(row.Cells(10).Value)))
-                    insertCmd.Parameters.AddWithValue("@TOTAL_DISKON", If(IsDBNull(row.Cells(11).Value), 0D, ModuleAngka.ParseDecimal(row.Cells(11).Value)))
-                    insertCmd.Parameters.AddWithValue("@TOTAL_HARGA", If(IsDBNull(row.Cells(12).Value), 0D, ModuleAngka.ParseDecimal(row.Cells(12).Value)))
-                    Dim hargaJual As Decimal = If(IsDBNull(row.Cells(12).Value), 0D, ModuleAngka.ParseDecimal(row.Cells(12).Value))
-                    Dim hargaBeli As Decimal = If(IsDBNull(row.Cells(6).Value), 0D, ModuleAngka.ParseDecimal(row.Cells(6).Value))
-                    insertCmd.Parameters.AddWithValue("@LABA", hargaJual - hargaBeli)
-                    insertCmd.Parameters.AddWithValue("@ID_USER", If(IsModeTambahPenjualan, FormUtama.StatusNamaUser.Text, TxtLogin.Text))
-                    insertCmd.Parameters.AddWithValue("@ID_KOMPUTER", If(IsModeTambahPenjualan, FormUtama.StatusNamaPC.Text, TxtKomputer.Text))
-                    insertCmd.ExecuteNonQuery()
-                End Using
+        Dim updateStokField As String
+        Select Case LblLokasiBarang.Text
+            Case "TOKO" : updateStokField = "PENJUALAN_TOKO"
+            Case "GUDANG" : updateStokField = "PENJUALAN_GUDANG"
+            Case Else : Throw New Exception("Lokasi barang tidak valid.")
+        End Select
 
-                ' Audit C: qty yang masuk ke penjualan_detail
-                Dim kodeC As String = row.Cells(0).Value.ToString()
-                Dim qtyC As Decimal = If(IsDBNull(row.Cells(8).Value), 0D, ModuleAngka.ParseDecimal(row.Cells(8).Value))
-                If auditDetail.ContainsKey(kodeC) Then
-                    auditDetail(kodeC) += qtyC
-                Else
-                    auditDetail(kodeC) = qtyC
-                End If
+        Dim idUser As String = If(IsModeTambahPenjualan, FormUtama.StatusNamaUser.Text, TxtLogin.Text)
+        Dim idKomputer As String = If(IsModeTambahPenjualan, FormUtama.StatusNamaPC.Text, TxtKomputer.Text)
+        Dim tgl As String = DTPTgl.Value.ToString("yyyy-MM-dd HH:mm:ss")
 
-                Dim updateStokField As String
-                Select Case LblLokasiBarang.Text
-                    Case "TOKO" : updateStokField = "PENJUALAN_TOKO"
-                    Case "GUDANG" : updateStokField = "PENJUALAN_GUDANG"
-                    Case Else : Throw New Exception("Lokasi barang tidak valid.")
-                End Select
+        ' Buat command sekali, reuse parameter per baris — hindari overhead new MySqlCommand per item
+        Using insertCmd As New MySqlCommand(insertQuery, conn, transaction)
+            insertCmd.Parameters.Add("@FAKTUR_JUAL", MySqlDbType.VarChar)
+            insertCmd.Parameters.Add("@ID_PELANGGAN", MySqlDbType.VarChar)
+            insertCmd.Parameters.Add("@NAMA_PELANGGAN", MySqlDbType.VarChar)
+            insertCmd.Parameters.Add("@JENIS_PELANGGAN", MySqlDbType.VarChar)
+            insertCmd.Parameters.Add("@LOKASIBARANG", MySqlDbType.VarChar)
+            insertCmd.Parameters.Add("@TANGGAL_JUAL", MySqlDbType.DateTime)
+            insertCmd.Parameters.Add("@ID_BARANG", MySqlDbType.VarChar)
+            insertCmd.Parameters.Add("@NAMA_BARANG", MySqlDbType.VarChar)
+            insertCmd.Parameters.Add("@SERIAL_NUMBER", MySqlDbType.VarChar)
+            insertCmd.Parameters.Add("@HARGA_BELI", MySqlDbType.Decimal)
+            insertCmd.Parameters.Add("@QTY", MySqlDbType.Decimal)
+            insertCmd.Parameters.Add("@SATUAN", MySqlDbType.VarChar)
+            insertCmd.Parameters.Add("@ISI_SATUAN", MySqlDbType.Int32)
+            insertCmd.Parameters.Add("@HARGA_BELI_SATUAN", MySqlDbType.Decimal)
+            insertCmd.Parameters.Add("@HARGA_JUAL", MySqlDbType.Decimal)
+            insertCmd.Parameters.Add("@QTY_SATUAN", MySqlDbType.Decimal)
+            insertCmd.Parameters.Add("@DISKON_PERSEN", MySqlDbType.Decimal)
+            insertCmd.Parameters.Add("@DISKON_RP", MySqlDbType.Decimal)
+            insertCmd.Parameters.Add("@TOTAL_DISKON", MySqlDbType.Decimal)
+            insertCmd.Parameters.Add("@TOTAL_HARGA", MySqlDbType.Decimal)
+            insertCmd.Parameters.Add("@LABA", MySqlDbType.Decimal)
+            insertCmd.Parameters.Add("@ID_USER", MySqlDbType.VarChar)
+            insertCmd.Parameters.Add("@ID_KOMPUTER", MySqlDbType.VarChar)
 
-                Dim kodeBarang As String = If(row.Cells("Kode").Value IsNot Nothing, row.Cells("Kode").Value.ToString(), String.Empty)
-                If Not String.IsNullOrEmpty(kodeBarang) Then
-                    Dim qtyTotal As Decimal = If(row.Cells("QtySat").Value IsNot Nothing, ModuleAngka.ParseDecimal(row.Cells("QtySat").Value), 0D)
-                    Using cmd As New MySqlCommand($"UPDATE tbl_barang SET {updateStokField} = {updateStokField} + ? WHERE ID_BARANG = ?", conn, transaction)
-                        cmd.Parameters.AddWithValue("@P1", qtyTotal)
-                        cmd.Parameters.AddWithValue("@P2", kodeBarang)
-                        cmd.ExecuteNonQuery()
-                    End Using
-                End If
-            End If
-        Next
+            insertCmd.Parameters("@FAKTUR_JUAL").Value = TxtFaktur.Text
+            insertCmd.Parameters("@ID_PELANGGAN").Value = LbLKodePel.Text
+            insertCmd.Parameters("@NAMA_PELANGGAN").Value = CmbPelanggan.Text
+            insertCmd.Parameters("@JENIS_PELANGGAN").Value = LblJenisPl.Text
+            insertCmd.Parameters("@LOKASIBARANG").Value = LblLokasiBarang.Text
+            insertCmd.Parameters("@TANGGAL_JUAL").Value = DTPTgl.Value
+            insertCmd.Parameters("@ID_USER").Value = idUser
+            insertCmd.Parameters("@ID_KOMPUTER").Value = idKomputer
+
+            insertCmd.Prepare()
+
+            Using cmdStok As New MySqlCommand($"UPDATE tbl_barang SET {updateStokField} = {updateStokField} + ? WHERE ID_BARANG = ?", conn, transaction)
+                cmdStok.Parameters.Add("@P1", MySqlDbType.Decimal)
+                cmdStok.Parameters.Add("@P2", MySqlDbType.VarChar)
+                cmdStok.Prepare()
+
+                For Each row As DataGridViewRow In DgvDataTransaksi.Rows
+                    If Not row.IsNewRow AndAlso row.Cells(0).Value IsNot Nothing AndAlso row.Cells(0).Value.ToString() <> "" Then
+                        Dim qtySatuan As Decimal = If(IsDBNull(row.Cells(8).Value), 0D, ModuleAngka.ParseDecimal(row.Cells(8).Value))
+                        Dim hargaJual As Decimal = If(IsDBNull(row.Cells(12).Value), 0D, ModuleAngka.ParseDecimal(row.Cells(12).Value))
+                        Dim hargaBeli As Decimal = If(IsDBNull(row.Cells(6).Value), 0D, ModuleAngka.ParseDecimal(row.Cells(6).Value))
+
+                        insertCmd.Parameters("@ID_BARANG").Value = row.Cells(0).Value
+                        insertCmd.Parameters("@NAMA_BARANG").Value = row.Cells(1).Value
+                        insertCmd.Parameters("@SERIAL_NUMBER").Value = If(row.Cells(16).Value IsNot Nothing, row.Cells(16).Value.ToString(), String.Empty)
+                        insertCmd.Parameters("@HARGA_BELI").Value = If(IsDBNull(row.Cells(2).Value), 0D, ModuleAngka.ParseDecimal(row.Cells(2).Value))
+                        insertCmd.Parameters("@QTY").Value = If(IsDBNull(row.Cells(3).Value), 0D, ModuleAngka.ParseDecimal(row.Cells(3).Value))
+                        insertCmd.Parameters("@SATUAN").Value = row.Cells(4).Value
+                        insertCmd.Parameters("@ISI_SATUAN").Value = If(IsDBNull(row.Cells(5).Value), 1, ModuleAngka.ParseInteger(row.Cells(5).Value, defaultValue:=1))
+                        insertCmd.Parameters("@HARGA_BELI_SATUAN").Value = hargaBeli
+                        insertCmd.Parameters("@HARGA_JUAL").Value = If(IsDBNull(row.Cells(7).Value), 0D, ModuleAngka.ParseDecimal(row.Cells(7).Value))
+                        insertCmd.Parameters("@QTY_SATUAN").Value = qtySatuan
+                        insertCmd.Parameters("@DISKON_PERSEN").Value = If(IsDBNull(row.Cells(9).Value), 0D, ModuleAngka.ParseDecimal(row.Cells(9).Value))
+                        insertCmd.Parameters("@DISKON_RP").Value = If(IsDBNull(row.Cells(10).Value), 0D, ModuleAngka.ParseDecimal(row.Cells(10).Value))
+                        insertCmd.Parameters("@TOTAL_DISKON").Value = If(IsDBNull(row.Cells(11).Value), 0D, ModuleAngka.ParseDecimal(row.Cells(11).Value))
+                        insertCmd.Parameters("@TOTAL_HARGA").Value = hargaJual
+                        insertCmd.Parameters("@LABA").Value = hargaJual - hargaBeli
+                        insertCmd.ExecuteNonQuery()
+
+                        ' Update counter stok
+                        Dim kodeBarang As String = row.Cells(0).Value.ToString()
+                        cmdStok.Parameters("@P1").Value = qtySatuan
+                        cmdStok.Parameters("@P2").Value = kodeBarang
+                        cmdStok.ExecuteNonQuery()
+
+                        ' Audit C
+                        If auditDetail.ContainsKey(kodeBarang) Then auditDetail(kodeBarang) += qtySatuan Else auditDetail(kodeBarang) = qtySatuan
+                    End If
+                Next
+            End Using
+        End Using
     End Sub
 
     Public Sub Simpanjurnal(ByVal transaction As MySqlTransaction, ByRef outDebet As Decimal, ByRef outKredit As Decimal)
@@ -5791,7 +5852,7 @@ Public Class FormJual
                 dgvRow.Cells(2).Value = row("HARGA_BELI")
                 dgvRow.Cells(3).Value = row("QTY")
                 dgvRow.Cells(4).Value = row("SATUAN")
-                dgvRow.Cells(5).Value = If(IsDBNull(row("ISI_SATUAN")), 1, Convert.ToInt32(row("ISI_SATUAN")))
+                dgvRow.Cells(5).Value = Math.Max(1, If(IsDBNull(row("ISI_SATUAN")), 1, Convert.ToInt32(row("ISI_SATUAN"))))
                 dgvRow.Cells(6).Value = row("HARGA_BELI_SATUAN")
                 dgvRow.Cells(7).Value = row("HARGA_JUAL")
                 dgvRow.Cells(8).Value = row("QTY_SATUAN")

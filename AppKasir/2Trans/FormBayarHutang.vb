@@ -26,7 +26,7 @@ Public Class FormBayarHutang
 
 
     Private Sub Kondisiawal()
-        PanelDatagridview.Visible = False
+        PanelGrid.Visible = False
         TxtTotalHutang.Text = 0
         TxtTotalBayar.Text = 0
         TxtSisaHutang.Text = 0
@@ -95,7 +95,7 @@ Public Class FormBayarHutang
 
         DgvData.ClearSelection()
 
-        PanelDatagridview.Visible = False
+        PanelGrid.Visible = False
         Totalhutang()
     End Sub
 
@@ -149,7 +149,7 @@ Public Class FormBayarHutang
             End With
             ModuleAngka.TerapkanFormatKolomAngka(DgvDetail, columnsToFormat)
             DgvDetail.ClearSelection()
-            PanelDatagridview.Visible = True
+            PanelGrid.Visible = True
         End If
     End Sub
 
@@ -460,23 +460,8 @@ Public Class FormBayarHutang
             UpdateHutangSupliyer(LblKodeSupliyer.Text, transaction)
 
 
-            Dim akunTerlibat As New HashSet(Of String)(StringComparer.OrdinalIgnoreCase)
-            Using cmdAkun As New MySqlCommand(
-                "SELECT DISTINCT NOMOR_AKUN_D FROM JurnalUmum WHERE NO_TRANSAKSI = @fk AND NOMOR_AKUN_D <> '' " &
-                "UNION " &
-                "SELECT DISTINCT NOMOR_AKUN_K FROM JurnalUmum WHERE NO_TRANSAKSI = @fk AND NOMOR_AKUN_K <> ''",
-                conn, transaction)
-                cmdAkun.Parameters.AddWithValue("@fk", LblNomorBayar.Text)
-                Using rd = cmdAkun.ExecuteReader()
-                    While rd.Read()
-                        Dim kode As String = rd(0).ToString().Trim()
-                        If kode <> "" Then akunTerlibat.Add(kode)
-                    End While
-                End Using
-            End Using
-            For Each kodeAkun As String In akunTerlibat
-                UpdateSaldoAkun(kodeAkun, transaction)
-            Next
+            ' Update saldo akun — incremental delta
+            UpdateSaldoAkunDeltaDariFaktur(LblNomorBayar.Text, transaction)
 
             ' Commit transaksi jika semua berhasil
             transaction.Commit()
@@ -555,8 +540,8 @@ Public Class FormBayarHutang
             Case Keys.F8
                 BtnBayar.PerformClick()
             Case Keys.Escape
-                If PanelDatagridview.Visible = True Then
-                    PanelDatagridview.Visible = False
+                If PanelGrid.Visible = True Then
+                    PanelGrid.Visible = False
                 Else
                     BtnKeluarForm.PerformClick()
                 End If
@@ -565,7 +550,7 @@ Public Class FormBayarHutang
     End Sub
 
     Private Sub BtnHide_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles BtnHide.Click
-        PanelDatagridview.Visible = False
+        PanelGrid.Visible = False
     End Sub
     Private Sub BtnSettingPrinter_Click(sender As Object, e As EventArgs) Handles BtnSettingPrinter.Click
         Using frm As New FormPengaturanPrinter() With {.FilterTab = "BayarHutang"}

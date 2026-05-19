@@ -647,26 +647,21 @@ Public Class FormTransferBarang
                     Dim hargaBeli As String = ModuleAngka.ParseDecimal(rd("HARGA_BELI")).ToString()
 
                     Dim satuanUmum As String = ModuleAngka.SafeGetValue(Of String)(rd, "SATUAN_UMUM_KECIL", String.Empty)
-                    Dim isiUmum As Integer = ModuleAngka.SafeGetValue(Of Integer)(rd, "ISI_UMUM_KECIL", 0)
+                    Dim isiUmum As Integer = Math.Max(1, ModuleAngka.SafeGetValue(Of Integer)(rd, "ISI_UMUM_KECIL", 1))
 
                     ' Periksa apakah TxtBarcode.Text tidak kosong
                     If Not String.IsNullOrEmpty(TxtBarcode.Text) Then
                         ' Sesuaikan nilai berdasarkan barcode
                         If TxtBarcode.Text = rd("BARCODE_KECIL").ToString() Then
                             satuanUmum = ModuleAngka.SafeGetValue(Of String)(rd, "SATUAN_UMUM_KECIL", String.Empty)
-                            isiUmum = ModuleAngka.SafeGetValue(Of Integer)(rd, "ISI_UMUM_KECIL", 0)
+                            isiUmum = Math.Max(1, ModuleAngka.SafeGetValue(Of Integer)(rd, "ISI_UMUM_KECIL", 1))
                         ElseIf TxtBarcode.Text = rd("BARCODE_SEDANG").ToString() Then
                             satuanUmum = ModuleAngka.SafeGetValue(Of String)(rd, "SATUAN_UMUM_SEDANG", String.Empty)
-                            isiUmum = ModuleAngka.SafeGetValue(Of Integer)(rd, "ISI_UMUM_SEDANG", 0)
+                            isiUmum = Math.Max(1, ModuleAngka.SafeGetValue(Of Integer)(rd, "ISI_UMUM_SEDANG", 1))
                         ElseIf TxtBarcode.Text = rd("BARCODE_BESAR").ToString() Then
                             satuanUmum = ModuleAngka.SafeGetValue(Of String)(rd, "SATUAN_UMUM_BESAR", String.Empty)
-                            isiUmum = ModuleAngka.SafeGetValue(Of Integer)(rd, "ISI_UMUM_BESAR", 0)
+                            isiUmum = Math.Max(1, ModuleAngka.SafeGetValue(Of Integer)(rd, "ISI_UMUM_BESAR", 1))
                         End If
-                    End If
-
-                    ' Pastikan isiUmum tidak bernilai nol
-                    If isiUmum = 0 Then
-                        isiUmum = 1
                     End If
 
                     Dim StokToko As String = ModuleAngka.ParseDecimal(rd("STOK_TOKO")).ToString()
@@ -754,7 +749,7 @@ Public Class FormTransferBarang
         If qty <= 0 Then qty = 1D
         Dim satuan As String = Txtsatuan.Text
 
-        Dim isi As Decimal = ModuleAngka.ParseDecimal(TxtIsi.Text)
+        Dim isi As Decimal = Math.Max(1, ModuleAngka.ParseDecimal(TxtIsi.Text))
         Dim Stok As Decimal = ModuleAngka.ParseDecimal(TxtStok.Text)
 
         ' Menetapkan nilai untuk baris yang baru ditambahkan
@@ -837,8 +832,8 @@ Public Class FormTransferBarang
                             End If
 
                             row.Cells("Satuan").Value = satuan
+                            isi = Math.Max(1, isi)
                             row.Cells("isi").Value = isi
-                            If isi = 0 Then isi = 1
                             row.Cells("HargaBeliSat").Value = CDec(row.Cells("Hargabeli").Value) * isi
                             row.Cells("qty").Value = 1
                             row.Cells("QtySat").Value = 1 * isi
@@ -1047,11 +1042,11 @@ Public Class FormTransferBarang
                     ' Update nilai pada kolom "Isi" berdasarkan indeks yang dipilih dalam ComboBox
                     Select Case comboBox.SelectedIndex
                         Case 0
-                            cell.OwningRow.Cells("Isi").Value = rd("ISI_UMUM_KECIL").ToString()
+                            cell.OwningRow.Cells("Isi").Value = Math.Max(1, CInt(rd("ISI_UMUM_KECIL")))
                         Case 1
-                            cell.OwningRow.Cells("Isi").Value = rd("ISI_UMUM_SEDANG").ToString()
+                            cell.OwningRow.Cells("Isi").Value = Math.Max(1, CInt(rd("ISI_UMUM_SEDANG")))
                         Case Else
-                            cell.OwningRow.Cells("Isi").Value = rd("ISI_UMUM_BESAR").ToString()
+                            cell.OwningRow.Cells("Isi").Value = Math.Max(1, CInt(rd("ISI_UMUM_BESAR")))
                     End Select
 
                     ' Lakukan perhitungan sel lain yang berkaitan dengan perubahan ini
@@ -1342,23 +1337,21 @@ Public Class FormTransferBarang
                     Dim hargaBeli As Decimal = ModuleAngka.ParseDecimal(rd("HARGA_BELI"))
 
                     Dim satuanUmum As String = ModuleAngka.SafeGetValue(Of String)(rd, "SATUAN_UMUM_KECIL", String.Empty)
-                    Dim isiUmum As Integer = ModuleAngka.SafeGetValue(Of Integer)(rd, "ISI_UMUM_KECIL", 0)
+                    Dim isiUmum As Integer = Math.Max(1, ModuleAngka.SafeGetValue(Of Integer)(rd, "ISI_UMUM_KECIL", 1))
 
                     ' Periksa apakah TxtBarcode tidak kosong — sesuaikan satuan berdasarkan barcode
                     If Not String.IsNullOrEmpty(TxtBarcode.Text) Then
                         If TxtBarcode.Text = rd("BARCODE_KECIL").ToString() Then
                             satuanUmum = ModuleAngka.SafeGetValue(Of String)(rd, "SATUAN_UMUM_KECIL", String.Empty)
-                            isiUmum = ModuleAngka.SafeGetValue(Of Integer)(rd, "ISI_UMUM_KECIL", 0)
+                            isiUmum = Math.Max(1, ModuleAngka.SafeGetValue(Of Integer)(rd, "ISI_UMUM_KECIL", 1))
                         ElseIf TxtBarcode.Text = rd("BARCODE_SEDANG").ToString() Then
                             satuanUmum = ModuleAngka.SafeGetValue(Of String)(rd, "SATUAN_UMUM_SEDANG", String.Empty)
-                            isiUmum = ModuleAngka.SafeGetValue(Of Integer)(rd, "ISI_UMUM_SEDANG", 0)
+                            isiUmum = Math.Max(1, ModuleAngka.SafeGetValue(Of Integer)(rd, "ISI_UMUM_SEDANG", 1))
                         ElseIf TxtBarcode.Text = rd("BARCODE_BESAR").ToString() Then
                             satuanUmum = ModuleAngka.SafeGetValue(Of String)(rd, "SATUAN_UMUM_BESAR", String.Empty)
-                            isiUmum = ModuleAngka.SafeGetValue(Of Integer)(rd, "ISI_UMUM_BESAR", 0)
+                            isiUmum = Math.Max(1, ModuleAngka.SafeGetValue(Of Integer)(rd, "ISI_UMUM_BESAR", 1))
                         End If
                     End If
-
-                    If isiUmum = 0 Then isiUmum = 1
 
                     Dim StokToko As Decimal = ModuleAngka.ParseDecimal(rd("STOK_TOKO"))
                     Dim StokGudang As Decimal = ModuleAngka.ParseDecimal(rd("STOK_GUDANG"))
@@ -1385,7 +1378,7 @@ Public Class FormTransferBarang
                     row.Cells("Hargabeli").Value = hargaBeli
                     row.Cells("qty").Value = qty
                     row.Cells("Satuan").Value = satuanUmum
-                    row.Cells("isi").Value = isiUmum
+                    row.Cells("isi").Value = Math.Max(1, isiUmum)
                     row.Cells("HargaBeliSat").Value = hargaBeli * isiUmum
                     row.Cells("QtySat").Value = qty * isiUmum
                     row.Cells("Totalharga").Value = qty * isiUmum * hargaBeli
@@ -1697,7 +1690,7 @@ Public Class FormTransferBarang
 
                 ' HapusUntukEdit memanggil ModuleHapusTransaksi.HapusTransferBarang
                 ' yang sudah menangani: reversal counter stok, HitungStokPerubahan,
-                ' AuditStokTransaksi, DELETE 4 tabel, dan UpdateSaldoAkun akun lama.
+                ' AuditStokTransaksi, DELETE 4 tabel, dan ReversalSaldoAkunDariFaktur.
                 HapusUntukEdit(transaction)
             Else
                 If Not ModulHakAkses.SettingIzinkanTanggalLampau Then
@@ -1746,24 +1739,8 @@ Public Class FormTransferBarang
             ' ========================================
             ' UPDATE saldo untuk akun BARU (akun lama sudah di-update oleh HapusUntukEdit)
             ' ========================================
-            Dim akunBaru As New HashSet(Of String)(StringComparer.OrdinalIgnoreCase)
-            Using cmdAkunBaru As New MySqlCommand(
-                "SELECT DISTINCT NOMOR_AKUN_D FROM JurnalUmum WHERE NO_TRANSAKSI = @fk AND NOMOR_AKUN_D <> '' " &
-                "UNION " &
-                "SELECT DISTINCT NOMOR_AKUN_K FROM JurnalUmum WHERE NO_TRANSAKSI = @fk AND NOMOR_AKUN_K <> ''",
-                conn, transaction)
-                cmdAkunBaru.Parameters.AddWithValue("@fk", TxtFaktur.Text)
-                Using rd = cmdAkunBaru.ExecuteReader()
-                    While rd.Read()
-                        Dim kode As String = rd(0).ToString().Trim()
-                        If kode <> "" Then akunBaru.Add(kode)
-                    End While
-                End Using
-            End Using
-
-            For Each kodeAkun As String In akunBaru
-                UpdateSaldoAkun(kodeAkun, transaction)
-            Next
+            ' Update saldo akun — incremental delta
+            UpdateSaldoAkunDeltaDariFaktur(TxtFaktur.Text, transaction)
 
             ' Commit transaksi jika tidak ada kesalahan
             transaction.Commit()
@@ -1811,7 +1788,7 @@ Public Class FormTransferBarang
     ''' <summary>
     ''' Hapus data transfer barang lama sebagai langkah awal proses edit.
     ''' Wrapper tipis ke ModuleHapusTransaksi.HapusTransferBarang — logika ada di modul.
-    ''' UpdateSaldoAkun untuk akun lama sudah ditangani di ProsesSimpan (akunLama + akunBaru).
+    ''' ReversalSaldoAkunDariFaktur untuk akun lama sudah ditangani di dalam HapusTransferBarang.
     ''' </summary>
     Private Sub HapusUntukEdit(ByVal transaction As MySqlTransaction)
         ModuleHapusTransaksi.HapusTransferBarang(
@@ -1999,6 +1976,7 @@ Public Class FormTransferBarang
             Using rd As MySqlDataReader = cmd.ExecuteReader()
                 If rd.Read() Then
                     DTPTgl.Value = CDate(rd("TGL_TRANSFER"))
+                    DTPTgl.Enabled = True  ' Mode edit: selalu bisa ubah tanggal, tanggal lama bisa lampau
                     TxtLogin.Text = rd("ID_USER").ToString()
                     TxtKomputer.Text = rd("ID_KOMPUTER").ToString()
                 End If

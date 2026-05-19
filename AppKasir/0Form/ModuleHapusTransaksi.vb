@@ -50,24 +50,6 @@ Module ModuleHapusTransaksi
             End If
         End Using
 
-        ' ── Step 2: Kumpulkan akun terlibat SEBELUM delete JurnalUmum ────────────
-        ' [FU] melakukan ini, [FP] tidak (UpdateSaldoAkun ada di caller FP)
-        ' → diambil dari [FU]: UpdateSaldoAkun menjadi tanggung jawab fungsi ini
-        Dim akunTerlibat As New HashSet(Of String)(StringComparer.OrdinalIgnoreCase)
-        Using cmdAkun As New MySqlCommand(
-            "SELECT DISTINCT NOMOR_AKUN_D FROM JurnalUmum WHERE NO_TRANSAKSI = @fk AND NOMOR_AKUN_D <> '' " &
-            "UNION " &
-            "SELECT DISTINCT NOMOR_AKUN_K FROM JurnalUmum WHERE NO_TRANSAKSI = @fk AND NOMOR_AKUN_K <> ''",
-            conn, transaction)
-            cmdAkun.Parameters.AddWithValue("@fk", faktur)
-            Using rd = cmdAkun.ExecuteReader()
-                While rd.Read()
-                    Dim kode As String = rd(0).ToString().Trim()
-                    If kode <> "" Then akunTerlibat.Add(kode)
-                End While
-            End Using
-        End Using
-
         ' ── Step 3: Baca detail faktur yang akan dihapus dari DB ─────────────────
         ' [FU] & [FP] membaca dari DGVDetail (data sudah ada di grid)
         ' → di sini baca langsung dari DB agar tidak bergantung pada state UI
@@ -176,6 +158,9 @@ Module ModuleHapusTransaksi
         End Using
 
         ' ── Step 6: Delete semua data faktur ─────────────────────────────────────
+        ' Reversal saldo akun SEBELUM DELETE JurnalUmum agar masih bisa baca jurnal
+        ReversalSaldoAkunDariFaktur(faktur, transaction)
+
         For Each query As String In {
             "DELETE FROM pembelian WHERE ID_PEMBELIAN = @fk",
             "DELETE FROM pembelian_detail WHERE FAKTUR_BELI = @fk",
@@ -292,15 +277,8 @@ Module ModuleHapusTransaksi
         '    End Using
 
         '    ' Tambahkan kedua akun ke daftar yang perlu di-update saldo
-        '    akunTerlibat.Add(KODE_REK_BARANG)
-        '    akunTerlibat.Add("06.04.002")
+        '    ReversalSaldoAkunDariFaktur(faktur, transaction)
         'End If
-
-        ' ── Step 8: Update saldo akun di tbl_datareferensi ───────────────────────
-        ' [FU] melakukan ini | [FP] tidak (di caller) → diambil dari [FU]
-        For Each kodeAkun As String In akunTerlibat
-            UpdateSaldoAkun(kodeAkun, transaction)
-        Next
 
         ' ── Step 9: Update HutangAkhir supplier ──────────────────────────────────
         ' Simetris dengan SimpanTransaksi di FormPembelian yang memanggil UpdateHutangSupliyer.
@@ -463,22 +441,6 @@ Module ModuleHapusTransaksi
             End If
         End Using
 
-        ' 2. Kumpulkan akun terlibat SEBELUM delete JurnalUmum
-        Dim akunTerlibat As New HashSet(Of String)(StringComparer.OrdinalIgnoreCase)
-        Using cmdAkun As New MySqlCommand(
-            "SELECT DISTINCT NOMOR_AKUN_D FROM JurnalUmum WHERE NO_TRANSAKSI = @fk AND NOMOR_AKUN_D <> '' " &
-            "UNION " &
-            "SELECT DISTINCT NOMOR_AKUN_K FROM JurnalUmum WHERE NO_TRANSAKSI = @fk AND NOMOR_AKUN_K <> ''",
-            conn, transaction)
-            cmdAkun.Parameters.AddWithValue("@fk", faktur)
-            Using rd = cmdAkun.ExecuteReader()
-                While rd.Read()
-                    Dim kode As String = rd(0).ToString().Trim()
-                    If kode <> "" Then akunTerlibat.Add(kode)
-                End While
-            End Using
-        End Using
-
         ' 3. Baca detail penjualan dari DB untuk pembalikan counter stok
         Dim detailJual As New List(Of (IdBarang As String, QtySat As Decimal))
         Using cmdDetail As New MySqlCommand(
@@ -487,12 +449,23 @@ Module ModuleHapusTransaksi
             cmdDetail.Parameters.AddWithValue("@fk", faktur)
             Using rd = cmdDetail.ExecuteReader()
                 While rd.Read()
-                    detailJual.Add((rd("ID_BARANG").ToString(), ModuleAngka.ParseDecimal(rd("QTY_SATUAN"))))
+                    Dim qty As Decimal = ModuleAngka.ParseDecimal(rd("QTY_SATUAN"))
+                    ' Guard: QTY_SATUAN = 0 berarti data tidak valid (ISI_SATUAN=0 saat simpan)
+                    ' Jika dibiarkan, PENJUALAN_TOKO -= 0 → stok tidak kembali
+                    If qty <= 0 Then
+                        Debug.WriteLine($"[HapusPenjualan] SKIP {rd("ID_BARANG")} — QTY_SATUAN={qty} (tidak valid)")
+                        Continue While
+                    End If
+                    detailJual.Add((rd("ID_BARANG").ToString(), qty))
                 End While
             End Using
         End Using
-
-        ' 4. Cek apakah sudah ada pembayaran piutang (Jika status Piutang)
+        Debug.WriteLine($"[HapusPenjualan] ══════════════════════════════════════════")
+        Debug.WriteLine($"[HapusPenjualan] faktur={faktur}, lokasi={lokasi}, field={updateStokField}")
+        Debug.WriteLine($"[HapusPenjualan] Detail dari DB ({detailJual.Count} item):")
+        For Each d In detailJual
+            Debug.WriteLine($"[HapusPenjualan]   kode={d.IdBarang}, qtySat={d.QtySat}")
+        Next        ' 4. Cek apakah sudah ada pembayaran piutang (Jika status Piutang)
         Using cmdCekBayar As New MySqlCommand(
             "SELECT COUNT(*) FROM piutang_detail WHERE ID_JUAL = @fk AND JENIS = 'BAYAR'", conn, transaction)
             cmdCekBayar.Parameters.AddWithValue("@fk", faktur)
@@ -509,6 +482,8 @@ Module ModuleHapusTransaksi
         ' 5. Proses pembalikan counter stok per barang
         Dim auditDGV As New Dictionary(Of String, Decimal)()
         Dim auditDelta As New Dictionary(Of String, Decimal)()
+        Dim _swHapus As New System.Diagnostics.Stopwatch()
+        _swHapus.Start()
 
         For Each item In detailJual
             If auditDGV.ContainsKey(item.IdBarang) Then auditDGV(item.IdBarang) += item.QtySat Else auditDGV(item.IdBarang) = item.QtySat
@@ -531,7 +506,7 @@ Module ModuleHapusTransaksi
             Dim delta As Decimal = sesudah - sebelum
             If auditDelta.ContainsKey(item.IdBarang) Then auditDelta(item.IdBarang) += delta Else auditDelta(item.IdBarang) = delta
         Next
-
+        Debug.WriteLine($"[PERF-HAPUSJUAL] ReversalStok ({detailJual.Count} barang) : {_swHapus.ElapsedMilliseconds} ms")
         ' 5. Hapus data piutang detail (JENIS='JUAL')
         Using cmdHapusPiutang As New MySqlCommand(
             "DELETE FROM piutang_detail WHERE ID_JUAL = @fk AND JENIS = 'JUAL'", conn, transaction)
@@ -540,6 +515,10 @@ Module ModuleHapusTransaksi
         End Using
 
         ' 6. Hapus data dari semua tabel terkait
+        ' PENTING: ReversalSaldoAkun dipanggil SEBELUM DELETE JurnalUmum
+        ' agar masih bisa baca jurnal faktur ini untuk hitung delta
+        ReversalSaldoAkunDariFaktur(faktur, transaction)
+
         For Each query As String In {
             "DELETE FROM penjualan WHERE ID_PENJUALAN = @fk",
             "DELETE FROM penjualan_detail WHERE FAKTUR_JUAL = @fk",
@@ -555,14 +534,10 @@ Module ModuleHapusTransaksi
         ' 7. Audit stok transaksi
         AuditStokTransaksi(faktur, "Hapus Penjualan", auditDGV, Nothing, Nothing, auditDelta, transaction)
 
-        ' 8. Update saldo akun di tbl_datareferensi
-        For Each kodeAkun As String In akunTerlibat
-            UpdateSaldoAkun(kodeAkun, transaction)
-        Next
-
         ' 9. Update PiutangAkhir pelanggan ────────────────────────────────────────
         ' Simetris dengan Prosessimpan di FormJual yang memanggil UpdatePiutangPelanggan.
         ' ID_PELANGGAN sudah diambil di Step 1 sebelum data dihapus.
+        Debug.WriteLine($"[PERF-HAPUSJUAL] UpdatePiutangPelanggan={idPelangganHapus}")
         UpdatePiutangPelanggan(idPelangganHapus, transaction)
 
     End Sub
@@ -595,22 +570,6 @@ Module ModuleHapusTransaksi
                     totalRupiah = ModuleAngka.ParseDecimal(rd("TOTAL_RUPIAH"))
                     kodeRekening = rd("KODE_REKENING").ToString()
                 End If
-            End Using
-        End Using
-
-        ' 2. Kumpulkan akun terlibat SEBELUM delete JurnalUmum
-        Dim akunTerlibat As New HashSet(Of String)(StringComparer.OrdinalIgnoreCase)
-        Using cmdAkun As New MySqlCommand(
-            "SELECT DISTINCT NOMOR_AKUN_D FROM JurnalUmum WHERE NO_TRANSAKSI = @fk AND NOMOR_AKUN_D <> '' " &
-            "UNION " &
-            "SELECT DISTINCT NOMOR_AKUN_K FROM JurnalUmum WHERE NO_TRANSAKSI = @fk AND NOMOR_AKUN_K <> ''",
-            conn, transaction)
-            cmdAkun.Parameters.AddWithValue("@fk", faktur)
-            Using rd = cmdAkun.ExecuteReader()
-                While rd.Read()
-                    Dim kode As String = rd(0).ToString().Trim()
-                    If kode <> "" Then akunTerlibat.Add(kode)
-                End While
             End Using
         End Using
 
@@ -669,6 +628,9 @@ Module ModuleHapusTransaksi
         Next
 
         ' 6. Hapus data dari semua tabel terkait
+        ' Reversal saldo akun SEBELUM DELETE JurnalUmum
+        ReversalSaldoAkunDariFaktur(faktur, transaction)
+
         For Each query As String In {
             "DELETE FROM retur_pembelian WHERE ID_RETUR_PEMBELIAN = @fk",
             "DELETE FROM retur_pembelian_detail WHERE ID_RETUR_PEMBELIAN = @fk",
@@ -684,10 +646,7 @@ Module ModuleHapusTransaksi
         ' 7. Audit stok transaksi
         AuditStokTransaksi(faktur, "Hapus Retur Pembelian", auditDGV, Nothing, Nothing, auditDelta, transaction)
 
-        ' 8. Update saldo akun di tbl_datareferensi
-        For Each kodeAkun As String In akunTerlibat
-            UpdateSaldoAkun(kodeAkun, transaction)
-        Next
+        ' 8. Update saldo akun — sudah dilakukan sebelum DELETE di atas
     End Sub
 
     ''' <summary>
@@ -748,22 +707,6 @@ Module ModuleHapusTransaksi
             End Using
         End If
 
-        ' 3. Kumpulkan akun terlibat SEBELUM delete JurnalUmum
-        Dim akunTerlibat As New HashSet(Of String)(StringComparer.OrdinalIgnoreCase)
-        Using cmdAkun As New MySqlCommand(
-            "SELECT DISTINCT NOMOR_AKUN_D FROM JurnalUmum WHERE NO_TRANSAKSI = @fk AND NOMOR_AKUN_D <> '' " &
-            "UNION " &
-            "SELECT DISTINCT NOMOR_AKUN_K FROM JurnalUmum WHERE NO_TRANSAKSI = @fk AND NOMOR_AKUN_K <> ''",
-            conn, transaction)
-            cmdAkun.Parameters.AddWithValue("@fk", faktur)
-            Using rd = cmdAkun.ExecuteReader()
-                While rd.Read()
-                    Dim kode As String = rd(0).ToString().Trim()
-                    If kode <> "" Then akunTerlibat.Add(kode)
-                End While
-            End Using
-        End Using
-
         ' 4. Update tabel PENJUALAN (Pembalikan nilai Retur, Tagihan, & Tanggal)
         If idPenjualan <> "" Then
             Dim updateJualQuery As String =
@@ -819,6 +762,9 @@ Module ModuleHapusTransaksi
         Next
 
         ' 7. Hapus data dari semua tabel terkait
+        ' Reversal saldo akun SEBELUM DELETE JurnalUmum
+        ReversalSaldoAkunDariFaktur(faktur, transaction)
+
         For Each query As String In {
             "DELETE FROM retur_penjualan WHERE ID_RETUR_PENJUALAN = @fk",
             "DELETE FROM retur_penjualan_detail WHERE ID_RETUR_PENJUALAN = @fk",
@@ -834,10 +780,7 @@ Module ModuleHapusTransaksi
         ' 8. Audit stok transaksi
         AuditStokTransaksi(faktur, "Hapus Retur Penjualan", auditDGV, Nothing, Nothing, auditDelta, transaction)
 
-        ' 9. Update saldo akun di tbl_datareferensi
-        For Each kodeAkun As String In akunTerlibat
-            UpdateSaldoAkun(kodeAkun, transaction)
-        Next
+        ' 9. Update saldo akun — sudah dilakukan sebelum DELETE di atas
 
         ' 10. Update PiutangAkhir pelanggan — hanya jika mode PotongHutang
         ' Simetris dengan BtnSimpan_Click di FormReturPenjualan yang memanggil
@@ -855,7 +798,7 @@ Module ModuleHapusTransaksi
     ''' <summary>
     ''' Hapus satu faktur transfer barang secara permanen atau sebagai langkah awal edit.
     ''' Membaca detail dari DATABASE (bukan dari grid UI) agar tidak bergantung pada state UI.
-    ''' Urutan: kurangi counter stok → HitungStokPerubahan → DELETE → UpdateSaldoAkun.
+    ''' Urutan: kurangi counter stok → HitungStokPerubahan → ReversalSaldoAkun → DELETE.
     ''' HitungStokPerubahan dilakukan SEBELUM DELETE agar sp_hlp_stok_hitung masih bisa
     ''' membaca counter yang sudah dikurangi.
     '''
@@ -885,22 +828,6 @@ Module ModuleHapusTransaksi
             Case Else
                 Throw New Exception("Lokasi barang tidak valid: " & lokasi)
         End Select
-
-        ' ── Step 1: Kumpulkan akun jurnal SEBELUM DELETE JurnalUmum ──────────────
-        Dim akunTerlibat As New HashSet(Of String)(StringComparer.OrdinalIgnoreCase)
-        Using cmdAkun As New MySqlCommand(
-            "SELECT DISTINCT NOMOR_AKUN_D FROM JurnalUmum WHERE NO_TRANSAKSI = @fk AND NOMOR_AKUN_D <> '' " &
-            "UNION " &
-            "SELECT DISTINCT NOMOR_AKUN_K FROM JurnalUmum WHERE NO_TRANSAKSI = @fk AND NOMOR_AKUN_K <> ''",
-            conn, transaction)
-            cmdAkun.Parameters.AddWithValue("@fk", faktur)
-            Using rd = cmdAkun.ExecuteReader()
-                While rd.Read()
-                    Dim kode As String = rd(0).ToString().Trim()
-                    If kode <> "" Then akunTerlibat.Add(kode)
-                End While
-            End Using
-        End Using
 
         ' ── Step 2: Baca detail faktur dari DATABASE ──────────────────────────────
         ' Tidak bergantung pada state grid UI (DGVDetail / DgvData).
@@ -964,6 +891,9 @@ Module ModuleHapusTransaksi
         AuditStokTransaksi(faktur, labelAudit, auditDGV, Nothing, Nothing, auditDelta, transaction)
 
         ' ── Step 5: DELETE semua data faktur ─────────────────────────────────────
+        ' Reversal saldo akun SEBELUM DELETE JurnalUmum
+        ReversalSaldoAkunDariFaktur(faktur, transaction)
+
         For Each query As String In {
             "DELETE FROM Transfer_Barang WHERE ID_TRANSFER = @fk",
             "DELETE FROM Transfer_Barang_Detail WHERE ID_TRANSFER = @fk",
@@ -976,20 +906,6 @@ Module ModuleHapusTransaksi
             End Using
         Next
 
-        ' ── Step 6: Update saldo akun di tbl_datareferensi ───────────────────────
-        ' Hanya dilakukan untuk konteks hapus permanen (dari FormUtama).
-        ' Untuk konteks edit (HapusUntukEdit), UpdateSaldoAkun sudah ditangani
-        ' di ProsesSimpan setelah semua langkah simpan selesai.
-        ' Caller yang bertanggung jawab menentukan apakah perlu UpdateSaldoAkun.
-        ' → Fungsi ini SELALU melakukan UpdateSaldoAkun agar konsisten dengan
-        '   pola HapusPembelian dan HapusPenjualan di modul ini.
-        '   Untuk konteks edit, akun lama sudah dikumpulkan di ProsesSimpan (akunLama)
-        '   dan akan digabung dengan akun baru setelah simpan — tidak ada double update
-        '   karena akun yang sama di-update dua kali menghasilkan nilai yang sama.
-        For Each kodeAkun As String In akunTerlibat
-            UpdateSaldoAkun(kodeAkun, transaction)
-        Next
-
     End Sub
 
 #End Region
@@ -1000,9 +916,9 @@ Module ModuleHapusTransaksi
     ''' Hapus satu faktur transfer stok secara permanen.
     ''' Transfer stok = tukar barang A (keluar) dengan barang B (masuk) dalam lokasi yang sama.
     ''' Membaca data dari DATABASE (bukan dari DGVTransaksi) agar tidak bergantung pada state UI.
-    ''' Urutan: kurangi counter stok → AuditTrail → kumpulkan akun → DELETE →
+    ''' Urutan: kurangi counter stok → ReversalSaldoAkun → DELETE →
     '''         HitungStokPerubahan (setelah DELETE karena Transfer_stok sudah tidak ada) →
-    '''         AuditStokTransaksi → UpdateSaldoAkun.
+    '''         AuditStokTransaksi.
     ''' Commit/Rollback tetap tanggung jawab caller.
     ''' </summary>
     ''' <param name="faktur">Nomor faktur yang akan dihapus (ID_TRANSFER)</param>
@@ -1071,23 +987,10 @@ Module ModuleHapusTransaksi
             cmd.ExecuteNonQuery()
         End Using
 
-        ' ── Step 4: Kumpulkan akun jurnal SEBELUM DELETE JurnalUmum ──────────────
-        Dim akunTerlibat As New HashSet(Of String)(StringComparer.OrdinalIgnoreCase)
-        Using cmdAkun As New MySqlCommand(
-            "SELECT DISTINCT NOMOR_AKUN_D FROM JurnalUmum WHERE NO_TRANSAKSI = @fk AND NOMOR_AKUN_D <> '' " &
-            "UNION " &
-            "SELECT DISTINCT NOMOR_AKUN_K FROM JurnalUmum WHERE NO_TRANSAKSI = @fk AND NOMOR_AKUN_K <> ''",
-            conn, transaction)
-            cmdAkun.Parameters.AddWithValue("@fk", faktur)
-            Using rd = cmdAkun.ExecuteReader()
-                While rd.Read()
-                    Dim kode As String = rd(0).ToString().Trim()
-                    If kode <> "" Then akunTerlibat.Add(kode)
-                End While
-            End Using
-        End Using
+        ' ── Step 4: DELETE semua data faktur ─────────────────────────────────────
+        ' Reversal saldo akun SEBELUM DELETE JurnalUmum
+        ReversalSaldoAkunDariFaktur(faktur, transaction)
 
-        ' ── Step 5: DELETE semua data faktur ─────────────────────────────────────
         For Each q As String In {
             "DELETE FROM Transfer_stok WHERE ID_TRANSFER = @fk",
             "DELETE FROM JurnalUmum WHERE NO_TRANSAKSI = @fk",
@@ -1099,7 +1002,7 @@ Module ModuleHapusTransaksi
             End Using
         Next
 
-        ' ── Step 6: Recalculate stok fisik + kumpulkan audit delta ───────────────
+        ' ── Step 5: Recalculate stok fisik + kumpulkan audit delta ───────────────
         ' HitungStokPerubahan dilakukan SETELAH DELETE karena Transfer_stok
         ' sudah tidak ada — sp_hlp_stok_hitung membaca dari HistoryBarang/counter.
         Dim sebelumMsk As Decimal = BacaStokSaatIni(idBarangMasuk, lokasi, transaction)
@@ -1115,12 +1018,8 @@ Module ModuleHapusTransaksi
             {idBarangMasuk,  sebelumMsk - sesudahMsk},
             {idBarangKeluar, sesudahKlr - sebelumKlr}
         }
+        ' ── Step 6: Audit stok transaksi ─────────────────────────────────────────
         AuditStokTransaksi(faktur, "Hapus Transfer Stok", Nothing, Nothing, Nothing, auditDelta, transaction)
-
-        ' ── Step 7: Update saldo akun ─────────────────────────────────────────────
-        For Each kodeAkun As String In akunTerlibat
-            UpdateSaldoAkun(kodeAkun, transaction)
-        Next
 
     End Sub
 
@@ -1132,8 +1031,8 @@ Module ModuleHapusTransaksi
     ''' Hapus satu faktur transfer cabang secara permanen.
     ''' Membaca detail dari DATABASE (transfer_cabang_detail) — tidak bergantung pada DGVDetail.
     ''' Lokasi asal dibaca dari HistoryBarang (JENIS = 'TRANSFER_CABANG_KELUAR').
-    ''' Urutan: baca lokasi → kurangi counter → kumpulkan akun → DELETE →
-    '''         HitungStokPerubahan → UpdateSaldoAkun.
+    ''' Urutan: baca lokasi → kurangi counter → ReversalSaldoAkun → DELETE →
+    '''         HitungStokPerubahan.
     ''' Commit/Rollback tetap tanggung jawab caller.
     ''' </summary>
     ''' <param name="faktur">Nomor faktur yang akan dihapus (ID_TRANSFER)</param>
@@ -1204,23 +1103,10 @@ Module ModuleHapusTransaksi
             kodeItems.Add(item.IdBarang)
         Next
 
-        ' ── Step 4: Kumpulkan akun jurnal SEBELUM DELETE JurnalUmum ──────────────
-        Dim akunTerlibat As New HashSet(Of String)(StringComparer.OrdinalIgnoreCase)
-        Using cmdAkun As New MySqlCommand(
-            "SELECT DISTINCT NOMOR_AKUN_D FROM JurnalUmum WHERE NO_TRANSAKSI = @fk AND NOMOR_AKUN_D <> '' " &
-            "UNION " &
-            "SELECT DISTINCT NOMOR_AKUN_K FROM JurnalUmum WHERE NO_TRANSAKSI = @fk AND NOMOR_AKUN_K <> ''",
-            conn, transaction)
-            cmdAkun.Parameters.AddWithValue("@fk", faktur)
-            Using rd = cmdAkun.ExecuteReader()
-                While rd.Read()
-                    Dim kode As String = rd(0).ToString().Trim()
-                    If kode <> "" Then akunTerlibat.Add(kode)
-                End While
-            End Using
-        End Using
+        ' ── Step 4: DELETE semua data faktur ─────────────────────────────────────
+        ' Reversal saldo akun SEBELUM DELETE JurnalUmum
+        ReversalSaldoAkunDariFaktur(faktur, transaction)
 
-        ' ── Step 5: DELETE semua data faktur ─────────────────────────────────────
         For Each q As String In {
             "DELETE FROM HistoryBarang WHERE FAKTUR = @id",
             "DELETE FROM JurnalUmum WHERE NO_TRANSAKSI = @id",
@@ -1233,16 +1119,11 @@ Module ModuleHapusTransaksi
             End Using
         Next
 
-        ' ── Step 6: Recalculate stok fisik untuk semua barang terlibat ───────────
+        ' ── Step 5: Recalculate stok fisik untuk semua barang terlibat ───────────
         ' HitungStokPerubahan dilakukan SETELAH DELETE HistoryBarang
         ' agar sp_hlp_stok_hitung tidak menghitung entry yang sudah dihapus.
         For Each kode As String In kodeItems
             HitungStokPerubahan(kode, transaction)
-        Next
-
-        ' ── Step 7: Update saldo akun ─────────────────────────────────────────────
-        For Each kodeAkun As String In akunTerlibat
-            UpdateSaldoAkun(kodeAkun, transaction)
         Next
 
     End Sub
@@ -1311,23 +1192,10 @@ Module ModuleHapusTransaksi
             End Using
         Next
 
-        ' ── Step 3: Kumpulkan akun jurnal SEBELUM DELETE JurnalUmum ──────────────
-        Dim akunTerlibat As New HashSet(Of String)(StringComparer.OrdinalIgnoreCase)
-        Using cmdAkun As New MySqlCommand(
-            "SELECT DISTINCT NOMOR_AKUN_D FROM JurnalUmum WHERE NO_TRANSAKSI = @fk AND NOMOR_AKUN_D <> '' " &
-            "UNION " &
-            "SELECT DISTINCT NOMOR_AKUN_K FROM JurnalUmum WHERE NO_TRANSAKSI = @fk AND NOMOR_AKUN_K <> ''",
-            conn, transaction)
-            cmdAkun.Parameters.AddWithValue("@fk", faktur)
-            Using rd = cmdAkun.ExecuteReader()
-                While rd.Read()
-                    Dim kode As String = rd(0).ToString().Trim()
-                    If kode <> "" Then akunTerlibat.Add(kode)
-                End While
-            End Using
-        End Using
-
         ' ── Step 4: DELETE semua data faktur ─────────────────────────────────────
+        ' Reversal saldo akun SEBELUM DELETE JurnalUmum
+        ReversalSaldoAkunDariFaktur(faktur, transaction)
+
         For Each q As String In {
             "DELETE FROM hutang WHERE NOBAYARHUTANG = @fk",
             "DELETE FROM Hutang_Detail WHERE ID_BAYAR = @fk",
@@ -1339,10 +1207,7 @@ Module ModuleHapusTransaksi
             End Using
         Next
 
-        ' ── Step 5: Update saldo akun ─────────────────────────────────────────────
-        For Each kodeAkun As String In akunTerlibat
-            UpdateSaldoAkun(kodeAkun, transaction)
-        Next
+        ' ── Step 5: Update saldo akun — sudah dilakukan sebelum DELETE di atas
 
     End Sub
 
@@ -1410,23 +1275,10 @@ Module ModuleHapusTransaksi
             End Using
         Next
 
-        ' ── Step 3: Kumpulkan akun jurnal SEBELUM DELETE JurnalUmum ──────────────
-        Dim akunTerlibat As New HashSet(Of String)(StringComparer.OrdinalIgnoreCase)
-        Using cmdAkun As New MySqlCommand(
-            "SELECT DISTINCT NOMOR_AKUN_D FROM JurnalUmum WHERE NO_TRANSAKSI = @fk AND NOMOR_AKUN_D <> '' " &
-            "UNION " &
-            "SELECT DISTINCT NOMOR_AKUN_K FROM JurnalUmum WHERE NO_TRANSAKSI = @fk AND NOMOR_AKUN_K <> ''",
-            conn, transaction)
-            cmdAkun.Parameters.AddWithValue("@fk", faktur)
-            Using rd = cmdAkun.ExecuteReader()
-                While rd.Read()
-                    Dim kode As String = rd(0).ToString().Trim()
-                    If kode <> "" Then akunTerlibat.Add(kode)
-                End While
-            End Using
-        End Using
-
         ' ── Step 4: DELETE semua data faktur ─────────────────────────────────────
+        ' Reversal saldo akun SEBELUM DELETE JurnalUmum
+        ReversalSaldoAkunDariFaktur(faktur, transaction)
+
         For Each q As String In {
             "DELETE FROM Piutang WHERE ID_BAYAR_PIUTANG = @fk",
             "DELETE FROM Piutang_Detail WHERE ID_BAYAR = @fk",
@@ -1438,10 +1290,7 @@ Module ModuleHapusTransaksi
             End Using
         Next
 
-        ' ── Step 5: Update saldo akun ─────────────────────────────────────────────
-        For Each kodeAkun As String In akunTerlibat
-            UpdateSaldoAkun(kodeAkun, transaction)
-        Next
+        ' ── Step 5: Update saldo akun — sudah dilakukan sebelum DELETE di atas
 
     End Sub
 
@@ -1487,23 +1336,10 @@ Module ModuleHapusTransaksi
             cmd.ExecuteNonQuery()
         End Using
 
-        ' ── Step 3: Kumpulkan akun jurnal SEBELUM DELETE JurnalUmum ──────────────
-        Dim akunTerlibat As New HashSet(Of String)(StringComparer.OrdinalIgnoreCase)
-        Using cmdAkun As New MySqlCommand(
-            "SELECT DISTINCT NOMOR_AKUN_D FROM JurnalUmum WHERE NO_TRANSAKSI = @fk AND NOMOR_AKUN_D <> '' " &
-            "UNION " &
-            "SELECT DISTINCT NOMOR_AKUN_K FROM JurnalUmum WHERE NO_TRANSAKSI = @fk AND NOMOR_AKUN_K <> ''",
-            conn, transaction)
-            cmdAkun.Parameters.AddWithValue("@fk", faktur)
-            Using rd = cmdAkun.ExecuteReader()
-                While rd.Read()
-                    Dim kode As String = rd(0).ToString().Trim()
-                    If kode <> "" Then akunTerlibat.Add(kode)
-                End While
-            End Using
-        End Using
-
         ' ── Step 4: DELETE semua data faktur ─────────────────────────────────────
+        ' Reversal saldo akun SEBELUM DELETE JurnalUmum
+        ReversalSaldoAkunDariFaktur(faktur, transaction)
+
         For Each q As String In {
             "DELETE FROM Stok_Opname WHERE ID_STOK_OPNAME = @fk",
             "DELETE FROM JurnalUmum WHERE NO_TRANSAKSI = @fk",
@@ -1524,11 +1360,6 @@ Module ModuleHapusTransaksi
         Dim sesudah As Decimal = BacaStokSaatIni(idBarang, lokasi, transaction)
         Dim auditDelta As New Dictionary(Of String, Decimal)() From {{idBarang, Math.Abs(sesudah - sebelum)}}
         AuditStokTransaksi(faktur, labelAudit, Nothing, Nothing, Nothing, auditDelta, transaction)
-
-        ' ── Step 6: Update saldo akun ─────────────────────────────────────────────
-        For Each kodeAkun As String In akunTerlibat
-            UpdateSaldoAkun(kodeAkun, transaction)
-        Next
 
     End Sub
 

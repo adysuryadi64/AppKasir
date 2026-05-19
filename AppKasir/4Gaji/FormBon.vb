@@ -236,22 +236,9 @@ Public Class FormBon
                         Using transaction As MySqlTransaction = conn.BeginTransaction()
                             Try
                                 ' ========================================
-                                ' STEP 1: SELECT daftar akun LAMA SEBELUM DELETE JurnalUmum
+                                ' STEP 1: REVERSAL saldo akun SEBELUM DELETE JurnalUmum
                                 ' ========================================
-                                Dim akunTerlibat As New HashSet(Of String)(StringComparer.OrdinalIgnoreCase)
-                                Using cmdAkunLama As New MySqlCommand(
-                                    "SELECT DISTINCT NOMOR_AKUN_D FROM JurnalUmum WHERE NO_TRANSAKSI = @fk AND NOMOR_AKUN_D <> '' " &
-                                    "UNION " &
-                                    "SELECT DISTINCT NOMOR_AKUN_K FROM JurnalUmum WHERE NO_TRANSAKSI = @fk AND NOMOR_AKUN_K <> ''",
-                                    conn, transaction)
-                                    cmdAkunLama.Parameters.AddWithValue("@fk", kodeTransaksi)
-                                    Using rd = cmdAkunLama.ExecuteReader()
-                                        While rd.Read()
-                                            Dim kode As String = rd(0).ToString().Trim()
-                                            If kode <> "" Then akunTerlibat.Add(kode)
-                                        End While
-                                    End Using
-                                End Using
+                                ReversalSaldoAkunDariFaktur(kodeTransaksi, transaction)
                                 ' ========================================
                                 ' START: Audit Trail - Hapus Bon Karyawan
                                 ' ========================================
@@ -317,12 +304,7 @@ Public Class FormBon
                                 Dim kodeKaryawan As String = DgvKeuangan.Rows(e.RowIndex).Cells("KODE").Value.ToString()
                                 UpdateBonKaryawan(kodeKaryawan, transaction)
 
-                                ' ========================================
-                                ' STEP 2: UPDATE saldo untuk semua akun yang terlibat
-                                ' ========================================
-                                For Each kodeAkun As String In akunTerlibat
-                                    UpdateSaldoAkun(kodeAkun, transaction)
-                                Next
+                                ' Update saldo akun — sudah dilakukan sebelum DELETE di atas
 
                                 ' Commit transaksi
                                 transaction.Commit()
@@ -349,24 +331,7 @@ Public Class FormBon
             Try
                 Dim Nominal As Decimal = ModuleAngka.ParseDecimal(TxtNominal.Text)
 
-                Dim akunLama As New HashSet(Of String)(StringComparer.OrdinalIgnoreCase)
                 If BtnSimpann.Text = "EDIT (F8)" Then
-                    ' ========================================
-                    ' STEP 1: SELECT daftar akun LAMA SEBELUM DELETE JurnalUmum
-                    ' ========================================
-                    Using cmdAkunLama As New MySqlCommand(
-                        "SELECT DISTINCT NOMOR_AKUN_D FROM JurnalUmum WHERE NO_TRANSAKSI = @fk AND NOMOR_AKUN_D <> '' " &
-                        "UNION " &
-                        "SELECT DISTINCT NOMOR_AKUN_K FROM JurnalUmum WHERE NO_TRANSAKSI = @fk AND NOMOR_AKUN_K <> ''",
-                        conn, transaction)
-                        cmdAkunLama.Parameters.AddWithValue("@fk", LblNomor.Text)
-                        Using rd = cmdAkunLama.ExecuteReader()
-                            While rd.Read()
-                                Dim kode As String = rd(0).ToString().Trim()
-                                If kode <> "" Then akunLama.Add(kode)
-                            End While
-                        End Using
-                    End Using
                     ' ========================================
                     ' START: Audit Trail - Edit Bon Karyawan
                     ' ========================================
@@ -408,37 +373,9 @@ Public Class FormBon
                 UpdateBonKaryawan(LblKode.Text, transaction)
 
                 ' ========================================
-                ' STEP 2: SELECT daftar akun BARU
+                ' STEP 2: UPDATE saldo akun — incremental delta
                 ' ========================================
-                Dim akunBaru As New HashSet(Of String)(StringComparer.OrdinalIgnoreCase)
-                Using cmdAkunBaru As New MySqlCommand(
-                    "SELECT DISTINCT NOMOR_AKUN_D FROM JurnalUmum WHERE NO_TRANSAKSI = @fk AND NOMOR_AKUN_D <> '' " &
-                    "UNION " &
-                    "SELECT DISTINCT NOMOR_AKUN_K FROM JurnalUmum WHERE NO_TRANSAKSI = @fk AND NOMOR_AKUN_K <> ''",
-                    conn, transaction)
-                    cmdAkunBaru.Parameters.AddWithValue("@fk", LblNomor.Text)
-                    Using rd = cmdAkunBaru.ExecuteReader()
-                        While rd.Read()
-                            Dim kode As String = rd(0).ToString().Trim()
-                            If kode <> "" Then akunBaru.Add(kode)
-                        End While
-                    End Using
-                End Using
-
-                ' ========================================
-                ' STEP 3: GABUNGKAN daftar akun LAMA + BARU
-                ' ========================================
-                Dim semuaAkunTerlibat As New HashSet(Of String)(akunLama, StringComparer.OrdinalIgnoreCase)
-                For Each akun In akunBaru
-                    semuaAkunTerlibat.Add(akun)
-                Next
-
-                ' ========================================
-                ' STEP 4: UPDATE saldo untuk SEMUA akun yang terlibat
-                ' ========================================
-                For Each kodeAkun As String In semuaAkunTerlibat
-                    UpdateSaldoAkun(kodeAkun, transaction)
-                Next
+                UpdateSaldoAkunDeltaDariFaktur(LblNomor.Text, transaction)
 
                 transaction.Commit()
 
@@ -524,6 +461,8 @@ Public Class FormBon
     End Function
 
     Private Sub HapusUntukEdit(ByVal transaction As MySqlTransaction, ByVal Nominal As Decimal)
+        ' Reversal saldo akun SEBELUM DELETE JurnalUmum
+        ReversalSaldoAkunDariFaktur(LblNomor.Text, transaction)
 
         Dim deleteQueries As String() = {
                "DELETE FROM Bon_karyawan WHERE FAKTUR = @FAKTUR",

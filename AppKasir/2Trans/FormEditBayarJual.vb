@@ -452,27 +452,8 @@ Public Class FormEditBayarJual
 
         Try
             ' ========================================
-            ' LANGKAH 1: SEBELUM DELETE - SIMPAN AKUN LAMA
-            ' Alasan: Setelah JurnalUmum dihapus, kita tidak bisa lagi SELECT akun yang terlibat dari transaksi lama!
             ' ========================================
-            Dim akunTerlibatLama As New HashSet(Of String)(StringComparer.OrdinalIgnoreCase)
-            Using cmdAkunLama As New MySqlCommand(
-                "SELECT DISTINCT NOMOR_AKUN_D FROM JurnalUmum WHERE NO_TRANSAKSI = @fk AND NOMOR_AKUN_D <> '' " &
-                "UNION " &
-                "SELECT DISTINCT NOMOR_AKUN_K FROM JurnalUmum WHERE NO_TRANSAKSI = @fk AND NOMOR_AKUN_K <> ''",
-                conn, transaksi)
-                cmdAkunLama.Parameters.AddWithValue("@fk", IdPenjualan)
-                Using rd = cmdAkunLama.ExecuteReader()
-                    While rd.Read()
-                        Dim kode As String = rd(0).ToString().Trim()
-                        If kode <> "" Then akunTerlibatLama.Add(kode)
-                    End While
-                End Using
-            End Using
-            logStep($"✅ SELECT akun lama ({akunTerlibatLama.Count} akun)")
-
-            ' ========================================
-            ' LANGKAH 2: AUDIT TRAIL
+            ' LANGKAH 1: AUDIT TRAIL
             ' ========================================
             ModuleAuditTrail.CatatAudit(IdPenjualan, "EDIT", "Bayar Piutang", ket:="[KRITIS] Edit bayar piutang", trans:=transaksi)
             logStep("✅ Catat audit trail")
@@ -572,6 +553,10 @@ Public Class FormEditBayarJual
             ' ========================================
             ' LANGKAH 4: DELETE JURNAL UMUM LAMA
             ' ========================================
+            ' Reversal saldo akun SEBELUM DELETE JurnalUmum
+            ReversalSaldoAkunDariFaktur(IdPenjualan, transaksi)
+            logStep("✅ ReversalSaldoAkun jurnal lama")
+
             Using cmdDeleteJurnal As New MySqlCommand("DELETE FROM JurnalUmum WHERE NO_TRANSAKSI = @NO_TRANSAKSI", conn, transaksi)
                 cmdDeleteJurnal.Parameters.AddWithValue("@NO_TRANSAKSI", IdPenjualan)
                 cmdDeleteJurnal.ExecuteNonQuery()
@@ -593,40 +578,10 @@ Public Class FormEditBayarJual
             logStep("✅ BangunUlangJurnal (insert jurnal baru)")
 
             ' ========================================
-            ' LANGKAH 7: SETELAH INSERT - SIMPAN AKUN BARU
+            ' LANGKAH 7: UPDATE SALDO AKUN — incremental delta
             ' ========================================
-            Dim akunTerlibatBaru As New HashSet(Of String)(StringComparer.OrdinalIgnoreCase)
-            Using cmdAkunBaru As New MySqlCommand(
-                "SELECT DISTINCT NOMOR_AKUN_D FROM JurnalUmum WHERE NO_TRANSAKSI = @fk AND NOMOR_AKUN_D <> '' " &
-                "UNION " &
-                "SELECT DISTINCT NOMOR_AKUN_K FROM JurnalUmum WHERE NO_TRANSAKSI = @fk AND NOMOR_AKUN_K <> ''",
-                conn, transaksi)
-                cmdAkunBaru.Parameters.AddWithValue("@fk", IdPenjualan)
-                Using rd = cmdAkunBaru.ExecuteReader()
-                    While rd.Read()
-                        Dim kode As String = rd(0).ToString().Trim()
-                        If kode <> "" Then akunTerlibatBaru.Add(kode)
-                    End While
-                End Using
-            End Using
-            logStep($"✅ SELECT akun baru ({akunTerlibatBaru.Count} akun)")
-
-            ' ========================================
-            ' LANGKAH 8: GABUNGKAN SEMUA AKUN TERLIBAT
-            ' Alasan: Kita perlu update akun lama (karena jurnalnya dihapus) dan akun baru (karena jurnalnya ditambah)
-            ' ========================================
-            Dim semuaAkunTerlibat As New HashSet(Of String)(akunTerlibatLama, StringComparer.OrdinalIgnoreCase)
-            For Each kodeAkun In akunTerlibatBaru
-                semuaAkunTerlibat.Add(kodeAkun)
-            Next
-
-            ' ========================================
-            ' LANGKAH 9: UPDATE SALDO SEMUA AKUN
-            ' ========================================
-            For Each kodeAkun As String In semuaAkunTerlibat
-                UpdateSaldoAkun(kodeAkun, transaksi)
-            Next
-            logStep($"✅ UpdateSaldoAkun ({semuaAkunTerlibat.Count} akun)")
+            UpdateSaldoAkunDeltaDariFaktur(IdPenjualan, transaksi)
+            logStep("✅ UpdateSaldoAkunDelta")
 
             ' ========================================
             ' LANGKAH 10: UPDATE PIUTANG PELANGGAN & COMMIT

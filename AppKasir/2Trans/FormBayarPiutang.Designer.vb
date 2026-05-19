@@ -42,33 +42,33 @@ Partial Class FormBayarPiutang
         Me.TxtTotalBayar = New System.Windows.Forms.TextBox()
         Me.DtpTanggal = New System.Windows.Forms.DateTimePicker()
         Me.DgvData = New System.Windows.Forms.DataGridView()
-        Me.Check = New System.Windows.Forms.DataGridViewCheckBoxColumn()
-        Me.IDPEMBELIAN = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.KODESUPLIYER = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.NAMASUPLIYER = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.Uraian = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.TGLPEMBELIAN = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.TOTALBELANJA = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.DIBAYAR = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.Retur = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.NOMINALHUTANG = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.TGLJATUHTEMPO = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.Bayar = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.View = New System.Windows.Forms.DataGridViewButtonColumn()
         Me.LblKodePelanggan = New System.Windows.Forms.Label()
         Me.Label12 = New System.Windows.Forms.Label()
         Me.CmbPelanggan = New System.Windows.Forms.ComboBox()
-        Me.LblUtama = New System.Windows.Forms.Label()
+        Me.LblHeader = New System.Windows.Forms.Label()
         Me.BtnKeluarForm = New System.Windows.Forms.Button()
         Me.BtnBayar = New System.Windows.Forms.Button()
         Me.Label1 = New System.Windows.Forms.Label()
-        Me.PanelView = New System.Windows.Forms.Panel()
+        Me.PanelGrid = New System.Windows.Forms.Panel()
         Me.LblDetail = New System.Windows.Forms.Label()
         Me.Button2 = New System.Windows.Forms.Button()
         Me.DgvDetail = New System.Windows.Forms.DataGridView()
         Me.BtnSettingPrinter = New System.Windows.Forms.Button()
+        Me.Check = New System.Windows.Forms.DataGridViewCheckBoxColumn()
+        Me.IDPENJUALAN = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.KODEPELANGGAN = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.NAMAPELANGGAN = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.Uraian = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.TGLPENJUALAN = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.TOTALPENJUALAN = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.DIBAYAR = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.Retur = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.NOMINALPIUTANG = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.TGLJATUHTEMPO = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.Bayar = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.View = New System.Windows.Forms.DataGridViewButtonColumn()
         CType(Me.DgvData, System.ComponentModel.ISupportInitialize).BeginInit()
-        Me.PanelView.SuspendLayout()
+        Me.PanelGrid.SuspendLayout()
         CType(Me.DgvDetail, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
@@ -247,7 +247,7 @@ Partial Class FormBayarPiutang
         DataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.[True]
         Me.DgvData.ColumnHeadersDefaultCellStyle = DataGridViewCellStyle1
         Me.DgvData.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
-        Me.DgvData.Columns.AddRange(New System.Windows.Forms.DataGridViewColumn() {Me.Check, Me.IDPEMBELIAN, Me.KODESUPLIYER, Me.NAMASUPLIYER, Me.Uraian, Me.TGLPEMBELIAN, Me.TOTALBELANJA, Me.DIBAYAR, Me.Retur, Me.NOMINALHUTANG, Me.TGLJATUHTEMPO, Me.Bayar, Me.View})
+        Me.DgvData.Columns.AddRange(New System.Windows.Forms.DataGridViewColumn() {Me.Check, Me.IDPENJUALAN, Me.KODEPELANGGAN, Me.NAMAPELANGGAN, Me.Uraian, Me.TGLPENJUALAN, Me.TOTALPENJUALAN, Me.DIBAYAR, Me.Retur, Me.NOMINALPIUTANG, Me.TGLJATUHTEMPO, Me.Bayar, Me.View})
         Me.DgvData.EnableHeadersVisualStyles = False
         Me.DgvData.Location = New System.Drawing.Point(6, 165)
         Me.DgvData.Name = "DgvData"
@@ -255,77 +255,6 @@ Partial Class FormBayarPiutang
         Me.DgvData.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect
         Me.DgvData.Size = New System.Drawing.Size(1136, 385)
         Me.DgvData.TabIndex = 110
-        '
-        'Check
-        '
-        Me.Check.FillWeight = 40.0!
-        Me.Check.HeaderText = "Pilih"
-        Me.Check.Name = "Check"
-        '
-        'IDPEMBELIAN
-        '
-        Me.IDPEMBELIAN.HeaderText = "No Nota"
-        Me.IDPEMBELIAN.Name = "IDPEMBELIAN"
-        '
-        'KODESUPLIYER
-        '
-        Me.KODESUPLIYER.FillWeight = 60.0!
-        Me.KODESUPLIYER.HeaderText = "Kode"
-        Me.KODESUPLIYER.Name = "KODESUPLIYER"
-        '
-        'NAMASUPLIYER
-        '
-        Me.NAMASUPLIYER.FillWeight = 80.0!
-        Me.NAMASUPLIYER.HeaderText = "Supliyer"
-        Me.NAMASUPLIYER.Name = "NAMASUPLIYER"
-        '
-        'Uraian
-        '
-        Me.Uraian.FillWeight = 50.0!
-        Me.Uraian.HeaderText = "Jenis"
-        Me.Uraian.Name = "Uraian"
-        '
-        'TGLPEMBELIAN
-        '
-        Me.TGLPEMBELIAN.HeaderText = "Tgl Pembelian"
-        Me.TGLPEMBELIAN.Name = "TGLPEMBELIAN"
-        '
-        'TOTALBELANJA
-        '
-        Me.TOTALBELANJA.HeaderText = "Total Belanja"
-        Me.TOTALBELANJA.Name = "TOTALBELANJA"
-        '
-        'DIBAYAR
-        '
-        Me.DIBAYAR.HeaderText = "Sudah Dibayar"
-        Me.DIBAYAR.Name = "DIBAYAR"
-        '
-        'Retur
-        '
-        Me.Retur.HeaderText = "Retur"
-        Me.Retur.Name = "Retur"
-        '
-        'NOMINALHUTANG
-        '
-        Me.NOMINALHUTANG.HeaderText = "Hutang"
-        Me.NOMINALHUTANG.Name = "NOMINALHUTANG"
-        '
-        'TGLJATUHTEMPO
-        '
-        Me.TGLJATUHTEMPO.HeaderText = "Jatuh Tempo"
-        Me.TGLJATUHTEMPO.Name = "TGLJATUHTEMPO"
-        '
-        'Bayar
-        '
-        Me.Bayar.HeaderText = "Pembayaran"
-        Me.Bayar.Name = "Bayar"
-        '
-        'View
-        '
-        Me.View.HeaderText = "Lihat"
-        Me.View.Name = "View"
-        Me.View.Text = "Detail"
-        Me.View.UseColumnTextForButtonValue = True
         '
         'LblKodePelanggan
         '
@@ -360,18 +289,18 @@ Partial Class FormBayarPiutang
         Me.CmbPelanggan.Size = New System.Drawing.Size(187, 24)
         Me.CmbPelanggan.TabIndex = 111
         '
-        'LblUtama
+        'LblHeader
         '
-        Me.LblUtama.BackColor = System.Drawing.Color.Sienna
-        Me.LblUtama.Dock = System.Windows.Forms.DockStyle.Top
-        Me.LblUtama.Font = New System.Drawing.Font("Century Gothic", 21.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.LblUtama.ForeColor = System.Drawing.Color.PaleGreen
-        Me.LblUtama.Location = New System.Drawing.Point(0, 0)
-        Me.LblUtama.Name = "LblUtama"
-        Me.LblUtama.Size = New System.Drawing.Size(1156, 36)
-        Me.LblUtama.TabIndex = 109
-        Me.LblUtama.Text = "BAYAR PIUTANG PENJUALAN"
-        Me.LblUtama.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
+        Me.LblHeader.BackColor = System.Drawing.Color.Sienna
+        Me.LblHeader.Dock = System.Windows.Forms.DockStyle.Top
+        Me.LblHeader.Font = New System.Drawing.Font("Century Gothic", 21.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.LblHeader.ForeColor = System.Drawing.Color.PaleGreen
+        Me.LblHeader.Location = New System.Drawing.Point(0, 0)
+        Me.LblHeader.Name = "LblHeader"
+        Me.LblHeader.Size = New System.Drawing.Size(1156, 36)
+        Me.LblHeader.TabIndex = 109
+        Me.LblHeader.Text = "BAYAR PIUTANG PENJUALAN"
+        Me.LblHeader.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
         '
         'BtnKeluarForm
         '
@@ -429,17 +358,17 @@ Partial Class FormBayarPiutang
         Me.Label1.TabIndex = 131
         Me.Label1.Text = "Tanggal :"
         '
-        'PanelView
+        'PanelGrid
         '
-        Me.PanelView.Anchor = System.Windows.Forms.AnchorStyles.Top
-        Me.PanelView.BackColor = System.Drawing.Color.Orange
-        Me.PanelView.Controls.Add(Me.LblDetail)
-        Me.PanelView.Controls.Add(Me.Button2)
-        Me.PanelView.Controls.Add(Me.DgvDetail)
-        Me.PanelView.Location = New System.Drawing.Point(200, 207)
-        Me.PanelView.Name = "PanelView"
-        Me.PanelView.Size = New System.Drawing.Size(753, 333)
-        Me.PanelView.TabIndex = 132
+        Me.PanelGrid.Anchor = System.Windows.Forms.AnchorStyles.Top
+        Me.PanelGrid.BackColor = System.Drawing.Color.Orange
+        Me.PanelGrid.Controls.Add(Me.LblDetail)
+        Me.PanelGrid.Controls.Add(Me.Button2)
+        Me.PanelGrid.Controls.Add(Me.DgvDetail)
+        Me.PanelGrid.Location = New System.Drawing.Point(200, 207)
+        Me.PanelGrid.Name = "PanelGrid"
+        Me.PanelGrid.Size = New System.Drawing.Size(753, 333)
+        Me.PanelGrid.TabIndex = 132
         '
         'LblDetail
         '
@@ -517,13 +446,84 @@ Partial Class FormBayarPiutang
         Me.BtnSettingPrinter.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText
         Me.BtnSettingPrinter.UseVisualStyleBackColor = False
         '
+        'Check
+        '
+        Me.Check.FillWeight = 40.0!
+        Me.Check.HeaderText = "Pilih"
+        Me.Check.Name = "Check"
+        '
+        'IDPENJUALAN
+        '
+        Me.IDPENJUALAN.HeaderText = "No Nota"
+        Me.IDPENJUALAN.Name = "IDPENJUALAN"
+        '
+        'KODEPELANGGAN
+        '
+        Me.KODEPELANGGAN.FillWeight = 60.0!
+        Me.KODEPELANGGAN.HeaderText = "Kode"
+        Me.KODEPELANGGAN.Name = "KODEPELANGGAN"
+        '
+        'NAMAPELANGGAN
+        '
+        Me.NAMAPELANGGAN.FillWeight = 80.0!
+        Me.NAMAPELANGGAN.HeaderText = "Pelanggan"
+        Me.NAMAPELANGGAN.Name = "NAMAPELANGGAN"
+        '
+        'Uraian
+        '
+        Me.Uraian.FillWeight = 50.0!
+        Me.Uraian.HeaderText = "Jenis"
+        Me.Uraian.Name = "Uraian"
+        '
+        'TGLPENJUALAN
+        '
+        Me.TGLPENJUALAN.HeaderText = "Tgl Pembelian"
+        Me.TGLPENJUALAN.Name = "TGLPENJUALAN"
+        '
+        'TOTALPENJUALAN
+        '
+        Me.TOTALPENJUALAN.HeaderText = "Total Belanja"
+        Me.TOTALPENJUALAN.Name = "TOTALPENJUALAN"
+        '
+        'DIBAYAR
+        '
+        Me.DIBAYAR.HeaderText = "Sudah Dibayar"
+        Me.DIBAYAR.Name = "DIBAYAR"
+        '
+        'Retur
+        '
+        Me.Retur.HeaderText = "Retur"
+        Me.Retur.Name = "Retur"
+        '
+        'NOMINALPIUTANG
+        '
+        Me.NOMINALPIUTANG.HeaderText = "Piutang"
+        Me.NOMINALPIUTANG.Name = "NOMINALPIUTANG"
+        '
+        'TGLJATUHTEMPO
+        '
+        Me.TGLJATUHTEMPO.HeaderText = "Jatuh Tempo"
+        Me.TGLJATUHTEMPO.Name = "TGLJATUHTEMPO"
+        '
+        'Bayar
+        '
+        Me.Bayar.HeaderText = "Pembayaran"
+        Me.Bayar.Name = "Bayar"
+        '
+        'View
+        '
+        Me.View.HeaderText = "Lihat"
+        Me.View.Name = "View"
+        Me.View.Text = "Detail"
+        Me.View.UseColumnTextForButtonValue = True
+        '
         'FormBayarPiutang
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(1156, 562)
         Me.Controls.Add(Me.BtnSettingPrinter)
-        Me.Controls.Add(Me.PanelView)
+        Me.Controls.Add(Me.PanelGrid)
         Me.Controls.Add(Me.Label1)
         Me.Controls.Add(Me.Label2)
         Me.Controls.Add(Me.TxtRekening)
@@ -546,7 +546,7 @@ Partial Class FormBayarPiutang
         Me.Controls.Add(Me.LblKodePelanggan)
         Me.Controls.Add(Me.Label12)
         Me.Controls.Add(Me.CmbPelanggan)
-        Me.Controls.Add(Me.LblUtama)
+        Me.Controls.Add(Me.LblHeader)
         Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None
         Me.KeyPreview = True
         Me.Name = "FormBayarPiutang"
@@ -555,8 +555,8 @@ Partial Class FormBayarPiutang
         Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen
         Me.Text = "FormBayarPiutang"
         CType(Me.DgvData, System.ComponentModel.ISupportInitialize).EndInit()
-        Me.PanelView.ResumeLayout(False)
-        Me.PanelView.PerformLayout()
+        Me.PanelGrid.ResumeLayout(False)
+        Me.PanelGrid.PerformLayout()
         CType(Me.DgvDetail, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ResumeLayout(False)
         Me.PerformLayout()
@@ -583,26 +583,26 @@ Partial Class FormBayarPiutang
     Friend WithEvents LblKodePelanggan As System.Windows.Forms.Label
     Friend WithEvents Label12 As System.Windows.Forms.Label
     Friend WithEvents CmbPelanggan As System.Windows.Forms.ComboBox
-    Friend WithEvents LblUtama As System.Windows.Forms.Label
+    Friend WithEvents LblHeader As System.Windows.Forms.Label
     Friend WithEvents Label1 As System.Windows.Forms.Label
-    Friend WithEvents PanelView As System.Windows.Forms.Panel
+    Friend WithEvents PanelGrid As System.Windows.Forms.Panel
     Friend WithEvents LblDetail As System.Windows.Forms.Label
     Friend WithEvents Button2 As System.Windows.Forms.Button
     Friend WithEvents DgvDetail As System.Windows.Forms.DataGridView
-    Friend WithEvents Check As System.Windows.Forms.DataGridViewCheckBoxColumn
-    Friend WithEvents IDPEMBELIAN As System.Windows.Forms.DataGridViewTextBoxColumn
-    Friend WithEvents KODESUPLIYER As System.Windows.Forms.DataGridViewTextBoxColumn
-    Friend WithEvents NAMASUPLIYER As System.Windows.Forms.DataGridViewTextBoxColumn
-    Friend WithEvents Uraian As System.Windows.Forms.DataGridViewTextBoxColumn
-    Friend WithEvents TGLPEMBELIAN As System.Windows.Forms.DataGridViewTextBoxColumn
-    Friend WithEvents TOTALBELANJA As System.Windows.Forms.DataGridViewTextBoxColumn
-    Friend WithEvents DIBAYAR As System.Windows.Forms.DataGridViewTextBoxColumn
-    Friend WithEvents Retur As System.Windows.Forms.DataGridViewTextBoxColumn
-    Friend WithEvents NOMINALHUTANG As System.Windows.Forms.DataGridViewTextBoxColumn
-    Friend WithEvents TGLJATUHTEMPO As System.Windows.Forms.DataGridViewTextBoxColumn
-    Friend WithEvents Bayar As System.Windows.Forms.DataGridViewTextBoxColumn
-    Friend WithEvents View As System.Windows.Forms.DataGridViewButtonColumn
     Friend WithEvents BtnSettingPrinter As Button
+    Friend WithEvents Check As DataGridViewCheckBoxColumn
+    Friend WithEvents IDPENJUALAN As DataGridViewTextBoxColumn
+    Friend WithEvents KODEPELANGGAN As DataGridViewTextBoxColumn
+    Friend WithEvents NAMAPELANGGAN As DataGridViewTextBoxColumn
+    Friend WithEvents Uraian As DataGridViewTextBoxColumn
+    Friend WithEvents TGLPENJUALAN As DataGridViewTextBoxColumn
+    Friend WithEvents TOTALPENJUALAN As DataGridViewTextBoxColumn
+    Friend WithEvents DIBAYAR As DataGridViewTextBoxColumn
+    Friend WithEvents Retur As DataGridViewTextBoxColumn
+    Friend WithEvents NOMINALPIUTANG As DataGridViewTextBoxColumn
+    Friend WithEvents TGLJATUHTEMPO As DataGridViewTextBoxColumn
+    Friend WithEvents Bayar As DataGridViewTextBoxColumn
+    Friend WithEvents View As DataGridViewButtonColumn
 End Class
 
 

@@ -724,7 +724,7 @@ Public Class FormPembelian
         DtpTanggalPembelian.Value = DateTime.Now
         DtpTanggalPembelian.Format = DateTimePickerFormat.Custom
         DtpTanggalPembelian.CustomFormat = "dd/MM/yyyy HH:mm:ss"
-        DtpTanggalPembelian.Enabled = ModulHakAkses.SettingIzinkanTanggalLampau
+        DtpTanggalPembelian.Enabled = True  ' Mode edit: selalu bisa ubah tanggal, tanggal lama bisa lampau
 
         Dim newDate As Date = DtpTanggalPembelian.Value.AddMonths(1)
         DtpJatuhTempo.Value = newDate
@@ -1708,6 +1708,18 @@ Public Class FormPembelian
             Return
         End If
 
+        ' Parse format qty*satuan*nama atau qty*nama — set TxtQty & TxtLevelSat sebelum search
+        If currentText.Contains("*") Then
+            Dim parts = currentText.Split("*"c)
+            If parts.Length >= 3 Then
+                ' FORMAT: qty*satuan*nama
+                SetQtyAndSatuan(parts(0), parts(1))
+            ElseIf parts.Length = 2 Then
+                ' FORMAT: qty*nama
+                SetQtyOnly(parts(0))
+            End If
+        End If
+
         ' Show manual search only when user types letters or uses qty*... pattern
         If currentText.Any(AddressOf Char.IsLetter) Then
             TriggerManualSearch(currentText)
@@ -2503,9 +2515,8 @@ Public Class FormPembelian
         row.Cells("Nama").Value = namaBarang
         row.Cells("Qty").Value = qty
         row.Cells("Hargabeli").Value = hargaBeliDefault
+        isiAktif = Math.Max(1, isiAktif)
         row.Cells("Isi").Value = isiAktif
-        ' Handle Isi = 0 → 1
-        If isiAktif = 0 Then isiAktif = 1
 
         row.Cells("HargaBeliSatKecil").Value = hargaBeli / isiAktif
         row.Cells("QtySat").Value = qty * isiAktif
@@ -2915,7 +2926,7 @@ Public Class FormPembelian
                     Dim hargaBeliTerakhir As Decimal = ModuleAngka.ParseDecimal(dataBarang("HARGA_BELI_TERAKHIR"))
 
                     ' Handle Isi = 0 → 1
-                    If isi = 0 Then isi = 1
+                    isi = Math.Max(1, isi)
 
                     DgvData.Rows(e.RowIndex).Cells("Hargabeli").Value = hargaBeliTerakhir * isi
                     DgvData.Rows(e.RowIndex).Cells("HargaBeliSatKecil").Value = hargaBeli / isi
@@ -2928,13 +2939,8 @@ Public Class FormPembelian
                         DgvData.Rows(e.RowIndex).Cells("Satuan").Value = satuan
                     End If
 
+                    isi = Math.Max(1, isi)
                     DgvData.Rows(e.RowIndex).Cells("isi").Value = isi
-                    If ModuleAngka.ParseInteger(DgvData.Rows(e.RowIndex).Cells("isi").Value, 1) = 0 Then
-                        DgvData.Rows(e.RowIndex).Cells("qtysat").Value = 1
-                    End If
-
-                    ' Handle Isi = 0 → 1
-                    If isi = 0 Then isi = 1
 
                     DgvData.Rows(e.RowIndex).Cells("qty").Value = qtyValue
                     DgvData.Rows(e.RowIndex).Cells("Average").Value = hargaBeli / isi
@@ -3270,13 +3276,12 @@ Public Class FormPembelian
                     ' Ambil nilai berdasarkan pilihan di ComboBox
                     Select Case selectedIdx
                         Case 0
-                            isiValue = ModuleAngka.ParseDecimal(rd("ISI_UMUM_KECIL"))
+                            isiValue = Math.Max(1, ModuleAngka.ParseDecimal(rd("ISI_UMUM_KECIL")))
                         Case 1
-                            isiValue = ModuleAngka.ParseDecimal(rd("ISI_UMUM_SEDANG"))
+                            isiValue = Math.Max(1, ModuleAngka.ParseDecimal(rd("ISI_UMUM_SEDANG")))
                         Case Else
-                            isiValue = ModuleAngka.ParseDecimal(rd("ISI_UMUM_BESAR"))
+                            isiValue = Math.Max(1, ModuleAngka.ParseDecimal(rd("ISI_UMUM_BESAR")))
                     End Select
-                    If isiValue = 0 Then isiValue = 1
 
                     ' Konversi nilai harga beli
                     hargaBeli = ModuleAngka.ParseDecimal(rd("HARGA_BELI"))
@@ -3287,7 +3292,7 @@ Public Class FormPembelian
 
         If found Then
             ' Update UI setelah reader ditutup
-            cell.OwningRow.Cells("Isi").Value = isiValue
+            cell.OwningRow.Cells("Isi").Value = Math.Max(1, isiValue)
 
             ' Dapatkan indeks baris
             Dim rowIndex As Integer = DgvData.CurrentCell.RowIndex
@@ -3915,27 +3920,8 @@ Public Class FormPembelian
         Dim transaction As MySqlTransaction = conn.BeginTransaction()
 
         Try
-            ' ========================================
-            ' LANGKAH 1: SIMPAN AKUN LAMA (JIKA MODE EDIT)
-            ' ========================================
-            Dim akunTerlibatLama As New HashSet(Of String)(StringComparer.OrdinalIgnoreCase)
-            If Not IsModeTambahPembelian Then
-                Using cmdAkunLama As New MySqlCommand(
-                    "SELECT DISTINCT NOMOR_AKUN_D FROM JurnalUmum WHERE NO_TRANSAKSI = @fk AND NOMOR_AKUN_D <> '' " &
-                    "UNION " &
-                    "SELECT DISTINCT NOMOR_AKUN_K FROM JurnalUmum WHERE NO_TRANSAKSI = @fk AND NOMOR_AKUN_K <> ''",
-                    conn, transaction)
-                    cmdAkunLama.Parameters.AddWithValue("@fk", TxtIdPembelian.Text)
-                    Using rd = cmdAkunLama.ExecuteReader()
-                        While rd.Read()
-                            Dim kode As String = rd(0).ToString().Trim()
-                            If kode <> "" Then akunTerlibatLama.Add(kode)
-                        End While
-                    End Using
-                End Using
-            End If
-
             ' Jika edit: hapus dulu transaksi lama
+            ' ReversalSaldoAkunDariFaktur dipanggil di dalam Hapusbelanja → HapusPembelian
             If Not IsModeTambahPembelian Then
                 ' ========================================
                 ' START: Audit Trail - Edit Pembelian
@@ -3983,34 +3969,8 @@ Public Class FormPembelian
             Next
 
 
-            Dim akunTerlibatBaru As New HashSet(Of String)(StringComparer.OrdinalIgnoreCase)
-            Using cmdAkunBaru As New MySqlCommand(
-                "SELECT DISTINCT NOMOR_AKUN_D FROM JurnalUmum WHERE NO_TRANSAKSI = @fk AND NOMOR_AKUN_D <> '' " &
-                "UNION " &
-                "SELECT DISTINCT NOMOR_AKUN_K FROM JurnalUmum WHERE NO_TRANSAKSI = @fk AND NOMOR_AKUN_K <> ''",
-                conn, transaction)
-                cmdAkunBaru.Parameters.AddWithValue("@fk", TxtIdPembelian.Text)
-                Using rd = cmdAkunBaru.ExecuteReader()
-                    While rd.Read()
-                        Dim kode As String = rd(0).ToString().Trim()
-                        If kode <> "" Then akunTerlibatBaru.Add(kode)
-                    End While
-                End Using
-            End Using
-
-            ' Gabungkan akun lama dan baru (jika mode edit)
-            Dim semuaAkunTerlibat As New HashSet(Of String)(StringComparer.OrdinalIgnoreCase)
-            For Each kodeAkun In akunTerlibatLama
-                semuaAkunTerlibat.Add(kodeAkun)
-            Next
-            For Each kodeAkun In akunTerlibatBaru
-                semuaAkunTerlibat.Add(kodeAkun)
-            Next
-
-            ' Update saldo semua akun yang terlibat
-            For Each kodeAkun As String In semuaAkunTerlibat
-                UpdateSaldoAkun(kodeAkun, transaction)
-            Next
+            ' Update saldo semua akun yang terlibat — incremental delta
+            UpdateSaldoAkunDeltaDariFaktur(TxtIdPembelian.Text, transaction)
             UpdateHutangSupliyer(LblKodeSupplier.Text, transaction)
 
             ' Hapus draft jika ada

@@ -126,10 +126,11 @@ Name: "startupicon";    Description: "Jalankan otomatis saat Windows startup"; G
 
 ; ============================================================
 [Files]
-; AUTO-GENERATED oleh Build-Installer.ps1 - 2026-04-25 17:07:58
-; Total file di bin\Debug: 1058
+; AUTO-GENERATED oleh Build-Installer.ps1 - 2026-05-17 16:56:13
+; Total file di bin\Debug: 872
 
 ; ----- File Utama Aplikasi -----
+Source: "{#MyAppSourceDir}\_dashboard_tmp.html"; DestDir: "{app}"; Flags: ignoreversion; Components: mainapp
 Source: "{#MyAppSourceDir}\Azure.Core.dll"; DestDir: "{app}"; Flags: ignoreversion; Components: mainapp
 Source: "{#MyAppSourceDir}\Azure.Core.xml"; DestDir: "{app}"; Flags: ignoreversion; Components: mainapp
 Source: "{#MyAppSourceDir}\Azure.Identity.dll"; DestDir: "{app}"; Flags: ignoreversion; Components: mainapp
@@ -227,6 +228,11 @@ Source: "{#MyAppSourceDir}\Microsoft.ReportViewer.ProcessingObjectModel.dll"; De
 Source: "{#MyAppSourceDir}\Microsoft.ReportViewer.WinForms.dll"; DestDir: "{app}"; Flags: ignoreversion; Components: mainapp
 Source: "{#MyAppSourceDir}\Microsoft.SqlServer.Types.dll"; DestDir: "{app}"; Flags: ignoreversion; Components: mainapp
 Source: "{#MyAppSourceDir}\Microsoft.VisualBasic.PowerPacks.Vs.dll"; DestDir: "{app}"; Flags: ignoreversion; Components: mainapp
+Source: "{#MyAppSourceDir}\Microsoft.Web.WebView2.Core.dll"; DestDir: "{app}"; Flags: ignoreversion; Components: mainapp
+Source: "{#MyAppSourceDir}\Microsoft.Web.WebView2.Core.xml"; DestDir: "{app}"; Flags: ignoreversion; Components: mainapp
+Source: "{#MyAppSourceDir}\Microsoft.Web.WebView2.WinForms.dll"; DestDir: "{app}"; Flags: ignoreversion; Components: mainapp
+Source: "{#MyAppSourceDir}\Microsoft.Web.WebView2.WinForms.xml"; DestDir: "{app}"; Flags: ignoreversion; Components: mainapp
+Source: "{#MyAppSourceDir}\MicrosoftEdgeWebView2RuntimeInstaller.exe"; DestDir: "{app}"; Flags: ignoreversion; Components: mainapp
 Source: "{#MyAppSourceDir}\MySql.Data.dll"; DestDir: "{app}"; Flags: ignoreversion; Components: mainapp
 Source: "{#MyAppSourceDir}\MySql.Data.xml"; DestDir: "{app}"; Flags: ignoreversion; Components: mainapp
 Source: "{#MyAppSourceDir}\mysql.exe"; DestDir: "{app}"; Flags: ignoreversion; Components: mainapp
@@ -285,14 +291,22 @@ Source: "{#MyAppSourceDir}\System.Text.Json.xml"; DestDir: "{app}"; Flags: ignor
 Source: "{#MyAppSourceDir}\System.Threading.Tasks.Extensions.dll"; DestDir: "{app}"; Flags: ignoreversion; Components: mainapp
 Source: "{#MyAppSourceDir}\System.Threading.Tasks.Extensions.xml"; DestDir: "{app}"; Flags: ignoreversion; Components: mainapp
 Source: "{#MyAppSourceDir}\toko.jpg"; DestDir: "{app}"; Flags: ignoreversion; Components: mainapp
+Source: "{#MyAppSourceDir}\vs2DA9.tmp"; DestDir: "{app}"; Flags: ignoreversion; Components: mainapp
+Source: "{#MyAppSourceDir}\WebView2Loader.dll"; DestDir: "{app}"; Flags: ignoreversion; Components: mainapp
 Source: "{#MyAppSourceDir}\ZstdSharp.dll"; DestDir: "{app}"; Flags: ignoreversion; Components: mainapp
 Source: "{#MyAppSourceDir}\zxing.dll"; DestDir: "{app}"; Flags: ignoreversion; Components: mainapp
 Source: "{#MyAppSourceDir}\zxing.presentation.dll"; DestDir: "{app}"; Flags: ignoreversion; Components: mainapp
 Source: "{#MyAppSourceDir}\zxing.presentation.xml"; DestDir: "{app}"; Flags: ignoreversion; Components: mainapp
 Source: "{#MyAppSourceDir}\zxing.xml"; DestDir: "{app}"; Flags: ignoreversion; Components: mainapp
 
+; ----- 0Form (1 file) -----
+Source: "{#MyAppSourceDir}\0Form\*"; DestDir: "{app}\0Form"; Flags: ignoreversion recursesubdirs; Components: mainapp
+
 ; ----- 5Lap (1 file) -----
 Source: "{#MyAppSourceDir}\5Lap\*"; DestDir: "{app}\5Lap"; Flags: ignoreversion recursesubdirs; Components: mainapp
+
+; ----- 8Uty (1 file) -----
+Source: "{#MyAppSourceDir}\8Uty\*"; DestDir: "{app}\8Uty"; Flags: ignoreversion recursesubdirs; Components: mainapp
 
 ; ----- Folder Backup (2 file) -----
 Source: "{#MyAppSourceDir}\Backup\*"; DestDir: "{app}\Backup"; Flags: ignoreversion recursesubdirs createallsubdirs; Components: mainapp
@@ -324,7 +338,7 @@ Source: "{#MyAppSourceDir}\ko\*"; DestDir: "{app}\ko"; Flags: ignoreversion recu
 ; ----- pl (1 file) -----
 Source: "{#MyAppSourceDir}\pl\*"; DestDir: "{app}\pl"; Flags: ignoreversion recursesubdirs; Components: mainapp
 
-; ----- Printer Driver Software (8 file) -----
+; ----- Printer Driver Software (7 file) -----
 ; Semua file driver disertakan ke {app}\Printer Driver Software
 Source: "{#MyAppDriverDir}\appserv-9-3-0.exe"; DestDir: "{app}\Printer Driver Software"; Flags: ignoreversion; Components: mainapp
 Source: "{#MyAppDriverDir}\mysql-connector-net-9.1.0.msi"; DestDir: "{app}\Printer Driver Software"; Flags: ignoreversion; Components: mainapp
@@ -458,16 +472,16 @@ var
   Return True  = ada koneksi internet
   Return False = tidak ada koneksi / offline
   ================================================================ }
+function InternetGetConnectedState(lpdwFlags: DWORD; dwReserved: DWORD): BOOL;
+  external 'InternetGetConnectedState@wininet.dll stdcall';
+
 function IsInternetConnected(): Boolean;
 var
-  Flags: Cardinal;
+  Flags: DWORD;
 begin
   Result := False;
   try
-    if not IsWin64 then
-      Result := DLLGetValue('wininet.dll', 'InternetGetConnectedState', Flags, 0) <> 0
-    else
-      Result := DLLGetValue('wininet.dll', 'InternetGetConnectedState', Flags, 0) <> 0;
+    Result := InternetGetConnectedState(Flags, 0);
   except
     Result := False;
   end;
@@ -902,11 +916,8 @@ begin
 
   { ── Perbaiki posisi label status di halaman Installing ──────────
     StatusLabel menimpa teks judul — geser ke bawah agar tidak overlap }
-  with WizardForm.InstallingPage do
-  begin
-    StatusLabel.Top   := StatusLabel.Top + 18;
-    FilenameLabel.Top := FilenameLabel.Top + 18;
-  end;
+  WizardForm.StatusLabel.Top   := WizardForm.StatusLabel.Top + 18;
+  WizardForm.FilenameLabel.Top := WizardForm.FilenameLabel.Top + 18;
 end;
 
 { ================================================================

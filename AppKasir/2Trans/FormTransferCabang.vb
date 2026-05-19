@@ -1024,7 +1024,7 @@ Public Class FormTransferCabang
         If options.Count = 0 Then Return
         Dim idx As Integer = cmb.SelectedIndex
         If idx < 0 OrElse idx >= options.Count Then idx = 0
-        DgvDetail.Rows(rowIdx).Cells("Isi").Value = options(idx).Value
+        DgvDetail.Rows(rowIdx).Cells("Isi").Value = Math.Max(1, options(idx).Value)
 
         ' Validasi stok setelah ganti satuan
         Dim qtySat As Decimal = ModuleAngka.ParseDecimal(Convert.ToString(DgvDetail.Rows(rowIdx).Cells("QtySat").Value))
@@ -1049,7 +1049,7 @@ Public Class FormTransferCabang
                 Dim currentIdx As Integer = options.FindIndex(Function(x) x.Key.Equals(cmb.Text, StringComparison.OrdinalIgnoreCase))
                 If currentIdx < 0 Then currentIdx = 0
                 DgvDetail.Rows(rowIdx).Cells("Satuan").Value = options(currentIdx).Key
-                DgvDetail.Rows(rowIdx).Cells("Isi").Value = options(currentIdx).Value
+                DgvDetail.Rows(rowIdx).Cells("Isi").Value = Math.Max(1, options(currentIdx).Value)
                 HitungBaris(rowIdx)
                 Return
             End If
@@ -1091,7 +1091,7 @@ Public Class FormTransferCabang
                             Math.Max(currentIdx - 1, 0))
                         If newIdx <> currentIdx Then
                             DgvDetail.Rows(rowIdx).Cells("Satuan").Value = options(newIdx).Key
-                            DgvDetail.Rows(rowIdx).Cells("Isi").Value = options(newIdx).Value
+                            DgvDetail.Rows(rowIdx).Cells("Isi").Value = Math.Max(1, options(newIdx).Value)
 
                             ' Validasi stok setelah ganti satuan
                             Dim qtySat As Decimal = ModuleAngka.ParseDecimal(Convert.ToString(DgvDetail.Rows(rowIdx).Cells("QtySat").Value))
@@ -1114,7 +1114,7 @@ Public Class FormTransferCabang
                                     MessageBox.Show(errorMessage, "Stok Tidak Cukup", MessageBoxButtons.OK, MessageBoxIcon.Warning)
                                     ' Kembalikan ke satuan sebelumnya
                                     DgvDetail.Rows(rowIdx).Cells("Satuan").Value = options(currentIdx).Key
-                                    DgvDetail.Rows(rowIdx).Cells("Isi").Value = options(currentIdx).Value
+                                    DgvDetail.Rows(rowIdx).Cells("Isi").Value = Math.Max(1, options(currentIdx).Value)
                                     e.SuppressKeyPress = True
                                     Return
                                 End If
@@ -1847,7 +1847,7 @@ Public Class FormTransferCabang
         If row.IsNewRow Then Return
 
         Dim qty As Decimal = ModuleAngka.ParseDecimal(Convert.ToString(row.Cells("QTY").Value))
-        Dim isi As Decimal = ModuleAngka.ParseDecimal(Convert.ToString(row.Cells("Isi").Value))
+        Dim isi As Decimal = Math.Max(1, ModuleAngka.ParseDecimal(Convert.ToString(row.Cells("Isi").Value)))
         Dim qtySat As Decimal = qty * isi
 
         ' Ambil harga dari DB jika sel kosong/nol
@@ -2392,23 +2392,8 @@ Public Class FormTransferCabang
                     End Using
 
 
-                    Dim akunTerlibat As New HashSet(Of String)(StringComparer.OrdinalIgnoreCase)
-                    Using cmdAkun As New MySqlCommand(
-                        "SELECT DISTINCT NOMOR_AKUN_D FROM JurnalUmum WHERE NO_TRANSAKSI = @fk AND NOMOR_AKUN_D <> '' " &
-                        "UNION " &
-                        "SELECT DISTINCT NOMOR_AKUN_K FROM JurnalUmum WHERE NO_TRANSAKSI = @fk AND NOMOR_AKUN_K <> ''",
-                        conn, trx)
-                        cmdAkun.Parameters.AddWithValue("@fk", idTransfer)
-                        Using rd = cmdAkun.ExecuteReader()
-                            While rd.Read()
-                                Dim kode As String = rd(0).ToString().Trim()
-                                If kode <> "" Then akunTerlibat.Add(kode)
-                            End While
-                        End Using
-                    End Using
-                    For Each kodeAkun As String In akunTerlibat
-                        UpdateSaldoAkun(kodeAkun, trx)
-                    Next
+                    ' Update saldo akun — incremental delta
+                    UpdateSaldoAkunDeltaDariFaktur(idTransfer, trx)
                 End If
                 ' 5. Hitung ulang stok dalam transaksi yang sama
                 HitungStokPerubahan(kodeBarang, trx)
@@ -2870,24 +2855,8 @@ Public Class FormTransferCabang
                     HitungStokPerubahan(row.Kode, trx)
                 Next
 
-
-                Dim akunTerlibat As New HashSet(Of String)(StringComparer.OrdinalIgnoreCase)
-                Using cmdAkun As New MySqlCommand(
-                    "SELECT DISTINCT NOMOR_AKUN_D FROM JurnalUmum WHERE NO_TRANSAKSI = @fk AND NOMOR_AKUN_D <> '' " &
-                    "UNION " &
-                    "SELECT DISTINCT NOMOR_AKUN_K FROM JurnalUmum WHERE NO_TRANSAKSI = @fk AND NOMOR_AKUN_K <> ''",
-                    conn, trx)
-                    cmdAkun.Parameters.AddWithValue("@fk", idTransfer)
-                    Using rd = cmdAkun.ExecuteReader()
-                        While rd.Read()
-                            Dim kode As String = rd(0).ToString().Trim()
-                            If kode <> "" Then akunTerlibat.Add(kode)
-                        End While
-                    End Using
-                End Using
-                For Each kodeAkun As String In akunTerlibat
-                    UpdateSaldoAkun(kodeAkun, trx)
-                Next
+                ' Update saldo akun — incremental delta
+                UpdateSaldoAkunDeltaDariFaktur(idTransfer, trx)
                 trx.Commit()
             Catch
                 trx.Rollback()

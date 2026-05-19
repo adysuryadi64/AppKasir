@@ -12,7 +12,7 @@ Public Class FormSuratJalan
         Else
             LoadSuratJalanDetail(LblNoNota.Text)
         End If
-        PanelDataPenjualan.Visible = False
+        PanelInput.Visible = False
     End Sub
 
 
@@ -151,26 +151,26 @@ Public Class FormSuratJalan
     End Sub
 
     Private Sub CenterPanel()
-        Dim x As Integer = (ClientSize.Width - PanelDataPenjualan.Width) \ 2
-        Dim y As Integer = (ClientSize.Height - PanelDataPenjualan.Height) \ 2
+        Dim x As Integer = (ClientSize.Width - PanelInput.Width) \ 2
+        Dim y As Integer = (ClientSize.Height - PanelInput.Height) \ 2
         'Dim y As Integer = 44
-        PanelDataPenjualan.Location = New Point(x, y)
+        PanelInput.Location = New Point(x, y)
     End Sub
 
 
     Private Sub BtnHideDaftar_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles BtnHideDaftar.Click
-        PanelDataPenjualan.Visible = False
+        PanelInput.Visible = False
         PanelHeader.Enabled = True
         PanelNota.Enabled = True
-        PanelSimpan.Enabled = True
+        PanelInput2.Enabled = True
     End Sub
 
     Private Sub BtnDaftarBarang_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles BtnDaftarBarang.Click
         CenterPanel()
-        PanelDataPenjualan.Visible = True
+        PanelInput.Visible = True
         PanelHeader.Enabled = False
         PanelNota.Enabled = False
-        PanelSimpan.Enabled = False
+        PanelInput2.Enabled = False
 
         ' Check data in DGVSuratJalan and mark corresponding rows in DGVPenjualan as checked
         For Each rowSJ As DataGridViewRow In DGVSuratJalan.Rows
@@ -271,10 +271,10 @@ Public Class FormSuratJalan
     Private Sub BtnTransfer_Click(ByVal sender As Object, ByVal e As EventArgs) Handles BtnTransfer.Click
         TransferDataToSuratJalan()
         HitungTotalDataDanRupiah()
-        PanelDataPenjualan.Visible = False
+        PanelInput.Visible = False
         PanelHeader.Enabled = True
         PanelNota.Enabled = True
-        PanelSimpan.Enabled = True
+        PanelInput2.Enabled = True
     End Sub
 
     Private Sub TransferDataToSuratJalan()
@@ -611,7 +611,7 @@ Public Class FormSuratJalan
             Case Keys.F8
                 BtnSimpann.PerformClick()
             Case Keys.Escape
-                If PanelDataPenjualan.Visible = True Then
+                If PanelInput.Visible = True Then
                     BtnHideDaftar.PerformClick()
                 Else
                     BtnKeluarForm.PerformClick()

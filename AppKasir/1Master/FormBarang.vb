@@ -644,12 +644,13 @@ Public Class FormBarang
                     ' ========================================
                     Dim hargaBeli As Decimal = If(IsDBNull(DGBarang.Item("HARGA_BELI", i).Value), 0D, Convert.ToDecimal(DGBarang.Item("HARGA_BELI", i).Value))
                     Dim nominal As Decimal = (stokToko + stokGudang) * hargaBeli
+                    Dim noTrxHapus As String = DateTime.Now.ToString("yyyyMMddHHmmss")
 
                     If nominal <> 0 Then
                         Using cmdInsert As New MySqlCommand(
                             "INSERT INTO JurnalUmum (NO_TRANSAKSI, TGL_TRANSAKSI, URAIAN, NAMA_AKUN_D, NOMOR_AKUN_D, NAMA_AKUN_K, NOMOR_AKUN_K, NOMINAL, JENIS_TRANSAKSI, LOKASI, ID_USER, ID_KOMPUTER) " &
                             "VALUES (@NO_TRANSAKSI, @TGL_TRANSAKSI, @URAIAN, @NAMA_AKUN_D, @NOMOR_AKUN_D, @NAMA_AKUN_K, @NOMOR_AKUN_K, @NOMINAL, @JENIS_TRANSAKSI, @LOKASI, @ID_USER, @ID_KOMPUTER)", conn, transaction)
-                            cmdInsert.Parameters.AddWithValue("@NO_TRANSAKSI", DateTime.Now.ToString("yyyyMMddHHmmss"))
+                            cmdInsert.Parameters.AddWithValue("@NO_TRANSAKSI", noTrxHapus)
                             cmdInsert.Parameters.AddWithValue("@TGL_TRANSAKSI", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"))
                             cmdInsert.Parameters.AddWithValue("@URAIAN", "Hapus barang " & nama)
                             cmdInsert.Parameters.AddWithValue("@NAMA_AKUN_D", LAWAN_NAMA_REK_BARANG)
@@ -672,8 +673,7 @@ Public Class FormBarang
 
                     ' Update saldo akun jurnal secara realtime (hanya jika ada nilai barang)
                     If nominal <> 0 Then
-                        UpdateSaldoAkun(LAWAN_KODE_REK_BARANG, transaction)
-                        UpdateSaldoAkun(KODE_REK_BARANG, transaction)
+                        UpdateSaldoAkunDeltaDariFaktur(noTrxHapus, transaction)
                     End If
 
                     transaction.Commit()
@@ -1190,8 +1190,7 @@ Public Class FormBarang
             ' ========================================
 
             UpdateStok(transaction, kodebarang, stokToko, stokGudang, FormUtama.StatusLokasi.Text)
-            UpdateSaldoAkun(KODE_REK_BARANG, transaction)
-            UpdateSaldoAkun(LAWAN_KODE_REK_BARANG, transaction)
+            UpdateSaldoAkunDeltaDariFaktur(noTransaksi, transaction)
 
             ' Recalculate stok barang
             Dim stokSebelumTK As Decimal = BacaStokSaatIni(kodebarang, FormUtama.StatusLokasi.Text, transaction)

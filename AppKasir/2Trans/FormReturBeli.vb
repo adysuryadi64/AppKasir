@@ -547,12 +547,15 @@ Public Class FormReturBeli
 
         ' Setup combobox rekening
         IsiComboBoxAkun(CmbAkunTunai, "KAS", "BANK", "EKUITAS")
+        IsiComboBoxAkun(CmbAkunTransfer, "BANK")
 
-        ' Set rekening default berdasarkan lokasi
-        If LblLokasiBarang.Text = "TOKO" Then
-            CmbAkunTunai.SelectedItem = nama_rek_Retur_Pembelian_Toko
-        ElseIf LblLokasiBarang.Text = "GUDANG" Then
-            CmbAkunTunai.SelectedItem = nama_rek_Retur_Pembelian_Gudang
+        ' Set rekening default berdasarkan lokasi (hanya untuk mode tambah)
+        If IsModeTambahReturBeli Then
+            If LblLokasiBarang.Text = "TOKO" Then
+                CmbAkunTunai.SelectedItem = nama_rek_Retur_Pembelian_Toko
+            ElseIf LblLokasiBarang.Text = "GUDANG" Then
+                CmbAkunTunai.SelectedItem = nama_rek_Retur_Pembelian_Gudang
+            End If
         End If
 
         ' Simpan posisi asli ListBarang
@@ -794,9 +797,9 @@ Public Class FormReturBeli
                         Dim namaBarang As String = rd("NAMA_BARANG").ToString()
 
                         ' Handle nullable integer conversions
-                        Dim isiKecil As Integer = ModuleAngka.SafeGetValue(Of Integer)(rd, "ISI_UMUM_KECIL", 0)
-                        Dim isiSedang As Integer = ModuleAngka.SafeGetValue(Of Integer)(rd, "ISI_UMUM_SEDANG", 0)
-                        Dim isiBesar As Integer = ModuleAngka.SafeGetValue(Of Integer)(rd, "ISI_UMUM_BESAR", 0)
+                        Dim isiKecil As Integer = Math.Max(1, ModuleAngka.SafeGetValue(Of Integer)(rd, "ISI_UMUM_KECIL", 1))
+                        Dim isiSedang As Integer = Math.Max(1, ModuleAngka.SafeGetValue(Of Integer)(rd, "ISI_UMUM_SEDANG", 1))
+                        Dim isiBesar As Integer = Math.Max(1, ModuleAngka.SafeGetValue(Of Integer)(rd, "ISI_UMUM_BESAR", 1))
 
                         ' Handle nullable decimal conversions
                         Dim hargaBeli As Decimal = ModuleAngka.SafeGetValue(Of Decimal)(rd, "HARGA_BELI_TERAKHIR", 0D)
@@ -1212,9 +1215,9 @@ Public Class FormReturBeli
         .SATUAN_UMUM_KECIL = rd("SATUAN_UMUM_KECIL").ToString(),
         .SATUAN_UMUM_SEDANG = rd("SATUAN_UMUM_SEDANG").ToString(),
         .SATUAN_UMUM_BESAR = rd("SATUAN_UMUM_BESAR").ToString(),
-        .ISI_UMUM_KECIL = CInt(rd("ISI_UMUM_KECIL")),
-        .ISI_UMUM_SEDANG = CInt(rd("ISI_UMUM_SEDANG")),
-        .ISI_UMUM_BESAR = CInt(rd("ISI_UMUM_BESAR")),
+        .ISI_UMUM_KECIL = Math.Max(1, CInt(rd("ISI_UMUM_KECIL"))),
+        .ISI_UMUM_SEDANG = Math.Max(1, CInt(rd("ISI_UMUM_SEDANG"))),
+        .ISI_UMUM_BESAR = Math.Max(1, CInt(rd("ISI_UMUM_BESAR"))),
         .BARCODE_KECIL = rd("BARCODE_KECIL").ToString(),
         .BARCODE_SEDANG = rd("BARCODE_SEDANG").ToString(),
         .BARCODE_BESAR = rd("BARCODE_BESAR").ToString(),
@@ -1264,13 +1267,13 @@ Public Class FormReturBeli
     ' ============================================
     Private Function GetIsiFromBarcode(rd As MySqlDataReader, barcode As String) As Integer
         If barcode = rd("BARCODE_KECIL").ToString() Then
-            Return CInt(rd("ISI_UMUM_KECIL"))
+            Return Math.Max(1, CInt(rd("ISI_UMUM_KECIL")))
         ElseIf barcode = rd("BARCODE_SEDANG").ToString() Then
-            Return CInt(rd("ISI_UMUM_SEDANG"))
+            Return Math.Max(1, CInt(rd("ISI_UMUM_SEDANG")))
         ElseIf barcode = rd("BARCODE_BESAR").ToString() Then
-            Return CInt(rd("ISI_UMUM_BESAR"))
+            Return Math.Max(1, CInt(rd("ISI_UMUM_BESAR")))
         Else
-            Return CInt(rd("ISI_UMUM_KECIL"))
+            Return Math.Max(1, CInt(rd("ISI_UMUM_KECIL")))
         End If
     End Function
 
@@ -1859,7 +1862,7 @@ Public Class FormReturBeli
         If barangFromCache IsNot Nothing Then
             ' Set data dari cache
             TxtKode.Text = barangFromCache.ID_BARANG
-            TxtHarga.Text = barangFromCache.HARGA_BELI_TERAKHIR.ToString()
+            TxtHarga.Text = barangFromCache.HARGA_BELI_TERAKHIR.ToString("N0")
             Txtsatuan.Text = barangFromCache.SATUAN_UMUM_KECIL
             TxtIsi.Text = barangFromCache.ISI_UMUM_KECIL.ToString()
             Return
@@ -1879,28 +1882,23 @@ Public Class FormReturBeli
                 Using rd As MySqlDataReader = cmd.ExecuteReader
                     If rd.Read() Then
                         Dim idBarang As String = ModuleAngka.SafeGetValue(Of String)(rd, "ID_BARANG", String.Empty)
-                        Dim hargaBeli As String = ModuleAngka.ParseDecimal(rd("HARGA_BELI_TERAKHIR")).ToString()
+                        Dim hargaBeli As String = ModuleAngka.ParseDecimal(rd("HARGA_BELI_TERAKHIR")).ToString("0.##", Globalization.CultureInfo.InvariantCulture)
 
                         Dim satuanUmum As String = ModuleAngka.SafeGetValue(Of String)(rd, "SATUAN_UMUM_KECIL", String.Empty)
-                        Dim isiUmum As Integer = ModuleAngka.SafeGetValue(Of Integer)(rd, "ISI_UMUM_KECIL", 0)
+                        Dim isiUmum As Integer = Math.Max(1, ModuleAngka.SafeGetValue(Of Integer)(rd, "ISI_UMUM_KECIL", 1))
 
                         ' Jika ada barcode, tentukan satuan berdasarkan barcode
                         If Not String.IsNullOrEmpty(TxtBarcode.Text) Then
                             If TxtBarcode.Text = rd("BARCODE_KECIL").ToString() Then
                                 satuanUmum = ModuleAngka.SafeGetValue(Of String)(rd, "SATUAN_UMUM_KECIL", String.Empty)
-                                isiUmum = ModuleAngka.SafeGetValue(Of Integer)(rd, "ISI_UMUM_KECIL", 0)
+                                isiUmum = Math.Max(1, ModuleAngka.SafeGetValue(Of Integer)(rd, "ISI_UMUM_KECIL", 1))
                             ElseIf TxtBarcode.Text = rd("BARCODE_SEDANG").ToString() Then
                                 satuanUmum = ModuleAngka.SafeGetValue(Of String)(rd, "SATUAN_UMUM_SEDANG", String.Empty)
-                                isiUmum = ModuleAngka.SafeGetValue(Of Integer)(rd, "ISI_UMUM_SEDANG", 0)
+                                isiUmum = Math.Max(1, ModuleAngka.SafeGetValue(Of Integer)(rd, "ISI_UMUM_SEDANG", 1))
                             ElseIf TxtBarcode.Text = rd("BARCODE_BESAR").ToString() Then
                                 satuanUmum = ModuleAngka.SafeGetValue(Of String)(rd, "SATUAN_UMUM_BESAR", String.Empty)
-                                isiUmum = ModuleAngka.SafeGetValue(Of Integer)(rd, "ISI_UMUM_BESAR", 0)
+                                isiUmum = Math.Max(1, ModuleAngka.SafeGetValue(Of Integer)(rd, "ISI_UMUM_BESAR", 1))
                             End If
-                        End If
-
-                        ' Jika isi = 0, set ke 1
-                        If isiUmum = 0 Then
-                            isiUmum = 1
                         End If
 
                         ' Set data ke textbox
@@ -1978,7 +1976,7 @@ Public Class FormReturBeli
             Dim hargaBeli As Decimal = ModuleAngka.ParseDecimal(TxtHarga.Text)
             Dim qty As Decimal = If(ModuleAngka.ParseDecimal(TxtQty.Text) > 0, ModuleAngka.ParseDecimal(TxtQty.Text), 1D)
             Dim satuan As String = Txtsatuan.Text
-            Dim isi As Decimal = ModuleAngka.ParseDecimal(TxtIsi.Text)
+            Dim isi As Decimal = Math.Max(1, ModuleAngka.ParseDecimal(TxtIsi.Text))
 
             ' Set nilai ke grid
             DgvData.Rows(indeksBaris).Cells("ID_BARANG").Value = kode
@@ -2339,7 +2337,7 @@ Public Class FormReturBeli
             End If
 
             ' Jika isi = 0, set ke 1
-            If isi = 0 Then isi = 1
+            isi = Math.Max(1, isi)
 
             ' UPDATE BARIS DI DATAGRIDVIEW
             UpdateGridRowFromBarang(rowIndex, barangFromCache, satuan, isi, qty)
@@ -2547,9 +2545,9 @@ Public Class FormReturBeli
                             .SATUAN_UMUM_KECIL = rd("SATUAN_UMUM_KECIL").ToString(),
                             .SATUAN_UMUM_SEDANG = rd("SATUAN_UMUM_SEDANG").ToString(),
                             .SATUAN_UMUM_BESAR = rd("SATUAN_UMUM_BESAR").ToString(),
-                            .ISI_UMUM_KECIL = ModuleAngka.SafeGetValue(Of Integer)(rd, "ISI_UMUM_KECIL", 0),
-                            .ISI_UMUM_SEDANG = ModuleAngka.SafeGetValue(Of Integer)(rd, "ISI_UMUM_SEDANG", 0),
-                            .ISI_UMUM_BESAR = ModuleAngka.SafeGetValue(Of Integer)(rd, "ISI_UMUM_BESAR", 0),
+                            .ISI_UMUM_KECIL = Math.Max(1, ModuleAngka.SafeGetValue(Of Integer)(rd, "ISI_UMUM_KECIL", 1)),
+                            .ISI_UMUM_SEDANG = Math.Max(1, ModuleAngka.SafeGetValue(Of Integer)(rd, "ISI_UMUM_SEDANG", 1)),
+                            .ISI_UMUM_BESAR = Math.Max(1, ModuleAngka.SafeGetValue(Of Integer)(rd, "ISI_UMUM_BESAR", 1)),
                             .BARCODE_KECIL = rd("BARCODE_KECIL").ToString(),
                             .BARCODE_SEDANG = rd("BARCODE_SEDANG").ToString(),
                             .BARCODE_BESAR = rd("BARCODE_BESAR").ToString(),
@@ -2641,7 +2639,7 @@ Public Class FormReturBeli
         End If
 
         ' Set nilai default
-        If isi = 0 Then isi = 1
+        isi = Math.Max(1, isi)
 
         ' Set nilai ke grid
         DgvData.Rows(rowIndex).Cells("SATUAN").Value = satuan
@@ -2669,8 +2667,8 @@ Public Class FormReturBeli
     ' ============================================
     Private Sub UpdateBarisDariDatabase(rowIndex As Integer, rd As MySqlDataReader, namaValue As String)
 
-        DgvData.Rows(rowIndex).Cells("ID_BARANG").Value = rd("ID_BARANG")
-        DgvData.Rows(rowIndex).Cells("HARGA_BELI_TERAKHIR").Value = rd("HARGA_BELI_TERAKHIR")
+        DgvData.Rows(rowIndex).Cells("ID_BARANG").Value = rd("ID_BARANG").ToString()
+        DgvData.Rows(rowIndex).Cells("HARGA_BELI_TERAKHIR").Value = ModuleAngka.ParseDecimal(rd("HARGA_BELI_TERAKHIR"))
 
         ' Setup ComboBox satuan
         Dim comboCell As DataGridViewComboBoxCell = CType(DgvData.Rows(rowIndex).Cells("SATUAN"), DataGridViewComboBoxCell)
@@ -3100,7 +3098,7 @@ Public Class FormReturBeli
                 Case Else : isiSatuan = barangFromCache.ISI_UMUM_BESAR
             End Select
 
-            If isiSatuan = 0 Then isiSatuan = 1
+            isiSatuan = Math.Max(1, isiSatuan)
 
             ' Validasi stok saat ganti satuan (Point)
             Dim rowIndex As Integer = cell.RowIndex
@@ -3680,6 +3678,10 @@ Public Class FormReturBeli
                 TxtNominalBayarTunai.Text = ""
             End If
         End If
+
+        ' Fokus ke nominal bayar tunai dan seleksi semua teks
+        TxtNominalBayarTunai.Focus()
+        TxtNominalBayarTunai.SelectAll()
     End Sub
 
     ' ============================================
@@ -3819,7 +3821,6 @@ Public Class FormReturBeli
             ' Simpan faktur asli SEBELUM NomorRetur() bisa mengubah TxtFaktur.Text
             Dim fakturAsli As String = TxtFaktur.Text
 
-            Dim akunLama As New HashSet(Of String)(StringComparer.OrdinalIgnoreCase)
             If LblJenisTrans.Text = "TambahReturBeli" Then
                 ' ===== MODE TAMBAH =====
                 ' SettingIzinkanTanggalLampau=False → paksa tanggal ke Now, generate nomor baru
@@ -3846,23 +3847,6 @@ Public Class FormReturBeli
                         Exit Sub
                     End If
                 End If
-                ' ========================================
-                ' STEP 1: SELECT daftar akun LAMA SEBELUM DELETE JurnalUmum
-                ' ========================================
-                Using cmdAkunLama As New MySqlCommand(
-                    "SELECT DISTINCT NOMOR_AKUN_D FROM JurnalUmum WHERE NO_TRANSAKSI = @fk AND NOMOR_AKUN_D <> '' " &
-                    "UNION " &
-                    "SELECT DISTINCT NOMOR_AKUN_K FROM JurnalUmum WHERE NO_TRANSAKSI = @fk AND NOMOR_AKUN_K <> ''",
-                    conn, transaction)
-                    cmdAkunLama.Parameters.AddWithValue("@fk", fakturAsli)
-                    Using rd = cmdAkunLama.ExecuteReader()
-                        While rd.Read()
-                            Dim kode As String = rd(0).ToString().Trim()
-                            If kode <> "" Then akunLama.Add(kode)
-                        End While
-                    End Using
-                End Using
-                Debug.WriteLine($"[INFO] SELECT akun lama ({akunLama.Count} akun)")
                 ' Hapus data lama pakai faktur asli
                 ' ========================================
                 ' START: Audit Trail - Edit Retur Pembelian
@@ -3912,36 +3896,10 @@ Public Class FormReturBeli
 
             AuditStokTransaksi(TxtFaktur.Text, "Retur Beli", auditDGV, auditHistory, auditDetail, auditStokDelta, transaction)
 
-            Dim akunBaru As New HashSet(Of String)(StringComparer.OrdinalIgnoreCase)
-            Using cmdAkunBaru As New MySqlCommand(
-                "SELECT DISTINCT NOMOR_AKUN_D FROM JurnalUmum WHERE NO_TRANSAKSI = @fk AND NOMOR_AKUN_D <> '' " &
-                "UNION " &
-                "SELECT DISTINCT NOMOR_AKUN_K FROM JurnalUmum WHERE NO_TRANSAKSI = @fk AND NOMOR_AKUN_K <> ''",
-                conn, transaction)
-                cmdAkunBaru.Parameters.AddWithValue("@fk", TxtFaktur.Text)
-                Using rd = cmdAkunBaru.ExecuteReader()
-                    While rd.Read()
-                        Dim kode As String = rd(0).ToString().Trim()
-                        If kode <> "" Then akunBaru.Add(kode)
-                    End While
-                End Using
-            End Using
-            Debug.WriteLine($"[INFO] SELECT akun baru ({akunBaru.Count} akun)")
-
             ' ========================================
-            ' STEP 3: GABUNGKAN daftar akun LAMA + BARU
+            ' STEP 3: UPDATE saldo akun — incremental delta
             ' ========================================
-            Dim semuaAkunTerlibat As New HashSet(Of String)(akunLama, StringComparer.OrdinalIgnoreCase)
-            For Each akun In akunBaru
-                semuaAkunTerlibat.Add(akun)
-            Next
-
-            ' ========================================
-            ' STEP 4: UPDATE saldo untuk SEMUA akun yang terlibat
-            ' ========================================
-            For Each kodeAkun As String In semuaAkunTerlibat
-                UpdateSaldoAkun(kodeAkun, transaction)
-            Next
+            UpdateSaldoAkunDeltaDariFaktur(TxtFaktur.Text, transaction)
 
             ' Commit transaksi
             transaction.Commit()
@@ -4397,11 +4355,25 @@ Public Class FormReturBeli
                         End If
 
                         ' Set nilai ke form
-                        TxtNominalBayarTunai.Text = nominalTunai.ToString("N0")
-                        TxtNominalBayarTransfer.Text = nominalTransfer.ToString("N0")
-                        CmbAkunTunai.Text = namaRekeningTunai
+                        TxtNominalBayarTunai.Text = nominalTunai.ToString("0.##", Globalization.CultureInfo.InvariantCulture)
+                        TxtNominalBayarTransfer.Text = nominalTransfer.ToString("0.##", Globalization.CultureInfo.InvariantCulture)
+
+                        ' Set combo tunai — pilih item yang cocok, fallback ke .Text jika tidak ada
+                        Dim idxTunai As Integer = CmbAkunTunai.FindStringExact(namaRekeningTunai)
+                        If idxTunai >= 0 Then
+                            CmbAkunTunai.SelectedIndex = idxTunai
+                        Else
+                            CmbAkunTunai.Text = namaRekeningTunai
+                        End If
                         TxtKodeAkunTunai.Text = kodeRekeningTunai
-                        CmbAkunTransfer.Text = namaRekeningTransfer
+
+                        ' Set combo transfer — pilih item yang cocok, fallback ke .Text jika tidak ada
+                        Dim idxTransfer As Integer = CmbAkunTransfer.FindStringExact(namaRekeningTransfer)
+                        If idxTransfer >= 0 Then
+                            CmbAkunTransfer.SelectedIndex = idxTransfer
+                        Else
+                            CmbAkunTransfer.Text = namaRekeningTransfer
+                        End If
                         TxtKodeAkunTransfer.Text = kodeRekeningTransfer
 
                     End If
@@ -4447,15 +4419,15 @@ Public Class FormReturBeli
                 Using rd As MySqlDataReader = cmd.ExecuteReader()
                     Do While rd.Read()
                         Dim row As DataGridViewRow = DgvData.Rows(DgvData.Rows.Add())
-                        row.Cells("ID_BARANG").Value = rd("ID_BARANG")
-                        row.Cells("NAMA_BARANG").Value = rd("NAMA_BARANG")
-                        row.Cells("HARGA_BELI_TERAKHIR").Value = rd("HARGA_BELI")
-                        row.Cells("QTY").Value = rd("QTY")
-                        row.Cells("SATUAN").Value = rd("SATUAN")
-                        row.Cells("ISI_SATUAN").Value = rd("ISI_SATUAN")
-                        row.Cells("HARGA_BELI_SATUAN").Value = rd("HARGA_BELI_SATUAN")
-                        row.Cells("QTY_SAT").Value = rd("QTY_SAT")
-                        row.Cells("TOTAL").Value = rd("TOTAL")
+                        row.Cells("ID_BARANG").Value = rd("ID_BARANG").ToString()
+                        row.Cells("NAMA_BARANG").Value = rd("NAMA_BARANG").ToString()
+                        row.Cells("HARGA_BELI_TERAKHIR").Value = ModuleAngka.ParseDecimal(rd("HARGA_BELI"))
+                        row.Cells("QTY").Value = ModuleAngka.ParseDecimal(rd("QTY"))
+                        row.Cells("SATUAN").Value = rd("SATUAN").ToString()
+                        row.Cells("ISI_SATUAN").Value = CInt(Math.Max(1, ModuleAngka.ParseDecimal(rd("ISI_SATUAN"))))
+                        row.Cells("HARGA_BELI_SATUAN").Value = ModuleAngka.ParseDecimal(rd("HARGA_BELI_SATUAN"))
+                        row.Cells("QTY_SAT").Value = ModuleAngka.ParseDecimal(rd("QTY_SAT"))
+                        row.Cells("TOTAL").Value = ModuleAngka.ParseDecimal(rd("TOTAL"))
                         row.Cells("StokToko").Value = ModuleAngka.SafeGetValue(Of Decimal)(rd, "STOK_TOKO", 0D)
                         row.Cells("StokGudang").Value = ModuleAngka.SafeGetValue(Of Decimal)(rd, "STOK_GUDANG", 0D)
 

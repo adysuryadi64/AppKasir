@@ -52,7 +52,7 @@ Partial Class FormSuratJalan
         Me.BtnKeluarForm = New System.Windows.Forms.Button()
         Me.LblJenisTrans = New System.Windows.Forms.Label()
         Me.Label8 = New System.Windows.Forms.Label()
-        Me.PanelDataPenjualan = New System.Windows.Forms.Panel()
+        Me.PanelInput = New System.Windows.Forms.Panel()
         Me.BtnTransfer = New System.Windows.Forms.Button()
         Me.BtnHideDaftar = New System.Windows.Forms.Button()
         Me.DtpPenjualan = New System.Windows.Forms.DateTimePicker()
@@ -75,7 +75,7 @@ Partial Class FormSuratJalan
         Me.Nominal = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.Lokasi = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.btnHapus = New System.Windows.Forms.DataGridViewButtonColumn()
-        Me.PanelSimpan = New System.Windows.Forms.Panel()
+        Me.PanelInput2 = New System.Windows.Forms.Panel()
         Me.BtnSimpann = New System.Windows.Forms.Button()
         Me.TxtTotalPelanggan = New System.Windows.Forms.TextBox()
         Me.Label1 = New System.Windows.Forms.Label()
@@ -84,10 +84,10 @@ Partial Class FormSuratJalan
         Me.Panel1 = New System.Windows.Forms.Panel()
         Me.PanelNota.SuspendLayout()
         Me.PanelHeader.SuspendLayout()
-        Me.PanelDataPenjualan.SuspendLayout()
+        Me.PanelInput.SuspendLayout()
         CType(Me.DGVPenjualan, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.DGVSuratJalan, System.ComponentModel.ISupportInitialize).BeginInit()
-        Me.PanelSimpan.SuspendLayout()
+        Me.PanelInput2.SuspendLayout()
         Me.Panel1.SuspendLayout()
         Me.SuspendLayout()
         '
@@ -412,22 +412,22 @@ Partial Class FormSuratJalan
         Me.Label8.Text = "SURAT JALAN PENGIRIMAN"
         Me.Label8.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
         '
-        'PanelDataPenjualan
+        'PanelInput
         '
-        Me.PanelDataPenjualan.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
+        Me.PanelInput.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
             Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.PanelDataPenjualan.BackColor = System.Drawing.Color.SaddleBrown
-        Me.PanelDataPenjualan.Controls.Add(Me.BtnTransfer)
-        Me.PanelDataPenjualan.Controls.Add(Me.BtnHideDaftar)
-        Me.PanelDataPenjualan.Controls.Add(Me.DtpPenjualan)
-        Me.PanelDataPenjualan.Controls.Add(Me.Label18)
-        Me.PanelDataPenjualan.Controls.Add(Me.DGVPenjualan)
-        Me.PanelDataPenjualan.Location = New System.Drawing.Point(205, 38)
-        Me.PanelDataPenjualan.Margin = New System.Windows.Forms.Padding(4, 3, 4, 3)
-        Me.PanelDataPenjualan.Name = "PanelDataPenjualan"
-        Me.PanelDataPenjualan.Size = New System.Drawing.Size(869, 475)
-        Me.PanelDataPenjualan.TabIndex = 233
+        Me.PanelInput.BackColor = System.Drawing.Color.SaddleBrown
+        Me.PanelInput.Controls.Add(Me.BtnTransfer)
+        Me.PanelInput.Controls.Add(Me.BtnHideDaftar)
+        Me.PanelInput.Controls.Add(Me.DtpPenjualan)
+        Me.PanelInput.Controls.Add(Me.Label18)
+        Me.PanelInput.Controls.Add(Me.DGVPenjualan)
+        Me.PanelInput.Location = New System.Drawing.Point(205, 38)
+        Me.PanelInput.Margin = New System.Windows.Forms.Padding(4, 3, 4, 3)
+        Me.PanelInput.Name = "PanelInput"
+        Me.PanelInput.Size = New System.Drawing.Size(869, 475)
+        Me.PanelInput.TabIndex = 233
         '
         'BtnTransfer
         '
@@ -653,20 +653,20 @@ Partial Class FormSuratJalan
         Me.btnHapus.Text = "Hapus"
         Me.btnHapus.UseColumnTextForButtonValue = True
         '
-        'PanelSimpan
+        'PanelInput2
         '
-        Me.PanelSimpan.BackColor = System.Drawing.Color.WhiteSmoke
-        Me.PanelSimpan.Controls.Add(Me.BtnSimpann)
-        Me.PanelSimpan.Controls.Add(Me.TxtTotalPelanggan)
-        Me.PanelSimpan.Controls.Add(Me.Label1)
-        Me.PanelSimpan.Controls.Add(Me.Label7)
-        Me.PanelSimpan.Controls.Add(Me.TxtTotalRupiah)
-        Me.PanelSimpan.Dock = System.Windows.Forms.DockStyle.Bottom
-        Me.PanelSimpan.Location = New System.Drawing.Point(0, 519)
-        Me.PanelSimpan.Margin = New System.Windows.Forms.Padding(4, 3, 4, 3)
-        Me.PanelSimpan.Name = "PanelSimpan"
-        Me.PanelSimpan.Size = New System.Drawing.Size(1144, 58)
-        Me.PanelSimpan.TabIndex = 235
+        Me.PanelInput2.BackColor = System.Drawing.Color.WhiteSmoke
+        Me.PanelInput2.Controls.Add(Me.BtnSimpann)
+        Me.PanelInput2.Controls.Add(Me.TxtTotalPelanggan)
+        Me.PanelInput2.Controls.Add(Me.Label1)
+        Me.PanelInput2.Controls.Add(Me.Label7)
+        Me.PanelInput2.Controls.Add(Me.TxtTotalRupiah)
+        Me.PanelInput2.Dock = System.Windows.Forms.DockStyle.Bottom
+        Me.PanelInput2.Location = New System.Drawing.Point(0, 519)
+        Me.PanelInput2.Margin = New System.Windows.Forms.Padding(4, 3, 4, 3)
+        Me.PanelInput2.Name = "PanelInput2"
+        Me.PanelInput2.Size = New System.Drawing.Size(1144, 58)
+        Me.PanelInput2.TabIndex = 235
         '
         'BtnSimpann
         '
@@ -749,8 +749,8 @@ Partial Class FormSuratJalan
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(1144, 577)
-        Me.Controls.Add(Me.PanelDataPenjualan)
-        Me.Controls.Add(Me.PanelSimpan)
+        Me.Controls.Add(Me.PanelInput)
+        Me.Controls.Add(Me.PanelInput2)
         Me.Controls.Add(Me.Panel1)
         Me.Controls.Add(Me.PanelHeader)
         Me.Controls.Add(Me.PanelNota)
@@ -764,12 +764,12 @@ Partial Class FormSuratJalan
         Me.PanelNota.PerformLayout()
         Me.PanelHeader.ResumeLayout(False)
         Me.PanelHeader.PerformLayout()
-        Me.PanelDataPenjualan.ResumeLayout(False)
-        Me.PanelDataPenjualan.PerformLayout()
+        Me.PanelInput.ResumeLayout(False)
+        Me.PanelInput.PerformLayout()
         CType(Me.DGVPenjualan, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.DGVSuratJalan, System.ComponentModel.ISupportInitialize).EndInit()
-        Me.PanelSimpan.ResumeLayout(False)
-        Me.PanelSimpan.PerformLayout()
+        Me.PanelInput2.ResumeLayout(False)
+        Me.PanelInput2.PerformLayout()
         Me.Panel1.ResumeLayout(False)
         Me.ResumeLayout(False)
 
@@ -780,13 +780,13 @@ Partial Class FormSuratJalan
     Friend WithEvents Label2 As System.Windows.Forms.Label
     Friend WithEvents PanelHeader As System.Windows.Forms.Panel
     Friend WithEvents Label8 As System.Windows.Forms.Label
-    Friend WithEvents PanelDataPenjualan As System.Windows.Forms.Panel
+    Friend WithEvents PanelInput As System.Windows.Forms.Panel
     Friend WithEvents BtnHideDaftar As System.Windows.Forms.Button
     Friend WithEvents DtpPenjualan As System.Windows.Forms.DateTimePicker
     Friend WithEvents Label18 As System.Windows.Forms.Label
     Friend WithEvents DGVPenjualan As System.Windows.Forms.DataGridView
     Friend WithEvents DGVSuratJalan As System.Windows.Forms.DataGridView
-    Friend WithEvents PanelSimpan As System.Windows.Forms.Panel
+    Friend WithEvents PanelInput2 As System.Windows.Forms.Panel
     Friend WithEvents TxtTotalPelanggan As System.Windows.Forms.TextBox
     Friend WithEvents Label1 As System.Windows.Forms.Label
     Friend WithEvents Label7 As System.Windows.Forms.Label

@@ -529,6 +529,117 @@ Module ModuleVariabel
         End Using
     End Sub
 
+    ''' <summary>
+    ''' Update saldo akun secara INCREMENTAL (delta) tanpa scan seluruh JurnalUmum.
+    ''' Jauh lebih cepat dari UpdateSaldoAkun — tidak menyentuh JurnalUmum sama sekali.
+    ''' Panggil setelah INSERT/DELETE JurnalUmum dengan delta yang sudah dihitung.
+    ''' </summary>
+    Public Sub UpdateSaldoAkunDelta(ByVal kodeAkun As String,
+                                    ByVal deltaDebet As Decimal,
+                                    ByVal deltaKredit As Decimal,
+                                    ByVal transaction As MySqlTransaction)
+        If String.IsNullOrEmpty(kodeAkun) Then Exit Sub
+        Using cmd As New MySqlCommand("CALL sp_hlp_saldo_akun_delta(@kode, @d, @k)", conn, transaction)
+            cmd.Parameters.AddWithValue("@kode", kodeAkun)
+            cmd.Parameters.AddWithValue("@d", deltaDebet)
+            cmd.Parameters.AddWithValue("@k", deltaKredit)
+            cmd.ExecuteNonQuery()
+        End Using
+    End Sub
+
+    ''' <summary>
+    ''' Baca jurnal faktur yang baru di-INSERT, hitung delta per akun,
+    ''' lalu update saldo semua akun terlibat dengan sp_hlp_saldo_akun_delta.
+    ''' Pengganti loop UpdateSaldoAkun — tidak scan seluruh JurnalUmum.
+    ''' </summary>
+    Public Sub UpdateSaldoAkunDeltaDariFaktur(ByVal noFaktur As String,
+                                               ByVal transaction As MySqlTransaction)
+        If String.IsNullOrEmpty(noFaktur) Then Exit Sub
+
+        ' Baca delta dari jurnal faktur ini saja (N baris kecil, bukan 600k+)
+        Dim deltaDebet As New Dictionary(Of String, Decimal)(StringComparer.OrdinalIgnoreCase)
+        Dim deltaKredit As New Dictionary(Of String, Decimal)(StringComparer.OrdinalIgnoreCase)
+
+        Using cmd As New MySqlCommand(
+            "SELECT NOMOR_AKUN_D, NOMOR_AKUN_K, NOMINAL FROM JurnalUmum WHERE NO_TRANSAKSI = @no",
+            conn, transaction)
+            cmd.Parameters.AddWithValue("@no", noFaktur)
+            Using rd = cmd.ExecuteReader()
+                While rd.Read()
+                    Dim nominal As Decimal = If(IsDBNull(rd("NOMINAL")), 0D, Convert.ToDecimal(rd("NOMINAL")))
+                    Dim kD As String = rd("NOMOR_AKUN_D").ToString().Trim()
+                    Dim kK As String = rd("NOMOR_AKUN_K").ToString().Trim()
+                    If kD <> "" Then
+                        If deltaDebet.ContainsKey(kD) Then deltaDebet(kD) += nominal Else deltaDebet(kD) = nominal
+                        If Not deltaKredit.ContainsKey(kD) Then deltaKredit(kD) = 0D
+                    End If
+                    If kK <> "" Then
+                        If deltaKredit.ContainsKey(kK) Then deltaKredit(kK) += nominal Else deltaKredit(kK) = nominal
+                        If Not deltaDebet.ContainsKey(kK) Then deltaDebet(kK) = 0D
+                    End If
+                End While
+            End Using
+        End Using
+
+        ' Update saldo per akun dengan delta — tidak scan JurnalUmum
+        Dim semuaAkun As New HashSet(Of String)(deltaDebet.Keys, StringComparer.OrdinalIgnoreCase)
+        For Each k In deltaKredit.Keys
+            semuaAkun.Add(k)
+        Next
+
+        For Each kode As String In semuaAkun
+            Dim d As Decimal = If(deltaDebet.ContainsKey(kode), deltaDebet(kode), 0D)
+            Dim k As Decimal = If(deltaKredit.ContainsKey(kode), deltaKredit(kode), 0D)
+            UpdateSaldoAkunDelta(kode, d, k, transaction)
+        Next
+    End Sub
+
+    ''' <summary>
+    ''' Reversal saldo akun dari jurnal faktur yang akan dihapus.
+    ''' Baca jurnal faktur lama, hitung delta negatif, update saldo.
+    ''' Dipanggil SEBELUM DELETE JurnalUmum.
+    ''' </summary>
+    Public Sub ReversalSaldoAkunDariFaktur(ByVal noFaktur As String,
+                                            ByVal transaction As MySqlTransaction)
+        If String.IsNullOrEmpty(noFaktur) Then Exit Sub
+
+        Dim deltaDebet As New Dictionary(Of String, Decimal)(StringComparer.OrdinalIgnoreCase)
+        Dim deltaKredit As New Dictionary(Of String, Decimal)(StringComparer.OrdinalIgnoreCase)
+
+        Using cmd As New MySqlCommand(
+            "SELECT NOMOR_AKUN_D, NOMOR_AKUN_K, NOMINAL FROM JurnalUmum WHERE NO_TRANSAKSI = @no",
+            conn, transaction)
+            cmd.Parameters.AddWithValue("@no", noFaktur)
+            Using rd = cmd.ExecuteReader()
+                While rd.Read()
+                    Dim nominal As Decimal = If(IsDBNull(rd("NOMINAL")), 0D, Convert.ToDecimal(rd("NOMINAL")))
+                    Dim kD As String = rd("NOMOR_AKUN_D").ToString().Trim()
+                    Dim kK As String = rd("NOMOR_AKUN_K").ToString().Trim()
+                    If kD <> "" Then
+                        If deltaDebet.ContainsKey(kD) Then deltaDebet(kD) += nominal Else deltaDebet(kD) = nominal
+                        If Not deltaKredit.ContainsKey(kD) Then deltaKredit(kD) = 0D
+                    End If
+                    If kK <> "" Then
+                        If deltaKredit.ContainsKey(kK) Then deltaKredit(kK) += nominal Else deltaKredit(kK) = nominal
+                        If Not deltaDebet.ContainsKey(kK) Then deltaDebet(kK) = 0D
+                    End If
+                End While
+            End Using
+        End Using
+
+        ' Delta negatif = reversal
+        Dim semuaAkun As New HashSet(Of String)(deltaDebet.Keys, StringComparer.OrdinalIgnoreCase)
+        For Each k In deltaKredit.Keys
+            semuaAkun.Add(k)
+        Next
+
+        For Each kode As String In semuaAkun
+            Dim d As Decimal = If(deltaDebet.ContainsKey(kode), deltaDebet(kode), 0D)
+            Dim k As Decimal = If(deltaKredit.ContainsKey(kode), deltaKredit(kode), 0D)
+            UpdateSaldoAkunDelta(kode, -d, -k, transaction)
+        Next
+    End Sub
+
 #End Region
 
 #Region "Jurnal Audit"

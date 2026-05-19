@@ -1625,6 +1625,40 @@ Public Class TambahBarang
             CmbSatUmumKecil.DroppedDown = True
             CmbSatUmumKecil.Focus()
             isValid = False
+        Else
+            ' Validasi: jika satuan diisi maka isi tidak boleh 0 atau kosong
+            Dim isiUmumKecil As Integer = ModuleAngka.ParseInteger(TxtIsiUmumKecil.Text)
+            Dim isiUmumSedang As Integer = ModuleAngka.ParseInteger(TxtIsiUmumSedang.Text)
+            Dim isiUmumBesar As Integer = ModuleAngka.ParseInteger(TxtIsiUmumBesar.Text)
+            Dim isiPartaiKecil As Integer = ModuleAngka.ParseInteger(TxtIsiPartaiKecil.Text)
+            Dim isiPartaiSedang As Integer = ModuleAngka.ParseInteger(TxtIsiPartaiSedang.Text)
+            Dim isiPartaiBesar As Integer = ModuleAngka.ParseInteger(TxtIsiPartaiBesar.Text)
+
+            If Not String.IsNullOrWhiteSpace(CmbSatUmumKecil.Text) AndAlso isiUmumKecil < 1 Then
+                MessageBox.Show("Isi satuan Umum Kecil tidak boleh 0 atau kosong ... !!!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                TxtIsiUmumKecil.Focus() : TxtIsiUmumKecil.SelectAll()
+                isValid = False
+            ElseIf Not String.IsNullOrWhiteSpace(CmbSatUmumSedang.Text) AndAlso isiUmumSedang < 1 Then
+                MessageBox.Show("Isi satuan Umum Sedang tidak boleh 0 atau kosong ... !!!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                TxtIsiUmumSedang.Focus() : TxtIsiUmumSedang.SelectAll()
+                isValid = False
+            ElseIf Not String.IsNullOrWhiteSpace(CmbSatUmumBesar.Text) AndAlso isiUmumBesar < 1 Then
+                MessageBox.Show("Isi satuan Umum Besar tidak boleh 0 atau kosong ... !!!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                TxtIsiUmumBesar.Focus() : TxtIsiUmumBesar.SelectAll()
+                isValid = False
+            ElseIf Not String.IsNullOrWhiteSpace(CmbSatPartaiKecil.Text) AndAlso isiPartaiKecil < 1 Then
+                MessageBox.Show("Isi satuan Partai Kecil tidak boleh 0 atau kosong ... !!!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                TxtIsiPartaiKecil.Focus() : TxtIsiPartaiKecil.SelectAll()
+                isValid = False
+            ElseIf Not String.IsNullOrWhiteSpace(CmbSatPartaiSedang.Text) AndAlso isiPartaiSedang < 1 Then
+                MessageBox.Show("Isi satuan Partai Sedang tidak boleh 0 atau kosong ... !!!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                TxtIsiPartaiSedang.Focus() : TxtIsiPartaiSedang.SelectAll()
+                isValid = False
+            ElseIf Not String.IsNullOrWhiteSpace(CmbSatPartaiBesar.Text) AndAlso isiPartaiBesar < 1 Then
+                MessageBox.Show("Isi satuan Partai Besar tidak boleh 0 atau kosong ... !!!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                TxtIsiPartaiBesar.Focus() : TxtIsiPartaiBesar.SelectAll()
+                isValid = False
+            End If
         End If
 
         Return isValid
@@ -1696,9 +1730,9 @@ Public Class TambahBarang
                         cmd.Parameters.AddWithValue("@SATUAN_UMUM_SEDANG", CmbSatUmumSedang.Text)
                         cmd.Parameters.AddWithValue("@SATUAN_UMUM_BESAR", CmbSatUmumBesar.Text)
 
-                        cmd.Parameters.AddWithValue("@ISI_UMUM_KECIL", ModuleAngka.ParseInteger(TxtIsiUmumKecil.Text))
-                        cmd.Parameters.AddWithValue("@ISI_UMUM_SEDANG", ModuleAngka.ParseInteger(TxtIsiUmumSedang.Text))
-                        cmd.Parameters.AddWithValue("@ISI_UMUM_BESAR", ModuleAngka.ParseInteger(TxtIsiUmumBesar.Text))
+                        cmd.Parameters.AddWithValue("@ISI_UMUM_KECIL", Math.Max(1, ModuleAngka.ParseInteger(TxtIsiUmumKecil.Text)))
+                        cmd.Parameters.AddWithValue("@ISI_UMUM_SEDANG", Math.Max(1, ModuleAngka.ParseInteger(TxtIsiUmumSedang.Text)))
+                        cmd.Parameters.AddWithValue("@ISI_UMUM_BESAR", Math.Max(1, ModuleAngka.ParseInteger(TxtIsiUmumBesar.Text)))
 
                         cmd.Parameters.AddWithValue("@HARGA_JUAL_UMUM_KECIL", ModuleAngka.ParseDecimal(TxtHArgaJUalUmumKecil.Text))
                         cmd.Parameters.AddWithValue("@HARGA_JUAL_UMUM_SEDANG", ModuleAngka.ParseDecimal(TxtHArgaJUalUmumSedang.Text))
@@ -1708,9 +1742,9 @@ Public Class TambahBarang
                         cmd.Parameters.AddWithValue("@SATUAN_PARTAI_SEDANG", CmbSatPartaiSedang.Text)
                         cmd.Parameters.AddWithValue("@SATUAN_PARTAI_BESAR", CmbSatPartaiBesar.Text)
 
-                        cmd.Parameters.AddWithValue("@ISI_PARTAI_KECIL", ModuleAngka.ParseInteger(TxtIsiPartaiKecil.Text))
-                        cmd.Parameters.AddWithValue("@ISI_PARTAI_SEDANG", ModuleAngka.ParseInteger(TxtIsiPartaiSedang.Text))
-                        cmd.Parameters.AddWithValue("@ISI_PARTAI_BESAR", ModuleAngka.ParseInteger(TxtIsiPartaiBesar.Text))
+                        cmd.Parameters.AddWithValue("@ISI_PARTAI_KECIL", Math.Max(1, ModuleAngka.ParseInteger(TxtIsiPartaiKecil.Text)))
+                        cmd.Parameters.AddWithValue("@ISI_PARTAI_SEDANG", Math.Max(1, ModuleAngka.ParseInteger(TxtIsiPartaiSedang.Text)))
+                        cmd.Parameters.AddWithValue("@ISI_PARTAI_BESAR", Math.Max(1, ModuleAngka.ParseInteger(TxtIsiPartaiBesar.Text)))
 
                         cmd.Parameters.AddWithValue("@HARGA_JUAL_PARTAI_KECIL", ModuleAngka.ParseDecimal(TxtHArgaJualPartaikecil.Text))
                         cmd.Parameters.AddWithValue("@HARGA_JUAL_PARTAI_SEDANG", ModuleAngka.ParseDecimal(TxtHArgaJualPartaiSedang.Text))
@@ -1773,8 +1807,7 @@ Public Class TambahBarang
 
                     ' Update saldo akun jurnal secara realtime (hanya jika ada nilai barang)
                     If TotalNilaiBarang <> 0 Then
-                        UpdateSaldoAkun(KODE_REK_BARANG, transaction)
-                        UpdateSaldoAkun(LAWAN_KODE_REK_BARANG, transaction)
+                        UpdateSaldoAkunDeltaDariFaktur(noTransaksi, transaction)
                     End If
 
                     ' Recalculate stok barang
@@ -1951,18 +1984,18 @@ Public Class TambahBarang
                     cmd.Parameters.AddWithValue("@SATUAN_UMUM_KECIL", CmbSatUmumKecil.Text)
                     cmd.Parameters.AddWithValue("@SATUAN_UMUM_SEDANG", CmbSatUmumSedang.Text)
                     cmd.Parameters.AddWithValue("@SATUAN_UMUM_BESAR", CmbSatUmumBesar.Text)
-                    cmd.Parameters.AddWithValue("@ISI_UMUM_KECIL", ModuleAngka.ParseInteger(TxtIsiUmumKecil.Text))
-                    cmd.Parameters.AddWithValue("@ISI_UMUM_SEDANG", ModuleAngka.ParseInteger(TxtIsiUmumSedang.Text))
-                    cmd.Parameters.AddWithValue("@ISI_UMUM_BESAR", ModuleAngka.ParseInteger(TxtIsiUmumBesar.Text))
+                    cmd.Parameters.AddWithValue("@ISI_UMUM_KECIL", Math.Max(1, ModuleAngka.ParseInteger(TxtIsiUmumKecil.Text)))
+                    cmd.Parameters.AddWithValue("@ISI_UMUM_SEDANG", Math.Max(1, ModuleAngka.ParseInteger(TxtIsiUmumSedang.Text)))
+                    cmd.Parameters.AddWithValue("@ISI_UMUM_BESAR", Math.Max(1, ModuleAngka.ParseInteger(TxtIsiUmumBesar.Text)))
                     cmd.Parameters.AddWithValue("@HARGA_JUAL_UMUM_KECIL", ModuleAngka.ParseDecimal(TxtHArgaJUalUmumKecil.Text))
                     cmd.Parameters.AddWithValue("@HARGA_JUAL_UMUM_SEDANG", ModuleAngka.ParseDecimal(TxtHArgaJUalUmumSedang.Text))
                     cmd.Parameters.AddWithValue("@HARGA_JUAL_UMUM_BESAR", ModuleAngka.ParseDecimal(TxtHArgaJUalUmumBesar.Text))
                     cmd.Parameters.AddWithValue("@SATUAN_PARTAI_KECIL", CmbSatPartaiKecil.Text)
                     cmd.Parameters.AddWithValue("@SATUAN_PARTAI_SEDANG", CmbSatPartaiSedang.Text)
                     cmd.Parameters.AddWithValue("@SATUAN_PARTAI_BESAR", CmbSatPartaiBesar.Text)
-                    cmd.Parameters.AddWithValue("@ISI_PARTAI_KECIL", ModuleAngka.ParseInteger(TxtIsiPartaiKecil.Text))
-                    cmd.Parameters.AddWithValue("@ISI_PARTAI_SEDANG", ModuleAngka.ParseInteger(TxtIsiPartaiSedang.Text))
-                    cmd.Parameters.AddWithValue("@ISI_PARTAI_BESAR", ModuleAngka.ParseInteger(TxtIsiPartaiBesar.Text))
+                    cmd.Parameters.AddWithValue("@ISI_PARTAI_KECIL", Math.Max(1, ModuleAngka.ParseInteger(TxtIsiPartaiKecil.Text)))
+                    cmd.Parameters.AddWithValue("@ISI_PARTAI_SEDANG", Math.Max(1, ModuleAngka.ParseInteger(TxtIsiPartaiSedang.Text)))
+                    cmd.Parameters.AddWithValue("@ISI_PARTAI_BESAR", Math.Max(1, ModuleAngka.ParseInteger(TxtIsiPartaiBesar.Text)))
                     cmd.Parameters.AddWithValue("@HARGA_JUAL_PARTAI_KECIL", ModuleAngka.ParseDecimal(TxtHArgaJualPartaikecil.Text))
                     cmd.Parameters.AddWithValue("@HARGA_JUAL_PARTAI_SEDANG", ModuleAngka.ParseDecimal(TxtHArgaJualPartaiSedang.Text))
                     cmd.Parameters.AddWithValue("@HARGA_JUAL_PARTAI_BESAR", ModuleAngka.ParseDecimal(TxtHArgaJualPartaiBesar.Text))
@@ -2013,8 +2046,7 @@ Public Class TambahBarang
 
                 ' Update saldo akun jurnal secara realtime (hanya jika ada selisih nilai)
                 If SelisihNilaiBarang <> 0 Then
-                    UpdateSaldoAkun(KODE_REK_BARANG, transaction)
-                    UpdateSaldoAkun(LAWAN_KODE_REK_BARANG, transaction)
+                    UpdateSaldoAkunDeltaDariFaktur(noTransaksi, transaction)
                 End If
 
                 ' Recalculate stok barang
@@ -2089,8 +2121,9 @@ Public Class TambahBarang
                     cmd.Parameters.AddWithValue("@SATUAN_UMUM_BESAR", CmbSatUmumBesar.Text)
 
                     cmd.Parameters.AddWithValue("@ISI_UMUM_KECIL", ModuleAngka.ParseInteger(TxtIsiUmumKecil.Text))
-                    cmd.Parameters.AddWithValue("@ISI_UMUM_SEDANG", ModuleAngka.ParseInteger(TxtIsiUmumSedang.Text))
-                    cmd.Parameters.AddWithValue("@ISI_UMUM_BESAR", ModuleAngka.ParseInteger(TxtIsiUmumBesar.Text))
+                    cmd.Parameters.AddWithValue("@ISI_UMUM_KECIL", Math.Max(1, ModuleAngka.ParseInteger(TxtIsiUmumKecil.Text)))
+                    cmd.Parameters.AddWithValue("@ISI_UMUM_SEDANG", Math.Max(1, ModuleAngka.ParseInteger(TxtIsiUmumSedang.Text)))
+                    cmd.Parameters.AddWithValue("@ISI_UMUM_BESAR", Math.Max(1, ModuleAngka.ParseInteger(TxtIsiUmumBesar.Text)))
 
                     cmd.Parameters.AddWithValue("@HARGA_JUAL_UMUM_KECIL", ModuleAngka.ParseDecimal(TxtHArgaJUalUmumKecil.Text))
                     cmd.Parameters.AddWithValue("@HARGA_JUAL_UMUM_SEDANG", ModuleAngka.ParseDecimal(TxtHArgaJUalUmumSedang.Text))
@@ -2100,9 +2133,9 @@ Public Class TambahBarang
                     cmd.Parameters.AddWithValue("@SATUAN_PARTAI_SEDANG", CmbSatPartaiSedang.Text)
                     cmd.Parameters.AddWithValue("@SATUAN_PARTAI_BESAR", CmbSatPartaiBesar.Text)
 
-                    cmd.Parameters.AddWithValue("@ISI_PARTAI_KECIL", ModuleAngka.ParseInteger(TxtIsiPartaiKecil.Text))
-                    cmd.Parameters.AddWithValue("@ISI_PARTAI_SEDANG", ModuleAngka.ParseInteger(TxtIsiPartaiSedang.Text))
-                    cmd.Parameters.AddWithValue("@ISI_PARTAI_BESAR", ModuleAngka.ParseInteger(TxtIsiPartaiBesar.Text))
+                    cmd.Parameters.AddWithValue("@ISI_PARTAI_KECIL", Math.Max(1, ModuleAngka.ParseInteger(TxtIsiPartaiKecil.Text)))
+                    cmd.Parameters.AddWithValue("@ISI_PARTAI_SEDANG", Math.Max(1, ModuleAngka.ParseInteger(TxtIsiPartaiSedang.Text)))
+                    cmd.Parameters.AddWithValue("@ISI_PARTAI_BESAR", Math.Max(1, ModuleAngka.ParseInteger(TxtIsiPartaiBesar.Text)))
 
                     cmd.Parameters.AddWithValue("@HARGA_JUAL_PARTAI_KECIL", ModuleAngka.ParseDecimal(TxtHArgaJualPartaikecil.Text))
                     cmd.Parameters.AddWithValue("@HARGA_JUAL_PARTAI_SEDANG", ModuleAngka.ParseDecimal(TxtHArgaJualPartaiSedang.Text))

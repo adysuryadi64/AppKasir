@@ -1000,24 +1000,8 @@ Public Class FormReturPenjualan
 
                 AuditStokTransaksi(LblNoNotaRetur.Text, "Retur Penjualan", auditDGV, auditHistory, auditDetail, auditStokDelta, transaction)
 
-
-                Dim akunTerlibat As New HashSet(Of String)(StringComparer.OrdinalIgnoreCase)
-                Using cmdAkun As New MySqlCommand(
-                    "SELECT DISTINCT NOMOR_AKUN_D FROM JurnalUmum WHERE NO_TRANSAKSI = @fk AND NOMOR_AKUN_D <> '' " &
-                    "UNION " &
-                    "SELECT DISTINCT NOMOR_AKUN_K FROM JurnalUmum WHERE NO_TRANSAKSI = @fk AND NOMOR_AKUN_K <> ''",
-                    conn, transaction)
-                    cmdAkun.Parameters.AddWithValue("@fk", LblNoNotaRetur.Text)
-                    Using rd = cmdAkun.ExecuteReader()
-                        While rd.Read()
-                            Dim kode As String = rd(0).ToString().Trim()
-                            If kode <> "" Then akunTerlibat.Add(kode)
-                        End While
-                    End Using
-                End Using
-                For Each kodeAkun As String In akunTerlibat
-                    UpdateSaldoAkun(kodeAkun, transaction)
-                Next
+                ' Update saldo akun — incremental delta
+                UpdateSaldoAkunDeltaDariFaktur(LblNoNotaRetur.Text, transaction)
 
                 ' Commit transaksi jika berhasil
                 transaction.Commit()

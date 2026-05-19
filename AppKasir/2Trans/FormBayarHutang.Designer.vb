@@ -26,7 +26,7 @@ Partial Class FormBayarHutang
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(FormBayarHutang))
         Dim DataGridViewCellStyle2 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
         Dim DataGridViewCellStyle3 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
-        Me.LblUtama = New System.Windows.Forms.Label()
+        Me.LblHeader = New System.Windows.Forms.Label()
         Me.DgvData = New System.Windows.Forms.DataGridView()
         Me.Check = New System.Windows.Forms.DataGridViewCheckBoxColumn()
         Me.ID_PEMBELIAN = New System.Windows.Forms.DataGridViewTextBoxColumn()
@@ -60,29 +60,29 @@ Partial Class FormBayarHutang
         Me.TxtRekening = New System.Windows.Forms.Label()
         Me.CmbRekening = New System.Windows.Forms.ComboBox()
         Me.Label2 = New System.Windows.Forms.Label()
-        Me.PanelDatagridview = New System.Windows.Forms.Panel()
+        Me.PanelGrid = New System.Windows.Forms.Panel()
         Me.LblDetail = New System.Windows.Forms.Label()
         Me.BtnHide = New System.Windows.Forms.Button()
         Me.DgvDetail = New System.Windows.Forms.DataGridView()
         Me.Label1 = New System.Windows.Forms.Label()
         Me.BtnSettingPrinter = New System.Windows.Forms.Button()
         CType(Me.DgvData, System.ComponentModel.ISupportInitialize).BeginInit()
-        Me.PanelDatagridview.SuspendLayout()
+        Me.PanelGrid.SuspendLayout()
         CType(Me.DgvDetail, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
-        'LblUtama
+        'LblHeader
         '
-        Me.LblUtama.BackColor = System.Drawing.Color.FromArgb(CType(CType(22, Byte), Integer), CType(CType(163, Byte), Integer), CType(CType(74, Byte), Integer))
-        Me.LblUtama.Dock = System.Windows.Forms.DockStyle.Top
-        Me.LblUtama.Font = New System.Drawing.Font("Century Gothic", 21.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.LblUtama.ForeColor = System.Drawing.Color.PaleGreen
-        Me.LblUtama.Location = New System.Drawing.Point(0, 0)
-        Me.LblUtama.Name = "LblUtama"
-        Me.LblUtama.Size = New System.Drawing.Size(1135, 36)
-        Me.LblUtama.TabIndex = 75
-        Me.LblUtama.Text = "BAYAR HUTANG PEMBELIAN"
-        Me.LblUtama.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
+        Me.LblHeader.BackColor = System.Drawing.Color.FromArgb(CType(CType(22, Byte), Integer), CType(CType(163, Byte), Integer), CType(CType(74, Byte), Integer))
+        Me.LblHeader.Dock = System.Windows.Forms.DockStyle.Top
+        Me.LblHeader.Font = New System.Drawing.Font("Century Gothic", 21.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.LblHeader.ForeColor = System.Drawing.Color.PaleGreen
+        Me.LblHeader.Location = New System.Drawing.Point(0, 0)
+        Me.LblHeader.Name = "LblHeader"
+        Me.LblHeader.Size = New System.Drawing.Size(1135, 36)
+        Me.LblHeader.TabIndex = 75
+        Me.LblHeader.Text = "BAYAR HUTANG PEMBELIAN"
+        Me.LblHeader.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
         '
         'DgvData
         '
@@ -423,17 +423,17 @@ Partial Class FormBayarHutang
         Me.Label2.TabIndex = 108
         Me.Label2.Text = "Sumber dana :"
         '
-        'PanelDatagridview
+        'PanelGrid
         '
-        Me.PanelDatagridview.Anchor = System.Windows.Forms.AnchorStyles.Top
-        Me.PanelDatagridview.BackColor = System.Drawing.Color.FromArgb(CType(CType(248, Byte), Integer), CType(CType(250, Byte), Integer), CType(CType(252, Byte), Integer))
-        Me.PanelDatagridview.Controls.Add(Me.LblDetail)
-        Me.PanelDatagridview.Controls.Add(Me.BtnHide)
-        Me.PanelDatagridview.Controls.Add(Me.DgvDetail)
-        Me.PanelDatagridview.Location = New System.Drawing.Point(191, 189)
-        Me.PanelDatagridview.Name = "PanelDatagridview"
-        Me.PanelDatagridview.Size = New System.Drawing.Size(753, 361)
-        Me.PanelDatagridview.TabIndex = 109
+        Me.PanelGrid.Anchor = System.Windows.Forms.AnchorStyles.Top
+        Me.PanelGrid.BackColor = System.Drawing.Color.FromArgb(CType(CType(248, Byte), Integer), CType(CType(250, Byte), Integer), CType(CType(252, Byte), Integer))
+        Me.PanelGrid.Controls.Add(Me.LblDetail)
+        Me.PanelGrid.Controls.Add(Me.BtnHide)
+        Me.PanelGrid.Controls.Add(Me.DgvDetail)
+        Me.PanelGrid.Location = New System.Drawing.Point(191, 189)
+        Me.PanelGrid.Name = "PanelGrid"
+        Me.PanelGrid.Size = New System.Drawing.Size(753, 361)
+        Me.PanelGrid.TabIndex = 109
         '
         'LblDetail
         '
@@ -530,7 +530,7 @@ Partial Class FormBayarHutang
         Me.ClientSize = New System.Drawing.Size(1135, 562)
         Me.Controls.Add(Me.BtnSettingPrinter)
         Me.Controls.Add(Me.Label1)
-        Me.Controls.Add(Me.PanelDatagridview)
+        Me.Controls.Add(Me.PanelGrid)
         Me.Controls.Add(Me.Label2)
         Me.Controls.Add(Me.TxtRekening)
         Me.Controls.Add(Me.CmbRekening)
@@ -552,7 +552,7 @@ Partial Class FormBayarHutang
         Me.Controls.Add(Me.Label12)
         Me.Controls.Add(Me.CmbSupliyer)
         Me.Controls.Add(Me.DgvData)
-        Me.Controls.Add(Me.LblUtama)
+        Me.Controls.Add(Me.LblHeader)
         Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None
         Me.KeyPreview = True
         Me.Name = "FormBayarHutang"
@@ -561,15 +561,15 @@ Partial Class FormBayarHutang
         Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen
         Me.Text = "FormBayarHutang"
         CType(Me.DgvData, System.ComponentModel.ISupportInitialize).EndInit()
-        Me.PanelDatagridview.ResumeLayout(False)
-        Me.PanelDatagridview.PerformLayout()
+        Me.PanelGrid.ResumeLayout(False)
+        Me.PanelGrid.PerformLayout()
         CType(Me.DgvDetail, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ResumeLayout(False)
         Me.PerformLayout()
 
     End Sub
 
-    Friend WithEvents LblUtama As Label
+    Friend WithEvents LblHeader As Label
     Friend WithEvents DgvData As DataGridView
     Friend WithEvents Label12 As Label
     Friend WithEvents CmbSupliyer As ComboBox
@@ -591,7 +591,7 @@ Partial Class FormBayarHutang
     Friend WithEvents TxtRekening As System.Windows.Forms.Label
     Friend WithEvents CmbRekening As System.Windows.Forms.ComboBox
     Friend WithEvents Label2 As System.Windows.Forms.Label
-    Friend WithEvents PanelDatagridview As System.Windows.Forms.Panel
+    Friend WithEvents PanelGrid As System.Windows.Forms.Panel
     Friend WithEvents DgvDetail As System.Windows.Forms.DataGridView
     Friend WithEvents LblDetail As System.Windows.Forms.Label
     Friend WithEvents BtnHide As System.Windows.Forms.Button

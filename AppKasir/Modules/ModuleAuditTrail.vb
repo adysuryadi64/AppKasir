@@ -1,5 +1,3 @@
-Imports MySql.Data.MySqlClient
-
 ' ================================================================
 ' ModuleAuditTrail — Pencatatan audit trail edit & hapus transaksi
 ' dan data master AppKasir.
@@ -171,10 +169,10 @@ Module ModuleAuditTrail
                                 "FROM retur_penjualan_detail WHERE ID_RETUR_PENJUALAN = @fk"
                 Case "Retur Pembelian"
                     sqlHeader = "SELECT ID_RETUR_PEMBELIAN, TGL_RETUR_BELI, TOTAL_RUPIAH, " &
-                                "NAMA_SUPPLIER, '' AS STATUS, ID_USER " &
-                                "FROM retur_pembelian WHERE ID_RETUR_PEMBELIAN = @fk LIMIT 1"
-                    sqlDetail = "SELECT NAMA_BARANG, QTY, SATUAN, HARGA_BELI, TOTAL_HARGA " &
-                                "FROM retur_pembelian_detail WHERE ID_RETUR_PEMBELIAN = @fk"
+                "NAMA_SUPPLIER, '' AS STATUS, ID_USER " &
+                "FROM retur_pembelian WHERE ID_RETUR_PEMBELIAN = @fk LIMIT 1"
+                    sqlDetail = "SELECT NAMA_BARANG, QTY, SATUAN, HARGA_BELI, TOTAL " &
+                "FROM retur_pembelian_detail WHERE ID_RETUR_PEMBELIAN = @fk"
                 Case "Bayar Hutang"
                     sqlHeader = "SELECT NOBAYARHUTANG, TGLPEMBAYARAN, NOMINALBAYAR, " &
                                 "NAMASUPLIYER, '' AS STATUS, ID_USER_BAYAR " &
@@ -194,12 +192,12 @@ Module ModuleAuditTrail
                 cmd.Parameters.AddWithValue("@fk", noFaktur)
                 Using rd As MySqlDataReader = cmd.ExecuteReader()
                     If rd.Read() Then
-                        Dim fk  As String  = ModuleAngka.SafeGetValue(Of String)(rd, rd.GetName(0), "")
-                        Dim tgl As String  = If(rd.IsDBNull(1), "", Convert.ToDateTime(rd(1)).ToString("yyyy-MM-dd HH:mm"))
+                        Dim fk As String = ModuleAngka.SafeGetValue(Of String)(rd, rd.GetName(0), "")
+                        Dim tgl As String = If(rd.IsDBNull(1), "", Convert.ToDateTime(rd(1)).ToString("yyyy-MM-dd HH:mm"))
                         Dim tot As Decimal = ModuleAngka.ParseDecimal(rd(2))
-                        Dim pel As String  = ModuleAngka.SafeGetValue(Of String)(rd, rd.GetName(3), "")
-                        Dim sts As String  = ModuleAngka.SafeGetValue(Of String)(rd, rd.GetName(4), "")
-                        Dim usr As String  = ModuleAngka.SafeGetValue(Of String)(rd, rd.GetName(5), "")
+                        Dim pel As String = ModuleAngka.SafeGetValue(Of String)(rd, rd.GetName(3), "")
+                        Dim sts As String = ModuleAngka.SafeGetValue(Of String)(rd, rd.GetName(4), "")
+                        Dim usr As String = ModuleAngka.SafeGetValue(Of String)(rd, rd.GetName(5), "")
 
                         sb.AppendLine(fk & " | " & tgl & " | Rp " &
                                       ModuleAngka.FormatRupiah(tot) & " | " &
@@ -218,9 +216,9 @@ Module ModuleAuditTrail
                         Dim no As Integer = 0
                         While rd.Read()
                             no += 1
-                            Dim nama  As String  = ModuleAngka.SafeGetValue(Of String)(rd, rd.GetName(0), "")
-                            Dim qty   As Decimal = ModuleAngka.ParseDecimal(rd(1))
-                            Dim sat   As String  = ModuleAngka.SafeGetValue(Of String)(rd, rd.GetName(2), "")
+                            Dim nama As String = ModuleAngka.SafeGetValue(Of String)(rd, rd.GetName(0), "")
+                            Dim qty As Decimal = ModuleAngka.ParseDecimal(rd(1))
+                            Dim sat As String = ModuleAngka.SafeGetValue(Of String)(rd, rd.GetName(2), "")
                             Dim harga As Decimal = ModuleAngka.ParseDecimal(rd(3))
                             Dim total As Decimal = ModuleAngka.ParseDecimal(rd(4))
 
@@ -254,10 +252,10 @@ Module ModuleAuditTrail
 
         Using cmd As New MySqlCommand(sql, conn, trans)
             cmd.Parameters.AddWithValue("@waktu", DateTime.Now)
-            cmd.Parameters.AddWithValue("@aksi",  jenisAksi)
+            cmd.Parameters.AddWithValue("@aksi", jenisAksi)
             cmd.Parameters.AddWithValue("@trans", jenisTransaksi)
-            cmd.Parameters.AddWithValue("@id",    identifier)
-            cmd.Parameters.AddWithValue("@user",  FormUtama.StatusNamaUser.Text)
+            cmd.Parameters.AddWithValue("@id", identifier)
+            cmd.Parameters.AddWithValue("@user", FormUtama.StatusNamaUser.Text)
             cmd.Parameters.AddWithValue("@lok",
                 If(String.IsNullOrEmpty(FormUtama.StatusLokasi.Text),
                    CObj(DBNull.Value), CObj(FormUtama.StatusLokasi.Text)))
@@ -291,7 +289,7 @@ Module ModuleAuditTrail
         Try
             Using cmd As New MySqlCommand(
                 "INSERT INTO History (TANGGAL, Aksi) VALUES (@tgl, @aksi)", conn)
-                cmd.Parameters.AddWithValue("@tgl",  DateTime.Now)
+                cmd.Parameters.AddWithValue("@tgl", DateTime.Now)
                 Dim pesanPendek As String = If(pesan.Length > 500, pesan.Substring(0, 500), pesan)
                 cmd.Parameters.AddWithValue("@aksi",
                     "[AUDIT_ERROR] " & FormUtama.StatusNamaUser.Text & " @ " &

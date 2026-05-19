@@ -1223,7 +1223,7 @@ Public Class FormUtama
             Case "Stok Opname"
                 GBTransaksi.Visible = False
                 With FormStokOpname
-                    .LblUtama.Text = "TAMBAH STOK OPNAME"
+                    .LblHeader.Text = "TAMBAH STOK OPNAME"
                     .MdiParent = Me
                     .BringToFront()
                     .Dock = DockStyle.Fill
@@ -1245,10 +1245,10 @@ Public Class FormUtama
                 With FormTransferBarang
                     If StatusLokasi.Text = "TOKO" Then
                         .LblLokasiBarang.Text = "TOKO"
-                        .LblUtama.Text = "TRANSFER STOK DARI TOKO KE GUDANG"
+                        .LblHeader.Text = "TRANSFER STOK DARI TOKO KE GUDANG"
                     ElseIf StatusLokasi.Text = "GUDANG" Then
                         .LblLokasiBarang.Text = "GUDANG"
-                        .LblUtama.Text = "TRANSFER STOK DARI GUDANG KE TOKO"
+                        .LblHeader.Text = "TRANSFER STOK DARI GUDANG KE TOKO"
                     End If
                     .LblJenisTrans.Text = "TambahTransfer"
                     .DgvData.Rows.Clear()
@@ -1406,7 +1406,7 @@ Public Class FormUtama
             Case "Stok Opname"
                 GBTransaksi.Visible = False
                 With FormStokOpname
-                    .LblUtama.Text = "EDIT STOK OPNAME"
+                    .LblHeader.Text = "EDIT STOK OPNAME"
                     .TxtFaktur.Text = DGVTransaksi.CurrentRow.Cells(0).Value.ToString()
                     .TxtQtyUntukEdit.Text = DGVTransaksi.CurrentRow.Cells(8).Value.ToString()
                     .Panel3.Enabled = False
@@ -1432,10 +1432,10 @@ Public Class FormUtama
                 With FormTransferBarang
                     If TxtLokasiUntukEdit.Text = "TOKO" Then
                         .LblLokasiBarang.Text = "TOKO"
-                        .LblUtama.Text = "EDIT TRANSFER STOK DARI TOKO KE GUDANG"
+                        .LblHeader.Text = "EDIT TRANSFER STOK DARI TOKO KE GUDANG"
                     ElseIf TxtLokasiUntukEdit.Text = "GUDANG" Then
                         .LblLokasiBarang.Text = "GUDANG"
-                        .LblUtama.Text = "EDIT TRANSFER STOK DARI GUDANG KE TOKO"
+                        .LblHeader.Text = "EDIT TRANSFER STOK DARI GUDANG KE TOKO"
                     End If
                     .LblJenisTrans.Text = "EditTransfer"
                     .TxtFaktur.Text = DGVTransaksi.CurrentRow.Cells(0).Value.ToString()

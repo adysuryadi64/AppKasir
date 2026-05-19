@@ -393,19 +393,14 @@ Public Class FormKeuangan
             ' END: Audit Trail - Hapus Jurnal Keuangan
             ' ========================================
 
+            ' Reversal saldo akun SEBELUM DELETE JurnalUmum
+            ModuleVariabel.ReversalSaldoAkunDariFaktur(transactionId, transaction)
+
             ' Hapus jurnal
             Using cmdDel As New MySqlCommand("DELETE FROM JurnalUmum WHERE NO_TRANSAKSI = @id", conn, transaction)
                 cmdDel.Parameters.AddWithValue("@id", transactionId)
                 cmdDel.ExecuteNonQuery()
             End Using
-
-            ' Update saldo kedua akun
-            If Not String.IsNullOrEmpty(nomorAkunD) Then
-                ModuleVariabel.UpdateSaldoAkun(nomorAkunD, transaction)
-            End If
-            If Not String.IsNullOrEmpty(nomorAkunK) Then
-                ModuleVariabel.UpdateSaldoAkun(nomorAkunK, transaction)
-            End If
 
             ' Commit
             transaction.Commit()
@@ -681,9 +676,8 @@ Public Class FormKeuangan
                 cmdInsert.ExecuteNonQuery()
             End Using
 
-            ' Update saldo kedua akun
-            ModuleVariabel.UpdateSaldoAkun(TxtDebetKeuangan.Text, transaction)
-            ModuleVariabel.UpdateSaldoAkun(TxtKreditKeuangan.Text, transaction)
+            ' Update saldo akun — incremental delta dari jurnal yang baru di-INSERT
+            ModuleVariabel.UpdateSaldoAkunDeltaDariFaktur(noTransaksi, transaction)
 
             ' Commit
             transaction.Commit()
@@ -758,19 +752,14 @@ Public Class FormKeuangan
             ' END: Audit Trail - Edit Jurnal Keuangan
             ' ========================================
 
-            ' Step 1: Hapus jurnal lama
+            ' Step 1: Reversal saldo akun lama SEBELUM DELETE JurnalUmum
+            ModuleVariabel.ReversalSaldoAkunDariFaktur(noTransaksiLama, transaction)
+
+            ' Hapus jurnal lama
             Using cmdDel As New MySqlCommand("DELETE FROM JurnalUmum WHERE NO_TRANSAKSI = @id", conn, transaction)
                 cmdDel.Parameters.AddWithValue("@id", noTransaksiLama)
                 cmdDel.ExecuteNonQuery()
             End Using
-
-            ' Update saldo akun lama
-            If Not String.IsNullOrEmpty(nomorAkunDLama) Then
-                ModuleVariabel.UpdateSaldoAkun(nomorAkunDLama, transaction)
-            End If
-            If Not String.IsNullOrEmpty(nomorAkunKLama) Then
-                ModuleVariabel.UpdateSaldoAkun(nomorAkunKLama, transaction)
-            End If
 
             ' Balikkan HutangAwal supplier/pelanggan untuk jurnal lama
             If nominalLama > 0 Then
@@ -816,9 +805,8 @@ Public Class FormKeuangan
                 cmdInsert.ExecuteNonQuery()
             End Using
 
-            ' Update saldo akun baru
-            ModuleVariabel.UpdateSaldoAkun(TxtDebetKeuangan.Text, transaction)
-            ModuleVariabel.UpdateSaldoAkun(TxtKreditKeuangan.Text, transaction)
+            ' Update saldo akun baru — incremental delta dari jurnal yang baru di-INSERT
+            ModuleVariabel.UpdateSaldoAkunDeltaDariFaktur(noTransaksiLama, transaction)
 
             ' Update HutangAwal supplier/pelanggan untuk jurnal baru
             If nominal > 0 Then

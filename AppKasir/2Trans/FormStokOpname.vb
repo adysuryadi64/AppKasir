@@ -3,7 +3,7 @@ Public Class FormStokOpname
     Private Sub BarangStokOpnameForm_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
         ModuleTheme.TerapkanTheme(Me)
 
-        If LblUtama.Text <> "TAMBAH STOK OPNAME" Then
+        If LblHeader.Text <> "TAMBAH STOK OPNAME" Then
             AmbilDataUntukEdit()
             PanelCari.Visible = False
             Label4.Visible = False
@@ -131,6 +131,7 @@ Public Class FormStokOpname
 
         ' Populate the form fields with the retrieved data
         DTPTgl.Value = tanggal
+        DTPTgl.Enabled = True  ' Mode edit: selalu bisa ubah tanggal, tanggal lama bisa lampau
         TxtLokasi.Text = lokasi
         TxtKode.Text = idBarang
         TxtnamaHasil.Text = namaBarang
@@ -524,7 +525,7 @@ Public Class FormStokOpname
             Exit Sub
         End If
 
-        If LblUtama.Text = "TAMBAH STOK OPNAME" AndAlso Not ModulHakAkses.SettingIzinkanTanggalLampau Then
+        If LblHeader.Text = "TAMBAH STOK OPNAME" AndAlso Not ModulHakAkses.SettingIzinkanTanggalLampau Then
             ModulHakAkses.ResetDTPKeTanggalHariIni(DTPTgl)
             GenerateNomorOpname()
         End If
@@ -533,25 +534,9 @@ Public Class FormStokOpname
         ' Mulai transaksi
         Dim transaction As MySqlTransaction = conn.BeginTransaction()
         Try
-            Dim akunLama As New HashSet(Of String)(StringComparer.OrdinalIgnoreCase)
-            If LblUtama.Text <> "TAMBAH STOK OPNAME" Then
+            If LblHeader.Text <> "TAMBAH STOK OPNAME" Then
                 Dim noOpname As String = TxtFaktur.Text
-                ' ========================================
-                ' STEP 1: SELECT daftar akun LAMA SEBELUM DELETE JurnalUmum
-                ' ========================================
-                Using cmdAkunLama As New MySqlCommand(
-                    "SELECT DISTINCT NOMOR_AKUN_D FROM JurnalUmum WHERE NO_TRANSAKSI = @fk AND NOMOR_AKUN_D <> '' " &
-                    "UNION " &
-                    "SELECT DISTINCT NOMOR_AKUN_K FROM JurnalUmum WHERE NO_TRANSAKSI = @fk AND NOMOR_AKUN_K <> ''",
-                    conn, transaction)
-                    cmdAkunLama.Parameters.AddWithValue("@fk", noOpname)
-                    Using rd = cmdAkunLama.ExecuteReader()
-                        While rd.Read()
-                            Dim kode As String = rd(0).ToString().Trim()
-                            If kode <> "" Then akunLama.Add(kode)
-                        End While
-                    End Using
-                End Using
+
                 ' ========================================
                 ' START: Audit Trail - Edit Stok Opname
                 ' ========================================
@@ -611,37 +596,9 @@ Public Class FormStokOpname
             AuditStokTransaksi(TxtFaktur.Text, "Stok Opname", auditDGV, auditHistory, auditDetail, auditStokDelta, transaction)
 
             ' ========================================
-            ' STEP 2: SELECT daftar akun BARU
+            ' STEP 3: UPDATE saldo akun — incremental delta
             ' ========================================
-            Dim akunBaru As New HashSet(Of String)(StringComparer.OrdinalIgnoreCase)
-            Using cmdAkunBaru As New MySqlCommand(
-                "SELECT DISTINCT NOMOR_AKUN_D FROM JurnalUmum WHERE NO_TRANSAKSI = @fk AND NOMOR_AKUN_D <> '' " &
-                "UNION " &
-                "SELECT DISTINCT NOMOR_AKUN_K FROM JurnalUmum WHERE NO_TRANSAKSI = @fk AND NOMOR_AKUN_K <> ''",
-                conn, transaction)
-                cmdAkunBaru.Parameters.AddWithValue("@fk", TxtFaktur.Text)
-                Using rd = cmdAkunBaru.ExecuteReader()
-                    While rd.Read()
-                        Dim kode As String = rd(0).ToString().Trim()
-                        If kode <> "" Then akunBaru.Add(kode)
-                    End While
-                End Using
-            End Using
-
-            ' ========================================
-            ' STEP 3: GABUNGKAN daftar akun LAMA + BARU
-            ' ========================================
-            Dim semuaAkunTerlibat As New HashSet(Of String)(akunLama, StringComparer.OrdinalIgnoreCase)
-            For Each akun In akunBaru
-                semuaAkunTerlibat.Add(akun)
-            Next
-
-            ' ========================================
-            ' STEP 4: UPDATE saldo untuk SEMUA akun yang terlibat
-            ' ========================================
-            For Each kodeAkun As String In semuaAkunTerlibat
-                UpdateSaldoAkun(kodeAkun, transaction)
-            Next
+            UpdateSaldoAkunDeltaDariFaktur(TxtFaktur.Text, transaction)
 
             ' Commit transaksi
             transaction.Commit()
@@ -651,7 +608,7 @@ Public Class FormStokOpname
                     {"SelisihOpname"})
             End If
 
-            If LblUtama.Text = "TAMBAH STOK OPNAME" Then
+            If LblHeader.Text = "TAMBAH STOK OPNAME" Then
                 Kondisiawaltambah()
                 TxtNama.Select()
             Else
@@ -662,7 +619,7 @@ Public Class FormStokOpname
 
 
         Catch ex As Exception
-            If LblUtama.Text = "Edit Stok Opname" Then
+            If LblHeader.Text = "Edit Stok Opname" Then
                 MessageBox.Show("Ups! Terdapat kendala saat mencoba menyimpan transaksi." & vbCrLf &
                                "Detail kesalahan: " & ex.Message,
                  "Oops! Ada masalah saat edit stok opnam", MessageBoxButtons.OK, MessageBoxIcon.Error)
@@ -701,8 +658,8 @@ Public Class FormStokOpname
 
             insertCmd.Parameters.AddWithValue("@KETERANGAN", TxtKeteranganToko.Text)
 
-            insertCmd.Parameters.AddWithValue("@ID_USER", If(LblUtama.Text = "TAMBAH STOK OPNAME", FormUtama.StatusNamaUser.Text, TxtIdUser.Text))
-            insertCmd.Parameters.AddWithValue("@ID_KOMPUTER", If(LblUtama.Text = "TAMBAH STOK OPNAME", FormUtama.StatusNamaPC.Text, TxtKomputer.Text))
+            insertCmd.Parameters.AddWithValue("@ID_USER", If(LblHeader.Text = "TAMBAH STOK OPNAME", FormUtama.StatusNamaUser.Text, TxtIdUser.Text))
+            insertCmd.Parameters.AddWithValue("@ID_KOMPUTER", If(LblHeader.Text = "TAMBAH STOK OPNAME", FormUtama.StatusNamaPC.Text, TxtKomputer.Text))
             insertCmd.ExecuteNonQuery()
         End Using
     End Sub
@@ -766,8 +723,8 @@ Public Class FormStokOpname
                 cmd.Parameters.AddWithValue("@LOKASI", TxtLokasi.Text)
 
                 ' Penentuan IdUser dan IdKomputer berdasarkan status LblUtama
-                cmd.Parameters.AddWithValue("@ID_USER", If(LblUtama.Text = "TAMBAH STOK OPNAME", FormUtama.StatusNamaUser.Text, TxtIdUser.Text))
-                cmd.Parameters.AddWithValue("@ID_KOMPUTER", If(LblUtama.Text = "TAMBAH STOK OPNAME", FormUtama.StatusNamaPC.Text, TxtKomputer.Text))
+                cmd.Parameters.AddWithValue("@ID_USER", If(LblHeader.Text = "TAMBAH STOK OPNAME", FormUtama.StatusNamaUser.Text, TxtIdUser.Text))
+                cmd.Parameters.AddWithValue("@ID_KOMPUTER", If(LblHeader.Text = "TAMBAH STOK OPNAME", FormUtama.StatusNamaPC.Text, TxtKomputer.Text))
 
                 cmd.ExecuteNonQuery()
             End Using
@@ -805,8 +762,8 @@ Public Class FormStokOpname
             cmd.Parameters.AddWithValue("@ISI_SATUAN", ModuleAngka.ParseDecimal(LblSatIsi.Text))
             cmd.Parameters.AddWithValue("@TOTAL_QTY", ModuleAngka.ParseDecimal(TxtSelisihQty.Text))
             cmd.Parameters.AddWithValue("@TOTAL_RUPIAH", ModuleAngka.ParseDecimal(TxtSelisihRp.Text))
-            cmd.Parameters.AddWithValue("@ID_USER", If(LblUtama.Text = "TAMBAH STOK OPNAME", FormUtama.StatusNamaUser.Text, TxtIdUser.Text))
-            cmd.Parameters.AddWithValue("@ID_KOMPUTER", If(LblUtama.Text = "TAMBAH STOK OPNAME", FormUtama.StatusNamaPC.Text, TxtKomputer.Text))
+            cmd.Parameters.AddWithValue("@ID_USER", If(LblHeader.Text = "TAMBAH STOK OPNAME", FormUtama.StatusNamaUser.Text, TxtIdUser.Text))
+            cmd.Parameters.AddWithValue("@ID_KOMPUTER", If(LblHeader.Text = "TAMBAH STOK OPNAME", FormUtama.StatusNamaPC.Text, TxtKomputer.Text))
             cmd.ExecuteNonQuery()
         End Using
     End Sub
@@ -875,11 +832,10 @@ Public Class FormStokOpname
 
 
     Private Sub BtNCetak_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles BtNCetak.Click
-        If BacaPengaturanPrinter("StokOpname", "PilihPrinter", "LANGSUNG CETAK") = "TANYA PILIH PRINTER" Then
-            ModulePrinterStokOpname.TanyaPilihPrinterStokOpname(TxtFaktur.Text)
-        Else
-            ModulePrinterStokOpname.CetakStokOpname(TxtFaktur.Text)
-        End If
+        With FormStokOpnameBahan
+            .BringToFront()
+            .ShowDialog()
+        End With
     End Sub
 
     ' ============================================

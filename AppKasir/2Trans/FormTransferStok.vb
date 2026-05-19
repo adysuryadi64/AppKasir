@@ -787,24 +787,8 @@ Public Class FormTransferStok
 
             AuditStokTransaksi(LblIdTransaksi.Text, "Transfer Stok", auditDGV, auditHistory, auditDetail, auditStokDelta, transaction)
 
-
-            Dim akunTerlibat As New HashSet(Of String)(StringComparer.OrdinalIgnoreCase)
-            Using cmdAkun As New MySqlCommand(
-                "SELECT DISTINCT NOMOR_AKUN_D FROM JurnalUmum WHERE NO_TRANSAKSI = @fk AND NOMOR_AKUN_D <> '' " &
-                "UNION " &
-                "SELECT DISTINCT NOMOR_AKUN_K FROM JurnalUmum WHERE NO_TRANSAKSI = @fk AND NOMOR_AKUN_K <> ''",
-                conn, transaction)
-                cmdAkun.Parameters.AddWithValue("@fk", LblIdTransaksi.Text)
-                Using rd = cmdAkun.ExecuteReader()
-                    While rd.Read()
-                        Dim kode As String = rd(0).ToString().Trim()
-                        If kode <> "" Then akunTerlibat.Add(kode)
-                    End While
-                End Using
-            End Using
-            For Each kodeAkun As String In akunTerlibat
-                UpdateSaldoAkun(kodeAkun, transaction)
-            Next
+            ' Update saldo akun — incremental delta
+            UpdateSaldoAkunDeltaDariFaktur(LblIdTransaksi.Text, transaction)
 
             ' Commit transaksi
             transaction.Commit()
