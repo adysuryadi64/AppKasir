@@ -114,48 +114,115 @@ Write-Host ""
 # ── Cek gh CLI tersedia ───────────────────────────────────────────
 $ghAvailable = $null -ne (Get-Command gh -ErrorAction SilentlyContinue)
 
-# ── [1.5/6] Auto Changelog dengan Gemini AI ───────────────────────
+# ── [1.5/6] Auto Changelog dengan AI (Fallback: Gemini → Groq → OpenRouter) ──
 Write-Host "  [1.5/6] Menyiapkan file untuk Commit & Generate Changelog AI..." -ForegroundColor Yellow
 
 # Tambahkan semua file yang berubah ke dalam antrean (Staging)
 git add -A 2>$null
 
-$aiKeyPath = Join-Path $PSScriptRoot "..\..\.ai_key"
+$aiKeyPath = Join-Path $PSScriptRoot "..\..\..\.ai_key"
+if (-not (Test-Path $aiKeyPath)) {
+    $aiKeyPath = Join-Path $PSScriptRoot "..\..\.ai_key"
+}
+
+# ── Parse .ai_key file ──
+# Format baru (KEY=VALUE per baris):    Format lama (1 baris = Gemini key):
+#   GEMINI=AIzaSy...                      AIzaSy...
+#   GROQ=gsk_...
+#   OPENROUTER=sk-or-...
+$aiKeys = @{}
 if (Test-Path $aiKeyPath) {
-    $apiKey = Get-Content $aiKeyPath | Select-Object -First 1
-    if ($apiKey) {
-        try {
-            $lastTag = git describe --tags --abbrev=0 2>$null
-            if ($lastTag) {
-                # Ambil daftar file yang akan di-commit (--cached)
-                $diff = git diff --name-status $lastTag --cached
-            } else {
-                $diff = git diff --name-status HEAD --cached
+    $lines = Get-Content $aiKeyPath | Where-Object { $_.Trim() -ne "" -and $_.Trim() -notmatch "^#" }
+    foreach ($line in $lines) {
+        if ($line -match "^(\w+)=(.+)$") {
+            $aiKeys[$Matches[1].ToUpper()] = $Matches[2].Trim()
+        } elseif ($aiKeys.Count -eq 0 -and $line.Trim().Length -gt 10) {
+            # Backward compatible: baris pertama tanpa '=' = Gemini key
+            $aiKeys["GEMINI"] = $line.Trim()
+        }
+    }
+}
+
+if ($aiKeys.Count -eq 0) {
+    Write-Host "        File .ai_key tidak ditemukan atau kosong. Changelog dilewati." -ForegroundColor DarkGray
+} else {
+    # Ambil diff untuk prompt
+    $lastTag = git describe --tags --abbrev=0 2>$null
+    if ($lastTag) {
+        $diff = git diff --name-status $lastTag --cached
+    } else {
+        $diff = git diff --name-status HEAD --cached
+    }
+
+    if ($diff) {
+        Write-Host "        Meminta AI merangkum perubahan..." -ForegroundColor DarkGray
+        $prompt = "Kamu adalah pembuat catatan rilis aplikasi Kasir. Berdasarkan perubahan file kode berikut, buatkan ringkasan 3-5 poin pembaruan dalam bahasa Indonesia yang ramah untuk pengguna awam (kasir/pemilik toko). Jangan sebutkan nama file atau teknis kodenya. Fokus pada perbaikan sistem, UI, atau fitur baru. Gunakan format markdown bullet points. Data perubahan:`n$diff"
+
+        # ── Daftar provider AI ──
+        $providers = @()
+
+        if ($aiKeys.ContainsKey("GEMINI")) {
+            $geminiBody = @{ contents = @( @{ parts = @( @{ text = $prompt } ) } ) } | ConvertTo-Json -Depth 10
+            $providers += @{
+                Name    = "Gemini"
+                Url     = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=$($aiKeys['GEMINI'])"
+                Headers = @{ "Content-Type" = "application/json" }
+                Body    = $geminiBody
+                Parse   = "GEMINI"
             }
-            
-            if ($diff) {
-                Write-Host "        Meminta AI merangkum perubahan..." -ForegroundColor DarkGray
-                $prompt = "Kamu adalah pembuat catatan rilis aplikasi Kasir. Berdasarkan perubahan file kode berikut, buatkan ringkasan 3-5 poin pembaruan dalam bahasa Indonesia yang ramah untuk pengguna awam (kasir/pemilik toko). Jangan sebutkan nama file atau teknis kodenya. Fokus pada perbaikan sistem, UI, atau fitur baru. Gunakan format markdown bullet points. Data perubahan:`n$diff"
-                
-                $body = @{
-                    contents = @(
-                        @{ parts = @( @{ text = $prompt } ) }
-                    )
-                } | ConvertTo-Json -Depth 10
-                
-                $url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=$apiKey"
-                $response = Invoke-RestMethod -Method Post -Uri $url -ContentType "application/json" -Body $body
-                
-                $changelogText = $response.candidates[0].content.parts[0].text
-                if ($changelogText) {
-                    $changelogPath = Join-Path $PSScriptRoot "..\..\changelog.md"
-                    Set-Content -Path $changelogPath -Value $changelogText -Encoding UTF8
-                    git add "changelog.md" 2>$null
-                    Write-Host "        Changelog berhasil dibuat oleh AI." -ForegroundColor Green
+        }
+
+        if ($aiKeys.ContainsKey("GROQ")) {
+            $groqBody = @{ model = "llama-3.3-70b-versatile"; messages = @( @{ role = "user"; content = $prompt } ) } | ConvertTo-Json -Depth 10
+            $providers += @{
+                Name    = "Groq"
+                Url     = "https://api.groq.com/openai/v1/chat/completions"
+                Headers = @{ "Content-Type" = "application/json"; "Authorization" = "Bearer $($aiKeys['GROQ'])" }
+                Body    = $groqBody
+                Parse   = "OPENAI"
+            }
+        }
+
+        if ($aiKeys.ContainsKey("OPENROUTER")) {
+            $orBody = @{ model = "google/gemini-2.0-flash-exp:free"; messages = @( @{ role = "user"; content = $prompt } ) } | ConvertTo-Json -Depth 10
+            $providers += @{
+                Name    = "OpenRouter"
+                Url     = "https://openrouter.ai/api/v1/chat/completions"
+                Headers = @{ "Content-Type" = "application/json"; "Authorization" = "Bearer $($aiKeys['OPENROUTER'])" }
+                Body    = $orBody
+                Parse   = "OPENAI"
+            }
+        }
+
+        $changelogText = $null
+        foreach ($prov in $providers) {
+            if ($changelogText) { break }
+            for ($attempt = 1; $attempt -le 2; $attempt++) {
+                try {
+                    Write-Host "        Mencoba $($prov.Name) (percobaan $attempt)..." -ForegroundColor DarkGray
+                    $response = Invoke-RestMethod -Method Post -Uri $prov.Url -Headers $prov.Headers -Body $prov.Body -TimeoutSec 30
+                    if ($prov.Parse -eq "GEMINI") {
+                        $changelogText = $response.candidates[0].content.parts[0].text
+                    } else {
+                        $changelogText = $response.choices[0].message.content
+                    }
+                    if ($changelogText) {
+                        Write-Host "        Changelog berhasil dari $($prov.Name)." -ForegroundColor Green
+                        break
+                    }
+                } catch {
+                    Write-Host "        $($prov.Name) gagal: $($_.Exception.Message)" -ForegroundColor Yellow
+                    if ($attempt -lt 2) { Start-Sleep -Seconds 2 }
                 }
             }
-        } catch {
-            Write-Host "        Gagal memanggil Gemini API: $($_.Exception.Message)" -ForegroundColor Red
+        }
+
+        if ($changelogText) {
+            $changelogPath = Join-Path $PSScriptRoot "..\..\changelog.md"
+            Set-Content -Path $changelogPath -Value $changelogText -Encoding UTF8
+            git add "changelog.md" 2>$null
+        } else {
+            Write-Host "        Semua provider AI gagal. Changelog dilewati." -ForegroundColor Red
         }
     }
 }
