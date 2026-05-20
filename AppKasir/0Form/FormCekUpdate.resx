@@ -17,6 +17,15 @@
     <resheader name="version">2.0</resheader>
     <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
     <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
                 
     There are any number of "resheader" rows that contain simple 
     name/value pairs.
@@ -111,13 +120,10 @@
   <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
   <data name="BtnClose.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
-        iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAACXBIWXMAABOvAAATrwFj5o7DAAAAdUlE
-        QVR4nM2SwQqAMAxDvekP6fypgdKkeNufq/SoTjoZir3mpaVtmuY3lVLqVHX0OBHpY4xtTggkV5Lzndk0
-        Y6xJFgAwkdwALE80Fyw25wyPzed9vbu80wA1K6DmiKh5o4j0pUFS1eEiWjxvE3YcFCz2Hvdd7eeZe4Eq
-        /vjFAAAAAElFTkSuQmCC
+        iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
+        YQUAAAAJcEhZcwAAE64AABOuAbGhbCcAAACDSURBVDhPzZJLCoAwDES70wv5uVRBaSa4681VUijUkFbE
+        hb7lzCSQMM79hhhjz8yz1jUhhMF732ldjAnADmDVXkY8ycgS7SWIaAFwENH2xLtgBS2tSTnweDiT7737
+        S5VXC16dYA1Ymkkr2PISUo67e/NfmHnUnpN6VhtWII2V2mv9O07nmXuBfVsMBQAAAABJRU5ErkJggg==
 </value>
   </data>
-  <data name="BtnCekUpdate.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
-    <value>iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAACXBIWXMAABOvAAATrwFj5o7DAAABOElEQVR4nJ1Tu0oDURCdGYkSbbTUyq+QIIp2foXYpVLjojsjIuQXLKwUtdFGRMFC0MxkCeKikB/wUSroF1hGZgNpdrObeMo7c869d84ZgDzsPk7Bv1G/HSexnxFurgxPDptLyHpCYl/E+gt7renBiBt3Yyh2TmyvJBYQ2zeyHQJ0ECSaRbYDqLZLffkoeoGsVy7kjRTaakJ2VNslFLtBtrNstjSWSewNgricOxfWd5DGQtbtp8S6XvRLYt1C0aN0QewFWOeKBIBtnkSfMpQtBo4qxQJRhVifU+fIdkzc3Czik2jNe9OVUBdJ9KNwiN6TNUSHW4Rs1z3roIPEjbXE+yAu59sIXa9JbB/ql6NO9hB5mIhtx2/2dHZrgyB8mPEYE9tnYlu/Z+fBF8kXCrbvJ4Ym91CLJvPqf2+3hunK+8iBAAAAAElFTkSuQmCC</value>
-  </data>
-  </root>
+</root>

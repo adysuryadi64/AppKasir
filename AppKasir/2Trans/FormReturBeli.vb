@@ -2891,6 +2891,14 @@ Public Class FormReturBeli
             ' Simpan baris saat ini
             currentGridRow = DgvData.CurrentCell.RowIndex
 
+            ' KRITIS: Selalu remove handler TextChanged dari editing control lama
+            ' karena DGV menggunakan satu TextBox yang di-share untuk semua kolom teks.
+            ' Tanpa ini, pindah ke kolom QTY masih memicu pencarian nama barang.
+            If _dgvEditingTextBox IsNot Nothing Then
+                RemoveHandler _dgvEditingTextBox.TextChanged, AddressOf DgvNamaBarang_TextChanged
+                _dgvEditingTextBox = Nothing
+            End If
+
             ' ── Kolom SATUAN (index 4) — attach ComboBox handlers ─────────────
             If DgvData.CurrentCell.ColumnIndex = 4 Then
                 Dim comboBox As ComboBox = TryCast(e.Control, ComboBox)
@@ -2907,11 +2915,6 @@ Public Class FormReturBeli
                 Dim editText As TextBox = TryCast(e.Control, TextBox)
                 If editText IsNot Nothing Then
                     editText.AutoCompleteMode = AutoCompleteMode.None
-
-                    ' Remove handler lama
-                    If _dgvEditingTextBox IsNot Nothing Then
-                        RemoveHandler _dgvEditingTextBox.TextChanged, AddressOf DgvNamaBarang_TextChanged
-                    End If
 
                     _dgvEditingTextBox = editText
 
