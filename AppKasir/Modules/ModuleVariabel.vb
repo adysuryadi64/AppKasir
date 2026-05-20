@@ -1,6 +1,7 @@
 Module ModuleVariabel
     Public NamaUser As String = ""
     Public LevelUser As String = ""
+    Public AplikasiSedangUpdate As Boolean = False
 
     ''' <summary>
     ''' Cek apakah MySqlException disebabkan kolom/tabel belum ada,

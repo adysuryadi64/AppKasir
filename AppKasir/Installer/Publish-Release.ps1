@@ -1,11 +1,16 @@
 # ============================================================
 #  Publish-Release.ps1
-#  Jalankan SETELAH Build Release di Visual Studio selesai.
-#  Script ini akan:
-#    1. Git commit + push update.xml & AssemblyInfo.vb
-#    2. Buat Git tag versi
-#    3. Push tag ke GitHub
-#    4. Buat GitHub Release + upload ZIP otomatis (pakai gh CLI)
+#  Script UTAMA untuk publish release Kasir Lancar.
+#  Cukup jalankan script ini — semua otomatis:
+#    0. Build Release via MSBuild
+#    1. Buat AppKasir_Update.zip (via Build-Update.ps1)
+#    2. Git commit + push update.xml & AssemblyInfo.vb
+#    3. Buat Git tag versi
+#    4. Push tag ke GitHub
+#    5. Buat GitHub Release + upload ZIP otomatis (pakai gh CLI)
+#
+#  Cara pakai:
+#    powershell -ExecutionPolicy Bypass -File Installer\Publish-Release.ps1
 #
 #  Prasyarat: GitHub CLI (gh) harus terinstall dan sudah login
 #  Install: https://cli.github.com/
@@ -16,6 +21,62 @@ param(
 )
 
 Set-Location (Split-Path (Split-Path $PSScriptRoot -Parent) -Parent)  # ke root solution (AppKasir_2026\)
+
+# ── [0/6] Build Release via MSBuild ──────────────────────────────
+Write-Host ""
+Write-Host "============================================================" -ForegroundColor Cyan
+Write-Host "  KASIR LANCAR - Publish Release (All-in-One)" -ForegroundColor Cyan
+Write-Host "============================================================" -ForegroundColor Cyan
+Write-Host ""
+Write-Host "  [0/6] Building Release..." -ForegroundColor Yellow
+
+# Cari MSBuild via vswhere
+$vswhere = "${env:ProgramFiles(x86)}\Microsoft Visual Studio\Installer\vswhere.exe"
+$msbuild = ""
+
+if (Test-Path $vswhere) {
+    $msbuild = & $vswhere -latest -requires Microsoft.Component.MSBuild `
+        -find "MSBuild\**\Bin\MSBuild.exe" | Select-Object -First 1
+}
+
+# Fallback: cari di PATH
+if (-not $msbuild -or -not (Test-Path $msbuild)) {
+    $msbuild = (Get-Command MSBuild.exe -ErrorAction SilentlyContinue).Source
+}
+
+if (-not $msbuild -or -not (Test-Path $msbuild)) {
+    Write-Host "  ERROR: MSBuild tidak ditemukan!" -ForegroundColor Red
+    Write-Host "         Pastikan Visual Studio atau Build Tools terinstall." -ForegroundColor Red
+    if (-not $NonInteractive) { Read-Host "Tekan Enter untuk keluar" }
+    exit 1
+}
+
+Write-Host "        MSBuild: $msbuild" -ForegroundColor DarkGray
+
+# Restore NuGet packages dulu
+$nuget = Get-Command nuget.exe -ErrorAction SilentlyContinue
+if ($nuget) {
+    & nuget.exe restore "AppKasir.sln"
+}
+
+# Build Release
+& $msbuild "AppKasir\AppKasir.vbproj" /p:Configuration=Release /t:Build
+if ($LASTEXITCODE -ne 0) {
+    Write-Host "  ERROR: Build Release gagal!" -ForegroundColor Red
+    Write-Host "         Periksa error di output MSBuild di atas." -ForegroundColor Red
+    if (-not $NonInteractive) { Read-Host "Tekan Enter untuk keluar" }
+    exit 1
+}
+Write-Host "        Build Release selesai." -ForegroundColor Green
+
+# ── [1/6] Buat ZIP via Build-Update.ps1 ─────────────────────────
+Write-Host "  [1/6] Membuat ZIP update..." -ForegroundColor Yellow
+& powershell -ExecutionPolicy Bypass -NoProfile -File "AppKasir\Installer\Build-Update.ps1"
+if ($LASTEXITCODE -ne 0) {
+    Write-Host "  ERROR: Pembuatan ZIP gagal!" -ForegroundColor Red
+    if (-not $NonInteractive) { Read-Host "Tekan Enter untuk keluar" }
+    exit 1
+}
 
 # ── Baca versi dari update.xml ────────────────────────────────────
 $UpdateXmlPath = "update.xml"
@@ -35,17 +96,13 @@ if ($versi -eq "") {
 $tag     = "v$versi"
 
 Write-Host ""
-Write-Host "============================================================" -ForegroundColor Cyan
-Write-Host "  KASIR LANCAR - Publish Release" -ForegroundColor Cyan
 Write-Host "  Versi : $versi" -ForegroundColor Cyan
 Write-Host "  Tag   : $tag" -ForegroundColor Cyan
-Write-Host "============================================================" -ForegroundColor Cyan
 Write-Host ""
 
 # ── Cek ZIP ada ───────────────────────────────────────────────────
 if (-not (Test-Path $zipPath)) {
     Write-Host "ERROR: $zipPath tidak ditemukan!" -ForegroundColor Red
-    Write-Host "       Pastikan Build Release sudah dijalankan." -ForegroundColor Red
     if (-not $NonInteractive) { Read-Host "Tekan Enter untuk keluar" }
     exit 1
 }
@@ -57,22 +114,67 @@ Write-Host ""
 # ── Cek gh CLI tersedia ───────────────────────────────────────────
 $ghAvailable = $null -ne (Get-Command gh -ErrorAction SilentlyContinue)
 
-# ── Git commit & push ─────────────────────────────────────────────
-Write-Host "  [1/4] Git commit..." -ForegroundColor Yellow
-git add "update.xml" "AppKasir/My Project/AssemblyInfo.vb"
-$status = git status --porcelain "update.xml" "AppKasir/My Project/AssemblyInfo.vb"
+# ── [1.5/6] Auto Changelog dengan Gemini AI ───────────────────────
+Write-Host "  [1.5/6] Menyiapkan file untuk Commit & Generate Changelog AI..." -ForegroundColor Yellow
+
+# Tambahkan semua file yang berubah ke dalam antrean (Staging)
+git add -A 2>$null
+
+$aiKeyPath = Join-Path $PSScriptRoot "..\..\.ai_key"
+if (Test-Path $aiKeyPath) {
+    $apiKey = Get-Content $aiKeyPath | Select-Object -First 1
+    if ($apiKey) {
+        try {
+            $lastTag = git describe --tags --abbrev=0 2>$null
+            if ($lastTag) {
+                # Ambil daftar file yang akan di-commit (--cached)
+                $diff = git diff --name-status $lastTag --cached
+            } else {
+                $diff = git diff --name-status HEAD --cached
+            }
+            
+            if ($diff) {
+                Write-Host "        Meminta AI merangkum perubahan..." -ForegroundColor DarkGray
+                $prompt = "Kamu adalah pembuat catatan rilis aplikasi Kasir. Berdasarkan perubahan file kode berikut, buatkan ringkasan 3-5 poin pembaruan dalam bahasa Indonesia yang ramah untuk pengguna awam (kasir/pemilik toko). Jangan sebutkan nama file atau teknis kodenya. Fokus pada perbaikan sistem, UI, atau fitur baru. Gunakan format markdown bullet points. Data perubahan:`n$diff"
+                
+                $body = @{
+                    contents = @(
+                        @{ parts = @( @{ text = $prompt } ) }
+                    )
+                } | ConvertTo-Json -Depth 10
+                
+                $url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=$apiKey"
+                $response = Invoke-RestMethod -Method Post -Uri $url -ContentType "application/json" -Body $body
+                
+                $changelogText = $response.candidates[0].content.parts[0].text
+                if ($changelogText) {
+                    $changelogPath = Join-Path $PSScriptRoot "..\..\changelog.md"
+                    Set-Content -Path $changelogPath -Value $changelogText -Encoding UTF8
+                    git add "changelog.md" 2>$null
+                    Write-Host "        Changelog berhasil dibuat oleh AI." -ForegroundColor Green
+                }
+            }
+        } catch {
+            Write-Host "        Gagal memanggil Gemini API: $($_.Exception.Message)" -ForegroundColor Red
+        }
+    }
+}
+
+# ── [2/6] Git commit & push ──────────────────────────────────────
+Write-Host "  [2/6] Git commit..." -ForegroundColor Yellow
+$status = git status --porcelain
 if ($status) {
     git commit -m "Release $tag"
-    Write-Host "        Committed: Release $tag" -ForegroundColor Green
+    Write-Host "        Committed: Semua perubahan sebagai Release $tag" -ForegroundColor Green
 } else {
     Write-Host "        Tidak ada perubahan untuk di-commit." -ForegroundColor DarkGray
 }
 
-Write-Host "  [2/4] Git push..." -ForegroundColor Yellow
+Write-Host "  [3/6] Git push..." -ForegroundColor Yellow
 git push origin master
 Write-Host "        Push selesai." -ForegroundColor Green
 
-Write-Host "  [3/4] Git tag $tag..." -ForegroundColor Yellow
+Write-Host "  [4/6] Git tag $tag..." -ForegroundColor Yellow
 # Hapus tag lama jika ada (untuk re-release versi yang sama)
 git tag -d $tag 2>$null
 git push origin ":refs/tags/$tag" 2>$null
@@ -80,8 +182,8 @@ git tag $tag
 git push origin $tag
 Write-Host "        Tag $tag dibuat dan dipush." -ForegroundColor Green
 
-# ── GitHub Release ────────────────────────────────────────────────
-Write-Host "  [4/4] GitHub Release..." -ForegroundColor Yellow
+# ── [5/6] GitHub Release ─────────────────────────────────────────
+Write-Host "  [5/6] GitHub Release..." -ForegroundColor Yellow
 
 if ($ghAvailable) {
     # Hapus release lama jika ada
@@ -103,6 +205,32 @@ if ($ghAvailable) {
     Write-Host "        Buat release manual di:" -ForegroundColor Yellow
     Write-Host "        https://github.com/adysuryadi64/AppKasir/releases/new?tag=$tag" -ForegroundColor Cyan
     Write-Host "        Upload file: $((Resolve-Path $zipPath).Path)" -ForegroundColor Cyan
+}
+
+# ── [6/6] Verifikasi akhir ───────────────────────────────────────
+Write-Host "  [6/6] Verifikasi..." -ForegroundColor Yellow
+
+# Verifikasi versi EXE di ZIP = update.xml
+Add-Type -AssemblyName System.IO.Compression.FileSystem
+try {
+    $archive = [System.IO.Compression.ZipFile]::OpenRead((Resolve-Path $zipPath).Path)
+    $exeEntry = $archive.Entries | Where-Object { $_.Name -eq "KasirLancar.exe" -and $_.FullName -eq "KasirLancar.exe" }
+    if ($exeEntry) {
+        $tempCheck = Join-Path $env:TEMP "KasirLancar_VersionCheck.exe"
+        if (Test-Path $tempCheck) { Remove-Item $tempCheck -Force }
+        [System.IO.Compression.ZipFileExtensions]::ExtractToFile($exeEntry, $tempCheck, $true)
+        $zipExeVer = [System.Diagnostics.FileVersionInfo]::GetVersionInfo($tempCheck).FileVersion
+        Remove-Item $tempCheck -Force
+        
+        if ($zipExeVer -eq $versi) {
+            Write-Host "        [OK] Versi ZIP EXE ($zipExeVer) = update.xml ($versi)" -ForegroundColor Green
+        } else {
+            Write-Host "        [ERROR] PERINGATAN: Versi ZIP EXE ($zipExeVer) != update.xml ($versi)" -ForegroundColor Red
+        }
+    }
+    $archive.Dispose()
+} catch {
+    Write-Host "        Tidak bisa verifikasi ZIP: $($_.Exception.Message)" -ForegroundColor Yellow
 }
 
 Write-Host ""

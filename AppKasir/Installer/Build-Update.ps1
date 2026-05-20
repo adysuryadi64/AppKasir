@@ -26,23 +26,24 @@ param(
 Set-Location $PSScriptRoot
 
 # ── Konfigurasi ───────────────────────────────────────────────────
-$DebugDir    = "..\bin\Debug"
-$ReleaseDir  = "..\bin\Release"
-$OutputDir   = "Output"
+$DebugDir    = Join-Path $PSScriptRoot "..\bin\Debug"
+$ReleaseDir  = Join-Path $PSScriptRoot "..\bin\Release"
+$OutputDir   = Join-Path $PSScriptRoot "Output"
 $ZipName     = "AppKasir_Update.zip"
 $ZipOutput   = Join-Path $OutputDir $ZipName
 
-# Pilih folder sumber: Release jika ada EXE-nya, fallback ke Debug
+# Folder sumber: HANYA bin\Release — tidak ada fallback ke Debug
 $SourceDir = $ReleaseDir
 if (-not (Test-Path (Join-Path $ReleaseDir "KasirLancar.exe"))) {
-    if (Test-Path (Join-Path $DebugDir "KasirLancar.exe")) {
-        $SourceDir = $DebugDir
-        Write-Host "  [INFO] bin\Release kosong, menggunakan bin\Debug" -ForegroundColor Yellow
-    }
+    Write-Host "  [ERROR] bin\Release\KasirLancar.exe tidak ditemukan!" -ForegroundColor Red
+    Write-Host "          Jalankan Build Release terlebih dahulu," -ForegroundColor Red
+    Write-Host "          atau gunakan Publish-Release.ps1 yang otomatis build." -ForegroundColor Red
+    if (-not $NonInteractive) { Read-Host "Tekan Enter untuk keluar" }
+    exit 1
 }
 
 # Baca versi dari AssemblyInfo.vb
-$AssemblyInfoPath = "..\My Project\AssemblyInfo.vb"
+$AssemblyInfoPath = Join-Path $PSScriptRoot "..\My Project\AssemblyInfo.vb"
 $versi = "unknown"
 if (Test-Path $AssemblyInfoPath) {
     $match = Select-String -Path $AssemblyInfoPath -Pattern 'AssemblyVersion\("([^"]+)"\)'
@@ -103,9 +104,32 @@ if (-not (Test-Path $SourceDir)) {
 $exePath = Join-Path $SourceDir "KasirLancar.exe"
 if (-not (Test-Path $exePath)) {
     Write-Host "ERROR: KasirLancar.exe tidak ditemukan!" -ForegroundColor Red
-    Write-Host "       Lakukan Build di Visual Studio terlebih dahulu." -ForegroundColor Red
+    Write-Host "       Lakukan Build Release di Visual Studio terlebih dahulu." -ForegroundColor Red
     if (-not $NonInteractive) { Read-Host "Tekan Enter untuk keluar" }
     exit 1
+}
+
+# ── Verifikasi versi EXE vs update.xml ────────────────────────────
+$UpdateXmlFullPath = Join-Path $PSScriptRoot "..\..\update.xml"
+$exeVi = [System.Diagnostics.FileVersionInfo]::GetVersionInfo((Resolve-Path $exePath).Path)
+$exeVer = $exeVi.FileVersion
+
+$xmlVer = ""
+if (Test-Path $UpdateXmlFullPath) {
+    $m = Select-String -Path $UpdateXmlFullPath -Pattern '<version>([^<]+)</version>'
+    if ($m) { $xmlVer = $m.Matches[0].Groups[1].Value }
+}
+
+if ($xmlVer -ne "" -and $exeVer -ne $xmlVer) {
+    Write-Host "" -ForegroundColor Red
+    Write-Host "  !!! VERSI TIDAK COCOK !!!" -ForegroundColor Red
+    Write-Host "  EXE version  : $exeVer" -ForegroundColor Red
+    Write-Host "  update.xml   : $xmlVer" -ForegroundColor Red
+    Write-Host "  Pastikan build Release sudah menggunakan versi terbaru." -ForegroundColor Red
+    if (-not $NonInteractive) { Read-Host "Tekan Enter untuk keluar" }
+    exit 1
+} else {
+    Write-Host "  Versi EXE cocok dengan update.xml: $exeVer" -ForegroundColor Green
 }
 
 # Buat folder Output jika belum ada
@@ -213,10 +237,9 @@ Write-Host "  Versi   : $versi" -ForegroundColor Green
 Write-Host "  File    : $count file dikemas" -ForegroundColor Green
 Write-Host "============================================================" -ForegroundColor Green
 Write-Host ""
-Write-Host "  Langkah selanjutnya:" -ForegroundColor Cyan
-Write-Host "  1. Buat GitHub Release dengan tag v$versi" -ForegroundColor White
-Write-Host "  2. Upload $ZipName ke release tersebut" -ForegroundColor White
-Write-Host "  3. Push update.xml ke GitHub (sudah otomatis terupdate saat build)" -ForegroundColor White
+Write-Host "  Langkah selanjutnya: (otomatis jika dijalankan via Publish-Release.ps1)" -ForegroundColor Cyan
+Write-Host "  1. Git commit + push update.xml + AssemblyInfo.vb" -ForegroundColor White
+Write-Host "  2. Buat GitHub Release + upload ZIP" -ForegroundColor White
 Write-Host ""
 
 # Tampilkan file yang dikecualikan jika mau debug

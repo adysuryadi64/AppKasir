@@ -15,13 +15,6 @@ Public Class FormTransferStok
     End Sub
 
 
-    Private Sub LakukanCetakTransferStok(idTransfer As String)
-        If BacaPengaturanPrinter("TransferStok", "PilihPrinter", "LANGSUNG CETAK") = "TANYA PILIH PRINTER" Then
-            ModulePrinterTransferStok.TanyaPilihPrinterTransferStok(idTransfer)
-        Else
-            ModulePrinterTransferStok.CetakTransferStok(idTransfer)
-        End If
-    End Sub
 
     Private Sub LblLokasi_TextChanged(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles LblLokasi.TextChanged
         Select Case LblLokasi.Text
@@ -356,7 +349,9 @@ Public Class FormTransferStok
     Private Sub MasukkandatabarangMsk()
         TxtKodeMsk.Text = idBarangResultMsk
         TxtNamaMsk.Text = namaBarangResultMsk
-        TxtHargaMsk.Text = hargaBarangResultMsk.ToString()
+        ' Gunakan Math.Truncate untuk menghilangkan trailing zeros dari MySQL DECIMAL(15,4)
+        ' Tanpa ini: 3435000.0000.ToString() → "3435000.0000" → ParseDecimal salah baca sebagai ribuan
+        TxtHargaMsk.Text = Math.Truncate(hargaBarangResultMsk).ToString()
         CmbSatuanMsk.SelectedItem = satuanBarangResultMsk
         TxtIsiMsk.Text = isiBarangResultMsk.ToString()
         LblStokTokoMsk.Text = stokTokoResultMsk.ToString("N0")
@@ -366,7 +361,6 @@ Public Class FormTransferStok
 
         UpdateTotalHargaMsk()
         TxtQtyMsk.Select()
-
     End Sub
 
     Private Sub CmbSatuanMsk_SelectedIndexChanged(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles CmbSatuanMsk.SelectedIndexChanged
@@ -673,7 +667,9 @@ Public Class FormTransferStok
     Private Sub MasukkandatabarangKlr()
         TxtKodeKlr.Text = idBarangResultKlr
         TxtNamaKlr.Text = namaBarangResultKlr
-        TxtHargaKlr.Text = hargaBarangResultKlr.ToString()
+        ' Gunakan Math.Truncate untuk menghilangkan trailing zeros dari MySQL DECIMAL(15,4)
+        ' Tanpa ini: 3435000.0000.ToString() → "3435000.0000" → ParseDecimal salah baca sebagai ribuan
+        TxtHargaKlr.Text = Math.Truncate(hargaBarangResultKlr).ToString()
         CmbSatuanKlr.SelectedItem = satuanBarangResultKlr
         TxtIsiKlr.Text = isiBarangResultKlr.ToString()
         LblStokTokoKlr.Text = stokTokoResultKlr.ToString("N0")
@@ -797,23 +793,7 @@ Public Class FormTransferStok
             CatatJurnalTidakSeimbang(LblIdTransaksi.Text, tsNominal, tsNominal, "Transfer Stok",
                 {"TransferStok"})
 
-            Dim idTransfer As String = LblIdTransaksi.Text
             Kondisiawal()
-
-            Try
-                Select Case BacaPengaturanPrinter("TransferStok", "CetakOtomatis", "IYA").Trim().ToUpper()
-                    Case "IYA"
-                        LakukanCetakTransferStok(idTransfer)
-                    Case "SELALU TANYA"
-                        If MessageBox.Show("Apakah Anda ingin mencetak transfer stok?",
-                                           "Konfirmasi Cetak", MessageBoxButtons.YesNo, MessageBoxIcon.Question) = DialogResult.Yes Then
-                            LakukanCetakTransferStok(idTransfer)
-                        End If
-                End Select
-            Catch ex As Exception
-                MessageBox.Show("Gagal mencetak transfer stok." & vbCrLf & "Detail: " & ex.Message,
-                                "Peringatan", MessageBoxButtons.OK, MessageBoxIcon.Warning)
-            End Try
         Catch ex As Exception
             MessageBox.Show("Oh tidak! Transaksi dibatalkan karena terjadi kesalahan." & vbCrLf &
                        "Detail kesalahan: " & ex.Message,

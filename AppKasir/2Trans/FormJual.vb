@@ -4695,13 +4695,37 @@ Public Class FormJual
     Public Sub Simpanatauedit()
         Cursor = Cursors.WaitCursor
         If IsModeTambahPenjualan Then
-            ' Cek duplikat faktur — jika sudah ada, generate ulang
+            ' ── Cek duplikat faktur ─────────────────────────────────────────────
+            ' Skenario utama: mode draft (draftPenjualanAktif terisi) dan nomor
+            ' faktur draft sudah dipakai kasir lain sejak draft disimpan.
+            '
+            ' Masalah lama: Nomorjual() punya guard → langsung Return jika
+            ' draftPenjualanAktif tidak kosong → nomor lama tetap dipakai →
+            ' INSERT gagal dengan Duplicate Key error.
+            '
+            ' Fix (Opsi A*):
+            '   1. Simpan fakturDraftLama (untuk HapusDraftPenjualan)
+            '   2. Kosongkan sementara draftPenjualanAktif agar Nomorjual() tidak di-skip
+            '   3. Generate nomor baru → TxtFaktur.Text diperbarui
+            '   4. Kembalikan fakturDraftLama ke draftPenjualanAktif
+            '      agar HapusDraftPenjualan menghapus draft yang benar (nomor lama)
+            ' ────────────────────────────────────────────────────────────────────
             Dim query As String = "SELECT ID_PENJUALAN FROM penjualan WHERE ID_PENJUALAN = ?"
             Using cmd As New MySqlCommand(query, conn)
                 cmd.Parameters.AddWithValue("@ID_PENJUALAN", TxtFaktur.Text)
                 Dim result As Object = cmd.ExecuteScalar()
                 If result IsNot Nothing Then
-                    Nomorjual()
+                    If Not String.IsNullOrWhiteSpace(draftPenjualanAktif) Then
+                        ' Mode draft: nomor draft sudah dipakai kasir lain.
+                        ' Simpan nomor lama, kosongkan guard, generate baru, kembalikan.
+                        Dim fakturDraftLama As String = draftPenjualanAktif
+                        draftPenjualanAktif = ""
+                        Nomorjual()
+                        draftPenjualanAktif = fakturDraftLama
+                    Else
+                        ' Mode tambah biasa (bukan dari draft): generate ulang seperti semula.
+                        Nomorjual()
+                    End If
                 End If
             End Using
         End If

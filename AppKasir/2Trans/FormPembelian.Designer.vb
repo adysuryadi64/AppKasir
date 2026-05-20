@@ -481,7 +481,7 @@ Partial Class FormPembelian
         Me.TxtGrandtotal.BackColor = System.Drawing.Color.Black
         Me.TxtGrandtotal.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
         Me.TxtGrandtotal.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.TxtGrandtotal.Font = New System.Drawing.Font("Digital-7", 68.24999!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.TxtGrandtotal.Font = New System.Drawing.Font("Digital-7", 48.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.TxtGrandtotal.ForeColor = System.Drawing.Color.Lime
         Me.TxtGrandtotal.Location = New System.Drawing.Point(3, 25)
         Me.TxtGrandtotal.Multiline = True

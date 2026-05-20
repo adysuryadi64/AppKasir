@@ -13,7 +13,8 @@
 
 param(
     [string]$ProjectDir,
-    [string]$UpdateXmlPath
+    [string]$UpdateXmlPath,
+    [string]$Configuration = "Debug"
 )
 
 # Bersihkan tanda kutip yang mungkin ikut dari MSBuild
@@ -54,12 +55,14 @@ Set-Content $AssemblyInfoPath $content -Encoding UTF8
 
 Write-Host "##[info] Versi di-set ke: $versionString (build ke-$($rev + 1) hari ini)"
 
-# ── Update update.xml jika path diberikan ────────────────────
-if ($UpdateXmlPath -ne "" -and (Test-Path $UpdateXmlPath)) {
+# ── Update update.xml HANYA saat Release build ──────────────
+if ($Configuration -eq "Release" -and $UpdateXmlPath -ne "" -and (Test-Path $UpdateXmlPath)) {
     $xmlContent = Get-Content $UpdateXmlPath -Raw
     $xmlContent = $xmlContent -replace '<version>[^<]+</version>',   "<version>$versionString</version>"
     $xmlContent = $xmlContent -replace 'releases/download/v[^/]+/', "releases/download/v$versionString/"
     $xmlContent = $xmlContent -replace 'releases/tag/v[^<"]+',       "releases/tag/v$versionString"
     Set-Content $UpdateXmlPath $xmlContent -Encoding UTF8
     Write-Host "##[info] update.xml di-sync ke versi: $versionString"
+} elseif ($Configuration -ne "Release") {
+    Write-Host "##[info] update.xml TIDAK diubah (build $Configuration - hanya Release yang update)"
 }

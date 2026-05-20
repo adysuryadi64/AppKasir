@@ -45,6 +45,10 @@ Public Class FormCekUpdate
         lblStatus.ForeColor = ModuleTheme.C(ModuleTheme.L_Secondary, ModuleTheme.D_Secondary)
         lblStatus.BackColor = Color.Transparent
 
+        ' RichTextBox Changelog
+        rtbChangelog.BackColor = ModuleTheme.C(ModuleTheme.L_Surface, ModuleTheme.D_Surface)
+        rtbChangelog.ForeColor = ModuleTheme.C(ModuleTheme.L_Text, ModuleTheme.D_Text)
+
         ' Tombol — pakai primary (biru)
         SetWarnaBtn(False)
     End Sub
@@ -63,8 +67,22 @@ Public Class FormCekUpdate
         btnCekUpdate.ForeColor = ModuleTheme.White
     End Sub
 
+    Private updateArgs As UpdateInfoEventArgs = Nothing
+
     ' ── Cek Update ──────────────────────────────────────────────────
     Private Sub btnCekUpdate_Click(sender As Object, e As EventArgs) Handles btnCekUpdate.Click
+        If btnCekUpdate.Text = "Unduh Update" AndAlso updateArgs IsNot Nothing Then
+            ModuleVariabel.AplikasiSedangUpdate = True
+            Try
+                AutoUpdater.DownloadUpdate(updateArgs)
+            Catch ex As Exception
+                lblStatus.Text = "Gagal mengunduh: " & ex.Message
+                SetWarnaBtn(False)
+                btnCekUpdate.Text = "Coba Lagi"
+            End Try
+            Return
+        End If
+
         btnCekUpdate.Enabled = False
         lblVersiTerbaru.Text = "..."
         lblVersiTerbaru.ForeColor = ModuleTheme.C(ModuleTheme.L_Muted, ModuleTheme.D_Muted)
@@ -77,7 +95,13 @@ Public Class FormCekUpdate
         AutoUpdater.ShowRemindLaterButton = False
 
         AddHandler AutoUpdater.CheckForUpdateEvent, AddressOf AutoUpdaterOnCheckForUpdateEvent
+        AddHandler AutoUpdater.ApplicationExitEvent, AddressOf AutoUpdaterOnApplicationExitEvent
         AutoUpdater.Start(urlUpdateXML)
+    End Sub
+
+    Private Sub AutoUpdaterOnApplicationExitEvent()
+        ' Tutup paksa seluruh aplikasi tanpa memicu messagebox di FormClosing
+        Environment.Exit(0)
     End Sub
 
     Private Sub AutoUpdaterOnCheckForUpdateEvent(args As UpdateInfoEventArgs)
@@ -97,25 +121,22 @@ Public Class FormCekUpdate
             lblVersiTerbaru.Text = args.CurrentVersion.ToString()
 
             If args.IsUpdateAvailable Then
+                updateArgs = args
                 ' Ada update — versi terbaru warna hijau (sukses/positif)
                 lblVersiTerbaru.ForeColor = ModuleTheme.C(ModuleTheme.L_Success, ModuleTheme.D_Success)
                 lblStatus.Text = "Update tersedia! Versi " & args.CurrentVersion & " siap diunduh."
                 btnCekUpdate.Text = "Unduh Update"
                 SetWarnaBtn(True)
 
+                ' Ambil changelog
                 Try
-                    ' DownloadUpdate menampilkan dialog download bawaan AutoUpdater.
-                    ' Jika user klik Download, AutoUpdater akan:
-                    '   1. Download ZIP ke %TEMP%
-                    '   2. Jalankan ZipExtractor (proses terpisah)
-                    '   3. ZipExtractor tunggu app tutup, lalu ekstrak ZIP ke folder EXE
-                    '   4. Restart app otomatis
-                    ' JANGAN panggil Application.Exit() manual — ZipExtractor handle sendiri.
-                    AutoUpdater.DownloadUpdate(args)
+                    Using client As New System.Net.WebClient()
+                        client.Encoding = System.Text.Encoding.UTF8
+                        Dim changelogText As String = client.DownloadString("https://raw.githubusercontent.com/adysuryadi64/AppKasir/master/changelog.md")
+                        rtbChangelog.Text = "=== CATATAN RILIS === " & vbCrLf & vbCrLf & changelogText
+                    End Using
                 Catch ex As Exception
-                    lblStatus.Text = "Gagal mengunduh: " & ex.Message
-                    SetWarnaBtn(False)
-                    btnCekUpdate.Text = "Coba Lagi"
+                    rtbChangelog.Text = "Gagal memuat catatan rilis."
                 End Try
             Else
                 ' Sudah terbaru — versi terbaru warna teks normal

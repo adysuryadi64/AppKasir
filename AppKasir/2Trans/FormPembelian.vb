@@ -3917,6 +3917,29 @@ Public Class FormPembelian
             NomorBeli()
         End If
 
+        ' ── Cek duplikat faktur untuk mode draft ────────────────────────────
+        ' Skenario: nomor faktur draft (draftPembelianAktif terisi) sudah dipakai
+        ' oleh transaksi lain sejak draft disimpan (kasir lain, atau tanggal berbeda).
+        '
+        ' Fix (Opsi A* - FormPembelian):
+        ' Berbeda dengan FormJual, NomorBeli() tidak punya guard draftPembelianAktif,
+        ' sehingga bisa dipanggil langsung tanpa pola sementara-kosongkan-kembalikan.
+        ' draftPembelianAktif TIDAK diubah agar HapusDraftPembelian menghapus
+        ' draft lama (nomor lama) dengan benar setelah commit.
+        ' ────────────────────────────────────────────────────────────────────
+        If jenisTrans = "TambahPembelian" AndAlso Not String.IsNullOrWhiteSpace(draftPembelianAktif) Then
+            Using cmdCekDuplikat As New MySqlCommand(
+                "SELECT ID_PEMBELIAN FROM pembelian WHERE ID_PEMBELIAN = ?", conn)
+                cmdCekDuplikat.Parameters.AddWithValue("@ID", TxtIdPembelian.Text)
+                Dim hasilCek As Object = cmdCekDuplikat.ExecuteScalar()
+                If hasilCek IsNot Nothing Then
+                    ' Nomor draft sudah dipakai transaksi lain → generate nomor baru.
+                    ' draftPembelianAktif tetap menunjuk ke nomor lama (untuk HapusDraftPembelian).
+                    NomorBeli()
+                End If
+            End Using
+        End If
+
         Dim transaction As MySqlTransaction = conn.BeginTransaction()
 
         Try

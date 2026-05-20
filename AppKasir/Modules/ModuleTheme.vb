@@ -314,6 +314,32 @@ Public Module ModuleTheme
 
 #Region "Helper"
 
+    Private _pfcDigital As PrivateFontCollection = Nothing
+
+    ''' <summary>
+    ''' Mengambil memori font Digital-7 dari file .ttf tanpa instalasi OS.
+    ''' Memastikan TextBox besar di Windows 7 tidak fallback ke Sans Serif.
+    ''' </summary>
+    Public Function GetDigitalFont(size As Single, style As FontStyle) As Font
+        Try
+            If _pfcDigital Is Nothing Then
+                _pfcDigital = New PrivateFontCollection()
+                Dim fontPath As String = IO.Path.Combine(Application.StartupPath, "Fonts", "digital-7.ttf")
+                If IO.File.Exists(fontPath) Then
+                    _pfcDigital.AddFontFile(fontPath)
+                End If
+            End If
+
+            If _pfcDigital.Families.Length > 0 Then
+                Return New Font(_pfcDigital.Families(0), size, style)
+            End If
+        Catch ex As Exception
+            ' Fallback diam-diam jika gagal load file
+        End Try
+        ' Fallback ke Sans Serif standar jika tidak ada font fisik
+        Return New Font("Microsoft Sans Serif", size, style)
+    End Function
+
     ''' <summary>Kembalikan warna sesuai mode aktif.</summary>
     Public Function C(light As Color, dark As Color) As Color
         Return If(IsDarkMode, dark, light)
@@ -745,11 +771,13 @@ End Sub
 
     Private Sub TerapkanTextBox(tb As TextBox)
         ' ── TextBox Grand Total (hitam pekat + teks kuning — kedua mode sama) ───────
-        If tb.Name = "TxtGrandtotal" Then
+        If tb.Name.Equals("TxtGrandtotal", StringComparison.OrdinalIgnoreCase) OrElse
+           tb.Name.Equals("TxtGrantotal", StringComparison.OrdinalIgnoreCase) Then
             tb.BackColor = Color.FromArgb(15, 23, 42)    ' #0F172A Slate-900 — hitam pekat
             tb.ForeColor = Color.White
             tb.BorderStyle = BorderStyle.FixedSingle
-            tb.Font = New Font(tb.Font.FontFamily, tb.Font.Size, FontStyle.Bold)
+            ' Mencegah fallback GDI+ Windows 7: muat langsung dari memori .ttf
+            tb.Font = GetDigitalFont(tb.Font.Size, FontStyle.Bold)
             Return
         End If
 

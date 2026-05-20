@@ -1667,14 +1667,9 @@
   <PropertyGroup>
   </PropertyGroup>
   <Target Name="SetVersionBeforeBuild" BeforeTargets="BeforeBuild">
-    <Exec Command="powershell -ExecutionPolicy Bypass -NoProfile -File &quot;$(MSBuildProjectDirectory)\SetVersion.ps1&quot; -ProjectDir &quot;$(MSBuildProjectDirectory)&quot; -UpdateXmlPath &quot;$(SolutionDir)update.xml&quot;" />
+    <Exec Command="powershell -ExecutionPolicy Bypass -NoProfile -File &quot;$(MSBuildProjectDirectory)\SetVersion.ps1&quot; -ProjectDir &quot;$(MSBuildProjectDirectory)&quot; -UpdateXmlPath &quot;$(MSBuildProjectDirectory)\..\update.xml&quot; -Configuration $(Configuration)" />
   </Target>
-  <!-- Otomatis buat AppKasir_Update.zip setelah Build Release selesai -->
-  <Target Name="BuildUpdateZip" AfterTargets="Build" Condition="'$(Configuration)' == 'Release'">
-    <Exec Command="powershell -ExecutionPolicy Bypass -NoProfile -NonInteractive -File &quot;$(MSBuildProjectDirectory)\Installer\Build-Update.ps1&quot; -NonInteractive" />
-    <Exec Command="powershell -ExecutionPolicy Bypass -NoProfile -NonInteractive -File &quot;$(MSBuildProjectDirectory)\Installer\Publish-Release.ps1&quot; -NonInteractive" />
-    <Message Text="##[info] Release selesai dipublish ke GitHub." Importance="high" />
-  </Target>
+  <!-- ZIP + Publish sekarang dijalankan manual via Installer\Publish-Release.ps1 -->
   <Import Project="$(MSBuildToolsPath)\Microsoft.VisualBasic.targets" />
   <Import Project="..\packages\Microsoft.Data.SqlClient.SNI.6.0.2\build\net462\Microsoft.Data.SqlClient.SNI.targets" Condition="Exists('..\packages\Microsoft.Data.SqlClient.SNI.6.0.2\build\net462\Microsoft.Data.SqlClient.SNI.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

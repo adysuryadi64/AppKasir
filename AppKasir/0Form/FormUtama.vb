@@ -2986,9 +2986,9 @@ Public Class FormUtama
     Private Sub PeriksaUpdateAplikasiToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles PeriksaUpdateAplikasiToolStripMenuItem.Click
         TutupSemuaForm()
         With FormCekUpdate
+            .StartPosition = FormStartPosition.CenterScreen
             .BringToFront()
-            .Dock = DockStyle.Fill
-            .ShowDialog()
+            .Show()
         End With
     End Sub
 
@@ -3111,6 +3111,8 @@ Public Class FormUtama
 
 
     Private Sub FormUtama_FormClosing(ByVal sender As Object, ByVal e As System.Windows.Forms.FormClosingEventArgs) Handles Me.FormClosing
+        If ModuleVariabel.AplikasiSedangUpdate Then Exit Sub
+
         ' Tanyakan apakah pengguna ingin melakukan backup sebelum keluar
         If MessageBox.Show("BACKUP DATA ?", "Konfirmasi Backup", MessageBoxButtons.YesNo) = DialogResult.Yes Then
             ' Panggil metode BackupDatabase jika pengguna memilih "Yes"

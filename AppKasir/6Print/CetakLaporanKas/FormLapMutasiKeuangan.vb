@@ -758,7 +758,7 @@ WHERE TGL_TRANSAKSI <= @BATAS"
 
     Private Sub BtnPrint_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles BtnPrint.Click
         Dim cetak As GdiCetakLaporanKas = ModulePrinterLaporanKas.BuatInstanceCetak(Me)
-        ModuleCetakLaporanKasInkjet.CetakNota(cetak)
+        ModuleCetakLaporanKasInkjet.SimanInstanceCetak(cetak)  ' simpan instance tanpa cetak
         If CmbProsesCetak.Text = "TANYA PILIH PRINTER" Then
             ModulePrinterLaporanKas.TanyaPilihPrinterLaporanKas(Me)
         Else

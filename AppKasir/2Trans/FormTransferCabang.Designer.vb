@@ -48,7 +48,7 @@ Partial Class FormTransferCabang
         Me.PanelTopInfo = New System.Windows.Forms.Panel()
         Me.BtnKeluarForm = New System.Windows.Forms.Button()
         Me.GBGrantotal = New System.Windows.Forms.GroupBox()
-        Me.TxtGrantotal = New System.Windows.Forms.TextBox()
+        Me.TxtGrandtotal = New System.Windows.Forms.TextBox()
         Me.BtnRefreshCabang = New System.Windows.Forms.Button()
         Me.TxtKeterangan = New System.Windows.Forms.TextBox()
         Me.LblKeterangan = New System.Windows.Forms.Label()
@@ -193,7 +193,7 @@ Partial Class FormTransferCabang
         Me.StokGudang.Name = "StokGudang"
         Me.StokGudang.ReadOnly = True
         '
-        'PanelCariNama
+        'PanelCari
         '
         Me.PanelCari.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom
         Me.PanelCari.Controls.Add(Me.BtnCari)
@@ -411,7 +411,7 @@ Partial Class FormTransferCabang
         Me.GBGrantotal.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.GBGrantotal.BackColor = System.Drawing.Color.LightSteelBlue
-        Me.GBGrantotal.Controls.Add(Me.TxtGrantotal)
+        Me.GBGrantotal.Controls.Add(Me.TxtGrandtotal)
         Me.GBGrantotal.Font = New System.Drawing.Font("Microsoft Sans Serif", 14.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.GBGrantotal.ForeColor = System.Drawing.Color.Black
         Me.GBGrantotal.Location = New System.Drawing.Point(766, 32)
@@ -421,21 +421,21 @@ Partial Class FormTransferCabang
         Me.GBGrantotal.TabStop = False
         Me.GBGrantotal.Text = "Grand Total"
         '
-        'TxtGrantotal
+        'TxtGrandtotal
         '
-        Me.TxtGrantotal.BackColor = System.Drawing.Color.Black
-        Me.TxtGrantotal.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
-        Me.TxtGrantotal.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.TxtGrantotal.Font = New System.Drawing.Font("Digital-7", 26.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.TxtGrantotal.ForeColor = System.Drawing.Color.Lime
-        Me.TxtGrantotal.Location = New System.Drawing.Point(3, 25)
-        Me.TxtGrantotal.Multiline = True
-        Me.TxtGrantotal.Name = "TxtGrantotal"
-        Me.TxtGrantotal.ReadOnly = True
-        Me.TxtGrantotal.Size = New System.Drawing.Size(519, 47)
-        Me.TxtGrantotal.TabIndex = 8
-        Me.TxtGrantotal.Text = "000"
-        Me.TxtGrantotal.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
+        Me.TxtGrandtotal.BackColor = System.Drawing.Color.Black
+        Me.TxtGrandtotal.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
+        Me.TxtGrandtotal.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.TxtGrandtotal.Font = New System.Drawing.Font("Digital-7", 26.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.TxtGrandtotal.ForeColor = System.Drawing.Color.Lime
+        Me.TxtGrandtotal.Location = New System.Drawing.Point(3, 25)
+        Me.TxtGrandtotal.Multiline = True
+        Me.TxtGrandtotal.Name = "TxtGrandtotal"
+        Me.TxtGrandtotal.ReadOnly = True
+        Me.TxtGrandtotal.Size = New System.Drawing.Size(519, 47)
+        Me.TxtGrandtotal.TabIndex = 8
+        Me.TxtGrandtotal.Text = "000"
+        Me.TxtGrandtotal.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
         '
         'BtnRefreshCabang
         '
@@ -585,7 +585,7 @@ Partial Class FormTransferCabang
     Friend WithEvents LblCabangTujuan As Label
     Friend WithEvents LblHeaderForm As Label
     Friend WithEvents GBGrantotal As GroupBox
-    Friend WithEvents TxtGrantotal As TextBox
+    Friend WithEvents TxtGrandtotal As TextBox
     Friend WithEvents CmbMode As ComboBox
     Friend WithEvents LblMode As Label
     Friend WithEvents BtnPelanggan As Button

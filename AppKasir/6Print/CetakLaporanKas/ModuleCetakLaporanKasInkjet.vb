@@ -1,4 +1,4 @@
-﻿Imports System.Drawing.Printing
+Imports System.Drawing.Printing
 
 ' ================================================================
 ' ModuleCetakLaporanKasInkjet
@@ -15,6 +15,11 @@ Module ModuleCetakLaporanKasInkjet
     Public Function GetCurrentCetak() As GdiCetakLaporanKas
         Return _cetak
     End Function
+
+    ' Simpan instance aktif tanpa mencetak — dipakai sebelum dialog pilihan printer muncul
+    Public Sub SimanInstanceCetak(cetak As GdiCetakLaporanKas)
+        _cetak = cetak
+    End Sub
 
     Public Sub CetakNota(cetak As GdiCetakLaporanKas)
         _cetak = cetak

@@ -2120,7 +2120,6 @@ Public Class TambahBarang
                     cmd.Parameters.AddWithValue("@SATUAN_UMUM_SEDANG", CmbSatUmumSedang.Text)
                     cmd.Parameters.AddWithValue("@SATUAN_UMUM_BESAR", CmbSatUmumBesar.Text)
 
-                    cmd.Parameters.AddWithValue("@ISI_UMUM_KECIL", ModuleAngka.ParseInteger(TxtIsiUmumKecil.Text))
                     cmd.Parameters.AddWithValue("@ISI_UMUM_KECIL", Math.Max(1, ModuleAngka.ParseInteger(TxtIsiUmumKecil.Text)))
                     cmd.Parameters.AddWithValue("@ISI_UMUM_SEDANG", Math.Max(1, ModuleAngka.ParseInteger(TxtIsiUmumSedang.Text)))
                     cmd.Parameters.AddWithValue("@ISI_UMUM_BESAR", Math.Max(1, ModuleAngka.ParseInteger(TxtIsiUmumBesar.Text)))

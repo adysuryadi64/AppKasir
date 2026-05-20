@@ -1,4 +1,3 @@
-Imports System.Drawing.Printing
 Imports System.IO
 Imports System.Text
 
@@ -52,8 +51,6 @@ Public Class FormTransferCabang
     Private _selectedStokGudang As Decimal = 0D
     Private _selectedSatuanOptions As New List(Of KeyValuePair(Of String, Integer))()
     Private _selectedKodeBarang As String = ""
-    Private _notaText As String = ""
-    Private WithEvents _printDoc As New PrintDocument()
     Private _panelTerima As Panel
     Private _dgvMasuk As DataGridView
     Private _btnTerima As Button
@@ -1968,7 +1965,7 @@ Public Class FormTransferCabang
             If row.IsNewRow Then Continue For
             total += ModuleAngka.ParseDecimal(row.Cells("TotalHarga").Value)
         Next
-        TxtGrantotal.Text = total.ToString("#,0.##", cultureIndonesia)
+        TxtGrandtotal.Text = total.ToString("#,0.##", cultureIndonesia)
     End Sub
 #End Region
 
@@ -2938,11 +2935,6 @@ Public Class FormTransferCabang
         Return result
     End Function
 
-    Private Sub PrintDoc_PrintPage(sender As Object, e As PrintPageEventArgs) Handles _printDoc.PrintPage
-        Using f As New Font("Consolas", 10.0F)
-            e.Graphics.DrawString(_notaText, f, Brushes.Black, New RectangleF(20, 20, e.MarginBounds.Width, e.MarginBounds.Height))
-        End Using
-    End Sub
 #End Region
 
     ' ============================================

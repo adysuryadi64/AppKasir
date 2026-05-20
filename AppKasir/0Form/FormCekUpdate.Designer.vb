@@ -31,6 +31,7 @@ Partial Class FormCekUpdate
         Me.ProgressBar = New System.Windows.Forms.ProgressBar()
         Me.PanelFooter = New System.Windows.Forms.Panel()
         Me.btnCekUpdate = New System.Windows.Forms.Button()
+        Me.rtbChangelog = New System.Windows.Forms.RichTextBox()
         Me.PanelHeader.SuspendLayout()
         Me.PanelBody.SuspendLayout()
         Me.PanelVersi.SuspendLayout()
@@ -76,6 +77,7 @@ Partial Class FormCekUpdate
         '
         'PanelBody — warna diset di TerapkanThemeForm()
         '
+        Me.PanelBody.Controls.Add(Me.rtbChangelog)
         Me.PanelBody.Controls.Add(Me.PanelVersi)
         Me.PanelBody.Controls.Add(Me.lblStatus)
         Me.PanelBody.Controls.Add(Me.ProgressBar)
@@ -83,7 +85,7 @@ Partial Class FormCekUpdate
         Me.PanelBody.Location = New System.Drawing.Point(0, 36)
         Me.PanelBody.Name = "PanelBody"
         Me.PanelBody.Padding = New System.Windows.Forms.Padding(24, 20, 24, 0)
-        Me.PanelBody.Size = New System.Drawing.Size(480, 194)
+        Me.PanelBody.Size = New System.Drawing.Size(480, 354)
         Me.PanelBody.TabIndex = 1
         '
         'PanelVersi — kartu info versi, warna diset di TerapkanThemeForm()
@@ -150,11 +152,25 @@ Partial Class FormCekUpdate
         Me.ProgressBar.TabIndex = 28
         Me.ProgressBar.Visible = False
         '
+        'rtbChangelog
+        '
+        Me.rtbChangelog.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right Or System.Windows.Forms.AnchorStyles.Bottom), System.Windows.Forms.AnchorStyles)
+        Me.rtbChangelog.Location = New System.Drawing.Point(24, 160)
+        Me.rtbChangelog.Name = "rtbChangelog"
+        Me.rtbChangelog.ReadOnly = True
+        Me.rtbChangelog.BackColor = System.Drawing.Color.White
+        Me.rtbChangelog.BorderStyle = System.Windows.Forms.BorderStyle.None
+        Me.rtbChangelog.Font = New System.Drawing.Font("Segoe UI", 9.0!)
+        Me.rtbChangelog.Size = New System.Drawing.Size(432, 174)
+        Me.rtbChangelog.TabIndex = 29
+        Me.rtbChangelog.Text = ""
+        '
         'PanelFooter — warna diset di TerapkanThemeForm()
         '
         Me.PanelFooter.Controls.Add(Me.btnCekUpdate)
         Me.PanelFooter.Dock = System.Windows.Forms.DockStyle.Bottom
-        Me.PanelFooter.Location = New System.Drawing.Point(0, 230)
+        Me.PanelFooter.Dock = System.Windows.Forms.DockStyle.Bottom
+        Me.PanelFooter.Location = New System.Drawing.Point(0, 390)
         Me.PanelFooter.Name = "PanelFooter"
         Me.PanelFooter.Padding = New System.Windows.Forms.Padding(24, 12, 24, 12)
         Me.PanelFooter.Size = New System.Drawing.Size(480, 60)
@@ -167,6 +183,7 @@ Partial Class FormCekUpdate
         Me.btnCekUpdate.FlatAppearance.BorderSize = 0
         Me.btnCekUpdate.FlatStyle = System.Windows.Forms.FlatStyle.Flat
         Me.btnCekUpdate.Font = New System.Drawing.Font("Segoe UI", 9.75!, System.Drawing.FontStyle.Bold)
+        Me.btnCekUpdate.BackColor = System.Drawing.SystemColors.MenuHighlight
         Me.btnCekUpdate.ForeColor = System.Drawing.Color.White
         Me.btnCekUpdate.Location = New System.Drawing.Point(320, 12)
         Me.btnCekUpdate.Name = "btnCekUpdate"
@@ -179,7 +196,7 @@ Partial Class FormCekUpdate
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(480, 290)
+        Me.ClientSize = New System.Drawing.Size(480, 450)
         Me.Controls.Add(Me.PanelBody)
         Me.Controls.Add(Me.PanelFooter)
         Me.Controls.Add(Me.PanelHeader)
@@ -212,4 +229,5 @@ Partial Class FormCekUpdate
     Friend WithEvents ProgressBar As ProgressBar
     Friend WithEvents PanelFooter As Panel
     Friend WithEvents btnCekUpdate As Button
+    Friend WithEvents rtbChangelog As RichTextBox
 End Class

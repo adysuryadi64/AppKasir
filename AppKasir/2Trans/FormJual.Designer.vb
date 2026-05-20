@@ -24,23 +24,23 @@ Partial Class FormJual
     Private Sub InitializeComponent()
         Me.components = New System.ComponentModel.Container()
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(FormJual))
-        Dim DataGridViewCellStyle1 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
-        Dim DataGridViewCellStyle15 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
-        Dim DataGridViewCellStyle16 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
-        Dim DataGridViewCellStyle17 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
-        Dim DataGridViewCellStyle2 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
-        Dim DataGridViewCellStyle3 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
-        Dim DataGridViewCellStyle4 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
-        Dim DataGridViewCellStyle5 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
-        Dim DataGridViewCellStyle6 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
-        Dim DataGridViewCellStyle7 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
-        Dim DataGridViewCellStyle8 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
-        Dim DataGridViewCellStyle9 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
-        Dim DataGridViewCellStyle10 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
-        Dim DataGridViewCellStyle11 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
-        Dim DataGridViewCellStyle12 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
-        Dim DataGridViewCellStyle13 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
-        Dim DataGridViewCellStyle14 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
+        Dim DataGridViewCellStyle18 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
+        Dim DataGridViewCellStyle32 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
+        Dim DataGridViewCellStyle33 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
+        Dim DataGridViewCellStyle34 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
+        Dim DataGridViewCellStyle19 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
+        Dim DataGridViewCellStyle20 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
+        Dim DataGridViewCellStyle21 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
+        Dim DataGridViewCellStyle22 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
+        Dim DataGridViewCellStyle23 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
+        Dim DataGridViewCellStyle24 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
+        Dim DataGridViewCellStyle25 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
+        Dim DataGridViewCellStyle26 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
+        Dim DataGridViewCellStyle27 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
+        Dim DataGridViewCellStyle28 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
+        Dim DataGridViewCellStyle29 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
+        Dim DataGridViewCellStyle30 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
+        Dim DataGridViewCellStyle31 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
         Me.TxtKodeBayarBank = New System.Windows.Forms.TextBox()
         Me.GBBayar = New System.Windows.Forms.GroupBox()
         Me.Label13 = New System.Windows.Forms.Label()
@@ -1120,7 +1120,7 @@ Partial Class FormJual
         Me.TxtGrandtotal.BackColor = System.Drawing.Color.Black
         Me.TxtGrandtotal.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
         Me.TxtGrandtotal.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.TxtGrandtotal.Font = New System.Drawing.Font("Digital-7", 72.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.TxtGrandtotal.Font = New System.Drawing.Font("Digital-7", 48.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.TxtGrandtotal.ForeColor = System.Drawing.Color.Yellow
         Me.TxtGrandtotal.Location = New System.Drawing.Point(3, 25)
         Me.TxtGrandtotal.Multiline = True
@@ -1388,31 +1388,31 @@ Partial Class FormJual
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.DgvDataTransaksi.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill
         Me.DgvDataTransaksi.CellBorderStyle = System.Windows.Forms.DataGridViewCellBorderStyle.Raised
-        DataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter
-        DataGridViewCellStyle1.Font = New System.Drawing.Font("Century Gothic", 11.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        DataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.[True]
-        Me.DgvDataTransaksi.ColumnHeadersDefaultCellStyle = DataGridViewCellStyle1
+        DataGridViewCellStyle18.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter
+        DataGridViewCellStyle18.Font = New System.Drawing.Font("Century Gothic", 11.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        DataGridViewCellStyle18.WrapMode = System.Windows.Forms.DataGridViewTriState.[True]
+        Me.DgvDataTransaksi.ColumnHeadersDefaultCellStyle = DataGridViewCellStyle18
         Me.DgvDataTransaksi.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
         Me.DgvDataTransaksi.Columns.AddRange(New System.Windows.Forms.DataGridViewColumn() {Me.Kode, Me.NamaBarang, Me.HargaBeli, Me.QTY, Me.Satuan, Me.Isi, Me.Totalhargabeli, Me.Harga, Me.QtySat, Me.DiskonPersen, Me.DiskonRp, Me.TotalDiskon, Me.TotalHarga, Me.StokToko, Me.StokGudang, Me.Stok, Me.SerialNumber})
-        DataGridViewCellStyle15.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft
-        DataGridViewCellStyle15.BackColor = System.Drawing.SystemColors.Window
-        DataGridViewCellStyle15.Font = New System.Drawing.Font("Century Gothic", 9.75!, System.Drawing.FontStyle.Bold)
-        DataGridViewCellStyle15.ForeColor = System.Drawing.SystemColors.ControlText
-        DataGridViewCellStyle15.SelectionBackColor = System.Drawing.SystemColors.Highlight
-        DataGridViewCellStyle15.SelectionForeColor = System.Drawing.SystemColors.HighlightText
-        DataGridViewCellStyle15.WrapMode = System.Windows.Forms.DataGridViewTriState.[False]
-        Me.DgvDataTransaksi.DefaultCellStyle = DataGridViewCellStyle15
+        DataGridViewCellStyle32.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft
+        DataGridViewCellStyle32.BackColor = System.Drawing.SystemColors.Window
+        DataGridViewCellStyle32.Font = New System.Drawing.Font("Century Gothic", 9.75!, System.Drawing.FontStyle.Bold)
+        DataGridViewCellStyle32.ForeColor = System.Drawing.SystemColors.ControlText
+        DataGridViewCellStyle32.SelectionBackColor = System.Drawing.SystemColors.Highlight
+        DataGridViewCellStyle32.SelectionForeColor = System.Drawing.SystemColors.HighlightText
+        DataGridViewCellStyle32.WrapMode = System.Windows.Forms.DataGridViewTriState.[False]
+        Me.DgvDataTransaksi.DefaultCellStyle = DataGridViewCellStyle32
         Me.DgvDataTransaksi.EditMode = System.Windows.Forms.DataGridViewEditMode.EditOnKeystroke
         Me.DgvDataTransaksi.Location = New System.Drawing.Point(3, 198)
         Me.DgvDataTransaksi.Name = "DgvDataTransaksi"
-        DataGridViewCellStyle16.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft
-        DataGridViewCellStyle16.BackColor = System.Drawing.SystemColors.Window
-        DataGridViewCellStyle16.Font = New System.Drawing.Font("Century Gothic", 9.75!, System.Drawing.FontStyle.Bold)
-        DataGridViewCellStyle16.ForeColor = System.Drawing.SystemColors.ControlText
-        DataGridViewCellStyle16.WrapMode = System.Windows.Forms.DataGridViewTriState.[True]
-        Me.DgvDataTransaksi.RowHeadersDefaultCellStyle = DataGridViewCellStyle16
-        DataGridViewCellStyle17.Font = New System.Drawing.Font("Century Gothic", 9.75!, System.Drawing.FontStyle.Bold)
-        Me.DgvDataTransaksi.RowsDefaultCellStyle = DataGridViewCellStyle17
+        DataGridViewCellStyle33.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft
+        DataGridViewCellStyle33.BackColor = System.Drawing.SystemColors.Window
+        DataGridViewCellStyle33.Font = New System.Drawing.Font("Century Gothic", 9.75!, System.Drawing.FontStyle.Bold)
+        DataGridViewCellStyle33.ForeColor = System.Drawing.SystemColors.ControlText
+        DataGridViewCellStyle33.WrapMode = System.Windows.Forms.DataGridViewTriState.[True]
+        Me.DgvDataTransaksi.RowHeadersDefaultCellStyle = DataGridViewCellStyle33
+        DataGridViewCellStyle34.Font = New System.Drawing.Font("Century Gothic", 9.75!, System.Drawing.FontStyle.Bold)
+        Me.DgvDataTransaksi.RowsDefaultCellStyle = DataGridViewCellStyle34
         Me.DgvDataTransaksi.ScrollBars = System.Windows.Forms.ScrollBars.Vertical
         Me.DgvDataTransaksi.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.CellSelect
         Me.DgvDataTransaksi.Size = New System.Drawing.Size(1289, 353)
@@ -1433,19 +1433,19 @@ Partial Class FormJual
         '
         'HargaBeli
         '
-        DataGridViewCellStyle2.Format = "#,0.#"
-        DataGridViewCellStyle2.NullValue = Nothing
-        Me.HargaBeli.DefaultCellStyle = DataGridViewCellStyle2
+        DataGridViewCellStyle19.Format = "#,0.#"
+        DataGridViewCellStyle19.NullValue = Nothing
+        Me.HargaBeli.DefaultCellStyle = DataGridViewCellStyle19
         Me.HargaBeli.HeaderText = "Harga Beli"
         Me.HargaBeli.Name = "HargaBeli"
         Me.HargaBeli.Visible = False
         '
         'QTY
         '
-        DataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight
-        DataGridViewCellStyle3.Format = "#,0.#"
-        DataGridViewCellStyle3.NullValue = Nothing
-        Me.QTY.DefaultCellStyle = DataGridViewCellStyle3
+        DataGridViewCellStyle20.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight
+        DataGridViewCellStyle20.Format = "#,0.#"
+        DataGridViewCellStyle20.NullValue = Nothing
+        Me.QTY.DefaultCellStyle = DataGridViewCellStyle20
         Me.QTY.FillWeight = 40.0!
         Me.QTY.HeaderText = "QTY"
         Me.QTY.Name = "QTY"
@@ -1459,8 +1459,8 @@ Partial Class FormJual
         '
         'Isi
         '
-        DataGridViewCellStyle4.Format = "#,0.#"
-        Me.Isi.DefaultCellStyle = DataGridViewCellStyle4
+        DataGridViewCellStyle21.Format = "#,0.#"
+        Me.Isi.DefaultCellStyle = DataGridViewCellStyle21
         Me.Isi.FillWeight = 30.0!
         Me.Isi.HeaderText = "Isi"
         Me.Isi.Name = "Isi"
@@ -1468,52 +1468,52 @@ Partial Class FormJual
         '
         'Totalhargabeli
         '
-        DataGridViewCellStyle5.Format = "#,0.#"
-        Me.Totalhargabeli.DefaultCellStyle = DataGridViewCellStyle5
+        DataGridViewCellStyle22.Format = "#,0.#"
+        Me.Totalhargabeli.DefaultCellStyle = DataGridViewCellStyle22
         Me.Totalhargabeli.HeaderText = "Total Harga Beli"
         Me.Totalhargabeli.Name = "Totalhargabeli"
         Me.Totalhargabeli.Visible = False
         '
         'Harga
         '
-        DataGridViewCellStyle6.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight
-        DataGridViewCellStyle6.Format = "#,0.#"
-        Me.Harga.DefaultCellStyle = DataGridViewCellStyle6
+        DataGridViewCellStyle23.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight
+        DataGridViewCellStyle23.Format = "#,0.#"
+        Me.Harga.DefaultCellStyle = DataGridViewCellStyle23
         Me.Harga.FillWeight = 70.0!
         Me.Harga.HeaderText = "Harga Jual"
         Me.Harga.Name = "Harga"
         '
         'QtySat
         '
-        DataGridViewCellStyle7.Format = "#,0.#"
-        Me.QtySat.DefaultCellStyle = DataGridViewCellStyle7
+        DataGridViewCellStyle24.Format = "#,0.#"
+        Me.QtySat.DefaultCellStyle = DataGridViewCellStyle24
         Me.QtySat.HeaderText = "QtySat"
         Me.QtySat.Name = "QtySat"
         Me.QtySat.Visible = False
         '
         'DiskonPersen
         '
-        DataGridViewCellStyle8.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight
-        DataGridViewCellStyle8.Format = "#,0.#"
-        Me.DiskonPersen.DefaultCellStyle = DataGridViewCellStyle8
+        DataGridViewCellStyle25.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight
+        DataGridViewCellStyle25.Format = "#,0.#"
+        Me.DiskonPersen.DefaultCellStyle = DataGridViewCellStyle25
         Me.DiskonPersen.FillWeight = 60.0!
         Me.DiskonPersen.HeaderText = "Diskon%"
         Me.DiskonPersen.Name = "DiskonPersen"
         '
         'DiskonRp
         '
-        DataGridViewCellStyle9.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight
-        DataGridViewCellStyle9.Format = "#,0.#"
-        Me.DiskonRp.DefaultCellStyle = DataGridViewCellStyle9
+        DataGridViewCellStyle26.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight
+        DataGridViewCellStyle26.Format = "#,0.#"
+        Me.DiskonRp.DefaultCellStyle = DataGridViewCellStyle26
         Me.DiskonRp.FillWeight = 80.0!
         Me.DiskonRp.HeaderText = "Diskon Rp"
         Me.DiskonRp.Name = "DiskonRp"
         '
         'TotalDiskon
         '
-        DataGridViewCellStyle10.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight
-        DataGridViewCellStyle10.Format = "#,0.#"
-        Me.TotalDiskon.DefaultCellStyle = DataGridViewCellStyle10
+        DataGridViewCellStyle27.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight
+        DataGridViewCellStyle27.Format = "#,0.#"
+        Me.TotalDiskon.DefaultCellStyle = DataGridViewCellStyle27
         Me.TotalDiskon.FillWeight = 80.0!
         Me.TotalDiskon.HeaderText = "Total Diskon"
         Me.TotalDiskon.Name = "TotalDiskon"
@@ -1521,19 +1521,19 @@ Partial Class FormJual
         '
         'TotalHarga
         '
-        DataGridViewCellStyle11.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight
-        DataGridViewCellStyle11.Format = "#,0.#"
-        Me.TotalHarga.DefaultCellStyle = DataGridViewCellStyle11
+        DataGridViewCellStyle28.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight
+        DataGridViewCellStyle28.Format = "#,0.#"
+        Me.TotalHarga.DefaultCellStyle = DataGridViewCellStyle28
         Me.TotalHarga.HeaderText = "Total Harga"
         Me.TotalHarga.Name = "TotalHarga"
         Me.TotalHarga.ReadOnly = True
         '
         'StokToko
         '
-        DataGridViewCellStyle12.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight
-        DataGridViewCellStyle12.BackColor = System.Drawing.Color.LightBlue
-        DataGridViewCellStyle12.Format = "#,0.#"
-        Me.StokToko.DefaultCellStyle = DataGridViewCellStyle12
+        DataGridViewCellStyle29.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight
+        DataGridViewCellStyle29.BackColor = System.Drawing.Color.LightBlue
+        DataGridViewCellStyle29.Format = "#,0.#"
+        Me.StokToko.DefaultCellStyle = DataGridViewCellStyle29
         Me.StokToko.FillWeight = 60.0!
         Me.StokToko.HeaderText = "S Toko"
         Me.StokToko.Name = "StokToko"
@@ -1541,10 +1541,10 @@ Partial Class FormJual
         '
         'StokGudang
         '
-        DataGridViewCellStyle13.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight
-        DataGridViewCellStyle13.BackColor = System.Drawing.Color.LightBlue
-        DataGridViewCellStyle13.Format = "#,0.#"
-        Me.StokGudang.DefaultCellStyle = DataGridViewCellStyle13
+        DataGridViewCellStyle30.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight
+        DataGridViewCellStyle30.BackColor = System.Drawing.Color.LightBlue
+        DataGridViewCellStyle30.Format = "#,0.#"
+        Me.StokGudang.DefaultCellStyle = DataGridViewCellStyle30
         Me.StokGudang.FillWeight = 70.0!
         Me.StokGudang.HeaderText = "S Gudang"
         Me.StokGudang.Name = "StokGudang"
@@ -1552,10 +1552,10 @@ Partial Class FormJual
         '
         'Stok
         '
-        DataGridViewCellStyle14.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight
-        DataGridViewCellStyle14.Format = "#,0.#"
-        DataGridViewCellStyle14.NullValue = Nothing
-        Me.Stok.DefaultCellStyle = DataGridViewCellStyle14
+        DataGridViewCellStyle31.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight
+        DataGridViewCellStyle31.Format = "#,0.#"
+        DataGridViewCellStyle31.NullValue = Nothing
+        Me.Stok.DefaultCellStyle = DataGridViewCellStyle31
         Me.Stok.FillWeight = 30.0!
         Me.Stok.HeaderText = "Stok"
         Me.Stok.Name = "Stok"

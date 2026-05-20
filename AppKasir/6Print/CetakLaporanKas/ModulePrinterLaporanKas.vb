@@ -1,4 +1,4 @@
-﻿' ================================================================
+' ================================================================
 ' ModulePrinterLaporanKas
 ' Entry point untuk cetak laporan mutasi keuangan dari FormLapSaldoKas.
 ' Data dibaca langsung dari TextBox form via BuatInstanceCetak().
@@ -143,8 +143,6 @@ Module ModulePrinterLaporanKas
                                 End Sub
         frm.ShowDialog()
         If Not String.IsNullOrEmpty(pilihan) Then
-            Dim cetak As GdiCetakLaporanKas = BuatInstanceCetak(form)
-            ModuleCetakLaporanKasInkjet.CetakNota(cetak)
             CetakLaporanKas(pilihan)
         End If
     End Sub

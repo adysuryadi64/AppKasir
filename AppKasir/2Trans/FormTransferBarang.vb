@@ -56,6 +56,7 @@ Public Class FormTransferBarang
         End If
 
         _formSudahSiap = False
+        AddHandler _searchTimer.Tick, AddressOf SearchTimer_Tick
     End Sub
 
     Private Sub FormTransferBarang_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
@@ -193,6 +194,9 @@ Public Class FormTransferBarang
     End Sub
 
     Private Sub KosongTxtboxcari()
+        ' Stop search timer — cegah query sisa dari sesi sebelumnya
+        _searchTimer.Stop()
+        _searchKeywordPending = ""
         TxtKode.Clear()
         TxtQty.Clear()
         Txtsatuan.Clear()
@@ -296,6 +300,11 @@ Public Class FormTransferBarang
     Dim isBarcodeScan As Boolean = False
     Dim suppressTextChanged As Boolean = False
 
+    ' ── Debounce timer untuk pencarian DGV inline ─────────────────────
+    ' Menunda query ke DB sampai user berhenti ketik 150ms — cegah query per keystroke
+    Private _searchTimer As New System.Windows.Forms.Timer() With {.Interval = 150}
+    Private _searchKeywordPending As String = ""
+
     ' ===== DGV INLINE EDIT + LISTBOX CONTEXT =====
     Private _dgvEditingTextBox As TextBox = Nothing
     Private _konteksLstBarang As String = "TXTNAMA"  ' "TXTNAMA" atau "DGV"
@@ -317,6 +326,7 @@ Public Class FormTransferBarang
         If e.KeyCode = Keys.Enter Then
             isBarcodeScan = (elapsedMs < 50) AndAlso (TxtNama.Text.Length >= 5 OrElse TxtNama.Text.All(AddressOf Char.IsDigit))
             suppressTextChanged = True
+            _konteksLstBarang = "TXTNAMA"
             ProsesInput(isBarcodeScan)
 
             'Logika existing untuk listbox
@@ -328,6 +338,8 @@ Public Class FormTransferBarang
                 e.SuppressKeyPress = True
             End If
         ElseIf e.KeyCode = Keys.Down AndAlso LstBarang.Visible AndAlso LstBarang.Items.Count > 0 Then
+            _konteksLstBarang = "TXTNAMA"
+            _teksSebelumPindahKeLstBarang = TxtNama.Text
             LstBarang.Focus()
             LstBarang.SelectedIndex = 0
             e.SuppressKeyPress = True
@@ -426,7 +438,7 @@ Public Class FormTransferBarang
 
     Private Sub TampilkanDaftarBarang(ByVal searchKeyword As String)
         ' Mengambil data dari database
-        Dim query As String = "SELECT NAMA_BARANG, BARCODE_KECIL, BARCODE_SEDANG, BARCODE_BESAR ,STOK_TOKO, STOK_GUDANG FROM tbl_barang WHERE STATUS = 'Aktif' AND (ID_BARANG LIKE @Nama OR NAMA_BARANG LIKE @Nama OR BARCODE_KECIL LIKE @Nama OR BARCODE_SEDANG LIKE @Nama OR BARCODE_BESAR LIKE @Nama) ORDER BY NAMA_BARANG"
+        Dim query As String = "SELECT NAMA_BARANG, BARCODE_KECIL, BARCODE_SEDANG, BARCODE_BESAR, STOK_TOKO, STOK_GUDANG FROM tbl_barang WHERE STATUS = 'Aktif' AND (ID_BARANG LIKE @Nama OR NAMA_BARANG LIKE @Nama OR BARCODE_KECIL LIKE @Nama OR BARCODE_SEDANG LIKE @Nama OR BARCODE_BESAR LIKE @Nama) ORDER BY NAMA_BARANG LIMIT 200"
 
         Using cmd As New MySqlCommand(query, conn)
             cmd.Parameters.AddWithValue("@Nama", "%" & searchKeyword & "%")
@@ -461,6 +473,10 @@ Public Class FormTransferBarang
                 If LstBarang.Items.Count > 0 Then
                     If _konteksLstBarang = "DGV" Then
                         PosisikanLstBarangDiBawahSel()
+                        LstBarang.BringToFront()
+                    Else
+                        ' Konteks TXTNAMA — posisikan di bawah TxtNama
+                        PosisikanLstBarangDiBawahTxtNama()
                         LstBarang.BringToFront()
                     End If
                     ' Simpan posisi sel saat ListBox dibuka — untuk guard CellLeave
@@ -508,9 +524,11 @@ Public Class FormTransferBarang
                                                            _sedangPindahKeLstBarang = False
                                                        End Sub))
                     Else
+                        ' Jalur TxtNama — kembalikan fokus ke TxtNama, restore teks
                         Dim teksSimpan As String = _teksSebelumPindahKeLstBarang
                         _teksSebelumPindahKeLstBarang = ""
-                        SetupFocusToGrid()
+                        TutupListBox()
+                        TxtNama.Focus()
                         If Not String.IsNullOrEmpty(teksSimpan) Then
                             TxtNama.Text = teksSimpan
                             TxtNama.SelectionStart = teksSimpan.Length
@@ -548,9 +566,10 @@ Public Class FormTransferBarang
                                                        _sedangPindahKeLstBarang = False
                                                    End Sub))
                 Else
+                    ' Jalur TxtNama — kembalikan fokus ke TxtNama, restore teks
                     Dim teksSimpan As String = _teksSebelumPindahKeLstBarang
                     _teksSebelumPindahKeLstBarang = ""
-                    SetupFocusToGrid()
+                    TxtNama.Focus()
                     If Not String.IsNullOrEmpty(teksSimpan) Then
                         TxtNama.Text = teksSimpan
                         TxtNama.SelectionStart = teksSimpan.Length
@@ -919,12 +938,12 @@ Public Class FormTransferBarang
     End Sub
 
     ''' <summary>
-    ''' CellEnter — khusus kolom Satuan langsung BeginEdit dan buka dropdown
-    ''' agar user bisa langsung pilih satuan pakai panah atas/bawah tanpa F2 atau klik.
-    ''' Sama dengan perilaku di FormJual dan FormPembelian.
+    ''' CellEnter — kolom Satuan: langsung BeginEdit dan buka dropdown.
+    ''' Kolom Nama: set ReadOnly berdasarkan apakah Id sudah terisi.
     ''' </summary>
     Private Sub DgvData_CellEnter(sender As Object, e As DataGridViewCellEventArgs) Handles DgvData.CellEnter
         If e.RowIndex >= 0 AndAlso e.ColumnIndex >= 0 Then
+            ' Kolom Satuan — buka dropdown langsung agar bisa pilih pakai panah
             If DgvData.Columns(e.ColumnIndex).Name = "Satuan" Then
                 DgvData.BeginInvoke(New Action(Sub()
                                                    If DgvData.CurrentCell IsNot Nothing AndAlso
@@ -938,11 +957,49 @@ Public Class FormTransferBarang
                                                    End If
                                                End Sub))
             End If
+
+            ' Kolom Nama (index 1) — set ReadOnly berdasarkan apakah Id sudah terisi
+            If e.ColumnIndex = 1 Then
+                Dim idValue = DgvData.Rows(e.RowIndex).Cells("Id").Value
+                If idValue IsNot Nothing AndAlso Not String.IsNullOrEmpty(idValue.ToString().Trim()) Then
+                    DgvData.Rows(e.RowIndex).Cells("nama").ReadOnly = True
+                    DgvData.Rows(e.RowIndex).Cells("nama").Style.BackColor = ModuleTheme.C(ModuleTheme.L_Subtle, ModuleTheme.D_Subtle)
+                    DgvData.Rows(e.RowIndex).Cells("nama").Style.ForeColor = ModuleTheme.C(ModuleTheme.L_Text, ModuleTheme.D_Text)
+                Else
+                    DgvData.Rows(e.RowIndex).Cells("nama").ReadOnly = False
+                    DgvData.Rows(e.RowIndex).Cells("nama").Style.BackColor = ModuleTheme.C(ModuleTheme.L_Surface, ModuleTheme.D_Surface)
+                    DgvData.Rows(e.RowIndex).Cells("nama").Style.ForeColor = ModuleTheme.C(ModuleTheme.L_Text, ModuleTheme.D_Text)
+                End If
+            End If
         End If
     End Sub
 
     Private Sub DgvData_DataError(ByVal sender As Object, ByVal e As System.Windows.Forms.DataGridViewDataErrorEventArgs) Handles DgvData.DataError
         e.Cancel = True
+    End Sub
+
+    ''' <summary>
+    ''' Tutup ListBox otomatis saat user pindah sel di DGV.
+    ''' Guard: jangan tutup jika ListBox sedang difokus, sedang transisi, atau masih di sel yang sama.
+    ''' </summary>
+    Private Sub DgvData_CellLeave(sender As Object, e As DataGridViewCellEventArgs) Handles DgvData.CellLeave
+        If Not Me.IsHandleCreated Then Return
+        ' BeginInvoke: cek SETELAH fokus benar-benar berpindah.
+        ' Tanpa ini: saat user klik ListBox, CellLeave terpicu sebelum ListBox dapat fokus
+        ' → LstBarang.Focused masih False → ListBox ditutup sebelum user bisa memilih.
+        Me.BeginInvoke(New Action(Sub()
+                                      If LstBarang.Visible Then
+                                          If LstBarang.Focused OrElse _sedangPindahKeLstBarang Then Return
+                                          If _listBoxDibukaDiRow >= 0 AndAlso
+                                             DgvData.CurrentCell IsNot Nothing AndAlso
+                                             DgvData.CurrentCell.RowIndex = _listBoxDibukaDiRow AndAlso
+                                             DgvData.CurrentCell.ColumnIndex = _listBoxDibukaDiCol Then Return
+                                          LstBarang.Visible = False
+                                          LstBarang.Items.Clear()
+                                          _listBoxDibukaDiRow = -1
+                                          _listBoxDibukaDiCol = -1
+                                      End If
+                                  End Sub))
     End Sub
 
     Private Sub DgvData_KeyDown(ByVal sender As Object, ByVal e As KeyEventArgs) Handles DgvData.KeyDown
@@ -958,6 +1015,7 @@ Public Class FormTransferBarang
                     If Not String.IsNullOrEmpty(DgvData.Rows(rowIndex).Cells("Nama").Value.ToString()) Then
                         ' Hapus baris jika nilai di kolom "Nama" tidak kosong
                         DgvData.Rows.RemoveAt(rowIndex)
+                        DgvData.ClearSelection()
                         UpdateSemuaTotal()
                         SetupFocusToGrid()
                     Else
@@ -1096,7 +1154,7 @@ Public Class FormTransferBarang
                     If LstBarang.Focused Then
                         Return MyBase.ProcessCmdKey(msg, keyData)
                     End If
-                    ' Simpan teks sebelum pindah
+                    ' Simpan teks sebelum pindah ke ListBox agar bisa di-restore saat Up
                     If _konteksLstBarang = "DGV" AndAlso _dgvEditingTextBox IsNot Nothing Then
                         _teksSebelumPindahKeLstBarang = _dgvEditingTextBox.Text
                     Else
@@ -1104,13 +1162,15 @@ Public Class FormTransferBarang
                     End If
                     _sedangPindahKeLstBarang = True
                     If LstBarang.SelectedIndex < 0 Then LstBarang.SelectedIndex = 0
+                    ' Nested BeginInvoke: lapis 1 tunggu CellLeave selesai,
+                    ' lapis 2 EndEdit dulu agar DGV tidak merebut fokus kembali, lalu Focus ke ListBox.
                     Me.BeginInvoke(New Action(Sub()
                                                   Me.BeginInvoke(New Action(Sub()
                                                                                 If LstBarang.Visible Then
                                                                                     _sedangSetNilaiDariListBox = True
                                                                                     DgvData.EndEdit()
                                                                                     _sedangSetNilaiDariListBox = False
-                                                                                    SetupFocusToGrid()
+                                                                                    LstBarang.Focus()
                                                                                 End If
                                                                                 _sedangPindahKeLstBarang = False
                                                                             End Sub))
@@ -1127,9 +1187,9 @@ Public Class FormTransferBarang
                 Case Keys.Escape
                     TutupListBox()
                     If _konteksLstBarang = "DGV" AndAlso _dgvEditingTextBox IsNot Nothing Then
-                        SetupFocusToGrid()
+                        _dgvEditingTextBox.Focus()
                     Else
-                        SetupFocusToGrid()
+                        TxtNama.Focus()
                     End If
                     Return True
             End Select
@@ -1154,6 +1214,8 @@ Public Class FormTransferBarang
             If _sedangPindahKeLstBarang OrElse LstBarang.Focused OrElse LstBarang.Visible Then
                 Return
             End If
+            _searchTimer.Stop()
+            _searchKeywordPending = ""
             LstBarang.Items.Clear()
             LstBarang.Visible = False
             Return
@@ -1170,12 +1232,14 @@ Public Class FormTransferBarang
         ' Lanjutkan hanya jika ada setidaknya 2 huruf valid
         If validLetters.Length < 2 Then Return
 
-        ' Parse format qty*harga*nama atau qty*nama
+        ' Parse format qty*harga*nama atau qty*nama — ekstrak keyword pencarian
         Dim indexAsteriskQty As Integer = currentText.IndexOf("*")
         Dim indexAsteriskHarga As Integer = -1
         If indexAsteriskQty >= 0 Then
             indexAsteriskHarga = currentText.IndexOf("*", indexAsteriskQty + 1)
         End If
+
+        Dim keyword As String = ""
 
         If indexAsteriskQty >= 0 And indexAsteriskHarga > indexAsteriskQty Then
             ' Dua * : qty*harga*nama
@@ -1192,8 +1256,7 @@ Public Class FormTransferBarang
             Dim hargaSebelumAsterisk As String = currentText.Substring(indexAsteriskQty + 1, indexAsteriskHarga - indexAsteriskQty - 1).Trim()
             TxtHarga.Text = hargaSebelumAsterisk
 
-            Dim searchKeyword As String = currentText.Substring(indexAsteriskHarga + 1).Trim()
-            TampilkanDaftarBarang(searchKeyword)
+            keyword = currentText.Substring(indexAsteriskHarga + 1).Trim()
 
         ElseIf indexAsteriskQty >= 0 Then
             ' Satu * : qty*nama
@@ -1207,13 +1270,28 @@ Public Class FormTransferBarang
                 TxtQty.Text = "1"
             End If
 
-            Dim searchKeyword As String = currentText.Substring(indexAsteriskQty + 1).Trim()
-            TampilkanDaftarBarang(searchKeyword)
+            keyword = currentText.Substring(indexAsteriskQty + 1).Trim()
 
         Else
             ' Tanpa * : langsung nama
-            TampilkanDaftarBarang(currentText)
+            keyword = currentText
             TxtQty.Text = "1"
+        End If
+
+        ' Debounce: tunda query sampai user berhenti ketik 150ms
+        If Not String.IsNullOrEmpty(keyword) Then
+            _searchKeywordPending = keyword
+            _searchTimer.Stop()
+            _searchTimer.Start()
+        End If
+    End Sub
+
+    ''' <summary>Dipanggil oleh _searchTimer setelah debounce 150ms.</summary>
+    Private Sub SearchTimer_Tick(sender As Object, e As EventArgs)
+        _searchTimer.Stop()
+        If Not String.IsNullOrEmpty(_searchKeywordPending) Then
+            TampilkanDaftarBarang(_searchKeywordPending)
+            _searchKeywordPending = ""
         End If
     End Sub
 
@@ -1231,13 +1309,14 @@ Public Class FormTransferBarang
                 End If
                 _sedangPindahKeLstBarang = True
                 If LstBarang.SelectedIndex < 0 Then LstBarang.SelectedIndex = 0
+                ' Nested BeginInvoke: EndEdit dulu agar DGV tidak merebut fokus, lalu Focus ke ListBox
                 Me.BeginInvoke(New Action(Sub()
                                               Me.BeginInvoke(New Action(Sub()
                                                                             If LstBarang.Visible Then
                                                                                 _sedangSetNilaiDariListBox = True
                                                                                 DgvData.EndEdit()
                                                                                 _sedangSetNilaiDariListBox = False
-                                                                                SetupFocusToGrid()
+                                                                                LstBarang.Focus()
                                                                             End If
                                                                             _sedangPindahKeLstBarang = False
                                                                         End Sub))
@@ -1281,6 +1360,17 @@ Public Class FormTransferBarang
         LstBarang.Items.Clear()
         _listBoxDibukaDiRow = -1
         _listBoxDibukaDiCol = -1
+    End Sub
+
+    ''' <summary>Posisikan ListBox tepat di bawah TxtNama (konteks pencarian atas).</summary>
+    Private Sub PosisikanLstBarangDiBawahTxtNama()
+        Try
+            Dim ptTxt = TxtNama.PointToScreen(New Point(0, TxtNama.Height))
+            Dim ptForm = Me.PointToClient(ptTxt)
+            LstBarang.Location = New Point(ptForm.X, ptForm.Y)
+            LstBarang.Width = Math.Max(300, TxtNama.Width)
+        Catch
+        End Try
     End Sub
 
     ''' <summary>Posisikan ListBox tepat di bawah sel DGV yang aktif.</summary>
@@ -2082,4 +2172,7 @@ Public Class FormTransferBarang
                         MessageBoxButtons.OK, MessageBoxIcon.Information)
     End Sub
 
+    Private Sub BtnKeluar_Click_1(sender As Object, e As EventArgs) Handles BtnKeluar.Click
+        Me.Close()
+    End Sub
 End Class
