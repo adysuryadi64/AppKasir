@@ -1,5 +1,4 @@
 ﻿Berikut adalah ringkasan pembaruan aplikasi Kasir:
-* Perbaikan kompatibilitas dengan sistem operasi Windows 7 untuk memastikan aplikasi berjalan lancar dan aman.
-* Peningkatan keamanan dengan mengaktifkan protokol TLS 1.2 untuk koneksi internet yang lebih aman.
-* Pembaruan informasi changelog yang lebih rapi dan mudah dibaca, sehingga Anda dapat memahami perubahan dan peningkatan yang dilakukan pada aplikasi Kasir.
-* Pembaruan versi aplikasi Kasir dengan perubahan minor untuk memperbaiki kinerja dan kestabilan aplikasi.
+* Versi aplikasi Kasir telah diperbarui untuk memperbaiki kinerja dan stabilitas.
+* Perubahan ini mencakup perbaikan pada sistem internal untuk meningkatkan keamanan dan efisiensi.
+* Kami tetap berkomitmen untuk memperbarui aplikasi Kasir secara teratur untuk memastikan pengalaman pengguna yang lebih baik dan mendukung kebutuhan operasional toko Anda.
