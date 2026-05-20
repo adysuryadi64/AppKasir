@@ -244,12 +244,8 @@ Write-Host ""
 
 # Tampilkan file yang dikecualikan jika mau debug
 if (-not $NonInteractive) {
-    $showSkipped = Read-Host "Tampilkan daftar file yang dikecualikan? (y/N)"
-    if ($showSkipped -eq 'y') {
-        Write-Host ""
-        Write-Host "  File dikecualikan:" -ForegroundColor DarkGray
-        $skipped | ForEach-Object { Write-Host $_ -ForegroundColor DarkGray }
-    }
     Write-Host ""
-    Read-Host "Tekan Enter untuk keluar"
+    Write-Host "  File dikecualikan:" -ForegroundColor DarkGray
+    $skipped | ForEach-Object { Write-Host $_ -ForegroundColor DarkGray }
+    Write-Host ""
 }

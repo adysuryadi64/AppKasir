@@ -2985,11 +2985,24 @@ Public Class FormUtama
 
     Private Sub PeriksaUpdateAplikasiToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles PeriksaUpdateAplikasiToolStripMenuItem.Click
         TutupSemuaForm()
-        With FormCekUpdate
-            .StartPosition = FormStartPosition.CenterScreen
-            .BringToFront()
-            .Show()
-        End With
+        
+        ' Buat efek overlay gelap (lightbox)
+        Using bg As New Form()
+            bg.StartPosition = FormStartPosition.Manual
+            bg.Bounds = Me.Bounds
+            bg.FormBorderStyle = FormBorderStyle.None
+            bg.Opacity = 0.6D
+            bg.BackColor = Color.Black
+            bg.ShowInTaskbar = False
+            bg.Show(Me)
+            
+            With FormCekUpdate
+                .StartPosition = FormStartPosition.CenterScreen
+                .ShowDialog(bg)
+            End With
+            
+            bg.Close()
+        End Using
     End Sub
 
     Private Sub CekIpKomputerToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles CekIpKomputerToolStripMenuItem.Click

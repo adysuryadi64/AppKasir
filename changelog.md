@@ -1,6 +1,5 @@
-﻿Tentu, berikut adalah ringkasan pembaruan aplikasi Kasir yang ramah untuk pengguna:
+﻿Tentu, ini ringkasan pembaruan untuk aplikasi Kasir Anda:
 
-*   **Perbaikan Penting untuk Transfer Stok:** Kami telah memperbaiki masalah di mana harga barang terkadang tidak sesuai saat melakukan transfer stok antar gudang atau cabang. Sekarang harga akan selalu akurat, memastikan laporan keuangan Anda selalu benar.
-*   **Peningkatan Proses Jual Beli dan Stok:** Kami telah melakukan banyak perbaikan di balik layar untuk membuat proses penjualan, pembelian, dan pengelolaan stok barang (termasuk transfer antar lokasi atau cabang) menjadi lebih cepat dan minim kesalahan.
-*   **Laporan Keuangan dan Cetak Lebih Baik:** Sekarang Anda bisa mendapatkan laporan mutasi keuangan yang lebih akurat dan lebih mudah dicetak. Ini akan membantu Anda memantau kondisi keuangan toko dengan lebih jelas.
-*   **Aplikasi Lebih Stabil dan Mudah Diperbarui:** Kami juga melakukan banyak pembaruan di balik layar untuk membuat aplikasi bekerja lebih stabil, responsif, dan proses pembaruan aplikasi menjadi lebih mudah.
+*   **Tampilan Dashboard Baru:** Kami telah memperbarui tampilan halaman utama (Dashboard) agar lebih rapi, informatif, dan mudah dilihat. Ini akan membantu Anda memantau ringkasan bisnis dengan lebih baik.
+*   **Proses Pembaruan Lebih Lancar:** Sekarang, memeriksa dan mendapatkan pembaruan aplikasi menjadi lebih mudah dan cepat, memastikan Anda selalu menggunakan versi terbaik tanpa repot.
+*   **Peningkatan Kinerja & Stabilitas:** Kami melakukan berbagai perbaikan di balik layar untuk membuat aplikasi Kasir berjalan lebih stabil, responsif, dan bebas gangguan saat Anda bertransaksi.

@@ -100,8 +100,8 @@ Public Class FormCekUpdate
     End Sub
 
     Private Sub AutoUpdaterOnApplicationExitEvent()
-        ' Tutup paksa seluruh aplikasi tanpa memicu messagebox di FormClosing
-        Environment.Exit(0)
+        ' Karena ModuleVariabel.AplikasiSedangUpdate sudah True, FormUtama akan tertutup otomatis tanpa peringatan
+        Application.Exit()
     End Sub
 
     Private Sub AutoUpdaterOnCheckForUpdateEvent(args As UpdateInfoEventArgs)
