@@ -1555,7 +1555,7 @@ Public Class FormJual
         TutupListBox()
 
         ' Konteks DGV inline edit
-        If _konteksLstBarang = "DGV" AndAlso _dgvEditingTextBox IsNot Nothing AndAlso
+        If _konteksLstBarang = "DGV" AndAlso
            DgvDataTransaksi.CurrentCell IsNot Nothing AndAlso DgvDataTransaksi.CurrentCell.ColumnIndex = 1 Then
 
             ' Baca qty dari TxtQty — diisi oleh DgvNamaBarang_TextChanged saat user ketik "5*nama"
@@ -2205,6 +2205,14 @@ Public Class FormJual
     ' Fungsi untuk mengonversi objek menjadi angka desimal
 
     Private Sub DgvDataData_CellEndEdit(ByVal sender As Object, ByVal e As System.Windows.Forms.DataGridViewCellEventArgs) Handles DgvDataTransaksi.CellEndEdit
+        ' ---> SOLUSI BUG BARCODE: Bersihkan handler TextBox DGV setiap kali selesai edit sel <---
+        If _dgvEditingTextBox IsNot Nothing Then
+            RemoveHandler _dgvEditingTextBox.TextChanged, AddressOf DgvNamaBarang_TextChanged
+            RemoveHandler _dgvEditingTextBox.KeyDown, AddressOf DgvNamaBarang_KeyDown
+            _dgvEditingTextBox = Nothing
+        End If
+        ResetBarcodeDetection()
+
         ' Guard: jangan proses jika sedang diisi dari ListBox — IsiBarangKeRow yang akan mengisi
         If _sedangSetNilaiDariListBox Then
             Return
@@ -3562,6 +3570,50 @@ Public Class FormJual
             transaction = conn.BeginTransaction()
             If IsModeTambahPenjualan Then
                 Nomorjual()
+
+                ' ==============================================================================
+                ' MULTI-KASIR FIX: Pastikan Nomor Faktur untuk Draft BARU tidak bertabrakan!
+                ' ==============================================================================
+                If String.IsNullOrWhiteSpace(draftPenjualanAktif) AndAlso TxtFaktur.Text.Length >= 9 Then
+                    Dim isValidUnique As Boolean = False
+                    While Not isValidUnique
+                        Dim checkDraft As New MySqlCommand("SELECT COUNT(*) FROM penjualan_ditahan WHERE FAKTUR_JUAL = @Faktur", conn, transaction)
+                        checkDraft.Parameters.AddWithValue("@Faktur", TxtFaktur.Text)
+                        Dim existingDraftCount = Convert.ToInt32(checkDraft.ExecuteScalar())
+
+                        If existingDraftCount > 0 Then
+                            ' Nomor sudah dipakai draft lain! Cari urutan maksimum dan tambah 1
+                            Dim idxPrefix As Integer = TxtFaktur.Text.LastIndexOf("-"c) + 7
+                            If idxPrefix > 0 AndAlso idxPrefix < TxtFaktur.Text.Length Then
+                                Dim prefixTgl As String = TxtFaktur.Text.Substring(0, idxPrefix)
+                                Dim currentUrut As Integer = 0
+                                Integer.TryParse(TxtFaktur.Text.Substring(idxPrefix), currentUrut)
+                                
+                                Dim checkMaxDraft As New MySqlCommand("SELECT MAX(FAKTUR_JUAL) FROM penjualan_ditahan WHERE FAKTUR_JUAL LIKE @Prefix", conn, transaction)
+                                checkMaxDraft.Parameters.AddWithValue("@Prefix", prefixTgl & "%")
+                                Dim maxDraft = checkMaxDraft.ExecuteScalar()
+                                
+                                If maxDraft IsNot DBNull.Value AndAlso maxDraft IsNot Nothing Then
+                                    Dim maxUrut As Integer = 0
+                                    Dim numStr As String = maxDraft.ToString()
+                                    If numStr.Length >= idxPrefix AndAlso Integer.TryParse(numStr.Substring(idxPrefix), maxUrut) Then
+                                        If maxUrut > currentUrut Then
+                                            currentUrut = maxUrut
+                                        End If
+                                    End If
+                                End If
+                                
+                                currentUrut += 1
+                                TxtFaktur.Text = prefixTgl & currentUrut.ToString("D4")
+                            Else
+                                isValidUnique = True ' Fallback jika format tidak dikenali
+                            End If
+                        Else
+                            isValidUnique = True
+                        End If
+                    End While
+                End If
+                ' ==============================================================================
             End If
 
             ' Jika draft sudah ada, timpa dengan data terbaru (aman untuk load draft lalu tahan lagi).

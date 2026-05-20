@@ -1,5 +1,5 @@
-﻿Berikut ringkasan pembaruan untuk aplikasi Kasir Anda:
+﻿Berikut adalah ringkasan pembaruan aplikasi Kasir yang ramah pengguna:
 
-*   **Pembaruan Sistem Rutin:** Kami telah melakukan pembaruan internal untuk menjaga aplikasi Kasir Anda selalu dalam kondisi terbaik, memastikan operasional sehari-hari berjalan lebih lancar.
-*   **Peningkatan Stabilitas Aplikasi:** Dengan pembaruan ini, aplikasi Kasir menjadi lebih stabil dan andal, mengurangi potensi kendala atau error saat Anda menggunakannya.
-*   **Proses Pembaruan yang Lebih Mulus:** Kini sistem pembaruan aplikasi telah ditingkatkan, sehingga Anda akan lebih mudah dan cepat mendapatkan versi terbaru di masa mendatang.
+*   **Pengalaman Transaksi Lebih Lancar:** Kami telah melakukan perbaikan pada berbagai proses transaksi penting seperti penjualan, pembelian, retur barang, dan transfer stok. Anda akan merasakan pengalaman yang lebih cepat dan minim hambatan saat menggunakannya.
+*   **Peningkatan Kinerja Sistem:** Aplikasi kini bekerja lebih optimal secara keseluruhan, mengurangi potensi kesalahan dan membuat operasional harian toko Anda lebih efisien.
+*   **Proses Pembaruan yang Lebih Baik:** Mekanisme pembaruan aplikasi telah kami optimalkan. Ini memastikan Anda selalu bisa mendapatkan versi terbaru dengan mudah dan cepat untuk menikmati fitur dan perbaikan terkini.

@@ -725,10 +725,15 @@ Public Class FormTransferCabang
         _rowSaatPindahKeLst = -1
 
         ' Konteks DGV inline edit
-        If _konteksLstBarang = "DGV" AndAlso _dgvEditingTextBox IsNot Nothing AndAlso
+        If _konteksLstBarang = "DGV" AndAlso
            DgvDetail.CurrentCell IsNot Nothing AndAlso DgvDetail.CurrentCell.ColumnIndex = DgvDetail.Columns("NamaBarang").Index Then
 
-            Dim originalInput As String = _dgvEditingTextBox.Text.Trim()
+            Dim originalInput As String = ""
+            If _dgvEditingTextBox IsNot Nothing Then
+                originalInput = _dgvEditingTextBox.Text.Trim()
+            ElseIf DgvDetail.CurrentCell.Value IsNot Nothing Then
+                originalInput = DgvDetail.CurrentCell.Value.ToString().Trim()
+            End If
             Dim qtyValue As Decimal = 1D
             If originalInput.Contains("*"c) Then
                 Dim parts = originalInput.Split("*"c)
@@ -889,6 +894,15 @@ Public Class FormTransferCabang
     End Sub
 
     Private Sub DgvDetail_CellEndEdit(sender As Object, e As DataGridViewCellEventArgs) Handles DgvDetail.CellEndEdit
+        ' ---> SOLUSI BUG BARCODE: Bersihkan handler TextBox DGV setiap kali selesai edit sel <---
+        If _dgvEditingTextBox IsNot Nothing Then
+            RemoveHandler _dgvEditingTextBox.TextChanged, AddressOf DgvNamaBarang_TextChanged
+            RemoveHandler _dgvEditingTextBox.KeyDown, AddressOf DgvNamaBarang_KeyDown
+            RemoveHandler _dgvEditingTextBox.PreviewKeyDown, AddressOf DgvNamaBarang_PreviewKeyDown
+            _dgvEditingTextBox = Nothing
+        End If
+        ResetBarcodeDetection()
+
         Debug.WriteLine($"[CellEndEdit] col={e.ColumnIndex} row={e.RowIndex}")
         If e.RowIndex < 0 Then Return
 

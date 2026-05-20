@@ -1700,6 +1700,7 @@ Public Class FormPembelian
     End Sub
 
     Private Sub TxtNama_TextChanged(ByVal sender As Object, ByVal e As EventArgs) Handles TxtNama.TextChanged
+        _konteksLstBarang = "TXTNAMA"
         Dim currentText = TxtNama.Text.Trim()
 
         If String.IsNullOrEmpty(currentText) Then
@@ -2115,14 +2116,17 @@ Public Class FormPembelian
         End If
     End Sub
 
-    ' [FP1-T08-4] UBAH: TutupListBox juga reset _listBoxDibukaDiRow/Col — sama seperti FormJual
     Private Sub TutupListBox()
         LstBarang.Visible = False
         LstBarang.Items.Clear()
         _listBoxDibukaDiRow = -1
         _listBoxDibukaDiCol = -1
-        If _konteksLstBarang = "DGV" AndAlso _dgvEditingTextBox IsNot Nothing Then
-            _dgvEditingTextBox.Select()
+        If _konteksLstBarang = "DGV" Then
+            If _dgvEditingTextBox IsNot Nothing Then
+                _dgvEditingTextBox.Select()
+            Else
+                DgvData.Focus()
+            End If
         Else
             TxtNama.Select()
         End If
@@ -2161,7 +2165,7 @@ Public Class FormPembelian
         TutupListBox()
 
         ' Konteks DGV inline edit
-        If _konteksLstBarang = "DGV" AndAlso _dgvEditingTextBox IsNot Nothing AndAlso
+        If _konteksLstBarang = "DGV" AndAlso
            DgvData.CurrentCell IsNot Nothing AndAlso DgvData.CurrentCell.ColumnIndex = 1 Then
 
             ' Gunakan TxtQty & TxtLevelSat yang sudah disinkronkan oleh TextChanged
@@ -2847,6 +2851,13 @@ Public Class FormPembelian
     End Sub
 
     Private Sub DgvDataData_CellEndEdit(ByVal sender As Object, ByVal e As System.Windows.Forms.DataGridViewCellEventArgs) Handles DgvData.CellEndEdit
+        ' ---> SOLUSI BUG BARCODE: Bersihkan handler TextBox DGV setiap kali selesai edit sel <---
+        If _dgvEditingTextBox IsNot Nothing Then
+            RemoveHandler _dgvEditingTextBox.TextChanged, AddressOf DgvNamaBarang_TextChanged
+            _dgvEditingTextBox = Nothing
+        End If
+        ResetBarcodeDetection()
+
         ' Guard: jangan proses jika sedang diisi dari ListView — IsiBarangKeRow yang akan mengisi
         If _sedangSetNilaiDariListBox Then Return
 
@@ -3223,12 +3234,6 @@ Public Class FormPembelian
                 PosisikanLstBarangDiBawahSel()
             End If
         Else
-            ' Hapus handler saat pindah ke kolom lain
-            If _dgvEditingTextBox IsNot Nothing Then
-                RemoveHandler _dgvEditingTextBox.TextChanged, AddressOf DgvNamaBarang_TextChanged
-                ' [FP1-T06-2] HAPUS: RemoveHandler untuk DgvNamaBarang_KeyDown dan DgvNamaBarang_PreviewKeyDown
-                _dgvEditingTextBox = Nothing
-            End If
             If Not LstBarang.Focused Then
                 LstBarang.Visible = False
                 LstBarang.Items.Clear()
@@ -4154,6 +4159,50 @@ Public Class FormPembelian
 
             If IsModeTambahPembelian AndAlso String.IsNullOrWhiteSpace(draftPembelianAktif) Then
                 NomorBeli()
+                
+                ' ==============================================================================
+                ' MULTI-ADMIN FIX: Pastikan Nomor Faktur untuk Draft BARU tidak bertabrakan!
+                ' ==============================================================================
+                If String.IsNullOrWhiteSpace(draftPembelianAktif) AndAlso TxtIdPembelian.Text.Length >= 9 Then
+                    Dim isValidUnique As Boolean = False
+                    While Not isValidUnique
+                        Dim checkDraft As New MySqlCommand("SELECT COUNT(*) FROM pembelian_ditahan WHERE ID_PEMBELIAN = @Faktur", conn, transaction)
+                        checkDraft.Parameters.AddWithValue("@Faktur", TxtIdPembelian.Text)
+                        Dim existingDraftCount = Convert.ToInt32(checkDraft.ExecuteScalar())
+
+                        If existingDraftCount > 0 Then
+                            ' Nomor sudah dipakai draft lain! Cari urutan maksimum dan tambah 1
+                            Dim idxPrefix As Integer = TxtIdPembelian.Text.LastIndexOf("-"c) + 7
+                            If idxPrefix > 0 AndAlso idxPrefix < TxtIdPembelian.Text.Length Then
+                                Dim prefixTgl As String = TxtIdPembelian.Text.Substring(0, idxPrefix)
+                                Dim currentUrut As Integer = 0
+                                Integer.TryParse(TxtIdPembelian.Text.Substring(idxPrefix), currentUrut)
+                                
+                                Dim checkMaxDraft As New MySqlCommand("SELECT MAX(ID_PEMBELIAN) FROM pembelian_ditahan WHERE ID_PEMBELIAN LIKE @Prefix", conn, transaction)
+                                checkMaxDraft.Parameters.AddWithValue("@Prefix", prefixTgl & "%")
+                                Dim maxDraft = checkMaxDraft.ExecuteScalar()
+                                
+                                If maxDraft IsNot DBNull.Value AndAlso maxDraft IsNot Nothing Then
+                                    Dim maxUrut As Integer = 0
+                                    Dim numStr As String = maxDraft.ToString()
+                                    If numStr.Length >= idxPrefix AndAlso Integer.TryParse(numStr.Substring(idxPrefix), maxUrut) Then
+                                        If maxUrut > currentUrut Then
+                                            currentUrut = maxUrut
+                                        End If
+                                    End If
+                                End If
+                                
+                                currentUrut += 1
+                                TxtIdPembelian.Text = prefixTgl & currentUrut.ToString("D4")
+                            Else
+                                isValidUnique = True ' Fallback jika format tidak dikenali
+                            End If
+                        Else
+                            isValidUnique = True
+                        End If
+                    End While
+                End If
+                ' ==============================================================================
             End If
 
             HapusDraftPembelian(transaction, TxtIdPembelian.Text)

@@ -614,7 +614,7 @@ Public Class FormTransferBarang
         TutupListBox()
 
         ' ===== Konteks DGV inline edit =====
-        If _konteksLstBarang = "DGV" AndAlso _dgvEditingTextBox IsNot Nothing AndAlso
+        If _konteksLstBarang = "DGV" AndAlso
            DgvData.CurrentCell IsNot Nothing AndAlso DgvData.CurrentCell.ColumnIndex = 1 Then
 
             Dim qtyValue As Decimal = ModuleAngka.ParseDecimal(TxtQty.Text)
@@ -797,6 +797,13 @@ Public Class FormTransferBarang
 
 
     Private Sub DgvDataData_CellEndEdit(ByVal sender As Object, ByVal e As System.Windows.Forms.DataGridViewCellEventArgs) Handles DgvData.CellEndEdit
+        ' ---> SOLUSI BUG HANDLER: Bersihkan handler TextBox DGV setiap kali selesai edit sel <---
+        If _dgvEditingTextBox IsNot Nothing Then
+            RemoveHandler _dgvEditingTextBox.TextChanged, AddressOf DgvNamaBarang_TextChanged
+            RemoveHandler _dgvEditingTextBox.KeyDown, AddressOf DgvNamaBarang_KeyDown
+            _dgvEditingTextBox = Nothing
+        End If
+
         ' Guard: jangan proses saat ListBox sedang set nilai ke DGV
         If _sedangSetNilaiDariListBox Then Return
 
@@ -1062,12 +1069,7 @@ Public Class FormTransferBarang
                 PosisikanLstBarangDiBawahSel()
             End If
         Else
-            ' Kolom selain Nama — hapus handler dan tutup ListBox
-            If _dgvEditingTextBox IsNot Nothing Then
-                RemoveHandler _dgvEditingTextBox.TextChanged, AddressOf DgvNamaBarang_TextChanged
-                RemoveHandler _dgvEditingTextBox.KeyDown, AddressOf DgvNamaBarang_KeyDown
-                _dgvEditingTextBox = Nothing
-            End If
+            ' Kolom selain Nama — tutup ListBox
             If Not LstBarang.Focused Then
                 LstBarang.Visible = False
                 LstBarang.Items.Clear()

@@ -458,15 +458,7 @@ Public Class FormReturPenjualan
                 AddHandler cmb.SelectedIndexChanged, AddressOf DGVReturjual_SatuanChanged
             End If
         Else
-            ' Kolom bukan NAMA BARANG dan bukan SATUAN — pastikan handler + barcode dibersihkan
-            If DGVReturjual.CurrentCell.ColumnIndex <> 1 Then
-                If _dgvEditingTextBox IsNot Nothing Then
-                    RemoveHandler _dgvEditingTextBox.TextChanged, AddressOf DgvNamaBarang_TextChanged
-                    RemoveHandler _dgvEditingTextBox.KeyDown, AddressOf DgvNamaBarang_KeyDown
-                    _dgvEditingTextBox = Nothing
-                End If
-                ResetBarcodeDetection()
-            End If
+            ' Kolom bukan NAMA BARANG dan bukan SATUAN
             If Not LstBarang.Focused Then
                 LstBarang.Visible = False
                 LstBarang.Items.Clear()
@@ -591,6 +583,14 @@ Public Class FormReturPenjualan
     End Sub
 
     Private Sub DGVReturjual_CellEndEdit(ByVal sender As System.Object, ByVal e As System.Windows.Forms.DataGridViewCellEventArgs) Handles DGVReturjual.CellEndEdit
+        ' ---> SOLUSI BUG BARCODE: Bersihkan handler TextBox DGV setiap kali selesai edit sel <---
+        If _dgvEditingTextBox IsNot Nothing Then
+            RemoveHandler _dgvEditingTextBox.TextChanged, AddressOf DgvNamaBarang_TextChanged
+            RemoveHandler _dgvEditingTextBox.KeyDown, AddressOf DgvNamaBarang_KeyDown
+            _dgvEditingTextBox = Nothing
+        End If
+        ResetBarcodeDetection()
+
         Debug.WriteLine($"[CellEndEdit] col={e.ColumnIndex} row={e.RowIndex} _sedangSetNilai={_sedangSetNilaiDariListBox} LstVisible={LstBarang.Visible}")
         '========================== Nama — identik FormTransferCabang CellEndEdit
         If e.ColumnIndex = 1 Then
@@ -1751,11 +1751,15 @@ Public Class FormReturPenjualan
         LstBarang.Items.Clear()
         _rowSaatPindahKeLst = -1
 
-        If _dgvEditingTextBox IsNot Nothing AndAlso
-           DGVReturjual.CurrentCell IsNot Nothing AndAlso
+        If DGVReturjual.CurrentCell IsNot Nothing AndAlso
            DGVReturjual.CurrentCell.ColumnIndex = 1 Then
 
-            Dim originalInput As String = _dgvEditingTextBox.Text.Trim()
+            Dim originalInput As String = ""
+            If _dgvEditingTextBox IsNot Nothing Then
+                originalInput = _dgvEditingTextBox.Text.Trim()
+            ElseIf DGVReturjual.CurrentCell.Value IsNot Nothing Then
+                originalInput = DGVReturjual.CurrentCell.Value.ToString().Trim()
+            End If
             Dim qtyValue As Decimal = 1D
             Dim levelValue As Integer = 1 ' Default Satuan Kecil
 
