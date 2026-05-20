@@ -218,6 +218,11 @@ if ($aiKeys.Count -eq 0) {
         }
 
         if ($changelogText) {
+            Write-Host ""
+            Write-Host "        [Hasil Changelog AI]:" -ForegroundColor Cyan
+            $changelogText -split "`n" | ForEach-Object { Write-Host "        $_" -ForegroundColor Cyan }
+            Write-Host ""
+
             $changelogPath = Join-Path $PSScriptRoot "..\..\changelog.md"
             Set-Content -Path $changelogPath -Value $changelogText -Encoding UTF8
             git add "changelog.md" 2>$null

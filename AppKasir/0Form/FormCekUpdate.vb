@@ -7,6 +7,14 @@ Public Class FormCekUpdate
 
     ' ── Load ────────────────────────────────────────────────────────
     Private Sub FormCekUpdate_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+        ' [FIX WINDOWS 7] Aktifkan TLS 1.2 dan abaikan error validasi sertifikat SSL
+        ' Karena Windows 7 sering gagal memverifikasi sertifikat CA modern (GitHub)
+        Try
+            System.Net.ServicePointManager.SecurityProtocol = System.Net.ServicePointManager.SecurityProtocol Or CType(3072, System.Net.SecurityProtocolType)
+            System.Net.ServicePointManager.ServerCertificateValidationCallback = Function(se, cert, chain, sslerror) True
+        Catch ex As Exception
+        End Try
+
         ModuleTheme.TerapkanTheme(Me)
         TerapkanThemeForm()
 

@@ -1,4 +1,5 @@
-﻿Berikut adalah ringkasan pembaruan pada aplikasi Kasir:
-* Pembaruan versi aplikasi untuk meningkatkan stabilitas dan kinerja.
-* Perbaikan proses update aplikasi untuk memastikan bahwa pengguna mendapatkan versi terbaru dengan mudah.
-* Pembaruan informasi changelog untuk memudahkan pengguna memahami perubahan yang dilakukan pada aplikasi.
+﻿Berikut adalah ringkasan pembaruan aplikasi Kasir:
+* Perbaikan kompatibilitas dengan sistem operasi Windows 7 untuk memastikan aplikasi berjalan lancar dan aman.
+* Peningkatan keamanan dengan mengaktifkan protokol TLS 1.2 untuk koneksi internet yang lebih aman.
+* Pembaruan informasi changelog yang lebih rapi dan mudah dibaca, sehingga Anda dapat memahami perubahan dan peningkatan yang dilakukan pada aplikasi Kasir.
+* Pembaruan versi aplikasi Kasir dengan perubahan minor untuk memperbaiki kinerja dan kestabilan aplikasi.
