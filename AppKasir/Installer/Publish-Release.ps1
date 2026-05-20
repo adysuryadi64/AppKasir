@@ -149,9 +149,9 @@ if ($aiKeys.Count -eq 0) {
     # Ambil diff untuk prompt
     $lastTag = git describe --tags --abbrev=0 2>$null
     if ($lastTag) {
-        $diff = git diff --name-status $lastTag --cached
+        $diff = (git diff -U1 $lastTag --cached) -join "`n"
     } else {
-        $diff = git diff --name-status HEAD --cached
+        $diff = (git diff -U1 HEAD --cached) -join "`n"
     }
 
     if ($diff) {
