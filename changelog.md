@@ -1,29 +1,46 @@
-﻿Tentu, berikut adalah catatan rilis mendetail untuk aplikasi Kasir berdasarkan perubahan kode yang Anda berikan:
+﻿Tentu, berikut adalah catatan rilis mendetail untuk aplikasi Kasir berdasarkan perubahan kode yang diberikan:
 
 ---
 
 # Catatan Rilis Aplikasi Kasir
 
-**Versi: 15.2026.522.8**
-Tanggal Rilis: [Isi Tanggal Rilis di Sini]
+**Versi:** 15.2026.522.9
+**Tanggal Rilis:** [Isi Tanggal Rilis di Sini]
 
-Catatan rilis ini merinci perubahan dan peningkatan yang diterapkan pada aplikasi Kasir, berfokus pada fungsionalitas terkait penggajian dan pembaruan internal.
+Rilis ini fokus pada peningkatan stabilitas dan keandalan proses pembaruan aplikasi otomatis (AutoUpdater), serta perbaikan penanganan tampilan dialog dan penutupan aplikasi setelah pembaruan.
 
 ---
 
-### Peningkatan Fungsionalitas & Pengalaman Pengguna
+### ð Peningkatan & Perbaikan Utama
 
-*   **Modul Gaji (4Gaji)**
-    *   **Formulir Bon (File: `AppKasir/4Gaji/FormBon.vb`)**
-        *   **Peningkatan Kontrol `DtpTanggal`:** Pada modul Bon, kontrol `DateTimePicker` (`DtpTanggal`) yang digunakan untuk memilih tanggal bon kini *selalu diaktifkan (enabled)*. Penambahan baris kode `DtpTanggal.Enabled = True` pada saat `FormBon` dimuat (`FormBon_Load`) dan saat mereset kontrol (`ResetControls`) memastikan bahwa pengguna dapat selalu mengubah tanggal bon, mengabaikan potensi pembatasan atau pengaturan hak akses sebelumnya yang mungkin menonaktifkan kontrol tersebut.
-    *   **Formulir Gaji (File: `AppKasir/4Gaji/FormGaji.vb`)**
-        *   **Peningkatan Kontrol `DtpTanggal`:** Serupa dengan formulir Bon, pada modul Gaji, kontrol `DateTimePicker` (`DtpTanggal`) untuk tanggal penggajian juga kini *selalu diaktifkan (enabled)*. Penambahan `DtpTanggal.Enabled = True` pada saat `FormGaji` dimuat (`FormGaji_Load`) memberikan fleksibilitas penuh kepada pengguna untuk mengatur tanggal penggajian tanpa terhalang oleh konfigurasi izin masa lalu.
+#### **1. Peningkatan Modul Pembaruan Aplikasi (AutoUpdater)**
+   *   **Komponen Terkait:** `FormCekUpdate`
+   *   **File yang diubah:** `AppKasir/0Form/FormCekUpdate.vb`
+   *   **Detail Perubahan Teknis:**
+        *   **Penanganan Tampilan Dialog Installer Lebih Baik:**
+            *   Menambahkan kode untuk menonaktifkan properti `TopMost` pada `FormCekUpdate` (`Me.TopMost = False`) sesaat sebelum menjalankan installer AutoUpdater. Ini bertujuan untuk memastikan bahwa dialog installer eksternal (misalnya, dialog konfirmasi instalasi) dapat tampil di bagian terdepan layar dan tidak tersembunyi di balik aplikasi Kasir yang sedang berjalan.
+            *   Ditambahkan pemanggilan `Me.Owner?.Activate()` untuk mengaktifkan kembali `FormUtama` (pemilik `FormCekUpdate`) sebentar, yang dapat membantu pengaturan z-order agar dialog installer tampil lebih tepat.
+        *   **Penanganan Kesalahan Pengunduhan yang Lebih Robust:**
+            *   Pada blok `Catch` (penanganan error) saat terjadi kegagalan pengunduhan pembaruan, status internal aplikasi `ModuleVariabel.AplikasiSedangUpdate` kini diatur kembali ke `False`. Hal ini mencegah aplikasi berada dalam status "sedang update" yang salah ketika proses update sebenarnya gagal, memastikan perilaku aplikasi kembali normal (misalnya, konfirmasi keluar aplikasi berfungsi kembali).
+            *   Properti `TopMost` pada `FormCekUpdate` juga dikembalikan menjadi `True` (`Me.TopMost = True`) jika pengunduhan gagal, mengembalikan tampilan form ke kondisi semula.
+        *   **Peningkatan Proses Penutupan Aplikasi Setelah Pembaruan:**
+            *   Logika dalam metode `AutoUpdaterOnApplicationExitEvent` telah diperbaiki untuk memastikan penutupan aplikasi yang lebih mulus dan andal setelah pembaruan.
+            *   Jika panggilan berasal dari thread yang berbeda (`Me.InvokeRequired`), metode kini memanggil dirinya sendiri secara rekursif melalui `Invoke` untuk memastikan eksekusi aman di UI thread, lalu mengembalikan kontrol.
+            *   Sebelum memanggil `Application.Exit()`, `FormCekUpdate` kini secara eksplisit ditutup terlebih dahulu (`Try : Me.Close() : Catch : End Try`). Ini mengatasi potensi `FormCekUpdate` memblokir proses penutupan aplikasi utama, yang bisa menyebabkan aplikasi tidak tertutup sepenuhnya atau mengalami *hang*.
 
-### Pembaruan Internal & Infrastruktur
+### âï¸ Pembaruan Konfigurasi & Internal
 
-*   **Informasi Perakitan Aplikasi (File: `AppKasir/My Project/AssemblyInfo.vb`)**
-    *   **Peningkatan Versi Aplikasi:** Versi internal aplikasi (`AssemblyVersion` dan `AssemblyFileVersion`) telah ditingkatkan dari `15.2026.522.6` menjadi `15.2026.522.8`. Ini merupakan pembaruan versi standar yang mengindikasikan adanya rilis baru.
-*   **Konfigurasi Pembaruan Otomatis (File: `update.xml`)**
-    *   **Penyesuaian Metadata Pembaruan:** File konfigurasi `update.xml`, yang digunakan oleh sistem pembaruan otomatis aplikasi, telah diperbarui. Atribut `<version>`, `<url>`, dan `<changelog>` kini menunjuk ke versi aplikasi `15.2026.522.8` yang baru, beserta tautan unduhan (`AppKasir_Update.zip`) dan URL changelog yang relevan di GitHub. Ini memastikan bahwa sistem pembaruan otomatis akan mengarahkan pengguna ke rilis terbaru ini.
+#### **1. Pembaruan Konfigurasi AutoUpdater**
+   *   **Komponen Terkait:** Konfigurasi Pembaruan
+   *   **File yang diubah:** `update.xml`
+   *   **Detail Perubahan Teknis:**
+        *   Berkas konfigurasi pembaruan otomatis (`update.xml`) telah diperbarui.
+        *   Nilai `<version>`, `<url>`, dan `<changelog>` sekarang mengarah ke versi `15.2026.522.9` yang baru. Ini memastikan bahwa mekanisme AutoUpdater akan mengidentifikasi versi terbaru, mengunduh paket pembaruan yang benar, dan menyediakan tautan ke catatan rilis yang relevan.
+
+#### **2. Pembaruan Versi Internal Aplikasi**
+   *   **Komponen Terkait:** Informasi Assembly Aplikasi
+   *   **File yang diubah:** `AppKasir/My Project/AssemblyInfo.vb`
+   *   **Detail Perubahan Teknis:**
+        *   Nomor versi internal aplikasi (`AssemblyVersion` dan `AssemblyFileVersion`) telah ditingkatkan dari `15.2026.522.8` menjadi `15.2026.522.9`. Perubahan ini mencerminkan pembaruan dan perbaikan yang disertakan dalam rilis ini.
 
 ---
