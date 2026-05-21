@@ -24,12 +24,12 @@ Partial Class FormReturPenjualan
     Private Sub InitializeComponent()
         Me.components = New System.ComponentModel.Container()
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(FormReturPenjualan))
-        Dim DataGridViewCellStyle7 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
-        Dim DataGridViewCellStyle8 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
-        Dim DataGridViewCellStyle9 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
-        Dim DataGridViewCellStyle10 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
-        Dim DataGridViewCellStyle11 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
-        Dim DataGridViewCellStyle12 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
+        Dim DataGridViewCellStyle1 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
+        Dim DataGridViewCellStyle2 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
+        Dim DataGridViewCellStyle3 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
+        Dim DataGridViewCellStyle4 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
+        Dim DataGridViewCellStyle5 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
+        Dim DataGridViewCellStyle6 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
         Me.PnlBatasKiri = New System.Windows.Forms.Panel()
         Me.PnlBatasKanan = New System.Windows.Forms.Panel()
         Me.PnlBatasBawah = New System.Windows.Forms.Panel()
@@ -1052,17 +1052,17 @@ Partial Class FormReturPenjualan
         '
         'HARGA_BELI
         '
-        DataGridViewCellStyle7.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight
-        DataGridViewCellStyle7.NullValue = Nothing
-        Me.HARGA_BELI.DefaultCellStyle = DataGridViewCellStyle7
+        DataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight
+        DataGridViewCellStyle1.NullValue = Nothing
+        Me.HARGA_BELI.DefaultCellStyle = DataGridViewCellStyle1
         Me.HARGA_BELI.HeaderText = "HARGA BELI"
         Me.HARGA_BELI.Name = "HARGA_BELI"
         Me.HARGA_BELI.Visible = False
         '
         'QTY
         '
-        DataGridViewCellStyle8.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight
-        Me.QTY.DefaultCellStyle = DataGridViewCellStyle8
+        DataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight
+        Me.QTY.DefaultCellStyle = DataGridViewCellStyle2
         Me.QTY.FillWeight = 50.0!
         Me.QTY.HeaderText = "QTY"
         Me.QTY.Name = "QTY"
@@ -1091,9 +1091,9 @@ Partial Class FormReturPenjualan
         '
         'HARGA_BELI_SATUAN
         '
-        DataGridViewCellStyle9.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight
-        DataGridViewCellStyle9.NullValue = Nothing
-        Me.HARGA_BELI_SATUAN.DefaultCellStyle = DataGridViewCellStyle9
+        DataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight
+        DataGridViewCellStyle3.NullValue = Nothing
+        Me.HARGA_BELI_SATUAN.DefaultCellStyle = DataGridViewCellStyle3
         Me.HARGA_BELI_SATUAN.HeaderText = "HARGA_BELI_SATUAN"
         Me.HARGA_BELI_SATUAN.Name = "HARGA_BELI_SATUAN"
         Me.HARGA_BELI_SATUAN.Resizable = System.Windows.Forms.DataGridViewTriState.[True]
@@ -1102,25 +1102,25 @@ Partial Class FormReturPenjualan
         '
         'HARGA_JUAL
         '
-        DataGridViewCellStyle10.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight
-        DataGridViewCellStyle10.NullValue = Nothing
-        Me.HARGA_JUAL.DefaultCellStyle = DataGridViewCellStyle10
+        DataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight
+        DataGridViewCellStyle4.NullValue = Nothing
+        Me.HARGA_JUAL.DefaultCellStyle = DataGridViewCellStyle4
         Me.HARGA_JUAL.HeaderText = "HARGA_JUAL"
         Me.HARGA_JUAL.Name = "HARGA_JUAL"
         '
         'TOTAL_DISKON
         '
-        DataGridViewCellStyle11.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight
-        DataGridViewCellStyle11.NullValue = Nothing
-        Me.TOTAL_DISKON.DefaultCellStyle = DataGridViewCellStyle11
+        DataGridViewCellStyle5.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight
+        DataGridViewCellStyle5.NullValue = Nothing
+        Me.TOTAL_DISKON.DefaultCellStyle = DataGridViewCellStyle5
         Me.TOTAL_DISKON.HeaderText = "DISKON"
         Me.TOTAL_DISKON.Name = "TOTAL_DISKON"
         '
         'TOTAL_HARGA
         '
-        DataGridViewCellStyle12.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight
-        DataGridViewCellStyle12.NullValue = Nothing
-        Me.TOTAL_HARGA.DefaultCellStyle = DataGridViewCellStyle12
+        DataGridViewCellStyle6.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight
+        DataGridViewCellStyle6.NullValue = Nothing
+        Me.TOTAL_HARGA.DefaultCellStyle = DataGridViewCellStyle6
         Me.TOTAL_HARGA.HeaderText = "TOTAL HARGA"
         Me.TOTAL_HARGA.Name = "TOTAL_HARGA"
         Me.TOTAL_HARGA.ReadOnly = True
@@ -1228,7 +1228,7 @@ Partial Class FormReturPenjualan
         Me.LstBarang.ItemHeight = 20
         Me.LstBarang.Location = New System.Drawing.Point(21, 299)
         Me.LstBarang.Name = "LstBarang"
-        Me.LstBarang.Size = New System.Drawing.Size(351, 284)
+        Me.LstBarang.Size = New System.Drawing.Size(351, 244)
         Me.LstBarang.TabIndex = 261
         Me.LstBarang.Visible = False
         '

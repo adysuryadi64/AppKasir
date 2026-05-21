@@ -114,7 +114,7 @@ Write-Host ""
 # ── Cek gh CLI tersedia ───────────────────────────────────────────
 $ghAvailable = $null -ne (Get-Command gh -ErrorAction SilentlyContinue)
 
-# ── [1.5/6] Auto Changelog dengan AI (Fallback: Gemini → Groq → OpenRouter) ──
+# ── [1.5/6] Auto Changelog dengan AI (Fallback: Groq → OpenRouter) ──
 Write-Host "  [1.5/6] Menyiapkan file untuk Commit & Generate Changelog AI..." -ForegroundColor Yellow
 
 # Tambahkan semua file yang berubah ke dalam antrean (Staging)
@@ -132,19 +132,37 @@ if (-not (Test-Path $aiKeyPath)) {
 #   OPENROUTER=sk-or-...
 $aiKeys = @{}
 if (Test-Path $aiKeyPath) {
-    $lines = Get-Content $aiKeyPath | Where-Object { $_.Trim() -ne "" -and $_.Trim() -notmatch "^#" }
-    foreach ($line in $lines) {
-        if ($line -match "^(\w+)=(.+)$") {
-            $aiKeys[$Matches[1].ToUpper()] = $Matches[2].Trim()
-        } elseif ($aiKeys.Count -eq 0 -and $line.Trim().Length -gt 10) {
-            # Backward compatible: baris pertama tanpa '=' = Gemini key
-            $aiKeys["GEMINI"] = $line.Trim()
+    $lines = Get-Content $aiKeyPath | Where-Object { $_.Trim() -ne "" }
+    $cleanLines = @()
+    foreach ($l in $lines) {
+        $trimmed = $l.Trim()
+        if ($trimmed -and -not $trimmed.StartsWith("#")) {
+            $cleanLines += $trimmed
+        }
+    }
+    
+    if ($cleanLines.Count -eq 1 -and $cleanLines[0] -notmatch "=") {
+        # Format lama: hanya berisi API key Gemini saja
+        $aiKeys["GEMINI"] = $cleanLines[0]
+    } else {
+        foreach ($line in $cleanLines) {
+            if ($line -match "^(\w+)=(.+)$") {
+                $aiKeys[$Matches[1].ToUpper()] = $Matches[2].Trim()
+            }
         }
     }
 }
 
-if ($aiKeys.Count -eq 0) {
-    Write-Host "        File .ai_key tidak ditemukan atau kosong. Changelog dilewati." -ForegroundColor DarkGray
+$hasValidKey = $false
+foreach ($k in $aiKeys.Keys) {
+    if ($aiKeys[$k] -ne "") {
+        $hasValidKey = $true
+        break
+    }
+}
+
+if (-not $hasValidKey) {
+    Write-Host "        File .ai_key tidak ditemukan atau tidak memiliki key yang aktif. Changelog dilewati." -ForegroundColor DarkGray
 } else {
     # Ambil diff untuk prompt
     $lastTag = git describe --tags --abbrev=0 2>$null
@@ -161,18 +179,20 @@ if ($aiKeys.Count -eq 0) {
         # ── Daftar provider AI ──
         $providers = @()
 
-        if ($aiKeys.ContainsKey("GEMINI")) {
-            $geminiBody = @{ contents = @( @{ parts = @( @{ text = $prompt } ) } ) } | ConvertTo-Json -Depth 10
+        # 1. Gemini (Google AI Studio - Free-forever)
+        if ($aiKeys.ContainsKey("GEMINI") -and $aiKeys["GEMINI"] -ne "") {
+            $geminiBody = @{ model = "gemini-2.5-flash"; messages = @( @{ role = "user"; content = $prompt } ) } | ConvertTo-Json -Depth 10
             $providers += @{
                 Name    = "Gemini"
-                Url     = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=$($aiKeys['GEMINI'])"
-                Headers = @{ "Content-Type" = "application/json" }
+                Url     = "https://generativelanguage.googleapis.com/v1beta/openai/chat/completions"
+                Headers = @{ "Content-Type" = "application/json"; "Authorization" = "Bearer $($aiKeys['GEMINI'])" }
                 Body    = $geminiBody
-                Parse   = "GEMINI"
+                Parse   = "OPENAI"
             }
         }
 
-        if ($aiKeys.ContainsKey("GROQ")) {
+        # 2. Groq (Fast open-source - Free tier)
+        if ($aiKeys.ContainsKey("GROQ") -and $aiKeys["GROQ"] -ne "") {
             $groqBody = @{ model = "llama-3.3-70b-versatile"; messages = @( @{ role = "user"; content = $prompt } ) } | ConvertTo-Json -Depth 10
             $providers += @{
                 Name    = "Groq"
@@ -183,13 +203,38 @@ if ($aiKeys.Count -eq 0) {
             }
         }
 
-        if ($aiKeys.ContainsKey("OPENROUTER")) {
-            $orBody = @{ model = "google/gemini-2.0-flash-exp:free"; messages = @( @{ role = "user"; content = $prompt } ) } | ConvertTo-Json -Depth 10
+        # 3. OpenRouter (Free model fallback)
+        if ($aiKeys.ContainsKey("OPENROUTER") -and $aiKeys["OPENROUTER"] -ne "") {
+            $orBody = @{ model = "openrouter/free"; messages = @( @{ role = "user"; content = $prompt } ) } | ConvertTo-Json -Depth 10
             $providers += @{
                 Name    = "OpenRouter"
                 Url     = "https://openrouter.ai/api/v1/chat/completions"
                 Headers = @{ "Content-Type" = "application/json"; "Authorization" = "Bearer $($aiKeys['OPENROUTER'])" }
                 Body    = $orBody
+                Parse   = "OPENAI"
+            }
+        }
+
+        # 4. Cohere (Free trial tier)
+        if ($aiKeys.ContainsKey("COHERE") -and $aiKeys["COHERE"] -ne "") {
+            $cohereBody = @{ model = "command-r"; messages = @( @{ role = "user"; content = $prompt } ) } | ConvertTo-Json -Depth 10
+            $providers += @{
+                Name    = "Cohere"
+                Url     = "https://api.cohere.ai/compatibility/v1/chat/completions"
+                Headers = @{ "Content-Type" = "application/json"; "Authorization" = "Bearer $($aiKeys['COHERE'])" }
+                Body    = $cohereBody
+                Parse   = "OPENAI"
+            }
+        }
+
+        # 5. Hugging Face (Free serverless API)
+        if ($aiKeys.ContainsKey("HUGGINGFACE") -and $aiKeys["HUGGINGFACE"] -ne "") {
+            $hfBody = @{ model = "meta-llama/Llama-3.2-3B-Instruct"; messages = @( @{ role = "user"; content = $prompt } ) } | ConvertTo-Json -Depth 10
+            $providers += @{
+                Name    = "HuggingFace"
+                Url     = "https://api-inference.huggingface.co/v1/chat/completions"
+                Headers = @{ "Content-Type" = "application/json"; "Authorization" = "Bearer $($aiKeys['HUGGINGFACE'])" }
+                Body    = $hfBody
                 Parse   = "OPENAI"
             }
         }
@@ -201,11 +246,7 @@ if ($aiKeys.Count -eq 0) {
                 try {
                     Write-Host "        Mencoba $($prov.Name) (percobaan $attempt)..." -ForegroundColor DarkGray
                     $response = Invoke-RestMethod -Method Post -Uri $prov.Url -Headers $prov.Headers -Body $prov.Body -TimeoutSec 30
-                    if ($prov.Parse -eq "GEMINI") {
-                        $changelogText = $response.candidates[0].content.parts[0].text
-                    } else {
-                        $changelogText = $response.choices[0].message.content
-                    }
+                    $changelogText = $response.choices[0].message.content
                     if ($changelogText) {
                         Write-Host "        Changelog berhasil dari $($prov.Name)." -ForegroundColor Green
                         break
