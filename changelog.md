@@ -1,28 +1,27 @@
-﻿Tentu, berikut adalah catatan rilis teknis (changelog) yang mendetail untuk aplikasi Kasir berdasarkan perubahan kode yang Anda berikan:
+﻿Tentu, berikut adalah catatan rilis (changelog) yang mendetail untuk aplikasi Kasir berdasarkan perubahan kode yang Anda berikan:
 
 ---
 
-## Catatan Rilis Teknis Aplikasi Kasir v15.2026.521.15
+# Catatan Rilis Aplikasi Kasir
 
-Berikut adalah ringkasan perubahan teknis mendetail pada versi aplikasi Kasir ini:
+**Versi:** 15.2026.521.16
+**Tanggal Rilis:** [Isi Tanggal Rilis di Sini]
 
-*   **Modul Otomatisasi Rilis (`AppKasir/Installer/Publish-Release.ps1`)**
-    *   **Penjelasan Teknis:** Pembaruan telah diterapkan pada skrip PowerShell `Publish-Release.ps1`, yang bertanggung jawab atas proses otomatisasi rilis aplikasi. Secara spesifik, *prompt* (instruksi) yang diberikan kepada asisten AI untuk tujuan pembuatan catatan rilis telah direvisi.
-        *   **Sebelumnya:** AI diinstruksikan untuk membuat ringkasan pembaruan yang ramah pengguna awam (non-teknis), tanpa menyebutkan detail file atau kode.
-        *   **Sekarang:** *Prompt* telah diubah untuk mengarahkan AI agar menghasilkan catatan rilis *teknis* yang mendetail. Ini mencakup persyaratan untuk menyebutkan nama file, modul, atau komponen yang diubah, serta menyediakan penjelasan teknis berdasarkan analisis kode `git diff`, dengan format markdown bullet points yang terstruktur, informatif, rapi, dan profesional.
-    *   **Dampak:** Perubahan ini bertujuan untuk meningkatkan kualitas dan kedalaman dokumentasi rilis yang dihasilkan secara otomatis, menjadikannya lebih komprehensif dan bermanfaat bagi tim pengembangan atau teknis.
+Rilis ini berfokus pada pembaruan versi internal dan konfigurasi pembaruan otomatis untuk memastikan aplikasi tetap up-to-date dan proses pembaruan berjalan dengan lancar.
 
-*   **Konfigurasi Proyek Aplikasi (`AppKasir/My Project/AssemblyInfo.vb`)**
-    *   **Penjelasan Teknis:** Nomor versi internal aplikasi telah diinkrementasi.
-        *   Properti `AssemblyVersion` telah diperbarui dari `15.2026.521.14` menjadi `15.2026.521.15`.
-        *   Properti `AssemblyFileVersion` juga telah diperbarui dari `15.2026.521.14` menjadi `15.2026.521.15`.
-    *   **Dampak:** Pembaruan versi ini merupakan praktik standar untuk menandai adanya rilis build baru dari aplikasi, memastikan identifikasi versi yang akurat dalam sistem dan lingkungan pengembangan.
+---
+
+### **Pembaruan Internal & Konfigurasi Sistem**
+
+*   **Peningkatan Versi Aplikasi (`AppKasir/My Project/AssemblyInfo.vb`)**
+    *   **Penjelasan Teknis:** Versi `AssemblyVersion` dan `AssemblyFileVersion` proyek telah diperbarui dari `15.2026.521.15` menjadi `15.2026.521.16`.
+    *   **Dampak:** Perubahan ini memastikan bahwa metadata biner aplikasi (DLL/EXE) secara akurat mencerminkan versi rilis terbaru. Hal ini krusial untuk manajemen versi internal .NET, kompatibilitas runtime, serta identifikasi file yang benar pada sistem operasi.
 
 *   **Konfigurasi Pembaruan Otomatis (`update.xml`)**
-    *   **Penjelasan Teknis:** File konfigurasi `update.xml`, yang digunakan oleh mekanisme pembaruan otomatis aplikasi, telah diperbarui untuk mereferensikan versi terbaru.
-        *   Elemen `<version>` telah diperbarui dari `15.2026.521.14` menjadi `15.2026.521.15`.
-        *   Elemen `<url>` untuk unduhan pembaruan telah disesuaikan agar mengarah ke aset zip untuk versi `v15.2026.521.15`.
-        *   Elemen `<changelog>` telah diperbarui untuk mengarahkan ke URL rilis GitHub yang sesuai untuk versi `v15.2026.521.15`.
-    *   **Dampak:** Perubahan ini memastikan bahwa sistem pembaruan otomatis dapat secara akurat mendeteksi, mengunduh, dan menampilkan catatan rilis untuk versi `15.2026.521.15` kepada pengguna, memfasilitasi proses pembaruan aplikasi yang lancar.
+    *   **Penjelasan Teknis:** File konfigurasi XML yang digunakan oleh mekanisme pembaruan otomatis aplikasi (`update.xml`) telah diperbarui untuk mereferensikan versi terbaru `15.2026.521.16`. Secara spesifik, perubahan meliputi:
+        *   Elemen `<version>` diperbarui dari `15.2026.521.15` ke `15.2026.521.16`.
+        *   Elemen `<url>` diperbarui untuk mengarah ke tautan unduhan ZIP pembaruan yang sesuai dengan versi `v15.2026.521.16` di GitHub.
+        *   Elemen `<changelog>` diperbarui untuk mengarah ke halaman rilis GitHub yang spesifik untuk versi `v15.2026.521.16`.
+    *   **Dampak:** Pembaruan ini memastikan bahwa sistem pembaruan otomatis aplikasi akan secara akurat mendeteksi ketersediaan versi `15.2026.521.16`, mengunduh paket pembaruan yang benar, dan mengarahkan pengguna ke informasi changelog yang relevan untuk rilis ini.
 
 ---
