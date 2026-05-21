@@ -25,16 +25,6 @@ Partial Class FormTransferCabang
         Me.PanelRoot = New System.Windows.Forms.Panel()
         Me.PanelGrid = New System.Windows.Forms.Panel()
         Me.DgvDetail = New System.Windows.Forms.DataGridView()
-        Me.Kode = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.NamaBarang = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.QTY = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.Satuan = New System.Windows.Forms.DataGridViewComboBoxColumn()
-        Me.Isi = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.HargaBeli = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.QtySat = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.TotalHarga = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.StokToko = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.StokGudang = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.PanelCari = New System.Windows.Forms.Panel()
         Me.BtnCari = New System.Windows.Forms.Button()
         Me.TxtNamaBarang = New System.Windows.Forms.TextBox()
@@ -57,6 +47,16 @@ Partial Class FormTransferCabang
         Me.CmbMode = New System.Windows.Forms.ComboBox()
         Me.LblMode = New System.Windows.Forms.Label()
         Me.LblHeaderForm = New System.Windows.Forms.Label()
+        Me.Kode = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.NamaBarang = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.QTY = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.Satuan = New System.Windows.Forms.DataGridViewComboBoxColumn()
+        Me.Isi = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.HargaBeli = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.QtySat = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.TotalHarga = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.StokToko = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.StokGudang = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.PanelRoot.SuspendLayout()
         Me.PanelGrid.SuspendLayout()
         CType(Me.DgvDetail, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -124,74 +124,6 @@ Partial Class FormTransferCabang
         Me.DgvDetail.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.CellSelect
         Me.DgvDetail.Size = New System.Drawing.Size(1291, 489)
         Me.DgvDetail.TabIndex = 5
-        '
-        'Kode
-        '
-        Me.Kode.FillWeight = 50.0!
-        Me.Kode.HeaderText = "Kode"
-        Me.Kode.Name = "Kode"
-        Me.Kode.ReadOnly = True
-        Me.Kode.Visible = False
-        '
-        'NamaBarang
-        '
-        Me.NamaBarang.FillWeight = 200.0!
-        Me.NamaBarang.HeaderText = "Nama Barang"
-        Me.NamaBarang.Name = "NamaBarang"
-        Me.NamaBarang.ReadOnly = True
-        '
-        'QTY
-        '
-        Me.QTY.FillWeight = 40.0!
-        Me.QTY.HeaderText = "QTY"
-        Me.QTY.Name = "QTY"
-        '
-        'Satuan
-        '
-        Me.Satuan.FillWeight = 60.0!
-        Me.Satuan.HeaderText = "Satuan"
-        Me.Satuan.Name = "Satuan"
-        '
-        'Isi
-        '
-        Me.Isi.FillWeight = 30.0!
-        Me.Isi.HeaderText = "Isi"
-        Me.Isi.Name = "Isi"
-        '
-        'HargaBeli
-        '
-        Me.HargaBeli.FillWeight = 70.0!
-        Me.HargaBeli.HeaderText = "Harga"
-        Me.HargaBeli.Name = "HargaBeli"
-        Me.HargaBeli.ReadOnly = True
-        '
-        'QtySat
-        '
-        Me.QtySat.FillWeight = 50.0!
-        Me.QtySat.HeaderText = "Total Qty"
-        Me.QtySat.Name = "QtySat"
-        Me.QtySat.ReadOnly = True
-        '
-        'TotalHarga
-        '
-        Me.TotalHarga.FillWeight = 80.0!
-        Me.TotalHarga.HeaderText = "Total"
-        Me.TotalHarga.Name = "TotalHarga"
-        Me.TotalHarga.ReadOnly = True
-        '
-        'StokToko
-        '
-        Me.StokToko.FillWeight = 60.0!
-        Me.StokToko.HeaderText = "S Toko"
-        Me.StokToko.Name = "StokToko"
-        Me.StokToko.ReadOnly = True
-        '
-        'StokGudang
-        '
-        Me.StokGudang.FillWeight = 70.0!
-        Me.StokGudang.HeaderText = "S Gudang"
-        Me.StokGudang.Name = "StokGudang"
-        Me.StokGudang.ReadOnly = True
         '
         'PanelCari
         '
@@ -528,6 +460,74 @@ Partial Class FormTransferCabang
         Me.LblHeaderForm.Text = "Transfer Barang Antar Cabang"
         Me.LblHeaderForm.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
         '
+        'Kode
+        '
+        Me.Kode.FillWeight = 50.0!
+        Me.Kode.HeaderText = "Kode"
+        Me.Kode.Name = "Kode"
+        Me.Kode.ReadOnly = True
+        Me.Kode.Visible = False
+        '
+        'NamaBarang
+        '
+        Me.NamaBarang.FillWeight = 300.0!
+        Me.NamaBarang.HeaderText = "Nama Barang"
+        Me.NamaBarang.Name = "NamaBarang"
+        Me.NamaBarang.ReadOnly = True
+        '
+        'QTY
+        '
+        Me.QTY.FillWeight = 40.0!
+        Me.QTY.HeaderText = "QTY"
+        Me.QTY.Name = "QTY"
+        '
+        'Satuan
+        '
+        Me.Satuan.FillWeight = 60.0!
+        Me.Satuan.HeaderText = "Satuan"
+        Me.Satuan.Name = "Satuan"
+        '
+        'Isi
+        '
+        Me.Isi.FillWeight = 30.0!
+        Me.Isi.HeaderText = "Isi"
+        Me.Isi.Name = "Isi"
+        '
+        'HargaBeli
+        '
+        Me.HargaBeli.FillWeight = 70.0!
+        Me.HargaBeli.HeaderText = "Harga"
+        Me.HargaBeli.Name = "HargaBeli"
+        Me.HargaBeli.ReadOnly = True
+        '
+        'QtySat
+        '
+        Me.QtySat.FillWeight = 50.0!
+        Me.QtySat.HeaderText = "Total Qty"
+        Me.QtySat.Name = "QtySat"
+        Me.QtySat.ReadOnly = True
+        '
+        'TotalHarga
+        '
+        Me.TotalHarga.FillWeight = 80.0!
+        Me.TotalHarga.HeaderText = "Total"
+        Me.TotalHarga.Name = "TotalHarga"
+        Me.TotalHarga.ReadOnly = True
+        '
+        'StokToko
+        '
+        Me.StokToko.FillWeight = 40.0!
+        Me.StokToko.HeaderText = "S Toko"
+        Me.StokToko.Name = "StokToko"
+        Me.StokToko.ReadOnly = True
+        '
+        'StokGudang
+        '
+        Me.StokGudang.FillWeight = 40.0!
+        Me.StokGudang.HeaderText = "S Gudang"
+        Me.StokGudang.Name = "StokGudang"
+        Me.StokGudang.ReadOnly = True
+        '
         'FormTransferCabang
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
@@ -562,16 +562,6 @@ Partial Class FormTransferCabang
     Friend WithEvents PanelCari As Panel
     Friend WithEvents BtnCari As Button
     Friend WithEvents DgvDetail As DataGridView
-    Friend WithEvents Kode As DataGridViewTextBoxColumn
-    Friend WithEvents NamaBarang As DataGridViewTextBoxColumn
-    Friend WithEvents QTY As DataGridViewTextBoxColumn
-    Friend WithEvents Satuan As DataGridViewComboBoxColumn
-    Friend WithEvents Isi As DataGridViewTextBoxColumn
-    Friend WithEvents QtySat As DataGridViewTextBoxColumn
-    Friend WithEvents HargaBeli As DataGridViewTextBoxColumn
-    Friend WithEvents TotalHarga As DataGridViewTextBoxColumn
-    Friend WithEvents StokToko As DataGridViewTextBoxColumn
-    Friend WithEvents StokGudang As DataGridViewTextBoxColumn
     Friend WithEvents TxtNamaBarang As TextBox
     Friend WithEvents LstBarang As ListBox
     Friend WithEvents PanelFooter As Panel
@@ -591,4 +581,14 @@ Partial Class FormTransferCabang
     Friend WithEvents BtnPelanggan As Button
     Friend WithEvents BtnBarang As Button
     Friend WithEvents BtnKeluarForm As Button
+    Friend WithEvents Kode As DataGridViewTextBoxColumn
+    Friend WithEvents NamaBarang As DataGridViewTextBoxColumn
+    Friend WithEvents QTY As DataGridViewTextBoxColumn
+    Friend WithEvents Satuan As DataGridViewComboBoxColumn
+    Friend WithEvents Isi As DataGridViewTextBoxColumn
+    Friend WithEvents HargaBeli As DataGridViewTextBoxColumn
+    Friend WithEvents QtySat As DataGridViewTextBoxColumn
+    Friend WithEvents TotalHarga As DataGridViewTextBoxColumn
+    Friend WithEvents StokToko As DataGridViewTextBoxColumn
+    Friend WithEvents StokGudang As DataGridViewTextBoxColumn
 End Class

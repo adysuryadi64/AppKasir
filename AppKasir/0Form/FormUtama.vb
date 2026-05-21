@@ -1799,9 +1799,9 @@ Public Class FormUtama
             ' ========================================
             Dim idTransfer As String = TxtFakturTransaksi.Text
             Dim lokasi As String = TxtLokasiUntukEdit.Text
-            Dim idBarangMasuk As String  = If(DGVTransaksi.CurrentRow.Cells(4).Value IsNot Nothing, DGVTransaksi.CurrentRow.Cells(4).Value.ToString(), "")
+            Dim idBarangMasuk As String = If(DGVTransaksi.CurrentRow.Cells(4).Value IsNot Nothing, DGVTransaksi.CurrentRow.Cells(4).Value.ToString(), "")
             Dim namaBarangMasuk As String = If(DGVTransaksi.CurrentRow.Cells(5).Value IsNot Nothing, DGVTransaksi.CurrentRow.Cells(5).Value.ToString(), "")
-            Dim idBarangKeluar As String  = If(DGVTransaksi.CurrentRow.Cells(12).Value IsNot Nothing, DGVTransaksi.CurrentRow.Cells(12).Value.ToString(), "")
+            Dim idBarangKeluar As String = If(DGVTransaksi.CurrentRow.Cells(12).Value IsNot Nothing, DGVTransaksi.CurrentRow.Cells(12).Value.ToString(), "")
             Dim namaBarangKeluar As String = If(DGVTransaksi.CurrentRow.Cells(13).Value IsNot Nothing, DGVTransaksi.CurrentRow.Cells(13).Value.ToString(), "")
             Dim qtySatMasuk As Decimal = ModuleAngka.ParseDecimal(DGVTransaksi.CurrentRow.Cells(9).Value)
             Dim qtySatKeluar As Decimal = ModuleAngka.ParseDecimal(DGVTransaksi.CurrentRow.Cells(17).Value)
@@ -2985,7 +2985,7 @@ Public Class FormUtama
 
     Private Sub PeriksaUpdateAplikasiToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles PeriksaUpdateAplikasiToolStripMenuItem.Click
         TutupSemuaForm()
-        
+
         ' Buat efek overlay gelap (lightbox)
         Using bg As New Form()
             bg.StartPosition = FormStartPosition.Manual
@@ -2995,12 +2995,12 @@ Public Class FormUtama
             bg.BackColor = Color.Black
             bg.ShowInTaskbar = False
             bg.Show(Me)
-            
+
             With FormCekUpdate
                 .StartPosition = FormStartPosition.CenterScreen
-                .ShowDialog(bg)
+                .Show(bg)
             End With
-            
+
             bg.Close()
         End Using
     End Sub

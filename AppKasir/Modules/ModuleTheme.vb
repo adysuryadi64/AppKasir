@@ -518,7 +518,11 @@ Public Module ModuleTheme
 
                 Case TypeOf ctrl Is ListBox
                     Dim lb = CType(ctrl, ListBox)
-                    lb.BackColor = C(L_Surface, D_Surface)
+                    If lb.Name.ToLower().Contains("lstbarang") Then
+                        lb.BackColor = C(L_Subtle, D_Subtle)
+                    Else
+                        lb.BackColor = C(L_Surface, D_Surface)
+                    End If
                     lb.ForeColor = C(L_SurfaceFore, D_SurfaceFore)
 
                 Case TypeOf ctrl Is NumericUpDown

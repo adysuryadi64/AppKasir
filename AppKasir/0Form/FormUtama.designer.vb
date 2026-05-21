@@ -583,7 +583,7 @@ Partial Class FormUtama
         'MenuLaporan
         '
         Me.MenuLaporan.BackColor = System.Drawing.SystemColors.Control
-        Me.MenuLaporan.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.MutasiSaldoToolStripMenuItem, Me.KeuanganToolStripMenuItem, Me.PembelianToolStripMenuItem, Me.PenjualanToolStripMenuItem, Me.ReturPembelianToolStripMenuItem, Me.ReturPenjualanToolStripMenuItem, Me.HutangToolStripMenuItem, Me.PiutangToolStripMenuItem, Me.KasPenjualanToolStripMenuItem, Me.TransferToolStripMenuItem, Me.StokBarangToolStripMenuItem, Me.GrafikToolStripMenuItem, Me.HistoryToolStripMenuItem, Me.RangkingToolStripMenuItem, Me.OmsetToolStripMenuItem, Me.AuditTrailToolStripMenuItem, Me.ProfiMarginToolStripMenuItem})
+        Me.MenuLaporan.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.MutasiSaldoToolStripMenuItem, Me.MutasiBarangToolStripMenuItem, Me.KeuanganToolStripMenuItem, Me.PembelianToolStripMenuItem, Me.PenjualanToolStripMenuItem, Me.ReturPembelianToolStripMenuItem, Me.ReturPenjualanToolStripMenuItem, Me.HutangToolStripMenuItem, Me.PiutangToolStripMenuItem, Me.KasPenjualanToolStripMenuItem, Me.TransferToolStripMenuItem, Me.StokBarangToolStripMenuItem, Me.GrafikToolStripMenuItem, Me.HistoryToolStripMenuItem, Me.RangkingToolStripMenuItem, Me.OmsetToolStripMenuItem, Me.AuditTrailToolStripMenuItem, Me.ProfiMarginToolStripMenuItem})
         Me.MenuLaporan.Font = New System.Drawing.Font("Bookman Old Style", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.MenuLaporan.Image = CType(resources.GetObject("MenuLaporan.Image"), System.Drawing.Image)
         Me.MenuLaporan.Name = "MenuLaporan"
@@ -599,7 +599,7 @@ Partial Class FormUtama
         '
         'KeuanganToolStripMenuItem
         '
-        Me.KeuanganToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.MutasiBarangToolStripMenuItem, Me.JurnalUmumToolStripMenuItem, Me.NeracaToolStripMenuItem, Me.BukuBesarToolStripMenuItem, Me.BukuBesarPembantuToolStripMenuItem, Me.LabaRugiBerjalanToolStripMenuItem})
+        Me.KeuanganToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.JurnalUmumToolStripMenuItem, Me.NeracaToolStripMenuItem, Me.BukuBesarToolStripMenuItem, Me.BukuBesarPembantuToolStripMenuItem, Me.LabaRugiBerjalanToolStripMenuItem})
         Me.KeuanganToolStripMenuItem.Image = CType(resources.GetObject("KeuanganToolStripMenuItem.Image"), System.Drawing.Image)
         Me.KeuanganToolStripMenuItem.Name = "KeuanganToolStripMenuItem"
         Me.KeuanganToolStripMenuItem.Size = New System.Drawing.Size(211, 24)
@@ -609,7 +609,7 @@ Partial Class FormUtama
         '
         Me.MutasiBarangToolStripMenuItem.Image = CType(resources.GetObject("MutasiBarangToolStripMenuItem.Image"), System.Drawing.Image)
         Me.MutasiBarangToolStripMenuItem.Name = "MutasiBarangToolStripMenuItem"
-        Me.MutasiBarangToolStripMenuItem.Size = New System.Drawing.Size(256, 24)
+        Me.MutasiBarangToolStripMenuItem.Size = New System.Drawing.Size(211, 24)
         Me.MutasiBarangToolStripMenuItem.Text = "Mutasi barang"
         '
         'JurnalUmumToolStripMenuItem

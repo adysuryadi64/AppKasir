@@ -127,6 +127,7 @@ Public Class FormKeuangan
         DTPTglKeuangan.Format = DateTimePickerFormat.Custom
         DTPTglKeuangan.CustomFormat = "dd/MM/yyyy"
         ModulHakAkses.ResetDTPKeTanggalHariIni(DTPTglKeuangan)
+        DTPTglKeuangan.Enabled = True
 
         HideHelperPanels()
         SetButtonState(FormState.Add)
@@ -428,6 +429,7 @@ Public Class FormKeuangan
         LblRinciPengeluaran.Text = detailText
 
         ModulHakAkses.ResetDTPKeTanggalHariIni(DTPTglKeuangan)
+        DTPTglKeuangan.Enabled = True
         ResetFormForNewTransaction()
     End Sub
 
@@ -628,11 +630,7 @@ Public Class FormKeuangan
         Dim transaction As MySqlTransaction = Nothing
 
         Try
-            ' Validasi backdate
-            If izinkanBackdate = 0 AndAlso DTPTglKeuangan.Value.Date < Today.Date Then
-                MessageBox.Show("Transaksi tanggal lampau tidak diizinkan.", "Validasi Gagal", MessageBoxButtons.OK, MessageBoxIcon.Warning)
-                Return
-            End If
+            ' Validasi backdate diabaikan khusus untuk FormKeuangan agar selalu diperbolehkan
 
             ' Mulai transaksi
             transaction = conn.BeginTransaction()
@@ -704,11 +702,7 @@ Public Class FormKeuangan
         Dim nominalLama As Decimal = 0D
 
         Try
-            ' Validasi backdate
-            If izinkanBackdate = 0 AndAlso DTPTglKeuangan.Value.Date < Today.Date Then
-                MessageBox.Show("Transaksi tanggal lampau tidak diizinkan.", "Validasi Gagal", MessageBoxButtons.OK, MessageBoxIcon.Warning)
-                Return
-            End If
+            ' Validasi backdate diabaikan khusus untuk FormKeuangan agar selalu diperbolehkan
 
             ' Mulai transaksi
             transaction = conn.BeginTransaction()

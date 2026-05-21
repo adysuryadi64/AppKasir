@@ -23,6 +23,7 @@ Partial Class FormTransferBarang
     <System.Diagnostics.DebuggerStepThrough()>
     Private Sub InitializeComponent()
         Me.components = New System.ComponentModel.Container()
+        Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(FormTransferBarang))
         Dim DataGridViewCellStyle1 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
         Dim DataGridViewCellStyle2 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
         Dim DataGridViewCellStyle10 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
@@ -34,8 +35,8 @@ Partial Class FormTransferBarang
         Dim DataGridViewCellStyle7 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
         Dim DataGridViewCellStyle8 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
         Dim DataGridViewCellStyle9 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
-        Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(FormTransferBarang))
         Me.PanelHeader = New System.Windows.Forms.Panel()
+        Me.BtnKeluar = New System.Windows.Forms.Button()
         Me.LblHeader = New System.Windows.Forms.Label()
         Me.BtnKeluarForm = New System.Windows.Forms.Button()
         Me.GBGrantotal = New System.Windows.Forms.GroupBox()
@@ -70,6 +71,13 @@ Partial Class FormTransferBarang
         Me.Timer1 = New System.Windows.Forms.Timer(Me.components)
         Me.TxtKode = New System.Windows.Forms.TextBox()
         Me.DgvData = New System.Windows.Forms.DataGridView()
+        Me.HapusToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ContextMenuStrip1 = New System.Windows.Forms.ContextMenuStrip(Me.components)
+        Me.GroupBox1 = New System.Windows.Forms.GroupBox()
+        Me.TxtStok = New System.Windows.Forms.TextBox()
+        Me.Txtsatuan = New System.Windows.Forms.TextBox()
+        Me.TxtQty = New System.Windows.Forms.TextBox()
+        Me.LstBarang = New System.Windows.Forms.ListBox()
         Me.Id = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.Nama = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.Hargabeli = New System.Windows.Forms.DataGridViewTextBoxColumn()
@@ -80,14 +88,6 @@ Partial Class FormTransferBarang
         Me.QtySat = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.Totalharga = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.Stok = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.HapusToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
-        Me.ContextMenuStrip1 = New System.Windows.Forms.ContextMenuStrip(Me.components)
-        Me.GroupBox1 = New System.Windows.Forms.GroupBox()
-        Me.TxtStok = New System.Windows.Forms.TextBox()
-        Me.Txtsatuan = New System.Windows.Forms.TextBox()
-        Me.TxtQty = New System.Windows.Forms.TextBox()
-        Me.LstBarang = New System.Windows.Forms.ListBox()
-        Me.BtnKeluar = New System.Windows.Forms.Button()
         Me.PanelHeader.SuspendLayout()
         Me.GBGrantotal.SuspendLayout()
         Me.GBInput.SuspendLayout()
@@ -110,6 +110,30 @@ Partial Class FormTransferBarang
         Me.PanelHeader.Name = "PanelHeader"
         Me.PanelHeader.Size = New System.Drawing.Size(1230, 39)
         Me.PanelHeader.TabIndex = 135
+        '
+        'BtnKeluar
+        '
+        Me.BtnKeluar.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.BtnKeluar.AutoSize = True
+        Me.BtnKeluar.BackColor = System.Drawing.Color.White
+        Me.BtnKeluar.Cursor = System.Windows.Forms.Cursors.Hand
+        Me.BtnKeluar.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(CType(CType(220, Byte), Integer), CType(CType(38, Byte), Integer), CType(CType(38, Byte), Integer))
+        Me.BtnKeluar.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(CType(CType(252, Byte), Integer), CType(CType(165, Byte), Integer), CType(CType(165, Byte), Integer))
+        Me.BtnKeluar.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(CType(CType(254, Byte), Integer), CType(CType(226, Byte), Integer), CType(CType(226, Byte), Integer))
+        Me.BtnKeluar.FlatStyle = System.Windows.Forms.FlatStyle.Flat
+        Me.BtnKeluar.Font = New System.Drawing.Font("Segoe UI", 9.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.BtnKeluar.ForeColor = System.Drawing.Color.FromArgb(CType(CType(220, Byte), Integer), CType(CType(38, Byte), Integer), CType(CType(38, Byte), Integer))
+        Me.BtnKeluar.Image = CType(resources.GetObject("BtnKeluar.Image"), System.Drawing.Image)
+        Me.BtnKeluar.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft
+        Me.BtnKeluar.Location = New System.Drawing.Point(1110, 1)
+        Me.BtnKeluar.Margin = New System.Windows.Forms.Padding(4, 3, 4, 3)
+        Me.BtnKeluar.Name = "BtnKeluar"
+        Me.BtnKeluar.Size = New System.Drawing.Size(112, 31)
+        Me.BtnKeluar.TabIndex = 78
+        Me.BtnKeluar.Text = "Keluar (Esc)"
+        Me.BtnKeluar.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
+        Me.BtnKeluar.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText
+        Me.BtnKeluar.UseVisualStyleBackColor = False
         '
         'LblHeader
         '
@@ -612,6 +636,88 @@ Partial Class FormTransferBarang
         Me.DgvData.Size = New System.Drawing.Size(1227, 376)
         Me.DgvData.TabIndex = 132
         '
+        'HapusToolStripMenuItem
+        '
+        Me.HapusToolStripMenuItem.Name = "HapusToolStripMenuItem"
+        Me.HapusToolStripMenuItem.Size = New System.Drawing.Size(170, 22)
+        Me.HapusToolStripMenuItem.Text = "Hapus barang"
+        '
+        'ContextMenuStrip1
+        '
+        Me.ContextMenuStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.HapusToolStripMenuItem})
+        Me.ContextMenuStrip1.Name = "ContextMenuStrip1"
+        Me.ContextMenuStrip1.ShowCheckMargin = True
+        Me.ContextMenuStrip1.Size = New System.Drawing.Size(171, 26)
+        '
+        'GroupBox1
+        '
+        Me.GroupBox1.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.GroupBox1.BackColor = System.Drawing.SystemColors.ActiveCaption
+        Me.GroupBox1.Controls.Add(Me.TxtStok)
+        Me.GroupBox1.Controls.Add(Me.PanelCari)
+        Me.GroupBox1.Controls.Add(Me.GBGrantotal)
+        Me.GroupBox1.Controls.Add(Me.GBInput)
+        Me.GroupBox1.Controls.Add(Me.TxtBarcode)
+        Me.GroupBox1.Controls.Add(Me.TxtHarga)
+        Me.GroupBox1.Controls.Add(Me.TxtIsi)
+        Me.GroupBox1.Controls.Add(Me.Txtsatuan)
+        Me.GroupBox1.Controls.Add(Me.TxtQty)
+        Me.GroupBox1.Controls.Add(Me.TxtKode)
+        Me.GroupBox1.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.GroupBox1.ForeColor = System.Drawing.Color.White
+        Me.GroupBox1.Location = New System.Drawing.Point(3, 38)
+        Me.GroupBox1.Name = "GroupBox1"
+        Me.GroupBox1.Size = New System.Drawing.Size(1227, 142)
+        Me.GroupBox1.TabIndex = 131
+        Me.GroupBox1.TabStop = False
+        '
+        'TxtStok
+        '
+        Me.TxtStok.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
+        Me.TxtStok.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.TxtStok.Location = New System.Drawing.Point(990, 109)
+        Me.TxtStok.Name = "TxtStok"
+        Me.TxtStok.ReadOnly = True
+        Me.TxtStok.Size = New System.Drawing.Size(64, 22)
+        Me.TxtStok.TabIndex = 9
+        Me.TxtStok.Text = "Stok"
+        Me.TxtStok.Visible = False
+        '
+        'Txtsatuan
+        '
+        Me.Txtsatuan.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
+        Me.Txtsatuan.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.Txtsatuan.Location = New System.Drawing.Point(782, 110)
+        Me.Txtsatuan.Name = "Txtsatuan"
+        Me.Txtsatuan.ReadOnly = True
+        Me.Txtsatuan.Size = New System.Drawing.Size(64, 22)
+        Me.Txtsatuan.TabIndex = 8
+        Me.Txtsatuan.Text = "satuan"
+        Me.Txtsatuan.Visible = False
+        '
+        'TxtQty
+        '
+        Me.TxtQty.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
+        Me.TxtQty.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.TxtQty.Location = New System.Drawing.Point(712, 110)
+        Me.TxtQty.Name = "TxtQty"
+        Me.TxtQty.ReadOnly = True
+        Me.TxtQty.Size = New System.Drawing.Size(64, 22)
+        Me.TxtQty.TabIndex = 8
+        Me.TxtQty.Text = "Qty"
+        Me.TxtQty.Visible = False
+        '
+        'LstBarang
+        '
+        Me.LstBarang.Font = New System.Drawing.Font("Century Gothic", 11.25!)
+        Me.LstBarang.FormattingEnabled = True
+        Me.LstBarang.ItemHeight = 20
+        Me.LstBarang.Location = New System.Drawing.Point(8, 172)
+        Me.LstBarang.Name = "LstBarang"
+        Me.LstBarang.Size = New System.Drawing.Size(533, 284)
+        Me.LstBarang.TabIndex = 136
+        '
         'Id
         '
         Me.Id.FillWeight = 50.0!
@@ -623,7 +729,7 @@ Partial Class FormTransferBarang
         '
         DataGridViewCellStyle3.ForeColor = System.Drawing.Color.Black
         Me.Nama.DefaultCellStyle = DataGridViewCellStyle3
-        Me.Nama.FillWeight = 200.0!
+        Me.Nama.FillWeight = 300.0!
         Me.Nama.HeaderText = "Nama"
         Me.Nama.Name = "Nama"
         '
@@ -710,112 +816,6 @@ Partial Class FormTransferBarang
         Me.Stok.HeaderText = "Stok"
         Me.Stok.Name = "Stok"
         '
-        'HapusToolStripMenuItem
-        '
-        Me.HapusToolStripMenuItem.Name = "HapusToolStripMenuItem"
-        Me.HapusToolStripMenuItem.Size = New System.Drawing.Size(170, 22)
-        Me.HapusToolStripMenuItem.Text = "Hapus barang"
-        '
-        'ContextMenuStrip1
-        '
-        Me.ContextMenuStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.HapusToolStripMenuItem})
-        Me.ContextMenuStrip1.Name = "ContextMenuStrip1"
-        Me.ContextMenuStrip1.ShowCheckMargin = True
-        Me.ContextMenuStrip1.Size = New System.Drawing.Size(171, 26)
-        '
-        'GroupBox1
-        '
-        Me.GroupBox1.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
-            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.GroupBox1.BackColor = System.Drawing.SystemColors.ActiveCaption
-        Me.GroupBox1.Controls.Add(Me.TxtStok)
-        Me.GroupBox1.Controls.Add(Me.PanelCari)
-        Me.GroupBox1.Controls.Add(Me.GBGrantotal)
-        Me.GroupBox1.Controls.Add(Me.GBInput)
-        Me.GroupBox1.Controls.Add(Me.TxtBarcode)
-        Me.GroupBox1.Controls.Add(Me.TxtHarga)
-        Me.GroupBox1.Controls.Add(Me.TxtIsi)
-        Me.GroupBox1.Controls.Add(Me.Txtsatuan)
-        Me.GroupBox1.Controls.Add(Me.TxtQty)
-        Me.GroupBox1.Controls.Add(Me.TxtKode)
-        Me.GroupBox1.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.GroupBox1.ForeColor = System.Drawing.Color.White
-        Me.GroupBox1.Location = New System.Drawing.Point(3, 38)
-        Me.GroupBox1.Name = "GroupBox1"
-        Me.GroupBox1.Size = New System.Drawing.Size(1227, 142)
-        Me.GroupBox1.TabIndex = 131
-        Me.GroupBox1.TabStop = False
-        '
-        'TxtStok
-        '
-        Me.TxtStok.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
-        Me.TxtStok.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.TxtStok.Location = New System.Drawing.Point(990, 109)
-        Me.TxtStok.Name = "TxtStok"
-        Me.TxtStok.ReadOnly = True
-        Me.TxtStok.Size = New System.Drawing.Size(64, 22)
-        Me.TxtStok.TabIndex = 9
-        Me.TxtStok.Text = "Stok"
-        Me.TxtStok.Visible = False
-        '
-        'Txtsatuan
-        '
-        Me.Txtsatuan.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
-        Me.Txtsatuan.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Txtsatuan.Location = New System.Drawing.Point(782, 110)
-        Me.Txtsatuan.Name = "Txtsatuan"
-        Me.Txtsatuan.ReadOnly = True
-        Me.Txtsatuan.Size = New System.Drawing.Size(64, 22)
-        Me.Txtsatuan.TabIndex = 8
-        Me.Txtsatuan.Text = "satuan"
-        Me.Txtsatuan.Visible = False
-        '
-        'TxtQty
-        '
-        Me.TxtQty.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
-        Me.TxtQty.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.TxtQty.Location = New System.Drawing.Point(712, 110)
-        Me.TxtQty.Name = "TxtQty"
-        Me.TxtQty.ReadOnly = True
-        Me.TxtQty.Size = New System.Drawing.Size(64, 22)
-        Me.TxtQty.TabIndex = 8
-        Me.TxtQty.Text = "Qty"
-        Me.TxtQty.Visible = False
-        '
-        'LstBarang
-        '
-        Me.LstBarang.Font = New System.Drawing.Font("Century Gothic", 11.25!)
-        Me.LstBarang.FormattingEnabled = True
-        Me.LstBarang.ItemHeight = 20
-        Me.LstBarang.Location = New System.Drawing.Point(8, 172)
-        Me.LstBarang.Name = "LstBarang"
-        Me.LstBarang.Size = New System.Drawing.Size(533, 284)
-        Me.LstBarang.TabIndex = 136
-        '
-        'BtnKeluar
-        '
-        Me.BtnKeluar.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.BtnKeluar.AutoSize = True
-        Me.BtnKeluar.BackColor = System.Drawing.Color.White
-        Me.BtnKeluar.Cursor = System.Windows.Forms.Cursors.Hand
-        Me.BtnKeluar.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(CType(CType(220, Byte), Integer), CType(CType(38, Byte), Integer), CType(CType(38, Byte), Integer))
-        Me.BtnKeluar.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(CType(CType(252, Byte), Integer), CType(CType(165, Byte), Integer), CType(CType(165, Byte), Integer))
-        Me.BtnKeluar.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(CType(CType(254, Byte), Integer), CType(CType(226, Byte), Integer), CType(CType(226, Byte), Integer))
-        Me.BtnKeluar.FlatStyle = System.Windows.Forms.FlatStyle.Flat
-        Me.BtnKeluar.Font = New System.Drawing.Font("Segoe UI", 9.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.BtnKeluar.ForeColor = System.Drawing.Color.FromArgb(CType(CType(220, Byte), Integer), CType(CType(38, Byte), Integer), CType(CType(38, Byte), Integer))
-        Me.BtnKeluar.Image = CType(resources.GetObject("BtnKeluar.Image"), System.Drawing.Image)
-        Me.BtnKeluar.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft
-        Me.BtnKeluar.Location = New System.Drawing.Point(1110, 1)
-        Me.BtnKeluar.Margin = New System.Windows.Forms.Padding(4, 3, 4, 3)
-        Me.BtnKeluar.Name = "BtnKeluar"
-        Me.BtnKeluar.Size = New System.Drawing.Size(112, 31)
-        Me.BtnKeluar.TabIndex = 78
-        Me.BtnKeluar.Text = "Keluar (Esc)"
-        Me.BtnKeluar.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
-        Me.BtnKeluar.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText
-        Me.BtnKeluar.UseVisualStyleBackColor = False
-        '
         'FormTransferBarang
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
@@ -890,6 +890,9 @@ Partial Class FormTransferBarang
     Friend WithEvents Label4 As System.Windows.Forms.Label
     Friend WithEvents Label2 As System.Windows.Forms.Label
     Friend WithEvents TxtStok As TextBox
+    Friend WithEvents BtnSettingPrinter As Button
+    Friend WithEvents BtnCari As Button
+    Friend WithEvents BtnKeluar As Button
     Friend WithEvents Id As DataGridViewTextBoxColumn
     Friend WithEvents Nama As DataGridViewTextBoxColumn
     Friend WithEvents Hargabeli As DataGridViewTextBoxColumn
@@ -900,9 +903,6 @@ Partial Class FormTransferBarang
     Friend WithEvents QtySat As DataGridViewTextBoxColumn
     Friend WithEvents Totalharga As DataGridViewTextBoxColumn
     Friend WithEvents Stok As DataGridViewTextBoxColumn
-    Friend WithEvents BtnSettingPrinter As Button
-    Friend WithEvents BtnCari As Button
-    Friend WithEvents BtnKeluar As Button
 End Class
 
 

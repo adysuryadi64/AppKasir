@@ -1472,12 +1472,26 @@ Public Class FormReturBeli
     ' ============================================
     Private Sub PosisikanLstBarangDiBawahSel()
         If DgvData.CurrentCell Is Nothing Then Return
-        Dim cellRect = DgvData.GetCellDisplayRectangle(DgvData.CurrentCell.ColumnIndex,
-                                                        DgvData.CurrentCell.RowIndex, False)
-        Dim pt = Me.PointToClient(DgvData.PointToScreen(New Point(cellRect.Left, cellRect.Bottom)))
-        LstBarang.Location = New Point(pt.X, pt.Y)
-        LstBarang.Width = Math.Max(cellRect.Width, 510)
-        LstBarang.BringToFront()
+        Try
+            Dim cellRect = DgvData.GetCellDisplayRectangle(DgvData.CurrentCell.ColumnIndex,
+                                                            DgvData.CurrentCell.RowIndex, False)
+            Dim pt = Me.PointToClient(DgvData.PointToScreen(New Point(cellRect.Left, cellRect.Bottom)))
+            
+            LstBarang.Width = Math.Max(cellRect.Width, 510)
+            
+            ' Cek sisa ruang vertikal di bawah sel aktif untuk menentukan posisi LstBarang (Atas/Bawah)
+            Dim spaceBelow As Integer = Me.ClientSize.Height - pt.Y
+            If spaceBelow < LstBarang.Height + 40 Then
+                ' Tampilkan di atas sel: Y = Bawah Sel - Tinggi Sel - Tinggi ListBox
+                Dim targetY As Integer = pt.Y - cellRect.Height - LstBarang.Height
+                LstBarang.Location = New Point(pt.X, targetY)
+            Else
+                ' Tampilkan di bawah sel
+                LstBarang.Location = New Point(pt.X, pt.Y)
+            End If
+            LstBarang.BringToFront()
+        Catch
+        End Try
     End Sub
 
 #End Region

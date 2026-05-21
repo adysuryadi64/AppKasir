@@ -134,23 +134,6 @@ Partial Class FormJual
         Me.BtnCari = New System.Windows.Forms.Button()
         Me.TxtNama = New System.Windows.Forms.TextBox()
         Me.DgvDataTransaksi = New System.Windows.Forms.DataGridView()
-        Me.Kode = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.NamaBarang = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.HargaBeli = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.QTY = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.Satuan = New System.Windows.Forms.DataGridViewComboBoxColumn()
-        Me.Isi = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.Totalhargabeli = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.Harga = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.QtySat = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.DiskonPersen = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.DiskonRp = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.TotalDiskon = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.TotalHarga = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.StokToko = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.StokGudang = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.Stok = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.SerialNumber = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.PanelHeader = New System.Windows.Forms.Panel()
         Me.BtnKeluarForm = New System.Windows.Forms.Button()
         Me.LblTextJalanAtas = New System.Windows.Forms.Label()
@@ -171,6 +154,23 @@ Partial Class FormJual
         Me.BtnPanggil = New System.Windows.Forms.Button()
         Me.BtnTahan = New System.Windows.Forms.Button()
         Me.Label8 = New System.Windows.Forms.Label()
+        Me.Kode = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.NamaBarang = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.HargaBeli = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.QTY = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.Satuan = New System.Windows.Forms.DataGridViewComboBoxColumn()
+        Me.Isi = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.Totalhargabeli = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.Harga = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.QtySat = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.DiskonPersen = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.DiskonRp = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.TotalDiskon = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.TotalHarga = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.StokToko = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.StokGudang = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.Stok = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.SerialNumber = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.GBBayar.SuspendLayout()
         Me.PanelTFPelanggan.SuspendLayout()
         Me.ContextMenuStrip1.SuspendLayout()
@@ -881,9 +881,9 @@ Partial Class FormJual
         Me.LstBarang.FormattingEnabled = True
         Me.LstBarang.IntegralHeight = False
         Me.LstBarang.ItemHeight = 19
-        Me.LstBarang.Location = New System.Drawing.Point(10, 191)
+        Me.LstBarang.Location = New System.Drawing.Point(35, 191)
         Me.LstBarang.Name = "LstBarang"
-        Me.LstBarang.Size = New System.Drawing.Size(532, 354)
+        Me.LstBarang.Size = New System.Drawing.Size(531, 354)
         Me.LstBarang.TabIndex = 13
         Me.LstBarang.Visible = False
         '
@@ -1352,7 +1352,7 @@ Partial Class FormJual
         Me.PanelCari.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom
         Me.PanelCari.Controls.Add(Me.BtnCari)
         Me.PanelCari.Controls.Add(Me.TxtNama)
-        Me.PanelCari.Location = New System.Drawing.Point(3, 124)
+        Me.PanelCari.Location = New System.Drawing.Point(28, 124)
         Me.PanelCari.Name = "PanelCari"
         Me.PanelCari.Size = New System.Drawing.Size(566, 36)
         Me.PanelCari.TabIndex = 12
@@ -1417,155 +1417,6 @@ Partial Class FormJual
         Me.DgvDataTransaksi.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.CellSelect
         Me.DgvDataTransaksi.Size = New System.Drawing.Size(1289, 353)
         Me.DgvDataTransaksi.TabIndex = 14
-        '
-        'Kode
-        '
-        Me.Kode.FillWeight = 50.0!
-        Me.Kode.HeaderText = "Kode"
-        Me.Kode.Name = "Kode"
-        Me.Kode.Visible = False
-        '
-        'NamaBarang
-        '
-        Me.NamaBarang.FillWeight = 200.0!
-        Me.NamaBarang.HeaderText = "Nama Barang"
-        Me.NamaBarang.Name = "NamaBarang"
-        '
-        'HargaBeli
-        '
-        DataGridViewCellStyle19.Format = "#,0.#"
-        DataGridViewCellStyle19.NullValue = Nothing
-        Me.HargaBeli.DefaultCellStyle = DataGridViewCellStyle19
-        Me.HargaBeli.HeaderText = "Harga Beli"
-        Me.HargaBeli.Name = "HargaBeli"
-        Me.HargaBeli.Visible = False
-        '
-        'QTY
-        '
-        DataGridViewCellStyle20.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight
-        DataGridViewCellStyle20.Format = "#,0.#"
-        DataGridViewCellStyle20.NullValue = Nothing
-        Me.QTY.DefaultCellStyle = DataGridViewCellStyle20
-        Me.QTY.FillWeight = 40.0!
-        Me.QTY.HeaderText = "QTY"
-        Me.QTY.Name = "QTY"
-        '
-        'Satuan
-        '
-        Me.Satuan.FillWeight = 60.0!
-        Me.Satuan.FlatStyle = System.Windows.Forms.FlatStyle.Flat
-        Me.Satuan.HeaderText = "Satuan"
-        Me.Satuan.Name = "Satuan"
-        '
-        'Isi
-        '
-        DataGridViewCellStyle21.Format = "#,0.#"
-        Me.Isi.DefaultCellStyle = DataGridViewCellStyle21
-        Me.Isi.FillWeight = 30.0!
-        Me.Isi.HeaderText = "Isi"
-        Me.Isi.Name = "Isi"
-        Me.Isi.Visible = False
-        '
-        'Totalhargabeli
-        '
-        DataGridViewCellStyle22.Format = "#,0.#"
-        Me.Totalhargabeli.DefaultCellStyle = DataGridViewCellStyle22
-        Me.Totalhargabeli.HeaderText = "Total Harga Beli"
-        Me.Totalhargabeli.Name = "Totalhargabeli"
-        Me.Totalhargabeli.Visible = False
-        '
-        'Harga
-        '
-        DataGridViewCellStyle23.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight
-        DataGridViewCellStyle23.Format = "#,0.#"
-        Me.Harga.DefaultCellStyle = DataGridViewCellStyle23
-        Me.Harga.FillWeight = 70.0!
-        Me.Harga.HeaderText = "Harga Jual"
-        Me.Harga.Name = "Harga"
-        '
-        'QtySat
-        '
-        DataGridViewCellStyle24.Format = "#,0.#"
-        Me.QtySat.DefaultCellStyle = DataGridViewCellStyle24
-        Me.QtySat.HeaderText = "QtySat"
-        Me.QtySat.Name = "QtySat"
-        Me.QtySat.Visible = False
-        '
-        'DiskonPersen
-        '
-        DataGridViewCellStyle25.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight
-        DataGridViewCellStyle25.Format = "#,0.#"
-        Me.DiskonPersen.DefaultCellStyle = DataGridViewCellStyle25
-        Me.DiskonPersen.FillWeight = 60.0!
-        Me.DiskonPersen.HeaderText = "Diskon%"
-        Me.DiskonPersen.Name = "DiskonPersen"
-        '
-        'DiskonRp
-        '
-        DataGridViewCellStyle26.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight
-        DataGridViewCellStyle26.Format = "#,0.#"
-        Me.DiskonRp.DefaultCellStyle = DataGridViewCellStyle26
-        Me.DiskonRp.FillWeight = 80.0!
-        Me.DiskonRp.HeaderText = "Diskon Rp"
-        Me.DiskonRp.Name = "DiskonRp"
-        '
-        'TotalDiskon
-        '
-        DataGridViewCellStyle27.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight
-        DataGridViewCellStyle27.Format = "#,0.#"
-        Me.TotalDiskon.DefaultCellStyle = DataGridViewCellStyle27
-        Me.TotalDiskon.FillWeight = 80.0!
-        Me.TotalDiskon.HeaderText = "Total Diskon"
-        Me.TotalDiskon.Name = "TotalDiskon"
-        Me.TotalDiskon.ReadOnly = True
-        '
-        'TotalHarga
-        '
-        DataGridViewCellStyle28.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight
-        DataGridViewCellStyle28.Format = "#,0.#"
-        Me.TotalHarga.DefaultCellStyle = DataGridViewCellStyle28
-        Me.TotalHarga.HeaderText = "Total Harga"
-        Me.TotalHarga.Name = "TotalHarga"
-        Me.TotalHarga.ReadOnly = True
-        '
-        'StokToko
-        '
-        DataGridViewCellStyle29.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight
-        DataGridViewCellStyle29.BackColor = System.Drawing.Color.LightBlue
-        DataGridViewCellStyle29.Format = "#,0.#"
-        Me.StokToko.DefaultCellStyle = DataGridViewCellStyle29
-        Me.StokToko.FillWeight = 60.0!
-        Me.StokToko.HeaderText = "S Toko"
-        Me.StokToko.Name = "StokToko"
-        Me.StokToko.ReadOnly = True
-        '
-        'StokGudang
-        '
-        DataGridViewCellStyle30.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight
-        DataGridViewCellStyle30.BackColor = System.Drawing.Color.LightBlue
-        DataGridViewCellStyle30.Format = "#,0.#"
-        Me.StokGudang.DefaultCellStyle = DataGridViewCellStyle30
-        Me.StokGudang.FillWeight = 70.0!
-        Me.StokGudang.HeaderText = "S Gudang"
-        Me.StokGudang.Name = "StokGudang"
-        Me.StokGudang.ReadOnly = True
-        '
-        'Stok
-        '
-        DataGridViewCellStyle31.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight
-        DataGridViewCellStyle31.Format = "#,0.#"
-        DataGridViewCellStyle31.NullValue = Nothing
-        Me.Stok.DefaultCellStyle = DataGridViewCellStyle31
-        Me.Stok.FillWeight = 30.0!
-        Me.Stok.HeaderText = "Stok"
-        Me.Stok.Name = "Stok"
-        Me.Stok.ReadOnly = True
-        Me.Stok.Visible = False
-        '
-        'SerialNumber
-        '
-        Me.SerialNumber.HeaderText = "Serial Number"
-        Me.SerialNumber.Name = "SerialNumber"
         '
         'PanelHeader
         '
@@ -1903,6 +1754,155 @@ Partial Class FormJual
         Me.Label8.Size = New System.Drawing.Size(18, 16)
         Me.Label8.TabIndex = 71
         Me.Label8.Text = "%"
+        '
+        'Kode
+        '
+        Me.Kode.FillWeight = 50.0!
+        Me.Kode.HeaderText = "Kode"
+        Me.Kode.Name = "Kode"
+        Me.Kode.Visible = False
+        '
+        'NamaBarang
+        '
+        Me.NamaBarang.FillWeight = 300.0!
+        Me.NamaBarang.HeaderText = "Nama Barang"
+        Me.NamaBarang.Name = "NamaBarang"
+        '
+        'HargaBeli
+        '
+        DataGridViewCellStyle19.Format = "#,0.#"
+        DataGridViewCellStyle19.NullValue = Nothing
+        Me.HargaBeli.DefaultCellStyle = DataGridViewCellStyle19
+        Me.HargaBeli.HeaderText = "Harga Beli"
+        Me.HargaBeli.Name = "HargaBeli"
+        Me.HargaBeli.Visible = False
+        '
+        'QTY
+        '
+        DataGridViewCellStyle20.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight
+        DataGridViewCellStyle20.Format = "#,0.#"
+        DataGridViewCellStyle20.NullValue = Nothing
+        Me.QTY.DefaultCellStyle = DataGridViewCellStyle20
+        Me.QTY.FillWeight = 40.0!
+        Me.QTY.HeaderText = "QTY"
+        Me.QTY.Name = "QTY"
+        '
+        'Satuan
+        '
+        Me.Satuan.FillWeight = 60.0!
+        Me.Satuan.FlatStyle = System.Windows.Forms.FlatStyle.Flat
+        Me.Satuan.HeaderText = "Satuan"
+        Me.Satuan.Name = "Satuan"
+        '
+        'Isi
+        '
+        DataGridViewCellStyle21.Format = "#,0.#"
+        Me.Isi.DefaultCellStyle = DataGridViewCellStyle21
+        Me.Isi.FillWeight = 30.0!
+        Me.Isi.HeaderText = "Isi"
+        Me.Isi.Name = "Isi"
+        Me.Isi.Visible = False
+        '
+        'Totalhargabeli
+        '
+        DataGridViewCellStyle22.Format = "#,0.#"
+        Me.Totalhargabeli.DefaultCellStyle = DataGridViewCellStyle22
+        Me.Totalhargabeli.HeaderText = "Total Harga Beli"
+        Me.Totalhargabeli.Name = "Totalhargabeli"
+        Me.Totalhargabeli.Visible = False
+        '
+        'Harga
+        '
+        DataGridViewCellStyle23.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight
+        DataGridViewCellStyle23.Format = "#,0.#"
+        Me.Harga.DefaultCellStyle = DataGridViewCellStyle23
+        Me.Harga.FillWeight = 70.0!
+        Me.Harga.HeaderText = "Harga Jual"
+        Me.Harga.Name = "Harga"
+        '
+        'QtySat
+        '
+        DataGridViewCellStyle24.Format = "#,0.#"
+        Me.QtySat.DefaultCellStyle = DataGridViewCellStyle24
+        Me.QtySat.HeaderText = "QtySat"
+        Me.QtySat.Name = "QtySat"
+        Me.QtySat.Visible = False
+        '
+        'DiskonPersen
+        '
+        DataGridViewCellStyle25.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight
+        DataGridViewCellStyle25.Format = "#,0.#"
+        Me.DiskonPersen.DefaultCellStyle = DataGridViewCellStyle25
+        Me.DiskonPersen.FillWeight = 40.0!
+        Me.DiskonPersen.HeaderText = "Diskon%"
+        Me.DiskonPersen.Name = "DiskonPersen"
+        '
+        'DiskonRp
+        '
+        DataGridViewCellStyle26.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight
+        DataGridViewCellStyle26.Format = "#,0.#"
+        Me.DiskonRp.DefaultCellStyle = DataGridViewCellStyle26
+        Me.DiskonRp.FillWeight = 80.0!
+        Me.DiskonRp.HeaderText = "Diskon Rp"
+        Me.DiskonRp.Name = "DiskonRp"
+        '
+        'TotalDiskon
+        '
+        DataGridViewCellStyle27.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight
+        DataGridViewCellStyle27.Format = "#,0.#"
+        Me.TotalDiskon.DefaultCellStyle = DataGridViewCellStyle27
+        Me.TotalDiskon.FillWeight = 80.0!
+        Me.TotalDiskon.HeaderText = "Total Diskon"
+        Me.TotalDiskon.Name = "TotalDiskon"
+        Me.TotalDiskon.ReadOnly = True
+        '
+        'TotalHarga
+        '
+        DataGridViewCellStyle28.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight
+        DataGridViewCellStyle28.Format = "#,0.#"
+        Me.TotalHarga.DefaultCellStyle = DataGridViewCellStyle28
+        Me.TotalHarga.HeaderText = "Total Harga"
+        Me.TotalHarga.Name = "TotalHarga"
+        Me.TotalHarga.ReadOnly = True
+        '
+        'StokToko
+        '
+        DataGridViewCellStyle29.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight
+        DataGridViewCellStyle29.BackColor = System.Drawing.Color.LightBlue
+        DataGridViewCellStyle29.Format = "#,0.#"
+        Me.StokToko.DefaultCellStyle = DataGridViewCellStyle29
+        Me.StokToko.FillWeight = 50.0!
+        Me.StokToko.HeaderText = "S Toko"
+        Me.StokToko.Name = "StokToko"
+        Me.StokToko.ReadOnly = True
+        '
+        'StokGudang
+        '
+        DataGridViewCellStyle30.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight
+        DataGridViewCellStyle30.BackColor = System.Drawing.Color.LightBlue
+        DataGridViewCellStyle30.Format = "#,0.#"
+        Me.StokGudang.DefaultCellStyle = DataGridViewCellStyle30
+        Me.StokGudang.FillWeight = 50.0!
+        Me.StokGudang.HeaderText = "S Gudang"
+        Me.StokGudang.Name = "StokGudang"
+        Me.StokGudang.ReadOnly = True
+        '
+        'Stok
+        '
+        DataGridViewCellStyle31.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight
+        DataGridViewCellStyle31.Format = "#,0.#"
+        DataGridViewCellStyle31.NullValue = Nothing
+        Me.Stok.DefaultCellStyle = DataGridViewCellStyle31
+        Me.Stok.FillWeight = 30.0!
+        Me.Stok.HeaderText = "Stok"
+        Me.Stok.Name = "Stok"
+        Me.Stok.ReadOnly = True
+        Me.Stok.Visible = False
+        '
+        'SerialNumber
+        '
+        Me.SerialNumber.HeaderText = "Serial Number"
+        Me.SerialNumber.Name = "SerialNumber"
         '
         'FormJual
         '

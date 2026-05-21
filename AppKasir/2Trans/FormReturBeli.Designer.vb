@@ -68,17 +68,6 @@ Partial Class FormReturBeli
         Me.TxtQty = New System.Windows.Forms.TextBox()
         Me.TxtKode = New System.Windows.Forms.TextBox()
         Me.DgvData = New System.Windows.Forms.DataGridView()
-        Me.ID_BARANG = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.NAMA_BARANG = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.HARGA_BELI_TERAKHIR = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.QTY = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.SATUAN = New System.Windows.Forms.DataGridViewComboBoxColumn()
-        Me.ISI_SATUAN = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.HARGA_BELI_SATUAN = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.QTY_SAT = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.TOTAL = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.StokToko = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.StokGudang = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.PanelFooter = New System.Windows.Forms.Panel()
         Me.BtnSettingPrinter = New System.Windows.Forms.Button()
         Me.Label2 = New System.Windows.Forms.Label()
@@ -114,6 +103,17 @@ Partial Class FormReturBeli
         Me.BtnSimpan = New System.Windows.Forms.Button()
         Me.listSupplier = New System.Windows.Forms.ListBox()
         Me.LstBarang = New System.Windows.Forms.ListBox()
+        Me.ID_BARANG = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.NAMA_BARANG = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.HARGA_BELI_TERAKHIR = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.QTY = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.SATUAN = New System.Windows.Forms.DataGridViewComboBoxColumn()
+        Me.ISI_SATUAN = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.HARGA_BELI_SATUAN = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.QTY_SAT = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.TOTAL = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.StokToko = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.StokGudang = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.PanelHeader.SuspendLayout()
         Me.GroupBox1.SuspendLayout()
         Me.PanelCari.SuspendLayout()
@@ -593,114 +593,6 @@ Partial Class FormReturBeli
         Me.DgvData.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.CellSelect
         Me.DgvData.Size = New System.Drawing.Size(1431, 375)
         Me.DgvData.TabIndex = 139
-        '
-        'ID_BARANG
-        '
-        Me.ID_BARANG.FillWeight = 50.0!
-        Me.ID_BARANG.HeaderText = "ID BARANG"
-        Me.ID_BARANG.Name = "ID_BARANG"
-        Me.ID_BARANG.Visible = False
-        '
-        'NAMA_BARANG
-        '
-        DataGridViewCellStyle3.ForeColor = System.Drawing.Color.Black
-        Me.NAMA_BARANG.DefaultCellStyle = DataGridViewCellStyle3
-        Me.NAMA_BARANG.FillWeight = 200.0!
-        Me.NAMA_BARANG.HeaderText = "NAMA BARANG"
-        Me.NAMA_BARANG.Name = "NAMA_BARANG"
-        '
-        'HARGA_BELI_TERAKHIR
-        '
-        DataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight
-        DataGridViewCellStyle4.Format = "N0"
-        DataGridViewCellStyle4.NullValue = Nothing
-        Me.HARGA_BELI_TERAKHIR.DefaultCellStyle = DataGridViewCellStyle4
-        Me.HARGA_BELI_TERAKHIR.FillWeight = 60.0!
-        Me.HARGA_BELI_TERAKHIR.HeaderText = "HARGA BELI"
-        Me.HARGA_BELI_TERAKHIR.Name = "HARGA_BELI_TERAKHIR"
-        '
-        'QTY
-        '
-        DataGridViewCellStyle5.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight
-        DataGridViewCellStyle5.Format = "N0"
-        DataGridViewCellStyle5.NullValue = Nothing
-        Me.QTY.DefaultCellStyle = DataGridViewCellStyle5
-        Me.QTY.FillWeight = 30.0!
-        Me.QTY.HeaderText = "QTY"
-        Me.QTY.Name = "QTY"
-        Me.QTY.Resizable = System.Windows.Forms.DataGridViewTriState.[True]
-        Me.QTY.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable
-        '
-        'SATUAN
-        '
-        Me.SATUAN.DisplayStyle = System.Windows.Forms.DataGridViewComboBoxDisplayStyle.ComboBox
-        Me.SATUAN.FillWeight = 50.0!
-        Me.SATUAN.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.SATUAN.HeaderText = "SATUAN"
-        Me.SATUAN.Name = "SATUAN"
-        '
-        'ISI_SATUAN
-        '
-        Me.ISI_SATUAN.FillWeight = 20.0!
-        Me.ISI_SATUAN.HeaderText = "ISI SATUAN"
-        Me.ISI_SATUAN.Name = "ISI_SATUAN"
-        Me.ISI_SATUAN.Resizable = System.Windows.Forms.DataGridViewTriState.[True]
-        Me.ISI_SATUAN.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable
-        Me.ISI_SATUAN.Visible = False
-        '
-        'HARGA_BELI_SATUAN
-        '
-        DataGridViewCellStyle6.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight
-        DataGridViewCellStyle6.Format = "N0"
-        DataGridViewCellStyle6.NullValue = Nothing
-        Me.HARGA_BELI_SATUAN.DefaultCellStyle = DataGridViewCellStyle6
-        Me.HARGA_BELI_SATUAN.HeaderText = "HARGA BELI SATUAN"
-        Me.HARGA_BELI_SATUAN.Name = "HARGA_BELI_SATUAN"
-        Me.HARGA_BELI_SATUAN.Resizable = System.Windows.Forms.DataGridViewTriState.[True]
-        Me.HARGA_BELI_SATUAN.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable
-        Me.HARGA_BELI_SATUAN.Visible = False
-        '
-        'QTY_SAT
-        '
-        DataGridViewCellStyle7.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight
-        DataGridViewCellStyle7.Format = "N0"
-        DataGridViewCellStyle7.NullValue = Nothing
-        Me.QTY_SAT.DefaultCellStyle = DataGridViewCellStyle7
-        Me.QTY_SAT.FillWeight = 40.0!
-        Me.QTY_SAT.HeaderText = "QTY SAT"
-        Me.QTY_SAT.Name = "QTY_SAT"
-        Me.QTY_SAT.Visible = False
-        '
-        'TOTAL
-        '
-        DataGridViewCellStyle8.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight
-        DataGridViewCellStyle8.Format = "N0"
-        DataGridViewCellStyle8.NullValue = Nothing
-        Me.TOTAL.DefaultCellStyle = DataGridViewCellStyle8
-        Me.TOTAL.FillWeight = 80.0!
-        Me.TOTAL.HeaderText = "TOTAL"
-        Me.TOTAL.Name = "TOTAL"
-        Me.TOTAL.ReadOnly = True
-        Me.TOTAL.Resizable = System.Windows.Forms.DataGridViewTriState.[True]
-        Me.TOTAL.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable
-        '
-        'StokToko
-        '
-        DataGridViewCellStyle9.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight
-        DataGridViewCellStyle9.Format = "#,0.#"
-        Me.StokToko.DefaultCellStyle = DataGridViewCellStyle9
-        Me.StokToko.FillWeight = 40.0!
-        Me.StokToko.HeaderText = "S TOKO"
-        Me.StokToko.Name = "StokToko"
-        '
-        'StokGudang
-        '
-        DataGridViewCellStyle10.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight
-        DataGridViewCellStyle10.Format = "#,0.#"
-        Me.StokGudang.DefaultCellStyle = DataGridViewCellStyle10
-        Me.StokGudang.FillWeight = 40.0!
-        Me.StokGudang.HeaderText = "S GUDANG"
-        Me.StokGudang.Name = "StokGudang"
         '
         'PanelFooter
         '
@@ -1193,6 +1085,114 @@ Partial Class FormReturBeli
         Me.LstBarang.Size = New System.Drawing.Size(533, 302)
         Me.LstBarang.TabIndex = 143
         '
+        'ID_BARANG
+        '
+        Me.ID_BARANG.FillWeight = 50.0!
+        Me.ID_BARANG.HeaderText = "ID BARANG"
+        Me.ID_BARANG.Name = "ID_BARANG"
+        Me.ID_BARANG.Visible = False
+        '
+        'NAMA_BARANG
+        '
+        DataGridViewCellStyle3.ForeColor = System.Drawing.Color.Black
+        Me.NAMA_BARANG.DefaultCellStyle = DataGridViewCellStyle3
+        Me.NAMA_BARANG.FillWeight = 300.0!
+        Me.NAMA_BARANG.HeaderText = "NAMA BARANG"
+        Me.NAMA_BARANG.Name = "NAMA_BARANG"
+        '
+        'HARGA_BELI_TERAKHIR
+        '
+        DataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight
+        DataGridViewCellStyle4.Format = "N0"
+        DataGridViewCellStyle4.NullValue = Nothing
+        Me.HARGA_BELI_TERAKHIR.DefaultCellStyle = DataGridViewCellStyle4
+        Me.HARGA_BELI_TERAKHIR.FillWeight = 60.0!
+        Me.HARGA_BELI_TERAKHIR.HeaderText = "HARGA BELI"
+        Me.HARGA_BELI_TERAKHIR.Name = "HARGA_BELI_TERAKHIR"
+        '
+        'QTY
+        '
+        DataGridViewCellStyle5.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight
+        DataGridViewCellStyle5.Format = "N0"
+        DataGridViewCellStyle5.NullValue = Nothing
+        Me.QTY.DefaultCellStyle = DataGridViewCellStyle5
+        Me.QTY.FillWeight = 30.0!
+        Me.QTY.HeaderText = "QTY"
+        Me.QTY.Name = "QTY"
+        Me.QTY.Resizable = System.Windows.Forms.DataGridViewTriState.[True]
+        Me.QTY.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable
+        '
+        'SATUAN
+        '
+        Me.SATUAN.DisplayStyle = System.Windows.Forms.DataGridViewComboBoxDisplayStyle.ComboBox
+        Me.SATUAN.FillWeight = 50.0!
+        Me.SATUAN.FlatStyle = System.Windows.Forms.FlatStyle.System
+        Me.SATUAN.HeaderText = "SATUAN"
+        Me.SATUAN.Name = "SATUAN"
+        '
+        'ISI_SATUAN
+        '
+        Me.ISI_SATUAN.FillWeight = 20.0!
+        Me.ISI_SATUAN.HeaderText = "ISI SATUAN"
+        Me.ISI_SATUAN.Name = "ISI_SATUAN"
+        Me.ISI_SATUAN.Resizable = System.Windows.Forms.DataGridViewTriState.[True]
+        Me.ISI_SATUAN.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable
+        Me.ISI_SATUAN.Visible = False
+        '
+        'HARGA_BELI_SATUAN
+        '
+        DataGridViewCellStyle6.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight
+        DataGridViewCellStyle6.Format = "N0"
+        DataGridViewCellStyle6.NullValue = Nothing
+        Me.HARGA_BELI_SATUAN.DefaultCellStyle = DataGridViewCellStyle6
+        Me.HARGA_BELI_SATUAN.HeaderText = "HARGA BELI SATUAN"
+        Me.HARGA_BELI_SATUAN.Name = "HARGA_BELI_SATUAN"
+        Me.HARGA_BELI_SATUAN.Resizable = System.Windows.Forms.DataGridViewTriState.[True]
+        Me.HARGA_BELI_SATUAN.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable
+        Me.HARGA_BELI_SATUAN.Visible = False
+        '
+        'QTY_SAT
+        '
+        DataGridViewCellStyle7.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight
+        DataGridViewCellStyle7.Format = "N0"
+        DataGridViewCellStyle7.NullValue = Nothing
+        Me.QTY_SAT.DefaultCellStyle = DataGridViewCellStyle7
+        Me.QTY_SAT.FillWeight = 40.0!
+        Me.QTY_SAT.HeaderText = "QTY SAT"
+        Me.QTY_SAT.Name = "QTY_SAT"
+        Me.QTY_SAT.Visible = False
+        '
+        'TOTAL
+        '
+        DataGridViewCellStyle8.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight
+        DataGridViewCellStyle8.Format = "N0"
+        DataGridViewCellStyle8.NullValue = Nothing
+        Me.TOTAL.DefaultCellStyle = DataGridViewCellStyle8
+        Me.TOTAL.FillWeight = 80.0!
+        Me.TOTAL.HeaderText = "TOTAL"
+        Me.TOTAL.Name = "TOTAL"
+        Me.TOTAL.ReadOnly = True
+        Me.TOTAL.Resizable = System.Windows.Forms.DataGridViewTriState.[True]
+        Me.TOTAL.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable
+        '
+        'StokToko
+        '
+        DataGridViewCellStyle9.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight
+        DataGridViewCellStyle9.Format = "#,0.#"
+        Me.StokToko.DefaultCellStyle = DataGridViewCellStyle9
+        Me.StokToko.FillWeight = 40.0!
+        Me.StokToko.HeaderText = "S TOKO"
+        Me.StokToko.Name = "StokToko"
+        '
+        'StokGudang
+        '
+        DataGridViewCellStyle10.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight
+        DataGridViewCellStyle10.Format = "#,0.#"
+        Me.StokGudang.DefaultCellStyle = DataGridViewCellStyle10
+        Me.StokGudang.FillWeight = 40.0!
+        Me.StokGudang.HeaderText = "S GUDANG"
+        Me.StokGudang.Name = "StokGudang"
+        '
         'FormReturBeli
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
@@ -1299,6 +1299,7 @@ Partial Class FormReturBeli
     Friend WithEvents TxtNominalBayarTunai As TextBox
     Friend WithEvents TxtKodeAkunTransfer As TextBox
     Friend WithEvents TxtKodeAkunTunai As TextBox
+    Friend WithEvents Button1 As Button
     Friend WithEvents ID_BARANG As DataGridViewTextBoxColumn
     Friend WithEvents NAMA_BARANG As DataGridViewTextBoxColumn
     Friend WithEvents HARGA_BELI_TERAKHIR As DataGridViewTextBoxColumn
@@ -1310,7 +1311,6 @@ Partial Class FormReturBeli
     Friend WithEvents TOTAL As DataGridViewTextBoxColumn
     Friend WithEvents StokToko As DataGridViewTextBoxColumn
     Friend WithEvents StokGudang As DataGridViewTextBoxColumn
-    Friend WithEvents Button1 As Button
 End Class
 
 

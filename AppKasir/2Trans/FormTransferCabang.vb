@@ -1329,8 +1329,19 @@ Public Class FormTransferCabang
                 DgvDetail.CurrentCell.ColumnIndex, DgvDetail.CurrentCell.RowIndex, True)
             Dim ptDgv = DgvDetail.PointToScreen(New Point(cellRect.Left, cellRect.Bottom))
             Dim ptPanel = PanelRoot.PointToClient(ptDgv)
-            LstBarang.Location = New Point(ptPanel.X, ptPanel.Y)
+            
             LstBarang.Width = Math.Max(300, cellRect.Width)
+            
+            ' Cek sisa ruang vertikal di bawah sel aktif untuk menentukan posisi LstBarang (Atas/Bawah)
+            Dim spaceBelow As Integer = PanelRoot.ClientSize.Height - ptPanel.Y
+            If spaceBelow < LstBarang.Height + 40 Then
+                ' Tampilkan di atas sel: Y = Bawah Sel - Tinggi Sel - Tinggi ListBox
+                Dim targetY As Integer = ptPanel.Y - cellRect.Height - LstBarang.Height
+                LstBarang.Location = New Point(ptPanel.X, targetY)
+            Else
+                ' Tampilkan di bawah sel
+                LstBarang.Location = New Point(ptPanel.X, ptPanel.Y)
+            End If
         Catch
         End Try
     End Sub
