@@ -2,30 +2,36 @@
 
 ---
 
-# Catatan Rilis Aplikasi Kasir
-**Versi Terbaru: `15.2026.522.12`**
+# Catatan Rilis Aplikasi Kasir - Versi 15.2026.522.13
 
-Kami dengan bangga mengumumkan rilis terbaru dari Aplikasi Kasir, versi `15.2026.522.12`. Rilis ini terutama berfokus pada pembaruan metadata versi aplikasi dan konfigurasi sistem pembaruan otomatis untuk memastikan pengguna selalu mendapatkan versi aplikasi yang paling mutakhir.
+Kami dengan senang hati mengumumkan pembaruan minor untuk aplikasi Kasir. Rilis ini berfokus pada pembaruan metadata versi internal dan konfigurasi mekanisme pembaruan otomatis, memastikan konsistensi dan kesiapan untuk pembaruan di masa mendatang.
 
 ## Detail Perubahan
 
-### 1. Pembaruan Versi Aplikasi
+### 1. Pembaruan Versi Aplikasi Internal
 
-*   **File/Komponen:** `AppKasir/My Project/AssemblyInfo.vb`
-    *   **Penjelasan Teknis:** File ini bertanggung jawab untuk menyimpan metadata penting tentang assembly (aplikasi) Kasir, termasuk nomor versi aplikasi.
-    *   **Perubahan:**
-        *   Nilai `AssemblyVersion` telah diperbarui dari `15.2026.522.10` menjadi `15.2026.522.12`.
-        *   Nilai `AssemblyFileVersion` juga telah diperbarui dari `15.2026.522.10` menjadi `15.2026.522.12`.
-    *   **Dampak:** Pembaruan ini secara resmi menandai aplikasi Kasir sebagai versi `15.2026.522.12`, yang akan tercermin dalam properti file aplikasi dan saat aplikasi melaporkan versinya secara internal.
+*   **File/Modul:** `AppKasir/My Project/AssemblyInfo.vb`
+*   **Penjelasan Teknis:**
+    *   Metadata versi internal aplikasi (`AssemblyVersion` dan `AssemblyFileVersion`) telah ditingkatkan dari `15.2026.522.12` menjadi `15.2026.522.13`.
+    *   `AssemblyInfo.vb` adalah file konfigurasi penting dalam proyek .NET yang mendefinisikan atribut-atribut untuk assembly (rakitan) aplikasi, termasuk versi. Peningkatan ini menandakan adanya rilis atau build baru aplikasi dan sangat penting untuk pelacakan versi yang akurat dalam lingkungan pengembangan, deployment, dan runtime.
 
-### 2. Konfigurasi Sistem Pembaruan Otomatis
+### 2. Konfigurasi Mekanisme Pembaruan Otomatis
 
-*   **File/Komponen:** `update.xml`
-    *   **Penjelasan Teknis:** File XML ini berfungsi sebagai konfigurasi untuk sistem pembaruan otomatis aplikasi Kasir. Sistem ini memeriksa file `update.xml` untuk menentukan apakah ada versi baru yang tersedia dan di mana bisa mengunduhnya.
-    *   **Perubahan:**
-        *   Tag `<version>` di dalam file XML telah diperbarui untuk mencerminkan versi terbaru `15.2026.522.12`.
-        *   Tag `<url>` telah diperbarui untuk menunjuk ke lokasi unduhan rilis `v15.2026.522.12` yang baru di GitHub (`https://github.com/adysuryadi64/AppKasir/releases/download/v15.2026.522.12/AppKasir_Update.zip`).
-        *   Tag `<changelog>` telah diperbarui untuk mengarahkan ke halaman catatan rilis spesifik untuk `v15.2026.522.12` di GitHub (`https://github.com/adysuryadi64/AppKasir/releases/tag/v15.2026.522.12`).
-    *   **Dampak:** Dengan perubahan ini, sistem pembaruan otomatis aplikasi Kasir sekarang akan dengan benar mendeteksi, mengarahkan, dan mengunduh versi `15.2026.522.12` sebagai pembaruan terbaru yang tersedia, memastikan pengguna mendapatkan akses ke fitur dan perbaikan terbaru.
+*   **File/Modul:** `update.xml`
+*   **Penjelasan Teknis:**
+    *   File konfigurasi `update.xml` yang digunakan oleh mekanisme pembaruan otomatis aplikasi telah diperbarui untuk menunjuk ke versi terbaru `15.2026.522.13`.
+    *   Secara spesifik, nilai-nilai pada tag XML berikut telah disesuaikan:
+        *   `<version>`: Diperbarui dari `15.2026.522.12` menjadi `15.2026.522.13`.
+        *   `<url>`: Tautan unduhan paket pembaruan ZIP telah diperbarui untuk mencerminkan versi baru (`v15.2026.522.13`).
+        *   `<changelog>`: Tautan ke catatan rilis (changelog) di GitHub juga telah diperbarui untuk menunjuk ke tag rilis yang sesuai (`v15.2026.522.13`).
+    *   Perubahan ini memastikan bahwa aplikasi Anda akan secara akurat mendeteksi ketersediaan versi terbaru ini, mengunduh paket pembaruan yang benar, dan menampilkan catatan rilis yang relevan ketika pengguna memeriksa adanya pembaruan.
+
+---
+
+Kami merekomendasikan semua pengguna untuk memperbarui ke versi terbaru ini untuk mendapatkan pengalaman terbaik.
+
+Terima kasih atas dukungan Anda!
+
+Tim Pengembang AppKasir
 
 ---
