@@ -24,6 +24,7 @@ Public Class FormGaji
 
     Private Sub ResetControls()
         ModulHakAkses.ResetDTPKeTanggalHariIni(DtpTanggal)
+        DtpTanggal.Enabled = True  ' 4Gaji: DTP selalu aktif, abaikan setting izin lampau
         DtpTanggal.Format = DateTimePickerFormat.Custom
         DtpTanggal.CustomFormat = "dd/MM/yyyy HH:mm:ss"
 

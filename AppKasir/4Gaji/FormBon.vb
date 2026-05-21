@@ -20,6 +20,7 @@ Public Class FormBon
             Label8.Text = "Saldo Bon Akhir :"
         End If
         ModulHakAkses.ResetDTPKeTanggalHariIni(DtpTanggal)
+        DtpTanggal.Enabled = True  ' 4Gaji: DTP selalu aktif, abaikan setting izin lampau
         ResetControls()
         CmbPilihCetak.Text = BacaPengaturanPrinter("BonKaryawan", "CetakOtomatis", "IYA")
         CmbProsesCetak.Text = BacaPengaturanPrinter("BonKaryawan", "PilihPrinter", "LANGSUNG CETAK")
@@ -34,6 +35,7 @@ Public Class FormBon
         AmbilDataKaryawan()
 
         ModulHakAkses.ResetDTPKeTanggalHariIni(DtpTanggal)
+        DtpTanggal.Enabled = True  ' 4Gaji: DTP selalu aktif, abaikan setting izin lampau
         DtpTanggal.Format = DateTimePickerFormat.Custom
         DtpTanggal.CustomFormat = "dd/MM/yyyy"
 
