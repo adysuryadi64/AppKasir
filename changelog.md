@@ -3,48 +3,29 @@
 ---
 
 # Catatan Rilis Aplikasi Kasir
+**Versi Terbaru: `15.2026.522.12`**
 
-**Versi:** 15.2026.522.10
-**Tanggal Rilis:** [Isi Tanggal Rilis di sini]
+Kami dengan bangga mengumumkan rilis terbaru dari Aplikasi Kasir, versi `15.2026.522.12`. Rilis ini terutama berfokus pada pembaruan metadata versi aplikasi dan konfigurasi sistem pembaruan otomatis untuk memastikan pengguna selalu mendapatkan versi aplikasi yang paling mutakhir.
 
-Rilis ini berfokus pada peningkatan signifikan terhadap mekanisme pembaruan aplikasi, menjadikannya lebih stabil, mulus, dan mengurangi potensi masalah tampilan dialog saat proses pembaruan. Perubahan utama adalah transisi dari tampilan jendela pembaruan modeless dengan overlay kustom menjadi dialog modal yang lebih sederhana dan efektif.
+## Detail Perubahan
 
----
+### 1. Pembaruan Versi Aplikasi
 
-## Daftar Perubahan
+*   **File/Komponen:** `AppKasir/My Project/AssemblyInfo.vb`
+    *   **Penjelasan Teknis:** File ini bertanggung jawab untuk menyimpan metadata penting tentang assembly (aplikasi) Kasir, termasuk nomor versi aplikasi.
+    *   **Perubahan:**
+        *   Nilai `AssemblyVersion` telah diperbarui dari `15.2026.522.10` menjadi `15.2026.522.12`.
+        *   Nilai `AssemblyFileVersion` juga telah diperbarui dari `15.2026.522.10` menjadi `15.2026.522.12`.
+    *   **Dampak:** Pembaruan ini secara resmi menandai aplikasi Kasir sebagai versi `15.2026.522.12`, yang akan tercermin dalam properti file aplikasi dan saat aplikasi melaporkan versinya secara internal.
 
-### ð Peningkatan Mekanisme Pembaruan Aplikasi
+### 2. Konfigurasi Sistem Pembaruan Otomatis
 
-Pembaruan ini secara drastis menyederhanakan dan meningkatkan pengalaman pembaruan aplikasi, mengurangi kompleksitas kode dan potensi masalah tampilan jendela.
-
-*   **Modul/Komponen Terkait:** `FormUtama.vb`, `FormCekUpdate.vb`
-*   **Perubahan Teknis:**
-    *   **`FormUtama.vb`**:
-        *   **Implementasi Dialog Modal (`FormCekUpdate` sebagai Dialog):**
-            *   Mekanisme tampilan `FormCekUpdate` diubah secara fundamental dari jendela modeless (yang membutuhkan manajemen `TopMost` dan overlay kustom) menjadi dialog modal. Kini, `FormCekUpdate` ditampilkan menggunakan `FormCekUpdate.ShowDialog(Me)`, yang secara otomatis memblokir interaksi dengan `FormUtama` hingga dialog pembaruan ditutup, memastikan dialog pembaruan selalu menjadi fokus utama.
-            *   **Penghapusan Logika Overlay Kustom:** Seluruh kode yang bertanggung jawab untuk membuat dan mengelola overlay gelap (`_bgOverlayCekUpdate`) di belakang `FormCekUpdate` telah dihapus. Ini termasuk pembuatan `bg` (form overlay), penanganan event `FormClosed` untuk membersihkan overlay, dan penanganan event `Move` dari `FormUtama` untuk menyesuaikan posisi overlay.
-            *   **Penghapusan Penanganan Fokus `FormUtama_Activated`:** Logika untuk membawa `FormCekUpdate` dan overlay ke depan ketika `FormUtama` mendapatkan fokus telah dihapus, karena dialog modal secara inheren menangani z-order-nya sendiri.
-            *   **Penyederhanaan Penutupan Form Saat Aplikasi Keluar:** Metode `TutupCekUpdateDanOverlay()` telah dihapus. Saat aplikasi keluar (`FormUtama_FormClosing`), jika pembaruan sedang berlangsung, form anak MDI ditutup secara langsung. Jika tidak ada pembaruan, dilakukan percobaan penutupan `FormCekUpdate` secara langsung (jika masih terbuka sebagai dialog), menghilangkan ketergantungan pada variabel overlay.
-    *   **`FormCekUpdate.vb`**:
-        *   **Penutupan Otomatis Sebelum Unduhan Dimulai:** Saat tombol "Unduh" diklik, `FormCekUpdate` kini akan mencoba menutup dirinya sendiri (`Me.Close()`) *sebelum* proses unduhan dimulai. Ini memastikan tidak ada jendela aplikasi yang menghalangi dialog installer dari `AutoUpdater` yang akan muncul.
-        *   **Penghapusan Manajemen `TopMost`:** Logika `Me.TopMost = False` dan `Me.Owner?.Activate()` yang sebelumnya digunakan untuk mengatur z-order jendela saat memulai unduhan telah dihapus.
-        *   **Penyederhanaan Penanganan Kesalahan Unduhan:** Saat terjadi kegagalan unduhan, hanya `ModuleVariabel.AplikasiSedangUpdate` yang diatur ulang ke `False`. Logika untuk memperbarui teks status dan tombol (misalnya, `lblStatus.Text = "Gagal mengunduh..."`, `SetWarnaBtn(False)`, `btnCekUpdate.Text = "Coba Lagi"`) telah dihapus, sejalan dengan keputusan untuk menutup form pembaruan sebelum unduhan dimulai.
-        *   **Penyederhanaan `AutoUpdaterOnApplicationExitEvent`:** Metode ini kini diasumsikan dipanggil setelah `FormCekUpdate` telah ditutup oleh logika `btnUnduh_Click`, sehingga panggilan `Me.Close()` yang sebelumnya ada di sini telah dihapus. Fungsi ini hanya memastikan `Application.Exit()` berjalan setelah installer siap.
-*   **Manfaat:**
-    *   **Pengalaman Pengguna yang Lebih Mulus:** Menghilangkan masalah tampilan di mana dialog installer mungkin tersembunyi di belakang jendela aplikasi, memastikan proses pembaruan berjalan lebih transparan dan tanpa hambatan visual.
-    *   **Peningkatan Stabilitas:** Mengurangi kompleksitas penanganan jendela dan fokus, mengurangi potensi error terkait Win32Exception dan isu z-order.
-    *   **Kode yang Lebih Bersih dan Mudah Dirawat:** Menghilangkan banyak kode boilerplate untuk manajemen overlay dan jendela modeless, membuat kode lebih ringkas dan fokus pada fungsionalitas inti.
-    *   **Fokus yang Lebih Jelas:** Dialog pembaruan kini selalu menjadi fokus utama dan memblokir interaksi dengan aplikasi utama hingga proses selesai atau dibatalkan.
-
-### âï¸ Perbaikan Umum & Optimalisasi
-
-*   **Penyederhanaan Alur Keluar Aplikasi Saat Pembaruan:** Logika penutupan aplikasi saat pembaruan sedang berjalan telah dioptimalkan, memastikan aplikasi dapat keluar dengan bersih tanpa menunggu dialog atau overlay yang tidak lagi relevan.
-
-### â¬ï¸ Pembaruan Versi Aplikasi
-
-*   **File Terkait:** `AppKasir/My Project/AssemblyInfo.vb`, `update.xml`
-*   **Perubahan Teknis:**
-    *   **`AssemblyInfo.vb`**: Versi aplikasi telah diperbarui dari `15.2026.522.9` menjadi `15.2026.522.10`.
-    *   **`update.xml`**: File manifes pembaruan telah diperbarui untuk mencerminkan versi terbaru (`15.2026.522.10`) serta tautan unduhan dan changelog yang sesuai.
+*   **File/Komponen:** `update.xml`
+    *   **Penjelasan Teknis:** File XML ini berfungsi sebagai konfigurasi untuk sistem pembaruan otomatis aplikasi Kasir. Sistem ini memeriksa file `update.xml` untuk menentukan apakah ada versi baru yang tersedia dan di mana bisa mengunduhnya.
+    *   **Perubahan:**
+        *   Tag `<version>` di dalam file XML telah diperbarui untuk mencerminkan versi terbaru `15.2026.522.12`.
+        *   Tag `<url>` telah diperbarui untuk menunjuk ke lokasi unduhan rilis `v15.2026.522.12` yang baru di GitHub (`https://github.com/adysuryadi64/AppKasir/releases/download/v15.2026.522.12/AppKasir_Update.zip`).
+        *   Tag `<changelog>` telah diperbarui untuk mengarahkan ke halaman catatan rilis spesifik untuk `v15.2026.522.12` di GitHub (`https://github.com/adysuryadi64/AppKasir/releases/tag/v15.2026.522.12`).
+    *   **Dampak:** Dengan perubahan ini, sistem pembaruan otomatis aplikasi Kasir sekarang akan dengan benar mendeteksi, mengarahkan, dan mengunduh versi `15.2026.522.12` sebagai pembaruan terbaru yang tersedia, memastikan pengguna mendapatkan akses ke fitur dan perbaikan terbaru.
 
 ---
