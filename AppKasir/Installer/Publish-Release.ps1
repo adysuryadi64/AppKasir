@@ -174,7 +174,7 @@ if (-not $hasValidKey) {
 
     if ($diff) {
         Write-Host "        Meminta AI merangkum perubahan..." -ForegroundColor DarkGray
-        $prompt = "Kamu adalah pembuat catatan rilis aplikasi Kasir. Berdasarkan perubahan file kode berikut, buatkan ringkasan 3-5 poin pembaruan dalam bahasa Indonesia yang ramah untuk pengguna awam (kasir/pemilik toko). Jangan sebutkan nama file atau teknis kodenya. Fokus pada perbaikan sistem, UI, atau fitur baru. Gunakan format markdown bullet points. Data perubahan:`n$diff"
+        $prompt = "Kamu adalah pembuat catatan rilis teknis aplikasi Kasir. Berdasarkan perubahan file kode berikut (git diff), buatkan catatan rilis (changelog) yang mendetail dalam bahasa Indonesia. Sebutkan nama file, modul, atau komponen yang diubah beserta ringkasan penjelasan teknis mengenai apa saja yang berubah pada bagian tersebut berdasarkan analisis kode di git diff. Tulis dengan format markdown bullet points yang terstruktur, informatif, rapi, dan profesional. Data perubahan:`n$diff"
 
         # ── Daftar provider AI ──
         $providers = @()
