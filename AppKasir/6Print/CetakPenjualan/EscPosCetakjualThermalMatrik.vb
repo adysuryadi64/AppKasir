@@ -198,32 +198,44 @@ Public Class EscPosCetakjualThermalMatrik
         esc.CetakTengah(ALAMAT_PERUSAHAAN, _cfg.EscUkuranKeterangan)
         esc.CetakTengah(KOTA_PERUSAHAAN, _cfg.EscUkuranKeterangan)
         esc.CetakTengah(KONTAK_PERUSAHAAN, _cfg.EscUkuranKeterangan)
+        ' Tampilkan label jenis dokumen jika Sales Order
+        If Jual_JudulNota = "Nota Order" Then
+            esc.CetakTengah("================================", _cfg.EscUkuranIsi)
+            esc.CetakTengah("  ** NOTA PESANAN / SALES ORDER **  ", _cfg.EscUkuranIsi)
+            esc.CetakTengah("================================", _cfg.EscUkuranIsi)
+        End If
     End Sub
 
     Private Sub CetakInfoTransaksi(esc As PrinterEscPos)
         Dim n As Integer = esc.JumlahKarakterPerBaris
         esc.CetakGaris()
-        esc.CetakBaris(FormatLabelNilai("Nota Jual", ": " & Jual_NoFaktur, n), _cfg.EscUkuranIsi)
+        esc.CetakBaris(FormatLabelNilai(Jual_JudulNota, ": " & Jual_NoFaktur, n), _cfg.EscUkuranIsi)
         esc.CetakBaris(FormatLabelNilai("Tanggal  ", ": " & Jual_Tanggal.ToString("yyyy-MM-dd HH:mm:ss"), n), _cfg.EscUkuranIsi)
         esc.CetakBaris(FormatLabelNilai("Kasir    ", ": " & Jual_IdUser & " - " & Jual_IdKomputer, n), _cfg.EscUkuranIsi)
         esc.CetakBaris(FormatLabelNilai("Pelanggan", ": " & Jual_JenisPelanggan & " - " & Jual_NamaPelanggan, n), _cfg.EscUkuranIsi)
+        If Not String.IsNullOrEmpty(Jual_NoSO) Then
+            esc.CetakBaris(FormatLabelNilai("Ref. SO  ", ": " & Jual_NoSO, n), _cfg.EscUkuranIsi)
+        End If
         esc.CetakGaris()
     End Sub
 
     Private Sub CetakInfoTransaksiSingkat(esc As PrinterEscPos)
         Dim n As Integer = esc.JumlahKarakterPerBaris
         esc.CetakGaris()
-        esc.CetakBaris(FormatLabelNilai("Nota Jual", ": " & Jual_NoFaktur, n), _cfg.EscUkuranIsi)
+        esc.CetakBaris(FormatLabelNilai(Jual_JudulNota, ": " & Jual_NoFaktur, n), _cfg.EscUkuranIsi)
         esc.CetakBaris(FormatLabelNilai("Tgl      ", ": " & Jual_Tanggal.ToString("yyyy-MM-dd HH:mm:ss"), n), _cfg.EscUkuranIsi)
         esc.CetakBaris(FormatLabelNilai("Kasir    ", ": " & Jual_IdUser & " - " & Jual_IdKomputer, n), _cfg.EscUkuranIsi)
         esc.CetakBaris(FormatLabelNilai("Pel      ", ": " & Jual_JenisPelanggan & " - " & Jual_NamaPelanggan, n), _cfg.EscUkuranIsi)
+        If Not String.IsNullOrEmpty(Jual_NoSO) Then
+            esc.CetakBaris(FormatLabelNilai("Ref. SO  ", ": " & Jual_NoSO, n), _cfg.EscUkuranIsi)
+        End If
         esc.CetakGaris()
     End Sub
 
     Private Sub CetakInfoTransaksiDenganSales(esc As PrinterEscPos)
         Dim n As Integer = esc.JumlahKarakterPerBaris
         esc.CetakGaris()
-        esc.CetakBaris(FormatLabelNilai("Nota Jual", ": " & Jual_NoFaktur, n), _cfg.EscUkuranIsi)
+        esc.CetakBaris(FormatLabelNilai(Jual_JudulNota, ": " & Jual_NoFaktur, n), _cfg.EscUkuranIsi)
         esc.CetakBaris(FormatLabelNilai("Tanggal  ", ": " & Jual_Tanggal.ToString("yyyy-MM-dd HH:mm:ss"), n), _cfg.EscUkuranIsi)
         esc.CetakBaris(FormatLabelNilai("Kasir    ", ": " & Jual_IdUser & " - " & Jual_IdKomputer, n), _cfg.EscUkuranIsi)
         esc.CetakBaris(FormatLabelNilai("Pelanggan", ": " & Jual_JenisPelanggan & " - " & Jual_NamaPelanggan, n), _cfg.EscUkuranIsi)
@@ -232,6 +244,9 @@ Public Class EscPosCetakjualThermalMatrik
         End If
         If Not String.IsNullOrEmpty(Jual_LokasiBarang) Then
             esc.CetakBaris(FormatLabelNilai("Lokasi   ", ": " & Jual_LokasiBarang, n), _cfg.EscUkuranIsi)
+        End If
+        If Not String.IsNullOrEmpty(Jual_NoSO) Then
+            esc.CetakBaris(FormatLabelNilai("Ref. SO  ", ": " & Jual_NoSO, n), _cfg.EscUkuranIsi)
         End If
         esc.CetakGaris()
     End Sub
@@ -368,20 +383,22 @@ Public Class EscPosCetakjualThermalMatrik
             esc.CetakBaris("".PadRight(posLabel) &
                 RataKanan("Total :", lebarLbl) & RataKanan(Rp(Jual_Total), lebarNilai), _cfg.EscUkuranIsi)
         End If
-        If Jual_NominalTransfer > 0 Then
-            If Jual_Bayar > 0 Then
+        If Jual_JudulNota <> "Nota Order" Then
+            If Jual_NominalTransfer > 0 Then
+                If Jual_Bayar > 0 Then
+                    esc.CetakBaris("".PadRight(posLabel) &
+                        RataKanan("Tunai (" & Jual_Penerima & ") :", lebarLbl) & RataKanan(Rp(Jual_Bayar), lebarNilai), _cfg.EscUkuranIsi)
+                End If
                 esc.CetakBaris("".PadRight(posLabel) &
-                    RataKanan("Tunai (" & Jual_Penerima & ") :", lebarLbl) & RataKanan(Rp(Jual_Bayar), lebarNilai), _cfg.EscUkuranIsi)
+                    RataKanan("Transfer (" & Jual_NamaAkunTransfer & ") :", lebarLbl) & RataKanan(Rp(Jual_NominalTransfer), lebarNilai), _cfg.EscUkuranIsi)
+            Else
+                esc.CetakBaris("".PadRight(posLabel) &
+                    RataKanan("Bayar :", lebarLbl) & RataKanan(Rp(Jual_Bayar), lebarNilai), _cfg.EscUkuranIsi)
             End If
+            esc.CetakBaris("".PadRight(posLabel) & New String("="c, lebarKanan), _cfg.EscUkuranIsi)
             esc.CetakBaris("".PadRight(posLabel) &
-                RataKanan("Transfer (" & Jual_NamaAkunTransfer & ") :", lebarLbl) & RataKanan(Rp(Jual_NominalTransfer), lebarNilai), _cfg.EscUkuranIsi)
-        Else
-            esc.CetakBaris("".PadRight(posLabel) &
-                RataKanan("Bayar :", lebarLbl) & RataKanan(Rp(Jual_Bayar), lebarNilai), _cfg.EscUkuranIsi)
+                RataKanan(Jual_LabelPembayaran, lebarLbl) & RataKanan(Rp(Jual_Kembali), lebarNilai), _cfg.EscUkuranIsi)
         End If
-        esc.CetakBaris("".PadRight(posLabel) & New String("="c, lebarKanan), _cfg.EscUkuranIsi)
-        esc.CetakBaris("".PadRight(posLabel) &
-            RataKanan(Jual_LabelPembayaran, lebarLbl) & RataKanan(Rp(Jual_Kembali), lebarNilai), _cfg.EscUkuranIsi)
         If Jual_StatusTransaksi = "Belum Lunas" AndAlso Not String.IsNullOrEmpty(Jual_JatuhTempo) Then
             esc.CetakBaris("".PadRight(posLabel) &
                 RataKanan("Jatuh Tempo :", lebarLbl) & RataKanan(Jual_JatuhTempo, lebarNilai), _cfg.EscUkuranIsi)
@@ -631,6 +648,14 @@ Public Class EscPosCetakjualThermalMatrik
         baris.Add(DotPKet & KiriKanan(ALAMAT_PERUSAHAAN, "Trx : " & Jual_NoFaktur, DotNKet))
         baris.Add(DotPKet & KiriKanan(KOTA_PERUSAHAAN, "Tgl : " & Jual_Tanggal.ToString("dd-MM-yyyy HH:mm"), DotNKet))
         baris.Add(DotPKet & KiriKanan(KONTAK_PERUSAHAAN, "Pel : " & Jual_JenisPelanggan & " " & Jual_NamaPelanggan, DotNKet))
+        If Not String.IsNullOrEmpty(Jual_NoSO) Then
+            baris.Add(DotPKet & "Ref. SO : " & Jual_NoSO)
+        End If
+        If Jual_JudulNota = "Nota Order" Then
+            baris.Add(DotPKet & New String("*"c, DotNKet))
+            baris.Add(DotPKet & "** NOTA PESANAN / SALES ORDER **".PadLeft((DotNKet + 32) \ 2).PadRight(DotNKet))
+            baris.Add(DotPKet & New String("*"c, DotNKet))
+        End If
         baris.Add(DotPKet & New String("-"c, DotNKet))
     End Sub
 
@@ -746,15 +771,17 @@ Public Class EscPosCetakjualThermalMatrik
         End If
         totalBaris.Add(RataKanan("Total :", lebarLabelTotal) & RataKanan(Rp(Jual_Total), lebarNilaiTotal))
         ' Jika split bayar: Tunai + Transfer langsung (tanpa baris Bayar)
-        If Jual_NominalTransfer > 0 Then
-            If Jual_Bayar > 0 Then
-                totalBaris.Add(RataKanan("Tunai (" & Jual_Penerima & ") :", lebarLabelTotal) & RataKanan(Rp(Jual_Bayar), lebarNilaiTotal))
+        If Jual_JudulNota <> "Nota Order" Then
+            If Jual_NominalTransfer > 0 Then
+                If Jual_Bayar > 0 Then
+                    totalBaris.Add(RataKanan("Tunai (" & Jual_Penerima & ") :", lebarLabelTotal) & RataKanan(Rp(Jual_Bayar), lebarNilaiTotal))
+                End If
+                totalBaris.Add(RataKanan("Transfer (" & Jual_NamaAkunTransfer & ") :", lebarLabelTotal) & RataKanan(Rp(Jual_NominalTransfer), lebarNilaiTotal))
+            Else
+                totalBaris.Add(RataKanan("Bayar :", lebarLabelTotal) & RataKanan(Rp(Jual_Bayar), lebarNilaiTotal))
             End If
-            totalBaris.Add(RataKanan("Transfer (" & Jual_NamaAkunTransfer & ") :", lebarLabelTotal) & RataKanan(Rp(Jual_NominalTransfer), lebarNilaiTotal))
-        Else
-            totalBaris.Add(RataKanan("Bayar :", lebarLabelTotal) & RataKanan(Rp(Jual_Bayar), lebarNilaiTotal))
+            totalBaris.Add(RataKanan(Jual_LabelPembayaran, lebarLabelTotal) & RataKanan(Rp(Jual_Kembali), lebarNilaiTotal))
         End If
-        totalBaris.Add(RataKanan(Jual_LabelPembayaran, lebarLabelTotal) & RataKanan(Rp(Jual_Kembali), lebarNilaiTotal))
         If Jual_StatusTransaksi = "Belum Lunas" AndAlso Not String.IsNullOrEmpty(Jual_JatuhTempo) Then
             totalBaris.Add(RataKanan("Jatuh Tempo :", lebarLabelTotal) & RataKanan(Jual_JatuhTempo, lebarNilaiTotal))
         End If

@@ -44,10 +44,11 @@ Public Class FormMonitorRDLC
         Next
 
         ' Parameter laporan
-        Dim tanggalJT As String = If(Jual_AdaJatuhTempo, Jual_JatuhTempo, "")
-        Dim labelJT As String = If(Jual_AdaJatuhTempo, "Tanggal JT :", "")
-        Dim adaTransfer As Boolean = Jual_NominalTransfer > 0
-        Dim jenisPembayaran As String = If(adaTransfer, Jual_NamaAkunTransfer, Jual_Penerima)
+        Dim isSalesOrder As Boolean = (Jual_JudulNota = "Nota Order")
+        Dim tanggalJT As String = If(Jual_AdaJatuhTempo AndAlso Not isSalesOrder, Jual_JatuhTempo, "")
+        Dim labelJT As String = If(Jual_AdaJatuhTempo AndAlso Not isSalesOrder, "Tanggal JT :", "")
+        Dim adaTransfer As Boolean = Jual_NominalTransfer > 0 AndAlso Not isSalesOrder
+        Dim jenisPembayaran As String = If(isSalesOrder, "", If(adaTransfer, Jual_NamaAkunTransfer, Jual_Penerima))
         Dim bank As String = If(adaTransfer, "From " & Jual_Bank, "")
         Dim noRekening As String = If(adaTransfer, "Rek " & Jual_NoRekening, "")
         Dim namaRekening As String = If(adaTransfer, Jual_NamaRekening, "")
@@ -73,13 +74,13 @@ Public Class FormMonitorRDLC
             New ReportParameter("PajakRp", Jual_Pajak.ToString("N0", cultureIndonesia)),
             New ReportParameter("GrandTotalStlPajak", Jual_Total.ToString("N0", cultureIndonesia)),
             New ReportParameter("Terbilang", Terbilang(Jual_Total)),
-            New ReportParameter("Bayar", Jual_Bayar.ToString("N0", cultureIndonesia)),
-            New ReportParameter("StatusTransaksi", Jual_LabelPembayaran),
-            New ReportParameter("Kembali", Jual_Kembali.ToString("N0", cultureIndonesia)),
+            New ReportParameter("Bayar", If(isSalesOrder, "", Jual_Bayar.ToString("N0", cultureIndonesia))),
+            New ReportParameter("StatusTransaksi", If(isSalesOrder, "", Jual_LabelPembayaran)),
+            New ReportParameter("Kembali", If(isSalesOrder, "", Jual_Kembali.ToString("N0", cultureIndonesia))),
             New ReportParameter("TanggalJT", labelJT),
             New ReportParameter("JatuhTempo", tanggalJT),
             New ReportParameter("JenisPembayaran", jenisPembayaran),
-            New ReportParameter("Metode", Jual_Metode),
+            New ReportParameter("Metode", If(isSalesOrder, "", Jual_Metode)),
             New ReportParameter("Bank", bank),
             New ReportParameter("NamaRekening", namaRekening),
             New ReportParameter("NoRekening", noRekening),

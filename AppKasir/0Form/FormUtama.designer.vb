@@ -73,8 +73,8 @@ Partial Class FormUtama
         Me.CekIpKomputerToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.MenuLaporan = New System.Windows.Forms.ToolStripMenuItem()
         Me.MutasiSaldoToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
-        Me.KeuanganToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.MutasiBarangToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.KeuanganToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.JurnalUmumToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.NeracaToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.BukuBesarToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
@@ -235,6 +235,7 @@ Partial Class FormUtama
         Me.ToolTip1 = New System.Windows.Forms.ToolTip(Me.components)
         Me.BtnMode = New System.Windows.Forms.Button()
         Me.WbDashboard = New System.Windows.Forms.WebBrowser()
+        Me.BtnSalesOrder = New System.Windows.Forms.Button()
         Me.StatusStrip1.SuspendLayout()
         Me.MenuStrip1.SuspendLayout()
         Me.PanelMaster.SuspendLayout()
@@ -597,6 +598,13 @@ Partial Class FormUtama
         Me.MutasiSaldoToolStripMenuItem.Size = New System.Drawing.Size(211, 24)
         Me.MutasiSaldoToolStripMenuItem.Text = "Mutasi saldo"
         '
+        'MutasiBarangToolStripMenuItem
+        '
+        Me.MutasiBarangToolStripMenuItem.Image = CType(resources.GetObject("MutasiBarangToolStripMenuItem.Image"), System.Drawing.Image)
+        Me.MutasiBarangToolStripMenuItem.Name = "MutasiBarangToolStripMenuItem"
+        Me.MutasiBarangToolStripMenuItem.Size = New System.Drawing.Size(211, 24)
+        Me.MutasiBarangToolStripMenuItem.Text = "Mutasi barang"
+        '
         'KeuanganToolStripMenuItem
         '
         Me.KeuanganToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.JurnalUmumToolStripMenuItem, Me.NeracaToolStripMenuItem, Me.BukuBesarToolStripMenuItem, Me.BukuBesarPembantuToolStripMenuItem, Me.LabaRugiBerjalanToolStripMenuItem})
@@ -604,13 +612,6 @@ Partial Class FormUtama
         Me.KeuanganToolStripMenuItem.Name = "KeuanganToolStripMenuItem"
         Me.KeuanganToolStripMenuItem.Size = New System.Drawing.Size(211, 24)
         Me.KeuanganToolStripMenuItem.Text = "Keuangan"
-        '
-        'MutasiBarangToolStripMenuItem
-        '
-        Me.MutasiBarangToolStripMenuItem.Image = CType(resources.GetObject("MutasiBarangToolStripMenuItem.Image"), System.Drawing.Image)
-        Me.MutasiBarangToolStripMenuItem.Name = "MutasiBarangToolStripMenuItem"
-        Me.MutasiBarangToolStripMenuItem.Size = New System.Drawing.Size(211, 24)
-        Me.MutasiBarangToolStripMenuItem.Text = "Mutasi barang"
         '
         'JurnalUmumToolStripMenuItem
         '
@@ -1360,15 +1361,14 @@ Partial Class FormUtama
         Me.PanelMaster.Controls.Add(Me.BtnBarang)
         Me.PanelMaster.Controls.Add(Me.BtnSupliyer)
         Me.PanelMaster.Controls.Add(Me.BTnPelanggan)
-        Me.PanelMaster.Location = New System.Drawing.Point(1, 129)
+        Me.PanelMaster.Location = New System.Drawing.Point(1, 184)
         Me.PanelMaster.Name = "PanelMaster"
-        Me.PanelMaster.Size = New System.Drawing.Size(1264, 40)
+        Me.PanelMaster.Size = New System.Drawing.Size(1264, 57)
         Me.PanelMaster.TabIndex = 1
         Me.PanelMaster.Visible = False
         '
         'BtnBarangRakitan
         '
-        Me.BtnBarangRakitan.AutoSize = True
         Me.BtnBarangRakitan.BackColor = System.Drawing.Color.FromArgb(CType(CType(255, Byte), Integer), CType(CType(255, Byte), Integer), CType(CType(255, Byte), Integer))
         Me.BtnBarangRakitan.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(CType(CType(100, Byte), Integer), CType(CType(116, Byte), Integer), CType(CType(139, Byte), Integer))
         Me.BtnBarangRakitan.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(CType(CType(226, Byte), Integer), CType(CType(232, Byte), Integer), CType(CType(240, Byte), Integer))
@@ -1378,9 +1378,9 @@ Partial Class FormUtama
         Me.BtnBarangRakitan.ForeColor = System.Drawing.Color.FromArgb(CType(CType(15, Byte), Integer), CType(CType(23, Byte), Integer), CType(CType(42, Byte), Integer))
         Me.BtnBarangRakitan.Image = CType(resources.GetObject("BtnBarangRakitan.Image"), System.Drawing.Image)
         Me.BtnBarangRakitan.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft
-        Me.BtnBarangRakitan.Location = New System.Drawing.Point(1098, 3)
+        Me.BtnBarangRakitan.Location = New System.Drawing.Point(996, 5)
         Me.BtnBarangRakitan.Name = "BtnBarangRakitan"
-        Me.BtnBarangRakitan.Size = New System.Drawing.Size(120, 33)
+        Me.BtnBarangRakitan.Size = New System.Drawing.Size(77, 46)
         Me.BtnBarangRakitan.TabIndex = 14
         Me.BtnBarangRakitan.Text = "Barang Rakitan"
         Me.BtnBarangRakitan.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
@@ -1389,7 +1389,6 @@ Partial Class FormUtama
         '
         'BtnMasterCabang
         '
-        Me.BtnMasterCabang.AutoSize = True
         Me.BtnMasterCabang.BackColor = System.Drawing.Color.FromArgb(CType(CType(255, Byte), Integer), CType(CType(255, Byte), Integer), CType(CType(255, Byte), Integer))
         Me.BtnMasterCabang.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(CType(CType(100, Byte), Integer), CType(CType(116, Byte), Integer), CType(CType(139, Byte), Integer))
         Me.BtnMasterCabang.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(CType(CType(226, Byte), Integer), CType(CType(232, Byte), Integer), CType(CType(240, Byte), Integer))
@@ -1399,9 +1398,9 @@ Partial Class FormUtama
         Me.BtnMasterCabang.ForeColor = System.Drawing.Color.FromArgb(CType(CType(15, Byte), Integer), CType(CType(23, Byte), Integer), CType(CType(42, Byte), Integer))
         Me.BtnMasterCabang.Image = CType(resources.GetObject("BtnMasterCabang.Image"), System.Drawing.Image)
         Me.BtnMasterCabang.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft
-        Me.BtnMasterCabang.Location = New System.Drawing.Point(709, 3)
+        Me.BtnMasterCabang.Location = New System.Drawing.Point(675, 5)
         Me.BtnMasterCabang.Name = "BtnMasterCabang"
-        Me.BtnMasterCabang.Size = New System.Drawing.Size(83, 32)
+        Me.BtnMasterCabang.Size = New System.Drawing.Size(83, 46)
         Me.BtnMasterCabang.TabIndex = 13
         Me.BtnMasterCabang.Text = " Cabang"
         Me.BtnMasterCabang.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
@@ -1410,7 +1409,6 @@ Partial Class FormUtama
         '
         'BtnGeneralSetting
         '
-        Me.BtnGeneralSetting.AutoSize = True
         Me.BtnGeneralSetting.BackColor = System.Drawing.Color.FromArgb(CType(CType(255, Byte), Integer), CType(CType(255, Byte), Integer), CType(CType(255, Byte), Integer))
         Me.BtnGeneralSetting.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(CType(CType(100, Byte), Integer), CType(CType(116, Byte), Integer), CType(CType(139, Byte), Integer))
         Me.BtnGeneralSetting.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(CType(CType(226, Byte), Integer), CType(CType(232, Byte), Integer), CType(CType(240, Byte), Integer))
@@ -1420,9 +1418,9 @@ Partial Class FormUtama
         Me.BtnGeneralSetting.ForeColor = System.Drawing.Color.FromArgb(CType(CType(15, Byte), Integer), CType(CType(23, Byte), Integer), CType(CType(42, Byte), Integer))
         Me.BtnGeneralSetting.Image = CType(resources.GetObject("BtnGeneralSetting.Image"), System.Drawing.Image)
         Me.BtnGeneralSetting.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft
-        Me.BtnGeneralSetting.Location = New System.Drawing.Point(969, 3)
+        Me.BtnGeneralSetting.Location = New System.Drawing.Point(913, 5)
         Me.BtnGeneralSetting.Name = "BtnGeneralSetting"
-        Me.BtnGeneralSetting.Size = New System.Drawing.Size(123, 33)
+        Me.BtnGeneralSetting.Size = New System.Drawing.Size(77, 46)
         Me.BtnGeneralSetting.TabIndex = 10
         Me.BtnGeneralSetting.Text = "General Setting"
         Me.BtnGeneralSetting.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
@@ -1431,7 +1429,6 @@ Partial Class FormUtama
         '
         'BtnKaryawan
         '
-        Me.BtnKaryawan.AutoSize = True
         Me.BtnKaryawan.BackColor = System.Drawing.Color.FromArgb(CType(CType(255, Byte), Integer), CType(CType(255, Byte), Integer), CType(CType(255, Byte), Integer))
         Me.BtnKaryawan.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(CType(CType(100, Byte), Integer), CType(CType(116, Byte), Integer), CType(CType(139, Byte), Integer))
         Me.BtnKaryawan.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(CType(CType(226, Byte), Integer), CType(CType(232, Byte), Integer), CType(CType(240, Byte), Integer))
@@ -1441,9 +1438,9 @@ Partial Class FormUtama
         Me.BtnKaryawan.ForeColor = System.Drawing.Color.FromArgb(CType(CType(15, Byte), Integer), CType(CType(23, Byte), Integer), CType(CType(42, Byte), Integer))
         Me.BtnKaryawan.Image = CType(resources.GetObject("BtnKaryawan.Image"), System.Drawing.Image)
         Me.BtnKaryawan.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft
-        Me.BtnKaryawan.Location = New System.Drawing.Point(610, 3)
+        Me.BtnKaryawan.Location = New System.Drawing.Point(576, 5)
         Me.BtnKaryawan.Name = "BtnKaryawan"
-        Me.BtnKaryawan.Size = New System.Drawing.Size(93, 33)
+        Me.BtnKaryawan.Size = New System.Drawing.Size(93, 46)
         Me.BtnKaryawan.TabIndex = 9
         Me.BtnKaryawan.Text = "Karyawan"
         Me.BtnKaryawan.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
@@ -1452,7 +1449,6 @@ Partial Class FormUtama
         '
         'BtnArmada
         '
-        Me.BtnArmada.AutoSize = True
         Me.BtnArmada.BackColor = System.Drawing.Color.FromArgb(CType(CType(255, Byte), Integer), CType(CType(255, Byte), Integer), CType(CType(255, Byte), Integer))
         Me.BtnArmada.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(CType(CType(100, Byte), Integer), CType(CType(116, Byte), Integer), CType(CType(139, Byte), Integer))
         Me.BtnArmada.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(CType(CType(226, Byte), Integer), CType(CType(232, Byte), Integer), CType(CType(240, Byte), Integer))
@@ -1462,9 +1458,9 @@ Partial Class FormUtama
         Me.BtnArmada.ForeColor = System.Drawing.Color.FromArgb(CType(CType(15, Byte), Integer), CType(CType(23, Byte), Integer), CType(CType(42, Byte), Integer))
         Me.BtnArmada.Image = CType(resources.GetObject("BtnArmada.Image"), System.Drawing.Image)
         Me.BtnArmada.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft
-        Me.BtnArmada.Location = New System.Drawing.Point(523, 3)
+        Me.BtnArmada.Location = New System.Drawing.Point(489, 5)
         Me.BtnArmada.Name = "BtnArmada"
-        Me.BtnArmada.Size = New System.Drawing.Size(81, 33)
+        Me.BtnArmada.Size = New System.Drawing.Size(81, 46)
         Me.BtnArmada.TabIndex = 8
         Me.BtnArmada.Text = "Armada"
         Me.BtnArmada.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
@@ -1473,7 +1469,6 @@ Partial Class FormUtama
         '
         'BtnTabelRef
         '
-        Me.BtnTabelRef.AutoSize = True
         Me.BtnTabelRef.BackColor = System.Drawing.Color.FromArgb(CType(CType(255, Byte), Integer), CType(CType(255, Byte), Integer), CType(CType(255, Byte), Integer))
         Me.BtnTabelRef.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(CType(CType(100, Byte), Integer), CType(CType(116, Byte), Integer), CType(CType(139, Byte), Integer))
         Me.BtnTabelRef.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(CType(CType(226, Byte), Integer), CType(CType(232, Byte), Integer), CType(CType(240, Byte), Integer))
@@ -1483,9 +1478,9 @@ Partial Class FormUtama
         Me.BtnTabelRef.ForeColor = System.Drawing.Color.FromArgb(CType(CType(15, Byte), Integer), CType(CType(23, Byte), Integer), CType(CType(42, Byte), Integer))
         Me.BtnTabelRef.Image = CType(resources.GetObject("BtnTabelRef.Image"), System.Drawing.Image)
         Me.BtnTabelRef.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft
-        Me.BtnTabelRef.Location = New System.Drawing.Point(394, 3)
+        Me.BtnTabelRef.Location = New System.Drawing.Point(394, 5)
         Me.BtnTabelRef.Name = "BtnTabelRef"
-        Me.BtnTabelRef.Size = New System.Drawing.Size(123, 33)
+        Me.BtnTabelRef.Size = New System.Drawing.Size(90, 46)
         Me.BtnTabelRef.TabIndex = 6
         Me.BtnTabelRef.Text = "Tabel Referensi"
         Me.BtnTabelRef.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
@@ -1494,7 +1489,6 @@ Partial Class FormUtama
         '
         'BtnHakAksesUser
         '
-        Me.BtnHakAksesUser.AutoSize = True
         Me.BtnHakAksesUser.BackColor = System.Drawing.Color.FromArgb(CType(CType(255, Byte), Integer), CType(CType(255, Byte), Integer), CType(CType(255, Byte), Integer))
         Me.BtnHakAksesUser.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(CType(CType(100, Byte), Integer), CType(CType(116, Byte), Integer), CType(CType(139, Byte), Integer))
         Me.BtnHakAksesUser.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(CType(CType(226, Byte), Integer), CType(CType(232, Byte), Integer), CType(CType(240, Byte), Integer))
@@ -1504,9 +1498,9 @@ Partial Class FormUtama
         Me.BtnHakAksesUser.ForeColor = System.Drawing.Color.FromArgb(CType(CType(15, Byte), Integer), CType(CType(23, Byte), Integer), CType(CType(42, Byte), Integer))
         Me.BtnHakAksesUser.Image = CType(resources.GetObject("BtnHakAksesUser.Image"), System.Drawing.Image)
         Me.BtnHakAksesUser.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft
-        Me.BtnHakAksesUser.Location = New System.Drawing.Point(867, 3)
+        Me.BtnHakAksesUser.Location = New System.Drawing.Point(833, 5)
         Me.BtnHakAksesUser.Name = "BtnHakAksesUser"
-        Me.BtnHakAksesUser.Size = New System.Drawing.Size(96, 33)
+        Me.BtnHakAksesUser.Size = New System.Drawing.Size(77, 46)
         Me.BtnHakAksesUser.TabIndex = 7
         Me.BtnHakAksesUser.Text = "Hak Akses"
         Me.BtnHakAksesUser.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
@@ -1515,7 +1509,6 @@ Partial Class FormUtama
         '
         'BtnToko
         '
-        Me.BtnToko.AutoSize = True
         Me.BtnToko.BackColor = System.Drawing.Color.FromArgb(CType(CType(255, Byte), Integer), CType(CType(255, Byte), Integer), CType(CType(255, Byte), Integer))
         Me.BtnToko.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(CType(CType(100, Byte), Integer), CType(CType(116, Byte), Integer), CType(CType(139, Byte), Integer))
         Me.BtnToko.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(CType(CType(226, Byte), Integer), CType(CType(232, Byte), Integer), CType(CType(240, Byte), Integer))
@@ -1525,9 +1518,9 @@ Partial Class FormUtama
         Me.BtnToko.ForeColor = System.Drawing.Color.FromArgb(CType(CType(15, Byte), Integer), CType(CType(23, Byte), Integer), CType(CType(42, Byte), Integer))
         Me.BtnToko.Image = CType(resources.GetObject("BtnToko.Image"), System.Drawing.Image)
         Me.BtnToko.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft
-        Me.BtnToko.Location = New System.Drawing.Point(11, 3)
+        Me.BtnToko.Location = New System.Drawing.Point(11, 5)
         Me.BtnToko.Name = "BtnToko"
-        Me.BtnToko.Size = New System.Drawing.Size(92, 33)
+        Me.BtnToko.Size = New System.Drawing.Size(92, 46)
         Me.BtnToko.TabIndex = 1
         Me.BtnToko.Text = "Company"
         Me.BtnToko.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
@@ -1536,7 +1529,6 @@ Partial Class FormUtama
         '
         'BtnUser
         '
-        Me.BtnUser.AutoSize = True
         Me.BtnUser.BackColor = System.Drawing.Color.FromArgb(CType(CType(255, Byte), Integer), CType(CType(255, Byte), Integer), CType(CType(255, Byte), Integer))
         Me.BtnUser.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(CType(CType(100, Byte), Integer), CType(CType(116, Byte), Integer), CType(CType(139, Byte), Integer))
         Me.BtnUser.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(CType(CType(226, Byte), Integer), CType(CType(232, Byte), Integer), CType(CType(240, Byte), Integer))
@@ -1546,9 +1538,9 @@ Partial Class FormUtama
         Me.BtnUser.ForeColor = System.Drawing.Color.FromArgb(CType(CType(15, Byte), Integer), CType(CType(23, Byte), Integer), CType(CType(42, Byte), Integer))
         Me.BtnUser.Image = CType(resources.GetObject("BtnUser.Image"), System.Drawing.Image)
         Me.BtnUser.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft
-        Me.BtnUser.Location = New System.Drawing.Point(795, 3)
+        Me.BtnUser.Location = New System.Drawing.Point(761, 5)
         Me.BtnUser.Name = "BtnUser"
-        Me.BtnUser.Size = New System.Drawing.Size(66, 33)
+        Me.BtnUser.Size = New System.Drawing.Size(66, 46)
         Me.BtnUser.TabIndex = 5
         Me.BtnUser.Text = "User"
         Me.BtnUser.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
@@ -1557,7 +1549,6 @@ Partial Class FormUtama
         '
         'BtnBarang
         '
-        Me.BtnBarang.AutoSize = True
         Me.BtnBarang.BackColor = System.Drawing.Color.FromArgb(CType(CType(255, Byte), Integer), CType(CType(255, Byte), Integer), CType(CType(255, Byte), Integer))
         Me.BtnBarang.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(CType(CType(100, Byte), Integer), CType(CType(116, Byte), Integer), CType(CType(139, Byte), Integer))
         Me.BtnBarang.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(CType(CType(226, Byte), Integer), CType(CType(232, Byte), Integer), CType(CType(240, Byte), Integer))
@@ -1567,9 +1558,9 @@ Partial Class FormUtama
         Me.BtnBarang.ForeColor = System.Drawing.Color.FromArgb(CType(CType(15, Byte), Integer), CType(CType(23, Byte), Integer), CType(CType(42, Byte), Integer))
         Me.BtnBarang.Image = CType(resources.GetObject("BtnBarang.Image"), System.Drawing.Image)
         Me.BtnBarang.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft
-        Me.BtnBarang.Location = New System.Drawing.Point(109, 3)
+        Me.BtnBarang.Location = New System.Drawing.Point(109, 5)
         Me.BtnBarang.Name = "BtnBarang"
-        Me.BtnBarang.Size = New System.Drawing.Size(80, 33)
+        Me.BtnBarang.Size = New System.Drawing.Size(80, 46)
         Me.BtnBarang.TabIndex = 2
         Me.BtnBarang.Text = "Barang"
         Me.BtnBarang.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
@@ -1578,7 +1569,6 @@ Partial Class FormUtama
         '
         'BtnSupliyer
         '
-        Me.BtnSupliyer.AutoSize = True
         Me.BtnSupliyer.BackColor = System.Drawing.Color.FromArgb(CType(CType(255, Byte), Integer), CType(CType(255, Byte), Integer), CType(CType(255, Byte), Integer))
         Me.BtnSupliyer.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(CType(CType(100, Byte), Integer), CType(CType(116, Byte), Integer), CType(CType(139, Byte), Integer))
         Me.BtnSupliyer.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(CType(CType(226, Byte), Integer), CType(CType(232, Byte), Integer), CType(CType(240, Byte), Integer))
@@ -1588,9 +1578,9 @@ Partial Class FormUtama
         Me.BtnSupliyer.ForeColor = System.Drawing.Color.FromArgb(CType(CType(15, Byte), Integer), CType(CType(23, Byte), Integer), CType(CType(42, Byte), Integer))
         Me.BtnSupliyer.Image = CType(resources.GetObject("BtnSupliyer.Image"), System.Drawing.Image)
         Me.BtnSupliyer.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft
-        Me.BtnSupliyer.Location = New System.Drawing.Point(302, 3)
+        Me.BtnSupliyer.Location = New System.Drawing.Point(302, 5)
         Me.BtnSupliyer.Name = "BtnSupliyer"
-        Me.BtnSupliyer.Size = New System.Drawing.Size(86, 33)
+        Me.BtnSupliyer.Size = New System.Drawing.Size(86, 46)
         Me.BtnSupliyer.TabIndex = 4
         Me.BtnSupliyer.Text = "Supliyer"
         Me.BtnSupliyer.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
@@ -1599,7 +1589,6 @@ Partial Class FormUtama
         '
         'BTnPelanggan
         '
-        Me.BTnPelanggan.AutoSize = True
         Me.BTnPelanggan.BackColor = System.Drawing.Color.FromArgb(CType(CType(255, Byte), Integer), CType(CType(255, Byte), Integer), CType(CType(255, Byte), Integer))
         Me.BTnPelanggan.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(CType(CType(100, Byte), Integer), CType(CType(116, Byte), Integer), CType(CType(139, Byte), Integer))
         Me.BTnPelanggan.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(CType(CType(226, Byte), Integer), CType(CType(232, Byte), Integer), CType(CType(240, Byte), Integer))
@@ -1609,9 +1598,9 @@ Partial Class FormUtama
         Me.BTnPelanggan.ForeColor = System.Drawing.Color.FromArgb(CType(CType(15, Byte), Integer), CType(CType(23, Byte), Integer), CType(CType(42, Byte), Integer))
         Me.BTnPelanggan.Image = CType(resources.GetObject("BTnPelanggan.Image"), System.Drawing.Image)
         Me.BTnPelanggan.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft
-        Me.BTnPelanggan.Location = New System.Drawing.Point(195, 3)
+        Me.BTnPelanggan.Location = New System.Drawing.Point(195, 5)
         Me.BTnPelanggan.Name = "BTnPelanggan"
-        Me.BTnPelanggan.Size = New System.Drawing.Size(101, 33)
+        Me.BTnPelanggan.Size = New System.Drawing.Size(101, 46)
         Me.BTnPelanggan.TabIndex = 3
         Me.BTnPelanggan.Text = "Pelanggan"
         Me.BTnPelanggan.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
@@ -1623,6 +1612,7 @@ Partial Class FormUtama
         Me.PanelTransaksi.AutoScroll = True
         Me.PanelTransaksi.BackColor = System.Drawing.Color.WhiteSmoke
         Me.PanelTransaksi.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
+        Me.PanelTransaksi.Controls.Add(Me.BtnSalesOrder)
         Me.PanelTransaksi.Controls.Add(Me.BtnKirimCabang)
         Me.PanelTransaksi.Controls.Add(Me.BtnSuratJalan)
         Me.PanelTransaksi.Controls.Add(Me.BtnTransferBarang)
@@ -1637,13 +1627,12 @@ Partial Class FormUtama
         Me.PanelTransaksi.Dock = System.Windows.Forms.DockStyle.Top
         Me.PanelTransaksi.Location = New System.Drawing.Point(0, 30)
         Me.PanelTransaksi.Name = "PanelTransaksi"
-        Me.PanelTransaksi.Size = New System.Drawing.Size(1264, 40)
+        Me.PanelTransaksi.Size = New System.Drawing.Size(1264, 57)
         Me.PanelTransaksi.TabIndex = 2
         Me.PanelTransaksi.Visible = False
         '
         'BtnKirimCabang
         '
-        Me.BtnKirimCabang.AutoSize = True
         Me.BtnKirimCabang.BackColor = System.Drawing.Color.FromArgb(CType(CType(255, Byte), Integer), CType(CType(255, Byte), Integer), CType(CType(255, Byte), Integer))
         Me.BtnKirimCabang.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(CType(CType(100, Byte), Integer), CType(CType(116, Byte), Integer), CType(CType(139, Byte), Integer))
         Me.BtnKirimCabang.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(CType(CType(226, Byte), Integer), CType(CType(232, Byte), Integer), CType(CType(240, Byte), Integer))
@@ -1653,9 +1642,9 @@ Partial Class FormUtama
         Me.BtnKirimCabang.ForeColor = System.Drawing.Color.FromArgb(CType(CType(15, Byte), Integer), CType(CType(23, Byte), Integer), CType(CType(42, Byte), Integer))
         Me.BtnKirimCabang.Image = CType(resources.GetObject("BtnKirimCabang.Image"), System.Drawing.Image)
         Me.BtnKirimCabang.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft
-        Me.BtnKirimCabang.Location = New System.Drawing.Point(1137, 2)
+        Me.BtnKirimCabang.Location = New System.Drawing.Point(806, 5)
         Me.BtnKirimCabang.Name = "BtnKirimCabang"
-        Me.BtnKirimCabang.Size = New System.Drawing.Size(110, 33)
+        Me.BtnKirimCabang.Size = New System.Drawing.Size(82, 46)
         Me.BtnKirimCabang.TabIndex = 11
         Me.BtnKirimCabang.Text = "Kirim Cabang"
         Me.BtnKirimCabang.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
@@ -1664,7 +1653,6 @@ Partial Class FormUtama
         '
         'BtnSuratJalan
         '
-        Me.BtnSuratJalan.AutoSize = True
         Me.BtnSuratJalan.BackColor = System.Drawing.Color.FromArgb(CType(CType(255, Byte), Integer), CType(CType(255, Byte), Integer), CType(CType(255, Byte), Integer))
         Me.BtnSuratJalan.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(CType(CType(100, Byte), Integer), CType(CType(116, Byte), Integer), CType(CType(139, Byte), Integer))
         Me.BtnSuratJalan.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(CType(CType(226, Byte), Integer), CType(CType(232, Byte), Integer), CType(CType(240, Byte), Integer))
@@ -1674,9 +1662,9 @@ Partial Class FormUtama
         Me.BtnSuratJalan.ForeColor = System.Drawing.Color.FromArgb(CType(CType(15, Byte), Integer), CType(CType(23, Byte), Integer), CType(CType(42, Byte), Integer))
         Me.BtnSuratJalan.Image = CType(resources.GetObject("BtnSuratJalan.Image"), System.Drawing.Image)
         Me.BtnSuratJalan.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft
-        Me.BtnSuratJalan.Location = New System.Drawing.Point(1028, 2)
+        Me.BtnSuratJalan.Location = New System.Drawing.Point(982, 5)
         Me.BtnSuratJalan.Name = "BtnSuratJalan"
-        Me.BtnSuratJalan.Size = New System.Drawing.Size(103, 33)
+        Me.BtnSuratJalan.Size = New System.Drawing.Size(83, 46)
         Me.BtnSuratJalan.TabIndex = 10
         Me.BtnSuratJalan.Text = "Surat Jala&N"
         Me.BtnSuratJalan.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
@@ -1685,7 +1673,6 @@ Partial Class FormUtama
         '
         'BtnTransferBarang
         '
-        Me.BtnTransferBarang.AutoSize = True
         Me.BtnTransferBarang.BackColor = System.Drawing.Color.FromArgb(CType(CType(255, Byte), Integer), CType(CType(255, Byte), Integer), CType(CType(255, Byte), Integer))
         Me.BtnTransferBarang.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(CType(CType(100, Byte), Integer), CType(CType(116, Byte), Integer), CType(CType(139, Byte), Integer))
         Me.BtnTransferBarang.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(CType(CType(226, Byte), Integer), CType(CType(232, Byte), Integer), CType(CType(240, Byte), Integer))
@@ -1695,9 +1682,9 @@ Partial Class FormUtama
         Me.BtnTransferBarang.ForeColor = System.Drawing.Color.FromArgb(CType(CType(15, Byte), Integer), CType(CType(23, Byte), Integer), CType(CType(42, Byte), Integer))
         Me.BtnTransferBarang.Image = CType(resources.GetObject("BtnTransferBarang.Image"), System.Drawing.Image)
         Me.BtnTransferBarang.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft
-        Me.BtnTransferBarang.Location = New System.Drawing.Point(775, 2)
+        Me.BtnTransferBarang.Location = New System.Drawing.Point(623, 5)
         Me.BtnTransferBarang.Name = "BtnTransferBarang"
-        Me.BtnTransferBarang.Size = New System.Drawing.Size(128, 33)
+        Me.BtnTransferBarang.Size = New System.Drawing.Size(87, 46)
         Me.BtnTransferBarang.TabIndex = 8
         Me.BtnTransferBarang.Text = "Tran&Sfer Barang"
         Me.BtnTransferBarang.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
@@ -1706,7 +1693,6 @@ Partial Class FormUtama
         '
         'BtnStokOpname
         '
-        Me.BtnStokOpname.AutoSize = True
         Me.BtnStokOpname.BackColor = System.Drawing.Color.FromArgb(CType(CType(255, Byte), Integer), CType(CType(255, Byte), Integer), CType(CType(255, Byte), Integer))
         Me.BtnStokOpname.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(CType(CType(100, Byte), Integer), CType(CType(116, Byte), Integer), CType(CType(139, Byte), Integer))
         Me.BtnStokOpname.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(CType(CType(226, Byte), Integer), CType(CType(232, Byte), Integer), CType(CType(240, Byte), Integer))
@@ -1716,9 +1702,9 @@ Partial Class FormUtama
         Me.BtnStokOpname.ForeColor = System.Drawing.Color.FromArgb(CType(CType(15, Byte), Integer), CType(CType(23, Byte), Integer), CType(CType(42, Byte), Integer))
         Me.BtnStokOpname.Image = CType(resources.GetObject("BtnStokOpname.Image"), System.Drawing.Image)
         Me.BtnStokOpname.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft
-        Me.BtnStokOpname.Location = New System.Drawing.Point(909, 2)
+        Me.BtnStokOpname.Location = New System.Drawing.Point(716, 5)
         Me.BtnStokOpname.Name = "BtnStokOpname"
-        Me.BtnStokOpname.Size = New System.Drawing.Size(113, 33)
+        Me.BtnStokOpname.Size = New System.Drawing.Size(84, 46)
         Me.BtnStokOpname.TabIndex = 9
         Me.BtnStokOpname.Text = "Stok O&Pname"
         Me.BtnStokOpname.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
@@ -1727,7 +1713,6 @@ Partial Class FormUtama
         '
         'BtnBayarPiutang
         '
-        Me.BtnBayarPiutang.AutoSize = True
         Me.BtnBayarPiutang.BackColor = System.Drawing.Color.FromArgb(CType(CType(255, Byte), Integer), CType(CType(255, Byte), Integer), CType(CType(255, Byte), Integer))
         Me.BtnBayarPiutang.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(CType(CType(100, Byte), Integer), CType(CType(116, Byte), Integer), CType(CType(139, Byte), Integer))
         Me.BtnBayarPiutang.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(CType(CType(226, Byte), Integer), CType(CType(232, Byte), Integer), CType(CType(240, Byte), Integer))
@@ -1737,9 +1722,9 @@ Partial Class FormUtama
         Me.BtnBayarPiutang.ForeColor = System.Drawing.Color.FromArgb(CType(CType(15, Byte), Integer), CType(CType(23, Byte), Integer), CType(CType(42, Byte), Integer))
         Me.BtnBayarPiutang.Image = CType(resources.GetObject("BtnBayarPiutang.Image"), System.Drawing.Image)
         Me.BtnBayarPiutang.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft
-        Me.BtnBayarPiutang.Location = New System.Drawing.Point(534, 2)
+        Me.BtnBayarPiutang.Location = New System.Drawing.Point(441, 5)
         Me.BtnBayarPiutang.Name = "BtnBayarPiutang"
-        Me.BtnBayarPiutang.Size = New System.Drawing.Size(117, 33)
+        Me.BtnBayarPiutang.Size = New System.Drawing.Size(80, 46)
         Me.BtnBayarPiutang.TabIndex = 6
         Me.BtnBayarPiutang.Text = "Bayar P&Iutang"
         Me.BtnBayarPiutang.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
@@ -1748,7 +1733,6 @@ Partial Class FormUtama
         '
         'BtnPindahStok
         '
-        Me.BtnPindahStok.AutoSize = True
         Me.BtnPindahStok.BackColor = System.Drawing.Color.FromArgb(CType(CType(255, Byte), Integer), CType(CType(255, Byte), Integer), CType(CType(255, Byte), Integer))
         Me.BtnPindahStok.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(CType(CType(100, Byte), Integer), CType(CType(116, Byte), Integer), CType(CType(139, Byte), Integer))
         Me.BtnPindahStok.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(CType(CType(226, Byte), Integer), CType(CType(232, Byte), Integer), CType(CType(240, Byte), Integer))
@@ -1758,9 +1742,9 @@ Partial Class FormUtama
         Me.BtnPindahStok.ForeColor = System.Drawing.Color.FromArgb(CType(CType(15, Byte), Integer), CType(CType(23, Byte), Integer), CType(CType(42, Byte), Integer))
         Me.BtnPindahStok.Image = CType(resources.GetObject("BtnPindahStok.Image"), System.Drawing.Image)
         Me.BtnPindahStok.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft
-        Me.BtnPindahStok.Location = New System.Drawing.Point(657, 2)
+        Me.BtnPindahStok.Location = New System.Drawing.Point(527, 5)
         Me.BtnPindahStok.Name = "BtnPindahStok"
-        Me.BtnPindahStok.Size = New System.Drawing.Size(113, 33)
+        Me.BtnPindahStok.Size = New System.Drawing.Size(90, 46)
         Me.BtnPindahStok.TabIndex = 7
         Me.BtnPindahStok.Text = "Trans&Fer Stok"
         Me.BtnPindahStok.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
@@ -1769,7 +1753,6 @@ Partial Class FormUtama
         '
         'BtnRetuBelanja
         '
-        Me.BtnRetuBelanja.AutoSize = True
         Me.BtnRetuBelanja.BackColor = System.Drawing.Color.FromArgb(CType(CType(255, Byte), Integer), CType(CType(255, Byte), Integer), CType(CType(255, Byte), Integer))
         Me.BtnRetuBelanja.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(CType(CType(100, Byte), Integer), CType(CType(116, Byte), Integer), CType(CType(139, Byte), Integer))
         Me.BtnRetuBelanja.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(CType(CType(226, Byte), Integer), CType(CType(232, Byte), Integer), CType(CType(240, Byte), Integer))
@@ -1779,9 +1762,9 @@ Partial Class FormUtama
         Me.BtnRetuBelanja.ForeColor = System.Drawing.Color.FromArgb(CType(CType(15, Byte), Integer), CType(CType(23, Byte), Integer), CType(CType(42, Byte), Integer))
         Me.BtnRetuBelanja.Image = CType(resources.GetObject("BtnRetuBelanja.Image"), System.Drawing.Image)
         Me.BtnRetuBelanja.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft
-        Me.BtnRetuBelanja.Location = New System.Drawing.Point(209, 2)
+        Me.BtnRetuBelanja.Location = New System.Drawing.Point(209, 5)
         Me.BtnRetuBelanja.Name = "BtnRetuBelanja"
-        Me.BtnRetuBelanja.Size = New System.Drawing.Size(95, 33)
+        Me.BtnRetuBelanja.Size = New System.Drawing.Size(67, 46)
         Me.BtnRetuBelanja.TabIndex = 3
         Me.BtnRetuBelanja.Text = "Retur B&Eli"
         Me.BtnRetuBelanja.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
@@ -1800,9 +1783,9 @@ Partial Class FormUtama
         Me.BtnPenjualan.ForeColor = System.Drawing.Color.FromArgb(CType(CType(15, Byte), Integer), CType(CType(23, Byte), Integer), CType(CType(42, Byte), Integer))
         Me.BtnPenjualan.Image = CType(resources.GetObject("BtnPenjualan.Image"), System.Drawing.Image)
         Me.BtnPenjualan.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft
-        Me.BtnPenjualan.Location = New System.Drawing.Point(108, 2)
+        Me.BtnPenjualan.Location = New System.Drawing.Point(108, 5)
         Me.BtnPenjualan.Name = "BtnPenjualan"
-        Me.BtnPenjualan.Size = New System.Drawing.Size(97, 33)
+        Me.BtnPenjualan.Size = New System.Drawing.Size(97, 46)
         Me.BtnPenjualan.TabIndex = 2
         Me.BtnPenjualan.Text = "Pen&Jualan"
         Me.BtnPenjualan.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
@@ -1821,9 +1804,9 @@ Partial Class FormUtama
         Me.BtnBelanja.ForeColor = System.Drawing.Color.FromArgb(CType(CType(15, Byte), Integer), CType(CType(23, Byte), Integer), CType(CType(42, Byte), Integer))
         Me.BtnBelanja.Image = CType(resources.GetObject("BtnBelanja.Image"), System.Drawing.Image)
         Me.BtnBelanja.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft
-        Me.BtnBelanja.Location = New System.Drawing.Point(9, 2)
+        Me.BtnBelanja.Location = New System.Drawing.Point(9, 5)
         Me.BtnBelanja.Name = "BtnBelanja"
-        Me.BtnBelanja.Size = New System.Drawing.Size(97, 33)
+        Me.BtnBelanja.Size = New System.Drawing.Size(97, 46)
         Me.BtnBelanja.TabIndex = 1
         Me.BtnBelanja.Text = "Pem&Belian"
         Me.BtnBelanja.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
@@ -1832,7 +1815,6 @@ Partial Class FormUtama
         '
         'BtnReturPenjualan
         '
-        Me.BtnReturPenjualan.AutoSize = True
         Me.BtnReturPenjualan.BackColor = System.Drawing.Color.FromArgb(CType(CType(255, Byte), Integer), CType(CType(255, Byte), Integer), CType(CType(255, Byte), Integer))
         Me.BtnReturPenjualan.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(CType(CType(100, Byte), Integer), CType(CType(116, Byte), Integer), CType(CType(139, Byte), Integer))
         Me.BtnReturPenjualan.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(CType(CType(226, Byte), Integer), CType(CType(232, Byte), Integer), CType(CType(240, Byte), Integer))
@@ -1842,9 +1824,9 @@ Partial Class FormUtama
         Me.BtnReturPenjualan.ForeColor = System.Drawing.Color.FromArgb(CType(CType(15, Byte), Integer), CType(CType(23, Byte), Integer), CType(CType(42, Byte), Integer))
         Me.BtnReturPenjualan.Image = CType(resources.GetObject("BtnReturPenjualan.Image"), System.Drawing.Image)
         Me.BtnReturPenjualan.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft
-        Me.BtnReturPenjualan.Location = New System.Drawing.Point(310, 2)
+        Me.BtnReturPenjualan.Location = New System.Drawing.Point(282, 5)
         Me.BtnReturPenjualan.Name = "BtnReturPenjualan"
-        Me.BtnReturPenjualan.Size = New System.Drawing.Size(97, 33)
+        Me.BtnReturPenjualan.Size = New System.Drawing.Size(69, 46)
         Me.BtnReturPenjualan.TabIndex = 4
         Me.BtnReturPenjualan.Text = "Retur J&Ual"
         Me.BtnReturPenjualan.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
@@ -1853,7 +1835,6 @@ Partial Class FormUtama
         '
         'BtnBayarHutang
         '
-        Me.BtnBayarHutang.AutoSize = True
         Me.BtnBayarHutang.BackColor = System.Drawing.Color.FromArgb(CType(CType(255, Byte), Integer), CType(CType(255, Byte), Integer), CType(CType(255, Byte), Integer))
         Me.BtnBayarHutang.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(CType(CType(100, Byte), Integer), CType(CType(116, Byte), Integer), CType(CType(139, Byte), Integer))
         Me.BtnBayarHutang.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(CType(CType(226, Byte), Integer), CType(CType(232, Byte), Integer), CType(CType(240, Byte), Integer))
@@ -1863,9 +1844,9 @@ Partial Class FormUtama
         Me.BtnBayarHutang.ForeColor = System.Drawing.Color.FromArgb(CType(CType(15, Byte), Integer), CType(CType(23, Byte), Integer), CType(CType(42, Byte), Integer))
         Me.BtnBayarHutang.Image = CType(resources.GetObject("BtnBayarHutang.Image"), System.Drawing.Image)
         Me.BtnBayarHutang.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft
-        Me.BtnBayarHutang.Location = New System.Drawing.Point(413, 2)
+        Me.BtnBayarHutang.Location = New System.Drawing.Point(357, 5)
         Me.BtnBayarHutang.Name = "BtnBayarHutang"
-        Me.BtnBayarHutang.Size = New System.Drawing.Size(115, 33)
+        Me.BtnBayarHutang.Size = New System.Drawing.Size(78, 46)
         Me.BtnBayarHutang.TabIndex = 5
         Me.BtnBayarHutang.Text = "Bayar Hutan&G"
         Me.BtnBayarHutang.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
@@ -1915,9 +1896,9 @@ Partial Class FormUtama
         Me.GBTransaksi.Controls.Add(Me.DtpTransaksi)
         Me.GBTransaksi.Controls.Add(Me.TxtTransaksi)
         Me.GBTransaksi.Controls.Add(Me.Panel1)
-        Me.GBTransaksi.Location = New System.Drawing.Point(1, 72)
+        Me.GBTransaksi.Location = New System.Drawing.Point(1, 88)
         Me.GBTransaksi.Name = "GBTransaksi"
-        Me.GBTransaksi.Size = New System.Drawing.Size(1264, 577)
+        Me.GBTransaksi.Size = New System.Drawing.Size(1264, 561)
         Me.GBTransaksi.TabIndex = 39
         Me.GBTransaksi.TabStop = False
         Me.GBTransaksi.Visible = False
@@ -1972,7 +1953,7 @@ Partial Class FormUtama
         'SplitTransaksi.Panel2
         '
         Me.SplitTransaksi.Panel2.Controls.Add(Me.DGVDetail)
-        Me.SplitTransaksi.Size = New System.Drawing.Size(1258, 500)
+        Me.SplitTransaksi.Size = New System.Drawing.Size(1258, 484)
         Me.SplitTransaksi.SplitterDistance = 880
         Me.SplitTransaksi.TabIndex = 200
         '
@@ -1982,7 +1963,7 @@ Partial Class FormUtama
         Me.Panel2.Dock = System.Windows.Forms.DockStyle.Fill
         Me.Panel2.Location = New System.Drawing.Point(0, 0)
         Me.Panel2.Name = "Panel2"
-        Me.Panel2.Size = New System.Drawing.Size(880, 500)
+        Me.Panel2.Size = New System.Drawing.Size(880, 484)
         Me.Panel2.TabIndex = 166
         '
         'DGVTransaksi
@@ -2013,7 +1994,7 @@ Partial Class FormUtama
         Me.DGVTransaksi.Name = "DGVTransaksi"
         Me.DGVTransaksi.ReadOnly = True
         Me.DGVTransaksi.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect
-        Me.DGVTransaksi.Size = New System.Drawing.Size(880, 500)
+        Me.DGVTransaksi.Size = New System.Drawing.Size(880, 484)
         Me.DGVTransaksi.TabIndex = 59
         '
         'DGVDetail
@@ -2042,7 +2023,7 @@ Partial Class FormUtama
         Me.DGVDetail.Margin = New System.Windows.Forms.Padding(3, 7, 3, 7)
         Me.DGVDetail.Name = "DGVDetail"
         Me.DGVDetail.ReadOnly = True
-        Me.DGVDetail.Size = New System.Drawing.Size(374, 500)
+        Me.DGVDetail.Size = New System.Drawing.Size(374, 484)
         Me.DGVDetail.TabIndex = 63
         '
         'Label2
@@ -2096,7 +2077,7 @@ Partial Class FormUtama
         Me.Panel1.Controls.Add(Me.BtnHapus)
         Me.Panel1.Controls.Add(Me.BtnTambah)
         Me.Panel1.Dock = System.Windows.Forms.DockStyle.Bottom
-        Me.Panel1.Location = New System.Drawing.Point(3, 539)
+        Me.Panel1.Location = New System.Drawing.Point(3, 523)
         Me.Panel1.Name = "Panel1"
         Me.Panel1.Size = New System.Drawing.Size(1258, 35)
         Me.Panel1.TabIndex = 60
@@ -2365,11 +2346,30 @@ Partial Class FormUtama
         Me.WbDashboard.Location = New System.Drawing.Point(1, 72)
         Me.WbDashboard.Name = "WbDashboard"
         Me.WbDashboard.ScriptErrorsSuppressed = True
-        Me.WbDashboard.BackColor = System.Drawing.Color.FromArgb(15, 23, 42)
         Me.WbDashboard.ScrollBarsEnabled = False
         Me.WbDashboard.Size = New System.Drawing.Size(1264, 577)
         Me.WbDashboard.TabIndex = 40
         Me.WbDashboard.WebBrowserShortcutsEnabled = False
+        '
+        'BtnSalesOrder
+        '
+        Me.BtnSalesOrder.BackColor = System.Drawing.Color.FromArgb(CType(CType(255, Byte), Integer), CType(CType(255, Byte), Integer), CType(CType(255, Byte), Integer))
+        Me.BtnSalesOrder.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(CType(CType(100, Byte), Integer), CType(CType(116, Byte), Integer), CType(CType(139, Byte), Integer))
+        Me.BtnSalesOrder.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(CType(CType(226, Byte), Integer), CType(CType(232, Byte), Integer), CType(CType(240, Byte), Integer))
+        Me.BtnSalesOrder.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(CType(CType(241, Byte), Integer), CType(CType(245, Byte), Integer), CType(CType(249, Byte), Integer))
+        Me.BtnSalesOrder.FlatStyle = System.Windows.Forms.FlatStyle.Flat
+        Me.BtnSalesOrder.Font = New System.Drawing.Font("Arial Narrow", 9.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.BtnSalesOrder.ForeColor = System.Drawing.Color.FromArgb(CType(CType(15, Byte), Integer), CType(CType(23, Byte), Integer), CType(CType(42, Byte), Integer))
+        Me.BtnSalesOrder.Image = CType(resources.GetObject("BtnSalesOrder.Image"), System.Drawing.Image)
+        Me.BtnSalesOrder.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft
+        Me.BtnSalesOrder.Location = New System.Drawing.Point(894, 5)
+        Me.BtnSalesOrder.Name = "BtnSalesOrder"
+        Me.BtnSalesOrder.Size = New System.Drawing.Size(82, 46)
+        Me.BtnSalesOrder.TabIndex = 12
+        Me.BtnSalesOrder.Text = "Sales Order"
+        Me.BtnSalesOrder.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
+        Me.BtnSalesOrder.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText
+        Me.BtnSalesOrder.UseVisualStyleBackColor = False
         '
         'FormUtama
         '
@@ -2400,7 +2400,6 @@ Partial Class FormUtama
         Me.MenuStrip1.ResumeLayout(False)
         Me.MenuStrip1.PerformLayout()
         Me.PanelMaster.ResumeLayout(False)
-        Me.PanelMaster.PerformLayout()
         Me.PanelTransaksi.ResumeLayout(False)
         Me.PanelTransaksi.PerformLayout()
         Me.GBTransaksi.ResumeLayout(False)
@@ -2628,6 +2627,7 @@ Partial Class FormUtama
     Friend WithEvents ProfiMarginToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents BtnBarangRakitan As Button
     Friend WithEvents LabaRugiBerjalanToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents BtnSalesOrder As Button
 End Class
 
 

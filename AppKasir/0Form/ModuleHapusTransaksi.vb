@@ -544,6 +544,78 @@ Module ModuleHapusTransaksi
 
 #End Region
 
+#Region "HAPUS SALES ORDER"
+
+    ''' <summary>
+    ''' Hapus satu faktur sales order secara permanen.
+    ''' Efek: Menambah stok kembali karena pesanan dibatalkan (membebaskan stok yang ditahan).
+    ''' </summary>
+    Public Sub HapusSalesOrder(ByVal faktur As String,
+                               ByVal lokasi As String,
+                               ByVal transaction As MySqlTransaction)
+
+        Dim updateStokField As String = If(lokasi = "GUDANG", "PENJUALAN_GUDANG", "PENJUALAN_TOKO")
+
+        ' 1. Baca detail sales order dari DB untuk pembalikan counter stok yang ditahan
+        Dim detailSO As New List(Of (IdBarang As String, QtySat As Decimal))
+        Using cmdDetail As New MySqlCommand(
+            "SELECT ID_BARANG, QTY_SATUAN FROM sales_order_detail WHERE FAKTUR_JUAL = @fk",
+            conn, transaction)
+            cmdDetail.Parameters.AddWithValue("@fk", faktur)
+            Using rd = cmdDetail.ExecuteReader()
+                While rd.Read()
+                    Dim qty As Decimal = ModuleAngka.ParseDecimal(rd("QTY_SATUAN"))
+                    If qty <= 0 Then Continue While
+                    detailSO.Add((rd("ID_BARANG").ToString(), qty))
+                End While
+            End Using
+        End Using
+
+        ' 2. Proses pembalikan counter stok per barang
+        Dim auditDGV As New Dictionary(Of String, Decimal)()
+        Dim auditDelta As New Dictionary(Of String, Decimal)()
+
+        For Each item In detailSO
+            If auditDGV.ContainsKey(item.IdBarang) Then auditDGV(item.IdBarang) += item.QtySat Else auditDGV(item.IdBarang) = item.QtySat
+
+            ' Kurangi counter PENJUALAN_x (karena stok dibebaskan kembali dari pesanan)
+            Using cmdCounter As New MySqlCommand(
+                $"UPDATE tbl_barang SET {updateStokField} = {updateStokField} - @qty WHERE ID_BARANG = @kode",
+                conn, transaction)
+                cmdCounter.Parameters.AddWithValue("@qty", item.QtySat)
+                cmdCounter.Parameters.AddWithValue("@kode", item.IdBarang)
+                cmdCounter.ExecuteNonQuery()
+            End Using
+
+            ' Hitung ulang stok fisik
+            Dim sebelum As Decimal = BacaStokSaatIni(item.IdBarang, lokasi, transaction)
+            HitungStokPerubahan(item.IdBarang, transaction)
+            Dim sesudah As Decimal = BacaStokSaatIni(item.IdBarang, lokasi, transaction)
+
+            ' Delta stok
+            Dim delta As Decimal = sesudah - sebelum
+            If auditDelta.ContainsKey(item.IdBarang) Then auditDelta(item.IdBarang) += delta Else auditDelta(item.IdBarang) = delta
+        Next
+
+        ' 3. Hapus data dari tabel terkait (Tidak ada Jurnal/Piutang di SO)
+        For Each query As String In {
+            "DELETE FROM sales_order WHERE ID_PENJUALAN = @fk",
+            "DELETE FROM sales_order_detail WHERE FAKTUR_JUAL = @fk",
+            "DELETE FROM HistoryBarang WHERE FAKTUR = @fk"
+        }
+            Using cmd As New MySqlCommand(query, conn, transaction)
+                cmd.Parameters.AddWithValue("@fk", faktur)
+                cmd.ExecuteNonQuery()
+            End Using
+        Next
+
+        ' 4. Audit stok transaksi (jika diaktifkan)
+        AuditStokTransaksi(faktur, "Hapus Sales Order", auditDGV, Nothing, Nothing, auditDelta, transaction)
+
+    End Sub
+
+#End Region
+
 #Region "HAPUS RETUR (BELI & JUAL)"
 
     ''' <summary>

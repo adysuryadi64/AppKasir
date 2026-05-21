@@ -109,7 +109,12 @@ Public Class FormCekUpdate
 
     Private Sub AutoUpdaterOnApplicationExitEvent()
         ' Karena ModuleVariabel.AplikasiSedangUpdate sudah True, FormUtama akan tertutup otomatis tanpa peringatan
-        Application.Exit()
+        ' Invoke ke UI thread agar Application.Exit() aman dipanggil dari thread manapun
+        If Me.InvokeRequired Then
+            Me.Invoke(Sub() Application.Exit())
+        Else
+            Application.Exit()
+        End If
     End Sub
 
     Private Sub AutoUpdaterOnCheckForUpdateEvent(args As UpdateInfoEventArgs)

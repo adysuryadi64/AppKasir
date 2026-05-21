@@ -1,4 +1,4 @@
-﻿Imports System.Drawing.Printing
+Imports System.Drawing.Printing
 
 ' ================================================================
 ' GdiCetakJualThermalMatrik
@@ -430,6 +430,11 @@ Public Class GdiCetakJualThermalMatrik
         TulisTengah(g, ALAMAT_PERUSAHAAN, FKet, y) : y += 10 + Jarak
         TulisTengah(g, KOTA_PERUSAHAAN, FKet, y) : y += 10 + Jarak
         TulisTengah(g, KONTAK_PERUSAHAAN, FKet, y) : y += 10 + Jarak
+        ' Tampilkan label jenis dokumen jika Sales Order
+        If Jual_JudulNota = "Nota Order" Then
+            y += 4 + Jarak
+            TulisTengah(g, "** NOTA PESANAN / SALES ORDER **", FKet, y) : y += 12 + Jarak
+        End If
         Return y
     End Function
 
@@ -447,14 +452,19 @@ Public Class GdiCetakJualThermalMatrik
                                          Optional labelSingkat As Boolean = False) As Integer
         Dim posNilai As Integer = PosNilaiKanan
         y += 15 + Jarak
-        Tulis(g, If(labelSingkat, "Nota Jual", "Nota Jual"), FKet, BatasKiri, y)
+        Tulis(g, Jual_JudulNota, FKet, BatasKiri, y)
         Tulis(g, ": " & Jual_NoFaktur, FKet, posNilai, y) : y += 10 + Jarak
         Tulis(g, If(labelSingkat, "Tgl", "Tanggal"), FKet, BatasKiri, y)
         Tulis(g, ": " & Jual_Tanggal.ToString("yyyy-MM-dd HH:mm:ss"), FKet, posNilai, y) : y += 10 + Jarak
         Tulis(g, "Kasir", FKet, BatasKiri, y)
         Tulis(g, ": " & Jual_IdUser & " - " & Jual_IdKomputer, FKet, posNilai, y) : y += 10 + Jarak
         Tulis(g, If(labelSingkat, "Pel", "Pelanggan"), FKet, BatasKiri, y)
-        Tulis(g, ": " & Jual_JenisPelanggan & " - " & Jual_NamaPelanggan, FKet, posNilai, y) : y += 14 + Jarak
+        Tulis(g, ": " & Jual_JenisPelanggan & " - " & Jual_NamaPelanggan, FKet, posNilai, y) : y += 10 + Jarak
+        If Not String.IsNullOrEmpty(Jual_NoSO) Then
+            Tulis(g, "Ref. SO", FKet, BatasKiri, y)
+            Tulis(g, ": " & Jual_NoSO, FKet, posNilai, y) : y += 10 + Jarak
+        End If
+        y += 4 + Jarak
         Tulis(g, GarisPemisah, FGaris, BatasKiri, y)
         Return y
     End Function
@@ -463,7 +473,7 @@ Public Class GdiCetakJualThermalMatrik
     Private Function CetakInfoTransaksiDenganSales(g As Graphics, y As Integer) As Integer
         Dim posNilai As Integer = PosNilaiKanan
         y += 15 + Jarak
-        Tulis(g, "Nota Jual", FKet, BatasKiri, y)
+        Tulis(g, Jual_JudulNota, FKet, BatasKiri, y)
         Tulis(g, ": " & Jual_NoFaktur, FKet, posNilai, y) : y += 10 + Jarak
         Tulis(g, "Tanggal", FKet, BatasKiri, y)
         Tulis(g, ": " & Jual_Tanggal.ToString("yyyy-MM-dd HH:mm:ss"), FKet, posNilai, y) : y += 10 + Jarak
@@ -478,6 +488,10 @@ Public Class GdiCetakJualThermalMatrik
         If Not String.IsNullOrEmpty(Jual_LokasiBarang) Then
             Tulis(g, "Lokasi", FKet, BatasKiri, y)
             Tulis(g, ": " & Jual_LokasiBarang, FKet, posNilai, y) : y += 10 + Jarak
+        End If
+        If Not String.IsNullOrEmpty(Jual_NoSO) Then
+            Tulis(g, "Ref. SO", FKet, BatasKiri, y)
+            Tulis(g, ": " & Jual_NoSO, FKet, posNilai, y) : y += 10 + Jarak
         End If
         y += 4 + Jarak
         Tulis(g, GarisPemisah, FGaris, BatasKiri, y)
@@ -594,25 +608,27 @@ Public Class GdiCetakJualThermalMatrik
             TulisKanan(g, Rp(Jual_Total), FIsi, m5, y)
         End If
 
-        y += 10 + Jarak
-        If Jual_NominalTransfer > 0 Then
-            If Jual_Bayar > 0 Then
-                TulisKanan(g, "Tunai (" & Jual_Penerima & ") :", FIsi, m3, y)
+        If Jual_JudulNota <> "Nota Order" Then
+            y += 10 + Jarak
+            If Jual_NominalTransfer > 0 Then
+                If Jual_Bayar > 0 Then
+                    TulisKanan(g, "Tunai (" & Jual_Penerima & ") :", FIsi, m3, y)
+                    TulisKanan(g, Rp(Jual_Bayar), FIsi, m5, y)
+                    y += 10 + Jarak
+                End If
+                TulisKanan(g, "Transfer (" & Jual_NamaAkunTransfer & ") :", FIsi, m3, y)
+                TulisKanan(g, Rp(Jual_NominalTransfer), FIsi, m5, y)
+            Else
+                TulisKanan(g, "Bayar :", FIsi, m3, y)
                 TulisKanan(g, Rp(Jual_Bayar), FIsi, m5, y)
-                y += 10 + Jarak
             End If
-            TulisKanan(g, "Transfer (" & Jual_NamaAkunTransfer & ") :", FIsi, m3, y)
-            TulisKanan(g, Rp(Jual_NominalTransfer), FIsi, m5, y)
-        Else
-            TulisKanan(g, "Bayar :", FIsi, m3, y)
-            TulisKanan(g, Rp(Jual_Bayar), FIsi, m5, y)
-        End If
 
-        y += 10 + Jarak
-        Tulis(g, GarisGanda, FGaris, m3, y)
-        y += 10 + Jarak
-        TulisKanan(g, Jual_LabelPembayaran, FIsi, m3, y)
-        TulisKanan(g, Rp(Jual_Kembali), FIsi, m5, y)
+            y += 10 + Jarak
+            Tulis(g, GarisGanda, FGaris, m3, y)
+            y += 10 + Jarak
+            TulisKanan(g, Jual_LabelPembayaran, FIsi, m3, y)
+            TulisKanan(g, Rp(Jual_Kembali), FIsi, m5, y)
+        End If
 
         If Jual_StatusTransaksi = "Belum Lunas" AndAlso Jual_AdaJatuhTempo Then
             y += 10 + Jarak
@@ -1138,16 +1154,18 @@ Public Class GdiCetakJualThermalMatrik
         End If
         totalBaris.Add(("Total :", Rp(Jual_Total)))
         ' Jika split bayar: Tunai + Transfer langsung (tanpa baris Bayar)
-        If Jual_NominalTransfer > 0 Then
-            If Jual_Bayar > 0 Then
-                totalBaris.Add(("Tunai (" & Jual_Penerima & ")
+        If Jual_JudulNota <> "Nota Order" Then
+            If Jual_NominalTransfer > 0 Then
+                If Jual_Bayar > 0 Then
+                    totalBaris.Add(("Tunai (" & Jual_Penerima & ")
                 ", Rp(Jual_Bayar)))
+                End If
+                totalBaris.Add(("Transfer (" & Jual_NamaAkunTransfer & ") :", Rp(Jual_NominalTransfer)))
+            Else
+                totalBaris.Add(("Bayar :", Rp(Jual_Bayar)))
             End If
-            totalBaris.Add(("Transfer (" & Jual_NamaAkunTransfer & ") :", Rp(Jual_NominalTransfer)))
-        Else
-            totalBaris.Add(("Bayar :", Rp(Jual_Bayar)))
+            totalBaris.Add((Jual_LabelPembayaran, Rp(Jual_Kembali)))
         End If
-        totalBaris.Add((Jual_LabelPembayaran, Rp(Jual_Kembali)))
         If Jual_StatusTransaksi = "Belum Lunas" AndAlso Not String.IsNullOrEmpty(Jual_JatuhTempo) Then
             totalBaris.Add(("Jatuh Tempo :", Jual_JatuhTempo))
         End If

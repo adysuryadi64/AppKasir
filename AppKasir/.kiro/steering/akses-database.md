@@ -6,7 +6,7 @@
 |---|---|
 | Executable | `MySQL\mysql.exe` (relatif dari root proyek) |
 | Password | `12345678` |
-| DB Development | `db_kasirlancar` |
+| DB Development | `db_moroseneng` |
 | DB Produksi | `db_rejeki` |
 
 ---
@@ -15,13 +15,13 @@
 
 ```powershell
 # Lihat struktur tabel
-.\MySQL\mysql.exe -u root -p12345678 db_kasirlancar -e "DESCRIBE nama_tabel"
+.\MySQL\mysql.exe -u root -p12345678 db_moroseneng -e "DESCRIBE nama_tabel"
 
 # Lihat semua tabel
-.\MySQL\mysql.exe -u root -p12345678 db_kasirlancar -e "SHOW TABLES"
+.\MySQL\mysql.exe -u root -p12345678 db_moroseneng -e "SHOW TABLES"
 
 # Query data
-.\MySQL\mysql.exe -u root -p12345678 db_kasirlancar -e "SELECT * FROM nama_tabel"
+.\MySQL\mysql.exe -u root -p12345678 db_moroseneng -e "SELECT * FROM nama_tabel"
 
 # Bandingkan data produksi
 .\MySQL\mysql.exe -u root -p12345678 db_rejeki -e "SELECT * FROM nama_tabel"
@@ -56,11 +56,11 @@ Sebelum menulis kode yang menyentuh tabel/kolom, **wajib verifikasi** ke databas
 
 ---
 
-## Kapan Pakai `db_kasirlancar` vs `db_rejeki`
+## Kapan Pakai `db_moroseneng` vs `db_rejeki`
 
 | Database | Kapan Dipakai |
 |---|---|
-| `db_kasirlancar` | Development — untuk cek struktur tabel, test query, verifikasi nama kolom |
+| `db_moroseneng` | Development — untuk cek struktur tabel, test query, verifikasi nama kolom |
 | `db_rejeki` | Produksi — untuk verifikasi data nyata, nilai enum, format data aktual |
 
 Jika ada perbedaan antara keduanya → **laporkan ke user**.
@@ -71,13 +71,13 @@ Jika ada perbedaan antara keduanya → **laporkan ke user**.
 
 ```powershell
 # Cek struktur tabel barang
-.\MySQL\mysql.exe -u root -p12345678 db_kasirlancar -e "DESCRIBE tbl_barang"
+.\MySQL\mysql.exe -u root -p12345678 db_moroseneng -e "DESCRIBE tbl_barang"
 
 # Cek nilai enum STATUS yang valid
-.\MySQL\mysql.exe -u root -p12345678 db_kasirlancar -e "SELECT DISTINCT STATUS FROM tbl_barang LIMIT 10"
+.\MySQL\mysql.exe -u root -p12345678 db_moroseneng -e "SELECT DISTINCT STATUS FROM tbl_barang LIMIT 10"
 
 # Cek nama kolom tabel penjualan
-.\MySQL\mysql.exe -u root -p12345678 db_kasirlancar -e "SHOW COLUMNS FROM penjualan"
+.\MySQL\mysql.exe -u root -p12345678 db_moroseneng -e "SHOW COLUMNS FROM penjualan"
 
 # Bandingkan data produksi untuk verifikasi
 .\MySQL\mysql.exe -u root -p12345678 db_rejeki -e "SELECT ID_PENJUALAN, TOTAL FROM penjualan ORDER BY ID_PENJUALAN DESC LIMIT 5"

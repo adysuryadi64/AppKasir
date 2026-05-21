@@ -4047,7 +4047,7 @@ Public Class FormPembelian
                         LakukanCetakPembelian(TxtIdPembelian.Text)
                     End If
                 Case "TAMPILKAN DI MONITOR"
-                    LakukanCetakPembelian(TxtIdPembelian.Text)
+                    ModulePrinterBeli.CetakPembelian(TxtIdPembelian.Text, "Tampilkan di Monitor")
             End Select
         Catch ex As Exception
             Debug.WriteLine("[ERROR] Cetak pembelian: " & ex.Message)

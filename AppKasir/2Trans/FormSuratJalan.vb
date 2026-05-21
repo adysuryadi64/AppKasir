@@ -47,6 +47,7 @@ Public Class FormSuratJalan
 
         DGVSuratJalan.DataSource = Nothing
         DGVSuratJalan.Rows.Clear()
+
         DGVPenjualan.DataSource = Nothing
         DGVPenjualan.Rows.Clear()
         GenerateNomorSuratJalan()
@@ -57,30 +58,33 @@ Public Class FormSuratJalan
         ' Bersihkan DataGridView sebelum mengisi data
         DGVSuratJalan.Rows.Clear()
 
-        ' Query untuk mengambil data berdasarkan NOTA
-        Dim query As String = "SELECT NOTA_BELANJA, KODE_PELANGGAN, NAMA_PELANGGAN, ALAMAT_PELANGGAN, TANGGAL_BELANJA, NILAI_BELANJA, LOKASI FROM surat_jalan_detail WHERE NOTA = @Nota"
+        ' Query untuk mengambil data berdasarkan NOTA — sertakan kolom SUMBER
+        Dim query As String = "SELECT NOTA_BELANJA, KODE_PELANGGAN, NAMA_PELANGGAN, ALAMAT_PELANGGAN, " &
+                              "TANGGAL_BELANJA, NILAI_BELANJA, LOKASI, " &
+                              "COALESCE(SUMBER, 'Jual') AS SUMBER " &
+                              "FROM surat_jalan_detail WHERE NOTA = @Nota"
 
         Try
             Using cmd As New MySqlCommand(query, conn)
-                ' Parameter untuk NOTA
                 cmd.Parameters.AddWithValue("@Nota", nota)
-
                 Using rd As MySqlDataReader = cmd.ExecuteReader()
-                    ' Periksa apakah ada data yang ditemukan
-                    If rd.HasRows Then
-                        While rd.Read()
-                            ' Tambahkan baris ke DataGridView
-                            DGVSuratJalan.Rows.Add(
+                    While rd.Read()
+                        Dim rowIdx As Integer = DGVSuratJalan.Rows.Add(
                             rd("NOTA_BELANJA").ToString(),
                             rd("KODE_PELANGGAN").ToString(),
                             rd("NAMA_PELANGGAN").ToString(),
                             rd("ALAMAT_PELANGGAN").ToString(),
                             Convert.ToDateTime(rd("TANGGAL_BELANJA")).ToString("yyyy-MM-dd HH:mm:ss"),
                             ModuleAngka.ParseDecimal(rd("NILAI_BELANJA")).ToString("N2"),
-                            rd("LOKASI").ToString()
-                        )
-                        End While
-                    End If
+                            rd("LOKASI").ToString())
+                        DGVSuratJalan.Rows(rowIdx).Cells("SUMBER_TRANS").Value = rd("SUMBER").ToString()
+
+                        ' Warna baris SO
+                        If rd("SUMBER").ToString() = "SO" Then
+                            DGVSuratJalan.Rows(rowIdx).DefaultCellStyle.BackColor = Color.FromArgb(255, 243, 205)
+                            DGVSuratJalan.Rows(rowIdx).DefaultCellStyle.ForeColor = Color.FromArgb(120, 80, 0)
+                        End If
+                    End While
                 End Using
             End Using
             HitungTotalDataDanRupiah()
@@ -197,72 +201,76 @@ Public Class FormSuratJalan
     Private Sub AmbildataPenjualan()
         Dim tanggalAwal As Date = DtpPenjualan.Value.Date
         Dim tanggalAkhir As Date = DtpPenjualan.Value.Date.AddDays(1).AddTicks(-1)
-        Dim query As String = "SELECT ID_PENJUALAN, ID_PELANGGAN, NAMA_PELANGGAN, ALAMAT_PELANGGAN, TGL_TRANSAKSI, GRAND_TOTAL_STL_PAJAK, LOKASIBARANG FROM penjualan WHERE TGL_TRANSAKSI BETWEEN @tanggalAwal AND @tanggalAkhir ORDER BY ID_PENJUALAN"
+
+        ' Gabungkan penjualan dan sales_order aktif dalam satu query UNION
+        ' Kolom SUMBER membedakan asal data: "Jual" atau "SO"
+        Dim query As String =
+            "SELECT ID_PENJUALAN, ID_PELANGGAN, NAMA_PELANGGAN, ALAMAT_PELANGGAN, " &
+            "       TGL_TRANSAKSI, GRAND_TOTAL_STL_PAJAK, LOKASIBARANG, 'Jual' AS SUMBER " &
+            "FROM penjualan " &
+            "WHERE TGL_TRANSAKSI BETWEEN @tanggalAwal AND @tanggalAkhir " &
+            "UNION ALL " &
+            "SELECT ID_PENJUALAN, ID_PELANGGAN, NAMA_PELANGGAN, ALAMAT_PELANGGAN, " &
+            "       TGL_TRANSAKSI, GRAND_TOTAL_STL_PAJAK, LOKASIBARANG, 'SO' AS SUMBER " &
+            "FROM sales_order " &
+            "WHERE TGL_TRANSAKSI BETWEEN @tanggalAwal AND @tanggalAkhir " &
+            "  AND STATUS_TRANSAKSI = 'Aktif' " &
+            "ORDER BY TGL_TRANSAKSI, ID_PENJUALAN"
+
+        ' Kolom SUMBER sudah ada di designer DGVPenjualan
 
         Using cmd As New MySqlCommand(query, conn)
             cmd.Parameters.AddWithValue("@tanggalAwal", tanggalAwal.ToString("yyyy-MM-dd HH:mm:ss"))
             cmd.Parameters.AddWithValue("@tanggalAkhir", tanggalAkhir.ToString("yyyy-MM-dd HH:mm:ss"))
 
+            DGVPenjualan.SuspendLayout()
+            DGVPenjualan.Rows.Clear()
+
             Using rd As MySqlDataReader = cmd.ExecuteReader()
-                If rd.HasRows Then
-                    DGVPenjualan.SuspendLayout() ' Suspend layout untuk meningkatkan kinerja
+                While rd.Read()
+                    Dim rowIdx As Integer = DGVPenjualan.Rows.Add(
+                        False,
+                        rd("ID_PENJUALAN"),
+                        rd("ID_PELANGGAN"),
+                        rd("NAMA_PELANGGAN"),
+                        rd("ALAMAT_PELANGGAN"),
+                        rd("TGL_TRANSAKSI"),
+                        rd("GRAND_TOTAL_STL_PAJAK"),
+                        rd("LOKASIBARANG"))
+                    DGVPenjualan.Rows(rowIdx).Cells("SUMBER").Value = rd("SUMBER").ToString()
 
-                    DGVPenjualan.Rows.Clear()
-
-                    Do While rd.Read()
-                        DGVPenjualan.Rows.Add(False, rd("ID_PENJUALAN"), rd("ID_PELANGGAN"), rd("NAMA_PELANGGAN"), rd("ALAMAT_PELANGGAN"), rd("TGL_TRANSAKSI"), rd("GRAND_TOTAL_STL_PAJAK"), rd("LOKASIBARANG"))
-                    Loop
-
-                    DGVPenjualan.ResumeLayout() ' Lanjutkan layout setelah menambahkan baris
-                Else
-                    DGVPenjualan.Rows.Clear()
-                End If
+                    ' Warna baris SO berbeda agar mudah dibedakan
+                    If rd("SUMBER").ToString() = "SO" Then
+                        DGVPenjualan.Rows(rowIdx).DefaultCellStyle.BackColor = Color.FromArgb(255, 243, 205) ' kuning muda
+                        DGVPenjualan.Rows(rowIdx).DefaultCellStyle.ForeColor = Color.FromArgb(120, 80, 0)
+                    End If
+                End While
             End Using
+
+            DGVPenjualan.ResumeLayout()
         End Using
 
         ' Pengaturan tampilan DataGridView
         With DGVPenjualan
-            ' Pengaturan umum DataGridView
             .AllowUserToAddRows = False
             .AllowUserToDeleteRows = False
             .AllowUserToOrderColumns = False
             .AllowUserToResizeColumns = False
             .AllowUserToResizeRows = False
 
-            ' Menambahkan kolom checkbox jika belum ada
-            If .Columns.Count = 0 Then
-                Dim chk As New DataGridViewCheckBoxColumn() With {
-                .HeaderText = "",
-                .Name = "chk",
-                .Width = 30
-            }
-                .Columns.Add(chk)
-
-                .Columns.Add("ID_PENJUALAN", "NO NOTA")
-                .Columns.Add("ID_PELANGGAN", "ID PELANGGAN")
-                .Columns.Add("NAMA_PELANGGAN", "PELANGGAN")
-                .Columns.Add("ALAMAT_PELANGGAN", "ALAMAT")
-                .Columns.Add("TGL_TRANSAKSI", "TANGGAL JUAL")
-                .Columns.Add("GRAND_TOTAL_STL_PAJAK", "NOMINAL")
-                .Columns.Add("LOKASIBARANG", "LOKASI")
-            End If
-
-
-            ' Pengaturan format dan visibilitas kolom
             .Columns("ID_PELANGGAN").Visible = False
             .Columns("TGL_TRANSAKSI").DefaultCellStyle.Format = "dd/MM/yyyy"
-
-            ' Mengubah nama header kolom
             .Columns("ID_PENJUALAN").HeaderText = "NO NOTA"
             .Columns("NAMA_PELANGGAN").HeaderText = "PELANGGAN"
             .Columns("ALAMAT_PELANGGAN").HeaderText = "ALAMAT"
-            .Columns("TGL_TRANSAKSI").HeaderText = "TANGGAL JUAL"
+            .Columns("TGL_TRANSAKSI").HeaderText = "TANGGAL"
             .Columns("GRAND_TOTAL_STL_PAJAK").HeaderText = "NOMINAL"
             .Columns("LOKASIBARANG").HeaderText = "LOKASI"
+            .Columns("SUMBER").HeaderText = "Sumber"
             .ClearSelection()
         End With
-        ModuleAngka.TerapkanFormatKolomAngka(DGVPenjualan, "GRAND_TOTAL_STL_PAJAK")
 
+        ModuleAngka.TerapkanFormatKolomAngka(DGVPenjualan, "GRAND_TOTAL_STL_PAJAK")
     End Sub
 
 
@@ -283,7 +291,27 @@ Public Class FormSuratJalan
 
             ' Check if the checkbox is checked and the data is not already present in DGVSuratJalan
             If Convert.ToBoolean(chk.Value) AndAlso Not DataExistsInDGVSuratJalan(row.Cells("ID_PENJUALAN").Value) Then
-                DGVSuratJalan.Rows.Add(row.Cells("ID_PENJUALAN").Value, row.Cells("ID_PELANGGAN").Value, row.Cells("NAMA_PELANGGAN").Value, row.Cells("ALAMAT_PELANGGAN").Value, Convert.ToDateTime(row.Cells("TGL_TRANSAKSI").Value).ToString("yyyy-MM-dd HH:mm:ss"), row.Cells("GRAND_TOTAL_STL_PAJAK").Value, row.Cells("LOKASIBARANG").Value)
+                Dim sumber As String = If(DGVPenjualan.Columns.Contains("SUMBER") AndAlso row.Cells("SUMBER").Value IsNot Nothing,
+                                          row.Cells("SUMBER").Value.ToString(), "Jual")
+                Dim rowIdx As Integer = DGVSuratJalan.Rows.Add(
+                    row.Cells("ID_PENJUALAN").Value,
+                    row.Cells("ID_PELANGGAN").Value,
+                    row.Cells("NAMA_PELANGGAN").Value,
+                    row.Cells("ALAMAT_PELANGGAN").Value,
+                    Convert.ToDateTime(row.Cells("TGL_TRANSAKSI").Value).ToString("yyyy-MM-dd HH:mm:ss"),
+                    row.Cells("GRAND_TOTAL_STL_PAJAK").Value,
+                    row.Cells("LOKASIBARANG").Value)
+
+                ' Isi kolom Sumber jika ada
+                If DGVSuratJalan.Columns.Contains("SUMBER_TRANS") Then
+                    DGVSuratJalan.Rows(rowIdx).Cells("SUMBER_TRANS").Value = sumber
+                End If
+
+                ' Warna baris SO
+                If sumber = "SO" Then
+                    DGVSuratJalan.Rows(rowIdx).DefaultCellStyle.BackColor = Color.FromArgb(255, 243, 205)
+                    DGVSuratJalan.Rows(rowIdx).DefaultCellStyle.ForeColor = Color.FromArgb(120, 80, 0)
+                End If
             End If
         Next
         DGVSuratJalan.ClearSelection()
@@ -572,11 +600,20 @@ Public Class FormSuratJalan
     End Sub
 
     Private Sub SimpanSuratJalanDetail(ByVal transaction As MySqlTransaction)
-        ' Simpan data rincian barang dari gridview ke tbl_rinci_BELI
+        ' Simpan data rincian dari DGVSuratJalan ke surat_jalan_detail
         For Each row As DataGridViewRow In DGVSuratJalan.Rows
             If Not row.IsNewRow AndAlso row.Cells("NOTA").Value IsNot Nothing AndAlso row.Cells("NOTA").Value.ToString() <> "" Then
-                Dim sqlrinci As String = "INSERT INTO Surat_Jalan_Detail (NOTA, TANGGAL_KIRIM, LOKASISIMPAN, NOTA_BELANJA, KODE_PELANGGAN, NAMA_PELANGGAN, ALAMAT_PELANGGAN, TANGGAL_BELANJA, NILAI_BELANJA, LOKASI, ID_USER, ID_KOMPUTER) " &
-                                         "VALUES (@NOTA, @TANGGAL_KIRIM, @LOKASISIMPAN, @NOTA_BELANJA, @KODE_PELANGGAN, @NAMA_PELANGGAN, @ALAMAT_PELANGGAN, @TANGGAL_BELANJA, @NILAI_BELANJA, @LOKASI, @ID_USER, @ID_KOMPUTER)"
+                Dim sumber As String = "Jual"
+                If DGVSuratJalan.Columns.Contains("SUMBER_TRANS") AndAlso row.Cells("SUMBER_TRANS").Value IsNot Nothing Then
+                    sumber = row.Cells("SUMBER_TRANS").Value.ToString()
+                End If
+
+                Dim sqlrinci As String = "INSERT INTO Surat_Jalan_Detail " &
+                    "(NOTA, TANGGAL_KIRIM, LOKASISIMPAN, NOTA_BELANJA, KODE_PELANGGAN, NAMA_PELANGGAN, " &
+                    "ALAMAT_PELANGGAN, TANGGAL_BELANJA, NILAI_BELANJA, LOKASI, SUMBER, ID_USER, ID_KOMPUTER) " &
+                    "VALUES (@NOTA, @TANGGAL_KIRIM, @LOKASISIMPAN, @NOTA_BELANJA, @KODE_PELANGGAN, @NAMA_PELANGGAN, " &
+                    "@ALAMAT_PELANGGAN, @TANGGAL_BELANJA, @NILAI_BELANJA, @LOKASI, @SUMBER, @ID_USER, @ID_KOMPUTER)"
+
                 Using cmd As New MySqlCommand(sqlrinci, conn, transaction)
                     cmd.Parameters.AddWithValue("@NOTA", LblNoNota.Text)
                     cmd.Parameters.AddWithValue("@TANGGAL_KIRIM", DtpSuratJalan.Value.ToString("yyyy-MM-dd HH:mm:ss"))
@@ -588,6 +625,7 @@ Public Class FormSuratJalan
                     cmd.Parameters.AddWithValue("@TANGGAL_BELANJA", Convert.ToDateTime(row.Cells("Tanggal").Value).ToString("yyyy-MM-dd HH:mm:ss"))
                     cmd.Parameters.AddWithValue("@NILAI_BELANJA", Convert.ToDecimal(row.Cells("Nominal").Value))
                     cmd.Parameters.AddWithValue("@LOKASI", row.Cells("Lokasi").Value.ToString())
+                    cmd.Parameters.AddWithValue("@SUMBER", sumber)
                     cmd.Parameters.AddWithValue("@ID_USER", FormUtama.StatusNamaUser.Text)
                     cmd.Parameters.AddWithValue("@ID_KOMPUTER", FormUtama.StatusNamaPC.Text)
                     cmd.ExecuteNonQuery()

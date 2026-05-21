@@ -29,8 +29,106 @@ Imports System.Runtime.InteropServices
 
 ' Versi di-generate otomatis saat build via Pre-build Event
 ' Format: 15.YYYY.M.D[.Rev] — jangan ubah manual
-<Assembly: AssemblyVersion("15.2026.521.16")>
-<Assembly: AssemblyFileVersion("15.2026.521.16")>
+<Assembly: AssemblyVersion("15.2026.522.6")>
+<Assembly: AssemblyFileVersion("15.2026.522.6")>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

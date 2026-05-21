@@ -323,8 +323,10 @@ Public Class FormLoading
             {"Surat Jalan", FormUtama.BtnSuratJalan},
             {"Transfer Cabang", FormUtama.BtnKirimCabang},
             {"Cabang", FormUtama.BtnKirimCabang},
-            {"Cabang Master", FormUtama.BtnMasterCabang}
-        }
+            {"Cabang Master", FormUtama.BtnMasterCabang},
+            {"Sales Order", FormUtama.BtnSalesOrder},
+            {"Pembayaran Sales Order", FormUtama.BtnSalesOrder}
+            }
 
         For Each moduleName As String In controls.Keys
             controls(moduleName).Visible = ModulHakAkses.BacaHakAksesDariCache(moduleName)(0)

@@ -1,4 +1,4 @@
-﻿Imports System.Drawing.Printing
+Imports System.Drawing.Printing
 
 ' ================================================================
 ' ModuleCetakJualInkjet
@@ -320,28 +320,30 @@ Module ModuleCetakJualInkjet
 
         ' Jika split bayar: tampilkan Tunai + Transfer langsung (tanpa baris Bayar)
         ' Jika tidak ada transfer: tampilkan Bayar seperti biasa
-        If Jual_NominalTransfer > 0 Then
-            If Jual_Bayar > 0 Then
-                TulisLbl("Tunai (" & Jual_Penerima & ") :", fIsi, Brushes.Black, y)
-                g.DrawString(Jual_Bayar.ToString("N0", cultureIndonesia),
+        If Jual_JudulNota <> "Nota Order" Then
+            If Jual_NominalTransfer > 0 Then
+                If Jual_Bayar > 0 Then
+                    TulisLbl("Tunai (" & Jual_Penerima & ") :", fIsi, Brushes.Black, y)
+                    g.DrawString(Jual_Bayar.ToString("N0", cultureIndonesia),
+                                 fIsi, Brushes.Black, xVal, y, fmtKanan)
+                    y += lh
+                End If
+                TulisLbl("Transfer (" & Jual_NamaAkunTransfer & ") :", fIsi, Brushes.Black, y)
+                g.DrawString(Jual_NominalTransfer.ToString("N0", cultureIndonesia),
                              fIsi, Brushes.Black, xVal, y, fmtKanan)
                 y += lh
+            Else
+                TulisLbl("Bayar :", fIsi, Brushes.Black, y)
+                g.DrawString(Jual_Bayar.ToString("N0", cultureIndonesia), fIsi, Brushes.Black, xVal, y, fmtKanan)
+                y += lh
             End If
-            TulisLbl("Transfer (" & Jual_NamaAkunTransfer & ") :", fIsi, Brushes.Black, y)
-            g.DrawString(Jual_NominalTransfer.ToString("N0", cultureIndonesia),
-                         fIsi, Brushes.Black, xVal, y, fmtKanan)
-            y += lh
-        Else
-            TulisLbl("Bayar :", fIsi, Brushes.Black, y)
-            g.DrawString(Jual_Bayar.ToString("N0", cultureIndonesia), fIsi, Brushes.Black, xVal, y, fmtKanan)
+
+            g.DrawLine(New Pen(Color.Black, 2), xLbl, y, xVal, y) : y += 4
+
+            TulisLbl(Jual_LabelPembayaran, fBold, Brushes.Black, y)
+            g.DrawString(Jual_Kembali.ToString("N0", cultureIndonesia), fBold, Brushes.Black, xVal, y, fmtKanan)
             y += lh
         End If
-
-        g.DrawLine(New Pen(Color.Black, 2), xLbl, y, xVal, y) : y += 4
-
-        TulisLbl(Jual_LabelPembayaran, fBold, Brushes.Black, y)
-        g.DrawString(Jual_Kembali.ToString("N0", cultureIndonesia), fBold, Brushes.Black, xVal, y, fmtKanan)
-        y += lh
 
         If Jual_StatusTransaksi = "Belum Lunas" AndAlso Jual_AdaJatuhTempo Then
             TulisLbl("Jatuh Tempo :", fIsi, Brushes.Black, y)

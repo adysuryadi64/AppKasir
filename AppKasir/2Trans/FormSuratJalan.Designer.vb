@@ -58,6 +58,14 @@ Partial Class FormSuratJalan
         Me.DtpPenjualan = New System.Windows.Forms.DateTimePicker()
         Me.Label18 = New System.Windows.Forms.Label()
         Me.DGVPenjualan = New System.Windows.Forms.DataGridView()
+        Me.DGVSuratJalan = New System.Windows.Forms.DataGridView()
+        Me.PanelInput2 = New System.Windows.Forms.Panel()
+        Me.BtnSimpann = New System.Windows.Forms.Button()
+        Me.TxtTotalPelanggan = New System.Windows.Forms.TextBox()
+        Me.Label1 = New System.Windows.Forms.Label()
+        Me.Label7 = New System.Windows.Forms.Label()
+        Me.TxtTotalRupiah = New System.Windows.Forms.TextBox()
+        Me.Panel1 = New System.Windows.Forms.Panel()
         Me.chk = New System.Windows.Forms.DataGridViewCheckBoxColumn()
         Me.ID_PENJUALAN = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.ID_PELANGGAN = New System.Windows.Forms.DataGridViewTextBoxColumn()
@@ -66,7 +74,8 @@ Partial Class FormSuratJalan
         Me.TGL_TRANSAKSI = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.GRAND_TOTAL_STL_PAJAK = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.LOKASIBARANG = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.DGVSuratJalan = New System.Windows.Forms.DataGridView()
+        Me.SUMBER = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.SUMBER_TRANS = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.Nota = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.Kode = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.Pelanggan = New System.Windows.Forms.DataGridViewTextBoxColumn()
@@ -75,13 +84,6 @@ Partial Class FormSuratJalan
         Me.Nominal = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.Lokasi = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.btnHapus = New System.Windows.Forms.DataGridViewButtonColumn()
-        Me.PanelInput2 = New System.Windows.Forms.Panel()
-        Me.BtnSimpann = New System.Windows.Forms.Button()
-        Me.TxtTotalPelanggan = New System.Windows.Forms.TextBox()
-        Me.Label1 = New System.Windows.Forms.Label()
-        Me.Label7 = New System.Windows.Forms.Label()
-        Me.TxtTotalRupiah = New System.Windows.Forms.TextBox()
-        Me.Panel1 = New System.Windows.Forms.Panel()
         Me.PanelNota.SuspendLayout()
         Me.PanelHeader.SuspendLayout()
         Me.PanelInput.SuspendLayout()
@@ -509,7 +511,7 @@ Partial Class FormSuratJalan
         DataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.[True]
         Me.DGVPenjualan.ColumnHeadersDefaultCellStyle = DataGridViewCellStyle1
         Me.DGVPenjualan.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
-        Me.DGVPenjualan.Columns.AddRange(New System.Windows.Forms.DataGridViewColumn() {Me.chk, Me.ID_PENJUALAN, Me.ID_PELANGGAN, Me.NAMA_PELANGGAN, Me.ALAMAT_PELANGGAN, Me.TGL_TRANSAKSI, Me.GRAND_TOTAL_STL_PAJAK, Me.LOKASIBARANG})
+        Me.DGVPenjualan.Columns.AddRange(New System.Windows.Forms.DataGridViewColumn() {Me.chk, Me.ID_PENJUALAN, Me.ID_PELANGGAN, Me.NAMA_PELANGGAN, Me.ALAMAT_PELANGGAN, Me.TGL_TRANSAKSI, Me.GRAND_TOTAL_STL_PAJAK, Me.LOKASIBARANG, Me.SUMBER})
         DataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft
         DataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Window
         DataGridViewCellStyle2.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
@@ -526,60 +528,6 @@ Partial Class FormSuratJalan
         Me.DGVPenjualan.Size = New System.Drawing.Size(861, 395)
         Me.DGVPenjualan.TabIndex = 2
         '
-        'chk
-        '
-        Me.chk.FillWeight = 30.0!
-        Me.chk.HeaderText = "Pilih"
-        Me.chk.Name = "chk"
-        '
-        'ID_PENJUALAN
-        '
-        Me.ID_PENJUALAN.HeaderText = "Nota"
-        Me.ID_PENJUALAN.Name = "ID_PENJUALAN"
-        Me.ID_PENJUALAN.Resizable = System.Windows.Forms.DataGridViewTriState.[True]
-        Me.ID_PENJUALAN.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable
-        '
-        'ID_PELANGGAN
-        '
-        Me.ID_PELANGGAN.HeaderText = "Kode"
-        Me.ID_PELANGGAN.Name = "ID_PELANGGAN"
-        '
-        'NAMA_PELANGGAN
-        '
-        Me.NAMA_PELANGGAN.FillWeight = 150.0!
-        Me.NAMA_PELANGGAN.HeaderText = "Pelanggan"
-        Me.NAMA_PELANGGAN.Name = "NAMA_PELANGGAN"
-        Me.NAMA_PELANGGAN.Resizable = System.Windows.Forms.DataGridViewTriState.[True]
-        Me.NAMA_PELANGGAN.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable
-        '
-        'ALAMAT_PELANGGAN
-        '
-        Me.ALAMAT_PELANGGAN.HeaderText = "Alamat"
-        Me.ALAMAT_PELANGGAN.Name = "ALAMAT_PELANGGAN"
-        '
-        'TGL_TRANSAKSI
-        '
-        Me.TGL_TRANSAKSI.HeaderText = "Tanggal"
-        Me.TGL_TRANSAKSI.Name = "TGL_TRANSAKSI"
-        Me.TGL_TRANSAKSI.Resizable = System.Windows.Forms.DataGridViewTriState.[True]
-        Me.TGL_TRANSAKSI.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable
-        '
-        'GRAND_TOTAL_STL_PAJAK
-        '
-        Me.GRAND_TOTAL_STL_PAJAK.FillWeight = 80.0!
-        Me.GRAND_TOTAL_STL_PAJAK.HeaderText = "Nominal"
-        Me.GRAND_TOTAL_STL_PAJAK.Name = "GRAND_TOTAL_STL_PAJAK"
-        Me.GRAND_TOTAL_STL_PAJAK.Resizable = System.Windows.Forms.DataGridViewTriState.[True]
-        Me.GRAND_TOTAL_STL_PAJAK.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable
-        '
-        'LOKASIBARANG
-        '
-        Me.LOKASIBARANG.FillWeight = 80.0!
-        Me.LOKASIBARANG.HeaderText = "Lokasi"
-        Me.LOKASIBARANG.Name = "LOKASIBARANG"
-        Me.LOKASIBARANG.Resizable = System.Windows.Forms.DataGridViewTriState.[True]
-        Me.LOKASIBARANG.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable
-        '
         'DGVSuratJalan
         '
         Me.DGVSuratJalan.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill
@@ -589,7 +537,7 @@ Partial Class FormSuratJalan
         DataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.[True]
         Me.DGVSuratJalan.ColumnHeadersDefaultCellStyle = DataGridViewCellStyle3
         Me.DGVSuratJalan.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
-        Me.DGVSuratJalan.Columns.AddRange(New System.Windows.Forms.DataGridViewColumn() {Me.Nota, Me.Kode, Me.Pelanggan, Me.Alamat, Me.Tanggal, Me.Nominal, Me.Lokasi, Me.btnHapus})
+        Me.DGVSuratJalan.Columns.AddRange(New System.Windows.Forms.DataGridViewColumn() {Me.SUMBER_TRANS, Me.Nota, Me.Kode, Me.Pelanggan, Me.Alamat, Me.Tanggal, Me.Nominal, Me.Lokasi, Me.btnHapus})
         DataGridViewCellStyle5.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft
         DataGridViewCellStyle5.BackColor = System.Drawing.SystemColors.Window
         DataGridViewCellStyle5.Font = New System.Drawing.Font("Century Gothic", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
@@ -605,53 +553,6 @@ Partial Class FormSuratJalan
         Me.DGVSuratJalan.RowHeadersVisible = False
         Me.DGVSuratJalan.Size = New System.Drawing.Size(1141, 400)
         Me.DGVSuratJalan.TabIndex = 234
-        '
-        'Nota
-        '
-        Me.Nota.HeaderText = "Nota"
-        Me.Nota.Name = "Nota"
-        '
-        'Kode
-        '
-        Me.Kode.HeaderText = "Kode"
-        Me.Kode.Name = "Kode"
-        '
-        'Pelanggan
-        '
-        Me.Pelanggan.HeaderText = "Pelanggan"
-        Me.Pelanggan.Name = "Pelanggan"
-        '
-        'Alamat
-        '
-        Me.Alamat.HeaderText = "Alamat"
-        Me.Alamat.Name = "Alamat"
-        '
-        'Tanggal
-        '
-        Me.Tanggal.HeaderText = "Tanggal"
-        Me.Tanggal.Name = "Tanggal"
-        '
-        'Nominal
-        '
-        DataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight
-        DataGridViewCellStyle4.Format = "N2"
-        DataGridViewCellStyle4.NullValue = Nothing
-        Me.Nominal.DefaultCellStyle = DataGridViewCellStyle4
-        Me.Nominal.HeaderText = "Nominal"
-        Me.Nominal.Name = "Nominal"
-        '
-        'Lokasi
-        '
-        Me.Lokasi.HeaderText = "Lokasi"
-        Me.Lokasi.Name = "Lokasi"
-        '
-        'btnHapus
-        '
-        Me.btnHapus.FillWeight = 40.0!
-        Me.btnHapus.HeaderText = "Hapus"
-        Me.btnHapus.Name = "btnHapus"
-        Me.btnHapus.Text = "Hapus"
-        Me.btnHapus.UseColumnTextForButtonValue = True
         '
         'PanelInput2
         '
@@ -744,6 +645,117 @@ Partial Class FormSuratJalan
         Me.Panel1.Size = New System.Drawing.Size(1141, 400)
         Me.Panel1.TabIndex = 236
         '
+        'chk
+        '
+        Me.chk.FillWeight = 30.0!
+        Me.chk.HeaderText = "Pilih"
+        Me.chk.Name = "chk"
+        '
+        'ID_PENJUALAN
+        '
+        Me.ID_PENJUALAN.HeaderText = "Nota"
+        Me.ID_PENJUALAN.Name = "ID_PENJUALAN"
+        Me.ID_PENJUALAN.Resizable = System.Windows.Forms.DataGridViewTriState.[True]
+        Me.ID_PENJUALAN.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable
+        '
+        'ID_PELANGGAN
+        '
+        Me.ID_PELANGGAN.HeaderText = "Kode"
+        Me.ID_PELANGGAN.Name = "ID_PELANGGAN"
+        '
+        'NAMA_PELANGGAN
+        '
+        Me.NAMA_PELANGGAN.FillWeight = 150.0!
+        Me.NAMA_PELANGGAN.HeaderText = "Pelanggan"
+        Me.NAMA_PELANGGAN.Name = "NAMA_PELANGGAN"
+        Me.NAMA_PELANGGAN.Resizable = System.Windows.Forms.DataGridViewTriState.[True]
+        Me.NAMA_PELANGGAN.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable
+        '
+        'ALAMAT_PELANGGAN
+        '
+        Me.ALAMAT_PELANGGAN.HeaderText = "Alamat"
+        Me.ALAMAT_PELANGGAN.Name = "ALAMAT_PELANGGAN"
+        '
+        'TGL_TRANSAKSI
+        '
+        Me.TGL_TRANSAKSI.HeaderText = "Tanggal"
+        Me.TGL_TRANSAKSI.Name = "TGL_TRANSAKSI"
+        Me.TGL_TRANSAKSI.Resizable = System.Windows.Forms.DataGridViewTriState.[True]
+        Me.TGL_TRANSAKSI.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable
+        '
+        'GRAND_TOTAL_STL_PAJAK
+        '
+        Me.GRAND_TOTAL_STL_PAJAK.FillWeight = 80.0!
+        Me.GRAND_TOTAL_STL_PAJAK.HeaderText = "Nominal"
+        Me.GRAND_TOTAL_STL_PAJAK.Name = "GRAND_TOTAL_STL_PAJAK"
+        Me.GRAND_TOTAL_STL_PAJAK.Resizable = System.Windows.Forms.DataGridViewTriState.[True]
+        Me.GRAND_TOTAL_STL_PAJAK.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable
+        '
+        'LOKASIBARANG
+        '
+        Me.LOKASIBARANG.FillWeight = 80.0!
+        Me.LOKASIBARANG.HeaderText = "Lokasi"
+        Me.LOKASIBARANG.Name = "LOKASIBARANG"
+        Me.LOKASIBARANG.Resizable = System.Windows.Forms.DataGridViewTriState.[True]
+        Me.LOKASIBARANG.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable
+        '
+        'SUMBER
+        '
+        Me.SUMBER.HeaderText = "Sumber"
+        Me.SUMBER.Name = "SUMBER"
+        '
+        'SUMBER_TRANS
+        '
+        Me.SUMBER_TRANS.HeaderText = "Sumber"
+        Me.SUMBER_TRANS.Name = "SUMBER_TRANS"
+        '
+        'Nota
+        '
+        Me.Nota.HeaderText = "Nota"
+        Me.Nota.Name = "Nota"
+        '
+        'Kode
+        '
+        Me.Kode.HeaderText = "Kode"
+        Me.Kode.Name = "Kode"
+        '
+        'Pelanggan
+        '
+        Me.Pelanggan.HeaderText = "Pelanggan"
+        Me.Pelanggan.Name = "Pelanggan"
+        '
+        'Alamat
+        '
+        Me.Alamat.HeaderText = "Alamat"
+        Me.Alamat.Name = "Alamat"
+        '
+        'Tanggal
+        '
+        Me.Tanggal.HeaderText = "Tanggal"
+        Me.Tanggal.Name = "Tanggal"
+        '
+        'Nominal
+        '
+        DataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight
+        DataGridViewCellStyle4.Format = "N2"
+        DataGridViewCellStyle4.NullValue = Nothing
+        Me.Nominal.DefaultCellStyle = DataGridViewCellStyle4
+        Me.Nominal.HeaderText = "Nominal"
+        Me.Nominal.Name = "Nominal"
+        '
+        'Lokasi
+        '
+        Me.Lokasi.HeaderText = "Lokasi"
+        Me.Lokasi.Name = "Lokasi"
+        '
+        'btnHapus
+        '
+        Me.btnHapus.FillWeight = 40.0!
+        Me.btnHapus.HeaderText = "Hapus"
+        Me.btnHapus.Name = "btnHapus"
+        Me.btnHapus.Text = "Hapus"
+        Me.btnHapus.UseColumnTextForButtonValue = True
+        '
         'FormSuratJalan
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
@@ -810,24 +822,26 @@ Partial Class FormSuratJalan
     Friend WithEvents LblKodeHelper2 As System.Windows.Forms.Label
     Friend WithEvents LblKodeHelper1 As System.Windows.Forms.Label
     Friend WithEvents LblKodeSupir As System.Windows.Forms.Label
-    Friend WithEvents chk As System.Windows.Forms.DataGridViewCheckBoxColumn
-    Friend WithEvents ID_PENJUALAN As System.Windows.Forms.DataGridViewTextBoxColumn
-    Friend WithEvents ID_PELANGGAN As System.Windows.Forms.DataGridViewTextBoxColumn
-    Friend WithEvents NAMA_PELANGGAN As System.Windows.Forms.DataGridViewTextBoxColumn
-    Friend WithEvents ALAMAT_PELANGGAN As System.Windows.Forms.DataGridViewTextBoxColumn
-    Friend WithEvents TGL_TRANSAKSI As System.Windows.Forms.DataGridViewTextBoxColumn
-    Friend WithEvents GRAND_TOTAL_STL_PAJAK As System.Windows.Forms.DataGridViewTextBoxColumn
-    Friend WithEvents LOKASIBARANG As System.Windows.Forms.DataGridViewTextBoxColumn
-    Friend WithEvents Nota As System.Windows.Forms.DataGridViewTextBoxColumn
-    Friend WithEvents Kode As System.Windows.Forms.DataGridViewTextBoxColumn
-    Friend WithEvents Pelanggan As System.Windows.Forms.DataGridViewTextBoxColumn
-    Friend WithEvents Alamat As System.Windows.Forms.DataGridViewTextBoxColumn
-    Friend WithEvents Tanggal As System.Windows.Forms.DataGridViewTextBoxColumn
-    Friend WithEvents Nominal As System.Windows.Forms.DataGridViewTextBoxColumn
-    Friend WithEvents Lokasi As System.Windows.Forms.DataGridViewTextBoxColumn
-    Friend WithEvents btnHapus As System.Windows.Forms.DataGridViewButtonColumn
     Friend WithEvents LblJenisTrans As Label
     Friend WithEvents BtnSettingPrinter As Button
+    Friend WithEvents chk As DataGridViewCheckBoxColumn
+    Friend WithEvents ID_PENJUALAN As DataGridViewTextBoxColumn
+    Friend WithEvents ID_PELANGGAN As DataGridViewTextBoxColumn
+    Friend WithEvents NAMA_PELANGGAN As DataGridViewTextBoxColumn
+    Friend WithEvents ALAMAT_PELANGGAN As DataGridViewTextBoxColumn
+    Friend WithEvents TGL_TRANSAKSI As DataGridViewTextBoxColumn
+    Friend WithEvents GRAND_TOTAL_STL_PAJAK As DataGridViewTextBoxColumn
+    Friend WithEvents LOKASIBARANG As DataGridViewTextBoxColumn
+    Friend WithEvents SUMBER As DataGridViewTextBoxColumn
+    Friend WithEvents SUMBER_TRANS As DataGridViewTextBoxColumn
+    Friend WithEvents Nota As DataGridViewTextBoxColumn
+    Friend WithEvents Kode As DataGridViewTextBoxColumn
+    Friend WithEvents Pelanggan As DataGridViewTextBoxColumn
+    Friend WithEvents Alamat As DataGridViewTextBoxColumn
+    Friend WithEvents Tanggal As DataGridViewTextBoxColumn
+    Friend WithEvents Nominal As DataGridViewTextBoxColumn
+    Friend WithEvents Lokasi As DataGridViewTextBoxColumn
+    Friend WithEvents btnHapus As DataGridViewButtonColumn
 End Class
 
 

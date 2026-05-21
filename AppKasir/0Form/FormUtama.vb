@@ -3,6 +3,8 @@ Imports System.Text.Json
 
 
 Public Class FormUtama
+    ' --- Menu Context Sales Order ke Penjualan ---
+    Private WithEvents ProsesKePenjualanToolStripMenuItem As New ToolStripMenuItem("Proses ke Penjualan Kasir")
 
     ' ── WebBrowser Dashboard ─────────────────────────────────────────────────
     ' WbDashboard sudah didefinisikan di designer — posisi dan anchor sama dengan GBTransaksi
@@ -247,7 +249,7 @@ Public Class FormUtama
         Dim buttons As Button() = {
         BtnToko, BtnBarang, BTnPelanggan, BtnSupliyer, BtnUser, BtnTabelRef, BtnKirimCabang, BtnHakAksesUser, BtnGeneralSetting, BtnKaryawan, BtnArmada,
         BtnBelanja, BtnPenjualan, BtnRetuBelanja, BtnReturPenjualan, BtnBayarHutang, BtnBayarPiutang, BtnStokOpname, BtnPindahStok, BtnTransferBarang,
-        BtnSuratJalan, BtnMasterCabang
+        BtnSuratJalan, BtnMasterCabang, BtnSalesOrder
         }
         For Each button As Button In buttons
             ModuleTheme.SetNavButtonIdle(button)
@@ -263,6 +265,16 @@ Public Class FormUtama
 
         AturTooltip()
         Terkunci()
+
+        ' --- Setup Menu Context Sales Order ---
+        Try
+            If BtnPenjualan.Image IsNot Nothing Then
+                ProsesKePenjualanToolStripMenuItem.Image = BtnPenjualan.Image
+            End If
+            CMSTransaksi.Items.Insert(0, ProsesKePenjualanToolStripMenuItem)
+        Catch ex As Exception
+        End Try
+        ' --------------------------------------
 
         OpenConnection()
 
@@ -344,6 +356,17 @@ Public Class FormUtama
         ' Restore warna button nav aktif yang di-reset oleh TerapkanFormUtama
         If _activeNavButton IsNot Nothing Then
             ModuleTheme.SetNavButtonActive(_activeNavButton)
+        End If
+    End Sub
+
+    ''' <summary>Saat FormUtama mendapat fokus, kembalikan FormCekUpdate ke depan jika sedang terbuka.</summary>
+    Private Sub FormUtama_Activated(sender As Object, e As EventArgs) Handles MyBase.Activated
+        If _bgOverlayCekUpdate IsNot Nothing AndAlso Not _bgOverlayCekUpdate.IsDisposed Then
+            _bgOverlayCekUpdate.BringToFront()
+            If Not FormCekUpdate.IsDisposed Then
+                FormCekUpdate.BringToFront()
+                FormCekUpdate.Activate()
+            End If
         End If
     End Sub
 
@@ -926,6 +949,33 @@ Public Class FormUtama
         BersihkanKontrolTransaksi()
     End Sub
 
+    Private Sub BtnSalesOrder_Click(sender As Object, e As EventArgs) Handles BtnSalesOrder.Click
+        IniTransaksiPanel(BtnSalesOrder, "Sales Order")
+        TerapkanHakAkses("Sales Order")
+        AturTombolTransaksi("Sales Order")
+        BtnTambah.Text = "Tambah Sales Order (F2)"
+        BtnPrint.Text = "Cetak Nota Sales Order (F5)"
+        AturTombolSettingPrinter()
+        DataSalesOrder()
+    End Sub
+
+    Public Sub DataSalesOrder()
+        Dim sf As String = "%" & TxtFilter.Text & "%"
+        Dim tAwal As Date = DtpTransaksi.Value.Date
+        Dim tAkhir As Date = tAwal.AddDays(1).AddTicks(-1)
+        HitungRangkuman("SELECT COUNT(*) AS RECORD, COALESCE(SUM(GRAND_TOTAL_STL_PAJAK), 0) AS TOTAL FROM sales_order WHERE TGL_TRANSAKSI >= @tanggalAwal AND TGL_TRANSAKSI <= @tanggalAkhir AND ID_PENJUALAN LIKE @SearchText", "Total Sales Order", tAwal, tAkhir, sf)
+        LoadDataTransaksi("SELECT ID_PENJUALAN, NAMA_PELANGGAN, LOKASIBARANG, NAMA_SALES, GRAND_TOTAL_STL_PAJAK, STATUS_TRANSAKSI, ID_USER FROM sales_order WHERE TGL_TRANSAKSI >= @tanggalAwal AND TGL_TRANSAKSI <= @tanggalAkhir AND ID_PENJUALAN LIKE @SearchText ORDER BY ID_PENJUALAN ASC", "sales_order", tAwal, tAkhir, sf)
+        With DGVTransaksi
+            .Columns(0).HeaderText = "NOTA SO" : .Columns(0).FillWeight = 130
+            .Columns(1).HeaderText = "PELANGGAN" : .Columns(2).HeaderText = "LOKASI"
+            .Columns(3).HeaderText = "SALES" : .Columns(4).HeaderText = "TOTAL"
+            .Columns(5).HeaderText = "STATUS" : .Columns(6).HeaderText = "USER"
+            AturKolomAngka(DGVTransaksi, 4)
+            UbahTampilanDataTransaksi() : .ClearSelection()
+        End With
+        BersihkanKontrolTransaksi("Detail Sales Order : ")
+    End Sub
+
     Private Sub BtnSuratJalan_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles BtnSuratJalan.Click
         IniTransaksiPanel(BtnSuratJalan, "Surat Jalan")
         TerapkanHakAkses("Surat Jalan")
@@ -1102,6 +1152,8 @@ Public Class FormUtama
 
                 ' === OPTIMASI: Baca hak akses dari CACHE (instant, tanpa DB query) ===
                 EditPembayaranToolStripMenuItem.Visible = False
+                ProsesKePenjualanToolStripMenuItem.Visible = False ' Default sembunyikan
+
                 Select Case TxtTransaksi.Text
                     Case "Pembelian"
                         TerapkanHakAksesContextMenu("Pembelian")
@@ -1125,12 +1177,67 @@ Public Class FormUtama
                         TerapkanHakAksesContextMenu("Transfer Cabang")
                     Case "Surat Jalan"
                         TerapkanHakAksesContextMenu("Surat Jalan")
+                    Case "Sales Order"
+                        TerapkanHakAksesContextMenu("Sales Order")
+                        ProsesKePenjualanToolStripMenuItem.Visible = True ' Tampilkan khusus untuk SO
                 End Select
                 Dim cursorPosition As Point = System.Windows.Forms.Cursor.Position
                 CMSTransaksi.Show(cursorPosition)
 
             End If
         End If
+    End Sub
+
+    Private Sub ProsesKePenjualanToolStripMenuItem_Click(ByVal sender As Object, ByVal e As EventArgs) Handles ProsesKePenjualanToolStripMenuItem.Click
+        ' 1. Pastikan yang diklik adalah dari tabel Sales Order
+        If TxtTransaksi.Text <> "Sales Order" Then
+            MessageBox.Show("Menu ini hanya untuk memproses Sales Order.", "Info", MessageBoxButtons.OK, MessageBoxIcon.Information)
+            Exit Sub
+        End If
+
+        ' 2. Cek apakah ada baris yang dipilih
+        If DGVTransaksi.CurrentRow Is Nothing Then
+            MessageBox.Show("Pilih Sales Order yang akan diproses terlebih dahulu.", "Pilih Data", MessageBoxButtons.OK, MessageBoxIcon.Warning)
+            Exit Sub
+        End If
+
+        ' 3. Ambil nilai NO SO dan Lokasi dari kontrol yang sudah terisi otomatis saat baris dipilih
+        Dim noSO As String = TxtFakturTransaksi.Text
+        Dim lokasiSO As String = TxtLokasiUntukEdit.Text
+
+        ' Jika kosong, ambil langsung dari grid secara aman
+        If String.IsNullOrWhiteSpace(noSO) OrElse String.IsNullOrWhiteSpace(lokasiSO) Then
+            Try
+                Dim row As DataGridViewRow = DGVTransaksi.CurrentRow
+                noSO = row.Cells("ID_PENJUALAN").Value.ToString()
+                lokasiSO = row.Cells("LOKASIBARANG").Value.ToString()
+            Catch ex As Exception
+                MessageBox.Show("Format kolom pada tabel tidak sesuai. Pastikan ada kolom 'ID_PENJUALAN' dan 'LOKASIBARANG'.", "Error Data", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                Exit Sub
+            End Try
+        End If
+
+        ' 4. Validasi Gap Lokasi (Toko vs Gudang)
+        If StatusLokasi.Text.ToUpper() <> lokasiSO.ToUpper() Then
+            MessageBox.Show("Lokasi Anda saat ini (" & StatusLokasi.Text & ") tidak berhak memproses Sales Order milik " & lokasiSO & ".",
+                            "Akses Ditolak", MessageBoxButtons.OK, MessageBoxIcon.Stop)
+            Exit Sub
+        End If
+
+        ' 5. Kirim data NO SO ke FormJual sebagai draft & Buka Form Kasir
+        ' Kita menggunakan cara buka yang identik dengan case "Penjualan" di Edittransaksi
+        With FormJual
+            .TxtJenistransaksi.Text = "TambahPenjualan"
+            .TxtFaktur.Text = ""
+            .draftSalesOrderAktif = noSO
+            .TampilPelanggan()
+            .AmbilDataKaryawan()
+            .BringToFront()
+            .ShowDialog(Me)
+        End With
+
+        ' Refresh datagrid setelah form kasir ditutup
+        Refresdatagridview()
     End Sub
 
     Private Sub TambahToolStripMenuItem_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles TambahToolStripMenuItem.Click
@@ -1275,6 +1382,14 @@ Public Class FormUtama
                     .Dock = DockStyle.Fill
                     .Show() 'Surat Jalan
                 End With
+
+            Case "Sales Order"
+                With FormSalesOrder
+                    .TxtJenistransaksi.Text = "TambahSalesOrder"
+                    .DgvDataTransaksi.Rows.Clear()
+                    .BringToFront()
+                    .ShowDialog(Me)
+                End With
         End Select
 
     End Sub
@@ -1376,6 +1491,25 @@ Public Class FormUtama
                         MessageBox.Show(pesan, "Peringatan", MessageBoxButtons.OK, MessageBoxIcon.Warning)
                     End If
                 End Using
+
+            Case "Sales Order"
+                If StatusLokasi.Text <> TxtLokasiUntukEdit.Text Then
+                    Dim pesan As String = "Oops! Tidak ada hak untuk edit sales order ini." & Environment.NewLine &
+                                          "User " & StatusLokasi.Text & " tidak berhak edit transaksi sales order " & TxtLokasiUntukEdit.Text
+                    MessageBox.Show(pesan, "Peringatan", MessageBoxButtons.OK, MessageBoxIcon.Warning)
+                    Exit Sub
+                End If
+
+                Dim idSO As String = DGVTransaksi.CurrentRow.Cells("ID_PENJUALAN").Value.ToString()
+
+                With FormSalesOrder
+                    .TxtJenistransaksi.Text = "EditSalesOrder"
+                    .TxtFaktur.Text = idSO
+                    .TampilPelanggan()
+                    .AmbilDataKaryawan()
+                    .BringToFront()
+                    .ShowDialog(Me)
+                End With
 
             Case "Retur Pembelian"
                 If StatusLokasi.Text <> TxtLokasiUntukEdit.Text Then
@@ -1565,6 +1699,17 @@ Public Class FormUtama
                     End If
                 End Using
 
+            Case "Sales Order"
+
+                If Not CekLokasiBarang() Then Exit Sub
+
+                Dim idSO As String = DGVTransaksi.CurrentRow.Cells("ID_PENJUALAN").Value.ToString()
+
+                ' Sales Order belum masuk retur atau piutang, jadi bisa langsung hapus
+                If MessageBox.Show("Apakah data Sales Order ini akan dihapus ...???", "Konfirmasi", MessageBoxButtons.YesNo, MessageBoxIcon.Question) = DialogResult.Yes Then
+                    HapusSalesOrder()
+                End If
+
             Case "Retur Pembelian"
 
                 If Not CekLokasiBarang() Then Exit Sub
@@ -1664,6 +1809,23 @@ Public Class FormUtama
                                                 "Oops! Ada masalah...", MessageBoxButtons.OK, MessageBoxIcon.Error)
         End Try
 
+    End Sub
+
+    Public Sub HapusSalesOrder()
+        Dim transaction As MySqlTransaction = conn.BeginTransaction()
+        Try
+            ' 1. Catat Audit Trail
+            ModuleAuditTrail.CatatAudit(TxtFakturTransaksi.Text, "HAPUS", "Sales Order", trans:=transaction)
+
+            ' 2. Panggil fungsi pusat (logika reversal stok ditahan)
+            ModuleHapusTransaksi.HapusSalesOrder(TxtFakturTransaksi.Text, TxtLokasiUntukEdit.Text, transaction)
+
+            transaction.Commit()
+            ' Refresdatagridview() dipanggil otomatis oleh BtnHapus_Click
+        Catch ex As Exception
+            transaction.Rollback()
+            MessageBox.Show("Terjadi kesalahan saat menghapus Sales Order: " & ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
+        End Try
     End Sub
 
     Public Sub Hapuspenjualan()
@@ -1987,6 +2149,14 @@ Public Class FormUtama
         End If
     End Sub
 
+    Private Sub EksekusiCetakSO(noFaktur As String)
+        If BacaPengaturanPrinter("Jual", "PilihPrinter", "LANGSUNG CETAK") = "TANYA PILIH PRINTER" Then
+            ModulePrinterJual.TanyaPilihPrinter(noFaktur, isSalesOrder:=True)
+        Else
+            ModulePrinterJual.CetakPenjualan(noFaktur, isSalesOrder:=True)
+        End If
+    End Sub
+
     Private Sub Cetaktransaksi()
         Dim faktur As String = TxtFakturTransaksi.Text
         If String.IsNullOrEmpty(faktur) Then Return
@@ -2001,6 +2171,8 @@ Public Class FormUtama
                                            "Konfirmasi Cetak", MessageBoxButtons.YesNo, MessageBoxIcon.Question) = DialogResult.Yes Then
                             LakukanCetakUlang("Beli", faktur)
                         End If
+                    Case "TAMPILKAN DI MONITOR"
+                        ModulePrinterBeli.CetakPembelian(faktur, "Tampilkan di Monitor")
                 End Select
 
             Case "Penjualan"
@@ -2016,6 +2188,19 @@ Public Class FormUtama
                         ModulePrinterJual.PreviewPenjualan(faktur)
                 End Select
 
+            Case "Sales Order"
+                Select Case BacaPengaturanPrinter("Jual", "CetakOtomatis", "IYA").Trim().ToUpper()
+                    Case "IYA"
+                        EksekusiCetakSO(faktur)
+                    Case "SELALU TANYA"
+                        If MessageBox.Show("Apakah Anda ingin mencetak nota Sales Order?",
+                                           "Konfirmasi Cetak", MessageBoxButtons.YesNo, MessageBoxIcon.Question) = DialogResult.Yes Then
+                            EksekusiCetakSO(faktur)
+                        End If
+                    Case "TAMPILKAN DI MONITOR"
+                        ModulePrinterJual.PreviewPenjualan(faktur, isSalesOrder:=True)
+                End Select
+
             Case "Retur Pembelian"
                 Select Case BacaPengaturanPrinter("ReturBeli", "CetakOtomatis", "IYA").Trim().ToUpper()
                     Case "IYA"
@@ -2025,6 +2210,8 @@ Public Class FormUtama
                                            "Konfirmasi Cetak", MessageBoxButtons.YesNo, MessageBoxIcon.Question) = DialogResult.Yes Then
                             LakukanCetakUlang("ReturBeli", faktur)
                         End If
+                    Case "TAMPILKAN DI MONITOR"
+                        ModulePrinterReturBeli.PreviewReturBeli(faktur)
                 End Select
 
             Case "Retur Penjualan"
@@ -2221,6 +2408,46 @@ Public Class FormUtama
                     TxtFakturTransaksi.Text = DGVTransaksi.CurrentRow.Cells(0).Value.ToString()
                     TxtLokasiUntukEdit.Text = DGVTransaksi.CurrentRow.Cells(2).Value.ToString()
                     LblDetailTransaksi.Text = "Detail Penjualan : " + DGVTransaksi.CurrentRow.Cells(0).Value.ToString()
+
+                Case "Sales Order"
+                    DGVDetail.DataSource = Nothing
+                    DGVDetail.Rows.Clear()
+                    Dim sqlSelect As String = "SELECT ID_BARANG, NAMA_BARANG, QTY, SATUAN, HARGA_JUAL, QTY_SATUAN, TOTAL_DISKON, TOTAL_HARGA FROM sales_order_detail WHERE FAKTUR_JUAL = ?"
+                    Using cmdSelect As New MySqlCommand(sqlSelect, conn)
+                        cmdSelect.Parameters.AddWithValue("@FAKTUR_JUAL", DGVTransaksi.CurrentRow.Cells(0).Value)
+
+                        Using da As New MySqlDataAdapter(cmdSelect)
+                            Using ds As New DataSet()
+                                da.Fill(ds, "sales_order_detail")
+                                DGVDetail.DataSource = ds.Tables("sales_order_detail")
+                                With DGVDetail
+                                    .Columns("ID_BARANG").Visible = False
+                                    .Columns("NAMA_BARANG").HeaderText = "NAMA BARANG"
+                                    .Columns("QTY").HeaderText = "QTY"
+                                    .Columns("SATUAN").HeaderText = "SATUAN"
+                                    .Columns("HARGA_JUAL").HeaderText = "HARGA"
+                                    .Columns("QTY_SATUAN").Visible = False
+                                    .Columns("TOTAL_DISKON").HeaderText = "DISKON"
+                                    .Columns("TOTAL_HARGA").HeaderText = "TOTAL"
+
+                                    AturKolomAngka(DGVDetail, "QTY")
+                                    AturKolomAngka(DGVDetail, "HARGA_JUAL")
+                                    AturKolomAngka(DGVDetail, "TOTAL_DISKON")
+                                    AturKolomAngka(DGVDetail, "TOTAL_HARGA")
+
+                                    .Columns("NAMA_BARANG").FillWeight = 150
+                                    .Columns("QTY").FillWeight = 30
+                                    .Columns("SATUAN").FillWeight = 50
+                                    .Columns("HARGA_JUAL").FillWeight = 60
+                                    .Columns("TOTAL_DISKON").FillWeight = 60
+                                    .Columns("TOTAL_HARGA").FillWeight = 60
+                                End With
+                            End Using
+                        End Using
+                    End Using
+                    TxtFakturTransaksi.Text = DGVTransaksi.CurrentRow.Cells(0).Value.ToString()
+                    TxtLokasiUntukEdit.Text = DGVTransaksi.CurrentRow.Cells(2).Value.ToString()
+                    LblDetailTransaksi.Text = "Detail Sales Order : " + DGVTransaksi.CurrentRow.Cells(0).Value.ToString()
 
                 Case "Retur Pembelian"
 
@@ -2591,6 +2818,8 @@ Public Class FormUtama
                 DataTransferBarang()
             Case "Transfer Cabang"
                 DataTransferCabang()
+            Case "Sales Order"
+                DataSalesOrder()
         End Select
     End Sub
 
@@ -2983,26 +3212,73 @@ Public Class FormUtama
     End Sub
 
 
+    ' Referensi overlay gelap untuk FormCekUpdate — agar bisa ditutup paksa dari FormUtama
+    Private _bgOverlayCekUpdate As Form = Nothing
+
+    Private Sub TutupCekUpdateDanOverlay()
+        ' Lepas owner dulu sebelum tutup — mencegah Win32Exception "Error creating window handle"
+        Try
+            If Not FormCekUpdate.IsDisposed Then
+                FormCekUpdate.Owner = Nothing
+                FormCekUpdate.Close()
+            End If
+        Catch : End Try
+        Try
+            If _bgOverlayCekUpdate IsNot Nothing AndAlso Not _bgOverlayCekUpdate.IsDisposed Then
+                _bgOverlayCekUpdate.Close()
+            End If
+        Catch : End Try
+        _bgOverlayCekUpdate = Nothing
+    End Sub
+
     Private Sub PeriksaUpdateAplikasiToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles PeriksaUpdateAplikasiToolStripMenuItem.Click
         TutupSemuaForm()
 
-        ' Buat efek overlay gelap (lightbox)
-        Using bg As New Form()
-            bg.StartPosition = FormStartPosition.Manual
-            bg.Bounds = Me.Bounds
-            bg.FormBorderStyle = FormBorderStyle.None
-            bg.Opacity = 0.6D
-            bg.BackColor = Color.Black
-            bg.ShowInTaskbar = False
-            bg.Show(Me)
+        ' Jika sudah terbuka, cukup bawa ke depan
+        If _bgOverlayCekUpdate IsNot Nothing AndAlso Not _bgOverlayCekUpdate.IsDisposed Then
+            FormCekUpdate.BringToFront()
+            Return
+        End If
 
-            With FormCekUpdate
-                .StartPosition = FormStartPosition.CenterScreen
-                .Show(bg)
-            End With
+        ' Buat efek overlay gelap (lightbox) — owner ke FormUtama (Me), bukan ke FormCekUpdate
+        Dim bg As New Form()
+        bg.StartPosition = FormStartPosition.Manual
+        bg.Bounds = Me.Bounds
+        bg.FormBorderStyle = FormBorderStyle.None
+        bg.Opacity = 0.6D
+        bg.BackColor = Color.Black
+        bg.ShowInTaskbar = False
+        bg.Show(Me)   ' overlay milik FormUtama
+        _bgOverlayCekUpdate = bg
 
-            bg.Close()
-        End Using
+        ' FormCekUpdate di-show dengan owner FormUtama langsung (bukan bg)
+        ' agar tidak crash saat bg di-dispose
+        With FormCekUpdate
+            .StartPosition = FormStartPosition.CenterScreen
+            .Owner = Me
+            .TopMost = True   ' selalu di depan selama terbuka
+            .Show(Me)
+            .BringToFront()
+        End With
+
+        ' Saat FormCekUpdate ditutup — reset TopMost dan bersihkan overlay
+        AddHandler FormCekUpdate.FormClosed, Sub(s, ev)
+                                                 Try : FormCekUpdate.TopMost = False : Catch : End Try
+                                                 Try
+                                                     If _bgOverlayCekUpdate IsNot Nothing AndAlso Not _bgOverlayCekUpdate.IsDisposed Then
+                                                         _bgOverlayCekUpdate.Close()
+                                                     End If
+                                                 Catch : End Try
+                                                 _bgOverlayCekUpdate = Nothing
+                                             End Sub
+
+        ' Ikuti posisi FormUtama jika di-move
+        AddHandler Me.Move, Sub(s, ev)
+                                If _bgOverlayCekUpdate IsNot Nothing AndAlso Not _bgOverlayCekUpdate.IsDisposed Then
+                                    _bgOverlayCekUpdate.Bounds = Me.Bounds
+                                    FormCekUpdate.BringToFront()
+                                End If
+                            End Sub
     End Sub
 
     Private Sub CekIpKomputerToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles CekIpKomputerToolStripMenuItem.Click
@@ -3124,7 +3400,18 @@ Public Class FormUtama
 
 
     Private Sub FormUtama_FormClosing(ByVal sender As Object, ByVal e As System.Windows.Forms.FormClosingEventArgs) Handles Me.FormClosing
-        If ModuleVariabel.AplikasiSedangUpdate Then Exit Sub
+        ' Saat proses update berjalan — tutup semua form tanpa konfirmasi agar installer bisa berjalan
+        If ModuleVariabel.AplikasiSedangUpdate Then
+            TutupCekUpdateDanOverlay()
+            ' Tutup semua MDI children
+            For Each frm As Form In MdiChildren
+                Try : frm.Close() : Catch : End Try
+            Next
+            Exit Sub  ' Biarkan Application.Exit() berjalan normal tanpa dialog
+        End If
+
+        ' Paksa tutup FormCekUpdate dan overlay jika sedang terbuka (modeless)
+        TutupCekUpdateDanOverlay()
 
         ' Tanyakan apakah pengguna ingin melakukan backup sebelum keluar
         If MessageBox.Show("BACKUP DATA ?", "Konfirmasi Backup", MessageBoxButtons.YesNo) = DialogResult.Yes Then

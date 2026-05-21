@@ -101,7 +101,7 @@ Sebelum menyimpulkan atau menulis kode:
 - **Jangan menebak** nama kolom, nama tabel, nilai enum, atau logika bisnis
 - **Selalu verifikasi ke database** jika menyangkut struktur tabel atau data nyata
 - **Selalu baca VB.NET** jika menyangkut logika bisnis yang sudah ada di desktop app
-- **Bandingkan data nyata** dari `db_moroseneng` (data produksi) vs `db_kasirlancar` (development)
+- **Bandingkan data nyata** dari `db_rejeki` (data produksi) vs `db_moroseneng` (development)
 - Jika ada keraguan → tanya user, jangan asumsikan
 
 ### ⚠️ CATATAN KRITIS — JANGAN PERCAYA NAMA, PERCAYA FUNGSI

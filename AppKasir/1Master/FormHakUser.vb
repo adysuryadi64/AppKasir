@@ -117,7 +117,7 @@ Public Class FormHakUser
 
         IsiDataGridView(DgvTransaksi, "TRANSAKSI", {"Pembelian", "Penjualan", "Retur Pembelian", "Retur Penjualan",
                                                 "Bayar Hutang", "Bayar Piutang", "Transfer Stok",
-                                                "Transfer Barang", "Stok Opname", "Surat Jalan", "Transfer Cabang"})
+                                                "Transfer Barang", "Stok Opname", "Surat Jalan", "Transfer Cabang", "Sales Order"})
 
         IsiDataGridView(DgvJurnal, "JURNAL", {})
 

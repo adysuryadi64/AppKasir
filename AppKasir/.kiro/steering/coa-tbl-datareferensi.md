@@ -2,7 +2,7 @@
 inclusion: always
 ---
 
-# Referensi COA Lengkap — tbl_datareferensi (db_kasirlancar)
+# Referensi COA Lengkap — tbl_datareferensi (db_moroseneng)
 
 > Dibaca langsung dari database. Wajib dipakai sebagai acuan setiap kali menulis kode yang menyentuh JurnalUmum, tbl_datareferensi, atau akun COA.
 > Jangan pernah hardcode kode akun tanpa mencocokkan tabel ini terlebih dahulu.

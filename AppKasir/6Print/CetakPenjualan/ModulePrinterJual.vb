@@ -23,6 +23,7 @@ Module ModulePrinterJual
     ' Diisi oleh MuatDataPenjualan() — dibaca oleh ESC/POS & GDI+
     ' ============================================================
     Public Jual_NoFaktur As String = ""
+    Public Jual_JudulNota As String = "Nota Jual"
     Public Jual_Tanggal As DateTime
     Public Jual_NamaPelanggan As String = ""
     Public Jual_JenisPelanggan As String = ""
@@ -54,6 +55,7 @@ Module ModulePrinterJual
     Public Jual_IdKomputer As String = ""
     Public Jual_NamaSales As String = ""
     Public Jual_LokasiBarang As String = ""
+    Public Jual_NoSO As String = ""                ' NO_SO — nomor Sales Order referensi (kosong jika bukan dari SO)
 
     ' ── Data hutang pelanggan (Model 8) ──────────────────────
     Public Jual_HutangAwal As Decimal
@@ -81,20 +83,31 @@ Module ModulePrinterJual
     ' Dipanggil oleh CetakPenjualan() sebelum class cetak dijalankan.
     ' Bisa juga dipanggil manual jika perlu akses data sebelum cetak.
     ' ============================================================
-    Public Sub MuatDataPenjualan(noFaktur As String)
+    Public Sub MuatDataPenjualan(noFaktur As String, Optional isSalesOrder As Boolean = False)
         Jual_NoFaktur = noFaktur
-        MuatItemPenjualan(noFaktur)
-        MuatHeaderPenjualan(noFaktur)
+        Jual_JudulNota = If(isSalesOrder, "Nota SO", "Nota Jual")
+        Jual_NoSO = ""   ' reset dulu, diisi oleh MuatHeaderPenjualan jika bukan SO
+        MuatItemPenjualan(noFaktur, isSalesOrder)
+        MuatHeaderPenjualan(noFaktur, isSalesOrder)
         MuatHutangPelangganJual()
     End Sub
 
-    Private Sub MuatItemPenjualan(noFaktur As String)
+    Private Sub MuatItemPenjualan(noFaktur As String, isSalesOrder As Boolean)
         Jual_DaftarItem.Clear()
-        Using cmd As New MySqlCommand(
-            "SELECT NAMA_BARANG, SERIAL_NUMBER, QTY, SATUAN, " &
-            "HARGA_JUAL, TOTAL_DISKON, TOTAL_HARGA " &
-            "FROM penjualan_detail WHERE FAKTUR_JUAL = @faktur " &
-            "ORDER BY NAMA_BARANG", conn)
+        Dim query As String
+        If isSalesOrder Then
+            query = "SELECT NAMA_BARANG, '' AS SERIAL_NUMBER, QTY, SATUAN, " &
+                    "HARGA_JUAL, TOTAL_DISKON, TOTAL_HARGA " &
+                    "FROM sales_order_detail WHERE FAKTUR_JUAL = @faktur " &
+                    "ORDER BY NAMA_BARANG"
+        Else
+            query = "SELECT NAMA_BARANG, SERIAL_NUMBER, QTY, SATUAN, " &
+                    "HARGA_JUAL, TOTAL_DISKON, TOTAL_HARGA " &
+                    "FROM penjualan_detail WHERE FAKTUR_JUAL = @faktur " &
+                    "ORDER BY NAMA_BARANG"
+        End If
+
+        Using cmd As New MySqlCommand(query, conn)
             cmd.Parameters.AddWithValue("@faktur", noFaktur)
             Using rd As MySqlDataReader = cmd.ExecuteReader()
                 While rd.Read()
@@ -112,17 +125,31 @@ Module ModulePrinterJual
         End Using
     End Sub
 
-    Private Sub MuatHeaderPenjualan(noFaktur As String)
-        Using cmd As New MySqlCommand(
-            "SELECT NAMA_PELANGGAN, JENIS_PELANGGAN, TGL_TRANSAKSI, " &
-            "GRAND_TOTAL_SBL_PAJAK, DISKON_TOTAL_RP, DISKON_TOTAL_PERSEN, " &
-            "GRAND_TOTAL_STL_PAJAK, PAJAK_RP, PAJAK_PERSEN, " &
-            "BIAYA_KIRIM, BAYAR, KEMBALI, SISA_TAGIHAN, JATUH_TEMPO, " &
-            "STATUS_TRANSAKSI, TYPE_AKUN, JENIS_PEMBAYARAN, " &
-            "NOMINAL_TRANSFER, NAMA_AKUN_TF, METODE, " &
-            "BANK, NO_REKENING, NAMA_REKENING, NO_REFFERENSI, " &
-            "NAMA_SALES, LOKASIBARANG, ID_PELANGGAN, ID_USER, ID_KOMPUTER " &
-            "FROM penjualan WHERE ID_PENJUALAN = @faktur", conn)
+    Private Sub MuatHeaderPenjualan(noFaktur As String, isSalesOrder As Boolean)
+        Dim query As String
+        If isSalesOrder Then
+            query = "SELECT NAMA_PELANGGAN, JENIS_PELANGGAN, TGL_TRANSAKSI, " &
+                    "GRAND_TOTAL_SBL_PAJAK, DISKON_TOTAL_RP, DISKON_TOTAL_PERSEN, " &
+                    "GRAND_TOTAL_STL_PAJAK, PAJAK_RP, PAJAK_PERSEN, " &
+                    "BIAYA_KIRIM, 0 AS BAYAR, 0 AS KEMBALI, 0 AS SISA_TAGIHAN, NULL AS JATUH_TEMPO, " &
+                    "STATUS_TRANSAKSI, '' AS TYPE_AKUN, '' AS JENIS_PEMBAYARAN, " &
+                    "0 AS NOMINAL_TRANSFER, '' AS NAMA_AKUN_TF, '' AS METODE, " &
+                    "'' AS BANK, '' AS NO_REKENING, '' AS NAMA_REKENING, '' AS NO_REFFERENSI, " &
+                    "NAMA_SALES, LOKASIBARANG, ID_PELANGGAN, ID_USER, ID_KOMPUTER, '' AS NO_SO " &
+                    "FROM sales_order WHERE ID_PENJUALAN = @faktur"
+        Else
+            query = "SELECT NAMA_PELANGGAN, JENIS_PELANGGAN, TGL_TRANSAKSI, " &
+                    "GRAND_TOTAL_SBL_PAJAK, DISKON_TOTAL_RP, DISKON_TOTAL_PERSEN, " &
+                    "GRAND_TOTAL_STL_PAJAK, PAJAK_RP, PAJAK_PERSEN, " &
+                    "BIAYA_KIRIM, BAYAR, KEMBALI, SISA_TAGIHAN, JATUH_TEMPO, " &
+                    "STATUS_TRANSAKSI, TYPE_AKUN, JENIS_PEMBAYARAN, " &
+                    "NOMINAL_TRANSFER, NAMA_AKUN_TF, METODE, " &
+                    "BANK, NO_REKENING, NAMA_REKENING, NO_REFFERENSI, " &
+                    "NAMA_SALES, LOKASIBARANG, ID_PELANGGAN, ID_USER, ID_KOMPUTER, NO_SO " &
+                    "FROM penjualan WHERE ID_PENJUALAN = @faktur"
+        End If
+
+        Using cmd As New MySqlCommand(query, conn)
             cmd.Parameters.AddWithValue("@faktur", noFaktur)
             Using rd As MySqlDataReader = cmd.ExecuteReader()
                 If rd.Read() Then
@@ -152,6 +179,7 @@ Module ModulePrinterJual
                     Jual_NamaSales = DbStr(rd, "NAMA_SALES")
                     Jual_LokasiBarang = DbStr(rd, "LOKASIBARANG")
                     Jual_IdPelanggan = DbStr(rd, "ID_PELANGGAN")
+                    Jual_NoSO = DbStrSafe(rd, "NO_SO")
 
                     Dim sisa As Decimal = DbDec(rd, "SISA_TAGIHAN")
                     If sisa = 0 Then
@@ -209,13 +237,22 @@ Module ModulePrinterJual
         Dim v As Decimal
         Return If(Decimal.TryParse(rd(kolom).ToString(), v), v, 0)
     End Function
+    ' Helper aman — tidak crash jika kolom belum ada di result set (kolom baru belum dimigrasi)
+    Friend Function DbStrSafe(rd As MySqlDataReader, kolom As String, Optional defaultVal As String = "") As String
+        Try
+            Dim ordinal As Integer = rd.GetOrdinal(kolom)
+            Return If(rd.IsDBNull(ordinal), defaultVal, rd.GetString(ordinal).Trim())
+        Catch ex As IndexOutOfRangeException
+            Return defaultVal
+        End Try
+    End Function
 
     ' ============================================================
     ' TANYA PILIH PRINTER — form custom inline, 6 tombol
     ' Baris 1: Thermal | Dot Matrix | Inkjet/Laser
     ' Baris 2: Monitor | Export PDF | Batal
     ' ============================================================
-    Public Sub TanyaPilihPrinter(noFaktur As String)
+    Public Sub TanyaPilihPrinter(noFaktur As String, Optional isSalesOrder As Boolean = False)
         Dim pilihan As String = ""
 
         Dim frm As New Form()
@@ -373,7 +410,7 @@ Module ModulePrinterJual
         frm.ShowDialog()
 
         If Not String.IsNullOrEmpty(pilihan) Then
-            CetakPenjualan(noFaktur, pilihan)
+            CetakPenjualan(noFaktur, pilihan, isSalesOrder)
         End If
     End Sub
 
@@ -383,17 +420,17 @@ Module ModulePrinterJual
     ' Overload dengan override: pakai jenis printer yang diberikan
     ' (dipakai saat TanyakanTampilPilihanPrinter = "Iya")
     ' ============================================================
-    Public Sub CetakPenjualan(noFaktur As String)
-        CetakPenjualan(noFaktur, "")
+    Public Sub CetakPenjualan(noFaktur As String, Optional isSalesOrder As Boolean = False)
+        CetakPenjualan(noFaktur, "", isSalesOrder)
     End Sub
 
-    Public Sub CetakPenjualan(noFaktur As String, jenisPrinterOverride As String)
+    Public Sub CetakPenjualan(noFaktur As String, jenisPrinterOverride As String, Optional isSalesOrder As Boolean = False)
 
         If String.IsNullOrEmpty(noFaktur) Then
             Exit Sub
         End If
 
-        MuatDataPenjualan(noFaktur)
+        MuatDataPenjualan(noFaktur, isSalesOrder)
 
         Dim cfg As New KonfigurasiThermal("Jual")
         Dim jenis As String = If(String.IsNullOrEmpty(jenisPrinterOverride),
@@ -456,9 +493,9 @@ Module ModulePrinterJual
     ' ============================================================
     ' ENTRY POINT PREVIEW PENJUALAN
     ' ============================================================
-    Public Sub PreviewPenjualan(noFaktur As String)
+    Public Sub PreviewPenjualan(noFaktur As String, Optional isSalesOrder As Boolean = False)
         If String.IsNullOrEmpty(noFaktur) Then Exit Sub
-        MuatDataPenjualan(noFaktur)
+        MuatDataPenjualan(noFaktur, isSalesOrder)
         Dim cetak As New GdiCetakJualThermalMatrik()
         cetak.TampilkanPreview()
     End Sub
