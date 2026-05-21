@@ -1,37 +1,63 @@
-﻿Tentu, berikut adalah catatan rilis mendetail untuk aplikasi Kasir berdasarkan perubahan kode yang Anda berikan:
+﻿```markdown
+## Catatan Rilis Teknis Aplikasi Kasir - Versi 15.2026.522.15
+
+### 1. Perubahan Versi Aplikasi
+- **File:** `My Project/AssemblyInfo.vb`
+- **Deskripsi:** 
+  - Versi aplikasi diperbarui menjadi `15.2026.522.15` (sebagian dari versããåé² dari 15.2026.522.13).
+  - Cambian versi file juga disesuaikan sehingga sesuai dengan versi utama.  
+  - Perubahan ini memungkinkan identifikasi yang lebih jelas dan menumpuk update yang lebih besar.
 
 ---
 
-# Catatan Rilis Aplikasi Kasir - Versi 15.2026.522.13
-
-Kami dengan senang hati mengumumkan pembaruan minor untuk aplikasi Kasir. Rilis ini berfokus pada pembaruan metadata versi internal dan konfigurasi mekanisme pembaruan otomatis, memastikan konsistensi dan kesiapan untuk pembaruan di masa mendatang.
-
-## Detail Perubahan
-
-### 1. Pembaruan Versi Aplikasi Internal
-
-*   **File/Modul:** `AppKasir/My Project/AssemblyInfo.vb`
-*   **Penjelasan Teknis:**
-    *   Metadata versi internal aplikasi (`AssemblyVersion` dan `AssemblyFileVersion`) telah ditingkatkan dari `15.2026.522.12` menjadi `15.2026.522.13`.
-    *   `AssemblyInfo.vb` adalah file konfigurasi penting dalam proyek .NET yang mendefinisikan atribut-atribut untuk assembly (rakitan) aplikasi, termasuk versi. Peningkatan ini menandakan adanya rilis atau build baru aplikasi dan sangat penting untuk pelacakan versi yang akurat dalam lingkungan pengembangan, deployment, dan runtime.
-
-### 2. Konfigurasi Mekanisme Pembaruan Otomatis
-
-*   **File/Modul:** `update.xml`
-*   **Penjelasan Teknis:**
-    *   File konfigurasi `update.xml` yang digunakan oleh mekanisme pembaruan otomatis aplikasi telah diperbarui untuk menunjuk ke versi terbaru `15.2026.522.13`.
-    *   Secara spesifik, nilai-nilai pada tag XML berikut telah disesuaikan:
-        *   `<version>`: Diperbarui dari `15.2026.522.12` menjadi `15.2026.522.13`.
-        *   `<url>`: Tautan unduhan paket pembaruan ZIP telah diperbarui untuk mencerminkan versi baru (`v15.2026.522.13`).
-        *   `<changelog>`: Tautan ke catatan rilis (changelog) di GitHub juga telah diperbarui untuk menunjuk ke tag rilis yang sesuai (`v15.2026.522.13`).
-    *   Perubahan ini memastikan bahwa aplikasi Anda akan secara akurat mendeteksi ketersediaan versi terbaru ini, mengunduh paket pembaruan yang benar, dan menampilkan catatan rilis yang relevan ketika pengguna memeriksa adanya pembaruan.
+### 2. Perubahan FormUtama (File: `FormUtama.designer.vb`)
+- **File:** `AppKasir/0Form/FormUtama.designer.vb`
+- **Deskripsi:**  
+  - **Tambaah Tombol Baru:**
+    - `BtnSalesOrder` (Tombol Sales Order) ditambahkan di posisi (112,5) dengan gaya penampilan yang lebih rapi.  
+    - Stil visual termasuk WARNA gambar (hijau keemasan), font "Arial Narrow"eran bold, dan warna teks (biru tua).
+  - **Perubahan Posisi Tombol:**
+    - Tombol `BtnKirimCabang` dilengkapi ke posisi (898,5) dari (806,5).
+    - Tombol lainnya seperti `BtnSuratJalan`, `BtnTransferBarang`, `BtnStokOpname`, `BtnBayarPiutang`, `BtnPindahStok`, `BtnRetuBelanja`, `BtnPenjualan`, `BtnReturPenjualan`, dan `BtnBayarHutang` juga dipindahkan dengan koordinat baru untuk memajukan layout tampilan.
+  - **Optimalisasi Tata Letak:**
+    - Semua tombol tetap dalam baris superi dengan penempatan horizontal yang lebih terdistribusikan.
 
 ---
 
-Kami merekomendasikan semua pengguna untuk memperbarui ke versi terbaru ini untuk mendapatkan pengalaman terbaik.
-
-Terima kasih atas dukungan Anda!
-
-Tim Pengembang AppKasir
+### 3. Perubahan File Resurs (File: `FormUtama.resx`)
+- **File:** `AppKasir/0Form/FormUtama.resx`
+- **Deskripsi:**  
+  - **Ubah Nama Icons Menu:**
+    - `MenuUtility.Image` baru menjadi icon untuk menu umum (diseberangi `MenuLaporan.Image`).
+    - Beberapa ikon menu lainnya diupdate, contoh:
+      - `BackupDatabaseToolStripMenuItem.Image` menggantikan `RestoreDatabaseToolStripMenuItem.Image`.
+      - `MenuKaryawan.Image`, `WindowToolStripMenuItem.Image`, dan lainnya diupdate dengan data base64 baru.
+  - **Menambahkan Icon Baru:**
+    - `MenuLaporan.Image` ditambahkan sebagai ikon baru untuk menu genera la laporsi.
+  - **Perbaikan Data Icon:**
+    - Beberapa ikon memiliki string ren fungus base64 yang lebih recent untuk mendukung desain GUI yang lebih konsisten.
 
 ---
+
+### 4. Perubahan AssemblyInfo (File: `AssemblyInfo.vb`)
+- **File:** `AppKasir/My Project/AssemblyInfo.vb`
+- **Deskripsi:**  
+  - Versi assembly diperbarui menjadi `15.2026.522.15`.
+  - Versi file versi juga diubah sesuai versi utama.
+  - Perubahan ini mencerminkan juga update install aplikasi dalam file `update.xml`.
+
+---
+
+### 5. Perubahan File Update (File: `update.xml`)
+- **File:** `update.xml`
+- **Deskripsi:**  
+  - Versi aplikasi diperbarui menjadi `15.2026.522.15`.
+  - URL dan link changelog untuk download update juga diupdate menjadi versi terkini.
+  - Permintaan compulsori update tetap tidak aktif (`<mandatory>false</mandatory>`).
+
+---
+
+### Kesimpulan
+Update ini mencakup peningkatan visual UIç°ä¸­ tombol, reposisi elemen untuk memajukan efisiensi, perbaikan ikon menup, serta penyesuaian versi aplikasi untuk mendukung fitur atau optimasi berikutnya.
+```
+

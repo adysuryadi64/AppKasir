@@ -24,10 +24,10 @@ Partial Class FormUtama
     Private Sub InitializeComponent()
         Me.components = New System.ComponentModel.Container()
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(FormUtama))
-        Dim DataGridViewCellStyle7 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
-        Dim DataGridViewCellStyle8 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
-        Dim DataGridViewCellStyle5 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
-        Dim DataGridViewCellStyle6 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
+        Dim DataGridViewCellStyle1 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
+        Dim DataGridViewCellStyle2 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
+        Dim DataGridViewCellStyle3 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
+        Dim DataGridViewCellStyle4 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
         Me.StatusStrip1 = New System.Windows.Forms.StatusStrip()
         Me.LblServer = New System.Windows.Forms.ToolStripStatusLabel()
         Me.LblServerDb = New System.Windows.Forms.ToolStripStatusLabel()
@@ -190,6 +190,7 @@ Partial Class FormUtama
         Me.BtnSupliyer = New System.Windows.Forms.Button()
         Me.BTnPelanggan = New System.Windows.Forms.Button()
         Me.PanelTransaksi = New System.Windows.Forms.Panel()
+        Me.BtnSalesOrder = New System.Windows.Forms.Button()
         Me.BtnKirimCabang = New System.Windows.Forms.Button()
         Me.BtnSuratJalan = New System.Windows.Forms.Button()
         Me.BtnTransferBarang = New System.Windows.Forms.Button()
@@ -235,7 +236,6 @@ Partial Class FormUtama
         Me.ToolTip1 = New System.Windows.Forms.ToolTip(Me.components)
         Me.BtnMode = New System.Windows.Forms.Button()
         Me.WbDashboard = New System.Windows.Forms.WebBrowser()
-        Me.BtnSalesOrder = New System.Windows.Forms.Button()
         Me.StatusStrip1.SuspendLayout()
         Me.MenuStrip1.SuspendLayout()
         Me.PanelMaster.SuspendLayout()
@@ -1631,6 +1631,26 @@ Partial Class FormUtama
         Me.PanelTransaksi.TabIndex = 2
         Me.PanelTransaksi.Visible = False
         '
+        'BtnSalesOrder
+        '
+        Me.BtnSalesOrder.BackColor = System.Drawing.Color.FromArgb(CType(CType(255, Byte), Integer), CType(CType(255, Byte), Integer), CType(CType(255, Byte), Integer))
+        Me.BtnSalesOrder.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(CType(CType(100, Byte), Integer), CType(CType(116, Byte), Integer), CType(CType(139, Byte), Integer))
+        Me.BtnSalesOrder.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(CType(CType(226, Byte), Integer), CType(CType(232, Byte), Integer), CType(CType(240, Byte), Integer))
+        Me.BtnSalesOrder.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(CType(CType(241, Byte), Integer), CType(CType(245, Byte), Integer), CType(CType(249, Byte), Integer))
+        Me.BtnSalesOrder.FlatStyle = System.Windows.Forms.FlatStyle.Flat
+        Me.BtnSalesOrder.Font = New System.Drawing.Font("Arial Narrow", 9.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.BtnSalesOrder.ForeColor = System.Drawing.Color.FromArgb(CType(CType(15, Byte), Integer), CType(CType(23, Byte), Integer), CType(CType(42, Byte), Integer))
+        Me.BtnSalesOrder.Image = CType(resources.GetObject("BtnSalesOrder.Image"), System.Drawing.Image)
+        Me.BtnSalesOrder.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft
+        Me.BtnSalesOrder.Location = New System.Drawing.Point(112, 5)
+        Me.BtnSalesOrder.Name = "BtnSalesOrder"
+        Me.BtnSalesOrder.Size = New System.Drawing.Size(82, 46)
+        Me.BtnSalesOrder.TabIndex = 12
+        Me.BtnSalesOrder.Text = "Sales Order"
+        Me.BtnSalesOrder.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
+        Me.BtnSalesOrder.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText
+        Me.BtnSalesOrder.UseVisualStyleBackColor = False
+        '
         'BtnKirimCabang
         '
         Me.BtnKirimCabang.BackColor = System.Drawing.Color.FromArgb(CType(CType(255, Byte), Integer), CType(CType(255, Byte), Integer), CType(CType(255, Byte), Integer))
@@ -1642,7 +1662,7 @@ Partial Class FormUtama
         Me.BtnKirimCabang.ForeColor = System.Drawing.Color.FromArgb(CType(CType(15, Byte), Integer), CType(CType(23, Byte), Integer), CType(CType(42, Byte), Integer))
         Me.BtnKirimCabang.Image = CType(resources.GetObject("BtnKirimCabang.Image"), System.Drawing.Image)
         Me.BtnKirimCabang.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft
-        Me.BtnKirimCabang.Location = New System.Drawing.Point(806, 5)
+        Me.BtnKirimCabang.Location = New System.Drawing.Point(898, 5)
         Me.BtnKirimCabang.Name = "BtnKirimCabang"
         Me.BtnKirimCabang.Size = New System.Drawing.Size(82, 46)
         Me.BtnKirimCabang.TabIndex = 11
@@ -1662,7 +1682,7 @@ Partial Class FormUtama
         Me.BtnSuratJalan.ForeColor = System.Drawing.Color.FromArgb(CType(CType(15, Byte), Integer), CType(CType(23, Byte), Integer), CType(CType(42, Byte), Integer))
         Me.BtnSuratJalan.Image = CType(resources.GetObject("BtnSuratJalan.Image"), System.Drawing.Image)
         Me.BtnSuratJalan.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft
-        Me.BtnSuratJalan.Location = New System.Drawing.Point(982, 5)
+        Me.BtnSuratJalan.Location = New System.Drawing.Point(985, 5)
         Me.BtnSuratJalan.Name = "BtnSuratJalan"
         Me.BtnSuratJalan.Size = New System.Drawing.Size(83, 46)
         Me.BtnSuratJalan.TabIndex = 10
@@ -1682,7 +1702,7 @@ Partial Class FormUtama
         Me.BtnTransferBarang.ForeColor = System.Drawing.Color.FromArgb(CType(CType(15, Byte), Integer), CType(CType(23, Byte), Integer), CType(CType(42, Byte), Integer))
         Me.BtnTransferBarang.Image = CType(resources.GetObject("BtnTransferBarang.Image"), System.Drawing.Image)
         Me.BtnTransferBarang.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft
-        Me.BtnTransferBarang.Location = New System.Drawing.Point(623, 5)
+        Me.BtnTransferBarang.Location = New System.Drawing.Point(715, 5)
         Me.BtnTransferBarang.Name = "BtnTransferBarang"
         Me.BtnTransferBarang.Size = New System.Drawing.Size(87, 46)
         Me.BtnTransferBarang.TabIndex = 8
@@ -1702,7 +1722,7 @@ Partial Class FormUtama
         Me.BtnStokOpname.ForeColor = System.Drawing.Color.FromArgb(CType(CType(15, Byte), Integer), CType(CType(23, Byte), Integer), CType(CType(42, Byte), Integer))
         Me.BtnStokOpname.Image = CType(resources.GetObject("BtnStokOpname.Image"), System.Drawing.Image)
         Me.BtnStokOpname.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft
-        Me.BtnStokOpname.Location = New System.Drawing.Point(716, 5)
+        Me.BtnStokOpname.Location = New System.Drawing.Point(808, 5)
         Me.BtnStokOpname.Name = "BtnStokOpname"
         Me.BtnStokOpname.Size = New System.Drawing.Size(84, 46)
         Me.BtnStokOpname.TabIndex = 9
@@ -1722,7 +1742,7 @@ Partial Class FormUtama
         Me.BtnBayarPiutang.ForeColor = System.Drawing.Color.FromArgb(CType(CType(15, Byte), Integer), CType(CType(23, Byte), Integer), CType(CType(42, Byte), Integer))
         Me.BtnBayarPiutang.Image = CType(resources.GetObject("BtnBayarPiutang.Image"), System.Drawing.Image)
         Me.BtnBayarPiutang.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft
-        Me.BtnBayarPiutang.Location = New System.Drawing.Point(441, 5)
+        Me.BtnBayarPiutang.Location = New System.Drawing.Point(533, 5)
         Me.BtnBayarPiutang.Name = "BtnBayarPiutang"
         Me.BtnBayarPiutang.Size = New System.Drawing.Size(80, 46)
         Me.BtnBayarPiutang.TabIndex = 6
@@ -1742,7 +1762,7 @@ Partial Class FormUtama
         Me.BtnPindahStok.ForeColor = System.Drawing.Color.FromArgb(CType(CType(15, Byte), Integer), CType(CType(23, Byte), Integer), CType(CType(42, Byte), Integer))
         Me.BtnPindahStok.Image = CType(resources.GetObject("BtnPindahStok.Image"), System.Drawing.Image)
         Me.BtnPindahStok.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft
-        Me.BtnPindahStok.Location = New System.Drawing.Point(527, 5)
+        Me.BtnPindahStok.Location = New System.Drawing.Point(619, 5)
         Me.BtnPindahStok.Name = "BtnPindahStok"
         Me.BtnPindahStok.Size = New System.Drawing.Size(90, 46)
         Me.BtnPindahStok.TabIndex = 7
@@ -1762,7 +1782,7 @@ Partial Class FormUtama
         Me.BtnRetuBelanja.ForeColor = System.Drawing.Color.FromArgb(CType(CType(15, Byte), Integer), CType(CType(23, Byte), Integer), CType(CType(42, Byte), Integer))
         Me.BtnRetuBelanja.Image = CType(resources.GetObject("BtnRetuBelanja.Image"), System.Drawing.Image)
         Me.BtnRetuBelanja.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft
-        Me.BtnRetuBelanja.Location = New System.Drawing.Point(209, 5)
+        Me.BtnRetuBelanja.Location = New System.Drawing.Point(301, 5)
         Me.BtnRetuBelanja.Name = "BtnRetuBelanja"
         Me.BtnRetuBelanja.Size = New System.Drawing.Size(67, 46)
         Me.BtnRetuBelanja.TabIndex = 3
@@ -1783,7 +1803,7 @@ Partial Class FormUtama
         Me.BtnPenjualan.ForeColor = System.Drawing.Color.FromArgb(CType(CType(15, Byte), Integer), CType(CType(23, Byte), Integer), CType(CType(42, Byte), Integer))
         Me.BtnPenjualan.Image = CType(resources.GetObject("BtnPenjualan.Image"), System.Drawing.Image)
         Me.BtnPenjualan.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft
-        Me.BtnPenjualan.Location = New System.Drawing.Point(108, 5)
+        Me.BtnPenjualan.Location = New System.Drawing.Point(200, 5)
         Me.BtnPenjualan.Name = "BtnPenjualan"
         Me.BtnPenjualan.Size = New System.Drawing.Size(97, 46)
         Me.BtnPenjualan.TabIndex = 2
@@ -1824,7 +1844,7 @@ Partial Class FormUtama
         Me.BtnReturPenjualan.ForeColor = System.Drawing.Color.FromArgb(CType(CType(15, Byte), Integer), CType(CType(23, Byte), Integer), CType(CType(42, Byte), Integer))
         Me.BtnReturPenjualan.Image = CType(resources.GetObject("BtnReturPenjualan.Image"), System.Drawing.Image)
         Me.BtnReturPenjualan.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft
-        Me.BtnReturPenjualan.Location = New System.Drawing.Point(282, 5)
+        Me.BtnReturPenjualan.Location = New System.Drawing.Point(374, 5)
         Me.BtnReturPenjualan.Name = "BtnReturPenjualan"
         Me.BtnReturPenjualan.Size = New System.Drawing.Size(69, 46)
         Me.BtnReturPenjualan.TabIndex = 4
@@ -1844,7 +1864,7 @@ Partial Class FormUtama
         Me.BtnBayarHutang.ForeColor = System.Drawing.Color.FromArgb(CType(CType(15, Byte), Integer), CType(CType(23, Byte), Integer), CType(CType(42, Byte), Integer))
         Me.BtnBayarHutang.Image = CType(resources.GetObject("BtnBayarHutang.Image"), System.Drawing.Image)
         Me.BtnBayarHutang.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft
-        Me.BtnBayarHutang.Location = New System.Drawing.Point(357, 5)
+        Me.BtnBayarHutang.Location = New System.Drawing.Point(449, 5)
         Me.BtnBayarHutang.Name = "BtnBayarHutang"
         Me.BtnBayarHutang.Size = New System.Drawing.Size(78, 46)
         Me.BtnBayarHutang.TabIndex = 5
@@ -1975,19 +1995,19 @@ Partial Class FormUtama
         Me.DGVTransaksi.AllowUserToResizeRows = False
         Me.DGVTransaksi.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill
         Me.DGVTransaksi.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D
-        DataGridViewCellStyle7.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft
-        DataGridViewCellStyle7.Font = New System.Drawing.Font("Arial Narrow", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        DataGridViewCellStyle7.WrapMode = System.Windows.Forms.DataGridViewTriState.[True]
-        Me.DGVTransaksi.ColumnHeadersDefaultCellStyle = DataGridViewCellStyle7
+        DataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft
+        DataGridViewCellStyle1.Font = New System.Drawing.Font("Arial Narrow", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        DataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.[True]
+        Me.DGVTransaksi.ColumnHeadersDefaultCellStyle = DataGridViewCellStyle1
         Me.DGVTransaksi.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
-        DataGridViewCellStyle8.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft
-        DataGridViewCellStyle8.BackColor = System.Drawing.SystemColors.Window
-        DataGridViewCellStyle8.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        DataGridViewCellStyle8.ForeColor = System.Drawing.SystemColors.ControlText
-        DataGridViewCellStyle8.SelectionBackColor = System.Drawing.SystemColors.Highlight
-        DataGridViewCellStyle8.SelectionForeColor = System.Drawing.SystemColors.HighlightText
-        DataGridViewCellStyle8.WrapMode = System.Windows.Forms.DataGridViewTriState.[False]
-        Me.DGVTransaksi.DefaultCellStyle = DataGridViewCellStyle8
+        DataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft
+        DataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Window
+        DataGridViewCellStyle2.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        DataGridViewCellStyle2.ForeColor = System.Drawing.SystemColors.ControlText
+        DataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Highlight
+        DataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HighlightText
+        DataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.[False]
+        Me.DGVTransaksi.DefaultCellStyle = DataGridViewCellStyle2
         Me.DGVTransaksi.Dock = System.Windows.Forms.DockStyle.Fill
         Me.DGVTransaksi.Location = New System.Drawing.Point(0, 0)
         Me.DGVTransaksi.Margin = New System.Windows.Forms.Padding(3, 7, 3, 7)
@@ -2006,18 +2026,18 @@ Partial Class FormUtama
         Me.DGVDetail.AllowUserToResizeRows = False
         Me.DGVDetail.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill
         Me.DGVDetail.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D
-        DataGridViewCellStyle5.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        DataGridViewCellStyle5.WrapMode = System.Windows.Forms.DataGridViewTriState.[True]
-        Me.DGVDetail.ColumnHeadersDefaultCellStyle = DataGridViewCellStyle5
+        DataGridViewCellStyle3.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        DataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.[True]
+        Me.DGVDetail.ColumnHeadersDefaultCellStyle = DataGridViewCellStyle3
         Me.DGVDetail.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
-        DataGridViewCellStyle6.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft
-        DataGridViewCellStyle6.BackColor = System.Drawing.SystemColors.Window
-        DataGridViewCellStyle6.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        DataGridViewCellStyle6.ForeColor = System.Drawing.SystemColors.ControlText
-        DataGridViewCellStyle6.SelectionBackColor = System.Drawing.SystemColors.Highlight
-        DataGridViewCellStyle6.SelectionForeColor = System.Drawing.SystemColors.ControlText
-        DataGridViewCellStyle6.WrapMode = System.Windows.Forms.DataGridViewTriState.[False]
-        Me.DGVDetail.DefaultCellStyle = DataGridViewCellStyle6
+        DataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft
+        DataGridViewCellStyle4.BackColor = System.Drawing.SystemColors.Window
+        DataGridViewCellStyle4.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        DataGridViewCellStyle4.ForeColor = System.Drawing.SystemColors.ControlText
+        DataGridViewCellStyle4.SelectionBackColor = System.Drawing.SystemColors.Highlight
+        DataGridViewCellStyle4.SelectionForeColor = System.Drawing.SystemColors.ControlText
+        DataGridViewCellStyle4.WrapMode = System.Windows.Forms.DataGridViewTriState.[False]
+        Me.DGVDetail.DefaultCellStyle = DataGridViewCellStyle4
         Me.DGVDetail.Dock = System.Windows.Forms.DockStyle.Fill
         Me.DGVDetail.Location = New System.Drawing.Point(0, 0)
         Me.DGVDetail.Margin = New System.Windows.Forms.Padding(3, 7, 3, 7)
@@ -2350,26 +2370,6 @@ Partial Class FormUtama
         Me.WbDashboard.Size = New System.Drawing.Size(1264, 577)
         Me.WbDashboard.TabIndex = 40
         Me.WbDashboard.WebBrowserShortcutsEnabled = False
-        '
-        'BtnSalesOrder
-        '
-        Me.BtnSalesOrder.BackColor = System.Drawing.Color.FromArgb(CType(CType(255, Byte), Integer), CType(CType(255, Byte), Integer), CType(CType(255, Byte), Integer))
-        Me.BtnSalesOrder.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(CType(CType(100, Byte), Integer), CType(CType(116, Byte), Integer), CType(CType(139, Byte), Integer))
-        Me.BtnSalesOrder.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(CType(CType(226, Byte), Integer), CType(CType(232, Byte), Integer), CType(CType(240, Byte), Integer))
-        Me.BtnSalesOrder.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(CType(CType(241, Byte), Integer), CType(CType(245, Byte), Integer), CType(CType(249, Byte), Integer))
-        Me.BtnSalesOrder.FlatStyle = System.Windows.Forms.FlatStyle.Flat
-        Me.BtnSalesOrder.Font = New System.Drawing.Font("Arial Narrow", 9.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.BtnSalesOrder.ForeColor = System.Drawing.Color.FromArgb(CType(CType(15, Byte), Integer), CType(CType(23, Byte), Integer), CType(CType(42, Byte), Integer))
-        Me.BtnSalesOrder.Image = CType(resources.GetObject("BtnSalesOrder.Image"), System.Drawing.Image)
-        Me.BtnSalesOrder.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft
-        Me.BtnSalesOrder.Location = New System.Drawing.Point(894, 5)
-        Me.BtnSalesOrder.Name = "BtnSalesOrder"
-        Me.BtnSalesOrder.Size = New System.Drawing.Size(82, 46)
-        Me.BtnSalesOrder.TabIndex = 12
-        Me.BtnSalesOrder.Text = "Sales Order"
-        Me.BtnSalesOrder.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
-        Me.BtnSalesOrder.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText
-        Me.BtnSalesOrder.UseVisualStyleBackColor = False
         '
         'FormUtama
         '
