@@ -81,17 +81,17 @@ Public Class FormCekUpdate
     Private Sub btnCekUpdate_Click(sender As Object, e As EventArgs) Handles btnCekUpdate.Click
         If btnCekUpdate.Text = "Unduh Update" AndAlso updateArgs IsNot Nothing Then
             ModuleVariabel.AplikasiSedangUpdate = True
-            ' Matikan TopMost agar dialog installer AutoUpdater bisa tampil di depan
-            Me.TopMost = False
-            Me.Owner?.Activate()  ' kembalikan fokus ke FormUtama sebentar agar z-order reset
+
+            ' Tutup FormCekUpdate dan overlay SEBELUM download dimulai
+            ' agar tidak ada form yang menghalangi dialog installer AutoUpdater
+            Try : Me.Close() : Catch : End Try
+
+            ' Mulai download — dialog installer AutoUpdater akan tampil bebas
             Try
                 AutoUpdater.DownloadUpdate(updateArgs)
             Catch ex As Exception
+                ' Jika gagal, batalkan flag update
                 ModuleVariabel.AplikasiSedangUpdate = False
-                Me.TopMost = True
-                lblStatus.Text = "Gagal mengunduh: " & ex.Message
-                SetWarnaBtn(False)
-                btnCekUpdate.Text = "Coba Lagi"
             End Try
             Return
         End If
@@ -113,14 +113,12 @@ Public Class FormCekUpdate
     End Sub
 
     Private Sub AutoUpdaterOnApplicationExitEvent()
-        ' Invoke ke UI thread agar aman dipanggil dari thread manapun
+        ' Dipanggil AutoUpdater setelah installer siap dijalankan
+        ' FormCekUpdate sudah ditutup saat klik Unduh — tinggal exit aplikasi
         If Me.InvokeRequired Then
             Me.Invoke(Sub() AutoUpdaterOnApplicationExitEvent())
             Return
         End If
-        ' Tutup FormCekUpdate dulu agar tidak ada form yang memblokir Application.Exit()
-        ' AplikasiSedangUpdate sudah True — FormUtama.FormClosing akan skip semua dialog
-        Try : Me.Close() : Catch : End Try
         Application.Exit()
     End Sub
 

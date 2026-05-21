@@ -359,17 +359,6 @@ Public Class FormUtama
         End If
     End Sub
 
-    ''' <summary>Saat FormUtama mendapat fokus, kembalikan FormCekUpdate ke depan jika sedang terbuka.</summary>
-    Private Sub FormUtama_Activated(sender As Object, e As EventArgs) Handles MyBase.Activated
-        If _bgOverlayCekUpdate IsNot Nothing AndAlso Not _bgOverlayCekUpdate.IsDisposed Then
-            _bgOverlayCekUpdate.BringToFront()
-            If Not FormCekUpdate.IsDisposed Then
-                FormCekUpdate.BringToFront()
-                FormCekUpdate.Activate()
-            End If
-        End If
-    End Sub
-
     Private Sub FormUtama_MdiChildActivate(sender As Object, e As EventArgs) Handles MyBase.MdiChildActivate
         ' Setiap kali MDI child dibuka atau diaktifkan, terapkan theme otomatis
         If ActiveMdiChild IsNot Nothing Then
@@ -3212,73 +3201,9 @@ Public Class FormUtama
     End Sub
 
 
-    ' Referensi overlay gelap untuk FormCekUpdate — agar bisa ditutup paksa dari FormUtama
-    Private _bgOverlayCekUpdate As Form = Nothing
-
-    Private Sub TutupCekUpdateDanOverlay()
-        ' Lepas owner dulu sebelum tutup — mencegah Win32Exception "Error creating window handle"
-        Try
-            If Not FormCekUpdate.IsDisposed Then
-                FormCekUpdate.Owner = Nothing
-                FormCekUpdate.Close()
-            End If
-        Catch : End Try
-        Try
-            If _bgOverlayCekUpdate IsNot Nothing AndAlso Not _bgOverlayCekUpdate.IsDisposed Then
-                _bgOverlayCekUpdate.Close()
-            End If
-        Catch : End Try
-        _bgOverlayCekUpdate = Nothing
-    End Sub
-
     Private Sub PeriksaUpdateAplikasiToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles PeriksaUpdateAplikasiToolStripMenuItem.Click
         TutupSemuaForm()
-
-        ' Jika sudah terbuka, cukup bawa ke depan
-        If _bgOverlayCekUpdate IsNot Nothing AndAlso Not _bgOverlayCekUpdate.IsDisposed Then
-            FormCekUpdate.BringToFront()
-            Return
-        End If
-
-        ' Buat efek overlay gelap (lightbox) — owner ke FormUtama (Me), bukan ke FormCekUpdate
-        Dim bg As New Form()
-        bg.StartPosition = FormStartPosition.Manual
-        bg.Bounds = Me.Bounds
-        bg.FormBorderStyle = FormBorderStyle.None
-        bg.Opacity = 0.6D
-        bg.BackColor = Color.Black
-        bg.ShowInTaskbar = False
-        bg.Show(Me)   ' overlay milik FormUtama
-        _bgOverlayCekUpdate = bg
-
-        ' FormCekUpdate di-show dengan owner FormUtama langsung (bukan bg)
-        ' agar tidak crash saat bg di-dispose
-        With FormCekUpdate
-            .StartPosition = FormStartPosition.CenterScreen
-            .Owner = Me
-            .TopMost = True   ' selalu di depan selama terbuka
-            .Show(Me)
-            .BringToFront()
-        End With
-
-        ' Saat FormCekUpdate ditutup — reset TopMost dan bersihkan overlay
-        AddHandler FormCekUpdate.FormClosed, Sub(s, ev)
-                                                 Try : FormCekUpdate.TopMost = False : Catch : End Try
-                                                 Try
-                                                     If _bgOverlayCekUpdate IsNot Nothing AndAlso Not _bgOverlayCekUpdate.IsDisposed Then
-                                                         _bgOverlayCekUpdate.Close()
-                                                     End If
-                                                 Catch : End Try
-                                                 _bgOverlayCekUpdate = Nothing
-                                             End Sub
-
-        ' Ikuti posisi FormUtama jika di-move
-        AddHandler Me.Move, Sub(s, ev)
-                                If _bgOverlayCekUpdate IsNot Nothing AndAlso Not _bgOverlayCekUpdate.IsDisposed Then
-                                    _bgOverlayCekUpdate.Bounds = Me.Bounds
-                                    FormCekUpdate.BringToFront()
-                                End If
-                            End Sub
+        FormCekUpdate.ShowDialog(Me)
     End Sub
 
     Private Sub CekIpKomputerToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles CekIpKomputerToolStripMenuItem.Click
@@ -3402,16 +3327,17 @@ Public Class FormUtama
     Private Sub FormUtama_FormClosing(ByVal sender As Object, ByVal e As System.Windows.Forms.FormClosingEventArgs) Handles Me.FormClosing
         ' Saat proses update berjalan — tutup semua form tanpa konfirmasi agar installer bisa berjalan
         If ModuleVariabel.AplikasiSedangUpdate Then
-            TutupCekUpdateDanOverlay()
-            ' Tutup semua MDI children
+            ' FormCekUpdate sudah ditutup saat klik Unduh — cukup tutup MDI children
             For Each frm As Form In MdiChildren
                 Try : frm.Close() : Catch : End Try
             Next
-            Exit Sub  ' Biarkan Application.Exit() berjalan normal tanpa dialog
+            Exit Sub  ' Langsung exit tanpa dialog apapun
         End If
 
-        ' Paksa tutup FormCekUpdate dan overlay jika sedang terbuka (modeless)
-        TutupCekUpdateDanOverlay()
+        ' Paksa tutup FormCekUpdate jika sedang terbuka sebagai dialog
+        Try
+            If Not FormCekUpdate.IsDisposed Then FormCekUpdate.Close()
+        Catch : End Try
 
         ' Tanyakan apakah pengguna ingin melakukan backup sebelum keluar
         If MessageBox.Show("BACKUP DATA ?", "Konfirmasi Backup", MessageBoxButtons.YesNo) = DialogResult.Yes Then
