@@ -401,14 +401,20 @@ Friend Module ModulHakAkses
     ''' </summary>
     Public Sub CacheBatasSatuan()
         Try
+            ' Cari dgn key baru (label text) dan key lama (migrasi) — tanpa filter UserName
             Using cmd As New MySqlCommand(
-                "SELECT Role, ModuleName FROM hakaksesuser WHERE Role IN ('JualBatasSatuanSedang','JualBatasSatuanBesar') AND UserName = 'SYSTEM'", conn)
+                "SELECT Role, ModuleName FROM hakaksesuser " &
+                "WHERE Role IN ('Batas qty satuan sedang (qty >=:)','Batas qty satuan besar (qty >=:)','JualBatasSatuanSedang','JualBatasSatuanBesar')", conn)
                 Using rd As MySqlDataReader = cmd.ExecuteReader()
                     While rd.Read()
                         Dim role As String = rd("Role").ToString()
                         Dim val As Integer = ModuleAngka.ParseInteger(rd("ModuleName"), 0)
-                        If role = "JualBatasSatuanSedang" AndAlso val > 0 Then _batasSatuanSedang = val
-                        If role = "JualBatasSatuanBesar" AndAlso val > 0 Then _batasSatuanBesar = val
+                        If (role = "Batas qty satuan sedang (qty >=:)" OrElse role = "JualBatasSatuanSedang") AndAlso val > 0 Then
+                            _batasSatuanSedang = val
+                        End If
+                        If (role = "Batas qty satuan besar (qty >=:)" OrElse role = "JualBatasSatuanBesar") AndAlso val > 0 Then
+                            _batasSatuanBesar = val
+                        End If
                     End While
                 End Using
             End Using

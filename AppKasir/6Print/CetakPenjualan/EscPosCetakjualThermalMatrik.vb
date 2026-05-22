@@ -449,6 +449,19 @@ Public Class EscPosCetakjualThermalMatrik
                 esc.CetakTengah(baris, _cfg.EscUkuranFooter)
             Next
         End If
+
+        ' ── Blok Poin Loyalitas (Req 6) ──────────────────────────
+        ' Hanya tampil jika: sistem poin aktif, ada pelanggan, dan ada data poin
+        If LP_Aktif AndAlso Not String.IsNullOrEmpty(Jual_IdPelanggan) Then
+            Dim n As Integer = esc.JumlahKarakterPerBaris
+            esc.CetakGaris()
+            esc.CetakBaris(KiriKanan("Saldo Poin  :", Jual_SaldoPoinAkhir.ToString("N0"), n), _cfg.EscUkuranIsi)
+            If Jual_PoinDiperoleh > 0 Then
+                esc.CetakBaris(KiriKanan("Poin Diperoleh:", "+" & Jual_PoinDiperoleh.ToString("N0"), n), _cfg.EscUkuranIsi)
+            End If
+            esc.CetakGaris()
+        End If
+
         esc.CetakBarisKosong(3)
         If _cfg.PotongOtomatis Then esc.PotongKertas()
         esc.Flush()

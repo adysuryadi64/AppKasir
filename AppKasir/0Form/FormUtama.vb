@@ -249,7 +249,7 @@ Public Class FormUtama
         Dim buttons As Button() = {
         BtnToko, BtnBarang, BTnPelanggan, BtnSupliyer, BtnUser, BtnTabelRef, BtnKirimCabang, BtnHakAksesUser, BtnGeneralSetting, BtnKaryawan, BtnArmada,
         BtnBelanja, BtnPenjualan, BtnRetuBelanja, BtnReturPenjualan, BtnBayarHutang, BtnBayarPiutang, BtnStokOpname, BtnPindahStok, BtnTransferBarang,
-        BtnSuratJalan, BtnMasterCabang, BtnSalesOrder
+        BtnSuratJalan, BtnMasterCabang, BtnSalesOrder, BtnMasterPoin, BtnTukarPoin
         }
         For Each button As Button In buttons
             ModuleTheme.SetNavButtonIdle(button)
@@ -683,6 +683,18 @@ Public Class FormUtama
         SetButtonBackgroundColor(BtnGeneralSetting)
         TutupSemuaForm()
         BukaFormMdi(My.Forms.FormGeneralSetting)
+    End Sub
+
+    Private Sub BtnMasterPoin_Click(sender As Object, e As EventArgs) Handles BtnMasterPoin.Click
+        SetButtonBackgroundColor(BtnMasterPoin)
+        TutupSemuaForm()
+        BukaFormMdi(My.Forms.FormMasterPoin)
+    End Sub
+
+    Private Sub BtnTukarPoin_Click(sender As Object, e As EventArgs) Handles BtnTukarPoin.Click
+        SetButtonBackgroundColor(BtnTukarPoin)
+        TutupSemuaForm()
+        BukaFormMdi(My.Forms.FormTukarPoin)
     End Sub
 
 

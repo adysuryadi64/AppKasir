@@ -78,6 +78,7 @@ Partial Class FormJual
         Me.Label16 = New System.Windows.Forms.Label()
         Me.LblLokasiBarang = New System.Windows.Forms.Label()
         Me.LbLKodePel = New System.Windows.Forms.Label()
+        Me.LblSaldoPoin = New System.Windows.Forms.Label()
         Me.CmbPelanggan = New System.Windows.Forms.ComboBox()
         Me.LblJenisPl = New System.Windows.Forms.Label()
         Me.Label4 = New System.Windows.Forms.Label()
@@ -515,6 +516,7 @@ Partial Class FormJual
         Me.GBInput.Controls.Add(Me.Label16)
         Me.GBInput.Controls.Add(Me.LblLokasiBarang)
         Me.GBInput.Controls.Add(Me.LbLKodePel)
+        Me.GBInput.Controls.Add(Me.LblSaldoPoin)
         Me.GBInput.Controls.Add(Me.CmbPelanggan)
         Me.GBInput.Controls.Add(Me.LblJenisPl)
         Me.GBInput.Controls.Add(Me.Label4)
@@ -639,6 +641,19 @@ Partial Class FormJual
         Me.LbLKodePel.Size = New System.Drawing.Size(51, 16)
         Me.LbLKodePel.TabIndex = 73
         Me.LbLKodePel.Text = "KodePl"
+        '
+        'LblSaldoPoin
+        '
+        Me.LblSaldoPoin.AutoSize = True
+        Me.LblSaldoPoin.BackColor = System.Drawing.Color.Transparent
+        Me.LblSaldoPoin.Font = New System.Drawing.Font("Century Gothic", 9.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.LblSaldoPoin.ForeColor = System.Drawing.Color.DarkBlue
+        Me.LblSaldoPoin.Location = New System.Drawing.Point(570, 95)
+        Me.LblSaldoPoin.Name = "LblSaldoPoin"
+        Me.LblSaldoPoin.Size = New System.Drawing.Size(80, 15)
+        Me.LblSaldoPoin.TabIndex = 74
+        Me.LblSaldoPoin.Text = ""
+        Me.LblSaldoPoin.Visible = False
         '
         'CmbPelanggan
         '
@@ -1983,6 +1998,7 @@ Partial Class FormJual
     Friend WithEvents Label16 As Label
     Friend WithEvents LblLokasiBarang As Label
     Friend WithEvents LbLKodePel As Label
+    Friend WithEvents LblSaldoPoin As Label
     Friend WithEvents CmbPelanggan As ComboBox
     Friend WithEvents LblJenisPl As Label
     Friend WithEvents Label4 As Label

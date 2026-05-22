@@ -118,21 +118,6 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
-  <data name="BtnSettingPrinter.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
-    <value>
-        iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAY
-        mwAAGJsBSXWDlAAAAgVJREFUOE/FlL9rFUEQxxO1sBAUBMVGEA3aiTxv5p5iVsy7mUPfzeyLnGhjIQgK
-        YpFCQpq0NoL+C2oTaws7C/EhiLxCsBARrCzsRBB/EGX27r0km0t8guAXFnZ3Zj83czO7ExP/WykVh5BF
-        0tw759z22D62WtzbhyRPkPUXsH5F1mVgfRH7jSXnyh3A8gZIX6XkAVgXkOV7kksv9h1LwHoLST8mM343
-        kr9uMORi1mwGtUj/Kn0geQqk9+r5A2B9G+BczFZwXU4ymY7PbShkfYkk8zavQDIwaICRzCPrl4R8Nz7X
-        qAqg74H0zuo9YH2YsFxD8q1QqKw4sPZkg4bR2LB5bD/qdFcVvT6Obev0J5ipncsxYLmNZ4q9sW2NNoQt
-        Lm5BkquQF6ktW53ufuuATSvcBGt1yp1lWW49znLY/pcVw1oFSD/bOmV/IeYENcHqvZs2P5H7gxUwGqTn
-        Y9ZmsIEdCDeE5FmoKMk7ILkCLM9rqHWBH8Gcc9uQpN8IYxlYysjyehgRUHEj+OQ6s7InP0dAZD2NJN/a
-        WW9PDBt+AEguI+uHKkXpp1lxEkkf1Sl/Qpa5EdCqBqw/2tQ9Yi0Qw4bCTHDd/wuvj7+02s80CSRLFnZ9
-        nfoxzISdc1MrKVYVDiPXs7GvaTJh37aH01okNprCM0Z6FzO5aGtgPYUk9+2tjH3/mX4DTwb4PR7vhfAA
-        AAAASUVORK5CYII=
-</value>
-  </data>
   <data name="BtnDaftarBarang.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAY
@@ -201,9 +186,6 @@
   <metadata name="SUMBER.UserAddedColumn" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>True</value>
   </metadata>
-  <metadata name="SUMBER_TRANS.UserAddedColumn" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-    <value>True</value>
-  </metadata>
   <metadata name="Nota.UserAddedColumn" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>True</value>
   </metadata>
@@ -223,6 +205,9 @@
     <value>True</value>
   </metadata>
   <metadata name="Lokasi.UserAddedColumn" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>True</value>
+  </metadata>
+  <metadata name="SUMBER_TRANS.UserAddedColumn" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>True</value>
   </metadata>
   <metadata name="btnHapus.UserAddedColumn" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">

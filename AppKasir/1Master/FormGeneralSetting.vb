@@ -18,10 +18,6 @@ Public Class FormGeneralSetting
         .Minimum = 1, .Maximum = 9999, .Value = 6, .Width = 70
     }
 
-    ' Label untuk batas satuan — disimpan agar bisa di-show/hide
-    Private _lblBatasSedang As Label
-    Private _lblBatasBesar As Label
-
     ' ToolTip untuk penjelasan setting
     Private toolTip As New ToolTip()
 
@@ -59,7 +55,9 @@ Public Class FormGeneralSetting
             (LblGlobalIsiNominal, CmbGlobalIsiNominal, 1),
             (LblGlobalInfoStok, CmbGlobalInfoStok, 0),
             (LblHidePencarianAtas, CmbHidePencarianAtas, 0),
-            (LblJualAutoLevelSatuan, CmbJualAutoLevelSatuan, 1)
+            (LblJualAutoLevelSatuan, CmbJualAutoLevelSatuan, 1),
+            (LblPoinAktif, CmbPoinAktif, 1),
+            (LblPoinMekanisme, CmbPoinMekanisme, 0)
         }
     End Sub
 
@@ -95,6 +93,10 @@ Public Class FormGeneralSetting
         toolTip.SetToolTip(LblGlobalInfoStok, "Jika 'Iya': Tampilkan stok Toko & Gudang" & vbCrLf & "Jika 'Tidak': Tampilkan stok lokasi aktif saja")
         toolTip.SetToolTip(LblHidePencarianAtas, "Jika 'Iya': Sembunyikan panel pencarian di atas data grid" & vbCrLf & "Jika 'Tidak': Tampilkan panel pencarian di atas data grid")
         toolTip.SetToolTip(LblJualAutoLevelSatuan, "Jika 'Iya': Satuan otomatis berubah sesuai qty (kecil/sedang/besar)" & vbCrLf & "Batas qty diatur di General Setting → Batas Satuan Sedang & Besar" & vbCrLf & "Jika 'Tidak': Satuan tidak berubah otomatis")
+
+        ' GBLoyaltyPoin
+        toolTip.SetToolTip(LblPoinAktif, "Jika 'Iya': Sistem poin loyalitas aktif — poin dihitung dan dicatat setiap transaksi penjualan" & vbCrLf & "Jika 'Tidak': Sistem poin dinonaktifkan, tidak ada poin yang dihitung")
+        toolTip.SetToolTip(LblPoinMekanisme, "Per Item (Qty): Poin dihitung berdasarkan jumlah qty setiap item yang terjual" & vbCrLf & "Per Kelipatan Nominal: Poin dihitung berdasarkan kelipatan total belanja (Rp)" & vbCrLf & "Nilai earn rate diatur di Form Master Poin")
     End Sub
 
     Private Sub FormGeneralSetting_Load(sender As Object, e As EventArgs) Handles MyBase.Load
@@ -102,37 +104,14 @@ Public Class FormGeneralSetting
         SinkronkanHakAksesTanpaDuplikat()
         BacaCombobox()
 
-        ' Buat label dan NUD batas satuan secara programatik
-        ' Disembunyikan dulu — baru tampil saat CmbJualAutoLevelSatuan = "Iya"
-        _lblBatasSedang = New Label() With {
-            .Text = "Batas qty satuan sedang (qty >=):",
-            .Font = New System.Drawing.Font("Century Gothic", 9.0!),
-            .Location = New System.Drawing.Point(6, 221),
-            .Size = New System.Drawing.Size(376, 28),
-            .BorderStyle = BorderStyle.FixedSingle,
-            .TextAlign = ContentAlignment.MiddleLeft,
-            .Visible = False
-        }
+        ' NUD batas satuan — dibuat programatik (tidak perlu modifikasi Designer)
         NudBatasSatuanSedang.Location = New System.Drawing.Point(388, 223)
         NudBatasSatuanSedang.Visible = False
-
-        _lblBatasBesar = New Label() With {
-            .Text = "Batas qty satuan besar (qty >=):",
-            .Font = New System.Drawing.Font("Century Gothic", 9.0!),
-            .Location = New System.Drawing.Point(6, 255),
-            .Size = New System.Drawing.Size(376, 28),
-            .BorderStyle = BorderStyle.FixedSingle,
-            .TextAlign = ContentAlignment.MiddleLeft,
-            .Visible = False
-        }
         NudBatasSatuanBesar.Location = New System.Drawing.Point(388, 257)
         NudBatasSatuanBesar.Visible = False
 
-        GBPenjualan.Controls.Add(_lblBatasSedang)
         GBPenjualan.Controls.Add(NudBatasSatuanSedang)
-        GBPenjualan.Controls.Add(_lblBatasBesar)
         GBPenjualan.Controls.Add(NudBatasSatuanBesar)
-        GBPenjualan.Size = New System.Drawing.Size(GBPenjualan.Width, 298)
 
         ' Pasang event handler untuk show/hide batas satuan
         AddHandler CmbJualAutoLevelSatuan.SelectedIndexChanged, AddressOf CmbJualAutoLevelSatuan_SelectedIndexChanged
@@ -140,8 +119,12 @@ Public Class FormGeneralSetting
         ' Pasang event handler untuk validasi konflik Mode Pencarian vs Sembunyikan Pencarian
         AddHandler CmbGlobalFokus.SelectedIndexChanged, AddressOf CmbGlobalFokus_SelectedIndexChanged
 
+        ' Pasang event handler untuk show/hide mekanisme poin
+        AddHandler CmbPoinAktif.SelectedIndexChanged, AddressOf CmbPoinAktif_SelectedIndexChanged
+
         ' Terapkan visibilitas awal sesuai nilai yang sudah dibaca dari DB
         TerapkanVisibilitasBatasSatuan()
+        TerapkanVisibilitasPoinMekanisme()
     End Sub
 
     ''' <summary>
@@ -149,14 +132,28 @@ Public Class FormGeneralSetting
     ''' </summary>
     Private Sub TerapkanVisibilitasBatasSatuan()
         Dim tampil As Boolean = CmbJualAutoLevelSatuan.Text = "Iya"
-        If _lblBatasSedang IsNot Nothing Then _lblBatasSedang.Visible = tampil
-        If _lblBatasBesar IsNot Nothing Then _lblBatasBesar.Visible = tampil
+        LblJualBatasSedang.Visible = tampil
+        LblJualBatasBesar.Visible = tampil
         NudBatasSatuanSedang.Visible = tampil
         NudBatasSatuanBesar.Visible = tampil
     End Sub
 
     Private Sub CmbJualAutoLevelSatuan_SelectedIndexChanged(sender As Object, e As EventArgs)
         TerapkanVisibilitasBatasSatuan()
+    End Sub
+
+    ''' <summary>
+    ''' Tampilkan atau sembunyikan kontrol mekanisme poin berdasarkan pilihan CmbPoinAktif.
+    ''' CmbPoinMekanisme hanya tampil saat sistem poin diaktifkan ("Iya").
+    ''' </summary>
+    Private Sub TerapkanVisibilitasPoinMekanisme()
+        Dim tampil As Boolean = CmbPoinAktif.Text = "Iya"
+        LblPoinMekanisme.Visible = tampil
+        CmbPoinMekanisme.Visible = tampil
+    End Sub
+
+    Private Sub CmbPoinAktif_SelectedIndexChanged(sender As Object, e As EventArgs)
+        TerapkanVisibilitasPoinMekanisme()
     End Sub
 
     ''' <summary>
@@ -245,10 +242,10 @@ Public Class FormGeneralSetting
             End If
         Next
 
-        ' Baca nilai retensi audit trail
+        ' Baca nilai retensi audit trail dari tbl_audit_config
         Try
             Using cmd As New MySqlCommand(
-                "SELECT ModuleName FROM hakaksesuser WHERE Role = 'AuditRetensi' AND UserName = 'SYSTEM' LIMIT 1", conn)
+                "SELECT config_value FROM tbl_audit_config WHERE config_key = 'AuditRetensi' LIMIT 1", conn)
                 Dim result As Object = cmd.ExecuteScalar()
                 Dim retensi As Integer = ModuleAngka.ParseInteger(result, 3)
                 If retensi < 1 Then retensi = 1
@@ -258,29 +255,56 @@ Public Class FormGeneralSetting
             NudRetensiBulan.Value = 3
         End Try
 
-        ' Baca nilai batas qty auto level satuan
-        Try
-            Using cmd As New MySqlCommand(
-                "SELECT ModuleName FROM hakaksesuser WHERE Role = 'JualBatasSatuanSedang' AND UserName = 'SYSTEM' LIMIT 1", conn)
-                Dim result As Object = cmd.ExecuteScalar()
-                Dim batas As Integer = ModuleAngka.ParseInteger(result, 3)
-                If batas < 1 Then batas = 1
-                NudBatasSatuanSedang.Value = batas
-            End Using
-        Catch
+        ' Baca nilai batas qty auto level satuan via moduleDict (sama seperti setting lain)
+        Dim keySedang As String = LblJualBatasSedang.Text
+        Dim keyBesar As String = LblJualBatasBesar.Text
+        If moduleDict.ContainsKey(keySedang) Then
+            NudBatasSatuanSedang.Value = Math.Max(1, ModuleAngka.ParseInteger(moduleDict(keySedang), 3))
+        Else
+            ' Fallback: migrasi dari key lama 'JualBatasSatuanSedang'
             NudBatasSatuanSedang.Value = 3
-        End Try
-        Try
-            Using cmd As New MySqlCommand(
-                "SELECT ModuleName FROM hakaksesuser WHERE Role = 'JualBatasSatuanBesar' AND UserName = 'SYSTEM' LIMIT 1", conn)
-                Dim result As Object = cmd.ExecuteScalar()
-                Dim batas As Integer = ModuleAngka.ParseInteger(result, 6)
-                If batas < 1 Then batas = 1
-                NudBatasSatuanBesar.Value = batas
-            End Using
-        Catch
+            Try
+                Using cmd As New MySqlCommand(
+                    "SELECT ModuleName FROM hakaksesuser WHERE Role = 'JualBatasSatuanSedang' LIMIT 1", conn)
+                    Dim result As Object = cmd.ExecuteScalar()
+                    If result IsNot Nothing AndAlso Not IsDBNull(result) Then
+                        Dim val As Integer = Math.Max(1, ModuleAngka.ParseInteger(result, 3))
+                        NudBatasSatuanSedang.Value = val
+                        Using cmdUpd As New MySqlCommand(
+                            "UPDATE hakaksesuser SET Role = @newRole WHERE Role = 'JualBatasSatuanSedang'", conn)
+                            cmdUpd.Parameters.AddWithValue("@newRole", keySedang)
+                            cmdUpd.ExecuteNonQuery()
+                        End Using
+                    End If
+                End Using
+            Catch
+            End Try
+        End If
+        If moduleDict.ContainsKey(keyBesar) Then
+            NudBatasSatuanBesar.Value = Math.Max(1, ModuleAngka.ParseInteger(moduleDict(keyBesar), 6))
+        Else
+            ' Fallback: migrasi dari key lama 'JualBatasSatuanBesar'
             NudBatasSatuanBesar.Value = 6
-        End Try
+            Try
+                Using cmd As New MySqlCommand(
+                    "SELECT ModuleName FROM hakaksesuser WHERE Role = 'JualBatasSatuanBesar' LIMIT 1", conn)
+                    Dim result As Object = cmd.ExecuteScalar()
+                    If result IsNot Nothing AndAlso Not IsDBNull(result) Then
+                        Dim val As Integer = Math.Max(1, ModuleAngka.ParseInteger(result, 6))
+                        NudBatasSatuanBesar.Value = val
+                        Using cmdUpd As New MySqlCommand(
+                            "UPDATE hakaksesuser SET Role = @newRole WHERE Role = 'JualBatasSatuanBesar'", conn)
+                            cmdUpd.Parameters.AddWithValue("@newRole", keyBesar)
+                            cmdUpd.ExecuteNonQuery()
+                        End Using
+                    End If
+                End Using
+            Catch
+            End Try
+        End If
+
+        ' Baca setting Loyalty Poin — dibaca via RoleComboList (moduleDict loop di atas)
+        ' Blok khusus di bawah hanya untuk sinkronisasi ke Role key pendek yang dibaca ModuleLoyaltyPoin
     End Sub
 
     Private Sub BtnSimpan_Click(sender As Object, e As EventArgs) Handles BtnSimpan.Click
@@ -304,39 +328,54 @@ Public Class FormGeneralSetting
         Try
             transaksi = conn.BeginTransaction()
 
-            ' Simpan nilai retensi audit trail
+            ' Simpan nilai retensi audit trail ke tbl_audit_config
             Dim retensiBulan As Integer = ModuleAngka.ParseInteger(NudRetensiBulan.Value, 3)
             If retensiBulan < 1 Then retensiBulan = 1
             Using cmdRetensi As New MySqlCommand(
-                "INSERT INTO hakaksesuser (UserName, Role, ModuleName, CanRead, CanAdd, CanEdit, CanDelete) " &
-                "VALUES ('SYSTEM', 'AuditRetensi', @val, 0, 0, 0, 0) " &
-                "ON DUPLICATE KEY UPDATE ModuleName = @val",
+                "UPDATE tbl_audit_config SET config_value = @val WHERE config_key = 'AuditRetensi'",
                 conn, transaksi)
                 cmdRetensi.Parameters.AddWithValue("@val", retensiBulan.ToString())
                 cmdRetensi.ExecuteNonQuery()
             End Using
 
-            ' Simpan nilai batas qty auto level satuan
-            Dim batasSedang As Integer = ModuleAngka.ParseInteger(NudBatasSatuanSedang.Value, 3)
-            If batasSedang < 1 Then batasSedang = 1
+            ' Simpan nilai batas qty auto level satuan — UPDATE sama seperti setting lain, pakai teks label sebagai key
+            Dim batasSedang As Integer = Math.Max(1, ModuleAngka.ParseInteger(NudBatasSatuanSedang.Value, 3))
             Using cmdBatasSedang As New MySqlCommand(
-                "INSERT INTO hakaksesuser (UserName, Role, ModuleName, CanRead, CanAdd, CanEdit, CanDelete) " &
-                "VALUES ('SYSTEM', 'JualBatasSatuanSedang', @val, 0, 0, 0, 0) " &
-                "ON DUPLICATE KEY UPDATE ModuleName = @val",
+                "UPDATE hakaksesuser SET ModuleName = @val WHERE Role = @Role",
                 conn, transaksi)
                 cmdBatasSedang.Parameters.AddWithValue("@val", batasSedang.ToString())
-                cmdBatasSedang.ExecuteNonQuery()
+                cmdBatasSedang.Parameters.AddWithValue("@Role", LblJualBatasSedang.Text)
+                If cmdBatasSedang.ExecuteNonQuery() = 0 Then
+                    ' Record belum ada — INSERT baru
+                    Using cmdIns As New MySqlCommand(
+                        "INSERT INTO hakaksesuser (UserName, Role, ModuleName, CanRead, CanAdd, CanEdit, CanDelete) " &
+                        "VALUES ('Semua', @Role, @val, 0, 0, 0, 0)", conn, transaksi)
+                        cmdIns.Parameters.AddWithValue("@val", batasSedang.ToString())
+                        cmdIns.Parameters.AddWithValue("@Role", LblJualBatasSedang.Text)
+                        cmdIns.ExecuteNonQuery()
+                    End Using
+                End If
             End Using
-            Dim batasBesar As Integer = ModuleAngka.ParseInteger(NudBatasSatuanBesar.Value, 6)
-            If batasBesar < 1 Then batasBesar = 1
+            Dim batasBesar As Integer = Math.Max(1, ModuleAngka.ParseInteger(NudBatasSatuanBesar.Value, 6))
             Using cmdBatasBesar As New MySqlCommand(
-                "INSERT INTO hakaksesuser (UserName, Role, ModuleName, CanRead, CanAdd, CanEdit, CanDelete) " &
-                "VALUES ('SYSTEM', 'JualBatasSatuanBesar', @val, 0, 0, 0, 0) " &
-                "ON DUPLICATE KEY UPDATE ModuleName = @val",
+                "UPDATE hakaksesuser SET ModuleName = @val WHERE Role = @Role",
                 conn, transaksi)
                 cmdBatasBesar.Parameters.AddWithValue("@val", batasBesar.ToString())
-                cmdBatasBesar.ExecuteNonQuery()
+                cmdBatasBesar.Parameters.AddWithValue("@Role", LblJualBatasBesar.Text)
+                If cmdBatasBesar.ExecuteNonQuery() = 0 Then
+                    Using cmdIns As New MySqlCommand(
+                        "INSERT INTO hakaksesuser (UserName, Role, ModuleName, CanRead, CanAdd, CanEdit, CanDelete) " &
+                        "VALUES ('Semua', @Role, @val, 0, 0, 0, 0)", conn, transaksi)
+                        cmdIns.Parameters.AddWithValue("@val", batasBesar.ToString())
+                        cmdIns.Parameters.AddWithValue("@Role", LblJualBatasBesar.Text)
+                        cmdIns.ExecuteNonQuery()
+                    End Using
+                End If
             End Using
+
+            ' Simpan setting Loyalty Poin — PoinAktif dan PoinMekanisme sudah masuk RoleComboList
+            ' sehingga disimpan via loop UPDATE WHERE Role = @Role di bawah (menggunakan teks label sebagai key).
+            ' Tidak perlu blok INSERT terpisah di sini.
 
             Using cmd As New MySqlCommand("UPDATE hakaksesuser SET ModuleName = @ModuleName WHERE Role = @Role", conn, transaksi)
                 cmd.Parameters.Add("@ModuleName", MySqlDbType.VarChar)
@@ -377,6 +416,7 @@ Public Class FormGeneralSetting
             MessageBox.Show("Perubahan telah disimpan.", "Informasi", MessageBoxButtons.OK, MessageBoxIcon.Information)
             ModulHakAkses.CacheGeneralSetting()
             ModulHakAkses.CacheBatasSatuan() ' Refresh cache batas qty satuan
+            ModuleLoyaltyPoin.MuatKonfigurasi() ' Refresh cache konfigurasi loyalty poin
         Catch ex As Exception
             If transaksi IsNot Nothing Then transaksi.Rollback()
             MessageBox.Show("Terjadi kesalahan: " & ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)

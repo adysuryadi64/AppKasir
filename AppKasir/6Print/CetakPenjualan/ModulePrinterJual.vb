@@ -57,6 +57,10 @@ Module ModulePrinterJual
     Public Jual_LokasiBarang As String = ""
     Public Jual_NoSO As String = ""                ' NO_SO — nomor Sales Order referensi (kosong jika bukan dari SO)
 
+    ' ── Data poin loyalitas ───────────────────────────────────
+    Public Jual_PoinDiperoleh As Integer = 0       ' Poin EARN dari faktur ini (0 jika tidak ada / poin tidak aktif)
+    Public Jual_SaldoPoinAkhir As Integer = 0      ' Saldo poin pelanggan setelah transaksi ini
+
     ' ── Data hutang pelanggan (Model 8) ──────────────────────
     Public Jual_HutangAwal As Decimal
     Public Jual_TotalHutang As Decimal
@@ -90,6 +94,7 @@ Module ModulePrinterJual
         MuatItemPenjualan(noFaktur, isSalesOrder)
         MuatHeaderPenjualan(noFaktur, isSalesOrder)
         MuatHutangPelangganJual()
+        MuatDataPoinJual(noFaktur)
     End Sub
 
     Private Sub MuatItemPenjualan(noFaktur As String, isSalesOrder As Boolean)
@@ -219,6 +224,32 @@ Module ModulePrinterJual
                 End If
             End Using
         End Using
+    End Sub
+
+    ''' <summary>
+    ''' Muat data poin loyalitas untuk struk — hanya jika sistem poin aktif dan ada pelanggan.
+    ''' Req 6: cetak saldo poin dan poin diperoleh di struk.
+    ''' </summary>
+    Private Sub MuatDataPoinJual(noFaktur As String)
+        Jual_PoinDiperoleh = 0
+        Jual_SaldoPoinAkhir = 0
+
+        ' Hanya muat jika sistem poin aktif dan ada pelanggan terpilih
+        If Not LP_Aktif Then Exit Sub
+        If String.IsNullOrEmpty(Jual_IdPelanggan) Then Exit Sub
+
+        Try
+            ' Ambil poin EARN dari faktur ini
+            Jual_PoinDiperoleh = ModuleLoyaltyPoin.AmbilPoinEarnDariFaktur(noFaktur)
+
+            ' Ambil saldo poin terkini pelanggan
+            Jual_SaldoPoinAkhir = ModuleLoyaltyPoin.AmbilSaldoPoin(Jual_IdPelanggan)
+        Catch ex As Exception
+            ' Jika tabel poin belum ada (migrasi belum dijalankan), abaikan saja
+            Debug.WriteLine($"[ModulePrinterJual.MuatDataPoinJual] {ex.Message}")
+            Jual_PoinDiperoleh = 0
+            Jual_SaldoPoinAkhir = 0
+        End Try
     End Sub
 
     ' ============================================================

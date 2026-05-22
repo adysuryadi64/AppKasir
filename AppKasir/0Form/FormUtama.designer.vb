@@ -24,10 +24,10 @@ Partial Class FormUtama
     Private Sub InitializeComponent()
         Me.components = New System.ComponentModel.Container()
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(FormUtama))
-        Dim DataGridViewCellStyle1 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
-        Dim DataGridViewCellStyle2 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
-        Dim DataGridViewCellStyle3 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
-        Dim DataGridViewCellStyle4 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
+        Dim DataGridViewCellStyle7 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
+        Dim DataGridViewCellStyle8 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
+        Dim DataGridViewCellStyle5 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
+        Dim DataGridViewCellStyle6 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
         Me.StatusStrip1 = New System.Windows.Forms.StatusStrip()
         Me.LblServer = New System.Windows.Forms.ToolStripStatusLabel()
         Me.LblServerDb = New System.Windows.Forms.ToolStripStatusLabel()
@@ -180,6 +180,7 @@ Partial Class FormUtama
         Me.BtnBarangRakitan = New System.Windows.Forms.Button()
         Me.BtnMasterCabang = New System.Windows.Forms.Button()
         Me.BtnGeneralSetting = New System.Windows.Forms.Button()
+        Me.BtnMasterPoin = New System.Windows.Forms.Button()
         Me.BtnKaryawan = New System.Windows.Forms.Button()
         Me.BtnArmada = New System.Windows.Forms.Button()
         Me.BtnTabelRef = New System.Windows.Forms.Button()
@@ -191,6 +192,7 @@ Partial Class FormUtama
         Me.BTnPelanggan = New System.Windows.Forms.Button()
         Me.PanelTransaksi = New System.Windows.Forms.Panel()
         Me.BtnSalesOrder = New System.Windows.Forms.Button()
+        Me.BtnTukarPoin = New System.Windows.Forms.Button()
         Me.BtnKirimCabang = New System.Windows.Forms.Button()
         Me.BtnSuratJalan = New System.Windows.Forms.Button()
         Me.BtnTransferBarang = New System.Windows.Forms.Button()
@@ -1352,6 +1354,7 @@ Partial Class FormUtama
         Me.PanelMaster.Controls.Add(Me.BtnBarangRakitan)
         Me.PanelMaster.Controls.Add(Me.BtnMasterCabang)
         Me.PanelMaster.Controls.Add(Me.BtnGeneralSetting)
+        Me.PanelMaster.Controls.Add(Me.BtnMasterPoin)
         Me.PanelMaster.Controls.Add(Me.BtnKaryawan)
         Me.PanelMaster.Controls.Add(Me.BtnArmada)
         Me.PanelMaster.Controls.Add(Me.BtnTabelRef)
@@ -1378,7 +1381,7 @@ Partial Class FormUtama
         Me.BtnBarangRakitan.ForeColor = System.Drawing.Color.FromArgb(CType(CType(15, Byte), Integer), CType(CType(23, Byte), Integer), CType(CType(42, Byte), Integer))
         Me.BtnBarangRakitan.Image = CType(resources.GetObject("BtnBarangRakitan.Image"), System.Drawing.Image)
         Me.BtnBarangRakitan.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft
-        Me.BtnBarangRakitan.Location = New System.Drawing.Point(996, 5)
+        Me.BtnBarangRakitan.Location = New System.Drawing.Point(1006, 5)
         Me.BtnBarangRakitan.Name = "BtnBarangRakitan"
         Me.BtnBarangRakitan.Size = New System.Drawing.Size(77, 46)
         Me.BtnBarangRakitan.TabIndex = 14
@@ -1420,12 +1423,30 @@ Partial Class FormUtama
         Me.BtnGeneralSetting.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft
         Me.BtnGeneralSetting.Location = New System.Drawing.Point(913, 5)
         Me.BtnGeneralSetting.Name = "BtnGeneralSetting"
-        Me.BtnGeneralSetting.Size = New System.Drawing.Size(77, 46)
+        Me.BtnGeneralSetting.Size = New System.Drawing.Size(87, 46)
         Me.BtnGeneralSetting.TabIndex = 10
         Me.BtnGeneralSetting.Text = "General Setting"
         Me.BtnGeneralSetting.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
         Me.BtnGeneralSetting.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText
         Me.BtnGeneralSetting.UseVisualStyleBackColor = False
+        '
+        'BtnMasterPoin
+        '
+        Me.BtnMasterPoin.BackColor = System.Drawing.Color.FromArgb(CType(CType(255, Byte), Integer), CType(CType(255, Byte), Integer), CType(CType(255, Byte), Integer))
+        Me.BtnMasterPoin.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(CType(CType(100, Byte), Integer), CType(CType(116, Byte), Integer), CType(CType(139, Byte), Integer))
+        Me.BtnMasterPoin.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(CType(CType(226, Byte), Integer), CType(CType(232, Byte), Integer), CType(CType(240, Byte), Integer))
+        Me.BtnMasterPoin.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(CType(CType(241, Byte), Integer), CType(CType(245, Byte), Integer), CType(CType(249, Byte), Integer))
+        Me.BtnMasterPoin.FlatStyle = System.Windows.Forms.FlatStyle.Flat
+        Me.BtnMasterPoin.Font = New System.Drawing.Font("Arial Narrow", 9.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.BtnMasterPoin.ForeColor = System.Drawing.Color.FromArgb(CType(CType(15, Byte), Integer), CType(CType(23, Byte), Integer), CType(CType(42, Byte), Integer))
+        Me.BtnMasterPoin.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft
+        Me.BtnMasterPoin.Location = New System.Drawing.Point(1088, 5)
+        Me.BtnMasterPoin.Name = "BtnMasterPoin"
+        Me.BtnMasterPoin.Size = New System.Drawing.Size(83, 46)
+        Me.BtnMasterPoin.TabIndex = 15
+        Me.BtnMasterPoin.Text = "Master Poin"
+        Me.BtnMasterPoin.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
+        Me.BtnMasterPoin.UseVisualStyleBackColor = False
         '
         'BtnKaryawan
         '
@@ -1613,6 +1634,7 @@ Partial Class FormUtama
         Me.PanelTransaksi.BackColor = System.Drawing.Color.WhiteSmoke
         Me.PanelTransaksi.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
         Me.PanelTransaksi.Controls.Add(Me.BtnSalesOrder)
+        Me.PanelTransaksi.Controls.Add(Me.BtnTukarPoin)
         Me.PanelTransaksi.Controls.Add(Me.BtnKirimCabang)
         Me.PanelTransaksi.Controls.Add(Me.BtnSuratJalan)
         Me.PanelTransaksi.Controls.Add(Me.BtnTransferBarang)
@@ -1690,6 +1712,24 @@ Partial Class FormUtama
         Me.BtnSuratJalan.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
         Me.BtnSuratJalan.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText
         Me.BtnSuratJalan.UseVisualStyleBackColor = False
+        '
+        'BtnTukarPoin
+        '
+        Me.BtnTukarPoin.BackColor = System.Drawing.Color.FromArgb(CType(CType(255, Byte), Integer), CType(CType(255, Byte), Integer), CType(CType(255, Byte), Integer))
+        Me.BtnTukarPoin.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(CType(CType(100, Byte), Integer), CType(CType(116, Byte), Integer), CType(CType(139, Byte), Integer))
+        Me.BtnTukarPoin.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(CType(CType(226, Byte), Integer), CType(CType(232, Byte), Integer), CType(CType(240, Byte), Integer))
+        Me.BtnTukarPoin.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(CType(CType(241, Byte), Integer), CType(CType(245, Byte), Integer), CType(CType(249, Byte), Integer))
+        Me.BtnTukarPoin.FlatStyle = System.Windows.Forms.FlatStyle.Flat
+        Me.BtnTukarPoin.Font = New System.Drawing.Font("Arial Narrow", 9.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.BtnTukarPoin.ForeColor = System.Drawing.Color.FromArgb(CType(CType(15, Byte), Integer), CType(CType(23, Byte), Integer), CType(CType(42, Byte), Integer))
+        Me.BtnTukarPoin.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft
+        Me.BtnTukarPoin.Location = New System.Drawing.Point(1073, 5)
+        Me.BtnTukarPoin.Name = "BtnTukarPoin"
+        Me.BtnTukarPoin.Size = New System.Drawing.Size(83, 46)
+        Me.BtnTukarPoin.TabIndex = 13
+        Me.BtnTukarPoin.Text = "Tukar Poin"
+        Me.BtnTukarPoin.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
+        Me.BtnTukarPoin.UseVisualStyleBackColor = False
         '
         'BtnTransferBarang
         '
@@ -1995,19 +2035,19 @@ Partial Class FormUtama
         Me.DGVTransaksi.AllowUserToResizeRows = False
         Me.DGVTransaksi.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill
         Me.DGVTransaksi.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D
-        DataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft
-        DataGridViewCellStyle1.Font = New System.Drawing.Font("Arial Narrow", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        DataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.[True]
-        Me.DGVTransaksi.ColumnHeadersDefaultCellStyle = DataGridViewCellStyle1
+        DataGridViewCellStyle7.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft
+        DataGridViewCellStyle7.Font = New System.Drawing.Font("Arial Narrow", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        DataGridViewCellStyle7.WrapMode = System.Windows.Forms.DataGridViewTriState.[True]
+        Me.DGVTransaksi.ColumnHeadersDefaultCellStyle = DataGridViewCellStyle7
         Me.DGVTransaksi.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
-        DataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft
-        DataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Window
-        DataGridViewCellStyle2.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        DataGridViewCellStyle2.ForeColor = System.Drawing.SystemColors.ControlText
-        DataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Highlight
-        DataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HighlightText
-        DataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.[False]
-        Me.DGVTransaksi.DefaultCellStyle = DataGridViewCellStyle2
+        DataGridViewCellStyle8.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft
+        DataGridViewCellStyle8.BackColor = System.Drawing.SystemColors.Window
+        DataGridViewCellStyle8.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        DataGridViewCellStyle8.ForeColor = System.Drawing.SystemColors.ControlText
+        DataGridViewCellStyle8.SelectionBackColor = System.Drawing.SystemColors.Highlight
+        DataGridViewCellStyle8.SelectionForeColor = System.Drawing.SystemColors.HighlightText
+        DataGridViewCellStyle8.WrapMode = System.Windows.Forms.DataGridViewTriState.[False]
+        Me.DGVTransaksi.DefaultCellStyle = DataGridViewCellStyle8
         Me.DGVTransaksi.Dock = System.Windows.Forms.DockStyle.Fill
         Me.DGVTransaksi.Location = New System.Drawing.Point(0, 0)
         Me.DGVTransaksi.Margin = New System.Windows.Forms.Padding(3, 7, 3, 7)
@@ -2026,18 +2066,18 @@ Partial Class FormUtama
         Me.DGVDetail.AllowUserToResizeRows = False
         Me.DGVDetail.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill
         Me.DGVDetail.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D
-        DataGridViewCellStyle3.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        DataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.[True]
-        Me.DGVDetail.ColumnHeadersDefaultCellStyle = DataGridViewCellStyle3
+        DataGridViewCellStyle5.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        DataGridViewCellStyle5.WrapMode = System.Windows.Forms.DataGridViewTriState.[True]
+        Me.DGVDetail.ColumnHeadersDefaultCellStyle = DataGridViewCellStyle5
         Me.DGVDetail.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
-        DataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft
-        DataGridViewCellStyle4.BackColor = System.Drawing.SystemColors.Window
-        DataGridViewCellStyle4.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        DataGridViewCellStyle4.ForeColor = System.Drawing.SystemColors.ControlText
-        DataGridViewCellStyle4.SelectionBackColor = System.Drawing.SystemColors.Highlight
-        DataGridViewCellStyle4.SelectionForeColor = System.Drawing.SystemColors.ControlText
-        DataGridViewCellStyle4.WrapMode = System.Windows.Forms.DataGridViewTriState.[False]
-        Me.DGVDetail.DefaultCellStyle = DataGridViewCellStyle4
+        DataGridViewCellStyle6.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft
+        DataGridViewCellStyle6.BackColor = System.Drawing.SystemColors.Window
+        DataGridViewCellStyle6.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        DataGridViewCellStyle6.ForeColor = System.Drawing.SystemColors.ControlText
+        DataGridViewCellStyle6.SelectionBackColor = System.Drawing.SystemColors.Highlight
+        DataGridViewCellStyle6.SelectionForeColor = System.Drawing.SystemColors.ControlText
+        DataGridViewCellStyle6.WrapMode = System.Windows.Forms.DataGridViewTriState.[False]
+        Me.DGVDetail.DefaultCellStyle = DataGridViewCellStyle6
         Me.DGVDetail.Dock = System.Windows.Forms.DockStyle.Fill
         Me.DGVDetail.Location = New System.Drawing.Point(0, 0)
         Me.DGVDetail.Margin = New System.Windows.Forms.Padding(3, 7, 3, 7)
@@ -2628,6 +2668,8 @@ Partial Class FormUtama
     Friend WithEvents BtnBarangRakitan As Button
     Friend WithEvents LabaRugiBerjalanToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents BtnSalesOrder As Button
+    Friend WithEvents BtnTukarPoin As Button
+    Friend WithEvents BtnMasterPoin As Button
 End Class
 
 

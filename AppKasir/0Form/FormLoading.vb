@@ -325,7 +325,8 @@ Public Class FormLoading
             {"Cabang", FormUtama.BtnKirimCabang},
             {"Cabang Master", FormUtama.BtnMasterCabang},
             {"Sales Order", FormUtama.BtnSalesOrder},
-            {"Pembayaran Sales Order", FormUtama.BtnSalesOrder}
+            {"Pembayaran Sales Order", FormUtama.BtnSalesOrder},
+            {"Tukar Poin", FormUtama.BtnTukarPoin}
             }
 
         For Each moduleName As String In controls.Keys

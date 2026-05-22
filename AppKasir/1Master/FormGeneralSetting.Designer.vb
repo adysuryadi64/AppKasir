@@ -47,6 +47,8 @@ Partial Class FormGeneralSetting
         Me.CmbJualRugi = New System.Windows.Forms.ComboBox()
         Me.LblJualAutoLevelSatuan = New System.Windows.Forms.Label()
         Me.CmbJualAutoLevelSatuan = New System.Windows.Forms.ComboBox()
+        Me.LblJualBatasSedang = New System.Windows.Forms.Label()
+        Me.LblJualBatasBesar = New System.Windows.Forms.Label()
         Me.GBPembelian = New System.Windows.Forms.GroupBox()
         Me.CmbbeliNominal0 = New System.Windows.Forms.ComboBox()
         Me.LblbeliNominal0 = New System.Windows.Forms.Label()
@@ -64,6 +66,11 @@ Partial Class FormGeneralSetting
         Me.CmbBeliRugi = New System.Windows.Forms.ComboBox()
         Me.PanelInput = New System.Windows.Forms.Panel()
         Me.BtnClose = New System.Windows.Forms.Button()
+        Me.GBLoyaltyPoin = New System.Windows.Forms.GroupBox()
+        Me.CmbPoinMekanisme = New System.Windows.Forms.ComboBox()
+        Me.LblPoinMekanisme = New System.Windows.Forms.Label()
+        Me.CmbPoinAktif = New System.Windows.Forms.ComboBox()
+        Me.LblPoinAktif = New System.Windows.Forms.Label()
         Me.GbGlobalTransaksi = New System.Windows.Forms.GroupBox()
         Me.LblHidePencarianAtas = New System.Windows.Forms.Label()
         Me.CmbHidePencarianAtas = New System.Windows.Forms.ComboBox()
@@ -86,6 +93,7 @@ Partial Class FormGeneralSetting
         Me.GBPenjualan.SuspendLayout()
         Me.GBPembelian.SuspendLayout()
         Me.PanelInput.SuspendLayout()
+        Me.GBLoyaltyPoin.SuspendLayout()
         Me.GbGlobalTransaksi.SuspendLayout()
         Me.SuspendLayout()
         '
@@ -124,7 +132,7 @@ Partial Class FormGeneralSetting
         Me.BtnRestore.ForeColor = System.Drawing.Color.Black
         Me.BtnRestore.Image = CType(resources.GetObject("BtnRestore.Image"), System.Drawing.Image)
         Me.BtnRestore.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft
-        Me.BtnRestore.Location = New System.Drawing.Point(169, 430)
+        Me.BtnRestore.Location = New System.Drawing.Point(188, 387)
         Me.BtnRestore.Margin = New System.Windows.Forms.Padding(4)
         Me.BtnRestore.Name = "BtnRestore"
         Me.BtnRestore.Size = New System.Drawing.Size(114, 32)
@@ -146,7 +154,7 @@ Partial Class FormGeneralSetting
         Me.BtnSimpan.ForeColor = System.Drawing.Color.FromArgb(CType(CType(22, Byte), Integer), CType(CType(163, Byte), Integer), CType(CType(74, Byte), Integer))
         Me.BtnSimpan.Image = CType(resources.GetObject("BtnSimpan.Image"), System.Drawing.Image)
         Me.BtnSimpan.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft
-        Me.BtnSimpan.Location = New System.Drawing.Point(27, 430)
+        Me.BtnSimpan.Location = New System.Drawing.Point(29, 387)
         Me.BtnSimpan.Margin = New System.Windows.Forms.Padding(4)
         Me.BtnSimpan.Name = "BtnSimpan"
         Me.BtnSimpan.Size = New System.Drawing.Size(114, 32)
@@ -174,7 +182,7 @@ Partial Class FormGeneralSetting
         Me.GbReturBeli.Controls.Add(Me.LblReturBeliAlasan)
         Me.GbReturBeli.Dock = System.Windows.Forms.DockStyle.Top
         Me.GbReturBeli.Font = New System.Drawing.Font("Century Gothic", 9.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.GbReturBeli.Location = New System.Drawing.Point(0, 571)
+        Me.GbReturBeli.Location = New System.Drawing.Point(0, 629)
         Me.GbReturBeli.Name = "GbReturBeli"
         Me.GbReturBeli.Size = New System.Drawing.Size(594, 67)
         Me.GbReturBeli.TabIndex = 139
@@ -210,7 +218,7 @@ Partial Class FormGeneralSetting
         Me.GBReturJual.Controls.Add(Me.LblReturJualAlasan)
         Me.GBReturJual.Dock = System.Windows.Forms.DockStyle.Top
         Me.GBReturJual.Font = New System.Drawing.Font("Century Gothic", 9.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.GBReturJual.Location = New System.Drawing.Point(0, 498)
+        Me.GBReturJual.Location = New System.Drawing.Point(0, 556)
         Me.GBReturJual.Name = "GBReturJual"
         Me.GBReturJual.Size = New System.Drawing.Size(594, 73)
         Me.GBReturJual.TabIndex = 138
@@ -254,11 +262,13 @@ Partial Class FormGeneralSetting
         Me.GBPenjualan.Controls.Add(Me.CmbJualRugi)
         Me.GBPenjualan.Controls.Add(Me.LblJualAutoLevelSatuan)
         Me.GBPenjualan.Controls.Add(Me.CmbJualAutoLevelSatuan)
+        Me.GBPenjualan.Controls.Add(Me.LblJualBatasSedang)
+        Me.GBPenjualan.Controls.Add(Me.LblJualBatasBesar)
         Me.GBPenjualan.Dock = System.Windows.Forms.DockStyle.Top
         Me.GBPenjualan.Font = New System.Drawing.Font("Century Gothic", 9.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.GBPenjualan.Location = New System.Drawing.Point(0, 264)
         Me.GBPenjualan.Name = "GBPenjualan"
-        Me.GBPenjualan.Size = New System.Drawing.Size(594, 234)
+        Me.GBPenjualan.Size = New System.Drawing.Size(594, 292)
         Me.GBPenjualan.TabIndex = 135
         Me.GBPenjualan.TabStop = False
         Me.GBPenjualan.Text = "Penjualan"
@@ -400,6 +410,30 @@ Partial Class FormGeneralSetting
         Me.CmbJualAutoLevelSatuan.Name = "CmbJualAutoLevelSatuan"
         Me.CmbJualAutoLevelSatuan.Size = New System.Drawing.Size(196, 25)
         Me.CmbJualAutoLevelSatuan.TabIndex = 145
+        '
+        'LblJualBatasSedang
+        '
+        Me.LblJualBatasSedang.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
+        Me.LblJualBatasSedang.Font = New System.Drawing.Font("Century Gothic", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.LblJualBatasSedang.Location = New System.Drawing.Point(6, 221)
+        Me.LblJualBatasSedang.Name = "LblJualBatasSedang"
+        Me.LblJualBatasSedang.Size = New System.Drawing.Size(376, 28)
+        Me.LblJualBatasSedang.TabIndex = 146
+        Me.LblJualBatasSedang.Text = "Batas qty satuan sedang (qty >=:)"
+        Me.LblJualBatasSedang.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
+        Me.LblJualBatasSedang.Visible = False
+        '
+        'LblJualBatasBesar
+        '
+        Me.LblJualBatasBesar.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
+        Me.LblJualBatasBesar.Font = New System.Drawing.Font("Century Gothic", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.LblJualBatasBesar.Location = New System.Drawing.Point(6, 255)
+        Me.LblJualBatasBesar.Name = "LblJualBatasBesar"
+        Me.LblJualBatasBesar.Size = New System.Drawing.Size(376, 28)
+        Me.LblJualBatasBesar.TabIndex = 147
+        Me.LblJualBatasBesar.Text = "Batas qty satuan besar (qty >=:)"
+        Me.LblJualBatasBesar.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
+        Me.LblJualBatasBesar.Visible = False
         '
         'GBPembelian
         '
@@ -590,10 +624,11 @@ Partial Class FormGeneralSetting
         'PanelInput
         '
         Me.PanelInput.AutoScroll = True
+        Me.PanelInput.Controls.Add(Me.BtnSimpan)
         Me.PanelInput.Controls.Add(Me.BtnClose)
         Me.PanelInput.Controls.Add(Me.BtnRestore)
+        Me.PanelInput.Controls.Add(Me.GBLoyaltyPoin)
         Me.PanelInput.Controls.Add(Me.GbGlobalTransaksi)
-        Me.PanelInput.Controls.Add(Me.BtnSimpan)
         Me.PanelInput.Dock = System.Windows.Forms.DockStyle.Left
         Me.PanelInput.Location = New System.Drawing.Point(594, 47)
         Me.PanelInput.Name = "PanelInput"
@@ -613,7 +648,7 @@ Partial Class FormGeneralSetting
         Me.BtnClose.ForeColor = System.Drawing.Color.FromArgb(CType(CType(220, Byte), Integer), CType(CType(38, Byte), Integer), CType(CType(38, Byte), Integer))
         Me.BtnClose.Image = CType(resources.GetObject("BtnClose.Image"), System.Drawing.Image)
         Me.BtnClose.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft
-        Me.BtnClose.Location = New System.Drawing.Point(313, 429)
+        Me.BtnClose.Location = New System.Drawing.Point(361, 387)
         Me.BtnClose.Name = "BtnClose"
         Me.BtnClose.Size = New System.Drawing.Size(112, 32)
         Me.BtnClose.TabIndex = 140
@@ -621,6 +656,67 @@ Partial Class FormGeneralSetting
         Me.BtnClose.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
         Me.BtnClose.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText
         Me.BtnClose.UseVisualStyleBackColor = False
+        '
+        'GBLoyaltyPoin
+        '
+        Me.GBLoyaltyPoin.Controls.Add(Me.CmbPoinMekanisme)
+        Me.GBLoyaltyPoin.Controls.Add(Me.LblPoinMekanisme)
+        Me.GBLoyaltyPoin.Controls.Add(Me.CmbPoinAktif)
+        Me.GBLoyaltyPoin.Controls.Add(Me.LblPoinAktif)
+        Me.GBLoyaltyPoin.Dock = System.Windows.Forms.DockStyle.Top
+        Me.GBLoyaltyPoin.Font = New System.Drawing.Font("Century Gothic", 9.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.GBLoyaltyPoin.Location = New System.Drawing.Point(0, 273)
+        Me.GBLoyaltyPoin.Name = "GBLoyaltyPoin"
+        Me.GBLoyaltyPoin.Size = New System.Drawing.Size(597, 100)
+        Me.GBLoyaltyPoin.TabIndex = 140
+        Me.GBLoyaltyPoin.TabStop = False
+        Me.GBLoyaltyPoin.Text = "Loyalty Poin"
+        '
+        'CmbPoinMekanisme
+        '
+        Me.CmbPoinMekanisme.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
+        Me.CmbPoinMekanisme.Font = New System.Drawing.Font("Century Gothic", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.CmbPoinMekanisme.FormattingEnabled = True
+        Me.CmbPoinMekanisme.Items.AddRange(New Object() {"Per Item (Qty)", "Per Kelipatan Nominal"})
+        Me.CmbPoinMekanisme.Location = New System.Drawing.Point(386, 62)
+        Me.CmbPoinMekanisme.Margin = New System.Windows.Forms.Padding(4)
+        Me.CmbPoinMekanisme.Name = "CmbPoinMekanisme"
+        Me.CmbPoinMekanisme.Size = New System.Drawing.Size(196, 25)
+        Me.CmbPoinMekanisme.TabIndex = 144
+        '
+        'LblPoinMekanisme
+        '
+        Me.LblPoinMekanisme.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
+        Me.LblPoinMekanisme.Font = New System.Drawing.Font("Century Gothic", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.LblPoinMekanisme.Location = New System.Drawing.Point(6, 60)
+        Me.LblPoinMekanisme.Name = "LblPoinMekanisme"
+        Me.LblPoinMekanisme.Size = New System.Drawing.Size(374, 28)
+        Me.LblPoinMekanisme.TabIndex = 143
+        Me.LblPoinMekanisme.Text = "Mekanisme Perolehan Poin"
+        Me.LblPoinMekanisme.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
+        '
+        'CmbPoinAktif
+        '
+        Me.CmbPoinAktif.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
+        Me.CmbPoinAktif.Font = New System.Drawing.Font("Century Gothic", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.CmbPoinAktif.FormattingEnabled = True
+        Me.CmbPoinAktif.Items.AddRange(New Object() {"Tidak", "Iya"})
+        Me.CmbPoinAktif.Location = New System.Drawing.Point(386, 28)
+        Me.CmbPoinAktif.Margin = New System.Windows.Forms.Padding(4)
+        Me.CmbPoinAktif.Name = "CmbPoinAktif"
+        Me.CmbPoinAktif.Size = New System.Drawing.Size(196, 25)
+        Me.CmbPoinAktif.TabIndex = 142
+        '
+        'LblPoinAktif
+        '
+        Me.LblPoinAktif.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
+        Me.LblPoinAktif.Font = New System.Drawing.Font("Century Gothic", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.LblPoinAktif.Location = New System.Drawing.Point(6, 26)
+        Me.LblPoinAktif.Name = "LblPoinAktif"
+        Me.LblPoinAktif.Size = New System.Drawing.Size(374, 28)
+        Me.LblPoinAktif.TabIndex = 141
+        Me.LblPoinAktif.Text = "Aktifkan Sistem Poin Loyalitas"
+        Me.LblPoinAktif.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
         '
         'GbGlobalTransaksi
         '
@@ -642,7 +738,7 @@ Partial Class FormGeneralSetting
         Me.GbGlobalTransaksi.Font = New System.Drawing.Font("Century Gothic", 9.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.GbGlobalTransaksi.Location = New System.Drawing.Point(0, 0)
         Me.GbGlobalTransaksi.Name = "GbGlobalTransaksi"
-        Me.GbGlobalTransaksi.Size = New System.Drawing.Size(597, 423)
+        Me.GbGlobalTransaksi.Size = New System.Drawing.Size(597, 273)
         Me.GbGlobalTransaksi.TabIndex = 139
         Me.GbGlobalTransaksi.TabStop = False
         Me.GbGlobalTransaksi.Text = "Berlaku semua transaksi"
@@ -831,6 +927,7 @@ Partial Class FormGeneralSetting
         Me.GBPembelian.ResumeLayout(False)
         Me.PanelInput.ResumeLayout(False)
         Me.PanelInput.PerformLayout()
+        Me.GBLoyaltyPoin.ResumeLayout(False)
         Me.GbGlobalTransaksi.ResumeLayout(False)
         Me.ResumeLayout(False)
 
@@ -892,4 +989,11 @@ Partial Class FormGeneralSetting
     Friend WithEvents CmbHidePencarianAtas As ComboBox
     Friend WithEvents LblJualAutoLevelSatuan As Label
     Friend WithEvents CmbJualAutoLevelSatuan As ComboBox
+    Friend WithEvents LblJualBatasSedang As Label
+    Friend WithEvents LblJualBatasBesar As Label
+    Friend WithEvents GBLoyaltyPoin As GroupBox
+    Friend WithEvents LblPoinAktif As Label
+    Friend WithEvents CmbPoinAktif As ComboBox
+    Friend WithEvents LblPoinMekanisme As Label
+    Friend WithEvents CmbPoinMekanisme As ComboBox
 End Class

@@ -1,0 +1,266 @@
+<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()>
+Partial Class FormTukarPoin
+    Inherits System.Windows.Forms.Form
+
+    'Form overrides dispose to clean up the component list.
+    <System.Diagnostics.DebuggerNonUserCode()>
+    Protected Overrides Sub Dispose(ByVal disposing As Boolean)
+        Try
+            If disposing AndAlso components IsNot Nothing Then
+                components.Dispose()
+            End If
+        Finally
+            MyBase.Dispose(disposing)
+        End Try
+    End Sub
+
+    'Required by the Windows Form Designer
+    Private components As System.ComponentModel.IContainer
+
+    'NOTE: The following procedure is required by the Windows Form Designer
+    'It can be modified using the Windows Form Designer.
+    'Do not modify it using the code editor.
+    <System.Diagnostics.DebuggerStepThrough()>
+    Private Sub InitializeComponent()
+        Me.PanelHeader = New System.Windows.Forms.Panel()
+        Me.BtnClose = New System.Windows.Forms.Button()
+        Me.LblHeader = New System.Windows.Forms.Label()
+        Me.PanelPelanggan = New System.Windows.Forms.Panel()
+        Me.LblCariPelanggan = New System.Windows.Forms.Label()
+        Me.TxtPelanggan = New System.Windows.Forms.TextBox()
+        Me.LblSaldoPoinTukar = New System.Windows.Forms.Label()
+        Me.LblStatusMinRedeem = New System.Windows.Forms.Label()
+        Me.DgvBarangTukar = New System.Windows.Forms.DataGridView()
+        Me.PanelRingkasan = New System.Windows.Forms.Panel()
+        Me.LblTotalPoinDibutuhkan = New System.Windows.Forms.Label()
+        Me.LblSisaPoinSetelah = New System.Windows.Forms.Label()
+        Me.BtnKonfirmasiTukar = New System.Windows.Forms.Button()
+        Me.BtnRefresh = New System.Windows.Forms.Button()
+        Me.PanelHeader.SuspendLayout()
+        Me.PanelPelanggan.SuspendLayout()
+        CType(Me.DgvBarangTukar, System.ComponentModel.ISupportInitialize).BeginInit()
+        Me.PanelRingkasan.SuspendLayout()
+        Me.SuspendLayout()
+        '
+        'PanelHeader
+        '
+        Me.PanelHeader.Controls.Add(Me.BtnClose)
+        Me.PanelHeader.Controls.Add(Me.LblHeader)
+        Me.PanelHeader.Dock = System.Windows.Forms.DockStyle.Top
+        Me.PanelHeader.Font = New System.Drawing.Font("Bookman Old Style", 21.75!, System.Drawing.FontStyle.Bold)
+        Me.PanelHeader.Location = New System.Drawing.Point(0, 0)
+        Me.PanelHeader.Name = "PanelHeader"
+        Me.PanelHeader.Size = New System.Drawing.Size(900, 40)
+        Me.PanelHeader.TabIndex = 0
+        '
+        'BtnClose
+        '
+        Me.BtnClose.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.BtnClose.Cursor = System.Windows.Forms.Cursors.Hand
+        Me.BtnClose.FlatAppearance.BorderSize = 0
+        Me.BtnClose.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(CType(CType(226, Byte), Integer), CType(CType(232, Byte), Integer), CType(CType(240, Byte), Integer))
+        Me.BtnClose.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(CType(CType(241, Byte), Integer), CType(CType(245, Byte), Integer), CType(CType(249, Byte), Integer))
+        Me.BtnClose.FlatStyle = System.Windows.Forms.FlatStyle.Flat
+        Me.BtnClose.Font = New System.Drawing.Font("Segoe UI", 9.75!, System.Drawing.FontStyle.Bold)
+        Me.BtnClose.ForeColor = System.Drawing.Color.DarkRed
+        Me.BtnClose.Location = New System.Drawing.Point(865, 4)
+        Me.BtnClose.Name = "BtnClose"
+        Me.BtnClose.Size = New System.Drawing.Size(23, 23)
+        Me.BtnClose.TabIndex = 0
+        Me.BtnClose.Text = "X"
+        Me.BtnClose.UseVisualStyleBackColor = False
+        '
+        'LblHeader
+        '
+        Me.LblHeader.BackColor = System.Drawing.Color.Transparent
+        Me.LblHeader.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.LblHeader.Font = New System.Drawing.Font("Bookman Old Style", 18.0!, CType((System.Drawing.FontStyle.Bold Or System.Drawing.FontStyle.Italic), System.Drawing.FontStyle))
+        Me.LblHeader.Location = New System.Drawing.Point(0, 0)
+        Me.LblHeader.Name = "LblHeader"
+        Me.LblHeader.Size = New System.Drawing.Size(900, 40)
+        Me.LblHeader.TabIndex = 1
+        Me.LblHeader.Text = "T U K A R   P O I N   D E N G A N   B A R A N G"
+        Me.LblHeader.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
+        '
+        'PanelPelanggan
+        '
+        Me.PanelPelanggan.Controls.Add(Me.LblCariPelanggan)
+        Me.PanelPelanggan.Controls.Add(Me.TxtPelanggan)
+        Me.PanelPelanggan.Controls.Add(Me.LblSaldoPoinTukar)
+        Me.PanelPelanggan.Controls.Add(Me.LblStatusMinRedeem)
+        Me.PanelPelanggan.Dock = System.Windows.Forms.DockStyle.Top
+        Me.PanelPelanggan.Location = New System.Drawing.Point(0, 40)
+        Me.PanelPelanggan.Name = "PanelPelanggan"
+        Me.PanelPelanggan.Size = New System.Drawing.Size(900, 60)
+        Me.PanelPelanggan.TabIndex = 1
+        '
+        'LblCariPelanggan
+        '
+        Me.LblCariPelanggan.Font = New System.Drawing.Font("Segoe UI", 9.75!)
+        Me.LblCariPelanggan.Location = New System.Drawing.Point(8, 8)
+        Me.LblCariPelanggan.Name = "LblCariPelanggan"
+        Me.LblCariPelanggan.Size = New System.Drawing.Size(110, 24)
+        Me.LblCariPelanggan.TabIndex = 0
+        Me.LblCariPelanggan.Text = "Cari Pelanggan :"
+        Me.LblCariPelanggan.TextAlign = System.Drawing.ContentAlignment.MiddleRight
+        '
+        'TxtPelanggan
+        '
+        Me.TxtPelanggan.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
+        Me.TxtPelanggan.Font = New System.Drawing.Font("Segoe UI", 9.75!)
+        Me.TxtPelanggan.Location = New System.Drawing.Point(124, 8)
+        Me.TxtPelanggan.Name = "TxtPelanggan"
+        Me.TxtPelanggan.Size = New System.Drawing.Size(280, 25)
+        Me.TxtPelanggan.TabIndex = 1
+        '
+        'LblSaldoPoinTukar
+        '
+        Me.LblSaldoPoinTukar.Font = New System.Drawing.Font("Segoe UI", 9.75!, System.Drawing.FontStyle.Bold)
+        Me.LblSaldoPoinTukar.ForeColor = System.Drawing.Color.DarkBlue
+        Me.LblSaldoPoinTukar.Location = New System.Drawing.Point(420, 8)
+        Me.LblSaldoPoinTukar.Name = "LblSaldoPoinTukar"
+        Me.LblSaldoPoinTukar.Size = New System.Drawing.Size(250, 24)
+        Me.LblSaldoPoinTukar.TabIndex = 2
+        Me.LblSaldoPoinTukar.Text = "Saldo Poin: -"
+        Me.LblSaldoPoinTukar.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
+        '
+        'LblStatusMinRedeem
+        '
+        Me.LblStatusMinRedeem.Font = New System.Drawing.Font("Segoe UI", 9.0!, System.Drawing.FontStyle.Italic)
+        Me.LblStatusMinRedeem.ForeColor = System.Drawing.Color.OrangeRed
+        Me.LblStatusMinRedeem.Location = New System.Drawing.Point(124, 36)
+        Me.LblStatusMinRedeem.Name = "LblStatusMinRedeem"
+        Me.LblStatusMinRedeem.Size = New System.Drawing.Size(560, 20)
+        Me.LblStatusMinRedeem.TabIndex = 3
+        Me.LblStatusMinRedeem.Text = ""
+        Me.LblStatusMinRedeem.Visible = False
+        '
+        'DgvBarangTukar
+        '
+        Me.DgvBarangTukar.AllowUserToAddRows = False
+        Me.DgvBarangTukar.AllowUserToDeleteRows = False
+        Me.DgvBarangTukar.AllowUserToResizeRows = False
+        Me.DgvBarangTukar.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
+            Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right, System.Windows.Forms.AnchorStyles)
+        Me.DgvBarangTukar.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill
+        Me.DgvBarangTukar.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
+        Me.DgvBarangTukar.Location = New System.Drawing.Point(8, 108)
+        Me.DgvBarangTukar.Name = "DgvBarangTukar"
+        Me.DgvBarangTukar.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect
+        Me.DgvBarangTukar.Size = New System.Drawing.Size(884, 420)
+        Me.DgvBarangTukar.TabIndex = 2
+        '
+        'PanelRingkasan
+        '
+        Me.PanelRingkasan.Controls.Add(Me.LblTotalPoinDibutuhkan)
+        Me.PanelRingkasan.Controls.Add(Me.LblSisaPoinSetelah)
+        Me.PanelRingkasan.Controls.Add(Me.BtnKonfirmasiTukar)
+        Me.PanelRingkasan.Controls.Add(Me.BtnRefresh)
+        Me.PanelRingkasan.Dock = System.Windows.Forms.DockStyle.Bottom
+        Me.PanelRingkasan.Location = New System.Drawing.Point(0, 540)
+        Me.PanelRingkasan.Name = "PanelRingkasan"
+        Me.PanelRingkasan.Size = New System.Drawing.Size(900, 60)
+        Me.PanelRingkasan.TabIndex = 3
+        '
+        'LblTotalPoinDibutuhkan
+        '
+        Me.LblTotalPoinDibutuhkan.Font = New System.Drawing.Font("Segoe UI", 9.75!, System.Drawing.FontStyle.Bold)
+        Me.LblTotalPoinDibutuhkan.ForeColor = System.Drawing.Color.DarkSlateBlue
+        Me.LblTotalPoinDibutuhkan.Location = New System.Drawing.Point(8, 8)
+        Me.LblTotalPoinDibutuhkan.Name = "LblTotalPoinDibutuhkan"
+        Me.LblTotalPoinDibutuhkan.Size = New System.Drawing.Size(280, 24)
+        Me.LblTotalPoinDibutuhkan.TabIndex = 0
+        Me.LblTotalPoinDibutuhkan.Text = "Total Poin Dibutuhkan: 0"
+        Me.LblTotalPoinDibutuhkan.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
+        '
+        'LblSisaPoinSetelah
+        '
+        Me.LblSisaPoinSetelah.Font = New System.Drawing.Font("Segoe UI", 9.75!, System.Drawing.FontStyle.Bold)
+        Me.LblSisaPoinSetelah.ForeColor = System.Drawing.Color.DarkGreen
+        Me.LblSisaPoinSetelah.Location = New System.Drawing.Point(300, 8)
+        Me.LblSisaPoinSetelah.Name = "LblSisaPoinSetelah"
+        Me.LblSisaPoinSetelah.Size = New System.Drawing.Size(280, 24)
+        Me.LblSisaPoinSetelah.TabIndex = 1
+        Me.LblSisaPoinSetelah.Text = "Sisa Poin Setelah Tukar: 0"
+        Me.LblSisaPoinSetelah.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
+        '
+        'BtnKonfirmasiTukar
+        '
+        Me.BtnKonfirmasiTukar.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.BtnKonfirmasiTukar.BackColor = System.Drawing.Color.White
+        Me.BtnKonfirmasiTukar.Cursor = System.Windows.Forms.Cursors.Hand
+        Me.BtnKonfirmasiTukar.Enabled = False
+        Me.BtnKonfirmasiTukar.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(CType(CType(22, Byte), Integer), CType(CType(163, Byte), Integer), CType(CType(74, Byte), Integer))
+        Me.BtnKonfirmasiTukar.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(CType(CType(187, Byte), Integer), CType(CType(247, Byte), Integer), CType(CType(208, Byte), Integer))
+        Me.BtnKonfirmasiTukar.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(CType(CType(220, Byte), Integer), CType(CType(252, Byte), Integer), CType(CType(231, Byte), Integer))
+        Me.BtnKonfirmasiTukar.FlatStyle = System.Windows.Forms.FlatStyle.Flat
+        Me.BtnKonfirmasiTukar.Font = New System.Drawing.Font("Segoe UI", 9.75!, System.Drawing.FontStyle.Bold)
+        Me.BtnKonfirmasiTukar.ForeColor = System.Drawing.Color.FromArgb(CType(CType(22, Byte), Integer), CType(CType(163, Byte), Integer), CType(CType(74, Byte), Integer))
+        Me.BtnKonfirmasiTukar.Location = New System.Drawing.Point(700, 12)
+        Me.BtnKonfirmasiTukar.Name = "BtnKonfirmasiTukar"
+        Me.BtnKonfirmasiTukar.Size = New System.Drawing.Size(160, 36)
+        Me.BtnKonfirmasiTukar.TabIndex = 2
+        Me.BtnKonfirmasiTukar.Text = "Konfirmasi Tukar (F2)"
+        Me.BtnKonfirmasiTukar.UseVisualStyleBackColor = False
+        '
+        'BtnRefresh
+        '
+        Me.BtnRefresh.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.BtnRefresh.BackColor = System.Drawing.Color.White
+        Me.BtnRefresh.Cursor = System.Windows.Forms.Cursors.Hand
+        Me.BtnRefresh.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(CType(CType(100, Byte), Integer), CType(CType(116, Byte), Integer), CType(CType(139, Byte), Integer))
+        Me.BtnRefresh.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(CType(CType(226, Byte), Integer), CType(CType(232, Byte), Integer), CType(CType(240, Byte), Integer))
+        Me.BtnRefresh.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(CType(CType(241, Byte), Integer), CType(CType(245, Byte), Integer), CType(CType(249, Byte), Integer))
+        Me.BtnRefresh.FlatStyle = System.Windows.Forms.FlatStyle.Flat
+        Me.BtnRefresh.Font = New System.Drawing.Font("Segoe UI", 9.75!, System.Drawing.FontStyle.Bold)
+        Me.BtnRefresh.ForeColor = System.Drawing.Color.FromArgb(CType(CType(100, Byte), Integer), CType(CType(116, Byte), Integer), CType(CType(139, Byte), Integer))
+        Me.BtnRefresh.Location = New System.Drawing.Point(610, 12)
+        Me.BtnRefresh.Name = "BtnRefresh"
+        Me.BtnRefresh.Size = New System.Drawing.Size(80, 36)
+        Me.BtnRefresh.TabIndex = 3
+        Me.BtnRefresh.Text = "Refresh"
+        Me.BtnRefresh.UseVisualStyleBackColor = False
+        '
+        'FormTukarPoin
+        '
+        Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
+        Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
+        Me.BackColor = System.Drawing.SystemColors.Control
+        Me.ClientSize = New System.Drawing.Size(900, 600)
+        Me.Controls.Add(Me.DgvBarangTukar)
+        Me.Controls.Add(Me.PanelRingkasan)
+        Me.Controls.Add(Me.PanelPelanggan)
+        Me.Controls.Add(Me.PanelHeader)
+        Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None
+        Me.KeyPreview = True
+        Me.Name = "FormTukarPoin"
+        Me.ShowIcon = False
+        Me.ShowInTaskbar = False
+        Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen
+        Me.Text = "Tukar Poin dengan Barang"
+        Me.PanelHeader.ResumeLayout(False)
+        Me.PanelPelanggan.ResumeLayout(False)
+        Me.PanelPelanggan.PerformLayout()
+        CType(Me.DgvBarangTukar, System.ComponentModel.ISupportInitialize).EndInit()
+        Me.PanelRingkasan.ResumeLayout(False)
+        Me.ResumeLayout(False)
+
+    End Sub
+
+    Friend WithEvents PanelHeader As System.Windows.Forms.Panel
+    Friend WithEvents BtnClose As System.Windows.Forms.Button
+    Friend WithEvents LblHeader As System.Windows.Forms.Label
+    Friend WithEvents PanelPelanggan As System.Windows.Forms.Panel
+    Friend WithEvents LblCariPelanggan As System.Windows.Forms.Label
+    Friend WithEvents TxtPelanggan As System.Windows.Forms.TextBox
+    Friend WithEvents LblSaldoPoinTukar As System.Windows.Forms.Label
+    Friend WithEvents LblStatusMinRedeem As System.Windows.Forms.Label
+    Friend WithEvents DgvBarangTukar As System.Windows.Forms.DataGridView
+    Friend WithEvents PanelRingkasan As System.Windows.Forms.Panel
+    Friend WithEvents LblTotalPoinDibutuhkan As System.Windows.Forms.Label
+    Friend WithEvents LblSisaPoinSetelah As System.Windows.Forms.Label
+    Friend WithEvents BtnKonfirmasiTukar As System.Windows.Forms.Button
+    Friend WithEvents BtnRefresh As System.Windows.Forms.Button
+
+End Class

@@ -1057,7 +1057,8 @@ End Sub
             f.BtnKaryawan, f.BtnArmada, f.BtnMasterCabang,
             f.BtnBelanja, f.BtnPenjualan, f.BtnRetuBelanja, f.BtnReturPenjualan,
             f.BtnBayarHutang, f.BtnBayarPiutang, f.BtnStokOpname,
-            f.BtnPindahStok, f.BtnTransferBarang, f.BtnSuratJalan, f.BtnKirimCabang
+            f.BtnPindahStok, f.BtnTransferBarang, f.BtnSuratJalan, f.BtnKirimCabang,
+            f.BtnTukarPoin, f.BtnMasterPoin
         }
         For Each btn As Button In navBtns
             SetNavButtonIdle(btn)

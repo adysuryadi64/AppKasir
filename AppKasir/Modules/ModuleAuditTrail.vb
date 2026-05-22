@@ -82,8 +82,8 @@ Module ModuleAuditTrail
         Try
             Dim tanggalTerakhir As String = ""
             Using cmd As New MySqlCommand(
-                "SELECT ModuleName FROM hakaksesuser " &
-                "WHERE Role = 'AuditArsipTerakhir' AND UserName = 'SYSTEM' LIMIT 1", conn)
+                "SELECT config_value FROM tbl_audit_config " &
+                "WHERE config_key = 'AuditArsipTerakhir' LIMIT 1", conn)
                 Dim result As Object = cmd.ExecuteScalar()
                 If result IsNot Nothing AndAlso Not IsDBNull(result) Then
                     tanggalTerakhir = result.ToString()
@@ -114,10 +114,10 @@ Module ModuleAuditTrail
 
                 arsipTrans.Commit()
 
+                ' Catat tanggal arsip terakhir ke tbl_audit_config (bukan hakaksesuser)
                 Using cmd As New MySqlCommand(
-                    "INSERT INTO hakaksesuser (UserName, Role, ModuleName, CanRead, CanAdd, CanEdit, CanDelete) " &
-                    "VALUES ('SYSTEM', 'AuditArsipTerakhir', @tgl, 0, 0, 0, 0) " &
-                    "ON DUPLICATE KEY UPDATE ModuleName = @tgl", conn)
+                    "UPDATE tbl_audit_config SET config_value = @tgl " &
+                    "WHERE config_key = 'AuditArsipTerakhir'", conn)
                     cmd.Parameters.AddWithValue("@tgl", DateTime.Today.ToString("yyyy-MM-dd"))
                     cmd.ExecuteNonQuery()
                 End Using
@@ -271,8 +271,8 @@ Module ModuleAuditTrail
     Private Function BacaRetensiBulan() As Integer
         Try
             Using cmd As New MySqlCommand(
-                "SELECT ModuleName FROM hakaksesuser " &
-                "WHERE Role = 'AuditRetensi' AND UserName = 'SYSTEM' LIMIT 1", conn)
+                "SELECT config_value FROM tbl_audit_config " &
+                "WHERE config_key = 'AuditRetensi' LIMIT 1", conn)
                 Dim result As Object = cmd.ExecuteScalar()
                 If result IsNot Nothing AndAlso Not IsDBNull(result) Then
                     Dim nilai As Integer = ModuleAngka.ParseInteger(result, 3)

@@ -657,12 +657,7 @@ Public Class FormSuratJalan
 
         End Select
     End Sub
-    Private Sub BtnSettingPrinter_Click(sender As Object, e As EventArgs) Handles BtnSettingPrinter.Click
-        Using frm As New FormPengaturanPrinter() With {.FilterTab = "SuratJalan"}
-            frm.ShowDialog()
-        End Using
-        MuatSemuaPengaturan()
-    End Sub
+
 
     ' ============================================
     ' FUNGSI: TAMPILKAN BANTUAN SHORTCUT

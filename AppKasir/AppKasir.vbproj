@@ -517,6 +517,12 @@
     <Compile Include="1Master\FormGeneralSetting.vb">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="1Master\FormMasterPoin.Designer.vb">
+      <DependentUpon>FormMasterPoin.vb</DependentUpon>
+    </Compile>
+    <Compile Include="1Master\FormMasterPoin.vb">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="1Master\FormHakUser.Designer.vb">
       <DependentUpon>FormHakUser.vb</DependentUpon>
     </Compile>
@@ -761,6 +767,13 @@
     <Compile Include="2Trans\FormBayarHutang.vb">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="2Trans\FormTukarPoin.Designer.vb">
+      <DependentUpon>FormTukarPoin.vb</DependentUpon>
+    </Compile>
+    <Compile Include="2Trans\FormTukarPoin.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="2Trans\ModuleLoyaltyPoin.vb" />
     <Compile Include="2Trans\FormBayarPiutang.Designer.vb">
       <DependentUpon>FormBayarPiutang.vb</DependentUpon>
     </Compile>
@@ -1293,6 +1306,9 @@
     <EmbeddedResource Include="1Master\FormGeneralSetting.resx">
       <DependentUpon>FormGeneralSetting.vb</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="1Master\FormMasterPoin.resx">
+      <DependentUpon>FormMasterPoin.vb</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="1Master\FormHakUser.resx">
       <DependentUpon>FormHakUser.vb</DependentUpon>
     </EmbeddedResource>
@@ -1331,6 +1347,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="2Trans\FormBayarHutang.resx">
       <DependentUpon>FormBayarHutang.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="2Trans\FormTukarPoin.resx">
+      <DependentUpon>FormTukarPoin.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="2Trans\FormBayarPiutang.resx">
       <DependentUpon>FormBayarPiutang.vb</DependentUpon>

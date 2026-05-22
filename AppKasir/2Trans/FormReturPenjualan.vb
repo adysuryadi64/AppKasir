@@ -1003,6 +1003,42 @@ Public Class FormReturPenjualan
                 ' Update saldo akun — incremental delta
                 UpdateSaldoAkunDeltaDariFaktur(LblNoNotaRetur.Text, transaction)
 
+                ' ── Void poin EARN saat retur (Req 5, Req 8) ─────────────────────────
+                ' Hanya Mode Normal (bukan Mode Bebas) karena Mode Bebas tidak punya
+                ' referensi faktur asal yang valid untuk dicari di poin_ledger.
+                If Not CbJenisRetur.Checked AndAlso LP_Aktif AndAlso
+                   Not String.IsNullOrEmpty(LblKodePel.Text) AndAlso
+                   Not String.IsNullOrEmpty(TxtNotaJual.Text) Then
+
+                    Try
+                        Dim poinEarnAsal As Integer = ModuleLoyaltyPoin.AmbilPoinEarnDariFaktur(TxtNotaJual.Text)
+
+                        If poinEarnAsal > 0 Then
+                            ' Tentukan apakah retur penuh atau parsial
+                            Dim totalNilaiFakturAsal As Decimal = ModuleAngka.ParseDecimal(TxtTotalJual.Text)
+                            Dim totalNilaiRetur As Decimal = ModuleAngka.ParseDecimal(TxtTotalRupiah.Text)
+
+                            Dim poinUntukVoid As Integer
+                            If totalNilaiFakturAsal > 0 AndAlso totalNilaiRetur < totalNilaiFakturAsal Then
+                                ' Retur parsial — hitung poin proporsional (Req 5.4)
+                                ' poinVoid = Floor(poinEarnAsal × (nilaiRetur / totalNilaiFakturAsal))
+                                poinUntukVoid = CInt(Math.Floor(poinEarnAsal * (totalNilaiRetur / totalNilaiFakturAsal)))
+                            Else
+                                ' Retur penuh — void seluruh poin EARN (Req 5.3)
+                                poinUntukVoid = poinEarnAsal
+                            End If
+
+                            If poinUntukVoid > 0 Then
+                                ModuleLoyaltyPoin.CatatVoidEarn(LblKodePel.Text, TxtNotaJual.Text, poinUntukVoid, transaction)
+                            End If
+                        End If
+                    Catch ex As Exception
+                        ' Jika tabel poin belum ada (migrasi belum dijalankan), abaikan
+                        Debug.WriteLine($"[FormReturPenjualan.VoidPoin] {ex.Message}")
+                    End Try
+                End If
+                ' ── Selesai void poin EARN ────────────────────────────────────────────
+
                 ' Commit transaksi jika berhasil
                 transaction.Commit()
 

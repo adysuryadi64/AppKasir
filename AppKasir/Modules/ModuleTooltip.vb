@@ -231,6 +231,16 @@ Friend Module ModuleTooltip
                 "  konfirmasi penerimaan → stok cabang tujuan bertambah" & Environment.NewLine &
                 "• Mendukung import manual jika koneksi server tidak tersedia" & Environment.NewLine &
                 "• History transfer tersimpan untuk audit trail antar cabang.")
+
+            .SetToolTip(frm.BtnTukarPoin,
+                "🎁 TUKAR POIN DENGAN BARANG" & Environment.NewLine &
+                "Form penukaran poin loyalitas pelanggan dengan barang pilihan." & Environment.NewLine &
+                "• Pilih pelanggan → saldo poin tampil otomatis" & Environment.NewLine &
+                "• Pilih barang dan qty yang ingin ditukar" & Environment.NewLine &
+                "• Total poin dibutuhkan dan sisa poin dihitung real-time" & Environment.NewLine &
+                "• Konfirmasi penukaran → stok barang berkurang, saldo poin berkurang" & Environment.NewLine &
+                "• Cetak bukti penukaran setelah transaksi berhasil." & Environment.NewLine &
+                "• Tombol konfirmasi otomatis disabled jika saldo tidak mencukupi.")
         End With
     End Sub
     Private Sub AturTooltipMenu(frm As FormUtama)

@@ -200,6 +200,11 @@ Public Class GdiCetakJualThermalMatrik
         If _cfg.TampilFooter3 Then
             _panjangKertas += FOOTER3.Split({vbCrLf, vbLf}, StringSplitOptions.None).Length * tinggiPerBaris
         End If
+
+        ' Tambah tinggi blok poin loyalitas jika aktif dan ada pelanggan (Req 6)
+        If LP_Aktif AndAlso Not String.IsNullOrEmpty(Jual_IdPelanggan) Then
+            _panjangKertas += If(Jual_PoinDiperoleh > 0, 60, 50)
+        End If
     End Sub
 
 #End Region
@@ -678,6 +683,21 @@ Public Class GdiCetakJualThermalMatrik
 
     ' Cetak footer
     Private Sub CetakFooter(g As Graphics, y As Integer)
+        ' ── Blok Poin Loyalitas (Req 6) ──────────────────────────
+        ' Hanya tampil jika: sistem poin aktif, ada pelanggan, dan ada data poin
+        If LP_Aktif AndAlso Not String.IsNullOrEmpty(Jual_IdPelanggan) Then
+            Dim m5 As Integer = BatasKiri + CInt(LebarPx * 0.95)
+            y += 5 + Jarak
+            Tulis(g, GarisPemisah, FGaris, BatasKiri, y) : y += 10 + Jarak
+            Tulis(g, "Saldo Poin  :", FIsi, BatasKiri, y)
+            TulisKanan(g, Jual_SaldoPoinAkhir.ToString("N0"), FIsi, m5, y) : y += 10 + Jarak
+            If Jual_PoinDiperoleh > 0 Then
+                Tulis(g, "Poin Diperoleh:", FIsi, BatasKiri, y)
+                TulisKanan(g, "+" & Jual_PoinDiperoleh.ToString("N0"), FIsi, m5, y) : y += 10 + Jarak
+            End If
+            Tulis(g, GarisPemisah, FGaris, BatasKiri, y) : y += 10 + Jarak
+        End If
+
         y += 10 + Jarak
         If ShowFooter1 Then
             For Each baris As String In FOOTER1.Split({vbCrLf, vbLf}, StringSplitOptions.None)
