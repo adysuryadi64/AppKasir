@@ -45,7 +45,7 @@ Module ModulePrinterTransferBarang
         Using cmd As New MySqlCommand(
             "SELECT ID_BARANG, NAMA_BARANG, HARGA, QTY, SATUAN, TOTAL " &
             "FROM transfer_barang_detail WHERE ID_TRANSFER = @id " &
-            "ORDER BY NAMA_BARANG", conn)
+            "ORDER BY URUTAN", conn)
             cmd.Parameters.AddWithValue("@id", idTransfer)
             Using rd As MySqlDataReader = cmd.ExecuteReader()
                 While rd.Read()

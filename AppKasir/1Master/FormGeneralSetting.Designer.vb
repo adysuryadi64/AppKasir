@@ -49,6 +49,8 @@ Partial Class FormGeneralSetting
         Me.CmbJualAutoLevelSatuan = New System.Windows.Forms.ComboBox()
         Me.LblJualBatasSedang = New System.Windows.Forms.Label()
         Me.LblJualBatasBesar = New System.Windows.Forms.Label()
+        Me.TxtBatasSatuanSedang = New System.Windows.Forms.TextBox()
+        Me.TxtBatasSatuanBesar = New System.Windows.Forms.TextBox()
         Me.GBPembelian = New System.Windows.Forms.GroupBox()
         Me.CmbbeliNominal0 = New System.Windows.Forms.ComboBox()
         Me.LblbeliNominal0 = New System.Windows.Forms.Label()
@@ -66,11 +68,6 @@ Partial Class FormGeneralSetting
         Me.CmbBeliRugi = New System.Windows.Forms.ComboBox()
         Me.PanelInput = New System.Windows.Forms.Panel()
         Me.BtnClose = New System.Windows.Forms.Button()
-        Me.GBLoyaltyPoin = New System.Windows.Forms.GroupBox()
-        Me.CmbPoinMekanisme = New System.Windows.Forms.ComboBox()
-        Me.LblPoinMekanisme = New System.Windows.Forms.Label()
-        Me.CmbPoinAktif = New System.Windows.Forms.ComboBox()
-        Me.LblPoinAktif = New System.Windows.Forms.Label()
         Me.GbGlobalTransaksi = New System.Windows.Forms.GroupBox()
         Me.LblHidePencarianAtas = New System.Windows.Forms.Label()
         Me.CmbHidePencarianAtas = New System.Windows.Forms.ComboBox()
@@ -93,7 +90,6 @@ Partial Class FormGeneralSetting
         Me.GBPenjualan.SuspendLayout()
         Me.GBPembelian.SuspendLayout()
         Me.PanelInput.SuspendLayout()
-        Me.GBLoyaltyPoin.SuspendLayout()
         Me.GbGlobalTransaksi.SuspendLayout()
         Me.SuspendLayout()
         '
@@ -264,6 +260,8 @@ Partial Class FormGeneralSetting
         Me.GBPenjualan.Controls.Add(Me.CmbJualAutoLevelSatuan)
         Me.GBPenjualan.Controls.Add(Me.LblJualBatasSedang)
         Me.GBPenjualan.Controls.Add(Me.LblJualBatasBesar)
+        Me.GBPenjualan.Controls.Add(Me.TxtBatasSatuanSedang)
+        Me.GBPenjualan.Controls.Add(Me.TxtBatasSatuanBesar)
         Me.GBPenjualan.Dock = System.Windows.Forms.DockStyle.Top
         Me.GBPenjualan.Font = New System.Drawing.Font("Century Gothic", 9.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.GBPenjualan.Location = New System.Drawing.Point(0, 264)
@@ -434,6 +432,28 @@ Partial Class FormGeneralSetting
         Me.LblJualBatasBesar.Text = "Batas qty satuan besar (qty >=:)"
         Me.LblJualBatasBesar.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
         Me.LblJualBatasBesar.Visible = False
+        '
+        'TxtBatasSatuanSedang
+        '
+        Me.TxtBatasSatuanSedang.Font = New System.Drawing.Font("Century Gothic", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.TxtBatasSatuanSedang.Location = New System.Drawing.Point(388, 225)
+        Me.TxtBatasSatuanSedang.Name = "TxtBatasSatuanSedang"
+        Me.TxtBatasSatuanSedang.Size = New System.Drawing.Size(70, 22)
+        Me.TxtBatasSatuanSedang.TabIndex = 148
+        Me.TxtBatasSatuanSedang.Text = "3"
+        Me.TxtBatasSatuanSedang.TextAlign = System.Windows.Forms.HorizontalAlignment.Center
+        Me.TxtBatasSatuanSedang.Visible = False
+        '
+        'TxtBatasSatuanBesar
+        '
+        Me.TxtBatasSatuanBesar.Font = New System.Drawing.Font("Century Gothic", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.TxtBatasSatuanBesar.Location = New System.Drawing.Point(388, 259)
+        Me.TxtBatasSatuanBesar.Name = "TxtBatasSatuanBesar"
+        Me.TxtBatasSatuanBesar.Size = New System.Drawing.Size(70, 22)
+        Me.TxtBatasSatuanBesar.TabIndex = 149
+        Me.TxtBatasSatuanBesar.Text = "6"
+        Me.TxtBatasSatuanBesar.TextAlign = System.Windows.Forms.HorizontalAlignment.Center
+        Me.TxtBatasSatuanBesar.Visible = False
         '
         'GBPembelian
         '
@@ -627,7 +647,6 @@ Partial Class FormGeneralSetting
         Me.PanelInput.Controls.Add(Me.BtnSimpan)
         Me.PanelInput.Controls.Add(Me.BtnClose)
         Me.PanelInput.Controls.Add(Me.BtnRestore)
-        Me.PanelInput.Controls.Add(Me.GBLoyaltyPoin)
         Me.PanelInput.Controls.Add(Me.GbGlobalTransaksi)
         Me.PanelInput.Dock = System.Windows.Forms.DockStyle.Left
         Me.PanelInput.Location = New System.Drawing.Point(594, 47)
@@ -656,68 +675,6 @@ Partial Class FormGeneralSetting
         Me.BtnClose.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
         Me.BtnClose.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText
         Me.BtnClose.UseVisualStyleBackColor = False
-        '
-        'GBLoyaltyPoin
-        '
-        Me.GBLoyaltyPoin.Controls.Add(Me.CmbPoinMekanisme)
-        Me.GBLoyaltyPoin.Controls.Add(Me.LblPoinMekanisme)
-        Me.GBLoyaltyPoin.Controls.Add(Me.CmbPoinAktif)
-        Me.GBLoyaltyPoin.Controls.Add(Me.LblPoinAktif)
-        Me.GBLoyaltyPoin.Dock = System.Windows.Forms.DockStyle.Top
-        Me.GBLoyaltyPoin.Font = New System.Drawing.Font("Century Gothic", 9.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.GBLoyaltyPoin.Location = New System.Drawing.Point(0, 273)
-        Me.GBLoyaltyPoin.Name = "GBLoyaltyPoin"
-        Me.GBLoyaltyPoin.Size = New System.Drawing.Size(597, 100)
-        Me.GBLoyaltyPoin.TabIndex = 140
-        Me.GBLoyaltyPoin.TabStop = False
-        Me.GBLoyaltyPoin.Text = "Loyalty Poin"
-        '
-        'CmbPoinMekanisme
-        '
-        Me.CmbPoinMekanisme.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
-        Me.CmbPoinMekanisme.Font = New System.Drawing.Font("Century Gothic", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.CmbPoinMekanisme.FormattingEnabled = True
-        Me.CmbPoinMekanisme.Items.AddRange(New Object() {"Per Item (Qty)", "Per Kelipatan Nominal"})
-        Me.CmbPoinMekanisme.Location = New System.Drawing.Point(386, 62)
-        Me.CmbPoinMekanisme.Margin = New System.Windows.Forms.Padding(4)
-        Me.CmbPoinMekanisme.Name = "CmbPoinMekanisme"
-        Me.CmbPoinMekanisme.Size = New System.Drawing.Size(196, 25)
-        Me.CmbPoinMekanisme.TabIndex = 144
-        '
-        'LblPoinMekanisme
-        '
-        Me.LblPoinMekanisme.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
-        Me.LblPoinMekanisme.Font = New System.Drawing.Font("Century Gothic", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.LblPoinMekanisme.Location = New System.Drawing.Point(6, 60)
-        Me.LblPoinMekanisme.Name = "LblPoinMekanisme"
-        Me.LblPoinMekanisme.Size = New System.Drawing.Size(374, 28)
-        Me.LblPoinMekanisme.TabIndex = 143
-        Me.LblPoinMekanisme.Text = "Mekanisme Perolehan Poin"
-        Me.LblPoinMekanisme.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
-        '
-        'CmbPoinAktif
-        '
-        Me.CmbPoinAktif.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
-        Me.CmbPoinAktif.Font = New System.Drawing.Font("Century Gothic", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.CmbPoinAktif.FormattingEnabled = True
-        Me.CmbPoinAktif.Items.AddRange(New Object() {"Tidak", "Iya"})
-        Me.CmbPoinAktif.Location = New System.Drawing.Point(386, 28)
-        Me.CmbPoinAktif.Margin = New System.Windows.Forms.Padding(4)
-        Me.CmbPoinAktif.Name = "CmbPoinAktif"
-        Me.CmbPoinAktif.Size = New System.Drawing.Size(196, 25)
-        Me.CmbPoinAktif.TabIndex = 142
-        '
-        'LblPoinAktif
-        '
-        Me.LblPoinAktif.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
-        Me.LblPoinAktif.Font = New System.Drawing.Font("Century Gothic", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.LblPoinAktif.Location = New System.Drawing.Point(6, 26)
-        Me.LblPoinAktif.Name = "LblPoinAktif"
-        Me.LblPoinAktif.Size = New System.Drawing.Size(374, 28)
-        Me.LblPoinAktif.TabIndex = 141
-        Me.LblPoinAktif.Text = "Aktifkan Sistem Poin Loyalitas"
-        Me.LblPoinAktif.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
-        '
         'GbGlobalTransaksi
         '
         Me.GbGlobalTransaksi.Controls.Add(Me.LblHidePencarianAtas)
@@ -927,7 +884,6 @@ Partial Class FormGeneralSetting
         Me.GBPembelian.ResumeLayout(False)
         Me.PanelInput.ResumeLayout(False)
         Me.PanelInput.PerformLayout()
-        Me.GBLoyaltyPoin.ResumeLayout(False)
         Me.GbGlobalTransaksi.ResumeLayout(False)
         Me.ResumeLayout(False)
 
@@ -991,9 +947,6 @@ Partial Class FormGeneralSetting
     Friend WithEvents CmbJualAutoLevelSatuan As ComboBox
     Friend WithEvents LblJualBatasSedang As Label
     Friend WithEvents LblJualBatasBesar As Label
-    Friend WithEvents GBLoyaltyPoin As GroupBox
-    Friend WithEvents LblPoinAktif As Label
-    Friend WithEvents CmbPoinAktif As ComboBox
-    Friend WithEvents LblPoinMekanisme As Label
-    Friend WithEvents CmbPoinMekanisme As ComboBox
+    Friend WithEvents TxtBatasSatuanSedang As TextBox
+    Friend WithEvents TxtBatasSatuanBesar As TextBox
 End Class

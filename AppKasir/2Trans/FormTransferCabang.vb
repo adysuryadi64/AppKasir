@@ -2819,12 +2819,14 @@ Public Class FormTransferCabang
                     cmd.ExecuteNonQuery()
                 End Using
 
+                Dim urutanCabang As Integer = 0
                 For Each row In items
+                    urutanCabang += 1
                     Using cmdD As New MySqlCommand(
                         "INSERT INTO transfer_cabang_detail (ID_TRANSFER, TGL_TRANSFER, LOKASI, ID_BARANG, NAMA_BARANG, HARGA,
-                         QTY, SATUAN, ISI_SATUAN, HARGA_QTY, TOTAL_QTY, DITERIMA_QTY, STATUS_ITEM, TOTAL, ID_USER, ID_KOMPUTER)
+                         QTY, SATUAN, ISI_SATUAN, HARGA_QTY, TOTAL_QTY, DITERIMA_QTY, STATUS_ITEM, TOTAL, ID_USER, ID_KOMPUTER, URUTAN)
                          VALUES (@id, @tgl, @lokasi, @idBarang, @namaBarang, @harga, @qty, @satuan, @isi, @hargaQty,
-                         @qtySat, 0, 'PENDING', @total, @idUser, @idKomputer)", conn, trx)
+                         @qtySat, 0, 'PENDING', @total, @idUser, @idKomputer, @urutan)", conn, trx)
                         cmdD.Parameters.AddWithValue("@id", idTransfer)
                         cmdD.Parameters.AddWithValue("@tgl", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"))
                         cmdD.Parameters.AddWithValue("@lokasi", $"ANTAR_CABANG:{AmbilKodeCabangTujuan()} [{modeKirim}] {referensi}")
@@ -2839,6 +2841,7 @@ Public Class FormTransferCabang
                         cmdD.Parameters.AddWithValue("@total", row.HargaBeli * row.QtySat)
                         cmdD.Parameters.AddWithValue("@idUser", ModuleVariabel.NamaUser)
                         cmdD.Parameters.AddWithValue("@idKomputer", FormUtama.StatusNamaPC.Text)
+                        cmdD.Parameters.AddWithValue("@urutan", urutanCabang)
                         cmdD.ExecuteNonQuery()
                     End Using
                     Using cmdStok As New MySqlCommand(

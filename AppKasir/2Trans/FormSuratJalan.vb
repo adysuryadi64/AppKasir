@@ -424,7 +424,9 @@ Public Class FormSuratJalan
 
         Try
             If LblJenisTrans.Text = "TambahSuratJalan" Then
-                ModulHakAkses.ResetDTPKeTanggalHariIni(DtpSuratJalan)
+                If Not ModulHakAkses.SettingIzinkanTanggalLampau Then
+                    ModulHakAkses.ResetDTPKeTanggalHariIni(DtpSuratJalan)
+                End If
                 GenerateNomorSuratJalan()
             Else
                 Dim NoNota As String = LblNoNota.Text

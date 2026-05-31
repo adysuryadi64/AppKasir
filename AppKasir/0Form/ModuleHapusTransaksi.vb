@@ -1464,4 +1464,121 @@ Module ModuleHapusTransaksi
 
 #End Region
 
+#Region "HAPUS TUKAR POIN"
+
+    ''' <summary>
+    ''' Hapus satu transaksi Tukar Poin secara permanen.
+    ''' Reverse: poin_ledger → SALDO_POIN → counter KURANG_TOKO/GUDANG → HistoryBarang → JurnalUmum.
+    ''' Commit/Rollback tetap tanggung jawab caller.
+    ''' Dipanggil dari: FormUtama.HapusTukarPoin().
+    ''' </summary>
+    Public Sub HapusTukarPoin(ByVal faktur As String,
+                               ByVal lokasi As String,
+                               ByVal transaction As MySqlTransaction)
+
+        Dim kolKurang As String = If(lokasi = "GUDANG", "KURANG_GUDANG", "KURANG_TOKO")
+
+        ' ── Step 1: Baca poin_ledger — ambil kode pelanggan + poin ──────────
+        Dim kodePelanggan As String = ""
+        Dim poinDigunakan As Integer = 0
+        Using dt As New DataTable
+            Using cmd As New MySqlCommand(
+                "SELECT KODE_PELANGGAN, JUMLAH_POIN FROM poin_ledger " &
+                "WHERE NO_REFERENSI = @fk AND TIPE = 'REDEEM' LIMIT 1", conn, transaction)
+                cmd.Parameters.AddWithValue("@fk", faktur)
+                Using da As New MySqlDataAdapter(cmd)
+                    da.Fill(dt)
+                End Using
+            End Using
+            If dt.Rows.Count > 0 Then
+                kodePelanggan = dt.Rows(0)("KODE_PELANGGAN").ToString()
+                poinDigunakan = If(IsDBNull(dt.Rows(0)("JUMLAH_POIN")), 0, Convert.ToInt32(dt.Rows(0)("JUMLAH_POIN")))
+            End If
+        End Using
+
+        If String.IsNullOrEmpty(kodePelanggan) Then Exit Sub
+
+        ' ── Step 2: Reverse SALDO_POIN (+= poin) ────────────────────────────
+        Using cmd As New MySqlCommand(
+            "UPDATE tbl_pelanggan SET SALDO_POIN = SALDO_POIN + @poin WHERE KODE = @kode",
+            conn, transaction)
+            cmd.Parameters.AddWithValue("@poin", poinDigunakan)
+            cmd.Parameters.AddWithValue("@kode", kodePelanggan)
+            cmd.ExecuteNonQuery()
+        End Using
+
+        ' ── Step 3: Hapus poin_ledger ───────────────────────────────────────
+        Using cmd As New MySqlCommand(
+            "DELETE FROM poin_ledger WHERE NO_REFERENSI = @fk AND TIPE = 'REDEEM'",
+            conn, transaction)
+            cmd.Parameters.AddWithValue("@fk", faktur)
+            cmd.ExecuteNonQuery()
+        End Using
+
+        ' ── Step 4: Baca HistoryBarang untuk reversal stok ──────────────────
+        Dim items As New List(Of Tuple(Of String, Decimal))
+        Using dt As New DataTable
+            Using cmd As New MySqlCommand(
+                "SELECT ID_BARANG, TOTAL_QTY FROM HistoryBarang " &
+                "WHERE FAKTUR = @fk AND JENIS = 'KURANG'", conn, transaction)
+                cmd.Parameters.AddWithValue("@fk", faktur)
+                Using da As New MySqlDataAdapter(cmd)
+                    da.Fill(dt)
+                End Using
+            End Using
+            For Each dr As DataRow In dt.Rows
+                items.Add(Tuple.Create(
+                    dr("ID_BARANG").ToString(),
+                    If(IsDBNull(dr("TOTAL_QTY")), 0D, Convert.ToDecimal(dr("TOTAL_QTY")))))
+            Next
+        End Using
+
+        ' ── Step 5: Reversal counter stok ───────────────────────────────────
+        For Each item In items
+            Using cmd As New MySqlCommand(
+                $"UPDATE tbl_barang SET {kolKurang} = {kolKurang} - @qty WHERE ID_BARANG = @kode",
+                conn, transaction)
+                cmd.Parameters.AddWithValue("@qty", item.Item2)
+                cmd.Parameters.AddWithValue("@kode", item.Item1)
+                cmd.ExecuteNonQuery()
+            End Using
+        Next
+
+        ' ── Step 6: Reversal saldo akun SEBELUM DELETE JurnalUmum ───────────
+        ReversalSaldoAkunDariFaktur(faktur, transaction)
+
+        ' ── Step 7: DELETE HistoryBarang ────────────────────────────────────
+        Using cmd As New MySqlCommand(
+            "DELETE FROM HistoryBarang WHERE FAKTUR = @fk", conn, transaction)
+            cmd.Parameters.AddWithValue("@fk", faktur)
+            cmd.ExecuteNonQuery()
+        End Using
+
+        ' ── Step 8: DELETE JurnalUmum ───────────────────────────────────────
+        Using cmd As New MySqlCommand(
+            "DELETE FROM JurnalUmum WHERE NO_TRANSAKSI = @fk", conn, transaction)
+            cmd.Parameters.AddWithValue("@fk", faktur)
+            cmd.ExecuteNonQuery()
+        End Using
+
+        ' ── Step 9: HitungStokPerubahan + audit untuk setiap item ───────────
+        Dim auditDelta As New Dictionary(Of String, Decimal)()
+        For Each item In items
+            Dim sebelum As Decimal = BacaStokSaatIni(item.Item1, lokasi, transaction)
+            HitungStokPerubahan(item.Item1, transaction)
+            Dim sesudah As Decimal = BacaStokSaatIni(item.Item1, lokasi, transaction)
+            Dim delta As Decimal = Math.Abs(sesudah - sebelum)
+            If auditDelta.ContainsKey(item.Item1) Then
+                auditDelta(item.Item1) += delta
+            Else
+                auditDelta(item.Item1) = delta
+            End If
+        Next
+
+        AuditStokTransaksi(faktur, "Hapus Tukar Poin", Nothing, Nothing, Nothing, auditDelta, transaction)
+
+    End Sub
+
+#End Region
+
 End Module

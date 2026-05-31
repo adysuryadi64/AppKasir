@@ -35,7 +35,8 @@ Public Class EscPosCetakSuratJalan
 
     Private Function BangunEscP() As Byte()
         Dim baris As New List(Of String)
-        Dim n As Integer = _cfgDot.LebarKertas
+        Dim n As Integer = CInt(_cfgDot.LebarKertas * 42 / 80)
+        If n < 20 Then n = 20
         Dim garis As String = New String("-"c, n)
         Dim pK As String = If(_cfgDot.EscUkuranKeterangan.Contains("Besar"), "~B~", "~N~")
         If _cfgDot.EscUkuranKeterangan.Contains("Bold") Then pK &= "~BOLD~"

@@ -1,0 +1,241 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Report xmlns:rd="http://schemas.microsoft.com/SQLServer/reporting/reportdesigner" xmlns="http://schemas.microsoft.com/sqlserver/reporting/2008/01/reportdefinition">
+  <DataSources>
+    <DataSource Name="PossDataSet">
+      <ConnectionProperties>
+        <DataProvider>System.Data.DataSet</DataProvider>
+        <ConnectString>/* Local Connection */</ConnectString>
+      </ConnectionProperties>
+      <rd:DataSourceID>a1b2c3d4-e5f6-7890-abcd-ef1234567892</rd:DataSourceID>
+    </DataSource>
+  </DataSources>
+  <DataSets>
+    <DataSet Name="DataSet1">
+      <Fields>
+        <Field Name="NamaBarang"><DataField>NamaBarang</DataField><rd:TypeName>System.String</rd:TypeName></Field>
+        <Field Name="Jumlah"><DataField>Jumlah</DataField><rd:TypeName>System.Int32</rd:TypeName></Field>
+        <Field Name="TotalPoin"><DataField>TotalPoin</DataField><rd:TypeName>System.Int32</rd:TypeName></Field>
+        <Field Name="TanggalTransaksi"><DataField>TanggalTransaksi</DataField><rd:TypeName>System.DateTime</rd:TypeName></Field>
+      </Fields>
+      <Query>
+        <DataSourceName>PossDataSet</DataSourceName>
+        <CommandText>/* Local Query */</CommandText>
+      </Query>
+    </DataSet>
+  </DataSets>
+  <ReportParameters>
+    <ReportParameter Name="Perusahaan">
+      <DataType>String</DataType><Nullable>true</Nullable><AllowBlank>true</AllowBlank>
+      <Prompt>Perusahaan</Prompt>
+    </ReportParameter>
+    <ReportParameter Name="Judul">
+      <DataType>String</DataType><Nullable>true</Nullable><AllowBlank>true</AllowBlank>
+      <Prompt>Judul</Prompt>
+    </ReportParameter>
+    <ReportParameter Name="Entitas">
+      <DataType>String</DataType><Nullable>true</Nullable><AllowBlank>true</AllowBlank>
+      <Prompt>Entitas</Prompt>
+    </ReportParameter>
+    <ReportParameter Name="Periode">
+      <DataType>String</DataType><Nullable>true</Nullable><AllowBlank>true</AllowBlank>
+      <Prompt>Periode</Prompt>
+    </ReportParameter>
+    <ReportParameter Name="Kasir">
+      <DataType>String</DataType><Nullable>true</Nullable><AllowBlank>true</AllowBlank>
+      <Prompt>Kasir</Prompt>
+    </ReportParameter>
+  </ReportParameters>
+  <Body>
+    <ReportItems>
+      <Textbox Name="TxtEntitas">
+        <CanGrow>true</CanGrow>
+        <Paragraphs><Paragraph><TextRuns><TextRun><Value>=Parameters!Entitas.Value</Value>
+          <Style><FontFamily>Arial Narrow</FontFamily><FontSize>9pt</FontSize></Style>
+        </TextRun></TextRuns><Style><TextAlign>Left</TextAlign></Style></Paragraph></Paragraphs>
+        <Top>0.05cm</Top><Left>0cm</Left><Height>0.45cm</Height><Width>20cm</Width>
+        <Style><Border><Style>None</Style></Border><PaddingLeft>2pt</PaddingLeft></Style>
+      </Textbox>
+      <Textbox Name="TxtPeriode">
+        <CanGrow>true</CanGrow>
+        <Paragraphs><Paragraph><TextRuns><TextRun><Value>=Parameters!Periode.Value</Value>
+          <Style><FontFamily>Arial Narrow</FontFamily><FontSize>9pt</FontSize></Style>
+        </TextRun></TextRuns><Style><TextAlign>Left</TextAlign></Style></Paragraph></Paragraphs>
+        <Top>0.52cm</Top><Left>0cm</Left><Height>0.45cm</Height><Width>20cm</Width>
+        <Style><Border><Style>None</Style></Border><PaddingLeft>2pt</PaddingLeft></Style>
+      </Textbox>
+      <Tablix Name="Tablix1">
+        <TablixBody>
+          <TablixColumns>
+            <TablixColumn><Width>5.0cm</Width></TablixColumn>
+            <TablixColumn><Width>3.5cm</Width></TablixColumn>
+            <TablixColumn><Width>4.0cm</Width></TablixColumn>
+            <TablixColumn><Width>7.5cm</Width></TablixColumn>
+          </TablixColumns>
+          <TablixRows>
+            <TablixRow>
+              <Height>0.6cm</Height>
+              <TablixCells>
+                <TablixCell><CellContents><Textbox Name="H_BARANG"><CanGrow>true</CanGrow><KeepTogether>true</KeepTogether>
+                  <Paragraphs><Paragraph><TextRuns><TextRun><Value>NAMA BARANG</Value><Style><FontFamily>Arial Narrow</FontFamily><FontSize>8pt</FontSize><FontWeight>Bold</FontWeight></Style></TextRun></TextRuns><Style><TextAlign>Center</TextAlign></Style></Paragraph></Paragraphs>
+                  <Style><Border><Style>Solid</Style></Border><BackgroundColor>LightSteelBlue</BackgroundColor><PaddingLeft>2pt</PaddingLeft><PaddingRight>2pt</PaddingRight><PaddingTop>2pt</PaddingTop><PaddingBottom>2pt</PaddingBottom></Style>
+                </Textbox></CellContents></TablixCell>
+                <TablixCell><CellContents><Textbox Name="H_JUMLAH"><CanGrow>true</CanGrow><KeepTogether>true</KeepTogether>
+                  <Paragraphs><Paragraph><TextRuns><TextRun><Value>JUMLAH</Value><Style><FontFamily>Arial Narrow</FontFamily><FontSize>8pt</FontSize><FontWeight>Bold</FontWeight></Style></TextRun></TextRuns><Style><TextAlign>Center</TextAlign></Style></Paragraph></Paragraphs>
+                  <Style><Border><Style>Solid</Style></Border><BackgroundColor>LightSteelBlue</BackgroundColor><PaddingLeft>2pt</PaddingLeft><PaddingRight>2pt</PaddingRight><PaddingTop>2pt</PaddingTop><PaddingBottom>2pt</PaddingBottom></Style>
+                </Textbox></CellContents></TablixCell>
+                <TablixCell><CellContents><Textbox Name="H_POIN"><CanGrow>true</CanGrow><KeepTogether>true</KeepTogether>
+                  <Paragraphs><Paragraph><TextRuns><TextRun><Value>TOTAL POIN</Value><Style><FontFamily>Arial Narrow</FontFamily><FontSize>8pt</FontSize><FontWeight>Bold</FontWeight></Style></TextRun></TextRuns><Style><TextAlign>Center</TextAlign></Style></Paragraph></Paragraphs>
+                  <Style><Border><Style>Solid</Style></Border><BackgroundColor>LightSteelBlue</BackgroundColor><PaddingLeft>2pt</PaddingLeft><PaddingRight>2pt</PaddingRight><PaddingTop>2pt</PaddingTop><PaddingBottom>2pt</PaddingBottom></Style>
+                </Textbox></CellContents></TablixCell>
+                <TablixCell><CellContents><Textbox Name="H_TANGGAL"><CanGrow>true</CanGrow><KeepTogether>true</KeepTogether>
+                  <Paragraphs><Paragraph><TextRuns><TextRun><Value>TANGGAL TRANSAKSI</Value><Style><FontFamily>Arial Narrow</FontFamily><FontSize>8pt</FontSize><FontWeight>Bold</FontWeight></Style></TextRun></TextRuns><Style><TextAlign>Center</TextAlign></Style></Paragraph></Paragraphs>
+                  <Style><Border><Style>Solid</Style></Border><BackgroundColor>LightSteelBlue</BackgroundColor><PaddingLeft>2pt</PaddingLeft><PaddingRight>2pt</PaddingRight><PaddingTop>2pt</PaddingTop><PaddingBottom>2pt</PaddingBottom></Style>
+                </Textbox></CellContents></TablixCell>
+              </TablixCells>
+            </TablixRow>
+            <TablixRow>
+              <Height>0.5cm</Height>
+              <TablixCells>
+                <TablixCell><CellContents><Textbox Name="D_BARANG"><CanGrow>true</CanGrow><KeepTogether>true</KeepTogether>
+                  <Paragraphs><Paragraph><TextRuns><TextRun><Value>=Fields!NamaBarang.Value</Value><Style><FontFamily>Arial Narrow</FontFamily><FontSize>8pt</FontSize></Style></TextRun></TextRuns><Style /></Paragraph></Paragraphs>
+                  <Style><Border><Style>Solid</Style></Border><PaddingLeft>2pt</PaddingLeft><PaddingRight>2pt</PaddingRight><PaddingTop>2pt</PaddingTop><PaddingBottom>2pt</PaddingBottom></Style>
+                </Textbox></CellContents></TablixCell>
+                <TablixCell><CellContents><Textbox Name="D_JUMLAH"><CanGrow>true</CanGrow><KeepTogether>true</KeepTogether>
+                  <Paragraphs><Paragraph><TextRuns><TextRun><Value>=Fields!Jumlah.Value</Value><Style><FontFamily>Arial Narrow</FontFamily><FontSize>8pt</FontSize><Format>#,0</Format><Language>id-ID</Language></Style></TextRun></TextRuns><Style><TextAlign>Right</TextAlign></Style></Paragraph></Paragraphs>
+                  <Style><Border><Style>Solid</Style></Border><PaddingLeft>2pt</PaddingLeft><PaddingRight>2pt</PaddingRight><PaddingTop>2pt</PaddingTop><PaddingBottom>2pt</PaddingBottom></Style>
+                </Textbox></CellContents></TablixCell>
+                <TablixCell><CellContents><Textbox Name="D_POIN"><CanGrow>true</CanGrow><KeepTogether>true</KeepTogether>
+                  <Paragraphs><Paragraph><TextRuns><TextRun><Value>=Fields!TotalPoin.Value</Value><Style><FontFamily>Arial Narrow</FontFamily><FontSize>8pt</FontSize><Format>#,0</Format><Language>id-ID</Language></Style></TextRun></TextRuns><Style><TextAlign>Right</TextAlign></Style></Paragraph></Paragraphs>
+                  <Style><Border><Style>Solid</Style></Border><PaddingLeft>2pt</PaddingLeft><PaddingRight>2pt</PaddingRight><PaddingTop>2pt</PaddingTop><PaddingBottom>2pt</PaddingBottom></Style>
+                </Textbox></CellContents></TablixCell>
+                <TablixCell><CellContents><Textbox Name="D_TANGGAL"><CanGrow>true</CanGrow><KeepTogether>true</KeepTogether>
+                  <Paragraphs><Paragraph><TextRuns><TextRun><Value>=Fields!TanggalTransaksi.Value</Value><Style><FontFamily>Arial Narrow</FontFamily><FontSize>8pt</FontSize><Format>dd/MM/yyyy</Format></Style></TextRun></TextRuns><Style><TextAlign>Center</TextAlign></Style></Paragraph></Paragraphs>
+                  <Style><Border><Style>Solid</Style></Border><PaddingLeft>2pt</PaddingLeft><PaddingRight>2pt</PaddingRight><PaddingTop>2pt</PaddingTop><PaddingBottom>2pt</PaddingBottom></Style>
+                </Textbox></CellContents></TablixCell>
+              </TablixCells>
+            </TablixRow>
+            <TablixRow>
+              <Height>0.6cm</Height>
+              <TablixCells>
+                <TablixCell><CellContents>
+                  <Textbox Name="T_LABEL"><CanGrow>true</CanGrow><KeepTogether>true</KeepTogether>
+                    <Paragraphs><Paragraph><TextRuns><TextRun><Value>TOTAL</Value><Style><FontFamily>Arial Narrow</FontFamily><FontSize>8pt</FontSize><FontWeight>Bold</FontWeight></Style></TextRun></TextRuns><Style><TextAlign>Right</TextAlign></Style></Paragraph></Paragraphs>
+                    <Style><Border><Style>Solid</Style></Border><BackgroundColor>LightYellow</BackgroundColor><PaddingLeft>2pt</PaddingLeft><PaddingRight>2pt</PaddingRight><PaddingTop>2pt</PaddingTop><PaddingBottom>2pt</PaddingBottom></Style>
+                  </Textbox>
+                  <ColSpan>1</ColSpan>
+                </CellContents></TablixCell>
+                <TablixCell><CellContents><Textbox Name="T_JUMLAH"><CanGrow>true</CanGrow><KeepTogether>true</KeepTogether>
+                  <Paragraphs><Paragraph><TextRuns><TextRun><Value>=Sum(Fields!Jumlah.Value)</Value><Style><FontFamily>Arial Narrow</FontFamily><FontSize>8pt</FontSize><FontWeight>Bold</FontWeight><Format>#,0</Format><Language>id-ID</Language></Style></TextRun></TextRuns><Style><TextAlign>Right</TextAlign></Style></Paragraph></Paragraphs>
+                  <Style><Border><Style>Solid</Style></Border><BackgroundColor>LightYellow</BackgroundColor><PaddingLeft>2pt</PaddingLeft><PaddingRight>2pt</PaddingRight><PaddingTop>2pt</PaddingTop><PaddingBottom>2pt</PaddingBottom></Style>
+                </Textbox></CellContents></TablixCell>
+                <TablixCell><CellContents><Textbox Name="T_POIN"><CanGrow>true</CanGrow><KeepTogether>true</KeepTogether>
+                  <Paragraphs><Paragraph><TextRuns><TextRun><Value>=Sum(Fields!TotalPoin.Value)</Value><Style><FontFamily>Arial Narrow</FontFamily><FontSize>8pt</FontSize><FontWeight>Bold</FontWeight><Format>#,0</Format><Language>id-ID</Language></Style></TextRun></TextRuns><Style><TextAlign>Right</TextAlign></Style></Paragraph></Paragraphs>
+                  <Style><Border><Style>Solid</Style></Border><BackgroundColor>LightYellow</BackgroundColor><PaddingLeft>2pt</PaddingLeft><PaddingRight>2pt</PaddingRight><PaddingTop>2pt</PaddingTop><PaddingBottom>2pt</PaddingBottom></Style>
+                </Textbox></CellContents></TablixCell>
+                <TablixCell><CellContents><Textbox Name="T_TANGGAL"><CanGrow>true</CanGrow><KeepTogether>true</KeepTogether>
+                  <Paragraphs><Paragraph><TextRuns><TextRun><Value></Value><Style><FontFamily>Arial Narrow</FontFamily><FontSize>8pt</FontSize><FontWeight>Bold</FontWeight></Style></TextRun></TextRuns><Style /></Paragraph></Paragraphs>
+                  <Style><Border><Style>Solid</Style></Border><BackgroundColor>LightYellow</BackgroundColor><PaddingLeft>2pt</PaddingLeft><PaddingRight>2pt</PaddingRight><PaddingTop>2pt</PaddingTop><PaddingBottom>2pt</PaddingBottom></Style>
+                </Textbox></CellContents></TablixCell>
+              </TablixCells>
+            </TablixRow>
+          </TablixRows>
+        </TablixBody>
+        <TablixColumnHierarchy>
+          <TablixMembers>
+            <TablixMember /><TablixMember /><TablixMember /><TablixMember />
+          </TablixMembers>
+        </TablixColumnHierarchy>
+        <TablixRowHierarchy>
+          <TablixMembers>
+            <TablixMember><KeepWithGroup>After</KeepWithGroup></TablixMember>
+            <TablixMember><Group Name="Details" /></TablixMember>
+            <TablixMember><KeepWithGroup>Before</KeepWithGroup></TablixMember>
+          </TablixMembers>
+        </TablixRowHierarchy>
+        <RepeatColumnHeaders>true</RepeatColumnHeaders>
+        <FixedColumnHeaders>true</FixedColumnHeaders>
+        <DataSetName>DataSet1</DataSetName>
+        <Top>1.0cm</Top><Left>0cm</Left><Height>1.7cm</Height><Width>20cm</Width>
+        <Style><Border><Style>None</Style></Border></Style>
+      </Tablix>
+    </ReportItems>
+    <Height>3cm</Height>
+    <Style />
+  </Body>
+  <Width>20cm</Width>
+  <Page>
+    <PageHeader>
+      <Height>1.2cm</Height>
+      <PrintOnFirstPage>true</PrintOnFirstPage>
+      <PrintOnLastPage>true</PrintOnLastPage>
+      <ReportItems>
+        <Textbox Name="TxtPerusahaan">
+          <CanGrow>true</CanGrow><KeepTogether>true</KeepTogether>
+          <Paragraphs><Paragraph><TextRuns><TextRun>
+            <Value>=Parameters!Perusahaan.Value</Value>
+            <Style><FontFamily>Arial Narrow</FontFamily><FontSize>12pt</FontSize><FontWeight>Bold</FontWeight></Style>
+          </TextRun></TextRuns><Style><TextAlign>Left</TextAlign></Style></Paragraph></Paragraphs>
+          <Top>0.3cm</Top><Left>0cm</Left><Height>0.7cm</Height><Width>10cm</Width>
+          <Style><Border><Style>None</Style></Border><PaddingLeft>2pt</PaddingLeft></Style>
+        </Textbox>
+        <Textbox Name="TxtJudul">
+          <CanGrow>true</CanGrow><KeepTogether>true</KeepTogether>
+          <Paragraphs><Paragraph><TextRuns><TextRun>
+            <Value>=Parameters!Judul.Value</Value>
+            <Style><FontFamily>Arial Narrow</FontFamily><FontSize>11pt</FontSize><FontWeight>Bold</FontWeight></Style>
+          </TextRun></TextRuns><Style><TextAlign>Right</TextAlign></Style></Paragraph></Paragraphs>
+          <Top>0.3cm</Top><Left>10cm</Left><Height>0.7cm</Height><Width>10cm</Width>
+          <ZIndex>1</ZIndex>
+          <Style><Border><Style>None</Style></Border><PaddingRight>2pt</PaddingRight></Style>
+        </Textbox>
+      </ReportItems>
+      <Style><Border><Style>None</Style></Border></Style>
+    </PageHeader>
+    <PageFooter>
+      <Height>0.8cm</Height>
+      <PrintOnFirstPage>true</PrintOnFirstPage>
+      <PrintOnLastPage>true</PrintOnLastPage>
+      <ReportItems>
+        <Textbox Name="TxtKasir">
+          <CanGrow>true</CanGrow><KeepTogether>true</KeepTogether>
+          <Paragraphs><Paragraph><TextRuns><TextRun>
+            <Value>=Parameters!Kasir.Value</Value>
+            <Style><FontFamily>Arial Narrow</FontFamily><FontSize>8pt</FontSize></Style>
+          </TextRun></TextRuns><Style><TextAlign>Left</TextAlign></Style></Paragraph></Paragraphs>
+          <Top>0.15cm</Top><Left>0cm</Left><Height>0.4cm</Height><Width>8cm</Width>
+          <Style><Border><Style>None</Style></Border><PaddingLeft>2pt</PaddingLeft></Style>
+        </Textbox>
+        <Textbox Name="TxtTanggalCetak">
+          <CanGrow>true</CanGrow><KeepTogether>true</KeepTogether>
+          <Paragraphs><Paragraph><TextRuns><TextRun>
+            <Value>=Globals!ExecutionTime</Value>
+            <Style><FontFamily>Arial Narrow</FontFamily><FontSize>8pt</FontSize><Format>dd MMMM yyyy HH:mm:ss</Format></Style>
+          </TextRun></TextRuns><Style><TextAlign>Center</TextAlign></Style></Paragraph></Paragraphs>
+          <Top>0.15cm</Top><Left>6cm</Left><Height>0.4cm</Height><Width>8cm</Width>
+          <ZIndex>1</ZIndex>
+          <Style><Border><Style>None</Style></Border></Style>
+        </Textbox>
+        <Textbox Name="TxtPage">
+          <CanGrow>true</CanGrow><KeepTogether>true</KeepTogether>
+          <Paragraphs><Paragraph><TextRuns><TextRun>
+            <Value>="Page " &amp; Globals!PageNumber &amp; " of " &amp; Globals!TotalPages</Value>
+            <Style><FontFamily>Arial Narrow</FontFamily><FontSize>8pt</FontSize></Style>
+          </TextRun></TextRuns><Style><TextAlign>Right</TextAlign></Style></Paragraph></Paragraphs>
+          <Top>0.15cm</Top><Left>15cm</Left><Height>0.4cm</Height><Width>5cm</Width>
+          <ZIndex>2</ZIndex>
+          <Style><Border><Style>None</Style></Border><PaddingRight>2pt</PaddingRight></Style>
+        </Textbox>
+      </ReportItems>
+      <Style><Border><Style>None</Style></Border></Style>
+    </PageFooter>
+    <PageHeight>33cm</PageHeight>
+    <PageWidth>21.5cm</PageWidth>
+    <LeftMargin>0.5cm</LeftMargin>
+    <RightMargin>0.5cm</RightMargin>
+    <TopMargin>0.5cm</TopMargin>
+    <BottomMargin>0.5cm</BottomMargin>
+    <Style />
+  </Page>
+  <rd:ReportUnitType>Cm</rd:ReportUnitType>
+  <rd:ReportID>a1b2c3d4-e5f6-7890-abcd-ef1234567892</rd:ReportID>
+</Report>

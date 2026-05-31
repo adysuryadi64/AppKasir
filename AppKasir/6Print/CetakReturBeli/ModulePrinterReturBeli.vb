@@ -45,7 +45,7 @@ Module ModulePrinterReturBeli
         Using cmd As New MySqlCommand(
             "SELECT NAMA_BARANG, QTY, SATUAN, HARGA_BELI_SATUAN, TOTAL " &
             "FROM retur_pembelian_detail WHERE ID_RETUR_PEMBELIAN = @noRetur " &
-            "ORDER BY NAMA_BARANG", conn)
+            "ORDER BY URUTAN", conn)
             cmd.Parameters.AddWithValue("@noRetur", noRetur)
             Using rd As MySqlDataReader = cmd.ExecuteReader()
                 While rd.Read()

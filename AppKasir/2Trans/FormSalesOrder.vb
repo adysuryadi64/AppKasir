@@ -1300,10 +1300,10 @@ Public Class FormSalesOrder
         Dim query As String
         If ModulHakAkses.SettingTampilInfoStok Then
             query = "SELECT NAMA_BARANG, STOK_TOKO, STOK_GUDANG FROM tbl_barang " &
-                    "WHERE STATUS = 'Aktif' AND NAMA_BARANG LIKE @key LIMIT 200"
+                    "WHERE STATUS = 'Aktif' AND NAMA_BARANG LIKE @key ORDER BY NAMA_BARANG LIMIT 200"
         Else
             query = "SELECT NAMA_BARANG FROM tbl_barang " &
-                    "WHERE STATUS = 'Aktif' AND NAMA_BARANG LIKE @key LIMIT 200"
+                    "WHERE STATUS = 'Aktif' AND NAMA_BARANG LIKE @key ORDER BY NAMA_BARANG LIMIT 200"
         End If
 
         Try
@@ -3593,6 +3593,9 @@ Public Class FormSalesOrder
 
     Public Sub Simpanatauedit()
         Cursor = Cursors.WaitCursor
+        If IsModeTambahSO AndAlso Not ModulHakAkses.SettingIzinkanTanggalLampau Then
+            DTPTgl.Value = DateTime.Now
+        End If
         If IsModeTambahSO Then
             ' ── Cek duplikat faktur (Multi-Kasir Protection) ─────────────────
             Dim query As String = "SELECT ID_PENJUALAN FROM sales_order WHERE ID_PENJUALAN = ?"
@@ -3676,13 +3679,13 @@ Public Class FormSalesOrder
                 "TANGGAL_JUAL, ID_BARANG, NAMA_BARANG, SERIAL_NUMBER, HARGA_BELI, " &
                 "QTY, SATUAN, ISI_SATUAN, HARGA_BELI_SATUAN, HARGA_JUAL, " &
                 "QTY_SATUAN, DISKON_PERSEN, DISKON_RP, TOTAL_DISKON, TOTAL_Harga, " &
-                "ID_USER, ID_KOMPUTER) " &
+                "ID_USER, ID_KOMPUTER, URUTAN) " &
                 "VALUES (" &
                 "@FAKTUR_JUAL, @ID_PELANGGAN, @NAMA_PELANGGAN, @JENIS_PELANGGAN, @LOKASIBARANG, " &
                 "@TANGGAL_JUAL, @ID_BARANG, @NAMA_BARANG, @SERIAL_NUMBER, @HARGA_BELI, " &
                 "@QTY, @SATUAN, @ISI_SATUAN, @HARGA_BELI_SATUAN, @HARGA_JUAL, " &
                 "@QTY_SATUAN, @DISKON_PERSEN, @DISKON_RP, @TOTAL_DISKON, @TOTAL_Harga, " &
-                "@ID_USER, @ID_KOMPUTER)"
+                "@ID_USER, @ID_KOMPUTER, @URUTAN)"
 
             ' Query History: Dipecah untuk kejelasan struktur data history stok
             Dim sbSql As New System.Text.StringBuilder("INSERT INTO HistoryBarang (" &
@@ -3714,6 +3717,7 @@ Public Class FormSalesOrder
                     cmdD.Parameters.Add("@TOTAL_Harga", MySqlDbType.Decimal)
                     cmdD.Parameters.Add("@ID_USER", MySqlDbType.VarChar)
                     cmdD.Parameters.Add("@ID_KOMPUTER", MySqlDbType.VarChar)
+                    cmdD.Parameters.Add("@URUTAN", MySqlDbType.Int32)
 
                     Dim idx As Integer = 0
                     For Each row As DataGridViewRow In DgvDataTransaksi.Rows
@@ -3755,6 +3759,7 @@ Public Class FormSalesOrder
                             cmdD.Parameters("@TOTAL_Harga").Value = totalHargaRow
                             cmdD.Parameters("@ID_USER").Value = idUser
                             cmdD.Parameters("@ID_KOMPUTER").Value = idKomputer
+                            cmdD.Parameters("@URUTAN").Value = idx + 1
                             cmdD.ExecuteNonQuery()
 
                             If idx > 0 Then sbSql.Append(",")

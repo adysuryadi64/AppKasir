@@ -312,7 +312,7 @@ Public Class FormReturPenjualan
                 "tb.SATUAN_UMUM_BESAR, tb.ISI_UMUM_BESAR " &
                 "FROM penjualan_detail pd " &
                 "LEFT JOIN tbl_barang tb ON tb.ID_BARANG = pd.ID_BARANG " &
-                "WHERE pd.FAKTUR_JUAL = @nota", conn)
+                "WHERE pd.FAKTUR_JUAL = @nota ORDER BY pd.URUTAN", conn)
                 cmd.Parameters.AddWithValue("@nota", _cacheNota)
                 Using rd As MySqlDataReader = cmd.ExecuteReader()
                     While rd.Read()
@@ -1279,10 +1279,12 @@ Public Class FormReturPenjualan
 
     Private Sub Simpanreturpenjualandetail(ByVal transaction As MySqlTransaction)
         ' Simpan data rincian barang dari gridview ke tbl_rinci_BELI
+        Dim urutan As Integer = 0
         For Each row As DataGridViewRow In DGVReturjual.Rows
             If Not row.IsNewRow AndAlso row.Cells(0).Value IsNot Nothing AndAlso row.Cells(0).Value.ToString() <> "" Then
-                Dim sqlrinci As String = "INSERT INTO retur_penjualan_detail (ID_RETUR_PENJUALAN, TGL_RETUR_JUAL, LOKASI, ID_PELANGGAN, NAMA_PELANGGAN, JENIS_PELANGGAN, ID_BARANG, NAMA_BARANG, HARGA_BELI, QTY, SATUAN, ISI_SATUAN, QTY_SATUAN, HARGA_BELI_SATUAN, HARGA_JUAL, TOTAL_DISKON, TOTAL_HARGA, LABA, ID_USER, ID_KOMPUTER) VALUES " &
-                                         "(@ID_RETUR_PENJUALAN, @TGL_RETUR_JUAL, @LOKASI, @ID_PELANGGAN, @NAMA_PELANGGAN, @JENIS_PELANGGAN, @ID_BARANG, @NAMA_BARANG, @HARGA_BELI, @QTY, @SATUAN, @ISI_SATUAN, @QTY_SATUAN, @HARGA_BELI_SATUAN, @HARGA_JUAL, @TOTAL_DISKON, @TOTAL_HARGA, @LABA, @ID_USER, @ID_KOMPUTER)"
+                urutan += 1
+                Dim sqlrinci As String = "INSERT INTO retur_penjualan_detail (ID_RETUR_PENJUALAN, TGL_RETUR_JUAL, LOKASI, ID_PELANGGAN, NAMA_PELANGGAN, JENIS_PELANGGAN, ID_BARANG, NAMA_BARANG, HARGA_BELI, QTY, SATUAN, ISI_SATUAN, QTY_SATUAN, HARGA_BELI_SATUAN, HARGA_JUAL, TOTAL_DISKON, TOTAL_HARGA, LABA, ID_USER, ID_KOMPUTER, URUTAN) VALUES " &
+                                         "(@ID_RETUR_PENJUALAN, @TGL_RETUR_JUAL, @LOKASI, @ID_PELANGGAN, @NAMA_PELANGGAN, @JENIS_PELANGGAN, @ID_BARANG, @NAMA_BARANG, @HARGA_BELI, @QTY, @SATUAN, @ISI_SATUAN, @QTY_SATUAN, @HARGA_BELI_SATUAN, @HARGA_JUAL, @TOTAL_DISKON, @TOTAL_HARGA, @LABA, @ID_USER, @ID_KOMPUTER, @URUTAN)"
                 Using cmd As New MySqlCommand(sqlrinci, conn, transaction)
                     cmd.Parameters.AddWithValue("@ID_RETUR_PENJUALAN", LblNoNotaRetur.Text)
                     cmd.Parameters.AddWithValue("@TGL_RETUR_JUAL", DTPRetur.Value.ToString("yyyy-MM-dd HH:mm:ss"))
@@ -1304,6 +1306,7 @@ Public Class FormReturPenjualan
                     cmd.Parameters.AddWithValue("@LABA", ModuleAngka.ParseDecimal(row.Cells(10).Value) - ModuleAngka.ParseDecimal(row.Cells(7).Value))
                     cmd.Parameters.AddWithValue("@ID_USER", FormUtama.StatusNamaUser.Text)
                     cmd.Parameters.AddWithValue("@ID_KOMPUTER", FormUtama.StatusNamaPC.Text)
+                    cmd.Parameters.AddWithValue("@URUTAN", urutan)
                     cmd.ExecuteNonQuery()
                 End Using
 

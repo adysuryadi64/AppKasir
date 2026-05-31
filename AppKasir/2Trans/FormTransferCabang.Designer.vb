@@ -23,6 +23,7 @@ Partial Class FormTransferCabang
         Dim DataGridViewCellStyle4 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(FormTransferCabang))
         Me.PanelRoot = New System.Windows.Forms.Panel()
+        Me.LstBarang = New System.Windows.Forms.ListBox()
         Me.PanelGrid = New System.Windows.Forms.Panel()
         Me.DgvDetail = New System.Windows.Forms.DataGridView()
         Me.Kode = New System.Windows.Forms.DataGridViewTextBoxColumn()
@@ -39,7 +40,6 @@ Partial Class FormTransferCabang
         Me.BtnCari = New System.Windows.Forms.Button()
         Me.TxtNamaBarang = New System.Windows.Forms.TextBox()
         Me.LblStatus = New System.Windows.Forms.Label()
-        Me.LstBarang = New System.Windows.Forms.ListBox()
         Me.PanelFooter = New System.Windows.Forms.Panel()
         Me.BtnPelanggan = New System.Windows.Forms.Button()
         Me.BtnBarang = New System.Windows.Forms.Button()
@@ -79,6 +79,17 @@ Partial Class FormTransferCabang
         Me.PanelRoot.Name = "PanelRoot"
         Me.PanelRoot.Size = New System.Drawing.Size(1291, 692)
         Me.PanelRoot.TabIndex = 0
+        '
+        'LstBarang
+        '
+        Me.LstBarang.Font = New System.Drawing.Font("Century Gothic", 11.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.LstBarang.FormattingEnabled = True
+        Me.LstBarang.ItemHeight = 20
+        Me.LstBarang.Location = New System.Drawing.Point(3, 148)
+        Me.LstBarang.Name = "LstBarang"
+        Me.LstBarang.Size = New System.Drawing.Size(532, 244)
+        Me.LstBarang.TabIndex = 2
+        Me.LstBarang.Visible = False
         '
         'PanelGrid
         '
@@ -248,17 +259,6 @@ Partial Class FormTransferCabang
         Me.LblStatus.Text = "Status: Siap pakai"
         Me.LblStatus.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
         '
-        'LstBarang
-        '
-        Me.LstBarang.Font = New System.Drawing.Font("Century Gothic", 11.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.LstBarang.FormattingEnabled = True
-        Me.LstBarang.ItemHeight = 20
-        Me.LstBarang.Location = New System.Drawing.Point(3, 148)
-        Me.LstBarang.Name = "LstBarang"
-        Me.LstBarang.Size = New System.Drawing.Size(532, 244)
-        Me.LstBarang.TabIndex = 2
-        Me.LstBarang.Visible = False
-        '
         'PanelFooter
         '
         Me.PanelFooter.BackColor = System.Drawing.Color.WhiteSmoke
@@ -331,7 +331,7 @@ Partial Class FormTransferCabang
         Me.BtnExportManual.ForeColor = System.Drawing.Color.Black
         Me.BtnExportManual.Image = CType(resources.GetObject("BtnExportManual.Image"), System.Drawing.Image)
         Me.BtnExportManual.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft
-        Me.BtnExportManual.Location = New System.Drawing.Point(959, 13)
+        Me.BtnExportManual.Location = New System.Drawing.Point(959, 6)
         Me.BtnExportManual.Name = "BtnExportManual"
         Me.BtnExportManual.Size = New System.Drawing.Size(166, 33)
         Me.BtnExportManual.TabIndex = 10
@@ -354,7 +354,7 @@ Partial Class FormTransferCabang
         Me.BtnKirimCloud.ForeColor = System.Drawing.Color.FromArgb(CType(CType(22, Byte), Integer), CType(CType(163, Byte), Integer), CType(CType(74, Byte), Integer))
         Me.BtnKirimCloud.Image = CType(resources.GetObject("BtnKirimCloud.Image"), System.Drawing.Image)
         Me.BtnKirimCloud.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft
-        Me.BtnKirimCloud.Location = New System.Drawing.Point(1131, 13)
+        Me.BtnKirimCloud.Location = New System.Drawing.Point(1131, 6)
         Me.BtnKirimCloud.Name = "BtnKirimCloud"
         Me.BtnKirimCloud.Size = New System.Drawing.Size(148, 33)
         Me.BtnKirimCloud.TabIndex = 9

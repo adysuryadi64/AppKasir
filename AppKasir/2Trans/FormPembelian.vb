@@ -2337,7 +2337,7 @@ Public Class FormPembelian
                     "   OR NAMA_BARANG LIKE @key " &
                     "   OR BARCODE_KECIL LIKE @key " &
                     "   OR BARCODE_SEDANG LIKE @key " &
-                    "   OR BARCODE_BESAR LIKE @key) LIMIT 200"
+                    "   OR BARCODE_BESAR LIKE @key) ORDER BY NAMA_BARANG LIMIT 200"
         Else
             query = "SELECT NAMA_BARANG FROM tbl_barang " &
                     "WHERE STATUS = 'Aktif' AND (" &
@@ -2345,7 +2345,7 @@ Public Class FormPembelian
                     "   OR NAMA_BARANG LIKE @key " &
                     "   OR BARCODE_KECIL LIKE @key " &
                     "   OR BARCODE_SEDANG LIKE @key " &
-                    "   OR BARCODE_BESAR LIKE @key) LIMIT 200"
+                    "   OR BARCODE_BESAR LIKE @key) ORDER BY NAMA_BARANG LIMIT 200"
         End If
 
         Try
@@ -4287,11 +4287,13 @@ Public Class FormPembelian
 
     Private Sub SimpanPembelianDitahanDetail(ByVal transaction As MySqlTransaction)
         Dim sql As String =
-            "INSERT INTO pembelian_ditahan_detail (FAKTUR_BELI, NOTA_BELI, TANGGAL_MASUK, LOKASI, ID_SUPLIYER, NAMA_SUPLIYER, ID_BARANG, NAMA_BARANG, HARGA_BELI, HARGA_AVERAGE, HARGA_BELI_SEBELUMNYA, QTY, SATUAN, ISI_SATUAN, HARGA_BELI_SATUAN, QTY_SAT, TOTAL) " &
-            "VALUES (@FAKTUR_BELI, @NOTA_BELI, @TANGGAL_MASUK, @LOKASI, @ID_SUPLIYER, @NAMA_SUPLIYER, @ID_BARANG, @NAMA_BARANG, @HARGA_BELI, @HARGA_AVERAGE, @HARGA_BELI_SEBELUMNYA, @QTY, @SATUAN, @ISI_SATUAN, @HARGA_BELI_SATUAN, @QTY_SAT, @TOTAL)"
+            "INSERT INTO pembelian_ditahan_detail (FAKTUR_BELI, NOTA_BELI, TANGGAL_MASUK, LOKASI, ID_SUPLIYER, NAMA_SUPLIYER, ID_BARANG, NAMA_BARANG, HARGA_BELI, HARGA_AVERAGE, HARGA_BELI_SEBELUMNYA, QTY, SATUAN, ISI_SATUAN, HARGA_BELI_SATUAN, QTY_SAT, TOTAL, URUTAN) " &
+            "VALUES (@FAKTUR_BELI, @NOTA_BELI, @TANGGAL_MASUK, @LOKASI, @ID_SUPLIYER, @NAMA_SUPLIYER, @ID_BARANG, @NAMA_BARANG, @HARGA_BELI, @HARGA_AVERAGE, @HARGA_BELI_SEBELUMNYA, @QTY, @SATUAN, @ISI_SATUAN, @HARGA_BELI_SATUAN, @QTY_SAT, @TOTAL, @URUTAN)"
 
+        Dim urutan As Integer = 0
         For Each row As DataGridViewRow In DgvData.Rows
             If row.IsNewRow OrElse row.Cells("Id").Value Is Nothing OrElse row.Cells("Id").Value.ToString().Trim() = "" Then Continue For
+            urutan += 1
 
             Using cmd As New MySqlCommand(sql, conn, transaction)
                 cmd.Parameters.AddWithValue("@FAKTUR_BELI", TxtIdPembelian.Text)
@@ -4311,6 +4313,7 @@ Public Class FormPembelian
                 cmd.Parameters.AddWithValue("@HARGA_BELI_SATUAN", ModuleAngka.ParseDecimal(row.Cells("HargaBeliSatKecil").Value))
                 cmd.Parameters.AddWithValue("@QTY_SAT", ModuleAngka.ParseDecimal(row.Cells("QtySat").Value))
                 cmd.Parameters.AddWithValue("@TOTAL", ModuleAngka.ParseDecimal(row.Cells("Totalharga").Value))
+                cmd.Parameters.AddWithValue("@URUTAN", urutan)
                 cmd.ExecuteNonQuery()
             End Using
         Next
@@ -4527,8 +4530,10 @@ Public Class FormPembelian
 
 
     Private Sub SimpanPembelianDetail(ByVal transaction As MySqlTransaction, ByRef auditDetail As Dictionary(Of String, Decimal))
+        Dim urutan As Integer = 0
         For Each row As DataGridViewRow In DgvData.Rows
             If row.IsNewRow OrElse row.Cells("Id").Value Is Nothing OrElse row.Cells("Id").Value.ToString().Trim() = "" Then Continue For
+            urutan += 1
 
             ' Ambil data dari row
             Dim IdBarang = row.Cells("Id").Value.ToString()
@@ -4546,8 +4551,8 @@ Public Class FormPembelian
             ' Simpan detail pembelian
             Using cmd As New MySqlCommand("
             INSERT INTO pembelian_detail 
-            (FAKTUR_BELI, NOTA_BELI, TANGGAL_MASUK, LOKASI, ID_SUPLIYER, NAMA_SUPLIYER, ID_BARANG, NAMA_BARANG, HARGA_BELI, HARGA_AVERAGE, HARGA_BELI_SEBELUMNYA, QTY, SATUAN, ISI_SATUAN, HARGA_BELI_SATUAN, QTY_SAT, TOTAL, ID_USER, ID_KOMPUTER) 
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", conn, transaction)
+            (FAKTUR_BELI, NOTA_BELI, TANGGAL_MASUK, LOKASI, ID_SUPLIYER, NAMA_SUPLIYER, ID_BARANG, NAMA_BARANG, HARGA_BELI, HARGA_AVERAGE, HARGA_BELI_SEBELUMNYA, QTY, SATUAN, ISI_SATUAN, HARGA_BELI_SATUAN, QTY_SAT, TOTAL, ID_USER, ID_KOMPUTER, URUTAN) 
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", conn, transaction)
 
                 With cmd.Parameters
                     .AddWithValue("@FAKTUR_BELI", TxtIdPembelian.Text)
@@ -4569,6 +4574,7 @@ Public Class FormPembelian
                     .AddWithValue("@TOTAL", Total)
                     .AddWithValue("@ID_USER", If(IsModeTambahPembelian, FormUtama.StatusNamaUser.Text, TxtLogin.Text))
                     .AddWithValue("@ID_KOMPUTER", If(IsModeTambahPembelian, FormUtama.StatusNamaPC.Text, TxtKomputer.Text))
+                    .AddWithValue("@URUTAN", urutan)
                 End With
                 cmd.ExecuteNonQuery()
             End Using
@@ -4982,7 +4988,7 @@ Public Class FormPembelian
         "tb.SATUAN_UMUM_KECIL, tb.SATUAN_UMUM_SEDANG, tb.SATUAN_UMUM_BESAR " &
         "FROM pembelian_detail pd " &
         "LEFT JOIN tbl_barang tb ON pd.ID_BARANG = tb.ID_BARANG " &
-        "WHERE pd.FAKTUR_BELI = ?"
+        "WHERE pd.FAKTUR_BELI = ? ORDER BY pd.URUTAN"
         Using cmd As New MySqlCommand(queryPembelian, conn)
             cmd.Parameters.AddWithValue("@FAKTUR_BELI", TxtIdPembelian.Text)
 

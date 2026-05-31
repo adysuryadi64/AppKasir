@@ -85,7 +85,7 @@ Public Class FormPenjualanDitahan
         Dim sql As String =
             "SELECT ID_BARANG AS `Kode`, NAMA_BARANG AS `Nama Barang`, QTY AS `Qty`, SATUAN AS `Satuan`, " &
             "ISI_SATUAN AS `Isi`, HARGA_JUAL AS `Harga Jual`, TOTAL_HARGA AS `Total` " &
-            "FROM penjualan_ditahan_detail WHERE FAKTUR_JUAL = @FAKTUR ORDER BY NAMA_BARANG"
+            "FROM penjualan_ditahan_detail WHERE FAKTUR_JUAL = @FAKTUR ORDER BY URUTAN"
         Using da As New MySqlDataAdapter(sql, conn)
             da.SelectCommand.Parameters.AddWithValue("@FAKTUR", faktur)
             da.Fill(dt)
@@ -175,7 +175,7 @@ Public Class FormPenjualanDitahan
                     sbSnapshot.AppendLine(vbCrLf & "Detail Barang:")
                     Using cmdSnapDetail As New MySqlCommand(
                         "SELECT KODE_BARANG, NAMA_BARANG, QTY, HARGA_JUAL, TOTAL_HARGA " &
-                        "FROM penjualan_ditahan_detail WHERE FAKTUR_JUAL = @f ORDER BY KODE_BARANG", conn, transaction)
+                        "FROM penjualan_ditahan_detail WHERE FAKTUR_JUAL = @f ORDER BY URUTAN", conn, transaction)
                         cmdSnapDetail.Parameters.AddWithValue("@f", faktur)
                         Using rdSnapDetail = cmdSnapDetail.ExecuteReader()
                             While rdSnapDetail.Read()

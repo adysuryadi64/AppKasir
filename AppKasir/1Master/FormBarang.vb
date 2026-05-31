@@ -624,7 +624,7 @@ Public Class FormBarang
                     ' ========================================
                     Dim sbSnapshot As New System.Text.StringBuilder()
                     Using cmdSnap As New MySqlCommand(
-                        "SELECT ID_BARANG, NAMA_BARANG, HARGA_BELI, KODE_KATEGORI, KODE_MERK, KODE_SATUAN, STATUS FROM tbl_barang WHERE ID_BARANG = @kode LIMIT 1", conn, transaction)
+                        "SELECT ID_BARANG, NAMA_BARANG, HARGA_BELI, KODE_KATEGORI, KODE_MERK, SATUAN_STOK, STATUS FROM tbl_barang WHERE ID_BARANG = @kode LIMIT 1", conn, transaction)
                         cmdSnap.Parameters.AddWithValue("@kode", kode)
                         Using rdSnap = cmdSnap.ExecuteReader()
                             If rdSnap.Read() Then
@@ -633,7 +633,7 @@ Public Class FormBarang
                                 sbSnapshot.AppendLine($"Harga Beli: {ModuleAngka.FormatRupiah(ModuleAngka.ParseDecimal(rdSnap("HARGA_BELI")))}")
                                 sbSnapshot.AppendLine($"Kode Kategori: {rdSnap("KODE_KATEGORI")}")
                                 sbSnapshot.AppendLine($"Kode Merk: {rdSnap("KODE_MERK")}")
-                                sbSnapshot.AppendLine($"Kode Satuan: {rdSnap("KODE_SATUAN")}")
+                                sbSnapshot.AppendLine($"Kode Satuan: {rdSnap("SATUAN_STOK")}")
                                 sbSnapshot.AppendLine($"Status: {rdSnap("STATUS")}")
                             End If
                         End Using

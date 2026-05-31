@@ -26,16 +26,20 @@ Partial Class FormTukarPoin
         Me.BtnClose = New System.Windows.Forms.Button()
         Me.LblHeader = New System.Windows.Forms.Label()
         Me.PanelPelanggan = New System.Windows.Forms.Panel()
-        Me.LblCariPelanggan = New System.Windows.Forms.Label()
-        Me.TxtPelanggan = New System.Windows.Forms.TextBox()
+        Me.LstHasilCariPelanggan = New System.Windows.Forms.ListBox()
         Me.LblSaldoPoinTukar = New System.Windows.Forms.Label()
-        Me.LblStatusMinRedeem = New System.Windows.Forms.Label()
+        Me.LblKodePelanggan = New System.Windows.Forms.Label()
+        Me.TxtPelanggan = New System.Windows.Forms.TextBox()
+        Me.LblCariPelanggan = New System.Windows.Forms.Label()
         Me.DgvBarangTukar = New System.Windows.Forms.DataGridView()
         Me.PanelRingkasan = New System.Windows.Forms.Panel()
+        Me.LblSummary = New System.Windows.Forms.Label()
         Me.LblTotalPoinDibutuhkan = New System.Windows.Forms.Label()
         Me.LblSisaPoinSetelah = New System.Windows.Forms.Label()
         Me.BtnKonfirmasiTukar = New System.Windows.Forms.Button()
         Me.BtnRefresh = New System.Windows.Forms.Button()
+        Me.TxtJenisTrans = New System.Windows.Forms.TextBox()
+        Me.TxtFaktur = New System.Windows.Forms.TextBox()
         Me.PanelHeader.SuspendLayout()
         Me.PanelPelanggan.SuspendLayout()
         CType(Me.DgvBarangTukar, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -79,88 +83,100 @@ Partial Class FormTukarPoin
         Me.LblHeader.Name = "LblHeader"
         Me.LblHeader.Size = New System.Drawing.Size(900, 40)
         Me.LblHeader.TabIndex = 1
-        Me.LblHeader.Text = "T U K A R   P O I N   D E N G A N   B A R A N G"
+        Me.LblHeader.Text = "T U K A R   P O I N"
         Me.LblHeader.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
         '
         'PanelPelanggan
         '
-        Me.PanelPelanggan.Controls.Add(Me.LblCariPelanggan)
-        Me.PanelPelanggan.Controls.Add(Me.TxtPelanggan)
+        Me.PanelPelanggan.BackColor = System.Drawing.SystemColors.Control
+        Me.PanelPelanggan.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
         Me.PanelPelanggan.Controls.Add(Me.LblSaldoPoinTukar)
-        Me.PanelPelanggan.Controls.Add(Me.LblStatusMinRedeem)
-        Me.PanelPelanggan.Dock = System.Windows.Forms.DockStyle.Top
-        Me.PanelPelanggan.Location = New System.Drawing.Point(0, 40)
+        Me.PanelPelanggan.Controls.Add(Me.LblKodePelanggan)
+        Me.PanelPelanggan.Controls.Add(Me.TxtPelanggan)
+        Me.PanelPelanggan.Controls.Add(Me.LblCariPelanggan)
+        Me.PanelPelanggan.Location = New System.Drawing.Point(8, 48)
         Me.PanelPelanggan.Name = "PanelPelanggan"
-        Me.PanelPelanggan.Size = New System.Drawing.Size(900, 60)
+        Me.PanelPelanggan.Size = New System.Drawing.Size(884, 60)
         Me.PanelPelanggan.TabIndex = 1
         '
-        'LblCariPelanggan
+        'LstHasilCariPelanggan
         '
-        Me.LblCariPelanggan.Font = New System.Drawing.Font("Segoe UI", 9.75!)
-        Me.LblCariPelanggan.Location = New System.Drawing.Point(8, 8)
-        Me.LblCariPelanggan.Name = "LblCariPelanggan"
-        Me.LblCariPelanggan.Size = New System.Drawing.Size(110, 24)
-        Me.LblCariPelanggan.TabIndex = 0
-        Me.LblCariPelanggan.Text = "Cari Pelanggan :"
-        Me.LblCariPelanggan.TextAlign = System.Drawing.ContentAlignment.MiddleRight
-        '
-        'TxtPelanggan
-        '
-        Me.TxtPelanggan.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
-        Me.TxtPelanggan.Font = New System.Drawing.Font("Segoe UI", 9.75!)
-        Me.TxtPelanggan.Location = New System.Drawing.Point(124, 8)
-        Me.TxtPelanggan.Name = "TxtPelanggan"
-        Me.TxtPelanggan.Size = New System.Drawing.Size(280, 25)
-        Me.TxtPelanggan.TabIndex = 1
+        Me.LstHasilCariPelanggan.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
+        Me.LstHasilCariPelanggan.Font = New System.Drawing.Font("Segoe UI", 9.75!)
+        Me.LstHasilCariPelanggan.ItemHeight = 17
+        Me.LstHasilCariPelanggan.Location = New System.Drawing.Point(122, 88)
+        Me.LstHasilCariPelanggan.Name = "LstHasilCariPelanggan"
+        Me.LstHasilCariPelanggan.Size = New System.Drawing.Size(280, 189)
+        Me.LstHasilCariPelanggan.TabIndex = 5
+        Me.LstHasilCariPelanggan.Visible = False
         '
         'LblSaldoPoinTukar
         '
         Me.LblSaldoPoinTukar.Font = New System.Drawing.Font("Segoe UI", 9.75!, System.Drawing.FontStyle.Bold)
         Me.LblSaldoPoinTukar.ForeColor = System.Drawing.Color.DarkBlue
-        Me.LblSaldoPoinTukar.Location = New System.Drawing.Point(420, 8)
+        Me.LblSaldoPoinTukar.Location = New System.Drawing.Point(544, 14)
         Me.LblSaldoPoinTukar.Name = "LblSaldoPoinTukar"
         Me.LblSaldoPoinTukar.Size = New System.Drawing.Size(250, 24)
-        Me.LblSaldoPoinTukar.TabIndex = 2
+        Me.LblSaldoPoinTukar.TabIndex = 3
         Me.LblSaldoPoinTukar.Text = "Saldo Poin: -"
         Me.LblSaldoPoinTukar.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
         '
-        'LblStatusMinRedeem
+        'LblKodePelanggan
         '
-        Me.LblStatusMinRedeem.Font = New System.Drawing.Font("Segoe UI", 9.0!, System.Drawing.FontStyle.Italic)
-        Me.LblStatusMinRedeem.ForeColor = System.Drawing.Color.OrangeRed
-        Me.LblStatusMinRedeem.Location = New System.Drawing.Point(124, 36)
-        Me.LblStatusMinRedeem.Name = "LblStatusMinRedeem"
-        Me.LblStatusMinRedeem.Size = New System.Drawing.Size(560, 20)
-        Me.LblStatusMinRedeem.TabIndex = 3
-        Me.LblStatusMinRedeem.Text = ""
-        Me.LblStatusMinRedeem.Visible = False
+        Me.LblKodePelanggan.Font = New System.Drawing.Font("Segoe UI", 9.75!, System.Drawing.FontStyle.Bold)
+        Me.LblKodePelanggan.ForeColor = System.Drawing.Color.DimGray
+        Me.LblKodePelanggan.Location = New System.Drawing.Point(404, 14)
+        Me.LblKodePelanggan.Name = "LblKodePelanggan"
+        Me.LblKodePelanggan.Size = New System.Drawing.Size(130, 24)
+        Me.LblKodePelanggan.TabIndex = 2
+        Me.LblKodePelanggan.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
+        '
+        'TxtPelanggan
+        '
+        Me.TxtPelanggan.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
+        Me.TxtPelanggan.Font = New System.Drawing.Font("Segoe UI", 9.75!)
+        Me.TxtPelanggan.Location = New System.Drawing.Point(114, 14)
+        Me.TxtPelanggan.Name = "TxtPelanggan"
+        Me.TxtPelanggan.Size = New System.Drawing.Size(280, 25)
+        Me.TxtPelanggan.TabIndex = 1
+        '
+        'LblCariPelanggan
+        '
+        Me.LblCariPelanggan.Font = New System.Drawing.Font("Segoe UI", 9.75!)
+        Me.LblCariPelanggan.Location = New System.Drawing.Point(8, 14)
+        Me.LblCariPelanggan.Name = "LblCariPelanggan"
+        Me.LblCariPelanggan.Size = New System.Drawing.Size(100, 24)
+        Me.LblCariPelanggan.TabIndex = 0
+        Me.LblCariPelanggan.Text = "Cari Pelanggan :"
+        Me.LblCariPelanggan.TextAlign = System.Drawing.ContentAlignment.MiddleRight
         '
         'DgvBarangTukar
         '
         Me.DgvBarangTukar.AllowUserToAddRows = False
         Me.DgvBarangTukar.AllowUserToDeleteRows = False
         Me.DgvBarangTukar.AllowUserToResizeRows = False
-        Me.DgvBarangTukar.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
+        Me.DgvBarangTukar.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
             Or System.Windows.Forms.AnchorStyles.Left) _
-            Or System.Windows.Forms.AnchorStyles.Right, System.Windows.Forms.AnchorStyles)
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.DgvBarangTukar.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill
         Me.DgvBarangTukar.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
         Me.DgvBarangTukar.Location = New System.Drawing.Point(8, 108)
         Me.DgvBarangTukar.Name = "DgvBarangTukar"
         Me.DgvBarangTukar.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect
-        Me.DgvBarangTukar.Size = New System.Drawing.Size(884, 420)
+        Me.DgvBarangTukar.Size = New System.Drawing.Size(884, 400)
         Me.DgvBarangTukar.TabIndex = 2
         '
         'PanelRingkasan
         '
+        Me.PanelRingkasan.Controls.Add(Me.LblSummary)
         Me.PanelRingkasan.Controls.Add(Me.LblTotalPoinDibutuhkan)
         Me.PanelRingkasan.Controls.Add(Me.LblSisaPoinSetelah)
         Me.PanelRingkasan.Controls.Add(Me.BtnKonfirmasiTukar)
         Me.PanelRingkasan.Controls.Add(Me.BtnRefresh)
         Me.PanelRingkasan.Dock = System.Windows.Forms.DockStyle.Bottom
-        Me.PanelRingkasan.Location = New System.Drawing.Point(0, 540)
+        Me.PanelRingkasan.Location = New System.Drawing.Point(0, 520)
         Me.PanelRingkasan.Name = "PanelRingkasan"
-        Me.PanelRingkasan.Size = New System.Drawing.Size(900, 60)
+        Me.PanelRingkasan.Size = New System.Drawing.Size(900, 80)
         Me.PanelRingkasan.TabIndex = 3
         '
         'LblTotalPoinDibutuhkan
@@ -222,16 +238,46 @@ Partial Class FormTukarPoin
         Me.BtnRefresh.Text = "Refresh"
         Me.BtnRefresh.UseVisualStyleBackColor = False
         '
+        'LblSummary
+        '
+        Me.LblSummary.Font = New System.Drawing.Font("Segoe UI", 9.75!)
+        Me.LblSummary.ForeColor = System.Drawing.Color.DimGray
+        Me.LblSummary.Location = New System.Drawing.Point(8, 48)
+        Me.LblSummary.Name = "LblSummary"
+        Me.LblSummary.Size = New System.Drawing.Size(580, 24)
+        Me.LblSummary.TabIndex = 4
+        Me.LblSummary.Text = "0 item | Total Qty: 0"
+        Me.LblSummary.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
+        '
+        'TxtJenisTrans
+        '
+        Me.TxtJenisTrans.Location = New System.Drawing.Point(10, 10)
+        Me.TxtJenisTrans.Name = "TxtJenisTrans"
+        Me.TxtJenisTrans.Size = New System.Drawing.Size(10, 20)
+        Me.TxtJenisTrans.TabIndex = 99
+        Me.TxtJenisTrans.Visible = False
+        '
+        'TxtFaktur
+        '
+        Me.TxtFaktur.Location = New System.Drawing.Point(30, 10)
+        Me.TxtFaktur.Name = "TxtFaktur"
+        Me.TxtFaktur.Size = New System.Drawing.Size(10, 20)
+        Me.TxtFaktur.TabIndex = 100
+        Me.TxtFaktur.Visible = False
+        '
         'FormTukarPoin
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.BackColor = System.Drawing.SystemColors.Control
         Me.ClientSize = New System.Drawing.Size(900, 600)
-        Me.Controls.Add(Me.DgvBarangTukar)
+        Me.Controls.Add(Me.TxtJenisTrans)
+        Me.Controls.Add(Me.TxtFaktur)
         Me.Controls.Add(Me.PanelRingkasan)
         Me.Controls.Add(Me.PanelPelanggan)
         Me.Controls.Add(Me.PanelHeader)
+        Me.Controls.Add(Me.DgvBarangTukar)
+        Me.Controls.Add(Me.LstHasilCariPelanggan)
         Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None
         Me.KeyPreview = True
         Me.Name = "FormTukarPoin"
@@ -245,6 +291,7 @@ Partial Class FormTukarPoin
         CType(Me.DgvBarangTukar, System.ComponentModel.ISupportInitialize).EndInit()
         Me.PanelRingkasan.ResumeLayout(False)
         Me.ResumeLayout(False)
+        Me.PerformLayout()
 
     End Sub
 
@@ -254,13 +301,17 @@ Partial Class FormTukarPoin
     Friend WithEvents PanelPelanggan As System.Windows.Forms.Panel
     Friend WithEvents LblCariPelanggan As System.Windows.Forms.Label
     Friend WithEvents TxtPelanggan As System.Windows.Forms.TextBox
+    Friend WithEvents LblKodePelanggan As System.Windows.Forms.Label
+    Friend WithEvents LstHasilCariPelanggan As System.Windows.Forms.ListBox
+    Friend WithEvents LblSummary As System.Windows.Forms.Label
     Friend WithEvents LblSaldoPoinTukar As System.Windows.Forms.Label
-    Friend WithEvents LblStatusMinRedeem As System.Windows.Forms.Label
     Friend WithEvents DgvBarangTukar As System.Windows.Forms.DataGridView
     Friend WithEvents PanelRingkasan As System.Windows.Forms.Panel
     Friend WithEvents LblTotalPoinDibutuhkan As System.Windows.Forms.Label
     Friend WithEvents LblSisaPoinSetelah As System.Windows.Forms.Label
     Friend WithEvents BtnKonfirmasiTukar As System.Windows.Forms.Button
     Friend WithEvents BtnRefresh As System.Windows.Forms.Button
+    Friend WithEvents TxtJenisTrans As System.Windows.Forms.TextBox
+    Friend WithEvents TxtFaktur As System.Windows.Forms.TextBox
 
 End Class

@@ -143,6 +143,10 @@ Partial Class FormUtama
         Me.AuditTrailToolStripMenuItem1 = New System.Windows.Forms.ToolStripMenuItem()
         Me.AuditTrailArsipToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ProfiMarginToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.PoinToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.MutasiPoinToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.RekapTukarPoinToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.SaldoPoinToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.TransferBarangToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.Label1 = New System.Windows.Forms.Label()
         Me.HelpToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
@@ -586,7 +590,7 @@ Partial Class FormUtama
         'MenuLaporan
         '
         Me.MenuLaporan.BackColor = System.Drawing.SystemColors.Control
-        Me.MenuLaporan.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.MutasiSaldoToolStripMenuItem, Me.MutasiBarangToolStripMenuItem, Me.KeuanganToolStripMenuItem, Me.PembelianToolStripMenuItem, Me.PenjualanToolStripMenuItem, Me.ReturPembelianToolStripMenuItem, Me.ReturPenjualanToolStripMenuItem, Me.HutangToolStripMenuItem, Me.PiutangToolStripMenuItem, Me.KasPenjualanToolStripMenuItem, Me.TransferToolStripMenuItem, Me.StokBarangToolStripMenuItem, Me.GrafikToolStripMenuItem, Me.HistoryToolStripMenuItem, Me.RangkingToolStripMenuItem, Me.OmsetToolStripMenuItem, Me.AuditTrailToolStripMenuItem, Me.ProfiMarginToolStripMenuItem})
+        Me.MenuLaporan.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.MutasiSaldoToolStripMenuItem, Me.MutasiBarangToolStripMenuItem, Me.KeuanganToolStripMenuItem, Me.PembelianToolStripMenuItem, Me.PenjualanToolStripMenuItem, Me.PoinToolStripMenuItem, Me.ReturPembelianToolStripMenuItem, Me.ReturPenjualanToolStripMenuItem, Me.HutangToolStripMenuItem, Me.PiutangToolStripMenuItem, Me.KasPenjualanToolStripMenuItem, Me.TransferToolStripMenuItem, Me.StokBarangToolStripMenuItem, Me.GrafikToolStripMenuItem, Me.HistoryToolStripMenuItem, Me.RangkingToolStripMenuItem, Me.OmsetToolStripMenuItem, Me.AuditTrailToolStripMenuItem, Me.ProfiMarginToolStripMenuItem})
         Me.MenuLaporan.Font = New System.Drawing.Font("Bookman Old Style", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.MenuLaporan.Image = CType(resources.GetObject("MenuLaporan.Image"), System.Drawing.Image)
         Me.MenuLaporan.Name = "MenuLaporan"
@@ -1090,6 +1094,35 @@ Partial Class FormUtama
         Me.AuditTrailArsipToolStripMenuItem.Name = "AuditTrailArsipToolStripMenuItem"
         Me.AuditTrailArsipToolStripMenuItem.Size = New System.Drawing.Size(207, 24)
         Me.AuditTrailArsipToolStripMenuItem.Text = "Audit Trail Arsip"
+        '
+        'PoinToolStripMenuItem
+        '
+        Me.PoinToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.MutasiPoinToolStripMenuItem, Me.RekapTukarPoinToolStripMenuItem, Me.SaldoPoinToolStripMenuItem})
+        Me.PoinToolStripMenuItem.Image = CType(resources.GetObject("PoinToolStripMenuItem.Image"), System.Drawing.Image)
+        Me.PoinToolStripMenuItem.Name = "PoinToolStripMenuItem"
+        Me.PoinToolStripMenuItem.Size = New System.Drawing.Size(211, 24)
+        Me.PoinToolStripMenuItem.Text = "Poin"
+        '
+        'MutasiPoinToolStripMenuItem
+        '
+        Me.MutasiPoinToolStripMenuItem.Image = CType(resources.GetObject("MutasiPoinToolStripMenuItem.Image"), System.Drawing.Image)
+        Me.MutasiPoinToolStripMenuItem.Name = "MutasiPoinToolStripMenuItem"
+        Me.MutasiPoinToolStripMenuItem.Size = New System.Drawing.Size(220, 24)
+        Me.MutasiPoinToolStripMenuItem.Text = "Mutasi Poin"
+        '
+        'RekapTukarPoinToolStripMenuItem
+        '
+        Me.RekapTukarPoinToolStripMenuItem.Image = CType(resources.GetObject("RekapTukarPoinToolStripMenuItem.Image"), System.Drawing.Image)
+        Me.RekapTukarPoinToolStripMenuItem.Name = "RekapTukarPoinToolStripMenuItem"
+        Me.RekapTukarPoinToolStripMenuItem.Size = New System.Drawing.Size(220, 24)
+        Me.RekapTukarPoinToolStripMenuItem.Text = "Rekap Tukar Poin"
+        '
+        'SaldoPoinToolStripMenuItem
+        '
+        Me.SaldoPoinToolStripMenuItem.Image = CType(resources.GetObject("SaldoPoinToolStripMenuItem.Image"), System.Drawing.Image)
+        Me.SaldoPoinToolStripMenuItem.Name = "SaldoPoinToolStripMenuItem"
+        Me.SaldoPoinToolStripMenuItem.Size = New System.Drawing.Size(220, 24)
+        Me.SaldoPoinToolStripMenuItem.Text = "Saldo Poin Pelanggan"
         '
         'ProfiMarginToolStripMenuItem
         '
@@ -2665,6 +2698,10 @@ Partial Class FormUtama
     Friend WithEvents AuditTrailToolStripMenuItem1 As ToolStripMenuItem
     Friend WithEvents AuditTrailArsipToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents ProfiMarginToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents PoinToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents MutasiPoinToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents RekapTukarPoinToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents SaldoPoinToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents BtnBarangRakitan As Button
     Friend WithEvents LabaRugiBerjalanToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents BtnSalesOrder As Button

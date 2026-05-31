@@ -160,7 +160,7 @@ Public Class PrinterSuratJalan
         Panjangkertas = TinggiKertas
         Panjangkertas += rowcount * 20
 
-        LebarKertas = CInt((LebarKertasDot * 0.3937) * 72) ' Lebar dalam dot
+        LebarKertas = CInt(LebarKertasDot / 25.4 * 72) ' Lebar dalam dot
     End Sub
 
 

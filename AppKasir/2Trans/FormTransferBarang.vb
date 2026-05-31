@@ -1126,7 +1126,7 @@ Public Class FormTransferBarang
 
 
     Public Sub AddItems(ByVal col As AutoCompleteStringCollection, ByVal namaValue As String)
-        Dim query As String = "SELECT NAMA_BARANG FROM tbl_barang WHERE STATUS = 'Aktif' AND NAMA_BARANG LIKE @Nama"
+        Dim query As String = "SELECT NAMA_BARANG FROM tbl_barang WHERE STATUS = 'Aktif' AND NAMA_BARANG LIKE @Nama ORDER BY NAMA_BARANG"
 
         Using cmd As New MySqlCommand(query, conn)
             cmd.Parameters.AddWithValue("@Nama", "%" & namaValue & "%")
@@ -1920,10 +1920,12 @@ Public Class FormTransferBarang
     End Sub
 
     Private Sub SimpanSurat_Jalan_Detail(ByVal transaction As MySqlTransaction)
+        Dim urutan As Integer = 0
         For Each row As DataGridViewRow In DgvData.Rows
             If Not row.IsNewRow AndAlso row.Cells(0).Value IsNot Nothing AndAlso row.Cells(0).Value.ToString() <> "" Then
-                Dim sqlrinci As String = "INSERT INTO Transfer_Barang_Detail (ID_TRANSFER, TGL_TRANSFER, LOKASI, ID_BARANG, NAMA_BARANG, HARGA, QTY, SATUAN, ISI_SATUAN, HARGA_QTY, TOTAL_QTY, TOTAL, ID_USER, ID_KOMPUTER) " &
-                         "VALUES (@ID_TRANSFER, @TGL_TRANSFER, @LOKASI, @ID_BARANG, @NAMA_BARANG, @HARGA, @QTY, @SATUAN, @ISI_SATUAN, @HARGA_QTY, @TOTAL_QTY, @TOTAL, @ID_USER, @ID_KOMPUTER)"
+                urutan += 1
+                Dim sqlrinci As String = "INSERT INTO Transfer_Barang_Detail (ID_TRANSFER, TGL_TRANSFER, LOKASI, ID_BARANG, NAMA_BARANG, HARGA, QTY, SATUAN, ISI_SATUAN, HARGA_QTY, TOTAL_QTY, TOTAL, ID_USER, ID_KOMPUTER, URUTAN) " &
+                         "VALUES (@ID_TRANSFER, @TGL_TRANSFER, @LOKASI, @ID_BARANG, @NAMA_BARANG, @HARGA, @QTY, @SATUAN, @ISI_SATUAN, @HARGA_QTY, @TOTAL_QTY, @TOTAL, @ID_USER, @ID_KOMPUTER, @URUTAN)"
 
                 Using cmd As New MySqlCommand(sqlrinci, conn, transaction)
                     cmd.Parameters.AddWithValue("@ID_TRANSFER", TxtFaktur.Text)
@@ -1940,6 +1942,7 @@ Public Class FormTransferBarang
                     cmd.Parameters.AddWithValue("@TOTAL", If(row.Cells(8).Value IsNot Nothing, ModuleAngka.ParseDecimal(row.Cells(8).Value), 0D))
                     cmd.Parameters.AddWithValue("@ID_USER", If(LblJenisTrans.Text = "TambahTransfer", FormUtama.StatusNamaUser.Text, TxtLogin.Text))
                     cmd.Parameters.AddWithValue("@ID_KOMPUTER", If(LblJenisTrans.Text = "TambahTransfer", FormUtama.StatusNamaPC.Text, TxtKomputer.Text))
+                    cmd.Parameters.AddWithValue("@URUTAN", urutan)
 
                     cmd.ExecuteNonQuery()
                 End Using

@@ -326,6 +326,7 @@ Public Class FormLoading
             {"Cabang Master", FormUtama.BtnMasterCabang},
             {"Sales Order", FormUtama.BtnSalesOrder},
             {"Pembayaran Sales Order", FormUtama.BtnSalesOrder},
+            {"Master Poin", FormUtama.BtnMasterPoin},
             {"Tukar Poin", FormUtama.BtnTukarPoin}
             }
 

@@ -637,8 +637,8 @@ Public Class FormStokOpname
     End Sub
 
     Public Sub SimpanMasukDetail(ByVal transaction As MySqlTransaction)
-        Dim insertQuery As String = "INSERT INTO Stok_Opname(ID_STOK_OPNAME, TANGGAL, LOKASI, ID_BARANG, NAMA_BARANG, KATEGORI, HARGA, STOK_SYSTEM, STOK_NYATA, STOK_SELISIH, SATUAN, ISI_SATUAN, TOTAL_QTY, TOTAL_HARGA, KETERANGAN, ID_USER, ID_KOMPUTER) " &
-                                    "VALUES (@ID_STOK_OPNAME, @TANGGAL, @LOKASI, @ID_BARANG, @NAMA_BARANG, @KATEGORI, @HARGA, @STOK_SYSTEM, @STOK_NYATA, @STOK_SELISIH, @SATUAN, @ISI_SATUAN, @TOTAL_QTY, @TOTAL_HARGA, @KETERANGAN, @ID_USER, @ID_KOMPUTER)"
+        Dim insertQuery As String = "INSERT INTO Stok_Opname(ID_STOK_OPNAME, TANGGAL, LOKASI, ID_BARANG, NAMA_BARANG, KATEGORI, HARGA, STOK_SYSTEM, STOK_NYATA, STOK_SELISIH, SATUAN, ISI_SATUAN, TOTAL_QTY, TOTAL_HARGA, KETERANGAN, ID_USER, ID_KOMPUTER, URUTAN) " &
+                                    "VALUES (@ID_STOK_OPNAME, @TANGGAL, @LOKASI, @ID_BARANG, @NAMA_BARANG, @KATEGORI, @HARGA, @STOK_SYSTEM, @STOK_NYATA, @STOK_SELISIH, @SATUAN, @ISI_SATUAN, @TOTAL_QTY, @TOTAL_HARGA, @KETERANGAN, @ID_USER, @ID_KOMPUTER, @URUTAN)"
 
         Using insertCmd As New MySqlCommand(insertQuery, conn, transaction)
             insertCmd.Parameters.AddWithValue("@ID_STOK_OPNAME", TxtFaktur.Text)
@@ -660,6 +660,7 @@ Public Class FormStokOpname
 
             insertCmd.Parameters.AddWithValue("@ID_USER", If(LblHeader.Text = "TAMBAH STOK OPNAME", FormUtama.StatusNamaUser.Text, TxtIdUser.Text))
             insertCmd.Parameters.AddWithValue("@ID_KOMPUTER", If(LblHeader.Text = "TAMBAH STOK OPNAME", FormUtama.StatusNamaPC.Text, TxtKomputer.Text))
+            insertCmd.Parameters.AddWithValue("@URUTAN", 1)
             insertCmd.ExecuteNonQuery()
         End Using
     End Sub

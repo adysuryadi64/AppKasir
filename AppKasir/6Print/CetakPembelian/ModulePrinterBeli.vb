@@ -57,7 +57,7 @@ Module ModulePrinterBeli
         Beli_DaftarItem.Clear()
         Using cmd As New MySqlCommand(
             "SELECT ID_BARANG, NAMA_BARANG, QTY, SATUAN, HARGA_BELI, TOTAL " &
-            "FROM pembelian_detail WHERE FAKTUR_BELI = @id ORDER BY NAMA_BARANG", conn)
+            "FROM pembelian_detail WHERE FAKTUR_BELI = @id ORDER BY URUTAN", conn)
             cmd.Parameters.AddWithValue("@id", idPembelian)
             Using rd As MySqlDataReader = cmd.ExecuteReader()
                 While rd.Read()

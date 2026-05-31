@@ -104,12 +104,12 @@ Module ModulePrinterJual
             query = "SELECT NAMA_BARANG, '' AS SERIAL_NUMBER, QTY, SATUAN, " &
                     "HARGA_JUAL, TOTAL_DISKON, TOTAL_HARGA " &
                     "FROM sales_order_detail WHERE FAKTUR_JUAL = @faktur " &
-                    "ORDER BY NAMA_BARANG"
+                    "ORDER BY URUTAN"
         Else
             query = "SELECT NAMA_BARANG, SERIAL_NUMBER, QTY, SATUAN, " &
                     "HARGA_JUAL, TOTAL_DISKON, TOTAL_HARGA " &
                     "FROM penjualan_detail WHERE FAKTUR_JUAL = @faktur " &
-                    "ORDER BY NAMA_BARANG"
+                    "ORDER BY URUTAN"
         End If
 
         Using cmd As New MySqlCommand(query, conn)

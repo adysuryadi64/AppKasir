@@ -113,11 +113,11 @@ Public Class FormHakUser
         IsiDataGridView(DGVMaster, "MASTER", {"Toko", "Barang", "Harga Beli", "Tambah Stok", "Kurang Stok",
                                           "Export Barang", "Import Barang", "Perbaiki Data Barang",
                                           "Perbaiki isi satuan", "Pelanggan", "Supplier", "Tabel Referensi",
-                                          "Armada", "Karyawan", "User", "Hak Akses", "Cabang Master"})
+                                           "Armada", "Karyawan", "User", "Hak Akses", "Cabang Master", "Master Poin"})
 
         IsiDataGridView(DgvTransaksi, "TRANSAKSI", {"Pembelian", "Penjualan", "Retur Pembelian", "Retur Penjualan",
                                                 "Bayar Hutang", "Bayar Piutang", "Transfer Stok",
-                                                "Transfer Barang", "Stok Opname", "Surat Jalan", "Transfer Cabang", "Sales Order"})
+                                                "Transfer Barang", "Stok Opname", "Surat Jalan", "Transfer Cabang", "Sales Order", "Tukar Poin"})
 
         IsiDataGridView(DgvJurnal, "JURNAL", {})
 

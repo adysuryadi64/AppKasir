@@ -692,9 +692,12 @@ Public Class FormUtama
     End Sub
 
     Private Sub BtnTukarPoin_Click(sender As Object, e As EventArgs) Handles BtnTukarPoin.Click
-        SetButtonBackgroundColor(BtnTukarPoin)
-        TutupSemuaForm()
-        BukaFormMdi(My.Forms.FormTukarPoin)
+        IniTransaksiPanel(BtnTukarPoin, "Tukar Poin")
+        TerapkanHakAkses("Tukar Poin", showEdit:=True, showPrint:=False)
+        AturTombolTransaksi("Tukar Poin")
+        BtnTambah.Text = "Tambah Tukar Poin (F2)"
+        BtnPrint.Visible = False
+        DataTukarPoin()
     End Sub
 
 
@@ -742,6 +745,8 @@ Public Class FormUtama
                 Return "TransferBarang"
             Case "Transfer Cabang"
                 Return "TransferCabang"
+            Case "Tukar Poin"
+                Return "TukarPoin"
             Case Else
                 Return ""
         End Select
@@ -977,6 +982,37 @@ Public Class FormUtama
         BersihkanKontrolTransaksi("Detail Sales Order : ")
     End Sub
 
+    Public Sub DataTukarPoin()
+        Dim sf As String = "%" & TxtFilter.Text & "%"
+        Dim tAwal As Date = DtpTransaksi.Value.Date
+        Dim tAkhir As Date = tAwal.AddDays(1).AddTicks(-1)
+        HitungRangkuman(
+            "SELECT COUNT(*) AS RECORD, COALESCE(SUM(JUMLAH_POIN), 0) AS TOTAL " &
+            "FROM poin_ledger WHERE TIPE = 'REDEEM' " &
+            "AND CREATED_AT >= @tanggalAwal AND CREATED_AT <= @tanggalAkhir " &
+            "AND NO_REFERENSI LIKE @SearchText",
+            "Total Tukar Poin", tAwal, tAkhir, sf)
+        LoadDataTransaksi(
+            "SELECT pl.NO_REFERENSI, COALESCE(p.NAMA, '') AS NAMA_PELANGGAN, " &
+            "'TOKO' AS LOKASI, pl.JUMLAH_POIN, pl.ID_USER, pl.CREATED_AT " &
+            "FROM poin_ledger pl " &
+            "LEFT JOIN tbl_pelanggan p ON pl.KODE_PELANGGAN = p.KODE " &
+            "WHERE pl.TIPE = 'REDEEM' " &
+            "AND pl.CREATED_AT >= @tanggalAwal AND pl.CREATED_AT <= @tanggalAkhir " &
+            "AND pl.NO_REFERENSI LIKE @SearchText " &
+            "ORDER BY pl.CREATED_AT DESC",
+            "poin_ledger", tAwal, tAkhir, sf)
+        With DGVTransaksi
+            .Columns(0).HeaderText = "NO. REFERENSI" : .Columns(0).FillWeight = 130
+            .Columns(1).HeaderText = "PELANGGAN" : .Columns(2).HeaderText = "LOKASI"
+            .Columns(3).HeaderText = "POIN" : .Columns(4).HeaderText = "USER"
+            .Columns(5).HeaderText = "TANGGAL"
+            AturKolomAngka(DGVTransaksi, 3)
+            UbahTampilanDataTransaksi() : .ClearSelection()
+        End With
+        BersihkanKontrolTransaksi("Detail Tukar Poin : ")
+    End Sub
+
     Private Sub BtnSuratJalan_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles BtnSuratJalan.Click
         IniTransaksiPanel(BtnSuratJalan, "Surat Jalan")
         TerapkanHakAkses("Surat Jalan")
@@ -1110,6 +1146,8 @@ Public Class FormUtama
                 DataTransferBarang()
             Case "Transfer Cabang"
                 DataTransferCabang()
+            Case "Tukar Poin"
+                DataTukarPoin()
         End Select
     End Sub
 
@@ -1181,6 +1219,8 @@ Public Class FormUtama
                     Case "Sales Order"
                         TerapkanHakAksesContextMenu("Sales Order")
                         ProsesKePenjualanToolStripMenuItem.Visible = True ' Tampilkan khusus untuk SO
+                    Case "Tukar Poin"
+                        TerapkanHakAksesContextMenu("Tukar Poin", showEdit:=True, showCetak:=False)
                 End Select
                 Dim cursorPosition As Point = System.Windows.Forms.Cursor.Position
                 CMSTransaksi.Show(cursorPosition)
@@ -1388,6 +1428,14 @@ Public Class FormUtama
                 With FormSalesOrder
                     .TxtJenistransaksi.Text = "TambahSalesOrder"
                     .DgvDataTransaksi.Rows.Clear()
+                    .BringToFront()
+                    .ShowDialog(Me)
+                End With
+
+            Case "Tukar Poin"
+                With FormTukarPoin
+                    .TxtJenisTrans.Text = "TambahTukarPoin"
+                    .TxtFaktur.Text = ""
                     .BringToFront()
                     .ShowDialog(Me)
                 End With
@@ -1620,6 +1668,21 @@ Public Class FormUtama
                     .Show()
                 End With
 
+            Case "Tukar Poin"
+                If StatusLokasi.Text <> TxtLokasiUntukEdit.Text Then
+                    MessageBox.Show("Tidak ada hak untuk edit Tukar Poin ini." & vbCrLf &
+                                    "User " & StatusLokasi.Text & " tidak berhak edit transaksi " & TxtLokasiUntukEdit.Text,
+                                    "Peringatan", MessageBoxButtons.OK, MessageBoxIcon.Warning)
+                    Exit Sub
+                End If
+                Dim noReferensi As String = DGVTransaksi.CurrentRow.Cells(0).Value.ToString()
+                With FormTukarPoin
+                    .TxtJenisTrans.Text = "EditTukarPoin"
+                    .TxtFaktur.Text = noReferensi
+                    .LblHeader.Text = "E D I T  T U K A R  P O I N"
+                    .BringToFront()
+                    .ShowDialog(Me)
+                End With
         End Select
 
     End Sub
@@ -1782,6 +1845,11 @@ Public Class FormUtama
                 HapusTransferBarang()
             Case "Transfer Cabang"
                 HapusTransferCabang()
+            Case "Tukar Poin"
+                If Not CekLokasiBarang() Then Exit Sub
+                If MessageBox.Show("Apakah data Tukar Poin ini akan dihapus ...???", "Konfirmasi", MessageBoxButtons.YesNo, MessageBoxIcon.Question) = DialogResult.Yes Then
+                    HapusTukarPoin()
+                End If
         End Select
 
     End Sub
@@ -1886,6 +1954,20 @@ Public Class FormUtama
         End If
     End Sub
 
+    Public Sub HapusTukarPoin()
+        If MessageBox.Show("Apakah data Tukar Poin ini akan dihapus ...???", "", MessageBoxButtons.YesNo) = DialogResult.Yes Then
+            Dim transaction As MySqlTransaction = conn.BeginTransaction()
+            Try
+                ModuleAuditTrail.CatatAudit(TxtFakturTransaksi.Text, "HAPUS", "Tukar Poin", trans:=transaction)
+                ModuleHapusTransaksi.HapusTukarPoin(TxtFakturTransaksi.Text, TxtLokasiUntukEdit.Text, transaction)
+                transaction.Commit()
+            Catch ex As Exception
+                transaction.Rollback()
+                MessageBox.Show("Terjadi kesalahan saat menghapus Tukar Poin: " & ex.Message,
+                                "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            End Try
+        End If
+    End Sub
 
     Private Sub Hapusbayarhutang()
         If MessageBox.Show("Apakah data ini akan dihapus ...???", "", MessageBoxButtons.YesNo) = DialogResult.Yes Then
@@ -2283,7 +2365,7 @@ Public Class FormUtama
                         End If
                 End Select
 
-            Case "Stok Opname", "Transfer Stok"
+            Case "Stok Opname", "Transfer Stok", "Tukar Poin"
                 MessageBox.Show("Cetak ulang tidak tersedia untuk transaksi ini.",
                                 "Info", MessageBoxButtons.OK, MessageBoxIcon.Information)
         End Select
@@ -2745,7 +2827,7 @@ Public Class FormUtama
 
                     Using cmdSelect As New MySqlCommand(
                         "SELECT ID_BARANG, NAMA_BARANG, QTY, SATUAN, ISI_SATUAN, TOTAL_QTY, TOTAL " &
-                        "FROM transfer_cabang_detail WHERE ID_TRANSFER = @id ORDER BY NAMA_BARANG", conn)
+                        "FROM transfer_cabang_detail WHERE ID_TRANSFER = @id ORDER BY URUTAN", conn)
                         cmdSelect.Parameters.AddWithValue("@id", DGVTransaksi.CurrentRow.Cells(0).Value)
                         Using da As New MySqlDataAdapter(cmdSelect)
                             Using ds As New DataSet()
@@ -2773,6 +2855,32 @@ Public Class FormUtama
                     TxtFakturTransaksi.Text = DGVTransaksi.CurrentRow.Cells(0).Value.ToString()
                     TxtLokasiUntukEdit.Text = lokasiAsal
                     LblDetailTransaksi.Text = "Detail Transfer Cabang: " & DGVTransaksi.CurrentRow.Cells(0).Value.ToString()
+
+                Case "Tukar Poin"
+                    DGVDetail.DataSource = Nothing
+                    DGVDetail.Rows.Clear()
+                    Using cmdSelect As New MySqlCommand(
+                        "SELECT ID_BARANG, NAMA_BARANG, QTY, SATUAN, TOTAL_QTY " &
+                        "FROM HistoryBarang WHERE FAKTUR = @id AND JENIS = 'KURANG' " &
+                        "ORDER BY NAMA_BARANG", conn)
+                        cmdSelect.Parameters.AddWithValue("@id", DGVTransaksi.CurrentRow.Cells(0).Value)
+                        Using da As New MySqlDataAdapter(cmdSelect)
+                            Using ds As New DataSet()
+                                da.Fill(ds, "history_detail")
+                                DGVDetail.DataSource = ds.Tables("history_detail")
+                            End Using
+                        End Using
+                    End Using
+                    With DGVDetail
+                        .Columns("ID_BARANG").HeaderText = "KODE"
+                        .Columns("NAMA_BARANG").HeaderText = "BARANG"
+                        .Columns("QTY").HeaderText = "QTY"
+                        .Columns("SATUAN").HeaderText = "SATUAN"
+                        .Columns("TOTAL_QTY").Visible = False
+                    End With
+                    TxtFakturTransaksi.Text = DGVTransaksi.CurrentRow.Cells(0).Value.ToString()
+                    TxtLokasiUntukEdit.Text = DGVTransaksi.CurrentRow.Cells(2).Value.ToString()
+                    LblDetailTransaksi.Text = "Detail Tukar Poin: " & DGVTransaksi.CurrentRow.Cells(0).Value.ToString()
 
             End Select
 
@@ -2821,6 +2929,8 @@ Public Class FormUtama
                 DataTransferCabang()
             Case "Sales Order"
                 DataSalesOrder()
+            Case "Tukar Poin"
+                DataTukarPoin()
         End Select
     End Sub
 
@@ -3082,6 +3192,17 @@ Public Class FormUtama
         TutupSemuaForm() : BukaFormMdi(My.Forms.FormLapMarginProfit)
     End Sub
 
+    Private Sub MutasiPoinToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles MutasiPoinToolStripMenuItem.Click
+        TutupSemuaForm() : My.Forms.FormLapPoin.LblHeader.Text = "LAPORAN MUTASI POIN" : BukaFormMdi(My.Forms.FormLapPoin)
+    End Sub
+
+    Private Sub RekapTukarPoinToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles RekapTukarPoinToolStripMenuItem.Click
+        TutupSemuaForm() : My.Forms.FormLapPoin.LblHeader.Text = "LAPORAN REKAP TUKAR POIN" : BukaFormMdi(My.Forms.FormLapPoin)
+    End Sub
+
+    Private Sub SaldoPoinToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles SaldoPoinToolStripMenuItem.Click
+        TutupSemuaForm() : My.Forms.FormLapPoin.LblHeader.Text = "LAPORAN SALDO POIN" : BukaFormMdi(My.Forms.FormLapPoin)
+    End Sub
 
     '----------------------------------------- UTILITY ---------------------------------------------------------------------------
 

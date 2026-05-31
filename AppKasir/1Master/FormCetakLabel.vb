@@ -177,7 +177,7 @@ Public Class FormCetakLabel
     End Sub
 
     Private Sub AddItems(ByVal col As AutoCompleteStringCollection, ByVal namaValue As String)
-        Dim query As String = "SELECT NAMA_BARANG FROM tbl_barang WHERE NAMA_BARANG LIKE @Nama"
+        Dim query As String = "SELECT NAMA_BARANG FROM tbl_barang WHERE NAMA_BARANG LIKE @Nama ORDER BY NAMA_BARANG"
         Using cmd As New MySqlCommand(query, conn)
             cmd.Parameters.AddWithValue("@Nama", "%" & namaValue & "%")
             Using rd As MySqlDataReader = cmd.ExecuteReader()

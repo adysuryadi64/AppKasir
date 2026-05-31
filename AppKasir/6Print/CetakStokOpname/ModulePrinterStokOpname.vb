@@ -27,7 +27,7 @@ Module ModulePrinterStokOpname
         Using cmd As New MySqlCommand(
             "SELECT NAMA_BARANG, SATUAN, STOK_SYSTEM, STOK_NYATA, STOK_SELISIH, TOTAL_HARGA, " &
             "TANGGAL, LOKASI, ID_USER, ID_KOMPUTER " &
-            "FROM stok_opname WHERE ID_STOK_OPNAME = @id ORDER BY NAMA_BARANG", conn)
+            "FROM stok_opname WHERE ID_STOK_OPNAME = @id ORDER BY URUTAN", conn)
             cmd.Parameters.AddWithValue("@id", idOpname)
             Using rd As MySqlDataReader = cmd.ExecuteReader()
                 Dim firstRow As Boolean = True

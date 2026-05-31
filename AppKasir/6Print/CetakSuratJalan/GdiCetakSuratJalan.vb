@@ -54,7 +54,7 @@ Public Class GdiCetakSuratJalan
     Private Sub HitungUkuranKertas()
         Dim tinggiInch As Double = _cfgDot.LebarKertas ' pakai LebarKertas sebagai tinggi untuk dot
         _panjangKertas = CInt((7 * 0.3937) * 72) + SJ_DaftarDetail.Count * 20 + 100
-        _lebarKertas = CInt((_cfgDot.LebarKertas * 0.3937) * 72)
+        _lebarKertas = CInt(_cfgDot.LebarKertas / 25.4 * 72)
     End Sub
 
     Private Sub Pd_BeginPrint(s As Object, e As PrintEventArgs) Handles _pd.BeginPrint

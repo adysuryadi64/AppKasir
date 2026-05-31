@@ -625,6 +625,12 @@
     <Compile Include="5Lap\FormLapOmset.vb">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="5Lap\FormLapPoin.Designer.vb">
+      <DependentUpon>FormLapPoin.vb</DependentUpon>
+    </Compile>
+    <Compile Include="5Lap\FormLapPoin.vb">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="5Lap\FormLapRanking.Designer.vb">
       <DependentUpon>FormLapRanking.vb</DependentUpon>
     </Compile>
@@ -713,6 +719,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="5Lap\FormLapMarginProfit.resx">
       <DependentUpon>FormLapMarginProfit.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="5Lap\FormLapPoin.resx">
+      <DependentUpon>FormLapPoin.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="8Uty\FormAbout.resx">
       <DependentUpon>FormAbout.vb</DependentUpon>
@@ -1556,6 +1565,9 @@
     <EmbeddedResource Include="5Lap\ReportLabaRugiFR.frx" />
     <EmbeddedResource Include="5Lap\ReportKartuStok.rdlc" />
     <EmbeddedResource Include="5Lap\ReportMutasiBarang.rdlc" />
+    <EmbeddedResource Include="5Lap\ReportMutasiPoin.rdlc" />
+    <EmbeddedResource Include="5Lap\ReportRekapTukarPoin.rdlc" />
+    <EmbeddedResource Include="5Lap\ReportSaldoPoin.rdlc" />
     <EmbeddedResource Include="5Lap\ReportNeracaLajur.rdlc" />
     <EmbeddedResource Include="5Lap\ReportNRC.rdlc" />
     <EmbeddedResource Include="5Lap\ReportPembelian.rdlc" />

@@ -28,14 +28,18 @@ Partial Class FormMasterPoin
         Me.TabControlPoin = New System.Windows.Forms.TabControl()
         Me.TabKonfigurasi = New System.Windows.Forms.TabPage()
         Me.LblInfoMekanisme = New System.Windows.Forms.Label()
+        Me.LblPoinAktif = New System.Windows.Forms.Label()
+        Me.CmbPoinAktif = New System.Windows.Forms.ComboBox()
+        Me.LblPoinMekanisme = New System.Windows.Forms.Label()
+        Me.CmbPoinMekanisme = New System.Windows.Forms.ComboBox()
         Me.BtnResetKonfig = New System.Windows.Forms.Button()
         Me.BtnSimpanKonfig = New System.Windows.Forms.Button()
-        Me.NudMinimumRedeem = New System.Windows.Forms.NumericUpDown()
-        Me.LblMinimumRedeem = New System.Windows.Forms.Label()
-        Me.NudKelipatanNominal = New System.Windows.Forms.NumericUpDown()
+        Me.TxtKelipatanNominal = New System.Windows.Forms.TextBox()
         Me.LblKelipatanNominal = New System.Windows.Forms.Label()
-        Me.NudPoinPerQty = New System.Windows.Forms.NumericUpDown()
+        Me.LblKelipatanNominalFormat = New System.Windows.Forms.Label()
+        Me.TxtPoinPerQty = New System.Windows.Forms.TextBox()
         Me.LblPoinPerQty = New System.Windows.Forms.Label()
+        Me.LblPoinPerQtyFormat = New System.Windows.Forms.Label()
         Me.TabHargaPoin = New System.Windows.Forms.TabPage()
         Me.BtnSimpanHargaPoin = New System.Windows.Forms.Button()
         Me.BtnHapusBarisPoin = New System.Windows.Forms.Button()
@@ -53,12 +57,11 @@ Partial Class FormMasterPoin
         Me.LblSaldoPoin = New System.Windows.Forms.Label()
         Me.TxtCariPelanggan = New System.Windows.Forms.TextBox()
         Me.LblCariPelanggan = New System.Windows.Forms.Label()
+        Me.LstHasilCariPelanggan = New System.Windows.Forms.ListBox()
+        Me.LblKodePelanggan = New System.Windows.Forms.Label()
         Me.PanelHeader.SuspendLayout()
         Me.TabControlPoin.SuspendLayout()
         Me.TabKonfigurasi.SuspendLayout()
-        CType(Me.NudMinimumRedeem, System.ComponentModel.ISupportInitialize).BeginInit()
-        CType(Me.NudKelipatanNominal, System.ComponentModel.ISupportInitialize).BeginInit()
-        CType(Me.NudPoinPerQty, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.TabHargaPoin.SuspendLayout()
         CType(Me.DgvPoinBarang, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.TabRiwayat.SuspendLayout()
@@ -113,6 +116,7 @@ Partial Class FormMasterPoin
         Me.TabControlPoin.Controls.Add(Me.TabKonfigurasi)
         Me.TabControlPoin.Controls.Add(Me.TabHargaPoin)
         Me.TabControlPoin.Controls.Add(Me.TabRiwayat)
+        Me.TabControlPoin.DrawMode = System.Windows.Forms.TabDrawMode.OwnerDrawFixed
         Me.TabControlPoin.Font = New System.Drawing.Font("Segoe UI", 9.75!, System.Drawing.FontStyle.Bold)
         Me.TabControlPoin.Location = New System.Drawing.Point(8, 48)
         Me.TabControlPoin.Name = "TabControlPoin"
@@ -126,14 +130,18 @@ Partial Class FormMasterPoin
         '
         Me.TabKonfigurasi.BackColor = System.Drawing.SystemColors.Control
         Me.TabKonfigurasi.Controls.Add(Me.LblInfoMekanisme)
+        Me.TabKonfigurasi.Controls.Add(Me.LblPoinAktif)
+        Me.TabKonfigurasi.Controls.Add(Me.CmbPoinAktif)
+        Me.TabKonfigurasi.Controls.Add(Me.LblPoinMekanisme)
+        Me.TabKonfigurasi.Controls.Add(Me.CmbPoinMekanisme)
         Me.TabKonfigurasi.Controls.Add(Me.BtnResetKonfig)
         Me.TabKonfigurasi.Controls.Add(Me.BtnSimpanKonfig)
-        Me.TabKonfigurasi.Controls.Add(Me.NudMinimumRedeem)
-        Me.TabKonfigurasi.Controls.Add(Me.LblMinimumRedeem)
-        Me.TabKonfigurasi.Controls.Add(Me.NudKelipatanNominal)
+        Me.TabKonfigurasi.Controls.Add(Me.TxtKelipatanNominal)
         Me.TabKonfigurasi.Controls.Add(Me.LblKelipatanNominal)
-        Me.TabKonfigurasi.Controls.Add(Me.NudPoinPerQty)
+        Me.TabKonfigurasi.Controls.Add(Me.LblKelipatanNominalFormat)
+        Me.TabKonfigurasi.Controls.Add(Me.TxtPoinPerQty)
         Me.TabKonfigurasi.Controls.Add(Me.LblPoinPerQty)
+        Me.TabKonfigurasi.Controls.Add(Me.LblPoinPerQtyFormat)
         Me.TabKonfigurasi.Location = New System.Drawing.Point(4, 26)
         Me.TabKonfigurasi.Name = "TabKonfigurasi"
         Me.TabKonfigurasi.Padding = New System.Windows.Forms.Padding(3)
@@ -151,72 +159,114 @@ Partial Class FormMasterPoin
         Me.LblInfoMekanisme.TabIndex = 0
         Me.LblInfoMekanisme.Text = "Mekanisme aktif: -"
         '
+        'LblPoinAktif
+        '
+        Me.LblPoinAktif.Font = New System.Drawing.Font("Segoe UI", 9.75!)
+        Me.LblPoinAktif.Location = New System.Drawing.Point(20, 55)
+        Me.LblPoinAktif.Name = "LblPoinAktif"
+        Me.LblPoinAktif.Size = New System.Drawing.Size(260, 28)
+        Me.LblPoinAktif.TabIndex = 1
+        Me.LblPoinAktif.Text = "Aktifkan Sistem Poin :"
+        Me.LblPoinAktif.TextAlign = System.Drawing.ContentAlignment.MiddleRight
+        '
+        'CmbPoinAktif
+        '
+        Me.CmbPoinAktif.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
+        Me.CmbPoinAktif.Font = New System.Drawing.Font("Segoe UI", 9.75!)
+        Me.CmbPoinAktif.FormattingEnabled = True
+        Me.CmbPoinAktif.Items.AddRange(New Object() {"Tidak", "Iya"})
+        Me.CmbPoinAktif.Location = New System.Drawing.Point(290, 57)
+        Me.CmbPoinAktif.Name = "CmbPoinAktif"
+        Me.CmbPoinAktif.Size = New System.Drawing.Size(120, 25)
+        Me.CmbPoinAktif.TabIndex = 2
+        '
+        'LblPoinMekanisme
+        '
+        Me.LblPoinMekanisme.Font = New System.Drawing.Font("Segoe UI", 9.75!)
+        Me.LblPoinMekanisme.Location = New System.Drawing.Point(20, 90)
+        Me.LblPoinMekanisme.Name = "LblPoinMekanisme"
+        Me.LblPoinMekanisme.Size = New System.Drawing.Size(260, 28)
+        Me.LblPoinMekanisme.TabIndex = 3
+        Me.LblPoinMekanisme.Text = "Mekanisme Perolehan Poin :"
+        Me.LblPoinMekanisme.TextAlign = System.Drawing.ContentAlignment.MiddleRight
+        '
+        'CmbPoinMekanisme
+        '
+        Me.CmbPoinMekanisme.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
+        Me.CmbPoinMekanisme.Font = New System.Drawing.Font("Segoe UI", 9.75!)
+        Me.CmbPoinMekanisme.FormattingEnabled = True
+        Me.CmbPoinMekanisme.Items.AddRange(New Object() {"Per Item (Qty)", "Per Kelipatan Nominal"})
+        Me.CmbPoinMekanisme.Location = New System.Drawing.Point(290, 92)
+        Me.CmbPoinMekanisme.Name = "CmbPoinMekanisme"
+        Me.CmbPoinMekanisme.Size = New System.Drawing.Size(200, 25)
+        Me.CmbPoinMekanisme.TabIndex = 4
+        '
         'LblPoinPerQty
         '
         Me.LblPoinPerQty.Font = New System.Drawing.Font("Segoe UI", 9.75!)
-        Me.LblPoinPerQty.Location = New System.Drawing.Point(20, 60)
+        Me.LblPoinPerQty.Location = New System.Drawing.Point(20, 130)
         Me.LblPoinPerQty.Name = "LblPoinPerQty"
         Me.LblPoinPerQty.Size = New System.Drawing.Size(260, 28)
-        Me.LblPoinPerQty.TabIndex = 1
+        Me.LblPoinPerQty.TabIndex = 5
         Me.LblPoinPerQty.Text = "Poin per 1 Qty Item :"
         Me.LblPoinPerQty.TextAlign = System.Drawing.ContentAlignment.MiddleRight
         '
-        'NudPoinPerQty
+        'TxtPoinPerQty
         '
-        Me.NudPoinPerQty.DecimalPlaces = 2
-        Me.NudPoinPerQty.Font = New System.Drawing.Font("Segoe UI", 9.75!)
-        Me.NudPoinPerQty.Location = New System.Drawing.Point(290, 62)
-        Me.NudPoinPerQty.Maximum = New Decimal(New Integer() {99999, 0, 0, 0})
-        Me.NudPoinPerQty.Minimum = New Decimal(New Integer() {1, 0, 0, 131072})
-        Me.NudPoinPerQty.Name = "NudPoinPerQty"
-        Me.NudPoinPerQty.Size = New System.Drawing.Size(120, 25)
-        Me.NudPoinPerQty.TabIndex = 2
-        Me.NudPoinPerQty.Value = New Decimal(New Integer() {1, 0, 0, 0})
+        Me.TxtPoinPerQty.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
+        Me.TxtPoinPerQty.Font = New System.Drawing.Font("Segoe UI", 9.75!)
+        Me.TxtPoinPerQty.Location = New System.Drawing.Point(290, 132)
+        Me.TxtPoinPerQty.Name = "TxtPoinPerQty"
+        Me.TxtPoinPerQty.Size = New System.Drawing.Size(120, 25)
+        Me.TxtPoinPerQty.TabIndex = 6
+        Me.TxtPoinPerQty.Text = "1,00"
+        Me.TxtPoinPerQty.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
+        '
+        'LblPoinPerQtyFormat
+        '
+        Me.LblPoinPerQtyFormat.Font = New System.Drawing.Font("Segoe UI", 9.0!, System.Drawing.FontStyle.Italic)
+        Me.LblPoinPerQtyFormat.ForeColor = System.Drawing.Color.DimGray
+        Me.LblPoinPerQtyFormat.Location = New System.Drawing.Point(420, 132)
+        Me.LblPoinPerQtyFormat.Name = "LblPoinPerQtyFormat"
+        Me.LblPoinPerQtyFormat.Size = New System.Drawing.Size(200, 25)
+        Me.LblPoinPerQtyFormat.TabIndex = 7
+        Me.LblPoinPerQtyFormat.Text = "= 1,00 poin per item"
+        Me.LblPoinPerQtyFormat.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
         '
         'LblKelipatanNominal
         '
         Me.LblKelipatanNominal.Font = New System.Drawing.Font("Segoe UI", 9.75!)
-        Me.LblKelipatanNominal.Location = New System.Drawing.Point(20, 60)
+        Me.LblKelipatanNominal.Location = New System.Drawing.Point(20, 130)
         Me.LblKelipatanNominal.Name = "LblKelipatanNominal"
         Me.LblKelipatanNominal.Size = New System.Drawing.Size(260, 28)
-        Me.LblKelipatanNominal.TabIndex = 3
+        Me.LblKelipatanNominal.TabIndex = 8
         Me.LblKelipatanNominal.Text = "Kelipatan Nominal (Rp) :"
         Me.LblKelipatanNominal.TextAlign = System.Drawing.ContentAlignment.MiddleRight
         Me.LblKelipatanNominal.Visible = False
         '
-        'NudKelipatanNominal
+        'TxtKelipatanNominal
         '
-        Me.NudKelipatanNominal.Font = New System.Drawing.Font("Segoe UI", 9.75!)
-        Me.NudKelipatanNominal.Location = New System.Drawing.Point(290, 62)
-        Me.NudKelipatanNominal.Maximum = New Decimal(New Integer() {9999999, 0, 0, 0})
-        Me.NudKelipatanNominal.Minimum = New Decimal(New Integer() {1, 0, 0, 0})
-        Me.NudKelipatanNominal.Name = "NudKelipatanNominal"
-        Me.NudKelipatanNominal.Size = New System.Drawing.Size(120, 25)
-        Me.NudKelipatanNominal.TabIndex = 4
-        Me.NudKelipatanNominal.Value = New Decimal(New Integer() {10000, 0, 0, 0})
-        Me.NudKelipatanNominal.Visible = False
+        Me.TxtKelipatanNominal.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
+        Me.TxtKelipatanNominal.Font = New System.Drawing.Font("Segoe UI", 9.75!)
+        Me.TxtKelipatanNominal.Location = New System.Drawing.Point(290, 132)
+        Me.TxtKelipatanNominal.Name = "TxtKelipatanNominal"
+        Me.TxtKelipatanNominal.Size = New System.Drawing.Size(120, 25)
+        Me.TxtKelipatanNominal.TabIndex = 9
+        Me.TxtKelipatanNominal.Text = "10.000"
+        Me.TxtKelipatanNominal.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
+        Me.TxtKelipatanNominal.Visible = False
         '
-        'LblMinimumRedeem
+        'LblKelipatanNominalFormat
         '
-        Me.LblMinimumRedeem.Font = New System.Drawing.Font("Segoe UI", 9.75!)
-        Me.LblMinimumRedeem.Location = New System.Drawing.Point(20, 100)
-        Me.LblMinimumRedeem.Name = "LblMinimumRedeem"
-        Me.LblMinimumRedeem.Size = New System.Drawing.Size(260, 28)
-        Me.LblMinimumRedeem.TabIndex = 5
-        Me.LblMinimumRedeem.Text = "Minimum Poin untuk Redeem :"
-        Me.LblMinimumRedeem.TextAlign = System.Drawing.ContentAlignment.MiddleRight
-        '
-        'NudMinimumRedeem
-        '
-        Me.NudMinimumRedeem.Font = New System.Drawing.Font("Segoe UI", 9.75!)
-        Me.NudMinimumRedeem.Location = New System.Drawing.Point(290, 102)
-        Me.NudMinimumRedeem.Maximum = New Decimal(New Integer() {999999, 0, 0, 0})
-        Me.NudMinimumRedeem.Minimum = New Decimal(New Integer() {1, 0, 0, 0})
-        Me.NudMinimumRedeem.Name = "NudMinimumRedeem"
-        Me.NudMinimumRedeem.Size = New System.Drawing.Size(120, 25)
-        Me.NudMinimumRedeem.TabIndex = 6
-        Me.NudMinimumRedeem.Value = New Decimal(New Integer() {100, 0, 0, 0})
-        '
+        Me.LblKelipatanNominalFormat.Font = New System.Drawing.Font("Segoe UI", 9.0!, System.Drawing.FontStyle.Italic)
+        Me.LblKelipatanNominalFormat.ForeColor = System.Drawing.Color.DimGray
+        Me.LblKelipatanNominalFormat.Location = New System.Drawing.Point(420, 132)
+        Me.LblKelipatanNominalFormat.Name = "LblKelipatanNominalFormat"
+        Me.LblKelipatanNominalFormat.Size = New System.Drawing.Size(200, 25)
+        Me.LblKelipatanNominalFormat.TabIndex = 10
+        Me.LblKelipatanNominalFormat.Text = "= Rp 10.000 → 1 poin"
+        Me.LblKelipatanNominalFormat.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
+        Me.LblKelipatanNominalFormat.Visible = False
         'BtnSimpanKonfig
         '
         Me.BtnSimpanKonfig.BackColor = System.Drawing.Color.White
@@ -227,10 +277,10 @@ Partial Class FormMasterPoin
         Me.BtnSimpanKonfig.FlatStyle = System.Windows.Forms.FlatStyle.Flat
         Me.BtnSimpanKonfig.Font = New System.Drawing.Font("Segoe UI", 9.75!, System.Drawing.FontStyle.Bold)
         Me.BtnSimpanKonfig.ForeColor = System.Drawing.Color.FromArgb(CType(CType(22, Byte), Integer), CType(CType(163, Byte), Integer), CType(CType(74, Byte), Integer))
-        Me.BtnSimpanKonfig.Location = New System.Drawing.Point(290, 145)
+        Me.BtnSimpanKonfig.Location = New System.Drawing.Point(290, 200)
         Me.BtnSimpanKonfig.Name = "BtnSimpanKonfig"
         Me.BtnSimpanKonfig.Size = New System.Drawing.Size(120, 33)
-        Me.BtnSimpanKonfig.TabIndex = 7
+        Me.BtnSimpanKonfig.TabIndex = 9
         Me.BtnSimpanKonfig.Text = "Simpan (F2)"
         Me.BtnSimpanKonfig.UseVisualStyleBackColor = False
         '
@@ -244,10 +294,10 @@ Partial Class FormMasterPoin
         Me.BtnResetKonfig.FlatStyle = System.Windows.Forms.FlatStyle.Flat
         Me.BtnResetKonfig.Font = New System.Drawing.Font("Segoe UI", 9.75!, System.Drawing.FontStyle.Bold)
         Me.BtnResetKonfig.ForeColor = System.Drawing.Color.FromArgb(CType(CType(100, Byte), Integer), CType(CType(116, Byte), Integer), CType(CType(139, Byte), Integer))
-        Me.BtnResetKonfig.Location = New System.Drawing.Point(420, 145)
+        Me.BtnResetKonfig.Location = New System.Drawing.Point(420, 200)
         Me.BtnResetKonfig.Name = "BtnResetKonfig"
         Me.BtnResetKonfig.Size = New System.Drawing.Size(100, 33)
-        Me.BtnResetKonfig.TabIndex = 8
+        Me.BtnResetKonfig.TabIndex = 10
         Me.BtnResetKonfig.Text = "Reset"
         Me.BtnResetKonfig.UseVisualStyleBackColor = False
         '
@@ -361,8 +411,10 @@ Partial Class FormMasterPoin
         Me.TabRiwayat.Controls.Add(Me.LblSampai)
         Me.TabRiwayat.Controls.Add(Me.DtpDari)
         Me.TabRiwayat.Controls.Add(Me.LblDari)
+        Me.TabRiwayat.Controls.Add(Me.LblKodePelanggan)
         Me.TabRiwayat.Controls.Add(Me.LblSaldoPoin)
         Me.TabRiwayat.Controls.Add(Me.TxtCariPelanggan)
+        Me.TabRiwayat.Controls.Add(Me.LstHasilCariPelanggan)
         Me.TabRiwayat.Controls.Add(Me.LblCariPelanggan)
         Me.TabRiwayat.Location = New System.Drawing.Point(4, 26)
         Me.TabRiwayat.Name = "TabRiwayat"
@@ -387,14 +439,25 @@ Partial Class FormMasterPoin
         Me.TxtCariPelanggan.Font = New System.Drawing.Font("Segoe UI", 9.75!)
         Me.TxtCariPelanggan.Location = New System.Drawing.Point(124, 12)
         Me.TxtCariPelanggan.Name = "TxtCariPelanggan"
-        Me.TxtCariPelanggan.Size = New System.Drawing.Size(280, 25)
+        Me.TxtCariPelanggan.Size = New System.Drawing.Size(200, 25)
         Me.TxtCariPelanggan.TabIndex = 1
+        '
+        'LblKodePelanggan
+        '
+        Me.LblKodePelanggan.Font = New System.Drawing.Font("Segoe UI", 9.75!, System.Drawing.FontStyle.Bold)
+        Me.LblKodePelanggan.ForeColor = System.Drawing.Color.DimGray
+        Me.LblKodePelanggan.Location = New System.Drawing.Point(328, 12)
+        Me.LblKodePelanggan.Name = "LblKodePelanggan"
+        Me.LblKodePelanggan.Size = New System.Drawing.Size(100, 24)
+        Me.LblKodePelanggan.TabIndex = 2
+        Me.LblKodePelanggan.Text = ""
+        Me.LblKodePelanggan.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
         '
         'LblSaldoPoin
         '
         Me.LblSaldoPoin.Font = New System.Drawing.Font("Segoe UI", 9.75!, System.Drawing.FontStyle.Bold)
         Me.LblSaldoPoin.ForeColor = System.Drawing.Color.DarkBlue
-        Me.LblSaldoPoin.Location = New System.Drawing.Point(420, 12)
+        Me.LblSaldoPoin.Location = New System.Drawing.Point(440, 12)
         Me.LblSaldoPoin.Name = "LblSaldoPoin"
         Me.LblSaldoPoin.Size = New System.Drawing.Size(250, 24)
         Me.LblSaldoPoin.TabIndex = 2
@@ -458,6 +521,16 @@ Partial Class FormMasterPoin
         Me.BtnTampilkanRiwayat.Text = "Tampilkan"
         Me.BtnTampilkanRiwayat.UseVisualStyleBackColor = False
         '
+        'LstHasilCariPelanggan
+        '
+        Me.LstHasilCariPelanggan.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
+        Me.LstHasilCariPelanggan.Font = New System.Drawing.Font("Segoe UI", 9.75!)
+        Me.LstHasilCariPelanggan.Location = New System.Drawing.Point(124, 38)
+        Me.LstHasilCariPelanggan.Name = "LstHasilCariPelanggan"
+        Me.LstHasilCariPelanggan.Size = New System.Drawing.Size(200, 120)
+        Me.LstHasilCariPelanggan.TabIndex = 9
+        Me.LstHasilCariPelanggan.Visible = False
+        '
         'DgvRiwayatPoin
         '
         Me.DgvRiwayatPoin.AllowUserToAddRows = False
@@ -495,9 +568,7 @@ Partial Class FormMasterPoin
         Me.PanelHeader.ResumeLayout(False)
         Me.TabControlPoin.ResumeLayout(False)
         Me.TabKonfigurasi.ResumeLayout(False)
-        CType(Me.NudMinimumRedeem, System.ComponentModel.ISupportInitialize).EndInit()
-        CType(Me.NudKelipatanNominal, System.ComponentModel.ISupportInitialize).EndInit()
-        CType(Me.NudPoinPerQty, System.ComponentModel.ISupportInitialize).EndInit()
+
         Me.TabHargaPoin.ResumeLayout(False)
         Me.TabHargaPoin.PerformLayout()
         CType(Me.DgvPoinBarang, System.ComponentModel.ISupportInitialize).EndInit()
@@ -514,14 +585,18 @@ Partial Class FormMasterPoin
     Friend WithEvents TabControlPoin As System.Windows.Forms.TabControl
     Friend WithEvents TabKonfigurasi As System.Windows.Forms.TabPage
     Friend WithEvents LblInfoMekanisme As System.Windows.Forms.Label
+    Friend WithEvents LblPoinAktif As System.Windows.Forms.Label
+    Friend WithEvents CmbPoinAktif As System.Windows.Forms.ComboBox
+    Friend WithEvents LblPoinMekanisme As System.Windows.Forms.Label
+    Friend WithEvents CmbPoinMekanisme As System.Windows.Forms.ComboBox
     Friend WithEvents BtnResetKonfig As System.Windows.Forms.Button
     Friend WithEvents BtnSimpanKonfig As System.Windows.Forms.Button
-    Friend WithEvents NudMinimumRedeem As System.Windows.Forms.NumericUpDown
-    Friend WithEvents LblMinimumRedeem As System.Windows.Forms.Label
-    Friend WithEvents NudKelipatanNominal As System.Windows.Forms.NumericUpDown
+    Friend WithEvents TxtKelipatanNominal As System.Windows.Forms.TextBox
     Friend WithEvents LblKelipatanNominal As System.Windows.Forms.Label
-    Friend WithEvents NudPoinPerQty As System.Windows.Forms.NumericUpDown
+    Friend WithEvents LblKelipatanNominalFormat As System.Windows.Forms.Label
+    Friend WithEvents TxtPoinPerQty As System.Windows.Forms.TextBox
     Friend WithEvents LblPoinPerQty As System.Windows.Forms.Label
+    Friend WithEvents LblPoinPerQtyFormat As System.Windows.Forms.Label
     Friend WithEvents TabHargaPoin As System.Windows.Forms.TabPage
     Friend WithEvents BtnSimpanHargaPoin As System.Windows.Forms.Button
     Friend WithEvents BtnHapusBarisPoin As System.Windows.Forms.Button
@@ -539,5 +614,7 @@ Partial Class FormMasterPoin
     Friend WithEvents LblSaldoPoin As System.Windows.Forms.Label
     Friend WithEvents TxtCariPelanggan As System.Windows.Forms.TextBox
     Friend WithEvents LblCariPelanggan As System.Windows.Forms.Label
+    Friend WithEvents LstHasilCariPelanggan As System.Windows.Forms.ListBox
+    Friend WithEvents LblKodePelanggan As System.Windows.Forms.Label
 
 End Class

@@ -257,7 +257,7 @@ Public Class FormTransferStok
         Dim satuanBesar As String = ""
 
         ' Lakukan query ke tabel "tbl_barang" untuk mendapatkan data terpilih berdasarkan input dari TxtNamaMasuk
-        Dim sqlQuery As String = "SELECT DISTINCT SATUAN_UMUM_KECIL,SATUAN_UMUM_SEDANG,SATUAN_UMUM_BESAR FROM tbl_barang WHERE NAMA_BARANG LIKE @selectedData"
+        Dim sqlQuery As String = "SELECT DISTINCT SATUAN_UMUM_KECIL,SATUAN_UMUM_SEDANG,SATUAN_UMUM_BESAR FROM tbl_barang WHERE NAMA_BARANG LIKE @selectedData ORDER BY NAMA_BARANG"
 
         Using cmd As New MySqlCommand(sqlQuery, conn)
             cmd.Parameters.AddWithValue("@selectedData", namayangdiambil)
@@ -574,7 +574,7 @@ Public Class FormTransferStok
         Dim satuanBesar As String = ""
 
         ' Lakukan query ke tabel "tbl_barang" untuk mendapatkan data terpilih berdasarkan input dari TxtNamaMasuk
-        Dim sqlQuery As String = "SELECT DISTINCT SATUAN_UMUM_KECIL,SATUAN_UMUM_SEDANG,SATUAN_UMUM_BESAR FROM tbl_barang WHERE NAMA_BARANG LIKE @selectedData"
+        Dim sqlQuery As String = "SELECT DISTINCT SATUAN_UMUM_KECIL,SATUAN_UMUM_SEDANG,SATUAN_UMUM_BESAR FROM tbl_barang WHERE NAMA_BARANG LIKE @selectedData ORDER BY NAMA_BARANG"
 
         Using cmd As New MySqlCommand(sqlQuery, conn)
             cmd.Parameters.AddWithValue("@selectedData", namaYangDiambilKlr)

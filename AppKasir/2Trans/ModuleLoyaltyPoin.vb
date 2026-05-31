@@ -18,8 +18,7 @@ Module ModuleLoyaltyPoin
     ' REGION: CACHE KONFIGURASI POIN
     ' ═══════════════════════════════════════════════════════════════════
     ' Variabel-variabel ini di-load sekali saat startup (MuatKonfigurasi)
-    ' dan di-refresh setiap kali konfigurasi disimpan dari FormGeneralSetting
-    ' atau FormMasterPoin.
+    ' dan di-refresh setiap kali konfigurasi disimpan dari FormMasterPoin.
     ' ═══════════════════════════════════════════════════════════════════
 
 #Region "Cache Konfigurasi"
@@ -36,8 +35,7 @@ Module ModuleLoyaltyPoin
     ''' <summary>Nilai belanja (Rp) yang menghasilkan 1 poin (dipakai saat PER_NOMINAL). Contoh: 10000 = Rp 10.000 → 1 poin.</summary>
     Public LP_KelipatanNominal As Decimal = 10000D
 
-    ''' <summary>Jumlah poin minimum yang harus dimiliki pelanggan sebelum dapat melakukan penukaran barang.</summary>
-    Public LP_MinimumRedeem As Integer = 100
+
 
 #End Region
 
@@ -50,7 +48,7 @@ Module ModuleLoyaltyPoin
     ''' <summary>
     ''' Muat konfigurasi poin dari tabel poin_config ke variabel cache modul ini.
     ''' Dipanggil saat aplikasi start (FormUtama.Load atau setelah login)
-    ''' dan setelah pengguna menyimpan konfigurasi di FormGeneralSetting / FormMasterPoin.
+    ''' dan setelah pengguna menyimpan konfigurasi di FormMasterPoin.
     '''
     ''' Jika tabel poin_config belum ada (migrasi belum dijalankan), fungsi ini
     ''' diam-diam melewati error dan membiarkan nilai default cache tetap berlaku.
@@ -59,25 +57,24 @@ Module ModuleLoyaltyPoin
         Try
             EnsureConnectionReady()
 
-            ' LP_Aktif dan LP_Mekanisme dibaca dari cache GeneralSetting via ModulHakAkses,
-            ' menggunakan teks label sebagai key — persis pola semua setting lain.
-            Dim aktifStr As String = ModulHakAkses.BacaSettingDariCache(FormGeneralSetting.LblPoinAktif.Text)
-            Dim mekanismeStr As String = ModulHakAkses.BacaSettingDariCache(FormGeneralSetting.LblPoinMekanisme.Text)
-
-            LP_Aktif = (aktifStr.Trim().ToLower() = "iya")
-            LP_Mekanisme = If(mekanismeStr.ToLower().Contains("item"), "PER_ITEM", "PER_NOMINAL")
-
-            ' Nilai numerik tetap dibaca dari poin_config
+            ' Baca semua setting langsung dari poin_config (single source of truth)
             Dim sqlCfg As String =
-                "SELECT POIN_PER_QTY, KELIPATAN_NOMINAL, MINIMUM_REDEEM " &
+                "SELECT AKTIF, MEKANISME, POIN_PER_QTY, KELIPATAN_NOMINAL " &
                 "FROM poin_config ORDER BY ID DESC LIMIT 1"
 
             Using cmd As New MySqlCommand(sqlCfg, conn)
                 Using rd As MySqlDataReader = cmd.ExecuteReader()
                     If rd.Read() Then
+                        LP_Aktif = If(IsDBNull(rd("AKTIF")), False, Convert.ToBoolean(rd("AKTIF")))
+                        LP_Mekanisme = If(IsDBNull(rd("MEKANISME")), "PER_ITEM", rd("MEKANISME").ToString())
                         LP_PoinPerQty = If(IsDBNull(rd("POIN_PER_QTY")), 1D, Convert.ToDecimal(rd("POIN_PER_QTY")))
                         LP_KelipatanNominal = If(IsDBNull(rd("KELIPATAN_NOMINAL")), 10000D, Convert.ToDecimal(rd("KELIPATAN_NOMINAL")))
-                        LP_MinimumRedeem = If(IsDBNull(rd("MINIMUM_REDEEM")), 100, Convert.ToInt32(rd("MINIMUM_REDEEM")))
+                    Else
+                        ' Tabel kosong — pakai default
+                        LP_Aktif = False
+                        LP_Mekanisme = "PER_ITEM"
+                        LP_PoinPerQty = 1D
+                        LP_KelipatanNominal = 10000D
                     End If
                 End Using
             End Using

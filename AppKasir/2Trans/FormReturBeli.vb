@@ -4079,10 +4079,10 @@ Public Class FormReturBeli
                 Dim sqlrinci As String = "INSERT INTO retur_pembelian_detail " &
                     "(ID_RETUR_PEMBELIAN, TGL_RETUR_BELI, ID_SUPLIYER, NAMA_SUPLIYER, " &
                     "ID_BARANG, NAMA_BARANG, HARGA_BELI, QTY, SATUAN, ISI_SATUAN, " &
-                    "HARGA_BELI_SATUAN, QTY_SAT, TOTAL, PENYIMPANAN, ID_USER, ID_KOMPUTER) " &
+                    "HARGA_BELI_SATUAN, QTY_SAT, TOTAL, PENYIMPANAN, ID_USER, ID_KOMPUTER, URUTAN) " &
                     "VALUES (@ID_RETUR_PEMBELIAN, @TGL_RETUR_BELI, @ID_SUPLIYER, @NAMA_SUPLIYER, " &
                     "@ID_BARANG, @NAMA_BARANG, @HARGA_BELI, @QTY, @SATUAN, @ISI_SATUAN, " &
-                    "@HARGA_BELI_SATUAN, @QTY_SAT, @TOTAL, @PENYIMPANAN, @ID_USER, @ID_KOMPUTER)"
+                    "@HARGA_BELI_SATUAN, @QTY_SAT, @TOTAL, @PENYIMPANAN, @ID_USER, @ID_KOMPUTER, @URUTAN)"
 
                 Using cmd As New MySqlCommand(sqlrinci, conn, transaction)
                     ' Set parameter dari grid
@@ -4102,6 +4102,7 @@ Public Class FormReturBeli
                     cmd.Parameters.AddWithValue("@PENYIMPANAN", LblLokasiBarang.Text)
                     cmd.Parameters.AddWithValue("@ID_USER", FormUtama.StatusNamaUser.Text)
                     cmd.Parameters.AddWithValue("@ID_KOMPUTER", FormUtama.StatusNamaPC.Text)
+                    cmd.Parameters.AddWithValue("@URUTAN", noUrut)
                     cmd.ExecuteNonQuery()
                 End Using
 
@@ -4429,7 +4430,7 @@ Public Class FormReturBeli
             Using cmd As New MySqlCommand("SELECT ID_BARANG, NAMA_BARANG, HARGA_BELI, QTY, " &
                                          "SATUAN, ISI_SATUAN, HARGA_BELI_SATUAN, QTY_SAT, TOTAL, " &
                                          "STOK_TOKO, STOK_GUDANG " &
-                                         "FROM retur_pembelian_detail WHERE ID_RETUR_PEMBELIAN = @ID_RETUR_PEMBELIAN", conn)
+                                         "FROM retur_pembelian_detail WHERE ID_RETUR_PEMBELIAN = @ID_RETUR_PEMBELIAN ORDER BY URUTAN", conn)
                 cmd.Parameters.AddWithValue("@ID_RETUR_PEMBELIAN", TxtFaktur.Text)
                 cmd.Transaction = transaction
 
