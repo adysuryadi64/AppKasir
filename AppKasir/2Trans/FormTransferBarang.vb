@@ -45,6 +45,7 @@ Public Class FormTransferBarang
             AmbilDataUntukEdit()
         End If
 
+        ModuleAngka.TerapkanFormatKolomAngka(DgvData, "Hargabeli", "Qty", "Isi", "HargaBeliSat", "QtySat", "Totalharga", "Stok")
 
         ' Cek apakah DgvData memiliki baris
         If DgvData.Rows.Count > 0 Then
@@ -278,9 +279,9 @@ Public Class FormTransferBarang
         Next
 
         ' Tampilkan hasil ke UI
-        TxtTotalRupiah.Text = grandTotal.ToString("N0")
-        TxtGrandtotal.Text = "Rp. " & grandTotal.ToString("N0")
-        TxtTotalQTY.Text = totalQty.ToString("N0")
+        TxtTotalRupiah.Text = ModuleAngka.FormatRupiah(grandTotal)
+        TxtGrandtotal.Text = ModuleAngka.FormatRupiahLabel(grandTotal)
+        TxtTotalQTY.Text = ModuleAngka.FormatRupiah(totalQty)
         LblRecord.Text = totalRows.ToString()
 
         ' Scroll ke baris terakhir jika ada baris
@@ -454,10 +455,10 @@ Public Class FormTransferBarang
                         Select Case LblLokasiBarang.Text
                             Case "TOKO"
                                 Dim stokToko As Decimal = ModuleAngka.ParseDecimal(rd("STOK_TOKO"))
-                                itemText &= " => " & stokToko.ToString("N0")
+                                itemText &= " => " & ModuleAngka.FormatRupiah(stokToko)
                             Case "GUDANG"
                                 Dim stokGudang As Decimal = ModuleAngka.ParseDecimal(rd("STOK_GUDANG"))
-                                itemText &= " => " & stokGudang.ToString("N0")
+                                itemText &= " => " & ModuleAngka.FormatRupiah(stokGudang)
                         End Select
                     End If
 
@@ -829,7 +830,7 @@ Public Class FormTransferBarang
                     Using rd As MySqlDataReader = cmd.ExecuteReader()
                         If rd.Read() Then
                             row.Cells("Id").Value = rd("ID_BARANG")
-                            row.Cells("Hargabeli").Value = rd("HARGA_BELI")
+                            row.Cells("Hargabeli").Value = ModuleAngka.ParseDecimal(rd("HARGA_BELI"))
 
                             ' Isi ComboBox satuan
                             Dim comboCell As DataGridViewComboBoxCell = CType(row.Cells("Satuan"), DataGridViewComboBoxCell)
@@ -860,12 +861,13 @@ Public Class FormTransferBarang
                             row.Cells("Satuan").Value = satuan
                             isi = Math.Max(1, isi)
                             row.Cells("isi").Value = isi
-                            row.Cells("HargaBeliSat").Value = CDec(row.Cells("Hargabeli").Value) * isi
+                            Dim hargaBeli As Decimal = ModuleAngka.ParseDecimal(row.Cells("Hargabeli").Value)
+                            row.Cells("HargaBeliSat").Value = hargaBeli * isi
                             row.Cells("qty").Value = 1
                             row.Cells("QtySat").Value = 1 * isi
-                            row.Cells("Totalharga").Value = CDec(row.Cells("Hargabeli").Value) * isi
+                            row.Cells("Totalharga").Value = hargaBeli * isi
 
-                            row.Cells("Stok").Value = If(LblLokasiBarang.Text = "TOKO", rd("STOK_TOKO"), rd("STOK_GUDANG"))
+                            row.Cells("Stok").Value = ModuleAngka.ParseDecimal(If(LblLokasiBarang.Text = "TOKO", rd("STOK_TOKO"), rd("STOK_GUDANG")))
                             row.Cells("nama").Value = rd("NAMA_BARANG")
                             UpdateWarnaKodeBarang(e.RowIndex)
                         Else
@@ -886,9 +888,9 @@ Public Class FormTransferBarang
                         For j = i + 1 To DgvData.RowCount - 2
                             If DgvData.Rows(i).Cells("Id").Value = DgvData.Rows(j).Cells("Id").Value Then
                                 DgvData.Rows(i).Cells("qty").Value += 1
-                                Dim isiVal = CInt(DgvData.Rows(i).Cells("isi").Value)
-                                DgvData.Rows(i).Cells("qtysat").Value = If(isiVal = 0, CInt(DgvData.Rows(i).Cells("qtysat").Value) + 1, isiVal * CInt(DgvData.Rows(i).Cells("qty").Value))
-                                DgvData.Rows(i).Cells("totalharga").Value = CDec(DgvData.Rows(i).Cells("Hargabeli").Value) * CDec(DgvData.Rows(i).Cells("qtysat").Value)
+                                Dim isiVal = ModuleAngka.ParseInteger(DgvData.Rows(i).Cells("isi").Value)
+                                DgvData.Rows(i).Cells("qtysat").Value = If(isiVal = 0, ModuleAngka.ParseInteger(DgvData.Rows(i).Cells("qtysat").Value) + 1, isiVal * ModuleAngka.ParseInteger(DgvData.Rows(i).Cells("qty").Value))
+                                DgvData.Rows(i).Cells("totalharga").Value = ModuleAngka.ParseDecimal(DgvData.Rows(i).Cells("Hargabeli").Value) * ModuleAngka.ParseDecimal(DgvData.Rows(i).Cells("qtysat").Value)
                                 Hapusbaris()
                                 SendKeys.Send("{down}")
                             End If
@@ -907,7 +909,7 @@ Public Class FormTransferBarang
         '========================== Harga beli (Kolom 2)
         If e.ColumnIndex = 2 Then
             Dim row = DgvData.Rows(e.RowIndex)
-            Dim harga As Decimal = CDec(If(row.Cells("Hargabeli").Value Is Nothing, 0, row.Cells("Hargabeli").Value))
+            Dim harga As Decimal = ModuleAngka.ParseDecimal(row.Cells("Hargabeli").Value)
 
             If harga <= 0 Then
                 row.Cells("Hargabeli").Value = 0
@@ -915,8 +917,8 @@ Public Class FormTransferBarang
                 Return
             End If
 
-            Dim qty As Decimal = CDec(row.Cells("Qty").Value)
-            Dim isi As Integer = CInt(row.Cells("Isi").Value)
+            Dim qty As Decimal = ModuleAngka.ParseDecimal(row.Cells("Qty").Value)
+            Dim isi As Integer = ModuleAngka.ParseInteger(row.Cells("Isi").Value)
 
             row.Cells("QtySat").Value = qty * isi
             row.Cells("HargaBeliSat").Value = harga * isi
@@ -926,15 +928,15 @@ Public Class FormTransferBarang
         '========================== Qty (Kolom 3)
         If e.ColumnIndex = 3 Then
             Dim row = DgvData.Rows(e.RowIndex)
-            Dim qty As Decimal = CDec(If(row.Cells("Qty").Value Is Nothing, 0, row.Cells("Qty").Value))
+            Dim qty As Decimal = ModuleAngka.ParseDecimal(row.Cells("Qty").Value)
 
             If qty <= 0 Then
                 row.Cells("Qty").Value = 1
                 qty = 1
             End If
 
-            Dim harga As Decimal = CDec(row.Cells("Hargabeli").Value)
-            Dim isi As Integer = CInt(row.Cells("Isi").Value)
+            Dim harga As Decimal = ModuleAngka.ParseDecimal(row.Cells("Hargabeli").Value)
+            Dim isi As Integer = ModuleAngka.ParseInteger(row.Cells("Isi").Value)
 
             row.Cells("QtySat").Value = qty * isi
             row.Cells("Totalharga").Value = harga * qty * isi
@@ -1102,18 +1104,21 @@ Public Class FormTransferBarang
                     ' Update nilai pada kolom "Isi" berdasarkan indeks yang dipilih dalam ComboBox
                     Select Case comboBox.SelectedIndex
                         Case 0
-                            cell.OwningRow.Cells("Isi").Value = Math.Max(1, CInt(rd("ISI_UMUM_KECIL")))
+                            cell.OwningRow.Cells("Isi").Value = Math.Max(1, ModuleAngka.SafeGetValue(Of Integer)(rd, "ISI_UMUM_KECIL", 1))
                         Case 1
-                            cell.OwningRow.Cells("Isi").Value = Math.Max(1, CInt(rd("ISI_UMUM_SEDANG")))
+                            cell.OwningRow.Cells("Isi").Value = Math.Max(1, ModuleAngka.SafeGetValue(Of Integer)(rd, "ISI_UMUM_SEDANG", 1))
                         Case Else
-                            cell.OwningRow.Cells("Isi").Value = Math.Max(1, CInt(rd("ISI_UMUM_BESAR")))
+                            cell.OwningRow.Cells("Isi").Value = Math.Max(1, ModuleAngka.SafeGetValue(Of Integer)(rd, "ISI_UMUM_BESAR", 1))
                     End Select
 
                     ' Lakukan perhitungan sel lain yang berkaitan dengan perubahan ini
                     Dim rowIndex As Integer = DgvData.CurrentCell.RowIndex
-                    DgvData("HargaBeliSat", rowIndex).Value = CDec(DgvData("Hargabeli", rowIndex).Value) * CDec(DgvData("isi", rowIndex).Value)
-                    DgvData("qtysat", rowIndex).Value = CDec(DgvData("isi", rowIndex).Value) * CDec(DgvData("qty", rowIndex).Value)
-                    DgvData("totalharga", rowIndex).Value = CDec(DgvData("hargabeli", rowIndex).Value) * CDec(DgvData("qtysat", rowIndex).Value)
+                    Dim hargaBeliCol As Decimal = ModuleAngka.ParseDecimal(DgvData("Hargabeli", rowIndex).Value)
+                    Dim isiCol As Decimal = ModuleAngka.ParseDecimal(DgvData("isi", rowIndex).Value)
+                    Dim qtyCol As Decimal = ModuleAngka.ParseDecimal(DgvData("qty", rowIndex).Value)
+                    DgvData("HargaBeliSat", rowIndex).Value = hargaBeliCol * isiCol
+                    DgvData("qtysat", rowIndex).Value = isiCol * qtyCol
+                    DgvData("totalharga", rowIndex).Value = hargaBeliCol * DgvData("qtysat", rowIndex).Value
 
                     UpdateSemuaTotal()
                 Else
@@ -1587,7 +1592,7 @@ Public Class FormTransferBarang
                         Using rdjual As MySqlDataReader = cmdjual.ExecuteReader()
                             While rdjual.Read()
                                 Dim idBarang As String = rdjual("ID_BARANG").ToString()
-                                Dim totalQtyTerjualRow As Decimal = Convert.ToDecimal(rdjual("TOTAL_QTY"))
+                                Dim totalQtyTerjualRow As Decimal = ModuleAngka.ParseDecimal(rdjual("TOTAL_QTY"))
                                 If stokDict.ContainsKey(idBarang) Then
                                     Dim stokInfo As StokInfo = stokDict(idBarang)
                                     If LblLokasiBarang.Text = "TOKO" Then
@@ -1602,7 +1607,7 @@ Public Class FormTransferBarang
                 End If
 
                 ' Memproses data di DataGridView
-                Dim totalQtyTerjual As Decimal = Convert.ToDecimal(dgvRow.Cells("QtySat").Value)
+                Dim totalQtyTerjual As Decimal = ModuleAngka.ParseDecimal(dgvRow.Cells("QtySat").Value)
                 If stokDict.ContainsKey(kodeBarangValue) Then
                     Dim stokInfo As StokInfo = stokDict(kodeBarangValue)
                     Dim totalStok As Decimal
@@ -2122,9 +2127,15 @@ Public Class FormTransferBarang
                 Using rd As MySqlDataReader = cmd.ExecuteReader()
                     Do While rd.Read()
                         Dim row As DataGridViewRow = DgvData.Rows(DgvData.Rows.Add())
-                        For i As Integer = 0 To rd.FieldCount - 1
-                            row.Cells(i).Value = rd(i)
-                        Next i
+                        row.Cells("Id").Value = rd("ID_BARANG")
+                        row.Cells("Nama").Value = rd("NAMA_BARANG")
+                        row.Cells("Hargabeli").Value = ModuleAngka.ParseDecimal(rd("HARGA"))
+                        row.Cells("Qty").Value = ModuleAngka.ParseDecimal(rd("QTY"))
+                        row.Cells("Satuan").Value = rd("SATUAN")
+                        row.Cells("Isi").Value = ModuleAngka.ParseDecimal(rd("ISI_SATUAN"))
+                        row.Cells("HargaBeliSat").Value = ModuleAngka.ParseDecimal(rd("HARGA_QTY"))
+                        row.Cells("QtySat").Value = ModuleAngka.ParseDecimal(rd("TOTAL_QTY"))
+                        row.Cells("Totalharga").Value = ModuleAngka.ParseDecimal(rd("TOTAL"))
 
                         ' Isi ComboBoxCell berdasarkan dictionary
                         Dim idBarang As String = row.Cells(0).Value.ToString()
