@@ -1,59 +1,36 @@
-﻿**Catatan Rilis Teknis Kasir - Versi 15.2026.531.5**
+﻿Tentu, berikut adalah catatan rilis teknis mendetail untuk aplikasi Kasir berdasarkan perubahan file kode yang Anda berikan:
 
-**Peristiwa Perubahan:**
-1. **UI/UX dan Navigation**
-   - **`FormLoading.vb`**
-     - Menambahkan tiga menu utama baru: "Master Poin", "Tukar Poin", dan "Lap Poin". 
-     - Potensi mengaruh pada waktu startup minimal, pantau performa.
+---
 
-2. **Modul Utama (Dashboard)**
-   - **`FormUtama.designer.vb`**
-     - Tambahkan otomatisasi menu untuk fitur poin (PoinToolStripMenuItem, MutasiPoinToolStripMenuItem, dll). 
-     - Potensi impact: struktur navigasi lebih terorganisasi, berapa dph 3 menu baris baru.
+# Catatan Rilis Teknis Aplikasi Kasir - Versi 15.2026.531.6
 
-3. **Master Data**
-   - **`FormGeneralSetting.vb`**
-     - Penambahan kontrol `TxtBatasSatuanSedang` & `TxtBatasSatuanBesar` untuk aturan auto-scaling qty. 
-     - Potensi impact: perubahan konfigurasi utamanyaan aplikasi, pastikan dokumentasi akan di-update.
-   - **`FormHakUser.vb`**
-     - Lisensi pribadi kategori `Master Poin`. 
-     - Potensi impact: penyesuaian hak akses di menu master.
+Berikut adalah catatan rilis teknis untuk pembaruan Aplikasi Kasir ke versi `15.2026.531.6`, merangkum perubahan berdasarkan `git diff` yang disediakan. Pembaruan ini fokus pada peningkatan versi dan konfigurasi sistem pembaruan otomatis.
 
-4. **Transaksi**
-   - **`FormTransferCabang.vb`**
-     - Restructuring alur flow transfer: validasi lokasi dengan `CekLokasiBarang()`, notifikasi poin salah sesuai lokasi.
-     - Potensi impact: perubahan logika kritis berisiko high-risk, test regressive diperlukan.
-   - **`FormTukarPoin.vb`**
-     - Integrasi fitur history stok di interface (inisialisasi data alokasi poin via `ModuleLoyaltyPoin.MuatBarangTukar()`). 
-     - Potensi impact: UI sesuai persyaratan lisensi.
+---
 
-5. **Audit & Jurnal**
-   - **`ModuleAuditTrail.vb`**
-     - Persiapan untuk audit stok transaksi poin (CEO auditor akan love ini).
-   - **`FormUtama.vb`**
-     - Diperubah logic cetak surat jalan: tambahan validasi `CekLokasiBarang()` sebelum proses. 
+## Daftar Perubahan
 
-6. **Fix & Refactoring**
-   - **Database Scripts**
-     - Menghapus kolom `MINIMUM_REDEEM` dari `poin_config` (35_migrasi):
-       ```sql
-       CALL DropColumnSafely('poin_config', 'MINIMUM_REDEEM');
-       ```
-       Lanjutkan dengan aturan baru provisi poin per item.
-     - Tambahan kolom `URUTAN` di tabel detail transaksi (36_migrasi) untuk melestarikan cetakan receipt berurutan.
+### 1. Perubahan Versi Assembly Aplikasi
 
-7. **Reporting**
-   - Menambahkan report baru:
-     - `FormLapPoin`: Rekap saldos per pelanggan (`ReportSaldoPoin`)
-     - Mutasi poin (`ReportMutasiPoin`) dan rekap tukar poin (`ReportRekapTukarPoin`). 
-   - Laporanè¿äº driven oleh data dari `poin_ledger`, `Transaction`, dan `tbl_barang`.
+*   **File/Modul:** `AppKasir/My Project/AssemblyInfo.vb`
+*   **Ringkasan Perubahan:** Pembaruan versi assembly aplikasi Kasir.
+*   **Detail Teknis:**
+    *   Atribut `AssemblyVersion` telah diperbarui dari `15.2026.531.5` menjadi `15.2026.531.6`. Atribut ini menentukan versi *runtime* dari assembly yang digunakan oleh .NET Framework dan penting untuk resolusi referensi.
+    *   Atribut `AssemblyFileVersion` juga diperbarui dari `15.2026.531.5` menjadi `15.2026.531.6`. Atribut ini menentukan versi file fisik yang terlihat di properti file (misalnya di Windows Explorer).
+    *   Perubahan ini secara konsisten mengidentifikasi build terbaru dari aplikasi, memastikan bahwa semua komponen internal dan eksternal mereferensikan versi yang benar dan terbaru.
 
-**Rekomendasi Penerimaan:**
-- Test interoperabilitas moduler dengan tropo berurutan
-- Validasi struktur data history poin di mode edit Tukar Poin
-- Pastikan simpul DB untuk audit stok update secara konsisten
-- Update panduan pengguna untuk refSAFETY tab form utama nilai-basis
+### 2. Konfigurasi Pembaruan Otomatis
 
-*Tag: 15.2026.531.5 (2026-02-01)*  
-*Catatan Penulis: Kelas refactoring `SaleService` diperbolehkan untuk v15.2026.532.0 (sabtu injekture).*
+*   **File/Modul:** `update.xml`
+*   **Ringkasan Perubahan:** Penyesuaian konfigurasi untuk sistem pembaruan otomatis aplikasi.
+*   **Detail Teknis:**
+    *   Tag `<version>` dalam XML diperbarui dari `15.2026.531.5` menjadi `15.2026.531.6`. Perubahan ini memberitahu mekanisme pembaruan otomatis aplikasi bahwa versi baru `15.2026.531.6` tersedia.
+    *   Tag `<url>` diperbarui untuk menunjuk ke tautan unduhan (`https://github.com/adysuryadi64/AppKasir/releases/download/v15.2026.531.6/AppKasir_Update.zip`) yang sesuai dengan paket pembaruan untuk versi `15.2026.531.6`. Ini memastikan pengguna mengunduh paket pembaruan yang benar.
+    *   Tag `<changelog>` diperbarui untuk mengarahkan pengguna ke halaman catatan rilis spesifik untuk versi `15.2026.531.6` (`https://github.com/adysuryadi64/AppKasir/releases/tag/v15.2026.531.6`). Ini memungkinkan pengguna melihat detail perubahan untuk rilis ini secara langsung.
+    *   Tambahan satu baris kosong pada akhir file. Perubahan ini bersifat kosmetik dan tidak memengaruhi fungsionalitas konfigurasi pembaruan.
 
+---
+
+**Kesimpulan:**
+
+Pembaruan ini merupakan bagian standar dari siklus rilis perangkat lunak, dengan fokus utama pada pembaruan metadata versi aplikasi dan memastikan infrastruktur pembaruan otomatis siap untuk mendistribusikan versi `15.2026.531.6` kepada pengguna.
