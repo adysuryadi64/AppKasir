@@ -380,22 +380,22 @@ Public Class FormReturPenjualan
             If Not Decimal.TryParse(DGVPenjualan.Item(6, DGVPenjualan.CurrentRow.Index).Value.ToString(), total) Then
                 total = 0D
             End If
-            TxtTotalJual.Text = total.ToString("0.##", Globalization.CultureInfo.InvariantCulture)
-            LblTotalJual.Text = "Rp. " & total.ToString("#,0.##", cultureIndonesia)
+            TxtTotalJual.Text = total.ToString("0.####", Globalization.CultureInfo.InvariantCulture)
+            LblTotalJual.Text = "Rp. " & total.ToString("#,0.####", cultureIndonesia)
 
             Dim tagihan As Decimal
             If Not Decimal.TryParse(DGVPenjualan.Item(7, DGVPenjualan.CurrentRow.Index).Value.ToString(), tagihan) Then
                 tagihan = 0D
             End If
-            TxtBayarJual.Text = tagihan.ToString("0.##", Globalization.CultureInfo.InvariantCulture)
-            LblBayarJual.Text = "Rp. " & tagihan.ToString("#,0.##", cultureIndonesia)
+            TxtBayarJual.Text = tagihan.ToString("0.####", Globalization.CultureInfo.InvariantCulture)
+            LblBayarJual.Text = "Rp. " & tagihan.ToString("#,0.####", cultureIndonesia)
 
             Dim sisaBayar As Decimal
             If Not Decimal.TryParse(DGVPenjualan.Item(8, DGVPenjualan.CurrentRow.Index).Value.ToString(), sisaBayar) Then
                 sisaBayar = 0D
             End If
-            TxtSisaJual.Text = sisaBayar.ToString("0.##", Globalization.CultureInfo.InvariantCulture)
-            LblSisaJual.Text = "Rp. " & sisaBayar.ToString("#,0.##", cultureIndonesia)
+            TxtSisaJual.Text = sisaBayar.ToString("0.####", Globalization.CultureInfo.InvariantCulture)
+            LblSisaJual.Text = "Rp. " & sisaBayar.ToString("#,0.####", cultureIndonesia)
 
             LblStatusJual.Text = DGVPenjualan.Item(9, DGVPenjualan.CurrentRow.Index).Value
             PanelInput.Visible = True
@@ -765,18 +765,18 @@ Public Class FormReturPenjualan
         Next
 
         ' Update hasil perhitungan ke textbox dan label
-        TxtTotalBarang.Text = totalBarang.ToString("0.##", Globalization.CultureInfo.InvariantCulture)
-        LblTotalBarang.Text = totalBarang.ToString("#,0.##", cultureIndonesia)
+        TxtTotalBarang.Text = totalBarang.ToString("0.####", Globalization.CultureInfo.InvariantCulture)
+        LblTotalBarang.Text = totalBarang.ToString("#,0.####", cultureIndonesia)
 
-        TxtTotalQTY.Text = totalQty.ToString("0.##", Globalization.CultureInfo.InvariantCulture)
-        LblTotalQTY.Text = totalQty.ToString("#,0.##", cultureIndonesia)
+        TxtTotalQTY.Text = totalQty.ToString("0.####", Globalization.CultureInfo.InvariantCulture)
+        LblTotalQTY.Text = totalQty.ToString("#,0.####", cultureIndonesia)
 
-        TxtHPP.Text = totalHPP.ToString("0.##", Globalization.CultureInfo.InvariantCulture)
+        TxtHPP.Text = totalHPP.ToString("0.####", Globalization.CultureInfo.InvariantCulture)
 
-        TxtTotalRupiah.Text = grandTotal.ToString("0.##", Globalization.CultureInfo.InvariantCulture)
-        LblTotalRupiah.Text = "Rp. " & grandTotal.ToString("#,0.##", cultureIndonesia)
+        TxtTotalRupiah.Text = grandTotal.ToString("0.####", Globalization.CultureInfo.InvariantCulture)
+        LblTotalRupiah.Text = "Rp. " & grandTotal.ToString("#,0.####", cultureIndonesia)
 
-        TxtTotalLaba.Text = totalLaba.ToString("0.##", Globalization.CultureInfo.InvariantCulture)
+        TxtTotalLaba.Text = totalLaba.ToString("0.####", Globalization.CultureInfo.InvariantCulture)
     End Sub
 
 
@@ -1945,7 +1945,7 @@ Public Class FormReturPenjualan
             If row.IsNewRow Then Continue For
             If row.Index = rowIdx Then Continue For
             If Convert.ToString(row.Cells("ID_BARANG").Value).Trim() = idBarang Then
-                Dim newQty As Decimal = ModuleAngka.ParseDecimal(Convert.ToString(row.Cells("QTY").Value)) + qty
+                Dim newQty As Decimal = ModuleAngka.ParseDecimal(row.Cells("QTY").Value) + qty
                 row.Cells("QTY").Value = newQty
                 HitungBaris(row.Index)
                 HitungSemua()
@@ -2198,12 +2198,12 @@ Public Class FormReturPenjualan
         Dim row = DGVReturjual.Rows(rowIdx)
         If row.IsNewRow Then Return
 
-        Dim qty As Decimal = ModuleAngka.ParseDecimal(Convert.ToString(row.Cells("QTY").Value))
-        Dim isi As Decimal = ModuleAngka.ParseDecimal(Convert.ToString(row.Cells("ISI_SATUAN").Value))
+        Dim qty As Decimal = ModuleAngka.ParseDecimal(row.Cells("QTY").Value)
+        Dim isi As Decimal = ModuleAngka.ParseDecimal(row.Cells("ISI_SATUAN").Value)
         Dim qtySat As Decimal = qty * isi
 
-        Dim hargaBeli As Decimal = ModuleAngka.ParseDecimal(Convert.ToString(row.Cells("HARGA_BELI").Value))
-        Dim hargaJual As Decimal = ModuleAngka.ParseDecimal(Convert.ToString(row.Cells("HARGA_JUAL").Value))
+        Dim hargaBeli As Decimal = ModuleAngka.ParseDecimal(row.Cells("HARGA_BELI").Value)
+        Dim hargaJual As Decimal = ModuleAngka.ParseDecimal(row.Cells("HARGA_JUAL").Value)
         Dim diskon As Decimal = 0D
 
         ' Skalasi Diskon: Jika Mode Normal, ambil diskon per unit dari cache
@@ -2216,7 +2216,7 @@ Public Class FormReturPenjualan
             End If
         Else
             ' Mode Bebas: Gunakan diskon yang diinput manual (jika ada)
-            diskon = ModuleAngka.ParseDecimal(Convert.ToString(row.Cells("TOTAL_DISKON").Value))
+            diskon = ModuleAngka.ParseDecimal(row.Cells("TOTAL_DISKON").Value)
         End If
 
         ' Mode bebas: update harga jual dari DB hanya jika diminta
