@@ -114,7 +114,7 @@ Write-Host ""
 # ── Cek gh CLI tersedia ───────────────────────────────────────────
 $ghAvailable = $null -ne (Get-Command gh -ErrorAction SilentlyContinue)
 
-# ── [1.5/6] Auto Changelog dengan AI (Fallback: Groq → OpenRouter) ──
+# ── [1.5/6] Auto Changelog dengan AI (Gemini → Groq → OpenRouter) ──
 Write-Host "  [1.5/6] Menyiapkan file untuk Commit & Generate Changelog AI..." -ForegroundColor Yellow
 
 # Tambahkan semua file yang berubah ke dalam antrean (Staging)
@@ -126,10 +126,6 @@ if (-not (Test-Path $aiKeyPath)) {
 }
 
 # ── Parse .ai_key file ──
-# Format baru (KEY=VALUE per baris):    Format lama (1 baris = Gemini key):
-#   GEMINI=AIzaSy...                      AIzaSy...
-#   GROQ=gsk_...
-#   OPENROUTER=sk-or-...
 $aiKeys = @{}
 if (Test-Path $aiKeyPath) {
     $lines = Get-Content $aiKeyPath | Where-Object { $_.Trim() -ne "" }
@@ -142,7 +138,6 @@ if (Test-Path $aiKeyPath) {
     }
     
     if ($cleanLines.Count -eq 1 -and $cleanLines[0] -notmatch "=") {
-        # Format lama: hanya berisi API key Gemini saja
         $aiKeys["GEMINI"] = $cleanLines[0]
     } else {
         foreach ($line in $cleanLines) {
@@ -173,13 +168,32 @@ if (-not $hasValidKey) {
     }
 
     if ($diff) {
-        Write-Host "        Meminta AI merangkum perubahan..." -ForegroundColor DarkGray
-        $prompt = "Kamu adalah pembuat catatan rilis teknis aplikasi Kasir. Berdasarkan perubahan file kode berikut (git diff), buatkan catatan rilis (changelog) yang mendetail dalam bahasa Indonesia. Sebutkan nama file, modul, atau komponen yang diubah beserta ringkasan penjelasan teknis mengenai apa saja yang berubah pada bagian tersebut berdasarkan analisis kode di git diff. Tulis dengan format markdown bullet points yang terstruktur, informatif, rapi, dan profesional. Data perubahan:`n$diff"
+        # Truncate diff jika terlalu panjang (hemat token, cegah error 400)
+        $maxDiffLen = 12000
+        if ($diff.Length -gt $maxDiffLen) {
+            $diff = $diff.Substring(0, $maxDiffLen) + "`n... [diff dipotong untuk hemat token]"
+            Write-Host "        Diff dipotong ke $maxDiffLen karakter." -ForegroundColor DarkGray
+        }
 
-        # ── Daftar provider AI ──
+        Write-Host "        Meminta AI merangkum perubahan..." -ForegroundColor DarkGray
+        $prompt = @"
+Kamu adalah pembuat catatan rilis teknis aplikasi kasir (POS). Berdasarkan git diff berikut, buatkan changelog dalam bahasa Indonesia.
+
+Aturan:
+- Sebutkan nama file/komponen yang diubah
+- Jelaskan apa yang berubah secara teknis (singkat, padat, jelas)
+- Format: markdown bullet points
+- Jangan tulis penjelasan umum — fokus ke perubahan spesifik
+- Jangan tulis "Tidak ada perubahan signifikan" — jika memang tidak ada, tulis "Tidak ada perubahan kode"
+
+Data perubahan:
+$diff
+"@
+
+        # ── Daftar provider AI (3 aktif, tanpa Cohere & HuggingFace) ──
         $providers = @()
 
-        # 1. Gemini (Google AI Studio - Free-forever)
+        # 1. Gemini (Google AI Studio - Free, paling pintar)
         if ($aiKeys.ContainsKey("GEMINI") -and $aiKeys["GEMINI"] -ne "") {
             $geminiBody = @{ model = "gemini-2.5-flash"; messages = @( @{ role = "user"; content = $prompt } ) } | ConvertTo-Json -Depth 10
             $providers += @{
@@ -187,55 +201,31 @@ if (-not $hasValidKey) {
                 Url     = "https://generativelanguage.googleapis.com/v1beta/openai/chat/completions"
                 Headers = @{ "Content-Type" = "application/json"; "Authorization" = "Bearer $($aiKeys['GEMINI'])" }
                 Body    = $geminiBody
-                Parse   = "OPENAI"
+                Timeout = 60
             }
         }
 
-        # 2. Groq (Fast open-source - Free tier)
+        # 2. Groq (Sangat cepat, model ringan untuk hemat quota)
         if ($aiKeys.ContainsKey("GROQ") -and $aiKeys["GROQ"] -ne "") {
-            $groqBody = @{ model = "llama-3.3-70b-versatile"; messages = @( @{ role = "user"; content = $prompt } ) } | ConvertTo-Json -Depth 10
+            $groqBody = @{ model = "llama-3.1-8b-instant"; messages = @( @{ role = "user"; content = $prompt } ) } | ConvertTo-Json -Depth 10
             $providers += @{
                 Name    = "Groq"
                 Url     = "https://api.groq.com/openai/v1/chat/completions"
                 Headers = @{ "Content-Type" = "application/json"; "Authorization" = "Bearer $($aiKeys['GROQ'])" }
                 Body    = $groqBody
-                Parse   = "OPENAI"
+                Timeout = 45
             }
         }
 
-        # 3. OpenRouter (Free model fallback)
+        # 3. OpenRouter (Banyak model gratis)
         if ($aiKeys.ContainsKey("OPENROUTER") -and $aiKeys["OPENROUTER"] -ne "") {
-            $orBody = @{ model = "openrouter/free"; messages = @( @{ role = "user"; content = $prompt } ) } | ConvertTo-Json -Depth 10
+            $orBody = @{ model = "google/gemini-2.0-flash-001:free"; messages = @( @{ role = "user"; content = $prompt } ) } | ConvertTo-Json -Depth 10
             $providers += @{
                 Name    = "OpenRouter"
                 Url     = "https://openrouter.ai/api/v1/chat/completions"
                 Headers = @{ "Content-Type" = "application/json"; "Authorization" = "Bearer $($aiKeys['OPENROUTER'])" }
                 Body    = $orBody
-                Parse   = "OPENAI"
-            }
-        }
-
-        # 4. Cohere (Free trial tier)
-        if ($aiKeys.ContainsKey("COHERE") -and $aiKeys["COHERE"] -ne "") {
-            $cohereBody = @{ model = "command-r"; messages = @( @{ role = "user"; content = $prompt } ) } | ConvertTo-Json -Depth 10
-            $providers += @{
-                Name    = "Cohere"
-                Url     = "https://api.cohere.ai/compatibility/v1/chat/completions"
-                Headers = @{ "Content-Type" = "application/json"; "Authorization" = "Bearer $($aiKeys['COHERE'])" }
-                Body    = $cohereBody
-                Parse   = "OPENAI"
-            }
-        }
-
-        # 5. Hugging Face (Free serverless API)
-        if ($aiKeys.ContainsKey("HUGGINGFACE") -and $aiKeys["HUGGINGFACE"] -ne "") {
-            $hfBody = @{ model = "meta-llama/Llama-3.2-3B-Instruct"; messages = @( @{ role = "user"; content = $prompt } ) } | ConvertTo-Json -Depth 10
-            $providers += @{
-                Name    = "HuggingFace"
-                Url     = "https://api-inference.huggingface.co/v1/chat/completions"
-                Headers = @{ "Content-Type" = "application/json"; "Authorization" = "Bearer $($aiKeys['HUGGINGFACE'])" }
-                Body    = $hfBody
-                Parse   = "OPENAI"
+                Timeout = 60
             }
         }
 
@@ -245,14 +235,20 @@ if (-not $hasValidKey) {
             for ($attempt = 1; $attempt -le 2; $attempt++) {
                 try {
                     Write-Host "        Mencoba $($prov.Name) (percobaan $attempt)..." -ForegroundColor DarkGray
-                    $response = Invoke-RestMethod -Method Post -Uri $prov.Url -Headers $prov.Headers -Body $prov.Body -TimeoutSec 30
+                    $response = Invoke-RestMethod -Method Post -Uri $prov.Url -Headers $prov.Headers -Body $prov.Body -TimeoutSec $prov.Timeout
                     $changelogText = $response.choices[0].message.content
                     if ($changelogText) {
                         Write-Host "        Changelog berhasil dari $($prov.Name)." -ForegroundColor Green
                         break
                     }
                 } catch {
-                    Write-Host "        $($prov.Name) gagal: $($_.Exception.Message)" -ForegroundColor Yellow
+                    $errMsg = $_.Exception.Message
+                    if ($errMsg -match "429") {
+                        Write-Host "        $($prov.Name): rate limit, tunggu 5 detik..." -ForegroundColor Yellow
+                        Start-Sleep -Seconds 5
+                    } else {
+                        Write-Host "        $($prov.Name) gagal: $errMsg" -ForegroundColor Yellow
+                    }
                     if ($attempt -lt 2) { Start-Sleep -Seconds 2 }
                 }
             }
