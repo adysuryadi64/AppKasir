@@ -165,13 +165,26 @@ Public Class FormJual
     End Sub
 
     Private Sub FormatKolomDenganCultureIndonesia()
-        ' Daftar nama kolom yang akan diformat
-        Dim kolomList As String() = {
-    "HargaBeli", "QTY", "Isi", "Totalhargabeli", "Harga", "QtySat",
-    "DiskonPersen", "DiskonRp", "TotalDiskon", "TotalHarga",
-    "StokToko", "StokGudang", "Stok"
-}
+        ' ═══════════════════════════════════════════════════════════════
+        ' KOLOM HIDDEN: Set ValueType = Decimal SAJA (jangan format!)
+        ' Decimal(15,4) dari DB harus tetap Decimal object di cell.
+        ' Jika diformat "#,0.##" → cell berubah ke String → parse salah.
+        ' ═══════════════════════════════════════════════════════════════
+        Dim kolomHiddenDecimal() As String = {"HargaBeli", "Isi", "Totalhargabeli", "StokToko", "StokGudang", "Stok"}
+        For Each nama As String In kolomHiddenDecimal
+            If DgvDataTransaksi.Columns.Contains(nama) Then
+                DgvDataTransaksi.Columns(nama).ValueType = GetType(Decimal)
+            End If
+        Next
 
+        ' ═══════════════════════════════════════════════════════════════
+        ' KOLOM VISIBLE: Format ribuan Indonesia untuk tampilan user.
+        ' Kolom ini tidak dipakai langsung sebagai input DB (atau aman).
+        ' ═══════════════════════════════════════════════════════════════
+        Dim kolomList As String() = {
+            "QTY", "QtySat", "Harga",
+            "DiskonPersen", "DiskonRp", "TotalDiskon", "TotalHarga"
+        }
         ModuleAngka.TerapkanFormatKolomAngka(DgvDataTransaksi, kolomList)
     End Sub
 

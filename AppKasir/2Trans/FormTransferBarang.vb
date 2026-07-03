@@ -45,7 +45,19 @@ Public Class FormTransferBarang
             AmbilDataUntukEdit()
         End If
 
-        ModuleAngka.TerapkanFormatKolomAngka(DgvData, "Hargabeli", "Qty", "Isi", "HargaBeliSat", "QtySat", "Totalharga", "Stok")
+        ' ═══════════════════════════════════════════════════════════════
+        ' HARGABELI, HARGABELISAT, TOTALHARGA: ValueType = Decimal SAJA
+        ' Kolom ini langsung disimpan ke DB. Tidak boleh format ribuan
+        ' di cell agar Decimal tidak berubah ke String.
+        ' ═══════════════════════════════════════════════════════════════
+        For Each nama As String In {"Hargabeli", "HargaBeliSat", "Totalharga", "QtySat", "Isi", "Stok"}
+            If DgvData.Columns.Contains(nama) Then
+                DgvData.Columns(nama).ValueType = GetType(Decimal)
+            End If
+        Next
+
+        ' Kolom visible: format ribuan untuk tampilan saja
+        ModuleAngka.TerapkanFormatKolomAngka(DgvData, "Qty")
 
         ' Cek apakah DgvData memiliki baris
         If DgvData.Rows.Count > 0 Then
@@ -1388,9 +1400,9 @@ Public Class FormTransferBarang
                 DgvData.CurrentCell.ColumnIndex, DgvData.CurrentCell.RowIndex, True)
             Dim ptDgv = DgvData.PointToScreen(New Point(cellRect.Left, cellRect.Bottom))
             Dim ptForm = Me.PointToClient(ptDgv)
-            
+
             LstBarang.Width = Math.Max(300, cellRect.Width)
-            
+
             ' Cek sisa ruang vertikal di bawah sel aktif untuk menentukan posisi LstBarang (Atas/Bawah)
             Dim spaceBelow As Integer = Me.ClientSize.Height - ptForm.Y
             If spaceBelow < LstBarang.Height + 40 Then

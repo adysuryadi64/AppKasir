@@ -654,7 +654,6 @@ Partial Class FormTransferBarang
         'Hargabeli
         '
         DataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight
-        DataGridViewCellStyle4.Format = "N0"
         DataGridViewCellStyle4.NullValue = Nothing
         Me.Hargabeli.DefaultCellStyle = DataGridViewCellStyle4
         Me.Hargabeli.FillWeight = 60.0!
@@ -694,7 +693,6 @@ Partial Class FormTransferBarang
         'HargaBeliSat
         '
         DataGridViewCellStyle6.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight
-        DataGridViewCellStyle6.Format = "N0"
         DataGridViewCellStyle6.NullValue = Nothing
         Me.HargaBeliSat.DefaultCellStyle = DataGridViewCellStyle6
         Me.HargaBeliSat.HeaderText = "Harga Beli Sat"
@@ -715,7 +713,6 @@ Partial Class FormTransferBarang
         'Totalharga
         '
         DataGridViewCellStyle8.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight
-        DataGridViewCellStyle8.Format = "N0"
         DataGridViewCellStyle8.NullValue = Nothing
         Me.Totalharga.DefaultCellStyle = DataGridViewCellStyle8
         Me.Totalharga.FillWeight = 80.0!

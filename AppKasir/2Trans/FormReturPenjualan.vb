@@ -705,7 +705,17 @@ Public Class FormReturPenjualan
         ' Tampilkan ComboBox hanya di cell aktif agar tidak membingungkan
         SATUAN.DisplayStyle = DataGridViewComboBoxDisplayStyle.ComboBox
         SATUAN.DisplayStyleForCurrentCellOnly = True
-        ModuleAngka.TerapkanFormatKolomAngka(DGVReturjual, "QTY", "QTY_SATUAN", "HARGA_BELI", "HARGA_BELI_SATUAN", "HARGA_JUAL", "TOTAL_DISKON", "TOTAL_HARGA")
+
+        ' ═══════════════════════════════════════════════════════════════
+        ' HARGA_BELI & HARGA_BELI_SATUAN: ValueType = Decimal SAJA
+        ' Kolom ini langsung disimpan ke DB. Decimal(15,4) harus tetap
+        ' Decimal object — tidak boleh diformat ke string ribuan.
+        ' ═══════════════════════════════════════════════════════════════
+        For Each nama As String In {"HARGA_BELI", "HARGA_BELI_SATUAN", "HARGA_JUAL", "TOTAL_DISKON", "TOTAL_HARGA", "QTY", "QTY_SATUAN"}
+            If DGVReturjual.Columns.Contains(nama) Then
+                DGVReturjual.Columns(nama).ValueType = GetType(Decimal)
+            End If
+        Next
     End Sub
 
 

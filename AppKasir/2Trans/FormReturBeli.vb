@@ -588,6 +588,16 @@ Public Class FormReturBeli
         ' GBGrantotal (Panel Total) harus tetap terlihat
         GBGrantotal.Visible = True
 
+        ' ═══════════════════════════════════════════════════════════════
+        ' Kolom harga/qty: ValueType = Decimal SAJA (hindari format ribuan)
+        ' Decimal(15,4) dari DB harus tetap Decimal object di cell.
+        ' ═══════════════════════════════════════════════════════════════
+        For Each nama As String In {"HARGA_BELI_TERAKHIR", "HARGA_BELI_SATUAN", "TOTAL", "QTY", "QTY_SAT", "ISI_SATUAN", "StokToko", "StokGudang"}
+            If DgvData.Columns.Contains(nama) Then
+                DgvData.Columns(nama).ValueType = GetType(Decimal)
+            End If
+        Next
+
         ' Tambahkan handler untuk keydown di grid
         AddHandler DgvData.KeyDown, AddressOf DgvData_CellKeyDown
     End Sub
@@ -1211,7 +1221,7 @@ Public Class FormReturBeli
         Dim barang As New DataBarang With {
         .ID_BARANG = idBarang,
         .NAMA_BARANG = namaBarang,
-        .HARGA_BELI_TERAKHIR = CDec(rd("HARGA_BELI_TERAKHIR")),
+        .HARGA_BELI_TERAKHIR = ModuleAngka.ParseDecimal(rd("HARGA_BELI_TERAKHIR")),
         .SATUAN_UMUM_KECIL = rd("SATUAN_UMUM_KECIL").ToString(),
         .SATUAN_UMUM_SEDANG = rd("SATUAN_UMUM_SEDANG").ToString(),
         .SATUAN_UMUM_BESAR = rd("SATUAN_UMUM_BESAR").ToString(),
@@ -2724,11 +2734,11 @@ Public Class FormReturBeli
         End If
 
         ' Hitung nilai lainnya
-        DgvData.Rows(rowIndex).Cells("HARGA_BELI_SATUAN").Value = CDec(DgvData.Rows(rowIndex).Cells("HARGA_BELI_TERAKHIR").Value) * isi
+        DgvData.Rows(rowIndex).Cells("HARGA_BELI_SATUAN").Value = ModuleAngka.ParseDecimal(DgvData.Rows(rowIndex).Cells("HARGA_BELI_TERAKHIR").Value) * isi
         DgvData.Rows(rowIndex).Cells("QTY").Value = 1
-        DgvData.Rows(rowIndex).Cells("QTY_SAT").Value = CDec(DgvData.Rows(rowIndex).Cells("QTY").Value) * isi
-        DgvData.Rows(rowIndex).Cells("TOTAL").Value = CDec(DgvData.Rows(rowIndex).Cells("HARGA_BELI_TERAKHIR").Value) *
-                                                      CDec(DgvData.Rows(rowIndex).Cells("QTY_SAT").Value)
+        DgvData.Rows(rowIndex).Cells("QTY_SAT").Value = ModuleAngka.ParseDecimal(DgvData.Rows(rowIndex).Cells("QTY").Value) * isi
+        DgvData.Rows(rowIndex).Cells("TOTAL").Value = ModuleAngka.ParseDecimal(DgvData.Rows(rowIndex).Cells("HARGA_BELI_TERAKHIR").Value) *
+                                                      ModuleAngka.ParseDecimal(DgvData.Rows(rowIndex).Cells("QTY_SAT").Value)
 
         ' Cek duplikasi jika setting tidak mengizinkan
         If Not ModulHakAkses.SettingIzinkanSatuanBerbeda Then
@@ -2786,7 +2796,7 @@ Public Class FormReturBeli
 
                 ' Update nilai terkait
                 DgvData.Rows(rowIndex).Cells("QTY_SAT").Value = qtySatValue
-                DgvData.Rows(rowIndex).Cells("HARGA_BELI_SATUAN").Value = CDec(DgvData.Rows(rowIndex).Cells("HARGA_BELI_TERAKHIR").Value) * isiValue
+                DgvData.Rows(rowIndex).Cells("HARGA_BELI_SATUAN").Value = ModuleAngka.ParseDecimal(DgvData.Rows(rowIndex).Cells("HARGA_BELI_TERAKHIR").Value) * isiValue
                 DgvData.Rows(rowIndex).Cells("TOTAL").Value = hargaBeliValue * qtySatValue
 
                 ' Format kolom harga beli
@@ -2811,9 +2821,9 @@ Public Class FormReturBeli
         Dim totalHargaCell As DataGridViewCell = DgvData.Rows(rowIndex).Cells("TOTAL")
 
         ' Ambil nilai dengan handling null
-        Dim qtyValue As Decimal = If(IsDBNull(qtyCell.Value) OrElse qtyCell.Value Is Nothing, 0D, Convert.ToDecimal(qtyCell.Value))
-        Dim isiValue As Decimal = If(IsDBNull(isiCell.Value) OrElse isiCell.Value Is Nothing, 0D, Convert.ToDecimal(isiCell.Value))
-        Dim hargaBeliValue As Decimal = If(IsDBNull(hargaBeliCell.Value) OrElse hargaBeliCell.Value Is Nothing, 0D, Convert.ToDecimal(hargaBeliCell.Value))
+        Dim qtyValue As Decimal = ModuleAngka.ParseDecimal(qtyCell.Value)
+        Dim isiValue As Decimal = ModuleAngka.ParseDecimal(isiCell.Value)
+        Dim hargaBeliValue As Decimal = ModuleAngka.ParseDecimal(hargaBeliCell.Value)
 
         ' Validasi qty
         If qtyValue <= 0D Then
@@ -2844,7 +2854,7 @@ Public Class FormReturBeli
 
         ' Update nilai terkait
         qtySatCell.Value = qtyValue * isiValue
-        totalHargaCell.Value = hargaBeliValue * CDec(qtySatCell.Value)
+        totalHargaCell.Value = hargaBeliValue * ModuleAngka.ParseDecimal(qtySatCell.Value)
 
         ' Refresh tampilan grid
         DgvData.SuspendLayout()
@@ -3121,8 +3131,8 @@ Public Class FormReturBeli
             Dim rowIndex As Integer = cell.RowIndex
             If Not ModulHakAkses.SettingIzinkanBarangMinus Then
                 Dim stokTersedia = barangFromCache.GetStokByLokasi(LblLokasiBarang.Text)
-                Dim qty = If(DgvData.Rows(rowIndex).Cells("QTY").Value IsNot Nothing,
-                             Convert.ToDecimal(DgvData.Rows(rowIndex).Cells("QTY").Value), 1D)
+                Dim qty = ModuleAngka.ParseDecimal(DgvData.Rows(rowIndex).Cells("QTY").Value)
+                If qty <= 0D Then qty = 1D
                 Dim qtySatBaru = qty * isiSatuan
                 If qtySatBaru > stokTersedia Then
                     MessageBox.Show($"Stok tidak mencukupi untuk satuan ini!{vbCrLf}" &
@@ -3140,10 +3150,9 @@ Public Class FormReturBeli
             ' Update row - LANGSUNG tanpa event trigger
             rowIndex = cell.RowIndex
             With DgvData.Rows(rowIndex)
-                Dim hargaBeli As Decimal = If(.Cells("HARGA_BELI_TERAKHIR").Value IsNot Nothing,
-                                          Convert.ToDecimal(.Cells("HARGA_BELI_TERAKHIR").Value), 0D)
-                Dim qty As Decimal = If(.Cells("QTY").Value IsNot Nothing,
-                                   Convert.ToDecimal(.Cells("QTY").Value), 1D)
+                Dim hargaBeli As Decimal = ModuleAngka.ParseDecimal(.Cells("HARGA_BELI_TERAKHIR").Value)
+                Dim qty As Decimal = ModuleAngka.ParseDecimal(.Cells("QTY").Value)
+                If qty <= 0D Then qty = 1D
 
                 .Cells("ISI_SATUAN").Value = isiSatuan
                 .Cells("HARGA_BELI_SATUAN").Value = hargaBeli * isiSatuan
@@ -3358,20 +3367,13 @@ Public Class FormReturBeli
                 If row.IsNewRow Then Continue For
 
                 ' Hitung Grand Total
-                Dim totalValue As Object = row.Cells("TOTAL").Value
-                If totalValue IsNot Nothing AndAlso Not String.IsNullOrEmpty(totalValue.ToString()) Then
-                    grandTotal += Convert.ToDecimal(totalValue)
-                End If
+                grandTotal += ModuleAngka.ParseDecimal(row.Cells("TOTAL").Value)
 
                 ' Hitung Total QTY
-                Dim qtySatValue As Object = row.Cells("QTY_SAT").Value
-                If qtySatValue IsNot Nothing AndAlso Not String.IsNullOrEmpty(qtySatValue.ToString()) Then
-                    totalQty += Convert.ToDecimal(qtySatValue)
-                End If
+                totalQty += ModuleAngka.ParseDecimal(row.Cells("QTY_SAT").Value)
 
                 ' Hitung Jumlah Baris
-                Dim qtyValue As Object = row.Cells("QTY").Value
-                If qtyValue IsNot Nothing AndAlso Not String.IsNullOrEmpty(qtyValue.ToString()) Then
+                If row.Cells("QTY").Value IsNot Nothing Then
                     totalRows += 1
                 End If
             Next
@@ -3422,8 +3424,7 @@ Public Class FormReturBeli
                     Dim kodeBarang As String = row.Cells("ID_BARANG").Value.ToString()
                     If Not String.IsNullOrEmpty(kodeBarang) Then
                         barangIds.Add(kodeBarang)
-                        Dim qtySat As Decimal = If(row.Cells("QTY_SAT").Value IsNot Nothing,
-                                                   Convert.ToDecimal(row.Cells("QTY_SAT").Value), 0D)
+                        Dim qtySat As Decimal = ModuleAngka.ParseDecimal(row.Cells("QTY_SAT").Value)
                         barangQty(kodeBarang) = qtySat
                     End If
                 End If

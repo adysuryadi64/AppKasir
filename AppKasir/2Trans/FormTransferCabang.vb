@@ -786,8 +786,17 @@ Public Class FormTransferCabang
         DgvDetail.Columns("StokToko").DefaultCellStyle.BackColor = Color.LightBlue
         DgvDetail.Columns("StokGudang").DefaultCellStyle.BackColor = Color.LightBlue
 
-        Dim kolomAngka As String() = {"HargaBeli", "QTY", "Isi", "QtySat", "TotalHarga", "StokToko", "StokGudang"}
+        Dim kolomAngka As String() = {"QTY"}
         ModuleAngka.TerapkanFormatKolomAngka(DgvDetail, kolomAngka)
+
+        ' ═══════════════════════════════════════════════════════════════
+        ' Kolom price/qty: ValueType = Decimal SAJA (hindari format ribuan)
+        ' ═══════════════════════════════════════════════════════════════
+        For Each nama As String In {"HargaBeli", "QtySat", "TotalHarga", "Isi", "StokToko", "StokGudang"}
+            If DgvDetail.Columns.Contains(nama) Then
+                DgvDetail.Columns(nama).ValueType = GetType(Decimal)
+            End If
+        Next
 
         DgvDetail.EnableHeadersVisualStyles = False
         ModuleTheme.ApplyThemeDataGridView(DgvDetail)
@@ -2091,7 +2100,10 @@ Public Class FormTransferCabang
                 If _dgvMasuk.Columns.Contains(pair.Key) Then _dgvMasuk.Columns(pair.Key).HeaderText = pair.Value
             Next
             If _dgvMasuk.Columns.Contains("id_cloud") Then _dgvMasuk.Columns("id_cloud").Visible = False
-            ModuleAngka.TerapkanFormatKolomAngka(_dgvMasuk, "harga_beli")
+            ' harga_beli: ValueType = Decimal SAJA (hindari format ribuan)
+            If _dgvMasuk.Columns.Contains("harga_beli") Then
+                _dgvMasuk.Columns("harga_beli").ValueType = GetType(Decimal)
+            End If
             _dgvMasuk.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill
             _dgvMasuk.RowHeadersVisible = False
             _dgvMasuk.SelectionMode = DataGridViewSelectionMode.FullRowSelect

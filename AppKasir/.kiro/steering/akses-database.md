@@ -7,7 +7,7 @@
 | Executable | `MySQL\mysql.exe` (relatif dari root proyek) |
 | Password | `12345678` |
 | DB Development | `db_moroseneng` |
-| DB Produksi | `db_rejeki` |
+| DB Produksi | `db_moroseneng_live` |
 
 ---
 

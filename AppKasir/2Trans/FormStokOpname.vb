@@ -692,8 +692,13 @@ Public Class FormStokOpname
         Dim nilaiSelisih As Decimal = ModuleAngka.ParseDecimal(TxtSelisihRp.Text)
 
         ' Akun penyesuaian stok sesuai COA: 06.04.001 PENYESUAIAN STOK MINUS
-        Const KODE_PENYESUAIAN As String = "06.04.001"
-        Const NAMA_PENYESUAIAN As String = "PENYESUAIAN STOK MINUS"
+
+
+        'Const KODE_PENYESUAIAN As String = "06.04.001"
+        'Const NAMA_PENYESUAIAN As String = "PENYESUAIAN STOK MINUS"
+
+        Dim KODE_PENYESUAIAN As String = LAWAN_KODE_REK_BARANG
+        Dim NAMA_PENYESUAIAN As String = LAWAN_NAMA_REK_BARANG
 
         If nilaiSelisih <> 0 Then
             Using cmd As New MySqlCommand("INSERT INTO JurnalUmum (NO_TRANSAKSI, TGL_TRANSAKSI, NO_NOTA, URAIAN, NAMA_AKUN_D, NOMOR_AKUN_D, NAMA_AKUN_K, NOMOR_AKUN_K, NOMINAL, JENIS_TRANSAKSI, LOKASI, ID_USER, ID_KOMPUTER) " &
