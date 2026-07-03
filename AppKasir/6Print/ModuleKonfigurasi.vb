@@ -825,6 +825,48 @@ Module ModuleKonfigurasi
         ' Kolom Nama = sisa (100 - No - Qty - Harga - Diskon - Jumlah)
         ' Kolom Jumlah = PctKolomHarga (sama lebar dengan Harga)
 
+        ' Lebar kolom khusus Surat Jalan: No | Nota | Pelanggan | Alamat | Jumlah | Lokasi | TTD(sisa)
+        Public PctSJNo As Integer           ' default 3
+        Public PctSJNota As Integer         ' default 12
+        Public PctSJPelanggan As Integer    ' default 20
+        Public PctSJAlamat As Integer       ' default 25
+        Public PctSJJumlah As Integer       ' default 12
+        Public PctSJLokasi As Integer       ' default 10
+        ' Kolom TTD = sisa (100 - No - Nota - Pelanggan - Alamat - Jumlah - Lokasi)
+
+        ' Lebar kolom TransferBarang: No | Kode | Nama | Harga | Qty | Satuan | Jumlah(sisa)
+        Public PctTBNo As Integer           ' default 3
+        Public PctTBKode As Integer         ' default 10
+        Public PctTBNama As Integer         ' default 35
+        Public PctTBHarga As Integer        ' default 15
+        Public PctTBQty As Integer          ' default 10
+        Public PctTBSatuan As Integer       ' default 9
+        ' Kolom Jumlah = sisa
+
+        ' Lebar kolom TransferCabang: No | Nama | Qty | Satuan | Harga | Total(sisa)
+        Public PctTCNo As Integer           ' default 3
+        Public PctTCNama As Integer         ' default 45
+        Public PctTCQty As Integer          ' default 10
+        Public PctTCSatuan As Integer       ' default 9
+        Public PctTCHarga As Integer        ' default 15
+        ' Kolom Total = sisa
+
+        ' Lebar kolom BayarHutang: No | Faktur | Tanggal | TotalHutang | Dibayar | Sisa(sisa)
+        Public PctBHNo As Integer           ' default 3
+        Public PctBHFaktur As Integer       ' default 24
+        Public PctBHTanggal As Integer      ' default 14
+        Public PctBHTotalHutang As Integer  ' default 16
+        Public PctBHDibayar As Integer      ' default 16
+        ' Kolom Sisa = sisa
+
+        ' Lebar kolom BayarPiutang: No | Faktur | Tanggal | TotalPiutang | Dibayar | Sisa(sisa)
+        Public PctBPNo As Integer           ' default 3
+        Public PctBPFaktur As Integer       ' default 24
+        Public PctBPTanggal As Integer      ' default 14
+        Public PctBPTotalPiutang As Integer ' default 16
+        Public PctBPDibayar As Integer      ' default 16
+        ' Kolom Sisa = sisa
+
         Sub New(transaksi As String)
             NamaPrinter = BacaPengaturanPrinter(transaksi, "Inkjet_NamaPrinter", "")
             UkuranKertas = BacaPengaturanPrinter(transaksi, "Inkjet_UkuranKertas", "A4")
@@ -852,6 +894,38 @@ Module ModuleKonfigurasi
             PctKolomQty = If(pQty > 0, pQty, 8)
             PctKolomHarga = If(pHarga > 0, pHarga, 12)
             PctKolomDiskon = If(pDiskon > 0, pDiskon, 10)
+            ' Kolom Surat Jalan
+            PctSJNo = Math.Max(1, KeBilangan(BacaPengaturanPrinter(transaksi, "Inkjet_PctSJNo", "3")))
+            PctSJNota = Math.Max(1, KeBilangan(BacaPengaturanPrinter(transaksi, "Inkjet_PctSJNota", "12")))
+            PctSJPelanggan = Math.Max(1, KeBilangan(BacaPengaturanPrinter(transaksi, "Inkjet_PctSJPelanggan", "20")))
+            PctSJAlamat = Math.Max(1, KeBilangan(BacaPengaturanPrinter(transaksi, "Inkjet_PctSJAlamat", "25")))
+            PctSJJumlah = Math.Max(1, KeBilangan(BacaPengaturanPrinter(transaksi, "Inkjet_PctSJJumlah", "12")))
+            PctSJLokasi = Math.Max(1, KeBilangan(BacaPengaturanPrinter(transaksi, "Inkjet_PctSJLokasi", "10")))
+            ' Kolom Transfer Barang
+            PctTBNo = Math.Max(1, KeBilangan(BacaPengaturanPrinter(transaksi, "Inkjet_PctTBNo", "3")))
+            PctTBKode = Math.Max(1, KeBilangan(BacaPengaturanPrinter(transaksi, "Inkjet_PctTBKode", "10")))
+            PctTBNama = Math.Max(1, KeBilangan(BacaPengaturanPrinter(transaksi, "Inkjet_PctTBNama", "35")))
+            PctTBHarga = Math.Max(1, KeBilangan(BacaPengaturanPrinter(transaksi, "Inkjet_PctTBHarga", "15")))
+            PctTBQty = Math.Max(1, KeBilangan(BacaPengaturanPrinter(transaksi, "Inkjet_PctTBQty", "10")))
+            PctTBSatuan = Math.Max(1, KeBilangan(BacaPengaturanPrinter(transaksi, "Inkjet_PctTBSatuan", "9")))
+            ' Kolom Transfer Cabang
+            PctTCNo = Math.Max(1, KeBilangan(BacaPengaturanPrinter(transaksi, "Inkjet_PctTCNo", "3")))
+            PctTCNama = Math.Max(1, KeBilangan(BacaPengaturanPrinter(transaksi, "Inkjet_PctTCNama", "45")))
+            PctTCQty = Math.Max(1, KeBilangan(BacaPengaturanPrinter(transaksi, "Inkjet_PctTCQty", "10")))
+            PctTCSatuan = Math.Max(1, KeBilangan(BacaPengaturanPrinter(transaksi, "Inkjet_PctTCSatuan", "9")))
+            PctTCHarga = Math.Max(1, KeBilangan(BacaPengaturanPrinter(transaksi, "Inkjet_PctTCHarga", "15")))
+            ' Kolom Bayar Hutang
+            PctBHNo = Math.Max(1, KeBilangan(BacaPengaturanPrinter(transaksi, "Inkjet_PctBHNo", "3")))
+            PctBHFaktur = Math.Max(1, KeBilangan(BacaPengaturanPrinter(transaksi, "Inkjet_PctBHFaktur", "24")))
+            PctBHTanggal = Math.Max(1, KeBilangan(BacaPengaturanPrinter(transaksi, "Inkjet_PctBHTanggal", "14")))
+            PctBHTotalHutang = Math.Max(1, KeBilangan(BacaPengaturanPrinter(transaksi, "Inkjet_PctBHTotalHutang", "16")))
+            PctBHDibayar = Math.Max(1, KeBilangan(BacaPengaturanPrinter(transaksi, "Inkjet_PctBHDibayar", "16")))
+            ' Kolom Bayar Piutang
+            PctBPNo = Math.Max(1, KeBilangan(BacaPengaturanPrinter(transaksi, "Inkjet_PctBPNo", "3")))
+            PctBPFaktur = Math.Max(1, KeBilangan(BacaPengaturanPrinter(transaksi, "Inkjet_PctBPFaktur", "24")))
+            PctBPTanggal = Math.Max(1, KeBilangan(BacaPengaturanPrinter(transaksi, "Inkjet_PctBPTanggal", "14")))
+            PctBPTotalPiutang = Math.Max(1, KeBilangan(BacaPengaturanPrinter(transaksi, "Inkjet_PctBPTotalPiutang", "16")))
+            PctBPDibayar = Math.Max(1, KeBilangan(BacaPengaturanPrinter(transaksi, "Inkjet_PctBPDibayar", "16")))
         End Sub
     End Class
 

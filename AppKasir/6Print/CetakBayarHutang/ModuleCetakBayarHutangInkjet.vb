@@ -61,12 +61,18 @@ Module ModuleCetakBayarHutangInkjet
         g.DrawString("Supplier", fIsi, Brushes.Black, xKiri, y) : g.DrawString(": " & BH_NamaSupplier, fIsi, Brushes.Black, xVal1, y) : y += lh + 4
         g.DrawLine(Pens.Black, b.Left, y, xKanan, y) : y += 6
 
-        ' Tabel
+        ' Tabel — posisi kolom dari konfigurasi
+        Dim pBHNo As Integer = _cfg.PctBHNo
+        Dim pBHFaktur As Integer = _cfg.PctBHFaktur
+        Dim pBHTanggal As Integer = _cfg.PctBHTanggal
+        Dim pBHTotalHutang As Integer = _cfg.PctBHTotalHutang
+        Dim pBHDibayar As Integer = _cfg.PctBHDibayar
+
         Dim xNo As Integer = b.Left
-        Dim xFaktur As Integer = b.Left + CInt(b.Width * 0.04)
-        Dim xTgl As Integer = b.Left + CInt(b.Width * 0.28)
-        Dim xTotal As Integer = b.Left + CInt(b.Width * 0.50)
-        Dim xBayar As Integer = b.Left + CInt(b.Width * 0.68)
+        Dim xFaktur As Integer = b.Left + CInt(b.Width * pBHNo / 100.0)
+        Dim xTgl As Integer = b.Left + CInt(b.Width * (pBHNo + pBHFaktur) / 100.0)
+        Dim xTotal As Integer = b.Left + CInt(b.Width * (pBHNo + pBHFaktur + pBHTanggal) / 100.0)
+        Dim xBayar As Integer = b.Left + CInt(b.Width * (pBHNo + pBHFaktur + pBHTanggal + pBHTotalHutang) / 100.0)
         Dim xSisa As Integer = b.Right
 
         g.DrawString("No", fBold, Brushes.Black, xNo, y)

@@ -34,21 +34,23 @@ h1{font-size:22px;font-weight:700;letter-spacing:-.01em}
 .lokasi-badge i{font-size:18px;margin-right:10px}
 .kpi-grid{display:-ms-flexbox;display:flex;margin-bottom:20px;margin-left:-8px;margin-right:-8px}
 .kpi-grid .kpi-card{-ms-flex:1 1 0%;flex:1 1 0%;min-width:0;margin-left:8px;margin-right:8px}
-.kpi-card{border-radius:12px;padding:20px 22px;color:#fff;display:-ms-flexbox;display:flex;-ms-flex-direction:row;flex-direction:row;-ms-flex-align:center;align-items:center;position:relative;overflow:hidden;transition:transform .2s ease,box-shadow .2s ease;min-height:110px}
+.kpi-card{border-radius:12px;padding:18px 20px 14px;color:#fff;display:-ms-flexbox;display:flex;-ms-flex-direction:column;flex-direction:column;position:relative;overflow:hidden;transition:transform .2s ease,box-shadow .2s ease;min-height:130px}
 .kpi-card:hover{transform:translateY(-3px);box-shadow:0 12px 28px rgba(0,0,0,.22)}
 .kpi-card::after{content:'';position:absolute;top:-20px;right:-20px;width:90px;height:90px;border-radius:50%;background:rgba(255,255,255,.12);pointer-events:none}
 .kpi-card::before{content:'';position:absolute;bottom:-30px;right:30px;width:60px;height:60px;border-radius:50%;background:rgba(255,255,255,.08);pointer-events:none}
 .kpi-card.revenue{background:#2563eb;background:-ms-linear-gradient(135deg,#2563eb 0%,#1d4ed8 100%);background:linear-gradient(135deg,#2563eb 0%,#1d4ed8 100%);box-shadow:0 4px 16px rgba(37,99,235,.4)}
+.kpi-card.session{background:#b45309;background:-ms-linear-gradient(135deg,#d97706 0%,#b45309 100%);background:linear-gradient(135deg,#d97706 0%,#b45309 100%);box-shadow:0 4px 16px rgba(180,83,9,.4)}
 .kpi-card.transactions{background:#0d9488;background:-ms-linear-gradient(135deg,#0d9488 0%,#0f766e 100%);background:linear-gradient(135deg,#0d9488 0%,#0f766e 100%);box-shadow:0 4px 16px rgba(13,148,136,.4)}
 .kpi-card.purchases{background:#16a34a;background:-ms-linear-gradient(135deg,#16a34a 0%,#15803d 100%);background:linear-gradient(135deg,#16a34a 0%,#15803d 100%);box-shadow:0 4px 16px rgba(22,163,74,.4)}
-.kpi-card.stock{background:#7c3aed;background:-ms-linear-gradient(135deg,#7c3aed 0%,#6d28d9 100%);background:linear-gradient(135deg,#7c3aed 0%,#6d28d9 100%);box-shadow:0 4px 16px rgba(124,58,237,.4)}
-.kpi-icon{-ms-flex-negative:0;flex-shrink:0;width:52px;height:52px;border-radius:12px;background:rgba(255,255,255,.2);display:-ms-flexbox;display:flex;-ms-flex-align:center;align-items:center;-ms-flex-pack:center;justify-content:center;font-size:22px;position:relative;z-index:1;margin-right:16px}
-.kpi-body{-ms-flex:1;flex:1;position:relative;z-index:1}
-.kpi-label{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;opacity:.85;margin-bottom:4px}
-.kpi-value{font-size:26px;font-weight:800;letter-spacing:-.03em;line-height:1.1;margin-bottom:4px}
-.kpi-sub{font-size:11px;font-weight:500;opacity:.85;display:-ms-flexbox;display:flex;-ms-flex-align:center;align-items:center}
-.kpi-sub i{margin-right:5px}
-.kpi-spark{width:90px;height:48px;-ms-flex-negative:0;flex-shrink:0;position:relative;z-index:1;margin-left:12px}
+.kpi-card.bulan-user{background:#7c3aed;background:-ms-linear-gradient(135deg,#7c3aed 0%,#6d28d9 100%);background:linear-gradient(135deg,#7c3aed 0%,#6d28d9 100%);box-shadow:0 4px 16px rgba(124,58,237,.4)}
+.kpi-icon{-ms-flex-negative:0;flex-shrink:0;width:40px;height:40px;border-radius:10px;background:rgba(255,255,255,.2);display:-ms-flexbox;display:flex;-ms-flex-align:center;align-items:center;-ms-flex-pack:center;justify-content:center;font-size:18px;position:relative;z-index:1;margin-right:12px;margin-top:2px}
+.kpi-top{display:-ms-flexbox;display:flex;-ms-flex-align:flex-start;align-items:flex-start;position:relative;z-index:1;-ms-flex:1;flex:1}
+.kpi-body{-ms-flex:1;flex:1;min-width:0;position:relative;z-index:1}
+.kpi-label{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;opacity:.85;margin-bottom:3px}
+.kpi-value{font-size:22px;font-weight:800;letter-spacing:-.03em;line-height:1.1;margin-bottom:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.kpi-sub{font-size:10px;font-weight:500;opacity:.85;display:-ms-flexbox;display:flex;-ms-flex-align:center;align-items:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.kpi-sub i{margin-right:4px;-ms-flex-negative:0;flex-shrink:0}
+.kpi-spark{width:100%;height:38px;position:relative;z-index:1;margin-top:10px;-ms-flex-negative:0;flex-shrink:0}
 .kpi-spark canvas{width:100%!important;height:100%!important}
 .content-grid{display:-ms-flexbox;display:flex;margin-bottom:16px;margin-left:-8px;margin-right:-8px}
 .card-main{-ms-flex:1 1 auto;flex:1 1 auto;min-width:0;margin-left:8px;margin-right:8px}
@@ -127,43 +129,56 @@ var _T = {
   </div>
 </div>
 
-<!-- 4 KPI Cards -->
+<!-- 5 KPI Cards -->
 <div class="kpi-grid">
   <div class="kpi-card revenue">
-    <div class="kpi-icon"><i class="fas fa-chart-line"></i></div>
-    <div class="kpi-body">
-      <div class="kpi-label">Omset Hari Ini</div>
-      <div class="kpi-value">{{OMSET_STR}}</div>
-      <div class="kpi-sub"><i class="fas {{TUMBUH_ICON}}"></i><span>{{TUMBUH_STR}} vs bulan lalu</span></div>
+    <div class="kpi-top">
+      <div class="kpi-body">
+        <div class="kpi-label">Omset Hari Ini</div>
+        <div class="kpi-value">{{OMSET_STR}}</div>
+        <div class="kpi-sub"><i class="fas {{TUMBUH_ICON}}"></i><span>{{TUMBUH_STR}} vs bulan lalu</span></div>
+      </div>
     </div>
     <div class="kpi-spark"><canvas id="spkOmset"></canvas></div>
   </div>
-  <div class="kpi-card transactions">
-    <div class="kpi-icon"><i class="fas fa-receipt"></i></div>
-    <div class="kpi-body">
-      <div class="kpi-label">Transaksi</div>
-      <div class="kpi-value">{{JML_TRANSAKSI}}</div>
-      <div class="kpi-sub"><i class="fas fa-circle" style="font-size:7px"></i><span>Total hari ini</span></div>
+  <div class="kpi-card session">
+    <div class="kpi-top">
+      <div class="kpi-body">
+        <div class="kpi-label">Omset Sesi Ini</div>
+        <div class="kpi-value">{{OMSET_LOGIN_STR}}</div>
+        <div class="kpi-sub"><i class="fas {{TUMBUH_ICON_USER}}"></i><span>{{TUMBUH_STR_USER}} vs bulan lalu</span></div>
+      </div>
     </div>
-    <div class="kpi-spark"><canvas id="spkTrx"></canvas></div>
+    <div class="kpi-spark"><canvas id="spkLogin"></canvas></div>
+  </div>
+  <div class="kpi-card transactions">
+    <div class="kpi-top">
+      <div class="kpi-body">
+        <div class="kpi-label">Transaksi</div>
+        <div class="kpi-value">{{JML_TRANSAKSI}}</div>
+        <div class="kpi-sub"><span>{{JML_TRANSAKSI_LOGIN}} trx by {{WAKTU_LOGIN}}</span></div>
+      </div>
+    </div>
   </div>
   <div class="kpi-card purchases">
-    <div class="kpi-icon"><i class="fas fa-shopping-bag"></i></div>
-    <div class="kpi-body">
-      <div class="kpi-label">Pembelian</div>
-      <div class="kpi-value">{{BELI_STR}}</div>
-      <div class="kpi-sub"><i class="fas fa-calendar-check"></i><span>Bulan ini</span></div>
+    <div class="kpi-top">
+      <div class="kpi-body">
+        <div class="kpi-label">Omset Bulan Ini</div>
+        <div class="kpi-value">{{OMSET_BULAN_STR}}</div>
+        <div class="kpi-sub"><i class="fas {{TUMBUH_ICON}}"></i><span>{{TUMBUH_STR}} vs bulan lalu</span></div>
+      </div>
     </div>
-    <div class="kpi-spark"><canvas id="spkBeli"></canvas></div>
+    <div class="kpi-spark"><canvas id="spkBulan"></canvas></div>
   </div>
-  <div class="kpi-card stock">
-    <div class="kpi-icon"><i class="fas fa-exclamation-triangle"></i></div>
-    <div class="kpi-body">
-      <div class="kpi-label">Peringatan Stok</div>
-      <div class="kpi-value">{{STOK_TOTAL}}</div>
-      <div class="kpi-sub"><i class="fas fa-arrow-down"></i><span>Perlu perhatian</span></div>
+  <div class="kpi-card bulan-user">
+    <div class="kpi-top">
+      <div class="kpi-body">
+        <div class="kpi-label">Omset Bulan Sesi Ini</div>
+        <div class="kpi-value">{{OMSET_BULAN_USER_STR}}</div>
+        <div class="kpi-sub"><i class="fas {{TUMBUH_ICON_USER}}"></i><span>{{TUMBUH_STR_USER}} vs bulan lalu</span></div>
+      </div>
     </div>
-    <div class="kpi-spark"><canvas id="spkStok"></canvas></div>
+    <div class="kpi-spark"><canvas id="spkBulanUser"></canvas></div>
   </div>
 </div>
 
@@ -336,10 +351,10 @@ function spark(id, data) {
   });
 }
 
-spark('spkOmset', '{{OMSET_JS}}'.split(',').map(Number));
-spark('spkTrx',   '{{TRX_JS}}'.split(',').map(Number));
-spark('spkBeli',  '{{BELI_JS}}'.split(',').map(Number));
-spark('spkStok',  '{{STOK_JS}}'.split(',').map(Number));
+spark('spkOmset',    '{{OMSET_JS}}'.split(',').map(Number));
+spark('spkLogin',    '{{LOGIN_JS}}'.split(',').map(Number));
+spark('spkBulan',    '{{OMSET_JS}}'.split(',').map(Number));
+spark('spkBulanUser','{{LOGIN_JS}}'.split(',').map(Number));
 
 // ── Grafik Utama ──────────────────────────────────────────────────────
 (function() {
@@ -404,8 +419,9 @@ spark('spkStok',  '{{STOK_JS}}'.split(',').map(Number));
             ticks: {
               fontSize: 11,
               callback: function(v) {
-                if (v >= 1000000) { return (v / 1000000).toFixed(1) + 'M'; }
-                if (v >= 1000)    { return (v / 1000).toFixed(0) + 'K'; }
+                if (v >= 1000000000) { return (v / 1000000000).toFixed(1) + 'M'; }
+                if (v >= 1000000)    { return (v / 1000000).toFixed(0) + 'jt'; }
+                if (v >= 1000)       { return (v / 1000).toFixed(0) + 'rb'; }
                 return v;
               }
             }

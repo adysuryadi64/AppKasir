@@ -155,6 +155,8 @@ Public Class FormLogin
                 ' Simpan ke variabel global agar bisa diakses dari module tanpa default instance
                 NamaUser = "Programer"
                 LevelUser = "Master"
+                KodeUser = ""
+                WaktuLogin = DateTime.Now
 
                 Me.Close()
                 Return
@@ -185,6 +187,8 @@ Public Class FormLogin
                         ' Simpan ke variabel global agar bisa diakses dari module tanpa default instance
                         NamaUser = If(Not Convert.IsDBNull(rd("NAMA_USER")), rd("NAMA_USER").ToString(), "")
                         LevelUser = rd("LVL").ToString()
+                        KodeUser = rd("KODE_USER").ToString()
+                        WaktuLogin = DateTime.Now
 
                         Me.Close()
 

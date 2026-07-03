@@ -1669,6 +1669,7 @@
     <None Include="README.md" />
     <None Include="Resources\kopi.png" />
     <Content Include="8Uty\guide.html">
+      <Link>guide.html</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
@@ -1728,9 +1729,11 @@
       <LogicalName>AppKasir.Resources.DashboardTemplate.html</LogicalName>
     </EmbeddedResource>
     <Content Include="0Form\Dashboard\chart.min.js">
+      <Link>chart.min.js</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="5Lap\LabaRugiHTML\TemplateLabaRugi.html">
+      <Link>TemplateLabaRugi.html</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="..\packages\Microsoft.Web.WebView2.1.0.3912.50\runtimes\win-x86\native\WebView2Loader.dll">

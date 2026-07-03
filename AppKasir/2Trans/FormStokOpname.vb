@@ -436,13 +436,13 @@ Public Class FormStokOpname
         TxtnamaHasil.Text = namayangdiambil
         TxtKode.Text = idBarang
         TxtKategori.Text = kategori
-        TxtHarga.Text = hargaBeli.ToString("#,0.##")
+        TxtHarga.Text = ModuleAngka.FormatUntukInput(hargaBeli)
 
         Select Case TxtLokasi.Text
             Case "TOKO"
-                TxtStokSystem.Text = stokToko.ToString("#,0.##")
+                TxtStokSystem.Text = ModuleAngka.FormatUntukInput(stokToko)
             Case "GUDANG"
-                TxtStokSystem.Text = stokGudang.ToString("#,0.##")
+                TxtStokSystem.Text = ModuleAngka.FormatUntukInput(stokGudang)
         End Select
 
         LblSat.Text = satuanStok

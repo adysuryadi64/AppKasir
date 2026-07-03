@@ -168,7 +168,7 @@ Public Class FormJual
         ' ═══════════════════════════════════════════════════════════════
         ' KOLOM HIDDEN: Set ValueType = Decimal SAJA (jangan format!)
         ' Decimal(15,4) dari DB harus tetap Decimal object di cell.
-        ' Jika diformat "#,0.##" → cell berubah ke String → parse salah.
+        ' Jika diformat "#,0.####" → cell berubah ke String → parse salah.
         ' ═══════════════════════════════════════════════════════════════
         Dim kolomHiddenDecimal() As String = {"HargaBeli", "Isi", "Totalhargabeli", "StokToko", "StokGudang", "Stok"}
         For Each nama As String In kolomHiddenDecimal
@@ -319,19 +319,19 @@ Public Class FormJual
 
         LblSales.Text = ""
         ' ✅ Gunakan format STANDAR (InvariantCulture - no separator) - tampilkan desimal hanya jika ada
-        TxtTotaljualStlPajak.Text = 0.ToString("0.##", Globalization.CultureInfo.InvariantCulture)
-        TxtNominalBayarTunai.Text = 0.ToString("0.##", Globalization.CultureInfo.InvariantCulture)
-        TxtNominalBayarTransfer.Text = 0.ToString("0.##", Globalization.CultureInfo.InvariantCulture)
-        TxtKembaliHutang.Text = 0.ToString("0.##", Globalization.CultureInfo.InvariantCulture)
+        TxtTotaljualStlPajak.Text = 0.ToString("0.####", Globalization.CultureInfo.InvariantCulture)
+        TxtNominalBayarTunai.Text = 0.ToString("0.####", Globalization.CultureInfo.InvariantCulture)
+        TxtNominalBayarTransfer.Text = 0.ToString("0.####", Globalization.CultureInfo.InvariantCulture)
+        TxtKembaliHutang.Text = 0.ToString("0.####", Globalization.CultureInfo.InvariantCulture)
         LblStatusTrans.Text = "Belum Lunas"
 
-        TxtTotalJualSblDiskonPajak.Text = 0.ToString("0.##", Globalization.CultureInfo.InvariantCulture)
+        TxtTotalJualSblDiskonPajak.Text = 0.ToString("0.####", Globalization.CultureInfo.InvariantCulture)
         TxtGrandtotal.Text = "Rp. 0"
-        TxtDiskonPersen.Text = 0.ToString("0.##", Globalization.CultureInfo.InvariantCulture)
-        TxtDiskonRp.Text = 0.ToString("0.##", Globalization.CultureInfo.InvariantCulture)
-        TxtPajakPersen.Text = 0.ToString("0.##", Globalization.CultureInfo.InvariantCulture)
-        TxtPajakRp.Text = 0.ToString("0.##", Globalization.CultureInfo.InvariantCulture)
-        TxtBiayaKirim.Text = 0.ToString("0.##", Globalization.CultureInfo.InvariantCulture)
+        TxtDiskonPersen.Text = 0.ToString("0.####", Globalization.CultureInfo.InvariantCulture)
+        TxtDiskonRp.Text = 0.ToString("0.####", Globalization.CultureInfo.InvariantCulture)
+        TxtPajakPersen.Text = 0.ToString("0.####", Globalization.CultureInfo.InvariantCulture)
+        TxtPajakRp.Text = 0.ToString("0.####", Globalization.CultureInfo.InvariantCulture)
+        TxtBiayaKirim.Text = 0.ToString("0.####", Globalization.CultureInfo.InvariantCulture)
         CmbBank.SelectedIndex = 0
         TxtNoRek.Clear()
         TxtNamaRek.Clear()
@@ -3233,9 +3233,9 @@ Public Class FormJual
         Next
 
         ' Set semua values sekaligus
-        TxtTotalHpp.Text = totalHpp.ToString("0.##", Globalization.CultureInfo.InvariantCulture)
-        TxtTotalJualSblDiskonPajak.Text = totalGrand.ToString("0.##", Globalization.CultureInfo.InvariantCulture)
-        LblJualSblDiskon.Text = totalGrand.ToString("#,0.##", cultureIndonesia)
+        TxtTotalHpp.Text = totalHpp.ToString("0.####", Globalization.CultureInfo.InvariantCulture)
+        TxtTotalJualSblDiskonPajak.Text = totalGrand.ToString("0.####", Globalization.CultureInfo.InvariantCulture)
+        LblJualSblDiskon.Text = totalGrand.ToString("#,0.####", cultureIndonesia)
         TxtJmlhQty.Text = totalQtyBarang.ToString()
         TxtJmlhItem.Text = totalItemCount.ToString()
         LblRecord.Text = "Total record : " & totalItemCount.ToString()
@@ -3291,16 +3291,16 @@ Public Class FormJual
                 diskonPersen = Math.Min(diskonPersen, 100)
                 diskonRupiah = Math.Round(totalSebelumDiskon * diskonPersen / 100, 0)
                 ' ✅ TextBox format STANDAR (no separator) - tampilkan desimal hanya jika ada
-                TxtDiskonRp.Text = diskonRupiah.ToString("0.##", Globalization.CultureInfo.InvariantCulture)
+                TxtDiskonRp.Text = diskonRupiah.ToString("0.####", Globalization.CultureInfo.InvariantCulture)
 
             Case "diskonrupiah"
                 diskonPersen = If(totalSebelumDiskon = 0, 0, Math.Round((diskonRupiah / totalSebelumDiskon) * 100, 2))
                 ' ✅ TextBox format STANDAR (no separator) - tampilkan desimal hanya jika ada
-                TxtDiskonPersen.Text = diskonPersen.ToString("0.##", Globalization.CultureInfo.InvariantCulture)
+                TxtDiskonPersen.Text = diskonPersen.ToString("0.####", Globalization.CultureInfo.InvariantCulture)
         End Select
 
         ' ✅ Label format INDONESIA (hanya untuk display)
-        LblDiskonRp.Text = "Rp. " & diskonRupiah.ToString("#,0.##", cultureIndonesia)
+        LblDiskonRp.Text = "Rp. " & diskonRupiah.ToString("#,0.####", cultureIndonesia)
 
         HitungTotalPenjualanAkhir()
         isUpdatingDiskon = False
@@ -3347,16 +3347,16 @@ Public Class FormJual
                 pajakPersen = Math.Min(pajakPersen, 100)
                 pajakRupiah = Math.Round(totalSebelumPajak * pajakPersen / 100, 0)
                 ' ✅ TextBox format STANDAR (no separator) - tampilkan desimal hanya jika ada
-                TxtPajakRp.Text = pajakRupiah.ToString("0.##", Globalization.CultureInfo.InvariantCulture)
+                TxtPajakRp.Text = pajakRupiah.ToString("0.####", Globalization.CultureInfo.InvariantCulture)
 
             Case "pajakrupiah"
                 pajakPersen = If(totalSebelumPajak = 0, 0, Math.Round((pajakRupiah / totalSebelumPajak) * 100, 2))
                 ' ✅ TextBox format STANDAR (no separator) - tampilkan desimal hanya jika ada
-                TxtPajakPersen.Text = pajakPersen.ToString("0.##", Globalization.CultureInfo.InvariantCulture)
+                TxtPajakPersen.Text = pajakPersen.ToString("0.####", Globalization.CultureInfo.InvariantCulture)
         End Select
 
         ' ✅ Label format INDONESIA (hanya untuk display)
-        LblPajakRp.Text = "Rp. " & pajakRupiah.ToString("#,0.##", cultureIndonesia)
+        LblPajakRp.Text = "Rp. " & pajakRupiah.ToString("#,0.####", cultureIndonesia)
 
         HitungTotalPenjualanAkhir()
         isUpdatingPajak = False
@@ -3369,10 +3369,10 @@ Public Class FormJual
         Dim biayaKirim As Decimal = ModuleAngka.ParseDecimal(TxtBiayaKirim.Text)
 
         ' ✅ TextBox selalu format STANDAR - tampilkan desimal hanya jika ada
-        TxtBiayaKirim.Text = biayaKirim.ToString("0.##", Globalization.CultureInfo.InvariantCulture)
+        TxtBiayaKirim.Text = biayaKirim.ToString("0.####", Globalization.CultureInfo.InvariantCulture)
 
         ' ✅ Label format INDONESIA (hanya untuk display)
-        LblBiayaKirim.Text = biayaKirim.ToString("#,0.##", cultureIndonesia)
+        LblBiayaKirim.Text = biayaKirim.ToString("#,0.####", cultureIndonesia)
 
         HitungTotalPenjualanAkhir()
 
@@ -3388,7 +3388,7 @@ Public Class FormJual
 
         ' Hitung Total Setelah Pajak (total belanja + pajak + biaya kirim)
         Dim totalSetelahPajak As Decimal = (totalSebelumDiskon - diskonRp) + pajakRp + biayaKirim
-        TxtTotaljualStlPajak.Text = totalSetelahPajak.ToString("0.##", Globalization.CultureInfo.InvariantCulture)
+        TxtTotaljualStlPajak.Text = totalSetelahPajak.ToString("0.####", Globalization.CultureInfo.InvariantCulture)
     End Sub
 
 
@@ -3401,7 +3401,7 @@ Public Class FormJual
     End Sub
 
     Private Sub TxtKembaliHutang_TextChanged(ByVal sender As System.Object, ByVal e As EventArgs) Handles TxtKembaliHutang.TextChanged
-        LblKembali.Text = ModuleAngka.ParseDecimal(TxtKembaliHutang.Text).ToString("#,0.##", cultureIndonesia)
+        LblKembali.Text = ModuleAngka.ParseDecimal(TxtKembaliHutang.Text).ToString("#,0.####", cultureIndonesia)
     End Sub
 
     Private Sub BtnBayar_Click(ByVal sender As Object, ByVal e As EventArgs) Handles BtnBayar.Click
@@ -4495,10 +4495,10 @@ Public Class FormJual
         ' ═══════════════════════════════════════════
         ' 5. TAMPILKAN NILAI DI LABEL & TEXTBOX
         ' ═══════════════════════════════════════════
-        LblBayarTunai.Text = nominalTunai.ToString("#,0.##", cultureIndonesia)
-        LblBayarTransfer.Text = nominalTransfer.ToString("#,0.##", cultureIndonesia)
-        LblKembali.Text = Math.Max(kembaliTunai, sisaHutang).ToString("#,0.##", cultureIndonesia)
-        TxtKembaliHutang.Text = Math.Max(kembaliTunai, sisaHutang).ToString("0.##", Globalization.CultureInfo.InvariantCulture)
+        LblBayarTunai.Text = nominalTunai.ToString("#,0.####", cultureIndonesia)
+        LblBayarTransfer.Text = nominalTransfer.ToString("#,0.####", cultureIndonesia)
+        LblKembali.Text = Math.Max(kembaliTunai, sisaHutang).ToString("#,0.####", cultureIndonesia)
+        TxtKembaliHutang.Text = Math.Max(kembaliTunai, sisaHutang).ToString("0.####", Globalization.CultureInfo.InvariantCulture)
 
         ' ═══════════════════════════════════════════
         ' 6. DEBUG LOG (Optional, untuk tracking)
@@ -4572,8 +4572,8 @@ Public Class FormJual
             If totalBayar < totalBelanja Then
                 MessageBox.Show(
                 "Status LUNAS tapi pembayaran kurang dari total belanja." & vbCrLf &
-                "Total Belanja: " & totalBelanja.ToString("#,0.##", cultureIndonesia) & vbCrLf &
-                "Total Bayar: " & totalBayar.ToString("#,0.##", cultureIndonesia),
+                "Total Belanja: " & totalBelanja.ToString("#,0.####", cultureIndonesia) & vbCrLf &
+                "Total Bayar: " & totalBayar.ToString("#,0.####", cultureIndonesia),
                 "Pembayaran Tidak Cukup",
                 MessageBoxButtons.OK,
                 MessageBoxIcon.Error
@@ -5186,7 +5186,7 @@ Public Class FormJual
         ' ===== NOMINAL (AMAN TOTAL) =====
         Dim lblNominal As New Label()
         With lblNominal
-            .Text = "Rp. " & jumlahKembali.ToString("#,0.##", cultureIndonesia)
+            .Text = "Rp. " & jumlahKembali.ToString("#,0.####", cultureIndonesia)
             .Font = New Font("Segoe UI", 36, FontStyle.Bold)
             .ForeColor = ModuleTheme.C(ModuleTheme.L_Primary, ModuleTheme.D_Primary)
             .AutoSize = True
@@ -5968,8 +5968,8 @@ Public Class FormJual
         Editpenjualan()
 
         ' ✅ TextBox gunakan format STANDAR (InvariantCulture - no separator) - tampilkan desimal hanya jika ada
-        TxtDiskonPersen.Text = diskonPersen.ToString("0.##", Globalization.CultureInfo.InvariantCulture)
-        TxtDiskonRp.Text = diskonRp.ToString("0.##", Globalization.CultureInfo.InvariantCulture)
+        TxtDiskonPersen.Text = diskonPersen.ToString("0.####", Globalization.CultureInfo.InvariantCulture)
+        TxtDiskonRp.Text = diskonRp.ToString("0.####", Globalization.CultureInfo.InvariantCulture)
         TxtNamaRek.Text = NAMA_REKENING
         TxtNoReff.Text = NO_REFFERENSI
 
@@ -5977,7 +5977,7 @@ Public Class FormJual
         ' SET NILAI KE KONTROL - STATUS PEMBAYARAN
         ' ═══════════════════════════════════════════════════════════
         ' ✅ TextBox format STANDAR (no separator) - tampilkan desimal hanya jika ada
-        TxtKembaliHutang.Text = Math.Max(kembali, sisaHutang).ToString("0.##", Globalization.CultureInfo.InvariantCulture)
+        TxtKembaliHutang.Text = Math.Max(kembali, sisaHutang).ToString("0.####", Globalization.CultureInfo.InvariantCulture)
         LblStatusTrans.Text = statusTransaksi
 
         ' Jika belum lunas, tampilkan jatuh tempo

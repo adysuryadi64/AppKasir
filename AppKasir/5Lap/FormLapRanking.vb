@@ -123,7 +123,6 @@ Public Class FormLapRanking
             "SUM(GRAND_TOTAL_BELI) AS TOTAL_PEMBELIAN " &
             "FROM pembelian " &
             "WHERE TGL_BELI BETWEEN @TGL_AWAL AND @TGL_AKHIR " &
-            "AND STATUS_TRANSAKSI_BELI <> 'BATAL' " &
             lokasiFilter & " " &
             "GROUP BY ID_SUPPLIER, NAMA_SUPLIYER " &
             "ORDER BY TOTAL_PEMBELIAN DESC " & limitClause
@@ -181,7 +180,6 @@ Public Class FormLapRanking
             "FROM pembelian_detail pd " &
             "INNER JOIN pembelian p ON p.ID_PEMBELIAN = pd.FAKTUR_BELI " &
             "WHERE pd.TANGGAL_MASUK BETWEEN @TGL_AWAL AND @TGL_AKHIR " &
-            "AND p.STATUS_TRANSAKSI_BELI <> 'BATAL' " &
             lokasiFilter & " " & supplierFilter & " " &
             "GROUP BY pd.ID_BARANG, pd.NAMA_BARANG, pd.NAMA_SUPLIYER " &
             "ORDER BY TOTAL_QTY DESC " & limitClause
@@ -235,7 +233,6 @@ Public Class FormLapRanking
             "SUM(GRAND_TOTAL_STL_PAJAK) AS TOTAL_OMSET " &
             "FROM penjualan " &
             "WHERE TGL_TRANSAKSI BETWEEN @TGL_AWAL AND @TGL_AKHIR " &
-            "AND STATUS_TRANSAKSI <> 'BATAL' " &
             lokasiFilter & " " &
             "GROUP BY ID_USER ORDER BY TOTAL_OMSET DESC"
         Try

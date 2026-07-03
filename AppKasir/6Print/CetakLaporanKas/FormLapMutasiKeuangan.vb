@@ -506,23 +506,24 @@ WHERE TGL_TRANSAKSI <= @BATAS"
         Dim notaHariIni As Integer = 0
         Dim val As Integer
 
-        If Integer.TryParse(TxtNotaPembelian.Text, val) Then notaHariIni -= val
-        If Integer.TryParse(TxtNotaPenjualan.Text, val) Then notaHariIni += val
-        If Integer.TryParse(TxtNotaReturBeli.Text, val) Then notaHariIni += val
-        If Integer.TryParse(TxtNotaReturJual.Text, val) Then notaHariIni -= val
-        If Integer.TryParse(TxtNotaBAyarHutang.Text, val) Then notaHariIni -= val
-        If Integer.TryParse(TxtNotaBayarPiutang.Text, val) Then notaHariIni += val
-        If Integer.TryParse(TxtNotaJurnalPemasukan.Text, val) Then notaHariIni += val
-        If Integer.TryParse(TxtNotaJurnalPengeluaran.Text, val) Then notaHariIni -= val
-        If Integer.TryParse(TxtNotaJurnalBiaya.Text, val) Then notaHariIni -= val
-        If Integer.TryParse(TxtNotaJurnalPR.Text, val) Then notaHariIni += val
-        If Integer.TryParse(TxtNotaJurnalPRK.Text, val) Then notaHariIni -= val
+        ' Pakai NumberStyles.Any + cultureIndonesia agar "1.000" (format Indonesia) bisa di-parse dengan benar
+        If Integer.TryParse(TxtNotaPembelian.Text, NumberStyles.Any, cultureIndonesia, val) Then notaHariIni -= val
+        If Integer.TryParse(TxtNotaPenjualan.Text, NumberStyles.Any, cultureIndonesia, val) Then notaHariIni += val
+        If Integer.TryParse(TxtNotaReturBeli.Text, NumberStyles.Any, cultureIndonesia, val) Then notaHariIni += val
+        If Integer.TryParse(TxtNotaReturJual.Text, NumberStyles.Any, cultureIndonesia, val) Then notaHariIni -= val
+        If Integer.TryParse(TxtNotaBAyarHutang.Text, NumberStyles.Any, cultureIndonesia, val) Then notaHariIni -= val
+        If Integer.TryParse(TxtNotaBayarPiutang.Text, NumberStyles.Any, cultureIndonesia, val) Then notaHariIni += val
+        If Integer.TryParse(TxtNotaJurnalPemasukan.Text, NumberStyles.Any, cultureIndonesia, val) Then notaHariIni += val
+        If Integer.TryParse(TxtNotaJurnalPengeluaran.Text, NumberStyles.Any, cultureIndonesia, val) Then notaHariIni -= val
+        If Integer.TryParse(TxtNotaJurnalBiaya.Text, NumberStyles.Any, cultureIndonesia, val) Then notaHariIni -= val
+        If Integer.TryParse(TxtNotaJurnalPR.Text, NumberStyles.Any, cultureIndonesia, val) Then notaHariIni += val
+        If Integer.TryParse(TxtNotaJurnalPRK.Text, NumberStyles.Any, cultureIndonesia, val) Then notaHariIni -= val
         ' Bon (-), BayarBon (+), Gaji (-), PinjamanSupplier (+), PinjamanPelanggan (-)
-        If Integer.TryParse(TxtNotaJurnalBonKaryawan.Text, val) Then notaHariIni -= val   ' BonNota (-)
-        If Integer.TryParse(TxtNotaJurnalBayarBon.Text, val) Then notaHariIni += val   ' BayarBonNota (+)
-        If Integer.TryParse(TxtNotaJurnalGaji.Text, val) Then notaHariIni -= val   ' GajiNota (-)
-        If Integer.TryParse(TxtNotaJurnalPinjamSupplier.Text, val) Then notaHariIni += val   ' PinjamanSupplierNota (+)
-        If Integer.TryParse(TxtNotaJurnalPinjamPelanggan.Text, val) Then notaHariIni -= val   ' PinjamanPelangganNota (-)
+        If Integer.TryParse(TxtNotaJurnalBonKaryawan.Text, NumberStyles.Any, cultureIndonesia, val) Then notaHariIni -= val   ' BonNota (-)
+        If Integer.TryParse(TxtNotaJurnalBayarBon.Text, NumberStyles.Any, cultureIndonesia, val) Then notaHariIni += val   ' BayarBonNota (+)
+        If Integer.TryParse(TxtNotaJurnalGaji.Text, NumberStyles.Any, cultureIndonesia, val) Then notaHariIni -= val   ' GajiNota (-)
+        If Integer.TryParse(TxtNotaJurnalPinjamSupplier.Text, NumberStyles.Any, cultureIndonesia, val) Then notaHariIni += val   ' PinjamanSupplierNota (+)
+        If Integer.TryParse(TxtNotaJurnalPinjamPelanggan.Text, NumberStyles.Any, cultureIndonesia, val) Then notaHariIni -= val   ' PinjamanPelangganNota (-)
 
         TxtNotaHariIni.Text = notaHariIni.ToString("N0", cultureIndonesia)
     End Sub
@@ -905,40 +906,40 @@ WHERE TGL_TRANSAKSI <= @BATAS"
         tinggi += 14 + TxtJarakString
         e.Graphics.DrawString(garis, New Drawing.Font("Courier New", 8), Brushes.Black, BatasKiri, tinggi)
 
-        Dim totalPembelian As Decimal = If(Decimal.TryParse(TxtTotalPembelian.Text, totalPembelian), totalPembelian, 0)
-        Dim totalPenjualan As Decimal = If(Decimal.TryParse(TxtTotalPenjualan.Text, totalPenjualan), totalPenjualan, 0)
-        Dim totalReturBeli As Decimal = If(Decimal.TryParse(TxtTotalReturBeli.Text, totalReturBeli), totalReturBeli, 0)
-        Dim totalReturJual As Decimal = If(Decimal.TryParse(TxtTotalReturJual.Text, totalReturJual), totalReturJual, 0)
-        Dim totalBayarHutang As Decimal = If(Decimal.TryParse(TxtTotalBayarHutang.Text, totalBayarHutang), totalBayarHutang, 0)
-        Dim totalBayarPiutang As Decimal = If(Decimal.TryParse(TxtTotalBayarPiutang.Text, totalBayarPiutang), totalBayarPiutang, 0)
-        Dim totalJurnalPemasukan As Decimal = If(Decimal.TryParse(TxtTotalJurnalPemasukan.Text, totalJurnalPemasukan), totalJurnalPemasukan, 0)
-        Dim totalJurnalPengeluaran As Decimal = If(Decimal.TryParse(TxtTotalJurnalPengeluaran.Text, totalJurnalPengeluaran), totalJurnalPengeluaran, 0)
-        Dim totalJurnalBiaya As Decimal = If(Decimal.TryParse(TxtTotalJurnalBiaya.Text, totalJurnalBiaya), totalJurnalBiaya, 0)
-        Dim totalJurnalPR As Decimal = If(Decimal.TryParse(TxtTotalJurnalPR.Text, totalJurnalPR), totalJurnalPR, 0)
-        Dim totalJurnalPRK As Decimal = If(Decimal.TryParse(TxtTotalJurnalPRK.Text, totalJurnalPRK), totalJurnalPRK, 0)
-        Dim totalBon As Decimal = If(Decimal.TryParse(TxtTotalJurnalBonKaryawan.Text, totalBon), totalBon, 0)
-        Dim totalBayarBon As Decimal = If(Decimal.TryParse(TxtTotalJurnalBayarBon.Text, totalBayarBon), totalBayarBon, 0)
-        Dim totalGaji As Decimal = If(Decimal.TryParse(TxtTotalJurnalGaji.Text, totalGaji), totalGaji, 0)
-        Dim totalPinjamanSupplier As Decimal = If(Decimal.TryParse(TxtTotalJurnalPinjamSupplier.Text, totalPinjamanSupplier), totalPinjamanSupplier, 0)
-        Dim totalPinjamanPelanggan As Decimal = If(Decimal.TryParse(TxtTotalJurnalPinjamPelanggan.Text, totalPinjamanPelanggan), totalPinjamanPelanggan, 0)
+        Dim totalPembelian As Decimal = ModuleAngka.ParseDecimal(TxtTotalPembelian.Text)
+        Dim totalPenjualan As Decimal = ModuleAngka.ParseDecimal(TxtTotalPenjualan.Text)
+        Dim totalReturBeli As Decimal = ModuleAngka.ParseDecimal(TxtTotalReturBeli.Text)
+        Dim totalReturJual As Decimal = ModuleAngka.ParseDecimal(TxtTotalReturJual.Text)
+        Dim totalBayarHutang As Decimal = ModuleAngka.ParseDecimal(TxtTotalBayarHutang.Text)
+        Dim totalBayarPiutang As Decimal = ModuleAngka.ParseDecimal(TxtTotalBayarPiutang.Text)
+        Dim totalJurnalPemasukan As Decimal = ModuleAngka.ParseDecimal(TxtTotalJurnalPemasukan.Text)
+        Dim totalJurnalPengeluaran As Decimal = ModuleAngka.ParseDecimal(TxtTotalJurnalPengeluaran.Text)
+        Dim totalJurnalBiaya As Decimal = ModuleAngka.ParseDecimal(TxtTotalJurnalBiaya.Text)
+        Dim totalJurnalPR As Decimal = ModuleAngka.ParseDecimal(TxtTotalJurnalPR.Text)
+        Dim totalJurnalPRK As Decimal = ModuleAngka.ParseDecimal(TxtTotalJurnalPRK.Text)
+        Dim totalBon As Decimal = ModuleAngka.ParseDecimal(TxtTotalJurnalBonKaryawan.Text)
+        Dim totalBayarBon As Decimal = ModuleAngka.ParseDecimal(TxtTotalJurnalBayarBon.Text)
+        Dim totalGaji As Decimal = ModuleAngka.ParseDecimal(TxtTotalJurnalGaji.Text)
+        Dim totalPinjamanSupplier As Decimal = ModuleAngka.ParseDecimal(TxtTotalJurnalPinjamSupplier.Text)
+        Dim totalPinjamanPelanggan As Decimal = ModuleAngka.ParseDecimal(TxtTotalJurnalPinjamPelanggan.Text)
 
 
-        Dim totalNotaPembelian As Integer = If(Integer.TryParse(TxtNotaPembelian.Text, totalNotaPembelian), totalNotaPembelian, 0)
-        Dim totalNotaPenjualan As Integer = If(Integer.TryParse(TxtNotaPenjualan.Text, totalNotaPenjualan), totalNotaPenjualan, 0)
-        Dim totalNotaReturBeli As Integer = If(Integer.TryParse(TxtNotaReturBeli.Text, totalNotaReturBeli), totalNotaReturBeli, 0)
-        Dim totalNotaReturJual As Integer = If(Integer.TryParse(TxtNotaReturJual.Text, totalNotaReturJual), totalNotaReturJual, 0)
-        Dim totalNotaBayarHutang As Integer = If(Integer.TryParse(TxtNotaBAyarHutang.Text, totalNotaBayarHutang), totalNotaBayarHutang, 0)
-        Dim totalNotaBayarPiutang As Integer = If(Integer.TryParse(TxtNotaBayarPiutang.Text, totalNotaBayarPiutang), totalNotaBayarPiutang, 0)
-        Dim totalNotaJurnalPemasukan As Integer = If(Integer.TryParse(TxtNotaJurnalPemasukan.Text, totalNotaJurnalPemasukan), totalNotaJurnalPemasukan, 0)
-        Dim totalNotaJurnalPengeluaran As Integer = If(Integer.TryParse(TxtNotaJurnalPengeluaran.Text, totalNotaJurnalPengeluaran), totalNotaJurnalPengeluaran, 0)
-        Dim totalNotaJurnalBiaya As Integer = If(Integer.TryParse(TxtNotaJurnalBiaya.Text, totalNotaJurnalBiaya), totalNotaJurnalBiaya, 0)
-        Dim totalNotaJurnalPR As Integer = If(Integer.TryParse(TxtNotaJurnalPR.Text, totalNotaJurnalPR), totalNotaJurnalPR, 0)
-        Dim totalNotaJurnalPRK As Integer = If(Integer.TryParse(TxtNotaJurnalPRK.Text, totalNotaJurnalPRK), totalNotaJurnalPRK, 0)
-        Dim totalNotaBon As Integer = If(Integer.TryParse(TxtNotaJurnalBonKaryawan.Text, totalNotaBon), totalNotaBon, 0)
-        Dim totalNotaBayarBon As Integer = If(Integer.TryParse(TxtNotaJurnalBayarBon.Text, totalNotaBayarBon), totalNotaBayarBon, 0)
-        Dim totalNotaGaji As Integer = If(Integer.TryParse(TxtNotaJurnalGaji.Text, totalNotaGaji), totalNotaGaji, 0)
-        Dim totalNotaPinjamanSupplier As Integer = If(Integer.TryParse(TxtNotaJurnalPinjamSupplier.Text, totalNotaPinjamanSupplier), totalNotaPinjamanSupplier, 0)
-        Dim totalNotaPinjamanPelanggan As Integer = If(Integer.TryParse(TxtNotaJurnalPinjamPelanggan.Text, totalNotaPinjamanPelanggan), totalNotaPinjamanPelanggan, 0)
+        Dim totalNotaPembelian As Integer = ModuleAngka.ParseInteger(TxtNotaPembelian.Text)
+        Dim totalNotaPenjualan As Integer = ModuleAngka.ParseInteger(TxtNotaPenjualan.Text)
+        Dim totalNotaReturBeli As Integer = ModuleAngka.ParseInteger(TxtNotaReturBeli.Text)
+        Dim totalNotaReturJual As Integer = ModuleAngka.ParseInteger(TxtNotaReturJual.Text)
+        Dim totalNotaBayarHutang As Integer = ModuleAngka.ParseInteger(TxtNotaBAyarHutang.Text)
+        Dim totalNotaBayarPiutang As Integer = ModuleAngka.ParseInteger(TxtNotaBayarPiutang.Text)
+        Dim totalNotaJurnalPemasukan As Integer = ModuleAngka.ParseInteger(TxtNotaJurnalPemasukan.Text)
+        Dim totalNotaJurnalPengeluaran As Integer = ModuleAngka.ParseInteger(TxtNotaJurnalPengeluaran.Text)
+        Dim totalNotaJurnalBiaya As Integer = ModuleAngka.ParseInteger(TxtNotaJurnalBiaya.Text)
+        Dim totalNotaJurnalPR As Integer = ModuleAngka.ParseInteger(TxtNotaJurnalPR.Text)
+        Dim totalNotaJurnalPRK As Integer = ModuleAngka.ParseInteger(TxtNotaJurnalPRK.Text)
+        Dim totalNotaBon As Integer = ModuleAngka.ParseInteger(TxtNotaJurnalBonKaryawan.Text)
+        Dim totalNotaBayarBon As Integer = ModuleAngka.ParseInteger(TxtNotaJurnalBayarBon.Text)
+        Dim totalNotaGaji As Integer = ModuleAngka.ParseInteger(TxtNotaJurnalGaji.Text)
+        Dim totalNotaPinjamanSupplier As Integer = ModuleAngka.ParseInteger(TxtNotaJurnalPinjamSupplier.Text)
+        Dim totalNotaPinjamanPelanggan As Integer = ModuleAngka.ParseInteger(TxtNotaJurnalPinjamPelanggan.Text)
 
 
 
@@ -1271,40 +1272,40 @@ WHERE TGL_TRANSAKSI <= @BATAS"
         tinggi += 14 + TxtJarakString
         e.Graphics.DrawString(garis, New Drawing.Font("Courier New", 8), Brushes.Black, BatasKiri, tinggi)
 
-        Dim totalPembelian As Decimal = If(Decimal.TryParse(TxtTotalPembelian.Text, totalPembelian), totalPembelian, 0)
-        Dim totalPenjualan As Decimal = If(Decimal.TryParse(TxtTotalPenjualan.Text, totalPenjualan), totalPenjualan, 0)
-        Dim totalReturBeli As Decimal = If(Decimal.TryParse(TxtTotalReturBeli.Text, totalReturBeli), totalReturBeli, 0)
-        Dim totalReturJual As Decimal = If(Decimal.TryParse(TxtTotalReturJual.Text, totalReturJual), totalReturJual, 0)
-        Dim totalBayarHutang As Decimal = If(Decimal.TryParse(TxtTotalBayarHutang.Text, totalBayarHutang), totalBayarHutang, 0)
-        Dim totalBayarPiutang As Decimal = If(Decimal.TryParse(TxtTotalBayarPiutang.Text, totalBayarPiutang), totalBayarPiutang, 0)
-        Dim totalJurnalPemasukan As Decimal = If(Decimal.TryParse(TxtTotalJurnalPemasukan.Text, totalJurnalPemasukan), totalJurnalPemasukan, 0)
-        Dim totalJurnalPengeluaran As Decimal = If(Decimal.TryParse(TxtTotalJurnalPengeluaran.Text, totalJurnalPengeluaran), totalJurnalPengeluaran, 0)
-        Dim totalJurnalBiaya As Decimal = If(Decimal.TryParse(TxtTotalJurnalBiaya.Text, totalJurnalBiaya), totalJurnalBiaya, 0)
-        Dim totalJurnalPR As Decimal = If(Decimal.TryParse(TxtTotalJurnalPR.Text, totalJurnalPR), totalJurnalPR, 0)
-        Dim totalJurnalPRK As Decimal = If(Decimal.TryParse(TxtTotalJurnalPRK.Text, totalJurnalPRK), totalJurnalPRK, 0)
-        Dim totalBon As Decimal = If(Decimal.TryParse(TxtTotalJurnalBonKaryawan.Text, totalBon), totalBon, 0)
-        Dim totalBayarBon As Decimal = If(Decimal.TryParse(TxtTotalJurnalBayarBon.Text, totalBayarBon), totalBayarBon, 0)
-        Dim totalGaji As Decimal = If(Decimal.TryParse(TxtTotalJurnalGaji.Text, totalGaji), totalGaji, 0)
-        Dim totalPinjamanSupplier As Decimal = If(Decimal.TryParse(TxtTotalJurnalPinjamSupplier.Text, totalPinjamanSupplier), totalPinjamanSupplier, 0)
-        Dim totalPinjamanPelanggan As Decimal = If(Decimal.TryParse(TxtTotalJurnalPinjamPelanggan.Text, totalPinjamanPelanggan), totalPinjamanPelanggan, 0)
+        Dim totalPembelian As Decimal = ModuleAngka.ParseDecimal(TxtTotalPembelian.Text)
+        Dim totalPenjualan As Decimal = ModuleAngka.ParseDecimal(TxtTotalPenjualan.Text)
+        Dim totalReturBeli As Decimal = ModuleAngka.ParseDecimal(TxtTotalReturBeli.Text)
+        Dim totalReturJual As Decimal = ModuleAngka.ParseDecimal(TxtTotalReturJual.Text)
+        Dim totalBayarHutang As Decimal = ModuleAngka.ParseDecimal(TxtTotalBayarHutang.Text)
+        Dim totalBayarPiutang As Decimal = ModuleAngka.ParseDecimal(TxtTotalBayarPiutang.Text)
+        Dim totalJurnalPemasukan As Decimal = ModuleAngka.ParseDecimal(TxtTotalJurnalPemasukan.Text)
+        Dim totalJurnalPengeluaran As Decimal = ModuleAngka.ParseDecimal(TxtTotalJurnalPengeluaran.Text)
+        Dim totalJurnalBiaya As Decimal = ModuleAngka.ParseDecimal(TxtTotalJurnalBiaya.Text)
+        Dim totalJurnalPR As Decimal = ModuleAngka.ParseDecimal(TxtTotalJurnalPR.Text)
+        Dim totalJurnalPRK As Decimal = ModuleAngka.ParseDecimal(TxtTotalJurnalPRK.Text)
+        Dim totalBon As Decimal = ModuleAngka.ParseDecimal(TxtTotalJurnalBonKaryawan.Text)
+        Dim totalBayarBon As Decimal = ModuleAngka.ParseDecimal(TxtTotalJurnalBayarBon.Text)
+        Dim totalGaji As Decimal = ModuleAngka.ParseDecimal(TxtTotalJurnalGaji.Text)
+        Dim totalPinjamanSupplier As Decimal = ModuleAngka.ParseDecimal(TxtTotalJurnalPinjamSupplier.Text)
+        Dim totalPinjamanPelanggan As Decimal = ModuleAngka.ParseDecimal(TxtTotalJurnalPinjamPelanggan.Text)
 
 
-        Dim totalNotaPembelian As Integer = If(Integer.TryParse(TxtNotaPembelian.Text, totalNotaPembelian), totalNotaPembelian, 0)
-        Dim totalNotaPenjualan As Integer = If(Integer.TryParse(TxtNotaPenjualan.Text, totalNotaPenjualan), totalNotaPenjualan, 0)
-        Dim totalNotaReturBeli As Integer = If(Integer.TryParse(TxtNotaReturBeli.Text, totalNotaReturBeli), totalNotaReturBeli, 0)
-        Dim totalNotaReturJual As Integer = If(Integer.TryParse(TxtNotaReturJual.Text, totalNotaReturJual), totalNotaReturJual, 0)
-        Dim totalNotaBayarHutang As Integer = If(Integer.TryParse(TxtNotaBAyarHutang.Text, totalNotaBayarHutang), totalNotaBayarHutang, 0)
-        Dim totalNotaBayarPiutang As Integer = If(Integer.TryParse(TxtNotaBayarPiutang.Text, totalNotaBayarPiutang), totalNotaBayarPiutang, 0)
-        Dim totalNotaJurnalPemasukan As Integer = If(Integer.TryParse(TxtNotaJurnalPemasukan.Text, totalNotaJurnalPemasukan), totalNotaJurnalPemasukan, 0)
-        Dim totalNotaJurnalPengeluaran As Integer = If(Integer.TryParse(TxtNotaJurnalPengeluaran.Text, totalNotaJurnalPengeluaran), totalNotaJurnalPengeluaran, 0)
-        Dim totalNotaJurnalBiaya As Integer = If(Integer.TryParse(TxtNotaJurnalBiaya.Text, totalNotaJurnalBiaya), totalNotaJurnalBiaya, 0)
-        Dim totalNotaJurnalPR As Integer = If(Integer.TryParse(TxtNotaJurnalPR.Text, totalNotaJurnalPR), totalNotaJurnalPR, 0)
-        Dim totalNotaJurnalPRK As Integer = If(Integer.TryParse(TxtNotaJurnalPRK.Text, totalNotaJurnalPRK), totalNotaJurnalPRK, 0)
-        Dim totalNotaBon As Integer = If(Integer.TryParse(TxtNotaJurnalBonKaryawan.Text, totalNotaBon), totalNotaBon, 0)
-        Dim totalNotaBayarBon As Integer = If(Integer.TryParse(TxtNotaJurnalBayarBon.Text, totalNotaBayarBon), totalNotaBayarBon, 0)
-        Dim totalNotaGaji As Integer = If(Integer.TryParse(TxtNotaJurnalGaji.Text, totalNotaGaji), totalNotaGaji, 0)
-        Dim totalNotaPinjamanSupplier As Integer = If(Integer.TryParse(TxtNotaJurnalPinjamSupplier.Text, totalNotaPinjamanSupplier), totalNotaPinjamanSupplier, 0)
-        Dim totalNotaPinjamanPelanggan As Integer = If(Integer.TryParse(TxtNotaJurnalPinjamPelanggan.Text, totalNotaPinjamanPelanggan), totalNotaPinjamanPelanggan, 0)
+        Dim totalNotaPembelian As Integer = ModuleAngka.ParseInteger(TxtNotaPembelian.Text)
+        Dim totalNotaPenjualan As Integer = ModuleAngka.ParseInteger(TxtNotaPenjualan.Text)
+        Dim totalNotaReturBeli As Integer = ModuleAngka.ParseInteger(TxtNotaReturBeli.Text)
+        Dim totalNotaReturJual As Integer = ModuleAngka.ParseInteger(TxtNotaReturJual.Text)
+        Dim totalNotaBayarHutang As Integer = ModuleAngka.ParseInteger(TxtNotaBAyarHutang.Text)
+        Dim totalNotaBayarPiutang As Integer = ModuleAngka.ParseInteger(TxtNotaBayarPiutang.Text)
+        Dim totalNotaJurnalPemasukan As Integer = ModuleAngka.ParseInteger(TxtNotaJurnalPemasukan.Text)
+        Dim totalNotaJurnalPengeluaran As Integer = ModuleAngka.ParseInteger(TxtNotaJurnalPengeluaran.Text)
+        Dim totalNotaJurnalBiaya As Integer = ModuleAngka.ParseInteger(TxtNotaJurnalBiaya.Text)
+        Dim totalNotaJurnalPR As Integer = ModuleAngka.ParseInteger(TxtNotaJurnalPR.Text)
+        Dim totalNotaJurnalPRK As Integer = ModuleAngka.ParseInteger(TxtNotaJurnalPRK.Text)
+        Dim totalNotaBon As Integer = ModuleAngka.ParseInteger(TxtNotaJurnalBonKaryawan.Text)
+        Dim totalNotaBayarBon As Integer = ModuleAngka.ParseInteger(TxtNotaJurnalBayarBon.Text)
+        Dim totalNotaGaji As Integer = ModuleAngka.ParseInteger(TxtNotaJurnalGaji.Text)
+        Dim totalNotaPinjamanSupplier As Integer = ModuleAngka.ParseInteger(TxtNotaJurnalPinjamSupplier.Text)
+        Dim totalNotaPinjamanPelanggan As Integer = ModuleAngka.ParseInteger(TxtNotaJurnalPinjamPelanggan.Text)
 
 
 

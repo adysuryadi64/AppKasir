@@ -25,9 +25,18 @@ Module ModuleLabaRugiHTML
         Dim templatePath As String = System.IO.Path.Combine(
             Application.StartupPath, "TemplateLabaRugi.html")
 
-        ' Fallback ke lokasi source saat debug/dev
+        ' Fallback 1: subfolder output (jika <Link> belum aktif)
         If Not System.IO.File.Exists(templatePath) Then
-            templatePath = "e:\1_Visual_Studio\AppKasir_2026\AppKasir\5Lap\LabaRugiHTML\TemplateLabaRugi.html"
+            templatePath = System.IO.Path.Combine(
+                Application.StartupPath, "5Lap", "LabaRugiHTML", "TemplateLabaRugi.html")
+        End If
+
+        ' Fallback 2: lokasi source relatif terhadap EXE saat debug
+        If Not System.IO.File.Exists(templatePath) Then
+            Dim exeDir As String = System.IO.Path.GetDirectoryName(
+                System.Reflection.Assembly.GetExecutingAssembly().Location)
+            templatePath = System.IO.Path.GetFullPath(
+                System.IO.Path.Combine(exeDir, "..", "..", "..", "5Lap", "LabaRugiHTML", "TemplateLabaRugi.html"))
         End If
 
         Dim template As String = If(System.IO.File.Exists(templatePath),

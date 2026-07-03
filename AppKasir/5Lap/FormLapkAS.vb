@@ -155,9 +155,9 @@ Public Class FormLapkAS
                             Dim kembali As Decimal = ModuleAngka.SafeGetValue(Of Decimal)(rd, "kembali", 0D)
                             Dim hutang As Decimal = ModuleAngka.SafeGetValue(Of Decimal)(rd, "hutang", 0D)
 
-                            TxtGrantotal.Text = totalHarga.ToString("N0")
-                            TxtDiterima.Text = bayar - kembali.ToString("N0")
-                            TxtPiutang.Text = hutang.ToString("N0")
+                            TxtGrantotal.Text = totalHarga.ToString("N0", cultureIndonesia)
+                            TxtDiterima.Text = (bayar - kembali).ToString("N0", cultureIndonesia)
+                            TxtPiutang.Text = hutang.ToString("N0", cultureIndonesia)
                         End If
 
                     End Using
@@ -217,9 +217,9 @@ Public Class FormLapkAS
                             Dim kembali As Decimal = ModuleAngka.SafeGetValue(Of Decimal)(rd, "kembali", 0D)
                             Dim hutang As Decimal = ModuleAngka.SafeGetValue(Of Decimal)(rd, "hutang", 0D)
 
-                            TxtGrantotal.Text = totalHarga.ToString("N0")
-                            TxtDiterima.Text = bayar - kembali.ToString("N0")
-                            TxtPiutang.Text = hutang.ToString("N0")
+                            TxtGrantotal.Text = totalHarga.ToString("N0", cultureIndonesia)
+                            TxtDiterima.Text = (bayar - kembali).ToString("N0", cultureIndonesia)
+                            TxtPiutang.Text = hutang.ToString("N0", cultureIndonesia)
                         End If
 
                     End Using
@@ -275,9 +275,9 @@ Public Class FormLapkAS
                             Dim kembali As Decimal = ModuleAngka.SafeGetValue(Of Decimal)(rd, "kembali", 0D)
                             Dim hutang As Decimal = ModuleAngka.SafeGetValue(Of Decimal)(rd, "hutang", 0D)
 
-                            TxtGrantotal.Text = totalHarga.ToString("N0")
-                            TxtDiterima.Text = bayar - kembali.ToString("N0")
-                            TxtPiutang.Text = hutang.ToString("N0")
+                            TxtGrantotal.Text = totalHarga.ToString("N0", cultureIndonesia)
+                            TxtDiterima.Text = (bayar - kembali).ToString("N0", cultureIndonesia)
+                            TxtPiutang.Text = hutang.ToString("N0", cultureIndonesia)
                         End If
                     End Using
                 End Using
@@ -337,9 +337,9 @@ Public Class FormLapkAS
                             Dim kembali As Decimal = ModuleAngka.SafeGetValue(Of Decimal)(rd, "kembali", 0D)
                             Dim hutang As Decimal = ModuleAngka.SafeGetValue(Of Decimal)(rd, "hutang", 0D)
 
-                            TxtGrantotal.Text = totalHarga.ToString("N0")
-                            TxtDiterima.Text = bayar - kembali.ToString("N0")
-                            TxtPiutang.Text = hutang.ToString("N0")
+                            TxtGrantotal.Text = totalHarga.ToString("N0", cultureIndonesia)
+                            TxtDiterima.Text = (bayar - kembali).ToString("N0", cultureIndonesia)
+                            TxtPiutang.Text = hutang.ToString("N0", cultureIndonesia)
                         End If
 
                     End Using

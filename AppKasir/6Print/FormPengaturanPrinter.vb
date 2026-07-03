@@ -1268,17 +1268,103 @@ Public Class FormPengaturanPrinter
         grp.Controls.Add(chkTtd)
 
         y += 32
-        AddLbl(grp, "Lebar Kolom (%) :", xL, y)
-        AddLbl(grp, "No :", xC, y)
-        AddTxt(grp, "txtPctKolomNo_" & key, xC + 43, y, 45)
-        AddLbl(grp, "Qty :", xC + 98, y)
-        AddTxt(grp, "txtPctKolomQty_" & key, xC + 144, y, 45)
-        AddLbl(grp, "Harga :", xC + 199, y)
-        AddTxt(grp, "txtPctKolomHarga_" & key, xC + 258, y, 45)
-        AddLbl(grp, "Diskon :", xC + 313, y)
-        AddTxt(grp, "txtPctKolomDiskon_" & key, xC + 376, y, 45)
-        AddLbl(grp, "(Kolom Nama = sisa, Jumlah = sama dengan Harga)",
-               xC + 431, y, Color.Gray, 8)
+        ' Lebar kolom — label dan key berbeda per jenis transaksi
+        Dim butuKolomBarang As Boolean = (key = "Jual" OrElse key = "Beli" OrElse
+                                          key = "ReturJual" OrElse key = "ReturBeli")
+        Dim isSuratJalan As Boolean = (key = "SuratJalan")
+
+        If butuKolomBarang Then
+            ' Transaksi barang: No | Qty | Harga | Diskon | (Nama = sisa, Jumlah = Harga)
+            AddLbl(grp, "Lebar Kolom (%) :", xL, y)
+            AddLbl(grp, "No :", xC, y)
+            AddTxt(grp, "txtPctKolomNo_" & key, xC + 43, y, 45)
+            AddLbl(grp, "Qty :", xC + 98, y)
+            AddTxt(grp, "txtPctKolomQty_" & key, xC + 144, y, 45)
+            AddLbl(grp, "Harga :", xC + 199, y)
+            AddTxt(grp, "txtPctKolomHarga_" & key, xC + 258, y, 45)
+            AddLbl(grp, "Diskon :", xC + 313, y)
+            AddTxt(grp, "txtPctKolomDiskon_" & key, xC + 376, y, 45)
+            AddLbl(grp, "(Kolom Nama = sisa, Jumlah = sama dengan Harga)", xC + 431, y, Color.Gray, 8)
+
+        ElseIf isSuratJalan Then
+            ' Surat Jalan: No | Nota | Pelanggan | Alamat | Jumlah | Lokasi | (TTD = sisa)
+            AddLbl(grp, "Lebar Kolom (%) :", xL, y)
+            AddLbl(grp, "No :", xC, y)
+            AddTxt(grp, "txtPctSJNo_" & key, xC + 43, y, 40)
+            AddLbl(grp, "Nota :", xC + 93, y)
+            AddTxt(grp, "txtPctSJNota_" & key, xC + 138, y, 40)
+            AddLbl(grp, "Pelanggan :", xC + 188, y)
+            AddTxt(grp, "txtPctSJPelanggan_" & key, xC + 268, y, 40)
+            AddLbl(grp, "Alamat :", xC + 318, y)
+            AddTxt(grp, "txtPctSJAlamat_" & key, xC + 376, y, 40)
+            AddLbl(grp, "Jumlah :", xC + 426, y)
+            AddTxt(grp, "txtPctSJJumlah_" & key, xC + 484, y, 40)
+            AddLbl(grp, "Lokasi :", xC + 534, y)
+            AddTxt(grp, "txtPctSJLokasi_" & key, xC + 590, y, 40)
+            AddLbl(grp, "(TTD Penerima = sisa)", xC + 640, y, Color.Gray, 8)
+
+        ElseIf key = "TransferBarang" Then
+            ' Transfer Barang: No | Kode | Nama | Harga | Qty | Satuan | (Jumlah = sisa)
+            AddLbl(grp, "Lebar Kolom (%) :", xL, y)
+            AddLbl(grp, "No :", xC, y)
+            AddTxt(grp, "txtPctTBNo_" & key, xC + 43, y, 40)
+            AddLbl(grp, "Kode :", xC + 93, y)
+            AddTxt(grp, "txtPctTBKode_" & key, xC + 138, y, 40)
+            AddLbl(grp, "Nama :", xC + 188, y)
+            AddTxt(grp, "txtPctTBNama_" & key, xC + 236, y, 40)
+            AddLbl(grp, "Harga :", xC + 286, y)
+            AddTxt(grp, "txtPctTBHarga_" & key, xC + 334, y, 40)
+            AddLbl(grp, "Qty :", xC + 384, y)
+            AddTxt(grp, "txtPctTBQty_" & key, xC + 418, y, 40)
+            AddLbl(grp, "Satuan :", xC + 468, y)
+            AddTxt(grp, "txtPctTBSatuan_" & key, xC + 522, y, 40)
+            AddLbl(grp, "(Jumlah = sisa)", xC + 572, y, Color.Gray, 8)
+
+        ElseIf key = "TransferCabang" Then
+            ' Transfer Cabang: No | Nama | Qty | Satuan | Harga | (Total = sisa)
+            AddLbl(grp, "Lebar Kolom (%) :", xL, y)
+            AddLbl(grp, "No :", xC, y)
+            AddTxt(grp, "txtPctTCNo_" & key, xC + 43, y, 40)
+            AddLbl(grp, "Nama :", xC + 93, y)
+            AddTxt(grp, "txtPctTCNama_" & key, xC + 138, y, 40)
+            AddLbl(grp, "Qty :", xC + 188, y)
+            AddTxt(grp, "txtPctTCQty_" & key, xC + 224, y, 40)
+            AddLbl(grp, "Satuan :", xC + 274, y)
+            AddTxt(grp, "txtPctTCSatuan_" & key, xC + 328, y, 40)
+            AddLbl(grp, "Harga :", xC + 378, y)
+            AddTxt(grp, "txtPctTCHarga_" & key, xC + 426, y, 40)
+            AddLbl(grp, "(Total = sisa)", xC + 476, y, Color.Gray, 8)
+
+        ElseIf key = "BayarHutang" Then
+            ' Bayar Hutang: No | Faktur | Tanggal | Total Hutang | Dibayar | (Sisa = sisa)
+            AddLbl(grp, "Lebar Kolom (%) :", xL, y)
+            AddLbl(grp, "No :", xC, y)
+            AddTxt(grp, "txtPctBHNo_" & key, xC + 43, y, 40)
+            AddLbl(grp, "Faktur :", xC + 93, y)
+            AddTxt(grp, "txtPctBHFaktur_" & key, xC + 145, y, 40)
+            AddLbl(grp, "Tanggal :", xC + 195, y)
+            AddTxt(grp, "txtPctBHTanggal_" & key, xC + 253, y, 40)
+            AddLbl(grp, "Total Hutang :", xC + 303, y)
+            AddTxt(grp, "txtPctBHTotalHutang_" & key, xC + 398, y, 40)
+            AddLbl(grp, "Dibayar :", xC + 448, y)
+            AddTxt(grp, "txtPctBHDibayar_" & key, xC + 510, y, 40)
+            AddLbl(grp, "(Sisa = sisa)", xC + 560, y, Color.Gray, 8)
+
+        ElseIf key = "BayarPiutang" Then
+            ' Bayar Piutang: No | Faktur | Tanggal | Total Piutang | Dibayar | (Sisa = sisa)
+            AddLbl(grp, "Lebar Kolom (%) :", xL, y)
+            AddLbl(grp, "No :", xC, y)
+            AddTxt(grp, "txtPctBPNo_" & key, xC + 43, y, 40)
+            AddLbl(grp, "Faktur :", xC + 93, y)
+            AddTxt(grp, "txtPctBPFaktur_" & key, xC + 145, y, 40)
+            AddLbl(grp, "Tanggal :", xC + 195, y)
+            AddTxt(grp, "txtPctBPTanggal_" & key, xC + 253, y, 40)
+            AddLbl(grp, "Total Piutang :", xC + 303, y)
+            AddTxt(grp, "txtPctBPTotalPiutang_" & key, xC + 405, y, 40)
+            AddLbl(grp, "Dibayar :", xC + 455, y)
+            AddTxt(grp, "txtPctBPDibayar_" & key, xC + 517, y, 40)
+            AddLbl(grp, "(Sisa = sisa)", xC + 567, y, Color.Gray, 8)
+        End If
 
         grp.Size = New Size(1060, y + 60)
         Return grp
@@ -1850,6 +1936,40 @@ Public Class FormPengaturanPrinter
             SetTxt(grpI, "txtPctKolomQty_" & key, GetVal(ini, key & "_Inkjet_PctKolomQty", "8"))
             SetTxt(grpI, "txtPctKolomHarga_" & key, GetVal(ini, key & "_Inkjet_PctKolomHarga", "15"))
             SetTxt(grpI, "txtPctKolomDiskon_" & key, GetVal(ini, key & "_Inkjet_PctKolomDiskon", "10"))
+            ' Kolom khusus Surat Jalan
+            If key = "SuratJalan" Then
+                SetTxt(grpI, "txtPctSJNo_" & key, GetVal(ini, key & "_Inkjet_PctSJNo", "3"))
+                SetTxt(grpI, "txtPctSJNota_" & key, GetVal(ini, key & "_Inkjet_PctSJNota", "12"))
+                SetTxt(grpI, "txtPctSJPelanggan_" & key, GetVal(ini, key & "_Inkjet_PctSJPelanggan", "20"))
+                SetTxt(grpI, "txtPctSJAlamat_" & key, GetVal(ini, key & "_Inkjet_PctSJAlamat", "25"))
+                SetTxt(grpI, "txtPctSJJumlah_" & key, GetVal(ini, key & "_Inkjet_PctSJJumlah", "12"))
+                SetTxt(grpI, "txtPctSJLokasi_" & key, GetVal(ini, key & "_Inkjet_PctSJLokasi", "10"))
+            ElseIf key = "TransferBarang" Then
+                SetTxt(grpI, "txtPctTBNo_" & key, GetVal(ini, key & "_Inkjet_PctTBNo", "3"))
+                SetTxt(grpI, "txtPctTBKode_" & key, GetVal(ini, key & "_Inkjet_PctTBKode", "10"))
+                SetTxt(grpI, "txtPctTBNama_" & key, GetVal(ini, key & "_Inkjet_PctTBNama", "35"))
+                SetTxt(grpI, "txtPctTBHarga_" & key, GetVal(ini, key & "_Inkjet_PctTBHarga", "15"))
+                SetTxt(grpI, "txtPctTBQty_" & key, GetVal(ini, key & "_Inkjet_PctTBQty", "10"))
+                SetTxt(grpI, "txtPctTBSatuan_" & key, GetVal(ini, key & "_Inkjet_PctTBSatuan", "9"))
+            ElseIf key = "TransferCabang" Then
+                SetTxt(grpI, "txtPctTCNo_" & key, GetVal(ini, key & "_Inkjet_PctTCNo", "3"))
+                SetTxt(grpI, "txtPctTCNama_" & key, GetVal(ini, key & "_Inkjet_PctTCNama", "45"))
+                SetTxt(grpI, "txtPctTCQty_" & key, GetVal(ini, key & "_Inkjet_PctTCQty", "10"))
+                SetTxt(grpI, "txtPctTCSatuan_" & key, GetVal(ini, key & "_Inkjet_PctTCSatuan", "9"))
+                SetTxt(grpI, "txtPctTCHarga_" & key, GetVal(ini, key & "_Inkjet_PctTCHarga", "15"))
+            ElseIf key = "BayarHutang" Then
+                SetTxt(grpI, "txtPctBHNo_" & key, GetVal(ini, key & "_Inkjet_PctBHNo", "3"))
+                SetTxt(grpI, "txtPctBHFaktur_" & key, GetVal(ini, key & "_Inkjet_PctBHFaktur", "24"))
+                SetTxt(grpI, "txtPctBHTanggal_" & key, GetVal(ini, key & "_Inkjet_PctBHTanggal", "14"))
+                SetTxt(grpI, "txtPctBHTotalHutang_" & key, GetVal(ini, key & "_Inkjet_PctBHTotalHutang", "16"))
+                SetTxt(grpI, "txtPctBHDibayar_" & key, GetVal(ini, key & "_Inkjet_PctBHDibayar", "16"))
+            ElseIf key = "BayarPiutang" Then
+                SetTxt(grpI, "txtPctBPNo_" & key, GetVal(ini, key & "_Inkjet_PctBPNo", "3"))
+                SetTxt(grpI, "txtPctBPFaktur_" & key, GetVal(ini, key & "_Inkjet_PctBPFaktur", "24"))
+                SetTxt(grpI, "txtPctBPTanggal_" & key, GetVal(ini, key & "_Inkjet_PctBPTanggal", "14"))
+                SetTxt(grpI, "txtPctBPTotalPiutang_" & key, GetVal(ini, key & "_Inkjet_PctBPTotalPiutang", "16"))
+                SetTxt(grpI, "txtPctBPDibayar_" & key, GetVal(ini, key & "_Inkjet_PctBPDibayar", "16"))
+            End If
         End If
 
         Dim grpM As GroupBox = TryCast(tabPage.Controls("grpMonitor_" & key), GroupBox)
@@ -2197,6 +2317,40 @@ Public Class FormPengaturanPrinter
                 ini(key & "_Inkjet_PctKolomQty") = GetTxt(grpI, "txtPctKolomQty_" & key)
                 ini(key & "_Inkjet_PctKolomHarga") = GetTxt(grpI, "txtPctKolomHarga_" & key)
                 ini(key & "_Inkjet_PctKolomDiskon") = GetTxt(grpI, "txtPctKolomDiskon_" & key)
+                ' Kolom khusus per transaksi
+                If key = "SuratJalan" Then
+                    ini(key & "_Inkjet_PctSJNo") = GetTxt(grpI, "txtPctSJNo_" & key)
+                    ini(key & "_Inkjet_PctSJNota") = GetTxt(grpI, "txtPctSJNota_" & key)
+                    ini(key & "_Inkjet_PctSJPelanggan") = GetTxt(grpI, "txtPctSJPelanggan_" & key)
+                    ini(key & "_Inkjet_PctSJAlamat") = GetTxt(grpI, "txtPctSJAlamat_" & key)
+                    ini(key & "_Inkjet_PctSJJumlah") = GetTxt(grpI, "txtPctSJJumlah_" & key)
+                    ini(key & "_Inkjet_PctSJLokasi") = GetTxt(grpI, "txtPctSJLokasi_" & key)
+                ElseIf key = "TransferBarang" Then
+                    ini(key & "_Inkjet_PctTBNo") = GetTxt(grpI, "txtPctTBNo_" & key)
+                    ini(key & "_Inkjet_PctTBKode") = GetTxt(grpI, "txtPctTBKode_" & key)
+                    ini(key & "_Inkjet_PctTBNama") = GetTxt(grpI, "txtPctTBNama_" & key)
+                    ini(key & "_Inkjet_PctTBHarga") = GetTxt(grpI, "txtPctTBHarga_" & key)
+                    ini(key & "_Inkjet_PctTBQty") = GetTxt(grpI, "txtPctTBQty_" & key)
+                    ini(key & "_Inkjet_PctTBSatuan") = GetTxt(grpI, "txtPctTBSatuan_" & key)
+                ElseIf key = "TransferCabang" Then
+                    ini(key & "_Inkjet_PctTCNo") = GetTxt(grpI, "txtPctTCNo_" & key)
+                    ini(key & "_Inkjet_PctTCNama") = GetTxt(grpI, "txtPctTCNama_" & key)
+                    ini(key & "_Inkjet_PctTCQty") = GetTxt(grpI, "txtPctTCQty_" & key)
+                    ini(key & "_Inkjet_PctTCSatuan") = GetTxt(grpI, "txtPctTCSatuan_" & key)
+                    ini(key & "_Inkjet_PctTCHarga") = GetTxt(grpI, "txtPctTCHarga_" & key)
+                ElseIf key = "BayarHutang" Then
+                    ini(key & "_Inkjet_PctBHNo") = GetTxt(grpI, "txtPctBHNo_" & key)
+                    ini(key & "_Inkjet_PctBHFaktur") = GetTxt(grpI, "txtPctBHFaktur_" & key)
+                    ini(key & "_Inkjet_PctBHTanggal") = GetTxt(grpI, "txtPctBHTanggal_" & key)
+                    ini(key & "_Inkjet_PctBHTotalHutang") = GetTxt(grpI, "txtPctBHTotalHutang_" & key)
+                    ini(key & "_Inkjet_PctBHDibayar") = GetTxt(grpI, "txtPctBHDibayar_" & key)
+                ElseIf key = "BayarPiutang" Then
+                    ini(key & "_Inkjet_PctBPNo") = GetTxt(grpI, "txtPctBPNo_" & key)
+                    ini(key & "_Inkjet_PctBPFaktur") = GetTxt(grpI, "txtPctBPFaktur_" & key)
+                    ini(key & "_Inkjet_PctBPTanggal") = GetTxt(grpI, "txtPctBPTanggal_" & key)
+                    ini(key & "_Inkjet_PctBPTotalPiutang") = GetTxt(grpI, "txtPctBPTotalPiutang_" & key)
+                    ini(key & "_Inkjet_PctBPDibayar") = GetTxt(grpI, "txtPctBPDibayar_" & key)
+                End If
             End If
 
             Dim grpM As GroupBox = TryCast(tabPage.Controls("grpMonitor_" & key), GroupBox)

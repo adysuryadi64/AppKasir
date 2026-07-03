@@ -287,8 +287,8 @@ Public Class FormSalesOrder
         End If
         ' ✅ Gunakan format STANDAR (InvariantCulture - no separator) - tampilkan desimal hanya jika ada
         _grandTotalSO = 0
-        TxtTotaljualStlPajak.Text = 0.ToString("0.##", Globalization.CultureInfo.InvariantCulture)
-        TxtTotalJualSblDiskonPajak.Text = 0.ToString("0.##", Globalization.CultureInfo.InvariantCulture)
+        TxtTotaljualStlPajak.Text = 0.ToString("0.####", Globalization.CultureInfo.InvariantCulture)
+        TxtTotalJualSblDiskonPajak.Text = 0.ToString("0.####", Globalization.CultureInfo.InvariantCulture)
         TxtGrandtotal.Text = "Rp. 0"
 
 
@@ -3144,9 +3144,9 @@ Public Class FormSalesOrder
 
         ' Set semua values sekaligus
         _grandTotalSO = totalGrand
-        TxtTotalHpp.Text = totalHpp.ToString("0.##", Globalization.CultureInfo.InvariantCulture)
-        TxtTotalJualSblDiskonPajak.Text = totalGrand.ToString("0.##", Globalization.CultureInfo.InvariantCulture)
-        TxtTotaljualStlPajak.Text = totalGrand.ToString("0.##", Globalization.CultureInfo.InvariantCulture)
+        TxtTotalHpp.Text = totalHpp.ToString("0.####", Globalization.CultureInfo.InvariantCulture)
+        TxtTotalJualSblDiskonPajak.Text = totalGrand.ToString("0.####", Globalization.CultureInfo.InvariantCulture)
+        TxtTotaljualStlPajak.Text = totalGrand.ToString("0.####", Globalization.CultureInfo.InvariantCulture)
         TxtGrandtotal.Text = "Rp. " & totalGrand.ToString("N0")
         TxtJmlhQty.Text = totalQtyBarang.ToString()
         TxtJmlhItem.Text = totalItemCount.ToString()

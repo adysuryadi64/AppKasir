@@ -25,6 +25,17 @@ Module ModulePrinterSuratJalan
     ' ── Data detail pengiriman ───────────────────────────────
     Public SJ_DaftarDetail As New List(Of ItemSuratJalan)
 
+    ''' <summary>Total dihitung ulang dari detail — dipakai semua renderer untuk cetak.</summary>
+    Public ReadOnly Property SJ_TotalDihitung() As Decimal
+        Get
+            Dim total As Decimal = 0
+            For Each item As ItemSuratJalan In SJ_DaftarDetail
+                total += item.NilaiBelanja
+            Next
+            Return total
+        End Get
+    End Property
+
     Public Class ItemSuratJalan
         Public NotaBelanja As String = ""
         Public NamaPelanggan As String = ""
@@ -96,7 +107,9 @@ Module ModulePrinterSuratJalan
     Friend Function SJDbDec(rd As MySqlDataReader, kolom As String) As Decimal
         If IsDBNull(rd(kolom)) Then Return 0
         Dim v As Decimal
-        Return If(Decimal.TryParse(rd(kolom).ToString(), v), v, 0)
+        Return If(Decimal.TryParse(rd(kolom).ToString(),
+                                   System.Globalization.NumberStyles.Any,
+                                   System.Globalization.CultureInfo.InvariantCulture, v), v, 0)
     End Function
 
     ' ============================================================

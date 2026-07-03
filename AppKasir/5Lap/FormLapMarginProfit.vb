@@ -116,7 +116,6 @@ Public Class FormLapMarginProfit
             "INNER JOIN penjualan p ON p.ID_PENJUALAN = pd.FAKTUR_JUAL " &
             "LEFT JOIN tbl_barang b ON b.ID_BARANG = pd.ID_BARANG " &
             "WHERE pd.TANGGAL_JUAL BETWEEN @TGL_AWAL AND @TGL_AKHIR " &
-            "    AND p.STATUS_TRANSAKSI <> 'BATAL' " &
             lokasiFilter & " " &
             "GROUP BY pd.ID_BARANG, pd.NAMA_BARANG, b.HARGA_JUAL_UMUM_KECIL, b.HPP_UMUM_KECIL " &
             "HAVING total_omzet > 0 " &

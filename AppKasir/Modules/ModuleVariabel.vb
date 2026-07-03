@@ -1,6 +1,8 @@
 Module ModuleVariabel
     Public NamaUser As String = ""
     Public LevelUser As String = ""
+    Public KodeUser As String = ""
+    Public WaktuLogin As DateTime = DateTime.MinValue
     Public AplikasiSedangUpdate As Boolean = False
 
     ''' <summary>

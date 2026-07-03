@@ -283,7 +283,7 @@ Partial Class FormPembelian
         'Qty
         '
         DataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight
-        DataGridViewCellStyle4.Format = "#,0.##"
+        DataGridViewCellStyle4.Format = "#,0.####"
         DataGridViewCellStyle4.NullValue = Nothing
         Me.Qty.DefaultCellStyle = DataGridViewCellStyle4
         Me.Qty.FillWeight = 30.0!
@@ -311,7 +311,7 @@ Partial Class FormPembelian
         'Hargabeli
         '
         DataGridViewCellStyle5.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight
-        DataGridViewCellStyle5.Format = "#,0.##"
+        DataGridViewCellStyle5.Format = "#,0.####"
         DataGridViewCellStyle5.NullValue = Nothing
         Me.Hargabeli.DefaultCellStyle = DataGridViewCellStyle5
         Me.Hargabeli.FillWeight = 60.0!
@@ -321,7 +321,7 @@ Partial Class FormPembelian
         'HargaBeliSatKecil
         '
         DataGridViewCellStyle6.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight
-        DataGridViewCellStyle6.Format = "#,0.##"
+        DataGridViewCellStyle6.Format = "#,0.####"
         DataGridViewCellStyle6.NullValue = Nothing
         Me.HargaBeliSatKecil.DefaultCellStyle = DataGridViewCellStyle6
         Me.HargaBeliSatKecil.HeaderText = "Harga Beli Sat"
@@ -334,7 +334,7 @@ Partial Class FormPembelian
         'QtySat
         '
         DataGridViewCellStyle7.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight
-        DataGridViewCellStyle7.Format = "#,0.##"
+        DataGridViewCellStyle7.Format = "#,0.####"
         DataGridViewCellStyle7.NullValue = Nothing
         Me.QtySat.DefaultCellStyle = DataGridViewCellStyle7
         Me.QtySat.FillWeight = 40.0!
@@ -346,7 +346,7 @@ Partial Class FormPembelian
         'Totalharga
         '
         DataGridViewCellStyle8.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight
-        DataGridViewCellStyle8.Format = "N0"
+        DataGridViewCellStyle8.Format = "#,0.####"
         DataGridViewCellStyle8.NullValue = Nothing
         Me.Totalharga.DefaultCellStyle = DataGridViewCellStyle8
         Me.Totalharga.FillWeight = 80.0!
@@ -359,7 +359,7 @@ Partial Class FormPembelian
         'Average
         '
         DataGridViewCellStyle9.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight
-        DataGridViewCellStyle9.Format = "N0"
+        DataGridViewCellStyle9.Format = "#,0.####"
         Me.Average.DefaultCellStyle = DataGridViewCellStyle9
         Me.Average.HeaderText = "Average"
         Me.Average.Name = "Average"
@@ -369,7 +369,7 @@ Partial Class FormPembelian
         'HargaSebelumnya
         '
         DataGridViewCellStyle10.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight
-        DataGridViewCellStyle10.Format = "N0"
+        DataGridViewCellStyle10.Format = "#,0.####"
         Me.HargaSebelumnya.DefaultCellStyle = DataGridViewCellStyle10
         Me.HargaSebelumnya.HeaderText = "Harga Sebelumnya"
         Me.HargaSebelumnya.Name = "HargaSebelumnya"
@@ -387,7 +387,7 @@ Partial Class FormPembelian
         '
         DataGridViewCellStyle11.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight
         DataGridViewCellStyle11.BackColor = System.Drawing.Color.Silver
-        DataGridViewCellStyle11.Format = "#,0.##"
+        DataGridViewCellStyle11.Format = "#,0.####"
         Me.StokToko.DefaultCellStyle = DataGridViewCellStyle11
         Me.StokToko.FillWeight = 40.0!
         Me.StokToko.HeaderText = "Toko"
@@ -397,7 +397,7 @@ Partial Class FormPembelian
         '
         DataGridViewCellStyle12.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight
         DataGridViewCellStyle12.BackColor = System.Drawing.Color.Silver
-        DataGridViewCellStyle12.Format = "#,0.##"
+        DataGridViewCellStyle12.Format = "#,0.####"
         Me.StokGudang.DefaultCellStyle = DataGridViewCellStyle12
         Me.StokGudang.FillWeight = 40.0!
         Me.StokGudang.HeaderText = "Gudang"

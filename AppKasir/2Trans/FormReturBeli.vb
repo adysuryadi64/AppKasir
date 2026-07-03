@@ -1906,7 +1906,7 @@ Public Class FormReturBeli
                 Using rd As MySqlDataReader = cmd.ExecuteReader
                     If rd.Read() Then
                         Dim idBarang As String = ModuleAngka.SafeGetValue(Of String)(rd, "ID_BARANG", String.Empty)
-                        Dim hargaBeli As String = ModuleAngka.ParseDecimal(rd("HARGA_BELI_TERAKHIR")).ToString("0.##", Globalization.CultureInfo.InvariantCulture)
+                        Dim hargaBeli As String = ModuleAngka.ParseDecimal(rd("HARGA_BELI_TERAKHIR")).ToString("0.####", Globalization.CultureInfo.InvariantCulture)
 
                         Dim satuanUmum As String = ModuleAngka.SafeGetValue(Of String)(rd, "SATUAN_UMUM_KECIL", String.Empty)
                         Dim isiUmum As Integer = Math.Max(1, ModuleAngka.SafeGetValue(Of Integer)(rd, "ISI_UMUM_KECIL", 1))
@@ -4374,8 +4374,8 @@ Public Class FormReturBeli
                         End If
 
                         ' Set nilai ke form
-                        TxtNominalBayarTunai.Text = nominalTunai.ToString("0.##", Globalization.CultureInfo.InvariantCulture)
-                        TxtNominalBayarTransfer.Text = nominalTransfer.ToString("0.##", Globalization.CultureInfo.InvariantCulture)
+                        TxtNominalBayarTunai.Text = nominalTunai.ToString("0.####", Globalization.CultureInfo.InvariantCulture)
+                        TxtNominalBayarTransfer.Text = nominalTransfer.ToString("0.####", Globalization.CultureInfo.InvariantCulture)
 
                         ' Set combo tunai — pilih item yang cocok, fallback ke .Text jika tidak ada
                         Dim idxTunai As Integer = CmbAkunTunai.FindStringExact(namaRekeningTunai)

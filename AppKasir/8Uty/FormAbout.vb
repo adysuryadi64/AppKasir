@@ -38,7 +38,7 @@ Public Class FormAbout
     ''' </summary>
     Private Sub LoadGuide()
         Try
-            Dim guidePath As String = Path.Combine(Application.StartupPath, "8Uty", "guide.html")
+            Dim guidePath As String = Path.Combine(Application.StartupPath, "guide.html")
             
             If File.Exists(guidePath) Then
                 ' Convert to absolute file path for WebBrowser
@@ -46,7 +46,7 @@ Public Class FormAbout
                 WebBrowser1.Navigate(fileUri.AbsoluteUri)
             Else
                 ' Fallback: show error message in HTML
-                ShowErrorMessage("File guide.html tidak ditemukan di folder 8Uty")
+                ShowErrorMessage("File guide.html tidak ditemukan")
             End If
         Catch ex As Exception
             ShowErrorMessage("Error memuat guide: " & ex.Message)

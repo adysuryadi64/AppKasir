@@ -82,19 +82,23 @@ Module ModuleCetakLaporanKasInkjet
         g.DrawString("LAPORAN MUTASI KEUANGAN", New Font(_cfg.FontJudul, _cfg.UkuranJudul + 1, FontStyle.Bold), Brushes.Black, tengah, y, fmtTengah)
         y += CInt(fJudul.GetHeight(g)) + 6
 
-        ' Info filter
+        ' Info filter — 2 baris, kolom kiri dan kanan dipisah dengan jarak yang cukup
         Dim xKiri As Integer = b.Left
-        Dim xVal1 As Integer = b.Left + CInt(b.Width * 0.10)
-        Dim xKanan2 As Integer = tengah + 10
-        Dim xVal2 As Integer = tengah + CInt(b.Width * 0.10)
-        g.DrawString("Rekening", fIsi, Brushes.Black, xKiri, y) : g.DrawString(": " & _cetak.LK_Rekening, fBold, Brushes.Black, xVal1, y)
-        g.DrawString("Kasir", fIsi, Brushes.Black, xKanan2, y) : g.DrawString(": " & _cetak.LK_Kasir, fIsi, Brushes.Black, xVal2, y) : y += lh
-        g.DrawString("Periode", fIsi, Brushes.Black, xKiri, y) : g.DrawString(": " & _cetak.LK_PeriodeLabel, fIsi, Brushes.Black, xVal1, y) : y += lh + 4
+        Dim xVal1 As Integer = b.Left + CInt(b.Width * 0.12)   ' nilai kolom kiri
+        Dim xKanan2 As Integer = b.Left + CInt(b.Width * 0.55)  ' label kolom kanan
+        Dim xVal2 As Integer = b.Left + CInt(b.Width * 0.67)    ' nilai kolom kanan
+        g.DrawString("Rekening", fIsi, Brushes.Black, xKiri, y)
+        g.DrawString(": " & _cetak.LK_Rekening, fBold, Brushes.Black, xVal1, y)
+        g.DrawString("Kasir", fIsi, Brushes.Black, xKanan2, y)
+        g.DrawString(": " & _cetak.LK_Kasir, fIsi, Brushes.Black, xVal2, y) : y += lh
+        g.DrawString("Periode", fIsi, Brushes.Black, xKiri, y)
+        g.DrawString(": " & _cetak.LK_PeriodeLabel, fIsi, Brushes.Black, xVal1, y) : y += lh + 4
         g.DrawLine(Pens.Black, b.Left, y, xKanan, y) : y += 6
 
         ' Header tabel
+        ' xNota di 50% memberi ruang cukup untuk nama transaksi terpanjang (~"(-) Jurnal Pengeluaran")
         Dim xNama As Integer = b.Left
-        Dim xNota As Integer = b.Left + CInt(b.Width * 0.55)
+        Dim xNota As Integer = b.Left + CInt(b.Width * 0.50)
         Dim xTotal As Integer = b.Right
 
         g.DrawString("Transaksi", fBold, Brushes.Black, xNama, y)
@@ -102,10 +106,13 @@ Module ModuleCetakLaporanKasInkjet
         g.DrawString("Sub Total", fBold, Brushes.Black, xTotal, y, fmtKanan) : y += lh
         g.DrawLine(Pens.Black, b.Left, y, xKanan, y) : y += 4
 
-        ' Baris transaksi
+        ' Baris transaksi — nama dibatasi lebar agar tidak menabrak kolom Nota
+        Dim lebarNamaInk As Integer = xNota - xNama - 4
         Dim TulisBaris = Sub(tanda As String, nama As String, nota As Integer, total As Decimal)
                              If total = 0 Then Return
-                             g.DrawString(tanda & " " & nama, fIsi, Brushes.Black, xNama, y)
+                             g.DrawString(tanda & " " & nama, fIsi, Brushes.Black,
+                                 New RectangleF(xNama, y, lebarNamaInk, fIsi.GetHeight(g) + 2),
+                                 StringFormat.GenericDefault)
                              g.DrawString(nota.ToString("N0", cultureIndonesia), fIsi, Brushes.Black, xNota, y, fmtKanan)
                              g.DrawString(total.ToString("N0", cultureIndonesia), fIsi, Brushes.Black, xTotal, y, fmtKanan)
                              y += lh
@@ -130,12 +137,14 @@ Module ModuleCetakLaporanKasInkjet
 
         g.DrawLine(Pens.Black, b.Left, y, xKanan, y) : y += 4
 
-        ' Ringkasan saldo
+        ' Ringkasan saldo — label rata kanan di 55%, nilai rata kanan di b.Right
+        ' Gunakan RectangleF agar label tidak overflow ke kolom nilai
         Dim xLbl As Integer = b.Left + CInt(b.Width * 0.55)
         Dim fmtLbl As New StringFormat() With {.Alignment = StringAlignment.Far}
         Dim TulisLbl = Sub(lbl As String, val As Decimal, bold As Boolean)
                            Dim fnt As Font = If(bold, fBold, fIsi)
-                           g.DrawString(lbl, fnt, Brushes.Black, New RectangleF(b.Left, y, xLbl - b.Left, fnt.GetHeight(g) + 2), fmtLbl)
+                           g.DrawString(lbl, fnt, Brushes.Black,
+                               New RectangleF(b.Left, y, xLbl - b.Left, fnt.GetHeight(g) + 2), fmtLbl)
                            g.DrawString(val.ToString("N0", cultureIndonesia), fnt, Brushes.Black, xTotal, y, fmtKanan)
                            y += lh
                        End Sub

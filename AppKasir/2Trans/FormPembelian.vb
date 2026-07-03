@@ -712,11 +712,11 @@ Public Class FormPembelian
         _totalSelisihHargaPokok = 0D
 
         ' Reset diskon, PPN, biaya kirim
-        TxtDiskonPersen.Text = 0.ToString("0.##", Globalization.CultureInfo.InvariantCulture)
-        TxtDiskonRupiah.Text = 0.ToString("0.##", Globalization.CultureInfo.InvariantCulture)
-        TxtPpnPersen.Text = 0.ToString("0.##", Globalization.CultureInfo.InvariantCulture)
-        TxtPpnRupiah.Text = 0.ToString("0.##", Globalization.CultureInfo.InvariantCulture)
-        TxtBiayaKirim.Text = 0.ToString("0.##", Globalization.CultureInfo.InvariantCulture)
+        TxtDiskonPersen.Text = 0.ToString("0.####", Globalization.CultureInfo.InvariantCulture)
+        TxtDiskonRupiah.Text = 0.ToString("0.####", Globalization.CultureInfo.InvariantCulture)
+        TxtPpnPersen.Text = 0.ToString("0.####", Globalization.CultureInfo.InvariantCulture)
+        TxtPpnRupiah.Text = 0.ToString("0.####", Globalization.CultureInfo.InvariantCulture)
+        TxtBiayaKirim.Text = 0.ToString("0.####", Globalization.CultureInfo.InvariantCulture)
         LblDiskonRupiah.Text = "Rp. 0"
         LblPpnRupiah.Text = "Rp. 0"
         LblBiayaKirim.Text = "Rp. 0"
@@ -3471,10 +3471,10 @@ Public Class FormPembelian
                     diskonPersen = Math.Min(diskonPersen, 100)
                     diskonRupiah = Math.Round(subtotalItem * diskonPersen / 100, 0)
                     ' TextBox input — format plain (InvariantCulture)
-                    TxtDiskonRupiah.Text = diskonRupiah.ToString("0.##", Globalization.CultureInfo.InvariantCulture)
+                    TxtDiskonRupiah.Text = diskonRupiah.ToString("0.####", Globalization.CultureInfo.InvariantCulture)
                 Case "diskonrupiah"
                     diskonPersen = If(subtotalItem = 0, 0, Math.Round((diskonRupiah / subtotalItem) * 100, 2))
-                    TxtDiskonPersen.Text = diskonPersen.ToString("0.##", Globalization.CultureInfo.InvariantCulture)
+                    TxtDiskonPersen.Text = diskonPersen.ToString("0.####", Globalization.CultureInfo.InvariantCulture)
             End Select
 
             ' Label display — format Indonesia
@@ -3515,10 +3515,10 @@ Public Class FormPembelian
                 Case "pajakpersen"
                     pajakPersen = Math.Min(pajakPersen, 100)
                     pajakRupiah = Math.Round(dasarPPN * pajakPersen / 100, 0)
-                    TxtPpnRupiah.Text = pajakRupiah.ToString("0.##", Globalization.CultureInfo.InvariantCulture)
+                    TxtPpnRupiah.Text = pajakRupiah.ToString("0.####", Globalization.CultureInfo.InvariantCulture)
                 Case "pajakrupiah"
                     pajakPersen = If(dasarPPN = 0, 0, Math.Round((pajakRupiah / dasarPPN) * 100, 2))
-                    TxtPpnPersen.Text = pajakPersen.ToString("0.##", Globalization.CultureInfo.InvariantCulture)
+                    TxtPpnPersen.Text = pajakPersen.ToString("0.####", Globalization.CultureInfo.InvariantCulture)
             End Select
 
             ' Label display — format Indonesia

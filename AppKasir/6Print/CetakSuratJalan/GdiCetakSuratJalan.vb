@@ -123,9 +123,9 @@ Public Class GdiCetakSuratJalan
 
         g.DrawString(garis, New Font("Courier New", 8), Brushes.Black, bk, y) : y += 5 + jarak
         g.DrawString("Total :", fIsi, Brushes.Black, m3, y)
-        g.DrawString(SJ_TotalRupiah.ToString("#,##0"), fIsi, Brushes.Black, m5, y, fmtKanan) : y += 5 + jarak
+        g.DrawString(SJ_TotalDihitung.ToString("#,##0"), fIsi, Brushes.Black, m5, y, fmtKanan) : y += 5 + jarak
         g.DrawString(garis, New Font("Courier New", 8), Brushes.Black, bk, y) : y += 10 + jarak
-        g.DrawString("Terbilang : " & Terbilang(SJ_TotalRupiah) & " Rupiah", fKecil, Brushes.Black, bk, y) : y += 10 + jarak
+        g.DrawString("Terbilang : " & Terbilang(SJ_TotalDihitung) & " Rupiah", fKecil, Brushes.Black, bk, y) : y += 10 + jarak
 
         g.DrawString("Sopir", fIsi, Brushes.Black, bk, y)
         g.DrawString("Helper 1", fIsi, Brushes.Black, m3, y)

@@ -171,6 +171,11 @@ Partial Class FormTransferCabang
         '
         'HargaBeli
         '
+        Dim csHargaBeli As New DataGridViewCellStyle()
+        csHargaBeli.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight
+        csHargaBeli.Format = "#,0.####"
+        csHargaBeli.NullValue = Nothing
+        Me.HargaBeli.DefaultCellStyle = csHargaBeli
         Me.HargaBeli.FillWeight = 70.0!
         Me.HargaBeli.HeaderText = "Harga"
         Me.HargaBeli.Name = "HargaBeli"
@@ -185,6 +190,11 @@ Partial Class FormTransferCabang
         '
         'TotalHarga
         '
+        Dim csTotalHarga As New DataGridViewCellStyle()
+        csTotalHarga.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight
+        csTotalHarga.Format = "#,0.####"
+        csTotalHarga.NullValue = Nothing
+        Me.TotalHarga.DefaultCellStyle = csTotalHarga
         Me.TotalHarga.FillWeight = 80.0!
         Me.TotalHarga.HeaderText = "Total"
         Me.TotalHarga.Name = "TotalHarga"

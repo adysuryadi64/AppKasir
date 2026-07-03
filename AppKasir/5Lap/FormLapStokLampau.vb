@@ -89,8 +89,8 @@ Public Class FormLapStokLampau
                         totalNilaiGudang += CDec(row("STOK_GUDANG")) * hpp
                     Next
                     LblTotalItem.Text = totalItem.ToString("N0") & " item"
-                    TxtNilaiToko.Text = totalNilaiToko.ToString("N0")
-                    TxtNilaiGudang.Text = totalNilaiGudang.ToString("N0")
+                    TxtNilaiToko.Text = totalNilaiToko.ToString("N0", cultureIndonesia)
+                    TxtNilaiGudang.Text = totalNilaiGudang.ToString("N0", cultureIndonesia)
 
                     Dim judulLokasi As String = If(lokasi = "SEMUA", "Toko & Gudang", lokasi)
                     Dim periodeStr As String = "Per Tanggal : " & DTPTanggal.Value.ToString("dd MMMM yyyy")

@@ -54,7 +54,7 @@ Partial Class FormLapLabaRugi
         Me.PanelKiri.Location = New System.Drawing.Point(0, 0)
         Me.PanelKiri.Name = "PanelKiri"
         Me.PanelKiri.Padding = New System.Windows.Forms.Padding(10, 12, 10, 10)
-        Me.PanelKiri.Size = New System.Drawing.Size(285, 700)
+        Me.PanelKiri.Size = New System.Drawing.Size(224, 700)
         Me.PanelKiri.TabIndex = 0
         '
         'LblJudul
@@ -101,7 +101,7 @@ Partial Class FormLapLabaRugi
         'LblAwal
         '
         Me.LblAwal.Font = New System.Drawing.Font("Century Gothic", 9.0!)
-        Me.LblAwal.Location = New System.Drawing.Point(0, 3)
+        Me.LblAwal.Location = New System.Drawing.Point(10, 4)
         Me.LblAwal.Name = "LblAwal"
         Me.LblAwal.Size = New System.Drawing.Size(45, 20)
         Me.LblAwal.TabIndex = 0
@@ -111,7 +111,7 @@ Partial Class FormLapLabaRugi
         '
         Me.DtpAwal.Font = New System.Drawing.Font("Century Gothic", 9.0!)
         Me.DtpAwal.Format = System.Windows.Forms.DateTimePickerFormat.[Short]
-        Me.DtpAwal.Location = New System.Drawing.Point(50, 1)
+        Me.DtpAwal.Location = New System.Drawing.Point(60, 2)
         Me.DtpAwal.Name = "DtpAwal"
         Me.DtpAwal.Size = New System.Drawing.Size(140, 22)
         Me.DtpAwal.TabIndex = 1
@@ -119,7 +119,7 @@ Partial Class FormLapLabaRugi
         'LblAkhir
         '
         Me.LblAkhir.Font = New System.Drawing.Font("Century Gothic", 9.0!)
-        Me.LblAkhir.Location = New System.Drawing.Point(0, 31)
+        Me.LblAkhir.Location = New System.Drawing.Point(10, 32)
         Me.LblAkhir.Name = "LblAkhir"
         Me.LblAkhir.Size = New System.Drawing.Size(45, 20)
         Me.LblAkhir.TabIndex = 2
@@ -129,7 +129,7 @@ Partial Class FormLapLabaRugi
         '
         Me.DtpAkhir.Font = New System.Drawing.Font("Century Gothic", 9.0!)
         Me.DtpAkhir.Format = System.Windows.Forms.DateTimePickerFormat.[Short]
-        Me.DtpAkhir.Location = New System.Drawing.Point(50, 29)
+        Me.DtpAkhir.Location = New System.Drawing.Point(60, 30)
         Me.DtpAkhir.Name = "DtpAkhir"
         Me.DtpAkhir.Size = New System.Drawing.Size(140, 22)
         Me.DtpAkhir.TabIndex = 3
@@ -196,7 +196,7 @@ Partial Class FormLapLabaRugi
         Me.BtnTampil.AutoSize = True
         Me.BtnTampil.Font = New System.Drawing.Font("Century Gothic", 9.0!, System.Drawing.FontStyle.Bold)
         Me.BtnTampil.Image = CType(resources.GetObject("BtnTampil.Image"), System.Drawing.Image)
-        Me.BtnTampil.Location = New System.Drawing.Point(65, 201)
+        Me.BtnTampil.Location = New System.Drawing.Point(93, 198)
         Me.BtnTampil.Name = "BtnTampil"
         Me.BtnTampil.Size = New System.Drawing.Size(123, 32)
         Me.BtnTampil.TabIndex = 6
@@ -209,10 +209,10 @@ Partial Class FormLapLabaRugi
         Me.WebBrowserLR.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
             Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.WebBrowserLR.Location = New System.Drawing.Point(285, 34)
+        Me.WebBrowserLR.Location = New System.Drawing.Point(230, 34)
         Me.WebBrowserLR.Name = "WebBrowserLR"
         Me.WebBrowserLR.ScriptErrorsSuppressed = True
-        Me.WebBrowserLR.Size = New System.Drawing.Size(815, 666)
+        Me.WebBrowserLR.Size = New System.Drawing.Size(870, 666)
         Me.WebBrowserLR.TabIndex = 7
         '
         'LblHeaderForm
@@ -220,9 +220,9 @@ Partial Class FormLapLabaRugi
         Me.LblHeaderForm.BackColor = System.Drawing.Color.Gold
         Me.LblHeaderForm.Dock = System.Windows.Forms.DockStyle.Top
         Me.LblHeaderForm.Font = New System.Drawing.Font("Bookman Old Style", 21.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.LblHeaderForm.Location = New System.Drawing.Point(285, 0)
+        Me.LblHeaderForm.Location = New System.Drawing.Point(224, 0)
         Me.LblHeaderForm.Name = "LblHeaderForm"
-        Me.LblHeaderForm.Size = New System.Drawing.Size(815, 31)
+        Me.LblHeaderForm.Size = New System.Drawing.Size(876, 31)
         Me.LblHeaderForm.TabIndex = 8
         Me.LblHeaderForm.Text = "LAPORAN LABA RUGI PERIODE"
         Me.LblHeaderForm.TextAlign = System.Drawing.ContentAlignment.MiddleCenter

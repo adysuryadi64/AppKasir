@@ -54,8 +54,7 @@ Public Class FormLapRankingTagihan
             "COUNT(ID_PENJUALAN) AS TOTAL_NOTA, " &
             "SUM(SISA_TAGIHAN) AS TOTAL_PIUTANG " &
             "FROM penjualan " &
-            "WHERE STATUS_TRANSAKSI <> 'BATAL' " &
-            "AND SISA_TAGIHAN > 0 " &
+            "WHERE SISA_TAGIHAN > 0 " &
             lokasiFilter & " " &
             "GROUP BY ID_PELANGGAN, NAMA_PELANGGAN " &
             "ORDER BY TOTAL_PIUTANG DESC " & limitClause

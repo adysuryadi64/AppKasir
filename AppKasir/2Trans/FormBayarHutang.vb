@@ -217,9 +217,8 @@ Public Class FormBayarHutang
                     currentRow.Cells("Bayar").Value = 0
                 End If
 
-                ' Terapkan format N0 untuk kolom "Bayar" (angka tanpa desimal)
-                ' Terapkan format #,0.## untuk kolom "Bayar" (angka dengan dua desimal jika ada, tanpa trailing zero)
-                currentRow.Cells("Bayar").Style.Format = "#,0.##"
+                ' Terapkan format #,0.#### untuk kolom "Bayar" (angka dengan empat desimal jika ada, tanpa trailing zero)
+                currentRow.Cells("Bayar").Style.Format = "#,0.####"
                 currentRow.Cells("Bayar").Style.Alignment = DataGridViewContentAlignment.MiddleRight
             End If
 

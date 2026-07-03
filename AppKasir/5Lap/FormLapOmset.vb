@@ -100,7 +100,6 @@ Public Class FormLapOmset
             "FROM penjualan_detail pd " &
             "INNER JOIN penjualan p ON p.ID_PENJUALAN = pd.FAKTUR_JUAL " &
             "WHERE pd.TANGGAL_JUAL BETWEEN @TGL_AWAL AND @TGL_AKHIR " &
-            "AND p.STATUS_TRANSAKSI <> 'BATAL' " &
             lokasiFilter & " " &
             "GROUP BY pd.ID_PELANGGAN, pd.NAMA_PELANGGAN " &
             "ORDER BY TOTAL_OMSET DESC " &
@@ -167,7 +166,6 @@ Public Class FormLapOmset
             "INNER JOIN penjualan p ON p.ID_PENJUALAN = pd.FAKTUR_JUAL " &
             "LEFT JOIN tbl_barang b ON b.ID_BARANG = pd.ID_BARANG " &
             "WHERE pd.TANGGAL_JUAL BETWEEN @TGL_AWAL AND @TGL_AKHIR " &
-            "AND p.STATUS_TRANSAKSI <> 'BATAL' " &
             lokasiFilter & " " &
             "GROUP BY b.NAMA_KATEGORI " &
             "ORDER BY TOTAL_OMSET DESC"

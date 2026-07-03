@@ -84,7 +84,6 @@ Public Class FormLapBarangTerlaris
             "FROM penjualan_detail pd " &
             "INNER JOIN penjualan p ON p.ID_PENJUALAN = pd.FAKTUR_JUAL " &
             "WHERE pd.TANGGAL_JUAL BETWEEN @TGL_AWAL AND @TGL_AKHIR " &
-            "AND p.STATUS_TRANSAKSI <> 'BATAL' " &
             lokasiFilter & " " &
             "GROUP BY pd.ID_BARANG, pd.NAMA_BARANG " &
             "ORDER BY TOTAL_TERJUAL DESC " &

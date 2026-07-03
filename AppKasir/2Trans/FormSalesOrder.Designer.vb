@@ -131,7 +131,7 @@ Partial Class FormSalesOrder
         '
         'Isi
         '
-        DataGridViewCellStyle18.Format = "#,0.#"
+        DataGridViewCellStyle18.Format = "#,0.####"
         Me.Isi.DefaultCellStyle = DataGridViewCellStyle18
         Me.Isi.FillWeight = 30.0!
         Me.Isi.HeaderText = "Isi"
@@ -141,7 +141,7 @@ Partial Class FormSalesOrder
         'QTY
         '
         DataGridViewCellStyle19.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight
-        DataGridViewCellStyle19.Format = "#,0.#"
+        DataGridViewCellStyle19.Format = "#,0.####"
         DataGridViewCellStyle19.NullValue = Nothing
         Me.QTY.DefaultCellStyle = DataGridViewCellStyle19
         Me.QTY.FillWeight = 40.0!
@@ -150,7 +150,7 @@ Partial Class FormSalesOrder
         '
         'HargaBeli
         '
-        DataGridViewCellStyle20.Format = "#,0.#"
+        DataGridViewCellStyle20.Format = "#,0.####"
         DataGridViewCellStyle20.NullValue = Nothing
         Me.HargaBeli.DefaultCellStyle = DataGridViewCellStyle20
         Me.HargaBeli.HeaderText = "Harga Beli"
@@ -508,7 +508,7 @@ Partial Class FormSalesOrder
         '
         'Totalhargabeli
         '
-        DataGridViewCellStyle21.Format = "#,0.#"
+        DataGridViewCellStyle21.Format = "#,0.####"
         Me.Totalhargabeli.DefaultCellStyle = DataGridViewCellStyle21
         Me.Totalhargabeli.HeaderText = "Total Harga Beli"
         Me.Totalhargabeli.Name = "Totalhargabeli"
@@ -777,7 +777,7 @@ Partial Class FormSalesOrder
         'Stok
         '
         DataGridViewCellStyle22.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight
-        DataGridViewCellStyle22.Format = "#,0.#"
+        DataGridViewCellStyle22.Format = "#,0.####"
         DataGridViewCellStyle22.NullValue = Nothing
         Me.Stok.DefaultCellStyle = DataGridViewCellStyle22
         Me.Stok.FillWeight = 30.0!
@@ -790,7 +790,7 @@ Partial Class FormSalesOrder
         '
         DataGridViewCellStyle23.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight
         DataGridViewCellStyle23.BackColor = System.Drawing.Color.LightBlue
-        DataGridViewCellStyle23.Format = "#,0.#"
+        DataGridViewCellStyle23.Format = "#,0.####"
         Me.StokGudang.DefaultCellStyle = DataGridViewCellStyle23
         Me.StokGudang.FillWeight = 50.0!
         Me.StokGudang.HeaderText = "S Gudang"
@@ -801,7 +801,7 @@ Partial Class FormSalesOrder
         '
         DataGridViewCellStyle24.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight
         DataGridViewCellStyle24.BackColor = System.Drawing.Color.LightBlue
-        DataGridViewCellStyle24.Format = "#,0.#"
+        DataGridViewCellStyle24.Format = "#,0.####"
         Me.StokToko.DefaultCellStyle = DataGridViewCellStyle24
         Me.StokToko.FillWeight = 50.0!
         Me.StokToko.HeaderText = "S Toko"
@@ -811,7 +811,7 @@ Partial Class FormSalesOrder
         'TotalHarga
         '
         DataGridViewCellStyle25.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight
-        DataGridViewCellStyle25.Format = "#,0.#"
+        DataGridViewCellStyle25.Format = "#,0.####"
         Me.TotalHarga.DefaultCellStyle = DataGridViewCellStyle25
         Me.TotalHarga.HeaderText = "Total Harga"
         Me.TotalHarga.Name = "TotalHarga"
@@ -820,7 +820,7 @@ Partial Class FormSalesOrder
         'TotalDiskon
         '
         DataGridViewCellStyle26.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight
-        DataGridViewCellStyle26.Format = "#,0.#"
+        DataGridViewCellStyle26.Format = "#,0.####"
         Me.TotalDiskon.DefaultCellStyle = DataGridViewCellStyle26
         Me.TotalDiskon.FillWeight = 80.0!
         Me.TotalDiskon.HeaderText = "Total Diskon"
@@ -830,7 +830,7 @@ Partial Class FormSalesOrder
         'DiskonRp
         '
         DataGridViewCellStyle27.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight
-        DataGridViewCellStyle27.Format = "#,0.#"
+        DataGridViewCellStyle27.Format = "#,0.####"
         Me.DiskonRp.DefaultCellStyle = DataGridViewCellStyle27
         Me.DiskonRp.FillWeight = 80.0!
         Me.DiskonRp.HeaderText = "Diskon Rp"
@@ -839,7 +839,7 @@ Partial Class FormSalesOrder
         'DiskonPersen
         '
         DataGridViewCellStyle28.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight
-        DataGridViewCellStyle28.Format = "#,0.#"
+        DataGridViewCellStyle28.Format = "#,0.####"
         Me.DiskonPersen.DefaultCellStyle = DataGridViewCellStyle28
         Me.DiskonPersen.FillWeight = 40.0!
         Me.DiskonPersen.HeaderText = "Diskon%"
@@ -847,7 +847,7 @@ Partial Class FormSalesOrder
         '
         'QtySat
         '
-        DataGridViewCellStyle29.Format = "#,0.#"
+        DataGridViewCellStyle29.Format = "#,0.####"
         Me.QtySat.DefaultCellStyle = DataGridViewCellStyle29
         Me.QtySat.HeaderText = "QtySat"
         Me.QtySat.Name = "QtySat"
@@ -869,7 +869,7 @@ Partial Class FormSalesOrder
         'Harga
         '
         DataGridViewCellStyle30.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight
-        DataGridViewCellStyle30.Format = "#,0.#"
+        DataGridViewCellStyle30.Format = "#,0.####"
         Me.Harga.DefaultCellStyle = DataGridViewCellStyle30
         Me.Harga.FillWeight = 70.0!
         Me.Harga.HeaderText = "Harga Jual"

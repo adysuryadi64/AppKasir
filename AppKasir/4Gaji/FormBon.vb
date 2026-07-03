@@ -219,7 +219,7 @@ Public Class FormBon
                     LblSaldoBon.Text = ModuleAngka.FormatRupiah(awal)
 
                     Dim nominal As Decimal = ModuleAngka.ParseDecimal(DgvKeuangan.Rows(e.RowIndex).Cells("NOMINAL").Value)
-                    TxtNominal.Text = nominal.ToString()
+                    TxtNominal.Text = ModuleAngka.FormatUntukInput(nominal)
                     TxtKeterangan.Text = DgvKeuangan.Rows(e.RowIndex).Cells("KETERANGAN").Value.ToString()
                     BtnSimpann.Text = "EDIT (F8)"
                 End If

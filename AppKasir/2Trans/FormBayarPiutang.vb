@@ -171,7 +171,7 @@ Public Class FormBayarPiutang
 
         ' Tampilkan total pada TextBox
         TxtTotalPiutang.Text = TotalHUtang.ToString()
-        LblTotalPiutang.Text = TotalHUtang.ToString("#,0.##")
+        LblTotalPiutang.Text = TotalHUtang.ToString("#,0.####")
     End Sub
 
     Private Sub DgvData_CurrentCellDirtyStateChanged(ByVal sender As Object, ByVal e As EventArgs) Handles DgvData.CurrentCellDirtyStateChanged
@@ -196,8 +196,8 @@ Public Class FormBayarPiutang
                     currentRow.Cells("Bayar").ReadOnly = True
                 End If
 
-                ' Terapkan format #,0.## untuk kolom "Bayar" (angka dengan dua desimal jika ada, tanpa trailing zero)
-                currentRow.Cells("Bayar").Style.Format = "#,0.##"
+                ' Terapkan format #,0.#### untuk kolom "Bayar" (angka dengan empat desimal jika ada, tanpa trailing zero)
+                currentRow.Cells("Bayar").Style.Format = "#,0.####"
                 currentRow.Cells("Bayar").Style.Alignment = DataGridViewContentAlignment.MiddleRight
             End If
 
@@ -210,8 +210,8 @@ Public Class FormBayarPiutang
     Private Sub DgvData_CellEndEdit(ByVal sender As Object, ByVal e As DataGridViewCellEventArgs) Handles DgvData.CellEndEdit
         ' Periksa apakah kolom yang diedit adalah kolom "Bayar"
         If DgvData.Columns(e.ColumnIndex).Name = "Bayar" Then
-            ' Terapkan format N0 untuk kolom "Bayar"
-            DgvData.Rows(e.RowIndex).Cells("Bayar").Style.Format = "#,0.##"
+            ' Terapkan format #,0.#### untuk kolom "Bayar"
+            DgvData.Rows(e.RowIndex).Cells("Bayar").Style.Format = "#,0.####"
             DgvData.Rows(e.RowIndex).Cells("Bayar").Style.Alignment = DataGridViewContentAlignment.MiddleRight
         End If
 

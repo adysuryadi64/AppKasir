@@ -1793,7 +1793,7 @@ Partial Class FormJual
         'QTY
         '
         DataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight
-        DataGridViewCellStyle3.Format = "#,0.#"
+        DataGridViewCellStyle3.Format = "#,0.####"
         DataGridViewCellStyle3.NullValue = Nothing
         Me.QTY.DefaultCellStyle = DataGridViewCellStyle3
         Me.QTY.FillWeight = 40.0!
@@ -1827,7 +1827,7 @@ Partial Class FormJual
         'Harga
         '
         DataGridViewCellStyle6.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight
-        DataGridViewCellStyle6.Format = "#,0.#"
+        DataGridViewCellStyle6.Format = "#,0.####"
         Me.Harga.DefaultCellStyle = DataGridViewCellStyle6
         Me.Harga.FillWeight = 70.0!
         Me.Harga.HeaderText = "Harga Jual"
@@ -1844,7 +1844,7 @@ Partial Class FormJual
         'DiskonPersen
         '
         DataGridViewCellStyle8.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight
-        DataGridViewCellStyle8.Format = "#,0.#"
+        DataGridViewCellStyle8.Format = "#,0.####"
         Me.DiskonPersen.DefaultCellStyle = DataGridViewCellStyle8
         Me.DiskonPersen.FillWeight = 40.0!
         Me.DiskonPersen.HeaderText = "Diskon%"
@@ -1853,7 +1853,7 @@ Partial Class FormJual
         'DiskonRp
         '
         DataGridViewCellStyle9.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight
-        DataGridViewCellStyle9.Format = "#,0.#"
+        DataGridViewCellStyle9.Format = "#,0.####"
         Me.DiskonRp.DefaultCellStyle = DataGridViewCellStyle9
         Me.DiskonRp.FillWeight = 80.0!
         Me.DiskonRp.HeaderText = "Diskon Rp"
@@ -1862,7 +1862,7 @@ Partial Class FormJual
         'TotalDiskon
         '
         DataGridViewCellStyle10.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight
-        DataGridViewCellStyle10.Format = "#,0.#"
+        DataGridViewCellStyle10.Format = "#,0.####"
         Me.TotalDiskon.DefaultCellStyle = DataGridViewCellStyle10
         Me.TotalDiskon.FillWeight = 80.0!
         Me.TotalDiskon.HeaderText = "Total Diskon"
@@ -1872,7 +1872,7 @@ Partial Class FormJual
         'TotalHarga
         '
         DataGridViewCellStyle11.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight
-        DataGridViewCellStyle11.Format = "#,0.#"
+        DataGridViewCellStyle11.Format = "#,0.####"
         Me.TotalHarga.DefaultCellStyle = DataGridViewCellStyle11
         Me.TotalHarga.HeaderText = "Total Harga"
         Me.TotalHarga.Name = "TotalHarga"
@@ -1882,7 +1882,7 @@ Partial Class FormJual
         '
         DataGridViewCellStyle12.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight
         DataGridViewCellStyle12.BackColor = System.Drawing.Color.LightBlue
-        DataGridViewCellStyle12.Format = "#,0.#"
+        DataGridViewCellStyle12.Format = "#,0.####"
         Me.StokToko.DefaultCellStyle = DataGridViewCellStyle12
         Me.StokToko.FillWeight = 50.0!
         Me.StokToko.HeaderText = "S Toko"
@@ -1893,7 +1893,7 @@ Partial Class FormJual
         '
         DataGridViewCellStyle13.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight
         DataGridViewCellStyle13.BackColor = System.Drawing.Color.LightBlue
-        DataGridViewCellStyle13.Format = "#,0.#"
+        DataGridViewCellStyle13.Format = "#,0.####"
         Me.StokGudang.DefaultCellStyle = DataGridViewCellStyle13
         Me.StokGudang.FillWeight = 50.0!
         Me.StokGudang.HeaderText = "S Gudang"
@@ -1903,7 +1903,7 @@ Partial Class FormJual
         'Stok
         '
         DataGridViewCellStyle14.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight
-        DataGridViewCellStyle14.Format = "#,0.#"
+        DataGridViewCellStyle14.Format = "#,0.####"
         DataGridViewCellStyle14.NullValue = Nothing
         Me.Stok.DefaultCellStyle = DataGridViewCellStyle14
         Me.Stok.FillWeight = 30.0!

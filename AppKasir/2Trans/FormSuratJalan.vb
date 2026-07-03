@@ -439,32 +439,31 @@ Public Class FormSuratJalan
                 Dim sbSnapshot As New System.Text.StringBuilder()
                 Try
                     Using cmdSnap As New MySqlCommand(
-                        "SELECT NOTA, TANGGAL, KODE_SUPIR, NAMA_SUPIR, KODE_HELPER1, NAMA_HELPER1, KODE_HELPER2, NAMA_HELPER2, KETERANGAN " &
+                        "SELECT NOTA, TGL_PENGIRIMAN, KODE_SUPIR, SUPIR, KODE_HELPER1, HELPER1, KODE_HELPER2, HELPER2 " &
                         "FROM surat_jalan WHERE NOTA = @n LIMIT 1", conn, transaction)
                         cmdSnap.Parameters.AddWithValue("@n", NoNota)
                         Using rdSnap = cmdSnap.ExecuteReader()
                             If rdSnap.Read() Then
                                 sbSnapshot.AppendLine($"Nota: {rdSnap("NOTA")}")
-                                sbSnapshot.AppendLine($"Tanggal: {Convert.ToDateTime(rdSnap("TANGGAL")).ToString("dd/MM/yyyy HH:mm:ss")}")
+                                sbSnapshot.AppendLine($"Tanggal: {Convert.ToDateTime(rdSnap("TGL_PENGIRIMAN")).ToString("dd/MM/yyyy HH:mm:ss")}")
                                 sbSnapshot.AppendLine($"Kode Supir: {rdSnap("KODE_SUPIR")}")
-                                sbSnapshot.AppendLine($"Nama Supir: {rdSnap("NAMA_SUPIR")}")
+                                sbSnapshot.AppendLine($"Nama Supir: {rdSnap("SUPIR")}")
                                 sbSnapshot.AppendLine($"Kode Helper 1: {rdSnap("KODE_HELPER1")}")
-                                sbSnapshot.AppendLine($"Nama Helper 1: {rdSnap("NAMA_HELPER1")}")
+                                sbSnapshot.AppendLine($"Nama Helper 1: {rdSnap("HELPER1")}")
                                 sbSnapshot.AppendLine($"Kode Helper 2: {rdSnap("KODE_HELPER2")}")
-                                sbSnapshot.AppendLine($"Nama Helper 2: {rdSnap("NAMA_HELPER2")}")
-                                sbSnapshot.AppendLine($"Keterangan: {rdSnap("KETERANGAN")}")
+                                sbSnapshot.AppendLine($"Nama Helper 2: {rdSnap("HELPER2")}")
                             End If
                         End Using
                     End Using
 
-                    sbSnapshot.AppendLine(vbCrLf & "Detail Barang:")
+                    sbSnapshot.AppendLine(vbCrLf & "Detail Pengiriman:")
                     Using cmdSnapDetail As New MySqlCommand(
-                        "SELECT KODE_BARANG, NAMA_BARANG, QTY, KETERANGAN_DETAIL " &
-                        "FROM surat_jalan_detail WHERE NOTA = @n ORDER BY KODE_BARANG", conn, transaction)
+                        "SELECT NOTA_BELANJA, NAMA_PELANGGAN, NILAI_BELANJA, LOKASI " &
+                        "FROM surat_jalan_detail WHERE NOTA = @n ORDER BY NOTA_BELANJA", conn, transaction)
                         cmdSnapDetail.Parameters.AddWithValue("@n", NoNota)
                         Using rdSnapDetail = cmdSnapDetail.ExecuteReader()
                             While rdSnapDetail.Read()
-                                sbSnapshot.AppendLine($"- {rdSnapDetail("KODE_BARANG")} - {rdSnapDetail("NAMA_BARANG")}: {rdSnapDetail("QTY")} unit - {rdSnapDetail("KETERANGAN_DETAIL")}")
+                                sbSnapshot.AppendLine($"- {rdSnapDetail("NOTA_BELANJA")} - {rdSnapDetail("NAMA_PELANGGAN")}: Rp {rdSnapDetail("NILAI_BELANJA")} - {rdSnapDetail("LOKASI")}")
                             End While
                         End Using
                     End Using

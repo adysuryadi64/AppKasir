@@ -127,12 +127,18 @@ Module ModuleCetakTransferCabangInkjet
         g.DrawString(": " & TC_IdUser, fIsi, Brushes.Black, xVal1, y) : y += lh + 4
         g.DrawLine(Pens.Black, b.Left, y, xKanan, y) : y += 6
 
-        ' ── Tabel Item ──────────────────────────────────────────
+        ' ── Tabel Item — posisi kolom dari konfigurasi ──────────────────────────
+        Dim pTCNo As Integer = _cfg.PctTCNo
+        Dim pTCNama As Integer = _cfg.PctTCNama
+        Dim pTCQty As Integer = _cfg.PctTCQty
+        Dim pTCSatuan As Integer = _cfg.PctTCSatuan
+        Dim pTCHarga As Integer = _cfg.PctTCHarga
+
         Dim xNo As Integer = b.Left
-        Dim xNama As Integer = b.Left + CInt(b.Width * 0.05)
-        Dim xQty As Integer = b.Left + CInt(b.Width * 0.52)
-        Dim xSat As Integer = b.Left + CInt(b.Width * 0.60)
-        Dim xHarga As Integer = b.Left + CInt(b.Width * 0.75)
+        Dim xNama As Integer = b.Left + CInt(b.Width * pTCNo / 100.0)
+        Dim xQty As Integer = b.Left + CInt(b.Width * (pTCNo + pTCNama) / 100.0)
+        Dim xSat As Integer = b.Left + CInt(b.Width * (pTCNo + pTCNama + pTCQty) / 100.0)
+        Dim xHarga As Integer = b.Left + CInt(b.Width * (pTCNo + pTCNama + pTCQty + pTCSatuan) / 100.0)
         Dim xJml As Integer = b.Right
 
         g.DrawString("No", fBold, Brushes.Black, xNo, y)

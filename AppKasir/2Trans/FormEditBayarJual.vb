@@ -233,11 +233,11 @@ Public Class FormEditBayarJual
 
         PilihCombo(cmbBayarTunai, jenisPembayaranTunai)
         txtKodeBayarTunai.Text = kodeAkunTunai
-        txtNominalTunai.Text = nominalTunai.ToString("0.##", CultureInfo.InvariantCulture)
+        txtNominalTunai.Text = nominalTunai.ToString("0.####", CultureInfo.InvariantCulture)
 
         PilihCombo(cmbBayarTransfer, namaAkunTransfer)
         txtKodeBayarTransfer.Text = kodeAkunTransfer
-        txtNominalTransfer.Text = nominalTransfer.ToString("0.##", CultureInfo.InvariantCulture)
+        txtNominalTransfer.Text = nominalTransfer.ToString("0.####", CultureInfo.InvariantCulture)
 
         cmbBankPengirim.Text = bank
         txtNoRek.Text = noRek
@@ -293,8 +293,8 @@ Public Class FormEditBayarJual
 
         AturTampilanInformasiTransfer(transfer)
 
-        lblTotalFmt.Text = _grandTotal.ToString("#,0.##", cultureId)
-        lblTotalBelanja.Text = _grandTotal.ToString("#,0.##", cultureId)
+        lblTotalFmt.Text = _grandTotal.ToString("#,0.####", cultureId)
+        lblTotalBelanja.Text = _grandTotal.ToString("#,0.####", cultureId)
 
         ' Row 6 = Jatuh Tempo (index 6, height 0 saat hidden)
         Const rowJatuhTempo As Integer = 6
@@ -303,7 +303,7 @@ Public Class FormEditBayarJual
             lblStatusValue.Text = "Belum Lunas"
             ModuleTheme.SetWarnaStatusTransaksi(lblStatusValue, False)
             lblHasilCaption.Text = "Hutang :"
-            lblHasilValue.Text = Math.Abs(selisih).ToString("#,0.##", cultureId)
+            lblHasilValue.Text = Math.Abs(selisih).ToString("#,0.####", cultureId)
             lblHasilValue.BackColor = ModuleTheme.C(ModuleTheme.L_NotifDanger, ModuleTheme.D_NotifDanger)
             lblHasilValue.ForeColor = ModuleTheme.C(ModuleTheme.L_Danger, ModuleTheme.D_Danger)
             lblJatuhTempo.Visible = True
@@ -316,7 +316,7 @@ Public Class FormEditBayarJual
             lblStatusValue.Text = "Lunas"
             ModuleTheme.SetWarnaStatusTransaksi(lblStatusValue, True)
             lblHasilCaption.Text = "Kembalian :"
-            lblHasilValue.Text = selisih.ToString("#,0.##", cultureId)
+            lblHasilValue.Text = selisih.ToString("#,0.####", cultureId)
             lblHasilValue.BackColor = ModuleTheme.C(Color.FromArgb(220, 252, 231), Color.FromArgb(20, 83, 45))  ' Green-100 / Green-900
             lblHasilValue.ForeColor = ModuleTheme.C(ModuleTheme.L_Success, ModuleTheme.D_Success)
             lblJatuhTempo.Visible = False

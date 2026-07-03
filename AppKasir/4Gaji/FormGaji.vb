@@ -205,19 +205,19 @@ Public Class FormGaji
         AmbilDataSupirDanHelper()
         AmbilDataOmsetPenjualan()
 
-        TxtTransport.Text = bonusTransport.ToString("N0")
-        TxtMakan.Text = bonusMakan.ToString("N0")
+        TxtTransport.Text = ModuleAngka.FormatUntukInput(bonusTransport)
+        TxtMakan.Text = ModuleAngka.FormatUntukInput(bonusMakan)
         LblKomisJual.Text = "Komisi jual " & prosentaseKomisi.ToString("N0") & " % :"
         LblLembur.Text = "Lembur " & bonusLembur.ToString("N0") & " :"
         LblAbsenkhusus.Text = "Abs Khusus " & potonganAbsenKhusus.ToString("N0") & " :"
         LblTelat.Text = "Telat " & potonganTerlambat.ToString("N0") & " :"
 
         If jenisPotongan = "Manual" Then
-            TxtPotAbsen.Text = Math.Round(Convert.ToDecimal(potonganAbsen), 0, MidpointRounding.AwayFromZero).ToString("N0")
+            TxtPotAbsen.Text = ModuleAngka.FormatUntukInput(Math.Round(Convert.ToDecimal(potonganAbsen), 0, MidpointRounding.AwayFromZero))
             LblAbsen.Text = "Absen " & Math.Round(Convert.ToDecimal(potonganAbsen), 0, MidpointRounding.AwayFromZero).ToString("N0") & " :"
         Else
             Dim potAbsen As Decimal = ModuleAngka.ParseDecimal(TxtPokok.Text) / hariKerja
-            TxtPotAbsen.Text = Math.Round(potAbsen, 0, MidpointRounding.AwayFromZero).ToString("N0")
+            TxtPotAbsen.Text = ModuleAngka.FormatUntukInput(Math.Round(potAbsen, 0, MidpointRounding.AwayFromZero))
             LblAbsen.Text = "Absen " & Math.Round(potAbsen, 0, MidpointRounding.AwayFromZero).ToString("N0") & " :"
         End If
     End Sub
@@ -355,7 +355,7 @@ Public Class FormGaji
                     reader.Read()
                     ' Mengambil nilai total omset dari reader
                     Dim totalOmset As Object = reader("TotalOmset")
-                    TxtOmsetJual.Text = If(totalOmset IsNot DBNull.Value, Convert.ToDecimal(totalOmset).ToString("N0"), "0")
+                    TxtOmsetJual.Text = If(totalOmset IsNot DBNull.Value, ModuleAngka.FormatUntukInput(Convert.ToDecimal(totalOmset)), "0")
                 Else
                     TxtOmsetJual.Text = "0"
                 End If
@@ -378,7 +378,7 @@ Public Class FormGaji
         Dim pendapatan As Decimal = pokok + komisijual + supir + helper + lemburRp + tunjangan + transport + makan
 
         ' Tampilkan total pendapatan dalam format tanpa tempat desimal
-        TxtPendapatan.Text = pendapatan.ToString("N0")
+        TxtPendapatan.Text = ModuleAngka.FormatUntukInput(pendapatan)
     End Sub
 
 
@@ -398,7 +398,7 @@ Public Class FormGaji
         Dim potongan As Decimal = bon + angsuran + absen + absenKhusus + keterlambatan + potlain
 
         ' Tampilkan total potongan dalam format tanpa tempat desimal
-        TxtPotongan.Text = potongan.ToString("N0")
+        TxtPotongan.Text = ModuleAngka.FormatUntukInput(potongan)
     End Sub
 
 
@@ -415,7 +415,7 @@ Public Class FormGaji
         Dim penerimaan As Decimal = pendapatan - potongan
 
         ' Tampilkan total penerimaan dalam format tanpa tempat desimal
-        TxtTerima.Text = penerimaan.ToString("N0")
+        TxtTerima.Text = ModuleAngka.FormatUntukInput(penerimaan)
     End Sub
 
 
@@ -429,7 +429,7 @@ Public Class FormGaji
         Dim KomisiJual As Decimal = Math.Round(OmsetPenjualan * (prosentaseKomisi / 100), 0, MidpointRounding.AwayFromZero)
 
         ' Tampilkan total penerimaan dalam format tanpa tempat desimal
-        TxtKomisiJual.Text = KomisiJual.ToString("N0")
+        TxtKomisiJual.Text = ModuleAngka.FormatUntukInput(KomisiJual)
     End Sub
 
 
@@ -441,7 +441,7 @@ Public Class FormGaji
         Dim NilaiSupir As Decimal = Supir * bonusSupir
 
         ' Tampilkan total penerimaan dalam format tanpa tempat desimal
-        TxtSupir.Text = NilaiSupir.ToString("N0")
+        TxtSupir.Text = ModuleAngka.FormatUntukInput(NilaiSupir)
     End Sub
 
 
@@ -453,7 +453,7 @@ Public Class FormGaji
         Dim NilaiHelper As Decimal = helper * bonusHelper
 
         ' Tampilkan total penerimaan dalam format tanpa tempat desimal
-        TxtHelper.Text = NilaiHelper.ToString("N0")
+        TxtHelper.Text = ModuleAngka.FormatUntukInput(NilaiHelper)
     End Sub
 
 
@@ -479,7 +479,7 @@ Public Class FormGaji
         Dim Nilailembur As Decimal = lembur * bonusLembur
 
         ' Tampilkan total penerimaan dalam format tanpa tempat desimal
-        TxtLemburRp.Text = Nilailembur.ToString("N0")
+        TxtLemburRp.Text = ModuleAngka.FormatUntukInput(Nilailembur)
     End Sub
 
 
@@ -492,7 +492,7 @@ Public Class FormGaji
         Dim Nilaiabsen As Decimal = absen * nilaiPotAbse
 
         ' Tampilkan total penerimaan dalam format tanpa tempat desimal
-        TxtAbsenRp.Text = Nilaiabsen.ToString("N0")
+        TxtAbsenRp.Text = ModuleAngka.FormatUntukInput(Nilaiabsen)
     End Sub
 
 
@@ -505,7 +505,7 @@ Public Class FormGaji
         Dim NilaiAbsenKhusus As Decimal = AbsenKhusus * potonganAbsenKhusus
 
         ' Tampilkan total penerimaan dalam format tanpa tempat desimal
-        TxtAbsenKhususRp.Text = NilaiAbsenKhusus.ToString("N0")
+        TxtAbsenKhususRp.Text = ModuleAngka.FormatUntukInput(NilaiAbsenKhusus)
     End Sub
 
 
@@ -517,7 +517,7 @@ Public Class FormGaji
         Dim NilaiKeterlambatan As Decimal = Keterlambatan * potonganTerlambat
 
         ' Tampilkan total penerimaan dalam format tanpa tempat desimal
-        TxtKeterlambatanRp.Text = NilaiKeterlambatan.ToString("N0")
+        TxtKeterlambatanRp.Text = ModuleAngka.FormatUntukInput(NilaiKeterlambatan)
     End Sub
 
 
@@ -577,14 +577,15 @@ Public Class FormGaji
                         Dim rekening As String = If(IsDBNull(reader("REKENING")), String.Empty, reader("REKENING").ToString())
                         Dim idUser As String = If(IsDBNull(reader("ID_USER")), String.Empty, reader("ID_USER").ToString())
 
-                        ' Menambahkan data ke DataGridView
+                        ' Menambahkan data ke DataGridView — simpan nilai Decimal langsung, bukan string formatted
+                        ' agar Convert.ToDecimal saat edit baris tidak bergantung CurrentCulture OS
                         DGVGaji.Rows.Add(nomor, bulan, tanggal.ToString("yyyy-MM-dd HH:mm:ss"), tanggalAwal.ToString("yyyy-MM-dd HH:mm:ss"), tanggalAkhir.ToString("yyyy-MM-dd HH:mm:ss"), kode, nama,
-                                         pokok.ToString("N0"), omsetJual.ToString("N0"), komisiJual.ToString("N0"), supir.ToString("N0"), supirRp.ToString("N0"),
-                                         helper.ToString("N0"), helperRp.ToString("N0"), lembur.ToString("N0"), lemburRp.ToString("N0"), tunjangan.ToString("N0"),
-                                         transport.ToString("N0"), uangMakan.ToString("N0"), saldobon.ToString("N0"), potBon.ToString("N0"), angsuran.ToString("N0"), absen.ToString("N0"),
-                                         absenRp.ToString("N0"), absenKhusus.ToString("N0"), absenKhususRp.ToString("N0"), terlambat.ToString("N0"),
-                                         terlambatRp.ToString("N0"), potLain.ToString("N0"), pendapatan.ToString("N0"), potongan.ToString("N0"),
-                                         terima.ToString("N0"), rekening, idUser)
+                                         pokok, omsetJual, komisiJual, supir, supirRp,
+                                         helper, helperRp, lembur, lemburRp, tunjangan,
+                                         transport, uangMakan, saldobon, potBon, angsuran, absen,
+                                         absenRp, absenKhusus, absenKhususRp, terlambat,
+                                         terlambatRp, potLain, pendapatan, potongan,
+                                         terima, rekening, idUser)
                     End While
 
                     DGVGaji.ClearSelection()
@@ -737,37 +738,37 @@ Public Class FormGaji
                 DtpAwal.Value = Convert.ToDateTime(DGVGaji.Rows(e.RowIndex).Cells("TanggalAwal").Value)
                 DtpAkhir.Value = Convert.ToDateTime(DGVGaji.Rows(e.RowIndex).Cells("TanggalAkhir").Value)
                 CmbNama.Text = DGVGaji.Rows(e.RowIndex).Cells("Nama").Value.ToString()
-                TxtPokok.Text = Convert.ToDecimal(DGVGaji.Rows(e.RowIndex).Cells("Pokok").Value).ToString("N0")
-                TxtOmsetJual.Text = Convert.ToDecimal(DGVGaji.Rows(e.RowIndex).Cells("OmsetJual").Value).ToString("N0")
-                TxtKomisiJual.Text = Convert.ToDecimal(DGVGaji.Rows(e.RowIndex).Cells("KomisiJual").Value).ToString("N0")
+                TxtPokok.Text = ModuleAngka.FormatUntukInput(Convert.ToDecimal(DGVGaji.Rows(e.RowIndex).Cells("Pokok").Value))
+                TxtOmsetJual.Text = ModuleAngka.FormatUntukInput(Convert.ToDecimal(DGVGaji.Rows(e.RowIndex).Cells("OmsetJual").Value))
+                TxtKomisiJual.Text = ModuleAngka.FormatUntukInput(Convert.ToDecimal(DGVGaji.Rows(e.RowIndex).Cells("KomisiJual").Value))
                 LblSupir.Text = DGVGaji.Rows(e.RowIndex).Cells("Supir").Value.ToString()
-                TxtSupir.Text = Convert.ToDecimal(DGVGaji.Rows(e.RowIndex).Cells("SupirRp").Value).ToString("N0")
+                TxtSupir.Text = ModuleAngka.FormatUntukInput(Convert.ToDecimal(DGVGaji.Rows(e.RowIndex).Cells("SupirRp").Value))
                 LblHelper.Text = DGVGaji.Rows(e.RowIndex).Cells("Helper").Value.ToString()
-                TxtHelper.Text = Convert.ToDecimal(DGVGaji.Rows(e.RowIndex).Cells("HelperRp").Value).ToString("N0")
+                TxtHelper.Text = ModuleAngka.FormatUntukInput(Convert.ToDecimal(DGVGaji.Rows(e.RowIndex).Cells("HelperRp").Value))
                 TxtLembur.Text = DGVGaji.Rows(e.RowIndex).Cells("Lembur").Value.ToString()
-                TxtLemburRp.Text = Convert.ToDecimal(DGVGaji.Rows(e.RowIndex).Cells("LemburRp").Value).ToString("N0")
-                TxtTunjangan.Text = Convert.ToDecimal(DGVGaji.Rows(e.RowIndex).Cells("Tunjangan").Value).ToString("N0")
-                TxtTransport.Text = Convert.ToDecimal(DGVGaji.Rows(e.RowIndex).Cells("Transport").Value).ToString("N0")
-                TxtMakan.Text = Convert.ToDecimal(DGVGaji.Rows(e.RowIndex).Cells("UangMakan").Value).ToString("N0")
+                TxtLemburRp.Text = ModuleAngka.FormatUntukInput(Convert.ToDecimal(DGVGaji.Rows(e.RowIndex).Cells("LemburRp").Value))
+                TxtTunjangan.Text = ModuleAngka.FormatUntukInput(Convert.ToDecimal(DGVGaji.Rows(e.RowIndex).Cells("Tunjangan").Value))
+                TxtTransport.Text = ModuleAngka.FormatUntukInput(Convert.ToDecimal(DGVGaji.Rows(e.RowIndex).Cells("Transport").Value))
+                TxtMakan.Text = ModuleAngka.FormatUntukInput(Convert.ToDecimal(DGVGaji.Rows(e.RowIndex).Cells("UangMakan").Value))
                 LblSaldoBon.Text = Convert.ToDecimal(DGVGaji.Rows(e.RowIndex).Cells("SaldoBon").Value).ToString("N0")
-                TxtPotBon.Text = Convert.ToDecimal(DGVGaji.Rows(e.RowIndex).Cells("PotBon").Value).ToString("N0")
-                TxtAngsuran.Text = Convert.ToDecimal(DGVGaji.Rows(e.RowIndex).Cells("Angsuran").Value).ToString("N0")
+                TxtPotBon.Text = ModuleAngka.FormatUntukInput(Convert.ToDecimal(DGVGaji.Rows(e.RowIndex).Cells("PotBon").Value))
+                TxtAngsuran.Text = ModuleAngka.FormatUntukInput(Convert.ToDecimal(DGVGaji.Rows(e.RowIndex).Cells("Angsuran").Value))
                 TxtAbsen.Text = DGVGaji.Rows(e.RowIndex).Cells("Absen").Value.ToString()
-                TxtAbsenRp.Text = Convert.ToDecimal(DGVGaji.Rows(e.RowIndex).Cells("AbsenRp").Value).ToString("N0")
+                TxtAbsenRp.Text = ModuleAngka.FormatUntukInput(Convert.ToDecimal(DGVGaji.Rows(e.RowIndex).Cells("AbsenRp").Value))
                 TxtAbsenKhusus.Text = DGVGaji.Rows(e.RowIndex).Cells("AbsenKhusus").Value.ToString()
-                TxtAbsenKhususRp.Text = Convert.ToDecimal(DGVGaji.Rows(e.RowIndex).Cells("AbsenKhususRp").Value).ToString("N0")
+                TxtAbsenKhususRp.Text = ModuleAngka.FormatUntukInput(Convert.ToDecimal(DGVGaji.Rows(e.RowIndex).Cells("AbsenKhususRp").Value))
                 TxtKeterlambatan.Text = DGVGaji.Rows(e.RowIndex).Cells("Terlambat").Value.ToString()
-                TxtKeterlambatanRp.Text = Convert.ToDecimal(DGVGaji.Rows(e.RowIndex).Cells("TerlambatRp").Value).ToString("N0")
-                TxtPotLain.Text = Convert.ToDecimal(DGVGaji.Rows(e.RowIndex).Cells("PotLain").Value).ToString("N0")
-                TxtPendapatan.Text = Convert.ToDecimal(DGVGaji.Rows(e.RowIndex).Cells("Pendapatan").Value).ToString("N0")
-                TxtPotongan.Text = Convert.ToDecimal(DGVGaji.Rows(e.RowIndex).Cells("Potongan").Value).ToString("N0")
-                TxtTerima.Text = Convert.ToDecimal(DGVGaji.Rows(e.RowIndex).Cells("Terima").Value).ToString("N0")
+                TxtKeterlambatanRp.Text = ModuleAngka.FormatUntukInput(Convert.ToDecimal(DGVGaji.Rows(e.RowIndex).Cells("TerlambatRp").Value))
+                TxtPotLain.Text = ModuleAngka.FormatUntukInput(Convert.ToDecimal(DGVGaji.Rows(e.RowIndex).Cells("PotLain").Value))
+                TxtPendapatan.Text = ModuleAngka.FormatUntukInput(Convert.ToDecimal(DGVGaji.Rows(e.RowIndex).Cells("Pendapatan").Value))
+                TxtPotongan.Text = ModuleAngka.FormatUntukInput(Convert.ToDecimal(DGVGaji.Rows(e.RowIndex).Cells("Potongan").Value))
+                TxtTerima.Text = ModuleAngka.FormatUntukInput(Convert.ToDecimal(DGVGaji.Rows(e.RowIndex).Cells("Terima").Value))
                 CmbRekening.Text = DGVGaji.Rows(e.RowIndex).Cells("Rekening").Value.ToString()
 
                 ' Konversi nilai dari TxtPotBon dan TxtAngsuran menjadi Decimal dengan default 0 jika tidak valid
                 Dim potBon As Decimal = ModuleAngka.ParseDecimal(TxtPotBon.Text)
                 Dim angsuran As Decimal = ModuleAngka.ParseDecimal(TxtAngsuran.Text)
-                TxtPotBonUntukEdit.Text = (potBon + angsuran).ToString("N0")
+                TxtPotBonUntukEdit.Text = ModuleAngka.FormatUntukInput(potBon + angsuran)
 
                 BtnSimpann.Text = "EDIT (F8)"
             Else

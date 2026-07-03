@@ -153,7 +153,7 @@ Public Class PrintReturBeli
                     DTPTgl.Value = Convert.ToDateTime(rd("TGL_RETUR_BELI"))
                     TxtNamaSupplier.Text = rd("NAMA_SUPPLIER").ToString()
                     TxtAlamatSupplier.Text = rd("ALAMAT_SUPPLIER").ToString()
-                    TxtTotal.Text = Convert.ToDecimal(rd("TOTAL_RUPIAH")).ToString("N0")
+                    TxtTotal.Text = Convert.ToDecimal(rd("TOTAL_RUPIAH")).ToString("N0", cultureIndonesia)
                     TxtIdUser.Text = rd("ID_USER").ToString()
                     TxtIdKomputer.Text = rd("ID_KOMPUTER").ToString()
                 End If

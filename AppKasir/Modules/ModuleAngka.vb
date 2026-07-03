@@ -182,7 +182,7 @@ Module ModuleAngka
         For Each nama As String In namaKolom
             If dgv.Columns.Contains(nama) Then
                 With dgv.Columns(nama).DefaultCellStyle
-                    .Format         = "#,0.##"
+                    .Format         = "#,0.####"
                     .Alignment      = DataGridViewContentAlignment.MiddleRight
                     .FormatProvider = CultureID
                 End With

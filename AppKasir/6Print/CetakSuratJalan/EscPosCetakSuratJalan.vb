@@ -78,9 +78,9 @@ Public Class EscPosCetakSuratJalan
             no += 1
         Next
         baris.Add(pI & garis)
-        baris.Add(pI & KiriKanan("Total :", SJRp(SJ_TotalRupiah), n))
+        baris.Add(pI & KiriKanan("Total :", SJRp(SJ_TotalDihitung), n))
         baris.Add(pI & garis)
-        baris.Add(pI & "Terbilang : " & Terbilang(SJ_TotalRupiah) & " Rupiah")
+        baris.Add(pI & "Terbilang : " & Terbilang(SJ_TotalDihitung) & " Rupiah")
         baris.Add(pI & "")
         baris.Add(pI & KiriKanan(KiriKanan("Sopir", "Helper 1", CInt(n * 0.6)), "Helper 2", n))
         baris.Add(pI & "")

@@ -612,7 +612,7 @@ Partial Class FormReturBeli
         'HARGA_BELI_TERAKHIR
         '
         DataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight
-        DataGridViewCellStyle4.Format = "N0"
+        DataGridViewCellStyle4.Format = "#,0.####"
         DataGridViewCellStyle4.NullValue = Nothing
         Me.HARGA_BELI_TERAKHIR.DefaultCellStyle = DataGridViewCellStyle4
         Me.HARGA_BELI_TERAKHIR.FillWeight = 60.0!
@@ -622,7 +622,7 @@ Partial Class FormReturBeli
         'QTY
         '
         DataGridViewCellStyle5.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight
-        DataGridViewCellStyle5.Format = "N0"
+        DataGridViewCellStyle5.Format = "#,0.####"
         DataGridViewCellStyle5.NullValue = Nothing
         Me.QTY.DefaultCellStyle = DataGridViewCellStyle5
         Me.QTY.FillWeight = 30.0!
@@ -651,7 +651,7 @@ Partial Class FormReturBeli
         'HARGA_BELI_SATUAN
         '
         DataGridViewCellStyle6.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight
-        DataGridViewCellStyle6.Format = "N0"
+        DataGridViewCellStyle6.Format = "#,0.####"
         DataGridViewCellStyle6.NullValue = Nothing
         Me.HARGA_BELI_SATUAN.DefaultCellStyle = DataGridViewCellStyle6
         Me.HARGA_BELI_SATUAN.HeaderText = "HARGA BELI SATUAN"
@@ -663,7 +663,7 @@ Partial Class FormReturBeli
         'QTY_SAT
         '
         DataGridViewCellStyle7.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight
-        DataGridViewCellStyle7.Format = "N0"
+        DataGridViewCellStyle7.Format = "#,0.####"
         DataGridViewCellStyle7.NullValue = Nothing
         Me.QTY_SAT.DefaultCellStyle = DataGridViewCellStyle7
         Me.QTY_SAT.FillWeight = 40.0!
@@ -674,7 +674,7 @@ Partial Class FormReturBeli
         'TOTAL
         '
         DataGridViewCellStyle8.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight
-        DataGridViewCellStyle8.Format = "N0"
+        DataGridViewCellStyle8.Format = "#,0.####"
         DataGridViewCellStyle8.NullValue = Nothing
         Me.TOTAL.DefaultCellStyle = DataGridViewCellStyle8
         Me.TOTAL.FillWeight = 80.0!
@@ -687,7 +687,7 @@ Partial Class FormReturBeli
         'StokToko
         '
         DataGridViewCellStyle9.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight
-        DataGridViewCellStyle9.Format = "#,0.#"
+        DataGridViewCellStyle9.Format = "#,0.####"
         Me.StokToko.DefaultCellStyle = DataGridViewCellStyle9
         Me.StokToko.FillWeight = 40.0!
         Me.StokToko.HeaderText = "S TOKO"
@@ -696,7 +696,7 @@ Partial Class FormReturBeli
         'StokGudang
         '
         DataGridViewCellStyle10.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight
-        DataGridViewCellStyle10.Format = "#,0.#"
+        DataGridViewCellStyle10.Format = "#,0.####"
         Me.StokGudang.DefaultCellStyle = DataGridViewCellStyle10
         Me.StokGudang.FillWeight = 40.0!
         Me.StokGudang.HeaderText = "S GUDANG"

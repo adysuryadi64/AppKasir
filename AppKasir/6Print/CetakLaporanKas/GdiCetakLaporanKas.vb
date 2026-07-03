@@ -107,7 +107,7 @@ Public Class GdiCetakLaporanKas
     End Property
     Private ReadOnly Property PosNilai As Integer
         Get
-            Return BK + CInt(LebarPx * 0.25)
+            Return BK + CInt(LebarPx * 0.28)
         End Get
     End Property
     Private ReadOnly Property Jarak As Integer
@@ -195,7 +195,7 @@ Public Class GdiCetakLaporanKas
     End Sub
 
     Private Sub HitungPanjang()
-        ' Hitung baris yang tidak nol
+        ' Hitung baris transaksi yang tidak nol
         Dim barisTerisi As Integer = 0
         If LK_TotalPembelian <> 0 Then barisTerisi += 1
         If LK_TotalPenjualan <> 0 Then barisTerisi += 1
@@ -213,7 +213,20 @@ Public Class GdiCetakLaporanKas
         If LK_TotalGaji <> 0 Then barisTerisi += 1
         If LK_TotalPinjamanSupplier <> 0 Then barisTerisi += 1
         If LK_TotalPinjamanPelanggan <> 0 Then barisTerisi += 1
-        _panjangKertas = barisTerisi * 12 + 500
+
+        ' Tinggi per baris dinamis berdasarkan ukuran font + jarak
+        Dim tinggiBaris As Integer = _cfg.UkuranIsi + 4 + _cfg.JarakBaris
+
+        ' Header: nama toko (4 baris) + judul + garis + info filter (3 baris) + header kolom = ~22 baris minimal
+        ' Ringkasan: 5-7 baris saldo + tanda tangan + footer = ~200px
+        Dim headerPx As Integer = 22 * (tinggiBaris + 2)  ' lebih longgar
+        Dim ringkasanPx As Integer = 200
+        Dim footerPx As Integer = 0
+        If ShowF1 Then footerPx += 16
+        If ShowF2 Then footerPx += 16
+        If ShowF3 Then footerPx += 16
+
+        _panjangKertas = headerPx + (barisTerisi * (tinggiBaris + 2)) + ringkasanPx + footerPx + 60
     End Sub
 
     Private Sub Pd_BeginPrint(s As Object, e As PrintEventArgs) Handles _pd.BeginPrint
@@ -249,9 +262,12 @@ Public Class GdiCetakLaporanKas
         g.DrawString(Garis, FGaris, Brushes.Black, BK, y) : y += 5 + Jarak
 
         ' Header kolom
-        Dim m3 As Integer = BK + CInt(LebarPx * 0.50)
-        Dim m4 As Integer = BK + CInt(LebarPx * 0.65)
-        Dim m5 As Integer = BK + CInt(LebarPx * 0.95)
+        ' m3 = posisi kanan kolom Nota (~45% dari kiri — beri ruang cukup untuk nama transaksi panjang)
+        ' m4 = posisi kanan label ringkasan saldo
+        ' m5 = posisi kanan nilai (hampir penuh lebar kertas)
+        Dim m3 As Integer = BK + CInt(LebarPx * 0.45)
+        Dim m4 As Integer = BK + CInt(LebarPx * 0.62)
+        Dim m5 As Integer = BK + CInt(LebarPx * 0.97)
 
         g.DrawString("Transaksi", FIsi, Brushes.Black, BK, y)
         g.DrawString("Nota", FIsi, Brushes.Black, m3, y, fmtKanan)
@@ -259,9 +275,14 @@ Public Class GdiCetakLaporanKas
         g.DrawString(Garis, FGaris, Brushes.Black, BK, y) : y += 5 + Jarak
 
         ' Baris transaksi — hanya tampil jika tidak nol
+        ' Kolom nama dibatasi lebar sampai sebelum m3 agar tidak menabrak kolom Nota
+        Dim lebarNama As Integer = m3 - BK - 4
         Dim TulisTransaksi = Sub(tanda As String, nama As String, nota As Integer, total As Decimal)
                                  y += 10 + Jarak
-                                 g.DrawString(tanda & " " & nama, FIsi, Brushes.Black, BK, y)
+                                 ' Gambar nama dengan clipping agar tidak menabrak kolom Nota
+                                 g.DrawString(tanda & " " & nama, FIsi, Brushes.Black,
+                                     New RectangleF(BK, y, lebarNama, FIsi.GetHeight(g) + 2),
+                                     StringFormat.GenericDefault)
                                  g.DrawString(nota.ToString("N0", cultureIndonesia), FIsi, Brushes.Black, m3, y, fmtKanan)
                                  g.DrawString(Rp(total), FIsi, Brushes.Black, m5, y, fmtKanan)
                              End Sub
@@ -286,10 +307,14 @@ Public Class GdiCetakLaporanKas
         y += 10 + Jarak
         g.DrawString(BuatGarisGanda(HitungLebarGaris(_cfg.LebarKertas)), FGaris, Brushes.Black, m3, y) : y += 10 + Jarak
 
-        ' Ringkasan saldo
+        ' Ringkasan saldo — label rata kanan di m4, nilai rata kanan di m5
+        ' Gunakan RectangleF agar label panjang tidak terpotong
+        Dim lebarLbl As Integer = m4 - BK
         Dim TulisRingkasan = Sub(lbl As String, val As Decimal, bold As Boolean)
                                  Dim fnt As Font = If(bold, FBold, FIsi)
-                                 g.DrawString(lbl, fnt, Brushes.Black, m4, y, fmtKanan)
+                                 g.DrawString(lbl, fnt, Brushes.Black,
+                                     New RectangleF(BK, y, lebarLbl, fnt.GetHeight(g) + 2),
+                                     New StringFormat() With {.Alignment = StringAlignment.Far})
                                  g.DrawString(Rp(val), fnt, Brushes.Black, m5, y, fmtKanan)
                                  y += 10 + Jarak
                              End Sub

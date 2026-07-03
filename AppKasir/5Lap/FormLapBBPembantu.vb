@@ -288,9 +288,9 @@ Public Class FormLapBBPembantu
                         totalD += CDec(row("DEBET"))
                         totalK += CDec(row("KREDIT"))
                     Next
-                    TxtTotalDebet.Text = totalD.ToString("N0")
-                    TxtTotalKredit.Text = totalK.ToString("N0")
-                    TxtSaldoAkhir.Text = Math.Abs(totalD - totalK).ToString("N0")
+                    TxtTotalDebet.Text = totalD.ToString("N0", cultureIndonesia)
+                    TxtTotalKredit.Text = totalK.ToString("N0", cultureIndonesia)
+                    TxtSaldoAkhir.Text = Math.Abs(totalD - totalK).ToString("N0", cultureIndonesia)
 
                     ReportViewer1.LocalReport.ReportEmbeddedResource = "AppKasir.ReportBBPembantu.rdlc"
                     ReportViewer1.LocalReport.DataSources.Add(New ReportDataSource("DataSet1", ds.Tables("BBPembantu")))

@@ -62,13 +62,20 @@ Module ModuleCetakTransferBarangInkjet
         g.DrawString("Lokasi", fIsi, Brushes.Black, xKanan2, y) : g.DrawString(": " & TB_Lokasi, fIsi, Brushes.Black, xVal2, y) : y += lh + 4
         g.DrawLine(Pens.Black, b.Left, y, xKanan, y) : y += 6
 
-        ' Tabel
+        ' Tabel — posisi kolom dari konfigurasi
+        Dim pTBNo As Integer = _cfg.PctTBNo
+        Dim pTBKode As Integer = _cfg.PctTBKode
+        Dim pTBNama As Integer = _cfg.PctTBNama
+        Dim pTBHarga As Integer = _cfg.PctTBHarga
+        Dim pTBQty As Integer = _cfg.PctTBQty
+        Dim pTBSatuan As Integer = _cfg.PctTBSatuan
+
         Dim xNo As Integer = b.Left
-        Dim xKode As Integer = b.Left + CInt(b.Width * 0.04)
-        Dim xNama As Integer = b.Left + CInt(b.Width * 0.16)
-        Dim xHarga As Integer = b.Left + CInt(b.Width * 0.52)
-        Dim xQty As Integer = b.Left + CInt(b.Width * 0.66)
-        Dim xSat As Integer = b.Left + CInt(b.Width * 0.74)
+        Dim xKode As Integer = b.Left + CInt(b.Width * pTBNo / 100.0)
+        Dim xNama As Integer = b.Left + CInt(b.Width * (pTBNo + pTBKode) / 100.0)
+        Dim xHarga As Integer = b.Left + CInt(b.Width * (pTBNo + pTBKode + pTBNama) / 100.0)
+        Dim xQty As Integer = b.Left + CInt(b.Width * (pTBNo + pTBKode + pTBNama + pTBHarga) / 100.0)
+        Dim xSat As Integer = b.Left + CInt(b.Width * (pTBNo + pTBKode + pTBNama + pTBHarga + pTBQty) / 100.0)
         Dim xJml As Integer = b.Right
 
         g.DrawString("No", fBold, Brushes.Black, xNo, y)

@@ -16,16 +16,16 @@ Public Class FormMasterGaji
                     ' Mengisi nilai dari reader ke kontrol yang sesuai
                     LblNomor.Text = reader("Kode").ToString()
                     TxtHariKerja.Text = If(Convert.IsDBNull(reader("Hari_kerja")), 0, Integer.Parse(reader("Hari_kerja").ToString()))
-                    TxtProsentase.Text = If(Convert.IsDBNull(reader("Prosentase_komisi")), 0, Decimal.Parse(reader("Prosentase_komisi").ToString()).ToString("N0"))
-                    TxtSupir.Text = If(Convert.IsDBNull(reader("Bonus_Supir")), 0, Decimal.Parse(reader("Bonus_Supir").ToString()).ToString("N0"))
-                    TxtHelper.Text = If(Convert.IsDBNull(reader("Bonus_Helper")), 0, Decimal.Parse(reader("Bonus_Helper").ToString()).ToString("N0"))
-                    TxtTransport.Text = If(Convert.IsDBNull(reader("Bonus_Transport")), 0, Decimal.Parse(reader("Bonus_Transport").ToString()).ToString("N0"))
-                    TxtMakan.Text = If(Convert.IsDBNull(reader("Bonus_makan")), 0, Decimal.Parse(reader("Bonus_makan").ToString()).ToString("N0"))
-                    TxtLembur.Text = If(Convert.IsDBNull(reader("Bonus_Lembur")), 0, Decimal.Parse(reader("Bonus_Lembur").ToString()).ToString("N0"))
+                    TxtProsentase.Text = ModuleAngka.FormatUntukInput(If(Convert.IsDBNull(reader("Prosentase_komisi")), 0D, ModuleAngka.ParseDecimal(reader("Prosentase_komisi"))))
+                    TxtSupir.Text = ModuleAngka.FormatUntukInput(If(Convert.IsDBNull(reader("Bonus_Supir")), 0D, ModuleAngka.ParseDecimal(reader("Bonus_Supir"))))
+                    TxtHelper.Text = ModuleAngka.FormatUntukInput(If(Convert.IsDBNull(reader("Bonus_Helper")), 0D, ModuleAngka.ParseDecimal(reader("Bonus_Helper"))))
+                    TxtTransport.Text = ModuleAngka.FormatUntukInput(If(Convert.IsDBNull(reader("Bonus_Transport")), 0D, ModuleAngka.ParseDecimal(reader("Bonus_Transport"))))
+                    TxtMakan.Text = ModuleAngka.FormatUntukInput(If(Convert.IsDBNull(reader("Bonus_makan")), 0D, ModuleAngka.ParseDecimal(reader("Bonus_makan"))))
+                    TxtLembur.Text = ModuleAngka.FormatUntukInput(If(Convert.IsDBNull(reader("Bonus_Lembur")), 0D, ModuleAngka.ParseDecimal(reader("Bonus_Lembur"))))
                     CmbAbsen.Text = reader("Jenis_Potongan").ToString()
-                    TxtAbsen.Text = If(Convert.IsDBNull(reader("Potongan_Absen")), 0, Decimal.Parse(reader("Potongan_Absen").ToString()).ToString("N0"))
-                    TxtAbsenKhusus.Text = If(Convert.IsDBNull(reader("Potongan_Absen_Khusus")), 0, Decimal.Parse(reader("Potongan_Absen_Khusus").ToString()).ToString("N0"))
-                    TxtTelat.Text = If(Convert.IsDBNull(reader("Potongan_Terlambat")), 0, Decimal.Parse(reader("Potongan_Terlambat").ToString()).ToString("N0"))
+                    TxtAbsen.Text = ModuleAngka.FormatUntukInput(If(Convert.IsDBNull(reader("Potongan_Absen")), 0D, ModuleAngka.ParseDecimal(reader("Potongan_Absen"))))
+                    TxtAbsenKhusus.Text = ModuleAngka.FormatUntukInput(If(Convert.IsDBNull(reader("Potongan_Absen_Khusus")), 0D, ModuleAngka.ParseDecimal(reader("Potongan_Absen_Khusus"))))
+                    TxtTelat.Text = ModuleAngka.FormatUntukInput(If(Convert.IsDBNull(reader("Potongan_Terlambat")), 0D, ModuleAngka.ParseDecimal(reader("Potongan_Terlambat"))))
                 End If
             End Using
         End Using

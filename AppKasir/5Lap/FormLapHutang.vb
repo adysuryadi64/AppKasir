@@ -155,9 +155,9 @@ Public Class FormLapHutang
 
 
             ' Tampilkan hasil perhitungan di TextBox
-            TxtTotalHutang.Text = totalHutang.ToString("N0")
-            TxtBayar.Text = totalBayar.ToString("N0")
-            TxtHutang.Text = totalHutang - totalBayar.ToString("N0")
+            TxtTotalHutang.Text = totalHutang.ToString("N0", cultureIndonesia)
+            TxtBayar.Text = totalBayar.ToString("N0", cultureIndonesia)
+            TxtHutang.Text = (totalHutang - totalBayar).ToString("N0", cultureIndonesia)
 
             Dim queryTampil As String = Nothing
             If LblHeaderForm.Text = "LAPORAN HUTANG KE SUPPLIER BY PEMBELIAN" Then

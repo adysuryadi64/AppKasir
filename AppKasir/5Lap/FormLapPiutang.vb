@@ -151,9 +151,9 @@ Public Class FormLapPiutang
                     Dim HUTANG As Decimal = ModuleAngka.SafeGetValue(Of Decimal)(rd, "HUTANG", 0D)
                     Dim NOMINAL_BAYAR As Decimal = ModuleAngka.SafeGetValue(Of Decimal)(rd, "NOMINAL_BAYAR", 0D)
 
-                    TxtTotalHutang.Text = HUTANG.ToString("N0")
-                    TxtBayar.Text = NOMINAL_BAYAR.ToString("N0")
-                    TxtHutang.Text = HUTANG - NOMINAL_BAYAR.ToString("N0")
+                    TxtTotalHutang.Text = HUTANG.ToString("N0", cultureIndonesia)
+                    TxtBayar.Text = NOMINAL_BAYAR.ToString("N0", cultureIndonesia)
+                    TxtHutang.Text = (HUTANG - NOMINAL_BAYAR).ToString("N0", cultureIndonesia)
                 End If
             End Using
         End Using

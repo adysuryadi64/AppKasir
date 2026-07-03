@@ -988,7 +988,7 @@ Public Class FormTransferCabang
             ' Validasi stok setelah ganti qty
             Dim kode As String = Convert.ToString(row.Cells("Kode").Value).Trim()
             If Not String.IsNullOrWhiteSpace(kode) Then
-                Dim qtySat As Decimal = ModuleAngka.ParseDecimal(Convert.ToString(row.Cells("QtySat").Value))
+                Dim qtySat As Decimal = ModuleAngka.ParseDecimal(row.Cells("QtySat").Value)
                 If qtySat > 0D Then
                     Dim errorCode As String = ""
                     Dim errorMessage As String = ""
@@ -1047,7 +1047,7 @@ Public Class FormTransferCabang
         DgvDetail.Rows(rowIdx).Cells("Isi").Value = Math.Max(1, options(idx).Value)
 
         ' Validasi stok setelah ganti satuan
-        Dim qtySat As Decimal = ModuleAngka.ParseDecimal(Convert.ToString(DgvDetail.Rows(rowIdx).Cells("QtySat").Value))
+        Dim qtySat As Decimal = ModuleAngka.ParseDecimal(DgvDetail.Rows(rowIdx).Cells("QtySat").Value)
         If qtySat > 0D Then
             Dim errorCode As String = ""
             Dim errorMessage As String = ""
@@ -1114,7 +1114,7 @@ Public Class FormTransferCabang
                             DgvDetail.Rows(rowIdx).Cells("Isi").Value = Math.Max(1, options(newIdx).Value)
 
                             ' Validasi stok setelah ganti satuan
-                            Dim qtySat As Decimal = ModuleAngka.ParseDecimal(Convert.ToString(DgvDetail.Rows(rowIdx).Cells("QtySat").Value))
+                            Dim qtySat As Decimal = ModuleAngka.ParseDecimal(DgvDetail.Rows(rowIdx).Cells("QtySat").Value)
                             If qtySat > 0D Then
                                 Dim errorCode As String = ""
                                 Dim errorMessage As String = ""
@@ -1544,7 +1544,7 @@ Public Class FormTransferCabang
             If existingRow.IsNewRow Then Continue For
             If existingRow.Index = rowIdx Then Continue For
             If existingRow.Cells("Kode").Value IsNot Nothing AndAlso existingRow.Cells("Kode").Value.ToString() = idBarang Then
-                Dim currentQtySat As Decimal = ModuleAngka.ParseDecimal(Convert.ToString(existingRow.Cells("QtySat").Value))
+                Dim currentQtySat As Decimal = ModuleAngka.ParseDecimal(existingRow.Cells("QtySat").Value)
                 Dim newQtySat As Decimal = (_selectedQty * options(0).Value) + currentQtySat
 
                 ' Validasi stok gabungan
@@ -1594,7 +1594,7 @@ Public Class FormTransferCabang
         HitungBaris(rowIdx)
 
         ' Validasi stok setelah input barang
-        Dim qtySat As Decimal = ModuleAngka.ParseDecimal(Convert.ToString(row.Cells("QtySat").Value))
+        Dim qtySat As Decimal = ModuleAngka.ParseDecimal(row.Cells("QtySat").Value)
         If qtySat > 0D Then
             Dim errorCode As String = ""
             Dim errorMessage As String = ""
@@ -1718,7 +1718,7 @@ Public Class FormTransferCabang
         For Each existingRow As DataGridViewRow In DgvDetail.Rows
             If existingRow.IsNewRow Then Continue For
             If existingRow.Cells("Kode").Value IsNot Nothing AndAlso existingRow.Cells("Kode").Value.ToString() = kode Then
-                Dim currentQtySat As Decimal = ModuleAngka.ParseDecimal(Convert.ToString(existingRow.Cells("QtySat").Value))
+                Dim currentQtySat As Decimal = ModuleAngka.ParseDecimal(existingRow.Cells("QtySat").Value)
                 Dim newQtySat As Decimal = qtySat + currentQtySat
 
                 ' Validasi stok gabungan
@@ -1877,8 +1877,8 @@ Public Class FormTransferCabang
         Dim row = DgvDetail.Rows(rowIdx)
         If row.IsNewRow Then Return
 
-        Dim qty As Decimal = ModuleAngka.ParseDecimal(Convert.ToString(row.Cells("QTY").Value))
-        Dim isi As Decimal = Math.Max(1, ModuleAngka.ParseDecimal(Convert.ToString(row.Cells("Isi").Value)))
+        Dim qty As Decimal = ModuleAngka.ParseDecimal(row.Cells("QTY").Value)
+        Dim isi As Decimal = Math.Max(1, ModuleAngka.ParseDecimal(row.Cells("Isi").Value))
         Dim qtySat As Decimal = qty * isi
 
         ' Ambil harga dari DB jika sel kosong/nol
@@ -1960,7 +1960,7 @@ Public Class FormTransferCabang
         row.Cells("NamaBarang").Value = namaBarang
         TerapkanSatuanKeRow(row, options, options(0).Key, options(0).Value)
         row.Cells("QTY").Value = qty
-        row.Cells("HargaBeli").Value = hargaBeli.ToString("#,0.##", cultureIndonesia)
+        row.Cells("HargaBeli").Value = hargaBeli.ToString("#,0.####", cultureIndonesia)
         row.Cells("StokToko").Value = stokToko
         row.Cells("StokGudang").Value = stokGudang
         HitungBaris(rowIdx)
@@ -1999,7 +1999,7 @@ Public Class FormTransferCabang
             If row.IsNewRow Then Continue For
             total += ModuleAngka.ParseDecimal(row.Cells("TotalHarga").Value)
         Next
-        TxtGrandtotal.Text = total.ToString("#,0.##", cultureIndonesia)
+        TxtGrandtotal.Text = total.ToString("#,0.####", cultureIndonesia)
     End Sub
 #End Region
 
@@ -2505,7 +2505,7 @@ Public Class FormTransferCabang
             If row.IsNewRow Then Continue For
             Dim kode As String = Convert.ToString(row.Cells("Kode").Value).Trim()
             If String.IsNullOrWhiteSpace(kode) Then Continue For
-            Dim qtySat As Decimal = ModuleAngka.ParseDecimal(Convert.ToString(row.Cells("QtySat").Value))
+            Dim qtySat As Decimal = ModuleAngka.ParseDecimal(row.Cells("QtySat").Value)
             If qtySat <= 0D Then
                 MessageBox.Show($"Qty transfer untuk barang {kode} harus lebih besar dari 0.", "Validasi", MessageBoxButtons.OK, MessageBoxIcon.Warning)
                 Return False
@@ -2737,7 +2737,7 @@ Public Class FormTransferCabang
                 EscapeCsv(row.Cells("Kode").Value.ToString()), EscapeCsv(row.Cells("NamaBarang").Value.ToString()),
                 EscapeCsv(row.Cells("QTY").Value.ToString()), EscapeCsv(row.Cells("Satuan").Value.ToString()),
                 EscapeCsv(row.Cells("Isi").Value.ToString()), EscapeCsv(row.Cells("QtySat").Value.ToString()),
-                EscapeCsv(hargaBeliCsv.ToString("0.##")),
+                EscapeCsv(hargaBeliCsv.ToString("0.####")),
                 EscapeCsv(TxtKeterangan.Text.Trim())}))
         Next
         File.WriteAllText(filePath, sb.ToString(), Encoding.UTF8)
@@ -2774,7 +2774,7 @@ Public Class FormTransferCabang
         Dim keySet As New HashSet(Of String)(itemsSukses.Select(Function(i) $"{i.Kode}|{i.QtySat}|{i.Satuan}"), StringComparer.OrdinalIgnoreCase)
         For i As Integer = DgvDetail.Rows.Count - 1 To 0 Step -1
             Dim r = DgvDetail.Rows(i)
-            Dim key = $"{Convert.ToString(r.Cells("Kode").Value)}|{ModuleAngka.ParseDecimal(Convert.ToString(r.Cells("QtySat").Value))}|{Convert.ToString(r.Cells("Satuan").Value)}"
+            Dim key = $"{Convert.ToString(r.Cells("Kode").Value)}|{ModuleAngka.ParseDecimal(r.Cells("QtySat").Value)}|{Convert.ToString(r.Cells("Satuan").Value)}"
             If keySet.Contains(key) Then DgvDetail.Rows.RemoveAt(i)
         Next
         TxtNamaBarang.Focus()

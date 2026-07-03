@@ -62,14 +62,22 @@ Module ModuleCetakSuratJalanInkjet
         g.DrawString("Armada", fIsi, Brushes.Black, xKanan2, y) : g.DrawString(": " & SJ_Armada & " " & SJ_JenisArmada, fIsi, Brushes.Black, xVal2, y) : y += lh + 4
         g.DrawLine(Pens.Black, b.Left, y, xKanan, y) : y += 6
 
-        ' Tabel header
+        ' Tabel header — posisi kolom dari konfigurasi
+        Dim pNo As Integer = _cfg.PctSJNo
+        Dim pNota As Integer = _cfg.PctSJNota
+        Dim pNama As Integer = _cfg.PctSJPelanggan
+        Dim pAlamat As Integer = _cfg.PctSJAlamat
+        Dim pJml As Integer = _cfg.PctSJJumlah
+        Dim pLokasi As Integer = _cfg.PctSJLokasi
+        Dim pTtd As Integer = Math.Max(1, 100 - pNo - pNota - pNama - pAlamat - pJml - pLokasi)
+
         Dim xNo As Integer = b.Left
-        Dim xNota As Integer = b.Left + CInt(b.Width * 0.04)
-        Dim xNama As Integer = b.Left + CInt(b.Width * 0.16)
-        Dim xAlamat As Integer = b.Left + CInt(b.Width * 0.36)
-        Dim xJml As Integer = b.Left + CInt(b.Width * 0.62)
-        Dim xLokasi As Integer = b.Left + CInt(b.Width * 0.75)
-        Dim xTtd As Integer = b.Right
+        Dim xNota As Integer = b.Left + CInt(b.Width * pNo / 100.0)
+        Dim xNama As Integer = b.Left + CInt(b.Width * (pNo + pNota) / 100.0)
+        Dim xAlamat As Integer = b.Left + CInt(b.Width * (pNo + pNota + pNama) / 100.0)
+        Dim xJml As Integer = b.Left + CInt(b.Width * (pNo + pNota + pNama + pAlamat) / 100.0)
+        Dim xLokasi As Integer = b.Left + CInt(b.Width * (pNo + pNota + pNama + pAlamat + pJml) / 100.0)
+        Dim xTtd As Integer = b.Left + CInt(b.Width * (pNo + pNota + pNama + pAlamat + pJml + pLokasi) / 100.0)
 
         g.DrawString("No", fBold, Brushes.Black, xNo, y)
         g.DrawString("Nota", fBold, Brushes.Black, xNota, y)
@@ -95,9 +103,9 @@ Module ModuleCetakSuratJalanInkjet
 
         ' Total
         g.DrawString("Total :", fBold, Brushes.Black, xAlamat, y)
-        g.DrawString(SJ_TotalRupiah.ToString("N0", cultureIndonesia), fBold, Brushes.Black, xJml, y, fmtKanan) : y += lh
+        g.DrawString(SJ_TotalDihitung.ToString("N0", cultureIndonesia), fBold, Brushes.Black, xJml, y, fmtKanan) : y += lh
         g.DrawLine(New Pen(Color.Black, 2), xAlamat, y, xJml, y) : y += 4
-        g.DrawString("Terbilang: " & Terbilang(SJ_TotalRupiah) & " Rupiah",
+        g.DrawString("Terbilang: " & Terbilang(SJ_TotalDihitung) & " Rupiah",
                      New Font(_cfg.FontIsi, Math.Max(6, _cfg.UkuranIsi - 1), FontStyle.Italic), Brushes.Gray, b.Left, y) : y += lh + 10
 
         ' Tanda tangan
