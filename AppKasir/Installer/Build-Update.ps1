@@ -188,6 +188,24 @@ foreach ($f in $allFiles) {
     })
 }
 
+# ── Tambahkan folder Database dari source project ─────────────────
+# Folder Database\ (SchemaDef, migrasi SQL) tidak di-copy saat build,
+# harus disertakan manual agar FormSchemaValidator bisa menemukan SchemaDef
+# saat runtime di komputer client.
+$DatabaseSourceDir = Join-Path $PSScriptRoot "..\Database"
+if (Test-Path $DatabaseSourceDir) {
+    $dbFiles = Get-ChildItem -Path $DatabaseSourceDir -Recurse -File
+    $dbSourceFull = (Resolve-Path $DatabaseSourceDir).Path
+    foreach ($f in $dbFiles) {
+        $relativePath = "Database\" + $f.FullName.Substring($dbSourceFull.Length).TrimStart('\')
+        $included.Add([PSCustomObject]@{
+            FullPath     = $f.FullName
+            RelativePath = $relativePath
+        })
+    }
+    Write-Host "  Database\  : $($dbFiles.Count) file ditambahkan dari source project" -ForegroundColor Cyan
+}
+
 Write-Host "  File akan dimasukkan : $($included.Count)" -ForegroundColor Green
 Write-Host "  File dikecualikan    : $($skipped.Count)" -ForegroundColor DarkGray
 Write-Host ""
