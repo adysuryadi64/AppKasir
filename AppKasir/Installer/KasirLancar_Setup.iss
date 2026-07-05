@@ -1,5 +1,5 @@
 ﻿#define MyAppName "Kasir Lancar"
-#define MyAppVersion "25.3.2026.18"
+#define MyAppVersion "2026.07.06.0"
 #define MyAppPublisher "Kasir Lancar"
 #define MyAppExeName "KasirLancar.exe"
 #define MyAppSourceDir "..\bin\Debug"
@@ -31,7 +31,7 @@ DirExistsWarning=no
 
 ; Output
 OutputDir=Output
-OutputBaseFilename=KasirLancar_Setup_v25.3.2026.18_new
+OutputBaseFilename=KasirLancar_Setup_v2026.07.06.0
 
 ; Icon
 SetupIconFile=Kasir lancar.ico
@@ -126,11 +126,13 @@ Name: "startupicon";    Description: "Jalankan otomatis saat Windows startup"; G
 
 ; ============================================================
 [Files]
-; AUTO-GENERATED oleh Build-Installer.ps1 - 2026-05-17 16:56:13
-; Total file di bin\Debug: 872
+; AUTO-GENERATED oleh Build-Installer.ps1 - 2026-07-06 03:25:35
+; Total file di bin\Debug: 867
 
 ; ----- File Utama Aplikasi -----
 Source: "{#MyAppSourceDir}\_dashboard_tmp.html"; DestDir: "{app}"; Flags: ignoreversion; Components: mainapp
+Source: "{#MyAppSourceDir}\AutoUpdater.NET.dll"; DestDir: "{app}"; Flags: ignoreversion; Components: mainapp
+Source: "{#MyAppSourceDir}\AutoUpdater.NET.xml"; DestDir: "{app}"; Flags: ignoreversion; Components: mainapp
 Source: "{#MyAppSourceDir}\Azure.Core.dll"; DestDir: "{app}"; Flags: ignoreversion; Components: mainapp
 Source: "{#MyAppSourceDir}\Azure.Core.xml"; DestDir: "{app}"; Flags: ignoreversion; Components: mainapp
 Source: "{#MyAppSourceDir}\Azure.Identity.dll"; DestDir: "{app}"; Flags: ignoreversion; Components: mainapp
@@ -139,13 +141,11 @@ Source: "{#MyAppSourceDir}\BouncyCastle.Crypto.dll"; DestDir: "{app}"; Flags: ig
 Source: "{#MyAppSourceDir}\BouncyCastle.Crypto.xml"; DestDir: "{app}"; Flags: ignoreversion; Components: mainapp
 Source: "{#MyAppSourceDir}\BouncyCastle.Cryptography.dll"; DestDir: "{app}"; Flags: ignoreversion; Components: mainapp
 Source: "{#MyAppSourceDir}\BouncyCastle.Cryptography.xml"; DestDir: "{app}"; Flags: ignoreversion; Components: mainapp
+Source: "{#MyAppSourceDir}\chart.min.js"; DestDir: "{app}"; Flags: ignoreversion; Components: mainapp
 Source: "{#MyAppSourceDir}\ClosedXML.dll"; DestDir: "{app}"; Flags: ignoreversion; Components: mainapp
 Source: "{#MyAppSourceDir}\ClosedXML.Parser.dll"; DestDir: "{app}"; Flags: ignoreversion; Components: mainapp
 Source: "{#MyAppSourceDir}\ClosedXML.Parser.xml"; DestDir: "{app}"; Flags: ignoreversion; Components: mainapp
 Source: "{#MyAppSourceDir}\ClosedXML.xml"; DestDir: "{app}"; Flags: ignoreversion; Components: mainapp
-Source: "{#MyAppSourceDir}\config.bin"; DestDir: "{app}"; Flags: onlyifdoesntexist; Components: mainapp
-Source: "{#MyAppSourceDir}\config_printer.ini"; DestDir: "{app}"; Flags: onlyifdoesntexist; Components: mainapp
-Source: "{#MyAppSourceDir}\ConfigLabelBarang.ini"; DestDir: "{app}"; Flags: onlyifdoesntexist; Components: mainapp
 Source: "{#MyAppSourceDir}\database.json"; DestDir: "{app}"; Flags: onlyifdoesntexist; Components: mainapp
 Source: "{#MyAppSourceDir}\DocumentFormat.OpenXml.dll"; DestDir: "{app}"; Flags: ignoreversion; Components: mainapp
 Source: "{#MyAppSourceDir}\DocumentFormat.OpenXml.Framework.dll"; DestDir: "{app}"; Flags: ignoreversion; Components: mainapp
@@ -160,7 +160,7 @@ Source: "{#MyAppSourceDir}\FastReport.dll"; DestDir: "{app}"; Flags: ignoreversi
 Source: "{#MyAppSourceDir}\FastReport.xml"; DestDir: "{app}"; Flags: ignoreversion; Components: mainapp
 Source: "{#MyAppSourceDir}\Google.Protobuf.dll"; DestDir: "{app}"; Flags: ignoreversion; Components: mainapp
 Source: "{#MyAppSourceDir}\Google.Protobuf.xml"; DestDir: "{app}"; Flags: ignoreversion; Components: mainapp
-Source: "{#MyAppSourceDir}\gudang.jpg"; DestDir: "{app}"; Flags: ignoreversion; Components: mainapp
+Source: "{#MyAppSourceDir}\guide.html"; DestDir: "{app}"; Flags: ignoreversion; Components: mainapp
 Source: "{#MyAppSourceDir}\itextsharp.dll"; DestDir: "{app}"; Flags: ignoreversion; Components: mainapp
 Source: "{#MyAppSourceDir}\itextsharp.xml"; DestDir: "{app}"; Flags: ignoreversion; Components: mainapp
 Source: "{#MyAppSourceDir}\K4os.Compression.LZ4.dll"; DestDir: "{app}"; Flags: ignoreversion; Components: mainapp
@@ -172,8 +172,6 @@ Source: "{#MyAppSourceDir}\K4os.Hash.xxHash.xml"; DestDir: "{app}"; Flags: ignor
 Source: "{#MyAppSourceDir}\Kasir Lancar.xml"; DestDir: "{app}"; Flags: onlyifdoesntexist; Components: mainapp
 Source: "{#MyAppSourceDir}\KasirLancar.exe"; DestDir: "{app}"; Flags: ignoreversion; Components: mainapp
 Source: "{#MyAppSourceDir}\KasirLancar.exe.config"; DestDir: "{app}"; Flags: ignoreversion; Components: mainapp
-Source: "{#MyAppSourceDir}\license.ini"; DestDir: "{app}"; Flags: onlyifdoesntexist; Components: mainapp
-Source: "{#MyAppSourceDir}\logo.png"; DestDir: "{app}"; Flags: ignoreversion; Components: mainapp
 Source: "{#MyAppSourceDir}\Microsoft.Bcl.AsyncInterfaces.dll"; DestDir: "{app}"; Flags: ignoreversion; Components: mainapp
 Source: "{#MyAppSourceDir}\Microsoft.Bcl.AsyncInterfaces.xml"; DestDir: "{app}"; Flags: ignoreversion; Components: mainapp
 Source: "{#MyAppSourceDir}\Microsoft.Bcl.Cryptography.dll"; DestDir: "{app}"; Flags: ignoreversion; Components: mainapp
@@ -232,11 +230,8 @@ Source: "{#MyAppSourceDir}\Microsoft.Web.WebView2.Core.dll"; DestDir: "{app}"; F
 Source: "{#MyAppSourceDir}\Microsoft.Web.WebView2.Core.xml"; DestDir: "{app}"; Flags: ignoreversion; Components: mainapp
 Source: "{#MyAppSourceDir}\Microsoft.Web.WebView2.WinForms.dll"; DestDir: "{app}"; Flags: ignoreversion; Components: mainapp
 Source: "{#MyAppSourceDir}\Microsoft.Web.WebView2.WinForms.xml"; DestDir: "{app}"; Flags: ignoreversion; Components: mainapp
-Source: "{#MyAppSourceDir}\MicrosoftEdgeWebView2RuntimeInstaller.exe"; DestDir: "{app}"; Flags: ignoreversion; Components: mainapp
 Source: "{#MyAppSourceDir}\MySql.Data.dll"; DestDir: "{app}"; Flags: ignoreversion; Components: mainapp
 Source: "{#MyAppSourceDir}\MySql.Data.xml"; DestDir: "{app}"; Flags: ignoreversion; Components: mainapp
-Source: "{#MyAppSourceDir}\mysql.exe"; DestDir: "{app}"; Flags: ignoreversion; Components: mainapp
-Source: "{#MyAppSourceDir}\mysqldump.exe"; DestDir: "{app}"; Flags: ignoreversion; Components: mainapp
 Source: "{#MyAppSourceDir}\Newtonsoft.Json.dll"; DestDir: "{app}"; Flags: ignoreversion; Components: mainapp
 Source: "{#MyAppSourceDir}\Newtonsoft.Json.xml"; DestDir: "{app}"; Flags: ignoreversion; Components: mainapp
 Source: "{#MyAppSourceDir}\pengaturan_cetak.ini"; DestDir: "{app}"; Flags: ignoreversion; Components: mainapp
@@ -290,8 +285,7 @@ Source: "{#MyAppSourceDir}\System.Text.Json.dll"; DestDir: "{app}"; Flags: ignor
 Source: "{#MyAppSourceDir}\System.Text.Json.xml"; DestDir: "{app}"; Flags: ignoreversion; Components: mainapp
 Source: "{#MyAppSourceDir}\System.Threading.Tasks.Extensions.dll"; DestDir: "{app}"; Flags: ignoreversion; Components: mainapp
 Source: "{#MyAppSourceDir}\System.Threading.Tasks.Extensions.xml"; DestDir: "{app}"; Flags: ignoreversion; Components: mainapp
-Source: "{#MyAppSourceDir}\toko.jpg"; DestDir: "{app}"; Flags: ignoreversion; Components: mainapp
-Source: "{#MyAppSourceDir}\vs2DA9.tmp"; DestDir: "{app}"; Flags: ignoreversion; Components: mainapp
+Source: "{#MyAppSourceDir}\TemplateLabaRugi.html"; DestDir: "{app}"; Flags: ignoreversion; Components: mainapp
 Source: "{#MyAppSourceDir}\WebView2Loader.dll"; DestDir: "{app}"; Flags: ignoreversion; Components: mainapp
 Source: "{#MyAppSourceDir}\ZstdSharp.dll"; DestDir: "{app}"; Flags: ignoreversion; Components: mainapp
 Source: "{#MyAppSourceDir}\zxing.dll"; DestDir: "{app}"; Flags: ignoreversion; Components: mainapp
@@ -299,76 +293,67 @@ Source: "{#MyAppSourceDir}\zxing.presentation.dll"; DestDir: "{app}"; Flags: ign
 Source: "{#MyAppSourceDir}\zxing.presentation.xml"; DestDir: "{app}"; Flags: ignoreversion; Components: mainapp
 Source: "{#MyAppSourceDir}\zxing.xml"; DestDir: "{app}"; Flags: ignoreversion; Components: mainapp
 
-; ----- 0Form (1 file) -----
-Source: "{#MyAppSourceDir}\0Form\*"; DestDir: "{app}\0Form"; Flags: ignoreversion recursesubdirs; Components: mainapp
+; ----- ar (1 file) -----
+Source: "{#MyAppSourceDir}\ar\*"; DestDir: "{app}\ar"; Flags: ignoreversion recursesubdirs; Components: mainapp
 
-; ----- 5Lap (1 file) -----
-Source: "{#MyAppSourceDir}\5Lap\*"; DestDir: "{app}\5Lap"; Flags: ignoreversion recursesubdirs; Components: mainapp
-
-; ----- 8Uty (1 file) -----
-Source: "{#MyAppSourceDir}\8Uty\*"; DestDir: "{app}\8Uty"; Flags: ignoreversion recursesubdirs; Components: mainapp
-
-; ----- Folder Backup (2 file) -----
-Source: "{#MyAppSourceDir}\Backup\*"; DestDir: "{app}\Backup"; Flags: ignoreversion recursesubdirs createallsubdirs; Components: mainapp
-
-; ----- cs (1 file) -----
+; ----- cs (2 file) -----
 Source: "{#MyAppSourceDir}\cs\*"; DestDir: "{app}\cs"; Flags: ignoreversion recursesubdirs; Components: mainapp
 
-; ----- database_Default_Master (4 file) -----
-Source: "{#MyAppSourceDir}\database_Default_Master\*"; DestDir: "{app}\database_Default_Master"; Flags: ignoreversion recursesubdirs; Components: mainapp
+; ----- da (1 file) -----
+Source: "{#MyAppSourceDir}\da\*"; DestDir: "{app}\da"; Flags: ignoreversion recursesubdirs; Components: mainapp
 
-; ----- de (6 file) -----
+; ----- de (7 file) -----
 Source: "{#MyAppSourceDir}\de\*"; DestDir: "{app}\de"; Flags: ignoreversion recursesubdirs; Components: mainapp
 
-; ----- es (6 file) -----
+; ----- es (7 file) -----
 Source: "{#MyAppSourceDir}\es\*"; DestDir: "{app}\es"; Flags: ignoreversion recursesubdirs; Components: mainapp
 
-; ----- fr (6 file) -----
+; ----- fr (7 file) -----
 Source: "{#MyAppSourceDir}\fr\*"; DestDir: "{app}\fr"; Flags: ignoreversion recursesubdirs; Components: mainapp
 
-; ----- it (6 file) -----
+; ----- it (7 file) -----
 Source: "{#MyAppSourceDir}\it\*"; DestDir: "{app}\it"; Flags: ignoreversion recursesubdirs; Components: mainapp
 
 ; ----- ja (6 file) -----
 Source: "{#MyAppSourceDir}\ja\*"; DestDir: "{app}\ja"; Flags: ignoreversion recursesubdirs; Components: mainapp
 
-; ----- ko (6 file) -----
+; ----- ja-JP (1 file) -----
+Source: "{#MyAppSourceDir}\ja-JP\*"; DestDir: "{app}\ja-JP"; Flags: ignoreversion recursesubdirs; Components: mainapp
+
+; ----- ko (7 file) -----
 Source: "{#MyAppSourceDir}\ko\*"; DestDir: "{app}\ko"; Flags: ignoreversion recursesubdirs; Components: mainapp
 
-; ----- pl (1 file) -----
+; ----- lv (1 file) -----
+Source: "{#MyAppSourceDir}\lv\*"; DestDir: "{app}\lv"; Flags: ignoreversion recursesubdirs; Components: mainapp
+
+; ----- nl (1 file) -----
+Source: "{#MyAppSourceDir}\nl\*"; DestDir: "{app}\nl"; Flags: ignoreversion recursesubdirs; Components: mainapp
+
+; ----- pl (2 file) -----
 Source: "{#MyAppSourceDir}\pl\*"; DestDir: "{app}\pl"; Flags: ignoreversion recursesubdirs; Components: mainapp
 
-; ----- Printer Driver Software (7 file) -----
-; Semua file driver disertakan ke {app}\Printer Driver Software
-Source: "{#MyAppDriverDir}\appserv-9-3-0.exe"; DestDir: "{app}\Printer Driver Software"; Flags: ignoreversion; Components: mainapp
-Source: "{#MyAppDriverDir}\mysql-connector-net-9.1.0.msi"; DestDir: "{app}\Printer Driver Software"; Flags: ignoreversion; Components: mainapp
-Source: "{#MyAppDriverDir}\POS Printer Driver Setup .exe"; DestDir: "{app}\Printer Driver Software"; Flags: ignoreversion; Components: mainapp
-Source: "{#MyAppDriverDir}\ReportViewer.exe"; DestDir: "{app}\Printer Driver Software"; Flags: ignoreversion; Components: mainapp
-Source: "{#MyAppDriverDir}\tsc_driver.exe"; DestDir: "{app}\Printer Driver Software"; Flags: ignoreversion; Components: mainapp
-Source: "{#MyAppDriverDir}\VC_redist.x64.exe"; DestDir: "{app}\Printer Driver Software"; Flags: ignoreversion; Components: mainapp
-Source: "{#MyAppDriverDir}\VC_redist.x86.exe"; DestDir: "{app}\Printer Driver Software"; Flags: ignoreversion; Components: mainapp
-
-; Installer prerequisite juga ke {tmp} untuk dijalankan
-Source: "{#MyAppDriverDir}\mysql-connector-net-9.1.0.msi"; DestDir: "{tmp}"; Flags: deleteafterinstall; Components: mysqlconn
-Source: "{#MyAppDriverDir}\appserv-9-3-0.exe"; DestDir: "{tmp}"; Flags: deleteafterinstall; Components: appserv
-Source: "{#MyAppDriverDir}\VC_redist.x86.exe"; DestDir: "{tmp}"; Flags: deleteafterinstall; Components: vcredist
-Source: "{#MyAppDriverDir}\VC_redist.x64.exe"; DestDir: "{tmp}"; Flags: deleteafterinstall; Components: vcredist
-Source: "{#MyAppDriverDir}\ReportViewer.exe"; DestDir: "{tmp}"; Flags: deleteafterinstall; Components: reportviewer
-Source: "{#MyAppDriverDir}\POS Printer Driver Setup .exe"; DestDir: "{tmp}"; Flags: deleteafterinstall; Components: posprinter
-
-; ----- pt (5 file) -----
+; ----- pt (6 file) -----
 Source: "{#MyAppSourceDir}\pt\*"; DestDir: "{app}\pt"; Flags: ignoreversion recursesubdirs; Components: mainapp
 
-; ----- pt-BR (1 file) -----
+; ----- pt-BR (2 file) -----
 Source: "{#MyAppSourceDir}\pt-BR\*"; DestDir: "{app}\pt-BR"; Flags: ignoreversion recursesubdirs; Components: mainapp
 
 ; ----- Resources (612 file) -----
 Source: "{#MyAppSourceDir}\Resources\*"; DestDir: "{app}\Resources"; Flags: ignoreversion recursesubdirs; Components: mainapp
 
-; ----- ru (6 file) -----
+; ----- ru (7 file) -----
 Source: "{#MyAppSourceDir}\ru\*"; DestDir: "{app}\ru"; Flags: ignoreversion recursesubdirs; Components: mainapp
 
-; ----- tr (1 file) -----
+; ----- sk (1 file) -----
+Source: "{#MyAppSourceDir}\sk\*"; DestDir: "{app}\sk"; Flags: ignoreversion recursesubdirs; Components: mainapp
+
+; ----- sv (1 file) -----
+Source: "{#MyAppSourceDir}\sv\*"; DestDir: "{app}\sv"; Flags: ignoreversion recursesubdirs; Components: mainapp
+
+; ----- th (1 file) -----
+Source: "{#MyAppSourceDir}\th\*"; DestDir: "{app}\th"; Flags: ignoreversion recursesubdirs; Components: mainapp
+
+; ----- tr (2 file) -----
 Source: "{#MyAppSourceDir}\tr\*"; DestDir: "{app}\tr"; Flags: ignoreversion recursesubdirs; Components: mainapp
 
 ; ----- x64 (1 file) -----
@@ -376,6 +361,9 @@ Source: "{#MyAppSourceDir}\x64\*"; DestDir: "{app}\x64"; Flags: ignoreversion re
 
 ; ----- x86 (1 file) -----
 Source: "{#MyAppSourceDir}\x86\*"; DestDir: "{app}\x86"; Flags: ignoreversion recursesubdirs; Components: mainapp
+
+; ----- zh (1 file) -----
+Source: "{#MyAppSourceDir}\zh\*"; DestDir: "{app}\zh"; Flags: ignoreversion recursesubdirs; Components: mainapp
 
 ; ----- zh-CHS (4 file) -----
 Source: "{#MyAppSourceDir}\zh-CHS\*"; DestDir: "{app}\zh-CHS"; Flags: ignoreversion recursesubdirs; Components: mainapp
@@ -388,6 +376,9 @@ Source: "{#MyAppSourceDir}\zh-Hans\*"; DestDir: "{app}\zh-Hans"; Flags: ignoreve
 
 ; ----- zh-Hant (2 file) -----
 Source: "{#MyAppSourceDir}\zh-Hant\*"; DestDir: "{app}\zh-Hant"; Flags: ignoreversion recursesubdirs; Components: mainapp
+
+; ----- zh-TW (1 file) -----
+Source: "{#MyAppSourceDir}\zh-TW\*"; DestDir: "{app}\zh-TW"; Flags: ignoreversion recursesubdirs; Components: mainapp
 
 
 ; ----- Database Migration & Scripts (Auto-include all) -----
