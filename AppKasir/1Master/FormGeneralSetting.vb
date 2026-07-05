@@ -48,7 +48,8 @@ Public Class FormGeneralSetting
             (LblGlobalIsiNominal, CmbGlobalIsiNominal, 1),
             (LblGlobalInfoStok, CmbGlobalInfoStok, 0),
             (LblHidePencarianAtas, CmbHidePencarianAtas, 0),
-            (LblJualAutoLevelSatuan, CmbJualAutoLevelSatuan, 1)
+            (LblJualAutoLevelSatuan, CmbJualAutoLevelSatuan, 1),
+            (LblPilihanBackUp, CmbPilihanBackUp, 2)
         }
     End Sub
 
@@ -84,6 +85,9 @@ Public Class FormGeneralSetting
         toolTip.SetToolTip(LblGlobalInfoStok, "Jika 'Iya': Tampilkan stok Toko & Gudang" & vbCrLf & "Jika 'Tidak': Tampilkan stok lokasi aktif saja")
         toolTip.SetToolTip(LblHidePencarianAtas, "Jika 'Iya': Sembunyikan panel pencarian di atas data grid" & vbCrLf & "Jika 'Tidak': Tampilkan panel pencarian di atas data grid")
         toolTip.SetToolTip(LblJualAutoLevelSatuan, "Jika 'Iya': Satuan otomatis berubah sesuai qty (kecil/sedang/besar)" & vbCrLf & "Batas qty diatur di General Setting → Batas Satuan Sedang & Besar" & vbCrLf & "Jika 'Tidak': Satuan tidak berubah otomatis")
+
+        ' GbGlobalTransaksi - Pilihan Backup
+        toolTip.SetToolTip(LblPilihanBackUp, "Pilihan aksi backup saat menutup aplikasi:" & vbCrLf & "- Iya   : Langsung backup otomatis (ZIP) sebelum keluar" & vbCrLf & "- Tidak : Tutup aplikasi tanpa backup" & vbCrLf & "- Tanya : Tampilkan konfirmasi backup (default)")
 
     End Sub
 

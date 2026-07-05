@@ -126,6 +126,15 @@ Friend Module ModuleTooltip
                 "• Umum: boleh input transaksi dengan tanggal lampau" & Environment.NewLine &
                 "Setting disimpan ke database dan di-cache per sesi login.")
 
+            .SetToolTip(frm.BtnBarangRakitan,
+                "📦 BARANG RAKITAN / PAKET" & Environment.NewLine &
+                "Kelola paket bundle dari beberapa barang (kitting)." & Environment.NewLine &
+                "• Master Rakitan: definisikan resep komponen (BOM) per paket" & Environment.NewLine &
+                "• Proses Rakit: gabungkan komponen → stok komponen berkurang, stok paket bertambah" & Environment.NewLine &
+                "• Proses Bongkar: kembalikan paket → stok paket berkurang, komponen dikembalikan" & Environment.NewLine &
+                "• Paket bisa dijual normal di FormJual seperti barang biasa" & Environment.NewLine &
+                "Nomor: RK-YYMMDD-XXXX (Rakit), BR-YYMMDD-XXXX (Bongkar)")
+
             ' --- TRANSAKSI ---
             .SetToolTip(frm.BtnBelanja,
                 "📦 PEMBELIAN" & Environment.NewLine &

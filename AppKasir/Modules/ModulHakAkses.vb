@@ -391,6 +391,19 @@ Friend Module ModulHakAkses
         End Get
     End Property
 
+    ''' <summary>
+    ''' Pilihan backup saat tutup aplikasi.
+    ''' Nilai: "Iya" (otomatis backup), "Tidak" (skip backup), "Tanya" (tanya dulu).
+    ''' Default: "Tanya"
+    ''' </summary>
+    Public ReadOnly Property SettingPilihanBackUp As String
+        Get
+            Dim val As String = BacaSettingDariCache(FormGeneralSetting.LblPilihanBackUp.Text)
+            If String.IsNullOrEmpty(val) Then Return "Tanya"
+            Return val
+        End Get
+    End Property
+
     ' Cache batas qty satuan — disimpan terpisah karena bertipe Integer, bukan Iya/Tidak
     Private _batasSatuanSedang As Integer = 3
     Private _batasSatuanBesar As Integer = 6

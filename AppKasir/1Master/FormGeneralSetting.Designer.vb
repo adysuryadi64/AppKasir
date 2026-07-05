@@ -83,6 +83,8 @@ Partial Class FormGeneralSetting
         Me.CmbGlobalIsiNominal = New System.Windows.Forms.ComboBox()
         Me.LblGlobalTransaksiLampau = New System.Windows.Forms.Label()
         Me.CmbGlobalTransaksiLampau = New System.Windows.Forms.ComboBox()
+        Me.LblPilihanBackUp = New System.Windows.Forms.Label()
+        Me.CmbPilihanBackUp = New System.Windows.Forms.ComboBox()
         Me.PanelHeader.SuspendLayout()
         Me.PanelInput1.SuspendLayout()
         Me.GbReturBeli.SuspendLayout()
@@ -675,8 +677,11 @@ Partial Class FormGeneralSetting
         Me.BtnClose.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
         Me.BtnClose.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText
         Me.BtnClose.UseVisualStyleBackColor = False
+        '
         'GbGlobalTransaksi
         '
+        Me.GbGlobalTransaksi.Controls.Add(Me.LblPilihanBackUp)
+        Me.GbGlobalTransaksi.Controls.Add(Me.CmbPilihanBackUp)
         Me.GbGlobalTransaksi.Controls.Add(Me.LblHidePencarianAtas)
         Me.GbGlobalTransaksi.Controls.Add(Me.CmbHidePencarianAtas)
         Me.GbGlobalTransaksi.Controls.Add(Me.LblGlobalInfoStok)
@@ -695,7 +700,7 @@ Partial Class FormGeneralSetting
         Me.GbGlobalTransaksi.Font = New System.Drawing.Font("Century Gothic", 9.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.GbGlobalTransaksi.Location = New System.Drawing.Point(0, 0)
         Me.GbGlobalTransaksi.Name = "GbGlobalTransaksi"
-        Me.GbGlobalTransaksi.Size = New System.Drawing.Size(597, 273)
+        Me.GbGlobalTransaksi.Size = New System.Drawing.Size(597, 296)
         Me.GbGlobalTransaksi.TabIndex = 139
         Me.GbGlobalTransaksi.TabStop = False
         Me.GbGlobalTransaksi.Text = "Berlaku semua transaksi"
@@ -861,6 +866,29 @@ Partial Class FormGeneralSetting
         Me.CmbGlobalTransaksiLampau.Size = New System.Drawing.Size(196, 25)
         Me.CmbGlobalTransaksiLampau.TabIndex = 128
         '
+        'LblPilihanBackUp
+        '
+        Me.LblPilihanBackUp.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
+        Me.LblPilihanBackUp.Font = New System.Drawing.Font("Century Gothic", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.LblPilihanBackUp.Location = New System.Drawing.Point(6, 254)
+        Me.LblPilihanBackUp.Name = "LblPilihanBackUp"
+        Me.LblPilihanBackUp.Size = New System.Drawing.Size(374, 28)
+        Me.LblPilihanBackUp.TabIndex = 143
+        Me.LblPilihanBackUp.Text = "Apakah Mau Backup Sebelum Tutup Aplikasi"
+        Me.LblPilihanBackUp.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
+        '
+        'CmbPilihanBackUp
+        '
+        Me.CmbPilihanBackUp.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
+        Me.CmbPilihanBackUp.Font = New System.Drawing.Font("Century Gothic", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.CmbPilihanBackUp.FormattingEnabled = True
+        Me.CmbPilihanBackUp.Items.AddRange(New Object() {"Iya", "Tidak", "Tanya"})
+        Me.CmbPilihanBackUp.Location = New System.Drawing.Point(386, 256)
+        Me.CmbPilihanBackUp.Margin = New System.Windows.Forms.Padding(4)
+        Me.CmbPilihanBackUp.Name = "CmbPilihanBackUp"
+        Me.CmbPilihanBackUp.Size = New System.Drawing.Size(196, 25)
+        Me.CmbPilihanBackUp.TabIndex = 142
+        '
         'FormGeneralSetting
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
@@ -881,6 +909,7 @@ Partial Class FormGeneralSetting
         Me.GbReturBeli.ResumeLayout(False)
         Me.GBReturJual.ResumeLayout(False)
         Me.GBPenjualan.ResumeLayout(False)
+        Me.GBPenjualan.PerformLayout()
         Me.GBPembelian.ResumeLayout(False)
         Me.PanelInput.ResumeLayout(False)
         Me.PanelInput.PerformLayout()
@@ -949,4 +978,6 @@ Partial Class FormGeneralSetting
     Friend WithEvents LblJualBatasBesar As Label
     Friend WithEvents TxtBatasSatuanSedang As TextBox
     Friend WithEvents TxtBatasSatuanBesar As TextBox
+    Friend WithEvents LblPilihanBackUp As Label
+    Friend WithEvents CmbPilihanBackUp As ComboBox
 End Class

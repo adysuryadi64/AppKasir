@@ -1581,4 +1581,116 @@ Module ModuleHapusTransaksi
 
 #End Region
 
+#Region "HAPUS RAKITAN"
+
+    ''' <summary>
+    ''' Hapus satu paket rakitan secara permanen.
+    ''' Efek: Mengembalikan stok komponen yang sudah terpakai (karena rakitan mengeluarkan komponen).
+    ''' Menghapus BOM, HistoryBarang terkait, dan reset IS_PAKET.
+    ''' Pola: identik dengan HapusPenjualan (reversal counter stok → HitungStokPerubahan → delete).
+    ''' </summary>
+    Public Sub HapusRakitan(ByVal kodeRakitan As String,
+                            ByVal lokasi As String,
+                            ByVal transaction As MySqlTransaction)
+
+        Dim kolTambah As String = If(lokasi = "GUDANG", "TAMBAH_GUDANG", "TAMBAH_TOKO")
+
+        ' ── Step 1: Baca semua komponen BOM dari DB ──
+        Dim komponen As New List(Of (Kode As String, Nama As String, Qty As Decimal))
+        Using cmd As New MySqlCommand(
+            "SELECT kode_komponen, nama_komponen, qty FROM tbl_rakitan_bom WHERE kode_rakitan=@kode",
+            conn, transaction)
+            cmd.Parameters.AddWithValue("@kode", kodeRakitan)
+            Using rd = cmd.ExecuteReader()
+                While rd.Read()
+                    Dim kd As String = rd("kode_komponen").ToString()
+                    Dim nm As String = rd("nama_komponen").ToString()
+                    Dim qt As Decimal = ModuleAngka.ParseDecimal(rd("qty"))
+                    If qt > 0 Then komponen.Add((kd, nm, qt))
+                End While
+            End Using
+        End Using
+
+        ' ── Step 2: Kembalikan stok + HitungStokPerubahan + History per komponen ──
+        Dim auditDelta As New Dictionary(Of String, Decimal)()
+
+        For Each k In komponen
+            ' 2a: Tambah counter TAMBAH_x (reversal dari KURANG_x saat rakitan disimpan)
+            Using cmd As New MySqlCommand(
+                $"UPDATE tbl_barang SET {kolTambah} = {kolTambah} + @qty WHERE ID_BARANG=@kode",
+                conn, transaction)
+                cmd.Parameters.AddWithValue("@qty", k.Qty)
+                cmd.Parameters.AddWithValue("@kode", k.Kode)
+                cmd.ExecuteNonQuery()
+            End Using
+
+            ' 2b: Recalculate stok fisik
+            Dim sebelum As Decimal = BacaStokSaatIni(k.Kode, lokasi, transaction)
+            HitungStokPerubahan(k.Kode, transaction)
+            Dim sesudah As Decimal = BacaStokSaatIni(k.Kode, lokasi, transaction)
+            Dim delta As Decimal = sesudah - sebelum
+            If auditDelta.ContainsKey(k.Kode) Then
+                auditDelta(k.Kode) += delta
+            Else
+                auditDelta(k.Kode) = delta
+            End If
+
+            ' 2c: History masuk kembali
+            InsertHistoryRakitan(kodeRakitan, DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"),
+                                  "HAPUS RAKITAN MASUK", k.Kode, k.Nama, k.Qty, lokasi, transaction)
+        Next
+
+        ' ── Step 3: Hapus data terkait ──
+        ' Hapus HistoryBarang untuk faktur ini
+        Using cmd As New MySqlCommand(
+            "DELETE FROM HistoryBarang WHERE FAKTUR=@fk", conn, transaction)
+            cmd.Parameters.AddWithValue("@fk", kodeRakitan)
+            cmd.ExecuteNonQuery()
+        End Using
+
+        ' Hapus BOM
+        Using cmd As New MySqlCommand(
+            "DELETE FROM tbl_rakitan_bom WHERE kode_rakitan=@kode", conn, transaction)
+            cmd.Parameters.AddWithValue("@kode", kodeRakitan)
+            cmd.ExecuteNonQuery()
+        End Using
+
+        ' Reset IS_PAKET
+        Using cmd As New MySqlCommand(
+            "UPDATE tbl_barang SET IS_PAKET=0 WHERE ID_BARANG=@kode", conn, transaction)
+            cmd.Parameters.AddWithValue("@kode", kodeRakitan)
+            cmd.ExecuteNonQuery()
+        End Using
+
+        ' ── Step 4: Audit stok ──
+        AuditStokTransaksi(kodeRakitan, "Hapus Rakitan", Nothing, Nothing, Nothing, auditDelta, transaction)
+
+    End Sub
+
+    ''' <summary>
+    ''' Insert HistoryBarang untuk komponen rakitan.
+    ''' </summary>
+    Private Sub InsertHistoryRakitan(faktur As String, tanggal As String, jenis As String,
+                                      idBarang As String, namaBarang As String,
+                                      qty As Decimal, lokasi As String,
+                                      transaction As MySqlTransaction)
+        Using cmd As New MySqlCommand(
+            "INSERT INTO HistoryBarang " &
+            "(FAKTUR,TANGGAL,JENIS,LOKASI,ID_BARANG,NAMA_BARANG,QTY,SATUAN,ISI_SATUAN,TOTAL_QTY,TOTAL_RUPIAH,ID_USER,ID_KOMPUTER) " &
+            "VALUES (@fk,@tgl,@jns,@lok,@id,@nm,@qty,'',1,@qty,0,@usr,@pc)", conn, transaction)
+            cmd.Parameters.AddWithValue("@fk", faktur)
+            cmd.Parameters.AddWithValue("@tgl", tanggal)
+            cmd.Parameters.AddWithValue("@jns", jenis)
+            cmd.Parameters.AddWithValue("@lok", lokasi)
+            cmd.Parameters.AddWithValue("@id", idBarang)
+            cmd.Parameters.AddWithValue("@nm", namaBarang)
+            cmd.Parameters.AddWithValue("@qty", qty)
+            cmd.Parameters.AddWithValue("@usr", "")
+            cmd.Parameters.AddWithValue("@pc", "")
+            cmd.ExecuteNonQuery()
+        End Using
+    End Sub
+
+#End Region
+
 End Module

@@ -517,6 +517,18 @@
     <Compile Include="1Master\FormGeneralSetting.vb">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="1Master\FormRakitan.Designer.vb">
+      <DependentUpon>FormRakitan.vb</DependentUpon>
+    </Compile>
+    <Compile Include="1Master\FormRakitan.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="1Master\FormTambahEditRakitan.Designer.vb">
+      <DependentUpon>FormTambahEditRakitan.vb</DependentUpon>
+    </Compile>
+    <Compile Include="1Master\FormTambahEditRakitan.vb">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="1Master\FormMasterPoin.Designer.vb">
       <DependentUpon>FormMasterPoin.vb</DependentUpon>
     </Compile>
@@ -687,7 +699,14 @@
     <Compile Include="8Uty\FormMigrasiDB.Designer.vb">
       <DependentUpon>FormMigrasiDB.vb</DependentUpon>
     </Compile>
+    <Compile Include="8Uty\MigrationExecutor.vb" />
     <Compile Include="8Uty\FormMigrasiDB.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="8Uty\FormSchemaValidator.Designer.vb">
+      <DependentUpon>FormSchemaValidator.vb</DependentUpon>
+    </Compile>
+    <Compile Include="8Uty\FormSchemaValidator.vb">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="9Sync\FormSync.Designer.vb">
@@ -1232,6 +1251,11 @@
     <Compile Include="Modules\ModuleTooltip.vb" />
     <Compile Include="Modules\DatabaseModule.vb" />
     <Compile Include="Modules\DatabaseRestore.vb" />
+    <Compile Include="Modules\SchemaModels.vb" />
+    <Compile Include="Modules\SchemaRegistry.vb" />
+    <Compile Include="Modules\DbSchemaHelper.vb" />
+    <Compile Include="Modules\SchemaComparer.vb" />
+    <Compile Include="Modules\MigrationGenerator.vb" />
     <Compile Include="DataSetKL.Designer.vb">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -1314,6 +1338,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="1Master\FormGeneralSetting.resx">
       <DependentUpon>FormGeneralSetting.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="1Master\FormRakitan.resx">
+      <DependentUpon>FormRakitan.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="1Master\FormTambahEditRakitan.resx">
+      <DependentUpon>FormTambahEditRakitan.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="1Master\FormMasterPoin.resx">
       <DependentUpon>FormMasterPoin.vb</DependentUpon>
@@ -1622,6 +1652,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="8Uty\FormMigrasiDB.resx">
       <DependentUpon>FormMigrasiDB.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="8Uty\FormSchemaValidator.resx">
+      <DependentUpon>FormSchemaValidator.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="8Uty\FormPerbaikanDatabase.resx">
       <DependentUpon>FormPerbaikanDatabase.vb</DependentUpon>

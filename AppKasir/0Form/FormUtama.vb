@@ -247,7 +247,7 @@ Public Class FormUtama
 
     Private Sub SetButtonBackgroundColor(ByVal clickedButton As Button)
         Dim buttons As Button() = {
-        BtnToko, BtnBarang, BTnPelanggan, BtnSupliyer, BtnUser, BtnTabelRef, BtnKirimCabang, BtnHakAksesUser, BtnGeneralSetting, BtnKaryawan, BtnArmada,
+        BtnToko, BtnBarang, BTnPelanggan, BtnSupliyer, BtnUser, BtnTabelRef, BtnKirimCabang, BtnHakAksesUser, BtnGeneralSetting, BtnKaryawan, BtnArmada, BtnBarangRakitan,
         BtnBelanja, BtnPenjualan, BtnRetuBelanja, BtnReturPenjualan, BtnBayarHutang, BtnBayarPiutang, BtnStokOpname, BtnPindahStok, BtnTransferBarang,
         BtnSuratJalan, BtnMasterCabang, BtnSalesOrder, BtnMasterPoin, BtnTukarPoin
         }
@@ -683,6 +683,12 @@ Public Class FormUtama
         SetButtonBackgroundColor(BtnGeneralSetting)
         TutupSemuaForm()
         BukaFormMdi(My.Forms.FormGeneralSetting)
+    End Sub
+
+    Private Sub BtnBarangRakitan_Click(sender As Object, e As EventArgs) Handles BtnBarangRakitan.Click
+        SetButtonBackgroundColor(BtnBarangRakitan)
+        TutupSemuaForm()
+        BukaFormMdi(My.Forms.FormRakitan)
     End Sub
 
     Private Sub BtnMasterPoin_Click(sender As Object, e As EventArgs) Handles BtnMasterPoin.Click
@@ -3308,6 +3314,10 @@ Public Class FormUtama
         TutupSemuaForm() : BukaFormMdi(My.Forms.FormMigrasiDB)
     End Sub
 
+    Private Sub SchemaValidatorToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles SchemaValidatorToolStripMenuItem.Click
+        TutupSemuaForm() : BukaFormMdi(My.Forms.FormSchemaValidator)
+    End Sub
+
     Private Sub SettingPrinterToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles SettingPrinterToolStripMenuItem.Click
         TutupSemuaForm() : BukaFormMdi(My.Forms.FormPengaturanPrinter)
     End Sub
@@ -3472,12 +3482,24 @@ Public Class FormUtama
             If Not FormCekUpdate.IsDisposed Then FormCekUpdate.Close()
         Catch : End Try
 
-        ' Tanyakan apakah pengguna ingin melakukan backup sebelum keluar
-        If MessageBox.Show("BACKUP DATA ?", "Konfirmasi Backup", MessageBoxButtons.YesNo) = DialogResult.Yes Then
-            ' Panggil metode BackupDatabase jika pengguna memilih "Yes"
+        ' Backup sebelum keluar — perilaku ditentukan dari General Setting
+        Dim pilihanBackUp As String = ModulHakAkses.SettingPilihanBackUp
+        Dim lakukanBackup As Boolean = False
+
+        Select Case pilihanBackUp
+            Case "Iya"
+                ' Langsung backup otomatis tanpa tanya
+                lakukanBackup = True
+            Case "Tidak"
+                ' Skip backup sama sekali
+                lakukanBackup = False
+            Case Else ' "Tanya" atau nilai tak dikenal — tampilkan dialog konfirmasi
+                lakukanBackup = (MessageBox.Show("BACKUP DATA ?", "Konfirmasi Backup", MessageBoxButtons.YesNo) = DialogResult.Yes)
+        End Select
+
+        If lakukanBackup Then
             Me.Cursor = Cursors.WaitCursor
-            Dim typesql As String = "ZIP"
-            BackupDatabase(typesql)
+            BackupDatabase("ZIP")
             Me.Cursor = Cursors.Default
         End If
 

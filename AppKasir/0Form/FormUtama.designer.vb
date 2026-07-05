@@ -62,6 +62,7 @@ Partial Class FormUtama
         Me.UpdateTabelDatabaseToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.QueryDatabaseToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.MigrasiDatabaseToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.SchemaValidatorToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripMenuItem7 = New System.Windows.Forms.ToolStripSeparator()
         Me.SettingPrinterToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripMenuItem8 = New System.Windows.Forms.ToolStripSeparator()
@@ -424,7 +425,7 @@ Partial Class FormUtama
         '
         'MenuUtility
         '
-        Me.MenuUtility.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.SystemTutupBulanToolStripMenuItem, Me.PilihanSaatMasukAplikasiToolStripMenuItem, Me.ToolStripMenuItem6, Me.DatabaseToolStripMenuItem, Me.BackupDatabaseToolStripMenuItem, Me.RestoreDatabaseToolStripMenuItem, Me.PerbaikiDatabaseToolStripMenuItem, Me.UpdateTabelDatabaseToolStripMenuItem, Me.QueryDatabaseToolStripMenuItem, Me.MigrasiDatabaseToolStripMenuItem, Me.ToolStripMenuItem7, Me.SettingPrinterToolStripMenuItem, Me.ToolStripMenuItem8, Me.HapusTransaksiTokoToolStripMenuItem, Me.HapusTransaksiGudangToolStripMenuItem, Me.HapusTransaksiSemuaToolStripMenuItem, Me.ToolStripMenuItem9, Me.PeriksaUpdateAplikasiToolStripMenuItem, Me.CekIpKomputerToolStripMenuItem})
+        Me.MenuUtility.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.SystemTutupBulanToolStripMenuItem, Me.PilihanSaatMasukAplikasiToolStripMenuItem, Me.ToolStripMenuItem6, Me.DatabaseToolStripMenuItem, Me.BackupDatabaseToolStripMenuItem, Me.RestoreDatabaseToolStripMenuItem, Me.PerbaikiDatabaseToolStripMenuItem, Me.UpdateTabelDatabaseToolStripMenuItem, Me.QueryDatabaseToolStripMenuItem, Me.MigrasiDatabaseToolStripMenuItem, Me.SchemaValidatorToolStripMenuItem, Me.ToolStripMenuItem7, Me.SettingPrinterToolStripMenuItem, Me.ToolStripMenuItem8, Me.HapusTransaksiTokoToolStripMenuItem, Me.HapusTransaksiGudangToolStripMenuItem, Me.HapusTransaksiSemuaToolStripMenuItem, Me.ToolStripMenuItem9, Me.PeriksaUpdateAplikasiToolStripMenuItem, Me.CekIpKomputerToolStripMenuItem})
         Me.MenuUtility.Font = New System.Drawing.Font("Bookman Old Style", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.MenuUtility.Image = CType(resources.GetObject("MenuUtility.Image"), System.Drawing.Image)
         Me.MenuUtility.Name = "MenuUtility"
@@ -529,6 +530,12 @@ Partial Class FormUtama
         Me.MigrasiDatabaseToolStripMenuItem.Name = "MigrasiDatabaseToolStripMenuItem"
         Me.MigrasiDatabaseToolStripMenuItem.Size = New System.Drawing.Size(405, 24)
         Me.MigrasiDatabaseToolStripMenuItem.Text = "Migrasi Database"
+        '
+        'SchemaValidatorToolStripMenuItem
+        '
+        Me.SchemaValidatorToolStripMenuItem.Name = "SchemaValidatorToolStripMenuItem"
+        Me.SchemaValidatorToolStripMenuItem.Size = New System.Drawing.Size(405, 24)
+        Me.SchemaValidatorToolStripMenuItem.Text = "Schema Validator"
         '
         'ToolStripMenuItem7
         '
@@ -2690,6 +2697,7 @@ Partial Class FormUtama
     Friend WithEvents StokBarangTakBergerakToolStripMenuItem As System.Windows.Forms.ToolStripMenuItem
     Friend WithEvents StokLampauToolStripMenuItem As System.Windows.Forms.ToolStripMenuItem
     Friend WithEvents MigrasiDatabaseToolStripMenuItem As System.Windows.Forms.ToolStripMenuItem
+    Friend WithEvents SchemaValidatorToolStripMenuItem As System.Windows.Forms.ToolStripMenuItem
     Friend WithEvents KeuanganToolStripMenuItem As System.Windows.Forms.ToolStripMenuItem
     Friend WithEvents TransferToolStripMenuItem As System.Windows.Forms.ToolStripMenuItem
     Friend WithEvents BtnMasterCabang As Button
