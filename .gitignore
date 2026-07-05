@@ -202,7 +202,7 @@ PublishScripts/
 # Database backups
 dbmoroseneng_backup_20260521_220041.sql
 *.sql
-!AppKasir/Database/*.sql
+!AppKasir/Database/**
 # except build/, which is used as an MSBuild target.
 !**/[Pp]ackages/build/
 # Uncomment if necessary however generally it will be regenerated when needed

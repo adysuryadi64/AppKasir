@@ -1,0 +1,21 @@
+﻿CREATE TABLE IF NOT EXISTS `hutang` (
+  `NOBAYARHUTANG` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `KODESUPLIYER` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `NAMASUPLIYER` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `TGLPEMBAYARAN` datetime DEFAULT NULL,
+  `LOKASI` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `TOTALHUTANG` decimal(15,0) DEFAULT '0',
+  `NOMINALBAYAR` decimal(15,0) DEFAULT '0',
+  `SISAHUTANG` decimal(15,0) DEFAULT '0',
+  `ID_USER_BAYAR` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `ID_KOMPUTER_BAYAR` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `sync_id` varchar(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  UNIQUE KEY `uq_sync_id_hutang` (`sync_id`),
+  KEY `idx_tgl_pembayaran_hutang` (`TGLPEMBAYARAN`),
+  KEY `idx_nobayarhutang` (`NOBAYARHUTANG`),
+  KEY `idx_tgl_supplier_hutang` (`TGLPEMBAYARAN`,`NAMASUPLIYER`),
+  KEY `idx_namasupliyer_hutang` (`NAMASUPLIYER`),
+  KEY `idx_tgl_lokasi_hutang` (`TGLPEMBAYARAN`,`LOKASI`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

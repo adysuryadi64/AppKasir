@@ -1,0 +1,21 @@
+﻿CREATE TABLE IF NOT EXISTS `tbl_karyawan` (
+  `KODE` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `NAMA` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `JABATAN` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `TGLMASUK` datetime DEFAULT NULL,
+  `GAJI` decimal(10,0) DEFAULT '0',
+  `SALDOAWAL` decimal(15,0) DEFAULT '0',
+  `TOTALBON` decimal(15,0) DEFAULT '0',
+  `TOTALBAYAR` decimal(15,0) DEFAULT '0',
+  `SALDOAKHIR` decimal(15,0) DEFAULT '0',
+  `Status` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'Aktif',
+  `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `sync_id` varchar(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  PRIMARY KEY (`KODE`),
+  UNIQUE KEY `uq_sync_id_tbl_karyawan` (`sync_id`),
+  KEY `idx_nama_karyawan` (`NAMA`),
+  KEY `idx_status_nama` (`Status`,`NAMA`),
+  KEY `idx_kode_karyawan` (`KODE`),
+  KEY `idx_saldo_akhir_karyawan` (`SALDOAKHIR`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

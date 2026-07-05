@@ -1,0 +1,12 @@
+﻿CREATE TABLE IF NOT EXISTS `temp_bbpembantu` (
+  `ID` int(11) NOT NULL AUTO_INCREMENT,
+  `NOMOR` int(11) DEFAULT '0',
+  `TANGGAL` datetime DEFAULT NULL,
+  `NOTA` varchar(30) DEFAULT NULL,
+  `ENTITAS` varchar(100) DEFAULT NULL,
+  `KETERANGAN` varchar(50) DEFAULT NULL,
+  `DEBET` decimal(15,0) DEFAULT '0',
+  `KREDIT` decimal(15,0) DEFAULT '0',
+  `SALDO` decimal(15,0) DEFAULT '0',
+  PRIMARY KEY (`ID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;

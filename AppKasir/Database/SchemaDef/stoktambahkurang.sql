@@ -1,0 +1,22 @@
+﻿CREATE TABLE IF NOT EXISTS `stoktambahkurang` (
+  `FAKTUR` varchar(15) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `TANGGAL` datetime DEFAULT NULL,
+  `JENIS` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `LOKASI` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `ID_BARANG` varchar(15) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `NAMA_BARANG` varchar(60) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `QTY` decimal(10,2) DEFAULT '0.00',
+  `SATUAN` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `ISI_SATUAN` int(11) DEFAULT '0',
+  `TOTAL_QTY` decimal(10,2) DEFAULT '0.00',
+  `ID_USER` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `ID_KOMPUTER` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `sync_id` varchar(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  UNIQUE KEY `uq_sync_id_stoktambahkurang` (`sync_id`),
+  KEY `idx_tanggal_stok_tk` (`TANGGAL`),
+  KEY `idx_lokasi_stok_tk` (`LOKASI`),
+  KEY `idx_id_barang_stok_tk` (`ID_BARANG`),
+  KEY `idx_faktur_stok_tk` (`FAKTUR`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

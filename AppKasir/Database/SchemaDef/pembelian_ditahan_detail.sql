@@ -1,0 +1,20 @@
+﻿CREATE TABLE IF NOT EXISTS `pembelian_ditahan_detail` (
+  `FAKTUR_BELI` varchar(15) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `NOTA_BELI` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `TANGGAL_MASUK` datetime DEFAULT NULL,
+  `LOKASI` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `ID_SUPLIYER` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `NAMA_SUPLIYER` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `ID_BARANG` varchar(15) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `NAMA_BARANG` varchar(60) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `HARGA_BELI` decimal(15,4) NOT NULL DEFAULT '0.0000',
+  `HARGA_AVERAGE` decimal(15,4) NOT NULL DEFAULT '0.0000',
+  `HARGA_BELI_SEBELUMNYA` decimal(15,4) NOT NULL DEFAULT '0.0000',
+  `QTY` decimal(10,2) DEFAULT '0.00',
+  `SATUAN` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `ISI_SATUAN` int(11) NOT NULL DEFAULT '1',
+  `HARGA_BELI_SATUAN` decimal(15,4) NOT NULL DEFAULT '0.0000',
+  `QTY_SAT` decimal(10,2) DEFAULT '0.00',
+  `TOTAL` decimal(10,2) DEFAULT '0.00',
+  `URUTAN` int(11) NOT NULL DEFAULT '0'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

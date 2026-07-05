@@ -1,0 +1,21 @@
+﻿CREATE TABLE IF NOT EXISTS `temp_datareferensi` (
+  `STATUS` varchar(10) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `JENIS_AKUN` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `TYPE_AKUN` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `KODE_AKUN` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `NAMA_AKUN` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `SUB_AKUN` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `AKUN_DK` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `AKUN_NRLR` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `KETERANGAN` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
+  `SALDO_AWAL` decimal(20,0) DEFAULT '0',
+  `SALDO_SEBELUMNYA` decimal(20,0) DEFAULT '0',
+  `S_DEBET` decimal(20,0) DEFAULT '0',
+  `S_KREDIT` decimal(20,0) DEFAULT '0',
+  `SALDO_AKHIR` decimal(20,0) DEFAULT '0',
+  `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `sync_id` varchar(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  PRIMARY KEY (`KODE_AKUN`),
+  UNIQUE KEY `sync_id` (`sync_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

@@ -1,0 +1,21 @@
+﻿CREATE TABLE IF NOT EXISTS `piutang` (
+  `ID_BAYAR_PIUTANG` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `KODE_PELANGGAN` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `NAMA_PELANGGAN` varchar(60) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `TGL_BAYAR` datetime DEFAULT NULL,
+  `TOTAL_PIUTANG` decimal(15,0) DEFAULT '0',
+  `NOMINAL_BAYAR` decimal(15,0) DEFAULT '0',
+  `SISA_PIUTANG` decimal(15,0) DEFAULT '0',
+  `LOKASI` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `ID_USER_BAYAR` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `ID_KOMPUTER_BAYAR` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `sync_id` varchar(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  UNIQUE KEY `uq_sync_id_piutang` (`sync_id`),
+  KEY `idx_tgl_bayar_piutang` (`TGL_BAYAR`),
+  KEY `idx_id_bayar_piutang` (`ID_BAYAR_PIUTANG`),
+  KEY `idx_tgl_pelanggan_piutang` (`TGL_BAYAR`,`NAMA_PELANGGAN`),
+  KEY `idx_nama_pelanggan_piutang` (`NAMA_PELANGGAN`),
+  KEY `idx_tgl_lokasi_piutang` (`TGL_BAYAR`,`LOKASI`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

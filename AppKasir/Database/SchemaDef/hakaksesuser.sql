@@ -1,0 +1,20 @@
+﻿CREATE TABLE IF NOT EXISTS `hakaksesuser` (
+  `NO` int(11) NOT NULL AUTO_INCREMENT,
+  `UserName` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `Role` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `ModuleName` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `CanRead` tinyint(1) DEFAULT '0',
+  `CanAdd` tinyint(1) DEFAULT '0',
+  `CanEdit` tinyint(1) DEFAULT '0',
+  `CanDelete` tinyint(1) DEFAULT '0',
+  `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `sync_id` varchar(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  PRIMARY KEY (`NO`),
+  UNIQUE KEY `uq_sync_id_hakaksesuser` (`sync_id`),
+  KEY `idx_username_hakakses` (`UserName`),
+  KEY `idx_username_role_hakakses` (`UserName`,`Role`),
+  KEY `idx_username_module_hakakses` (`UserName`,`ModuleName`),
+  KEY `idx_updated_at_hakakses` (`updated_at`),
+  KEY `idx_role_hakakses` (`Role`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

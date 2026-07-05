@@ -1,0 +1,20 @@
+﻿CREATE TABLE IF NOT EXISTS `tukarbarang` (
+  `ID_TUKAR` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `ID_PENJUALAN` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `TANGGAL` datetime DEFAULT NULL,
+  `DESKRIPSI` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `KODEPEL` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `NAMAPEL` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `JENISPEL` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `ID_BARANG` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `NAMA_BARANG` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `QTY` decimal(10,2) DEFAULT '0.00',
+  `SATUAN` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `ISISATUAN` int(11) DEFAULT NULL,
+  `QTYSATUAN` decimal(10,2) DEFAULT '0.00',
+  `HARGASATUAN` decimal(10,2) DEFAULT '0.00',
+  `DISKON` decimal(10,2) DEFAULT '0.00',
+  `TOTALHARGA` decimal(10,2) DEFAULT '0.00',
+  `SELISIH` decimal(10,2) DEFAULT '0.00',
+  `ID_USER` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
