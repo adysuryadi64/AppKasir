@@ -160,11 +160,26 @@ if (-not $hasValidKey) {
     Write-Host "        File .ai_key tidak ditemukan atau tidak memiliki key yang aktif. Changelog dilewati." -ForegroundColor DarkGray
 } else {
     # Ambil diff untuk prompt
+    # Ambil diff untuk prompt — gunakan HEAD dibanding tag terakhir (lebih andal dari --cached)
     $lastTag = git describe --tags --abbrev=0 2>$null
     if ($lastTag) {
-        $diff = (git diff -U1 $lastTag --cached) -join "`n"
+        $diff = (git diff -U1 $lastTag HEAD) -join "`n"
+        # Jika diff HEAD kosong (belum commit), ambil yang staged
+        if (-not $diff) {
+            $diff = (git diff -U1 $lastTag --cached) -join "`n"
+        }
     } else {
         $diff = (git diff -U1 HEAD --cached) -join "`n"
+        if (-not $diff) {
+            $diff = (git diff -U1 HEAD) -join "`n"
+        }
+    }
+
+    # Fallback: jika diff masih kosong, gunakan daftar file yang berubah
+    if (-not $diff) {
+        $changedFiles = git diff --name-only $lastTag HEAD 2>$null
+        if (-not $changedFiles) { $changedFiles = git show --stat HEAD 2>$null }
+        $diff = if ($changedFiles) { ($changedFiles) -join "`n" } else { "Tidak ada informasi perubahan tersedia." }
     }
 
     if ($diff) {
@@ -241,6 +256,11 @@ if (-not $hasValidKey) {
                 try {
                     Write-Host "        Mencoba $($prov.Name) (percobaan $attempt)..." -ForegroundColor DarkGray
                     $bodyBytes = [System.Text.Encoding]::UTF8.GetBytes($prov.Body)
+                    # Validasi JSON sebelum kirim — cegah error 400 akibat JSON rusak
+                    try { $prov.Body | ConvertFrom-Json | Out-Null } catch {
+                        Write-Host "        $($prov.Name): JSON tidak valid, skip." -ForegroundColor Yellow
+                        break
+                    }
                     $response = Invoke-RestMethod -Method Post -Uri $prov.Url -Headers $prov.Headers -Body $bodyBytes -TimeoutSec $prov.Timeout
                     $changelogText = $response.choices[0].message.content
                     if ($changelogText) {
