@@ -176,34 +176,27 @@ if (-not $hasValidKey) {
         }
 
         Write-Host "        Meminta AI merangkum perubahan..." -ForegroundColor DarkGray
-        $prompt = @"
-Kamu adalah pembuat catatan rilis teknis aplikasi kasir (POS). Berdasarkan git diff berikut, buatkan changelog dalam bahasa Indonesia.
 
-Aturan:
-- Sebutkan nama file/komponen yang diubah
-- Jelaskan apa yang berubah secara teknis (singkat, padat, jelas)
-- Format: markdown bullet points
-- Jangan tulis penjelasan umum — fokus ke perubahan spesifik
-- Jangan tulis "Tidak ada perubahan signifikan" — jika memang tidak ada, tulis "Tidak ada perubahan kode"
-
-Data perubahan:
-$diff
-"@
-
-        # Gunakan [System.Text.Json.JsonSerializer] untuk serialisasi yang benar
-        # ConvertTo-Json PowerShell tidak escape backslash & karakter kontrol dengan benar
-        Add-Type -AssemblyName System.Text.Json
-        function New-JsonBody($model, $promptText) {
-            $obj = [ordered]@{
-                model    = $model
-                messages = @(
-                    [ordered]@{ role = "user"; content = $promptText }
-                )
-            }
-            $opts = [System.Text.Json.JsonSerializerOptions]::new()
-            $opts.Encoder = [System.Text.Encodings.Web.JavaScriptEncoder]::UnsafeRelaxedJsonEscaping
-            return [System.Text.Json.JsonSerializer]::Serialize([object]$obj, $opts)
+        # Fungsi escape JSON manual — tidak butuh System.Text.Json (kompatibel PS semua versi)
+        function ConvertTo-JsonString($str) {
+            if ($null -eq $str) { return '""' }
+            $escaped = $str `
+                -replace '\\', '\\\\' `
+                -replace '"',  '\\"'  `
+                -replace "`r`n", '\n'  `
+                -replace "`n",  '\n'  `
+                -replace "`r",  '\n'  `
+                -replace "`t",  '\t'
+            return "`"$escaped`""
         }
+
+        function New-JsonBody($model, $promptText) {
+            $modelJson  = ConvertTo-JsonString $model
+            $contentJson = ConvertTo-JsonString $promptText
+            return "{`"model`":$modelJson,`"messages`":[{`"role`":`"user`",`"content`":$contentJson}]}"
+        }
+
+        $prompt = "Kamu adalah pembuat catatan rilis teknis aplikasi kasir (POS). Berdasarkan git diff berikut, buatkan changelog dalam bahasa Indonesia.`n`nAturan:`n- Sebutkan nama file/komponen yang diubah`n- Jelaskan apa yang berubah secara teknis (singkat, padat, jelas)`n- Format: markdown bullet points`n- Jangan tulis penjelasan umum, fokus ke perubahan spesifik`n- Jangan tulis 'Tidak ada perubahan signifikan', jika memang tidak ada tulis 'Tidak ada perubahan kode'`n`nData perubahan:`n$diff"
 
         # ── Daftar provider AI (3 aktif, tanpa Cohere & HuggingFace) ──
         $providers = @()
