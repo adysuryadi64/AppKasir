@@ -183,32 +183,34 @@ if (-not $hasValidKey) {
     }
 
     if ($diff) {
-        # Truncate diff jika terlalu panjang (hemat token, cegah error 400)
-        $maxDiffLen = 12000
+        # Truncate diff — cukup 4000 karakter untuk changelog yang baik
+        $maxDiffLen = 4000
         if ($diff.Length -gt $maxDiffLen) {
-            $diff = $diff.Substring(0, $maxDiffLen) + "`n... [diff dipotong untuk hemat token]"
+            $diff = $diff.Substring(0, $maxDiffLen) + "`n... [diff dipotong]"
             Write-Host "        Diff dipotong ke $maxDiffLen karakter." -ForegroundColor DarkGray
         }
 
         Write-Host "        Meminta AI merangkum perubahan..." -ForegroundColor DarkGray
 
-        # Fungsi escape JSON manual — tidak butuh System.Text.Json (kompatibel PS semua versi)
+        # Escape JSON manual — kompatibel semua versi PowerShell
+        # Urutan PENTING: backslash harus pertama
         function ConvertTo-JsonString($str) {
             if ($null -eq $str) { return '""' }
-            $escaped = $str `
-                -replace '\\', '\\\\' `
-                -replace '"',  '\\"'  `
-                -replace "`r`n", '\n'  `
-                -replace "`n",  '\n'  `
-                -replace "`r",  '\n'  `
-                -replace "`t",  '\t'
-            return "`"$escaped`""
+            $s = $str -replace '\\', '\\' `
+                      -replace '"',  '\"' `
+                      -replace "`r`n", '\n' `
+                      -replace "`n",  '\n' `
+                      -replace "`r",  '\n' `
+                      -replace "`t",  '\t'
+            # Hapus karakter kontrol lain (ASCII < 32 selain yang sudah di-escape)
+            $s = $s -replace '[\x00-\x08\x0b\x0c\x0e-\x1f]', ''
+            return '"' + $s + '"'
         }
 
         function New-JsonBody($model, $promptText) {
-            $modelJson  = ConvertTo-JsonString $model
-            $contentJson = ConvertTo-JsonString $promptText
-            return "{`"model`":$modelJson,`"messages`":[{`"role`":`"user`",`"content`":$contentJson}]}"
+            $m = ConvertTo-JsonString $model
+            $c = ConvertTo-JsonString $promptText
+            return '{"model":' + $m + ',"messages":[{"role":"user","content":' + $c + '}]}'
         }
 
         $prompt = "Kamu adalah pembuat catatan rilis teknis aplikasi kasir (POS). Berdasarkan git diff berikut, buatkan changelog dalam bahasa Indonesia.`n`nAturan:`n- Sebutkan nama file/komponen yang diubah`n- Jelaskan apa yang berubah secara teknis (singkat, padat, jelas)`n- Format: markdown bullet points`n- Jangan tulis penjelasan umum, fokus ke perubahan spesifik`n- Jangan tulis 'Tidak ada perubahan signifikan', jika memang tidak ada tulis 'Tidak ada perubahan kode'`n`nData perubahan:`n$diff"
@@ -256,11 +258,6 @@ if (-not $hasValidKey) {
                 try {
                     Write-Host "        Mencoba $($prov.Name) (percobaan $attempt)..." -ForegroundColor DarkGray
                     $bodyBytes = [System.Text.Encoding]::UTF8.GetBytes($prov.Body)
-                    # Validasi JSON sebelum kirim — cegah error 400 akibat JSON rusak
-                    try { $prov.Body | ConvertFrom-Json | Out-Null } catch {
-                        Write-Host "        $($prov.Name): JSON tidak valid, skip." -ForegroundColor Yellow
-                        break
-                    }
                     $response = Invoke-RestMethod -Method Post -Uri $prov.Url -Headers $prov.Headers -Body $bodyBytes -TimeoutSec $prov.Timeout
                     $changelogText = $response.choices[0].message.content
                     if ($changelogText) {
