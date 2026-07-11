@@ -202,6 +202,13 @@ Public Class FormBarang
             ' Loop melalui kolom dan atur format serta alignment
             ModuleAngka.TerapkanFormatKolomAngka(DGBarang, columnsToFormat)
 
+            ' Override format khusus FormBarang: tampil max 1 desimal (misal 103.953,4)
+            For Each nama As String In columnsToFormat
+                If DGBarang.Columns.Contains(nama) Then
+                    DGBarang.Columns(nama).DefaultCellStyle.Format = "#,0.#"
+                End If
+            Next
+
             .Columns("ID_BARANG").Frozen = True
             .Columns("NAMA_BARANG").Frozen = True
 
@@ -307,56 +314,56 @@ Public Class FormBarang
                     LblValKategori.Text = If(DGBarang.Item("NAMA_KATEGORI", i).Value Is Nothing, "", DGBarang.Item("NAMA_KATEGORI", i).Value.ToString())
                     LblValSupliyer.Text = If(DGBarang.Item("NAMA_SUPLIYER", i).Value IsNot DBNull.Value AndAlso Not String.IsNullOrEmpty(DGBarang.Item("NAMA_SUPLIYER", i).Value.ToString()), DGBarang.Item("NAMA_SUPLIYER", i).Value.ToString(), "")
                     LblValMerk.Text = If(DGBarang.Item("NAMA_MERK", i).Value Is Nothing, "", DGBarang.Item("NAMA_MERK", i).Value.ToString())
-                    LblValHargaPokok.Text = "Rp. " & If(IsDBNull(DGBarang.Item("HARGA_BELI", i).Value), 0D, Convert.ToDecimal(DGBarang.Item("HARGA_BELI", i).Value)).ToString("#,0.####")
-                    LblValHargaBeliTerakhir.Text = "Rp. " & If(IsDBNull(DGBarang.Item("HARGA_BELI_TERAKHIR", i).Value), 0D, Convert.ToDecimal(DGBarang.Item("HARGA_BELI_TERAKHIR", i).Value)).ToString("#,0.####")
+                    LblValHargaPokok.Text = "Rp. " & If(IsDBNull(DGBarang.Item("HARGA_BELI", i).Value), 0D, Convert.ToDecimal(DGBarang.Item("HARGA_BELI", i).Value)).ToString("#,0.#")
+                    LblValHargaBeliTerakhir.Text = "Rp. " & If(IsDBNull(DGBarang.Item("HARGA_BELI_TERAKHIR", i).Value), 0D, Convert.ToDecimal(DGBarang.Item("HARGA_BELI_TERAKHIR", i).Value)).ToString("#,0.#")
                     LblBarcodeKecil.Text = reader("BARCODE_KECIL").ToString()
                     LblBarcodeSedang.Text = reader("BARCODE_SEDANG").ToString()
                     LblBarcodeBesar.Text = reader("BARCODE_BESAR").ToString()
                     LblSatuanUmumKecil.Text = DGBarang.Item("SATUAN_UMUM_KECIL", i).Value & " (" & reader("ISI_UMUM_KECIL").ToString() & ")"
                     LblSatuanUmumSedang.Text = DGBarang.Item("SATUAN_UMUM_SEDANG", i).Value & " (" & reader("ISI_UMUM_SEDANG").ToString() & ")"
                     LblSatuanUmumBesar.Text = DGBarang.Item("SATUAN_UMUM_BESAR", i).Value & " (" & reader("ISI_UMUM_BESAR").ToString() & ")"
-                    LblHargaJualUmumKecil.Text = If(IsDBNull(DGBarang.Item("HARGA_JUAL_UMUM_KECIL", i).Value), 0D, Convert.ToDecimal(DGBarang.Item("HARGA_JUAL_UMUM_KECIL", i).Value)).ToString("#,0.####")
-                    LblHargaJualUmumSedang.Text = If(IsDBNull(DGBarang.Item("HARGA_JUAL_UMUM_SEDANG", i).Value), 0D, Convert.ToDecimal(DGBarang.Item("HARGA_JUAL_UMUM_SEDANG", i).Value)).ToString("#,0.####")
-                    LblHargaJualUmumBesar.Text = If(IsDBNull(DGBarang.Item("HARGA_JUAL_UMUM_BESAR", i).Value), 0D, Convert.ToDecimal(DGBarang.Item("HARGA_JUAL_UMUM_BESAR", i).Value)).ToString("#,0.####")
+                    LblHargaJualUmumKecil.Text = If(IsDBNull(DGBarang.Item("HARGA_JUAL_UMUM_KECIL", i).Value), 0D, Convert.ToDecimal(DGBarang.Item("HARGA_JUAL_UMUM_KECIL", i).Value)).ToString("#,0.#")
+                    LblHargaJualUmumSedang.Text = If(IsDBNull(DGBarang.Item("HARGA_JUAL_UMUM_SEDANG", i).Value), 0D, Convert.ToDecimal(DGBarang.Item("HARGA_JUAL_UMUM_SEDANG", i).Value)).ToString("#,0.#")
+                    LblHargaJualUmumBesar.Text = If(IsDBNull(DGBarang.Item("HARGA_JUAL_UMUM_BESAR", i).Value), 0D, Convert.ToDecimal(DGBarang.Item("HARGA_JUAL_UMUM_BESAR", i).Value)).ToString("#,0.#")
                     LblSatuanPartaiKecil.Text = DGBarang.Item("SATUAN_PARTAI_KECIL", i).Value & " (" & reader("ISI_PARTAI_KECIL").ToString() & ")"
                     LblSatuanPartaiSedang.Text = DGBarang.Item("SATUAN_PARTAI_SEDANG", i).Value & " (" & reader("ISI_PARTAI_SEDANG").ToString() & ")"
                     LblSatuanPartaiBesar.Text = DGBarang.Item("SATUAN_PARTAI_BESAR", i).Value & " (" & reader("ISI_PARTAI_BESAR").ToString() & ")"
-                    LblHargaJualPartaiKecil.Text = If(IsDBNull(DGBarang.Item("HARGA_JUAL_PARTAI_KECIL", i).Value), 0D, Convert.ToDecimal(DGBarang.Item("HARGA_JUAL_PARTAI_KECIL", i).Value)).ToString("#,0.####")
-                    LblHargaJualPartaiSedang.Text = If(IsDBNull(DGBarang.Item("HARGA_JUAL_PARTAI_SEDANG", i).Value), 0D, Convert.ToDecimal(DGBarang.Item("HARGA_JUAL_PARTAI_SEDANG", i).Value)).ToString("#,0.####")
-                    LblHargaJualPartaiBesar.Text = If(IsDBNull(DGBarang.Item("HARGA_JUAL_PARTAI_BESAR", i).Value), 0D, Convert.ToDecimal(DGBarang.Item("HARGA_JUAL_PARTAI_BESAR", i).Value)).ToString("#,0.####")
-                    LblAwalToko.Text = If(reader("AWAL_TOKO") IsNot DBNull.Value AndAlso Not String.IsNullOrEmpty(reader("AWAL_TOKO").ToString()), Convert.ToDecimal(reader("AWAL_TOKO")).ToString("#,0.####"), "0")
-                    LblTambahToko.Text = If(reader("TAMBAH_TOKO") IsNot DBNull.Value AndAlso Not String.IsNullOrEmpty(reader("TAMBAH_TOKO").ToString()), Convert.ToDecimal(reader("TAMBAH_TOKO")).ToString("#,0.####"), "0")
-                    LblKurangToko.Text = If(reader("KURANG_TOKO") IsNot DBNull.Value AndAlso Not String.IsNullOrEmpty(reader("KURANG_TOKO").ToString()), Convert.ToDecimal(reader("KURANG_TOKO")).ToString("#,0.####"), "0")
-                    LblPembelianToko.Text = If(reader("PEMBELIAN_TOKO") IsNot DBNull.Value AndAlso Not String.IsNullOrEmpty(reader("PEMBELIAN_TOKO").ToString()), Convert.ToDecimal(reader("PEMBELIAN_TOKO")).ToString("#,0.####"), "0")
-                    LblPenjualanToko.Text = If(reader("PENJUALAN_TOKO") IsNot DBNull.Value AndAlso Not String.IsNullOrEmpty(reader("PENJUALAN_TOKO").ToString()), Convert.ToDecimal(reader("PENJUALAN_TOKO")).ToString("#,0.####"), "0")
-                    LblReturBeliToko.Text = If(reader("RETUR_BELI_TOKO") IsNot DBNull.Value AndAlso Not String.IsNullOrEmpty(reader("RETUR_BELI_TOKO").ToString()), Convert.ToDecimal(reader("RETUR_BELI_TOKO")).ToString("#,0.####"), "0")
-                    LblReturJualToko.Text = If(reader("RETUR_JUAL_TOKO") IsNot DBNull.Value AndAlso Not String.IsNullOrEmpty(reader("RETUR_JUAL_TOKO").ToString()), Convert.ToDecimal(reader("RETUR_JUAL_TOKO")).ToString("#,0.####"), "0")
-                    LblOpnameToko.Text = If(reader("OPNAME_TOKO") IsNot DBNull.Value AndAlso Not String.IsNullOrEmpty(reader("OPNAME_TOKO").ToString()), Convert.ToDecimal(reader("OPNAME_TOKO")).ToString("#,0.####"), "0")
-                    LblTrStokMasukToko.Text = If(reader("TRANSFER_STOK_MASUK_TOKO") IsNot DBNull.Value AndAlso Not String.IsNullOrEmpty(reader("TRANSFER_STOK_MASUK_TOKO").ToString()), Convert.ToDecimal(reader("TRANSFER_STOK_MASUK_TOKO")).ToString("#,0.####"), "0")
-                    LblTrStokKeluarToko.Text = If(reader("TRANSFER_STOK_KELUAR_TOKO") IsNot DBNull.Value AndAlso Not String.IsNullOrEmpty(reader("TRANSFER_STOK_KELUAR_TOKO").ToString()), Convert.ToDecimal(reader("TRANSFER_STOK_KELUAR_TOKO")).ToString("#,0.####"), "0")
-                    LblTrBarangMasukToko.Text = If(reader("TRANSFER_BARANG_MASUK_TOKO") IsNot DBNull.Value AndAlso Not String.IsNullOrEmpty(reader("TRANSFER_BARANG_MASUK_TOKO").ToString()), Convert.ToDecimal(reader("TRANSFER_BARANG_MASUK_TOKO")).ToString("#,0.####"), "0")
-                    LblTrBarangKeluarToko.Text = If(reader("TRANSFER_BARANG_KELUAR_TOKO") IsNot DBNull.Value AndAlso Not String.IsNullOrEmpty(reader("TRANSFER_BARANG_KELUAR_TOKO").ToString()), Convert.ToDecimal(reader("TRANSFER_BARANG_KELUAR_TOKO")).ToString("#,0.####"), "0")
+                    LblHargaJualPartaiKecil.Text = If(IsDBNull(DGBarang.Item("HARGA_JUAL_PARTAI_KECIL", i).Value), 0D, Convert.ToDecimal(DGBarang.Item("HARGA_JUAL_PARTAI_KECIL", i).Value)).ToString("#,0.#")
+                    LblHargaJualPartaiSedang.Text = If(IsDBNull(DGBarang.Item("HARGA_JUAL_PARTAI_SEDANG", i).Value), 0D, Convert.ToDecimal(DGBarang.Item("HARGA_JUAL_PARTAI_SEDANG", i).Value)).ToString("#,0.#")
+                    LblHargaJualPartaiBesar.Text = If(IsDBNull(DGBarang.Item("HARGA_JUAL_PARTAI_BESAR", i).Value), 0D, Convert.ToDecimal(DGBarang.Item("HARGA_JUAL_PARTAI_BESAR", i).Value)).ToString("#,0.#")
+                    LblAwalToko.Text = If(reader("AWAL_TOKO") IsNot DBNull.Value AndAlso Not String.IsNullOrEmpty(reader("AWAL_TOKO").ToString()), Convert.ToDecimal(reader("AWAL_TOKO")).ToString("#,0.#"), "0")
+                    LblTambahToko.Text = If(reader("TAMBAH_TOKO") IsNot DBNull.Value AndAlso Not String.IsNullOrEmpty(reader("TAMBAH_TOKO").ToString()), Convert.ToDecimal(reader("TAMBAH_TOKO")).ToString("#,0.#"), "0")
+                    LblKurangToko.Text = If(reader("KURANG_TOKO") IsNot DBNull.Value AndAlso Not String.IsNullOrEmpty(reader("KURANG_TOKO").ToString()), Convert.ToDecimal(reader("KURANG_TOKO")).ToString("#,0.#"), "0")
+                    LblPembelianToko.Text = If(reader("PEMBELIAN_TOKO") IsNot DBNull.Value AndAlso Not String.IsNullOrEmpty(reader("PEMBELIAN_TOKO").ToString()), Convert.ToDecimal(reader("PEMBELIAN_TOKO")).ToString("#,0.#"), "0")
+                    LblPenjualanToko.Text = If(reader("PENJUALAN_TOKO") IsNot DBNull.Value AndAlso Not String.IsNullOrEmpty(reader("PENJUALAN_TOKO").ToString()), Convert.ToDecimal(reader("PENJUALAN_TOKO")).ToString("#,0.#"), "0")
+                    LblReturBeliToko.Text = If(reader("RETUR_BELI_TOKO") IsNot DBNull.Value AndAlso Not String.IsNullOrEmpty(reader("RETUR_BELI_TOKO").ToString()), Convert.ToDecimal(reader("RETUR_BELI_TOKO")).ToString("#,0.#"), "0")
+                    LblReturJualToko.Text = If(reader("RETUR_JUAL_TOKO") IsNot DBNull.Value AndAlso Not String.IsNullOrEmpty(reader("RETUR_JUAL_TOKO").ToString()), Convert.ToDecimal(reader("RETUR_JUAL_TOKO")).ToString("#,0.#"), "0")
+                    LblOpnameToko.Text = If(reader("OPNAME_TOKO") IsNot DBNull.Value AndAlso Not String.IsNullOrEmpty(reader("OPNAME_TOKO").ToString()), Convert.ToDecimal(reader("OPNAME_TOKO")).ToString("#,0.#"), "0")
+                    LblTrStokMasukToko.Text = If(reader("TRANSFER_STOK_MASUK_TOKO") IsNot DBNull.Value AndAlso Not String.IsNullOrEmpty(reader("TRANSFER_STOK_MASUK_TOKO").ToString()), Convert.ToDecimal(reader("TRANSFER_STOK_MASUK_TOKO")).ToString("#,0.#"), "0")
+                    LblTrStokKeluarToko.Text = If(reader("TRANSFER_STOK_KELUAR_TOKO") IsNot DBNull.Value AndAlso Not String.IsNullOrEmpty(reader("TRANSFER_STOK_KELUAR_TOKO").ToString()), Convert.ToDecimal(reader("TRANSFER_STOK_KELUAR_TOKO")).ToString("#,0.#"), "0")
+                    LblTrBarangMasukToko.Text = If(reader("TRANSFER_BARANG_MASUK_TOKO") IsNot DBNull.Value AndAlso Not String.IsNullOrEmpty(reader("TRANSFER_BARANG_MASUK_TOKO").ToString()), Convert.ToDecimal(reader("TRANSFER_BARANG_MASUK_TOKO")).ToString("#,0.#"), "0")
+                    LblTrBarangKeluarToko.Text = If(reader("TRANSFER_BARANG_KELUAR_TOKO") IsNot DBNull.Value AndAlso Not String.IsNullOrEmpty(reader("TRANSFER_BARANG_KELUAR_TOKO").ToString()), Convert.ToDecimal(reader("TRANSFER_BARANG_KELUAR_TOKO")).ToString("#,0.#"), "0")
                     ' Transfer Cabang TOKO
-                    LblTrCabangMasukToko.Text = If(reader("TRANSFER_CABANG_MASUK_TOKO") IsNot DBNull.Value, Convert.ToDecimal(reader("TRANSFER_CABANG_MASUK_TOKO")).ToString("#,0.####"), "0")
-                    LblTrCabangKeluarToko.Text = If(reader("TRANSFER_CABANG_KELUAR_TOKO") IsNot DBNull.Value, Convert.ToDecimal(reader("TRANSFER_CABANG_KELUAR_TOKO")).ToString("#,0.####"), "0")
-                    LblStokToko.Text = If(DGBarang.Item("STOK_TOKO", i).Value IsNot DBNull.Value AndAlso Not String.IsNullOrEmpty(DGBarang.Item("STOK_TOKO", i).Value.ToString()), Convert.ToDecimal(DGBarang.Item("STOK_TOKO", i).Value).ToString("#,0.####"), "0")
+                    LblTrCabangMasukToko.Text = If(reader("TRANSFER_CABANG_MASUK_TOKO") IsNot DBNull.Value, Convert.ToDecimal(reader("TRANSFER_CABANG_MASUK_TOKO")).ToString("#,0.#"), "0")
+                    LblTrCabangKeluarToko.Text = If(reader("TRANSFER_CABANG_KELUAR_TOKO") IsNot DBNull.Value, Convert.ToDecimal(reader("TRANSFER_CABANG_KELUAR_TOKO")).ToString("#,0.#"), "0")
+                    LblStokToko.Text = If(DGBarang.Item("STOK_TOKO", i).Value IsNot DBNull.Value AndAlso Not String.IsNullOrEmpty(DGBarang.Item("STOK_TOKO", i).Value.ToString()), Convert.ToDecimal(DGBarang.Item("STOK_TOKO", i).Value).ToString("#,0.#"), "0")
 
-                    LblAwalGudang.Text = If(reader("AWAL_GUDANG") IsNot DBNull.Value AndAlso Not String.IsNullOrEmpty(reader("AWAL_GUDANG").ToString()), Convert.ToDecimal(reader("AWAL_GUDANG")).ToString("#,0.####"), "0")
-                    LblTambahGudang.Text = If(reader("TAMBAH_GUDANG") IsNot DBNull.Value AndAlso Not String.IsNullOrEmpty(reader("TAMBAH_GUDANG").ToString()), Convert.ToDecimal(reader("TAMBAH_GUDANG")).ToString("#,0.####"), "0")
-                    LblKurangGudang.Text = If(reader("KURANG_GUDANG") IsNot DBNull.Value AndAlso Not String.IsNullOrEmpty(reader("KURANG_GUDANG").ToString()), Convert.ToDecimal(reader("KURANG_GUDANG")).ToString("#,0.####"), "0")
-                    LblPembelianGudang.Text = If(reader("PEMBELIAN_GUDANG") IsNot DBNull.Value AndAlso Not String.IsNullOrEmpty(reader("PEMBELIAN_GUDANG").ToString()), Convert.ToDecimal(reader("PEMBELIAN_GUDANG")).ToString("#,0.####"), "0")
-                    LblPenjualanGudang.Text = If(reader("PENJUALAN_GUDANG") IsNot DBNull.Value AndAlso Not String.IsNullOrEmpty(reader("PENJUALAN_GUDANG").ToString()), Convert.ToDecimal(reader("PENJUALAN_GUDANG")).ToString("#,0.####"), "0")
-                    LblReturBeliGudang.Text = If(reader("RETUR_BELI_GUDANG") IsNot DBNull.Value AndAlso Not String.IsNullOrEmpty(reader("RETUR_BELI_GUDANG").ToString()), Convert.ToDecimal(reader("RETUR_BELI_GUDANG")).ToString("#,0.####"), "0")
-                    LblReturJualGudang.Text = If(reader("RETUR_JUAL_GUDANG") IsNot DBNull.Value AndAlso Not String.IsNullOrEmpty(reader("RETUR_JUAL_GUDANG").ToString()), Convert.ToDecimal(reader("RETUR_JUAL_GUDANG")).ToString("#,0.####"), "0")
-                    LblOpnameGudang.Text = If(reader("OPNAME_GUDANG") IsNot DBNull.Value AndAlso Not String.IsNullOrEmpty(reader("OPNAME_GUDANG").ToString()), Convert.ToDecimal(reader("OPNAME_GUDANG")).ToString("#,0.####"), "0")
-                    LblTrStokMasukGudang.Text = If(reader("TRANSFER_STOK_MASUK_GUDANG") IsNot DBNull.Value AndAlso Not String.IsNullOrEmpty(reader("TRANSFER_STOK_MASUK_GUDANG").ToString()), Convert.ToDecimal(reader("TRANSFER_STOK_MASUK_GUDANG")).ToString("#,0.####"), "0")
-                    LblTrStokKeluarGudang.Text = If(reader("TRANSFER_STOK_KELUAR_GUDANG") IsNot DBNull.Value AndAlso Not String.IsNullOrEmpty(reader("TRANSFER_STOK_KELUAR_GUDANG").ToString()), Convert.ToDecimal(reader("TRANSFER_STOK_KELUAR_GUDANG")).ToString("#,0.####"), "0")
-                    LblTrBarangMasukGudang.Text = If(reader("TRANSFER_BARANG_MASUK_GUDANG") IsNot DBNull.Value AndAlso Not String.IsNullOrEmpty(reader("TRANSFER_BARANG_MASUK_GUDANG").ToString()), Convert.ToDecimal(reader("TRANSFER_BARANG_MASUK_GUDANG")).ToString("#,0.####"), "0")
-                    LblTrBarangKeluarGudang.Text = If(reader("TRANSFER_BARANG_KELUAR_GUDANG") IsNot DBNull.Value AndAlso Not String.IsNullOrEmpty(reader("TRANSFER_BARANG_KELUAR_GUDANG").ToString()), Convert.ToDecimal(reader("TRANSFER_BARANG_KELUAR_GUDANG")).ToString("#,0.####"), "0")
+                    LblAwalGudang.Text = If(reader("AWAL_GUDANG") IsNot DBNull.Value AndAlso Not String.IsNullOrEmpty(reader("AWAL_GUDANG").ToString()), Convert.ToDecimal(reader("AWAL_GUDANG")).ToString("#,0.#"), "0")
+                    LblTambahGudang.Text = If(reader("TAMBAH_GUDANG") IsNot DBNull.Value AndAlso Not String.IsNullOrEmpty(reader("TAMBAH_GUDANG").ToString()), Convert.ToDecimal(reader("TAMBAH_GUDANG")).ToString("#,0.#"), "0")
+                    LblKurangGudang.Text = If(reader("KURANG_GUDANG") IsNot DBNull.Value AndAlso Not String.IsNullOrEmpty(reader("KURANG_GUDANG").ToString()), Convert.ToDecimal(reader("KURANG_GUDANG")).ToString("#,0.#"), "0")
+                    LblPembelianGudang.Text = If(reader("PEMBELIAN_GUDANG") IsNot DBNull.Value AndAlso Not String.IsNullOrEmpty(reader("PEMBELIAN_GUDANG").ToString()), Convert.ToDecimal(reader("PEMBELIAN_GUDANG")).ToString("#,0.#"), "0")
+                    LblPenjualanGudang.Text = If(reader("PENJUALAN_GUDANG") IsNot DBNull.Value AndAlso Not String.IsNullOrEmpty(reader("PENJUALAN_GUDANG").ToString()), Convert.ToDecimal(reader("PENJUALAN_GUDANG")).ToString("#,0.#"), "0")
+                    LblReturBeliGudang.Text = If(reader("RETUR_BELI_GUDANG") IsNot DBNull.Value AndAlso Not String.IsNullOrEmpty(reader("RETUR_BELI_GUDANG").ToString()), Convert.ToDecimal(reader("RETUR_BELI_GUDANG")).ToString("#,0.#"), "0")
+                    LblReturJualGudang.Text = If(reader("RETUR_JUAL_GUDANG") IsNot DBNull.Value AndAlso Not String.IsNullOrEmpty(reader("RETUR_JUAL_GUDANG").ToString()), Convert.ToDecimal(reader("RETUR_JUAL_GUDANG")).ToString("#,0.#"), "0")
+                    LblOpnameGudang.Text = If(reader("OPNAME_GUDANG") IsNot DBNull.Value AndAlso Not String.IsNullOrEmpty(reader("OPNAME_GUDANG").ToString()), Convert.ToDecimal(reader("OPNAME_GUDANG")).ToString("#,0.#"), "0")
+                    LblTrStokMasukGudang.Text = If(reader("TRANSFER_STOK_MASUK_GUDANG") IsNot DBNull.Value AndAlso Not String.IsNullOrEmpty(reader("TRANSFER_STOK_MASUK_GUDANG").ToString()), Convert.ToDecimal(reader("TRANSFER_STOK_MASUK_GUDANG")).ToString("#,0.#"), "0")
+                    LblTrStokKeluarGudang.Text = If(reader("TRANSFER_STOK_KELUAR_GUDANG") IsNot DBNull.Value AndAlso Not String.IsNullOrEmpty(reader("TRANSFER_STOK_KELUAR_GUDANG").ToString()), Convert.ToDecimal(reader("TRANSFER_STOK_KELUAR_GUDANG")).ToString("#,0.#"), "0")
+                    LblTrBarangMasukGudang.Text = If(reader("TRANSFER_BARANG_MASUK_GUDANG") IsNot DBNull.Value AndAlso Not String.IsNullOrEmpty(reader("TRANSFER_BARANG_MASUK_GUDANG").ToString()), Convert.ToDecimal(reader("TRANSFER_BARANG_MASUK_GUDANG")).ToString("#,0.#"), "0")
+                    LblTrBarangKeluarGudang.Text = If(reader("TRANSFER_BARANG_KELUAR_GUDANG") IsNot DBNull.Value AndAlso Not String.IsNullOrEmpty(reader("TRANSFER_BARANG_KELUAR_GUDANG").ToString()), Convert.ToDecimal(reader("TRANSFER_BARANG_KELUAR_GUDANG")).ToString("#,0.#"), "0")
                     ' Transfer Cabang GUDANG
-                    LblTrCabangMasukGudang.Text = If(reader("TRANSFER_CABANG_MASUK_GUDANG") IsNot DBNull.Value, Convert.ToDecimal(reader("TRANSFER_CABANG_MASUK_GUDANG")).ToString("#,0.####"), "0")
-                    LblTrCabangKeluarGudang.Text = If(reader("TRANSFER_CABANG_KELUAR_GUDANG") IsNot DBNull.Value, Convert.ToDecimal(reader("TRANSFER_CABANG_KELUAR_GUDANG")).ToString("#,0.####"), "0")
-                    LblStokGudang.Text = If(DGBarang.Item("STOK_GUDANG", i).Value IsNot DBNull.Value AndAlso Not String.IsNullOrEmpty(DGBarang.Item("STOK_GUDANG", i).Value.ToString()), Convert.ToDecimal(DGBarang.Item("STOK_GUDANG", i).Value).ToString("#,0.####"), "0")
+                    LblTrCabangMasukGudang.Text = If(reader("TRANSFER_CABANG_MASUK_GUDANG") IsNot DBNull.Value, Convert.ToDecimal(reader("TRANSFER_CABANG_MASUK_GUDANG")).ToString("#,0.#"), "0")
+                    LblTrCabangKeluarGudang.Text = If(reader("TRANSFER_CABANG_KELUAR_GUDANG") IsNot DBNull.Value, Convert.ToDecimal(reader("TRANSFER_CABANG_KELUAR_GUDANG")).ToString("#,0.#"), "0")
+                    LblStokGudang.Text = If(DGBarang.Item("STOK_GUDANG", i).Value IsNot DBNull.Value AndAlso Not String.IsNullOrEmpty(DGBarang.Item("STOK_GUDANG", i).Value.ToString()), Convert.ToDecimal(DGBarang.Item("STOK_GUDANG", i).Value).ToString("#,0.#"), "0")
 
                 End If
             End Using

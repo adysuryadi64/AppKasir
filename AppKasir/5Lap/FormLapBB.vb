@@ -153,18 +153,19 @@ Public Class FormLapBB
 
             Using rd As MySqlDataReader = cmd.ExecuteReader()
                 While rd.Read()
-                    ' Simpan setiap baris data dalam Dictionary
                     Dim row As New Dictionary(Of String, Object)
                     row("JENIS_TRANSAKSI") = rd("JENIS_TRANSAKSI")
                     row("NO_TRANSAKSI") = rd("NO_TRANSAKSI")
-                    row("TGL_TRANSAKSI") = rd("TGL_TRANSAKSI")
+                    ' Pakai GetDateTime agar tipe DateTime tersimpan eksplisit, bukan Object
+                    ' AddWithValue dengan Object bisa menyebabkan 0000-00-00 di MySQL
+                    Dim ordTgl As Integer = rd.GetOrdinal("TGL_TRANSAKSI")
+                    row("TGL_TRANSAKSI") = If(rd.IsDBNull(ordTgl), CType(DBNull.Value, Object), CType(rd.GetDateTime(ordTgl), Object))
                     row("NO_NOTA") = rd("NO_NOTA")
                     row("URAIAN") = rd("URAIAN")
                     row("NOMOR_AKUN_D") = rd("NOMOR_AKUN_D")
                     row("NOMOR_AKUN_K") = rd("NOMOR_AKUN_K")
                     row("NOMINAL") = ModuleAngka.SafeGetValue(Of Decimal)(rd, "NOMINAL", 0D)
 
-                    ' Tambahkan row ke dalam list
                     dataList.Add(row)
                 End While
             End Using
@@ -188,7 +189,12 @@ Public Class FormLapBB
                         Nomor += 1
                         insertCmd.Parameters.AddWithValue("@JENISTRANSAKSI", row("JENIS_TRANSAKSI"))
                         insertCmd.Parameters.AddWithValue("@NOTRANSAKSI", row("NO_TRANSAKSI"))
-                        insertCmd.Parameters.AddWithValue("@TGLTRANSAKSI", row("TGL_TRANSAKSI"))
+                        ' Cast eksplisit ke DateTime untuk menghindari 0000-00-00 di MySQL
+                        If row("TGL_TRANSAKSI") Is DBNull.Value Then
+                            insertCmd.Parameters.AddWithValue("@TGLTRANSAKSI", DBNull.Value)
+                        Else
+                            insertCmd.Parameters.Add("@TGLTRANSAKSI", MySql.Data.MySqlClient.MySqlDbType.DateTime).Value = Convert.ToDateTime(row("TGL_TRANSAKSI"))
+                        End If
                         insertCmd.Parameters.AddWithValue("@NONOTA", row("NO_NOTA"))
                         insertCmd.Parameters.AddWithValue("@URAIAN", row("URAIAN"))
 
@@ -283,14 +289,16 @@ Public Class FormLapBB
         ReportViewer3.LocalReport.DataSources.Clear()
 
         ' Daftar query untuk masing-masing jenis akun
-        Dim QueryBB As String = "SELECT NOTRANSAKSI, TGLTRANSAKSI, URAIAN, DEBET, KREDIT, SALDO FROM TempJurnalUmum ORDER BY TGLTRANSAKSI"
+        ' Alias kolom disesuaikan dengan nama DataField di RDLC (ReportBukuBesar.rdlc)
+        Dim QueryBB As String = "SELECT NOTRANSAKSI AS NoTransaksi, TGLTRANSAKSI AS TglTransaksi, URAIAN AS Uraian, DEBET AS Debet, KREDIT AS Kredit, SALDO AS Saldo FROM TempJurnalUmum ORDER BY TGLTRANSAKSI"
 
-        ' Ambil data HPP
+        ' Ambil data BukuBesar
         Using cmdBB As New MySqlCommand(QueryBB, conn)
             Using rd As MySqlDataReader = cmdBB.ExecuteReader()
                 Using datasetBB As New DataSetKL()
                     datasetBB.Load(rd, LoadOption.OverwriteChanges, "BukuBesar")
-                    ReportViewer3.LocalReport.DataSources.Add(New ReportDataSource("DataSet1", datasetBB.Tables("BukuBesar")))
+                    Dim dtBB As DataTable = ConvertColumnToDateTime(datasetBB.Tables("BukuBesar"), "TglTransaksi")
+                    ReportViewer3.LocalReport.DataSources.Add(New ReportDataSource("DataSet1", dtBB))
                 End Using
             End Using
         End Using

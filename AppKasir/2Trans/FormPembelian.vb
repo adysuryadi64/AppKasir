@@ -3759,11 +3759,37 @@ Public Class FormPembelian
                 Dim namaBarang As String = dgvRow.Cells("Nama").Value.ToString()
                 Dim hargaBeliTotal As Decimal = ModuleAngka.ParseDecimal(dgvRow.Cells("Totalharga").Value)
                 Dim qtysat As Decimal = ModuleAngka.ParseDecimal(dgvRow.Cells("QtySat").Value)
+                Dim hargaBeliSat As Decimal = ModuleAngka.ParseDecimal(dgvRow.Cells("HargaBeliSatKecil").Value)
+                Dim hargaAverage As Decimal = ModuleAngka.ParseDecimal(dgvRow.Cells("Average").Value)  ' HPP lama
+
+                ' ── Hitung HPP average baru (sama dengan UpdateHargaAverage) ──────
+                ' Validasi harus pakai HPP average, bukan harga beli input.
+                ' Contoh: beli 1 pcs @ 110.000 tapi stok 999 @ 100.000 → HPP ≈ 100.010, bukan 110.000.
+                Dim stokToko As Decimal = 0D
+                Dim stokGudang As Decimal = 0D
+                Using cmdStok As New MySqlCommand(
+                    "SELECT STOK_TOKO, STOK_GUDANG FROM tbl_barang WHERE ID_BARANG = @kode", conn)
+                    cmdStok.Parameters.AddWithValue("@kode", kodeBarangValue)
+                    Using rd = cmdStok.ExecuteReader()
+                        If rd.Read() Then
+                            stokToko = ModuleAngka.ParseDecimal(rd("STOK_TOKO"))
+                            stokGudang = ModuleAngka.ParseDecimal(rd("STOK_GUDANG"))
+                        End If
+                    End Using
+                End Using
+                Dim stokLama As Decimal = If(ModulHakAkses.SettingAverageHargaBerdasarkanStok = "Toko", stokToko,
+                                          If(ModulHakAkses.SettingAverageHargaBerdasarkanStok = "Gudang", stokGudang,
+                                          stokToko + stokGudang))
+                Dim hppBaru As Decimal = If(stokLama + qtysat = 0, hargaBeliSat,
+                                         Math.Round((hargaAverage * stokLama + hargaBeliSat * qtysat) / (stokLama + qtysat), 4))
+
+                ' Kirim HPP average baru × qtySat ke SP — SP akan bagi /qty → hasilnya HPP per kecil
+                Dim hppBaruTotal As Decimal = hppBaru * qtysat
 
                 ' Mengumpulkan informasi barang menggunakan SP validasi v2.0.0
                 Using cmd As New MySqlCommand("CALL sp_val_pembelian_harga_beli_vs_jual(@ID_BARANG, @HARGA_BELI, @QTY, @RUGI_KRITIS, @RUGI_UMUM, @RUGI_PARTAI, @HARGA_JUAL_MIN, @JUAL_UMUM, @JUAL_PARTAI)", conn)
                     cmd.Parameters.AddWithValue("@ID_BARANG", kodeBarangValue)
-                    cmd.Parameters.AddWithValue("@HARGA_BELI", hargaBeliTotal)
+                    cmd.Parameters.AddWithValue("@HARGA_BELI", hppBaruTotal)  ' HPP average baru, bukan harga beli input
                     cmd.Parameters.AddWithValue("@QTY", qtysat)
 
                     Dim pRugiKritis = cmd.Parameters.Add("@RUGI_KRITIS", MySqlDbType.Bit)
@@ -3798,10 +3824,11 @@ Public Class FormPembelian
                     If rugiKritis Then
                         Dim errorMessage As String = "TIDAK BISA SIMPAN!" & vbCrLf & vbCrLf &
                                                      "Barang: " & namaBarang & vbCrLf &
-                                                     "Harga beli lebih tinggi dari SEMUA harga jual yang tersedia." & vbCrLf & vbCrLf &
-                                                     "Harga beli: " & hargaBeliTotal.ToString("N0") & vbCrLf &
-                                                     "Harga jual minimum: " & (hargaJualMin * qtysat).ToString("N0") & vbCrLf & vbCrLf &
-                                                     "Silakan ubah harga beli atau harga jual terlebih dahulu."
+                                                     "HPP average lebih tinggi dari SEMUA harga jual yang tersedia." & vbCrLf & vbCrLf &
+                                                     "Harga beli input: " & hargaBeliSat.ToString("N0") & vbCrLf &
+                                                     "HPP average baru: " & hppBaru.ToString("N0") & vbCrLf &
+                                                     "Harga jual minimum: " & hargaJualMin.ToString("N0") & vbCrLf & vbCrLf &
+                                                     "Silakan ubah harga jual terlebih dahulu."
                         MessageBox.Show(errorMessage, "Rugi Kritis - Tidak Boleh Simpan", MessageBoxButtons.OK, MessageBoxIcon.Error)
                         dgvRow.Selected = True
                         For Each cell As DataGridViewCell In dgvRow.Cells
@@ -3815,10 +3842,11 @@ Public Class FormPembelian
                     If rugiUmum AndAlso rugiPartai Then
                         Dim warningMessage As String = "PERINGATAN!" & vbCrLf & vbCrLf &
                                                        "Barang: " & namaBarang & vbCrLf &
-                                                       "Harga beli lebih tinggi dari harga jual Umum DAN Partai." & vbCrLf & vbCrLf &
-                                                       "Harga beli: " & hargaBeliTotal.ToString("N0") & vbCrLf &
-                                                       "Harga jual Umum: " & hargajualUmum.ToString("N0") & vbCrLf &
-                                                       "Harga jual Partai: " & hargajualPartai.ToString("N0") & vbCrLf & vbCrLf &
+                                                       "HPP average lebih tinggi dari harga jual Umum DAN Partai." & vbCrLf & vbCrLf &
+                                                       "Harga beli input: " & hargaBeliSat.ToString("N0") & vbCrLf &
+                                                       "HPP average baru: " & hppBaru.ToString("N0") & vbCrLf &
+                                                       "Harga jual Umum: " & (hargajualUmum / qtysat).ToString("N0") & vbCrLf &
+                                                       "Harga jual Partai: " & (hargajualPartai / qtysat).ToString("N0") & vbCrLf & vbCrLf &
                                                        "Apakah Anda yakin ingin melanjutkan?"
                         Dim result As DialogResult = MessageBox.Show(warningMessage, "Peringatan Harga Pembelian", MessageBoxButtons.YesNo, MessageBoxIcon.Warning)
                         If result = DialogResult.No Then
@@ -3835,20 +3863,22 @@ Public Class FormPembelian
                     If rugiUmum AndAlso Not rugiPartai Then
                         Dim infoMessage As String = "INFORMASI:" & vbCrLf & vbCrLf &
                                                     "Barang: " & namaBarang & vbCrLf &
-                                                    "Harga beli lebih tinggi dari harga jual Umum, " &
+                                                    "HPP average lebih tinggi dari harga jual Umum, " &
                                                     "tapi masih untung jika dijual dengan harga Partai." & vbCrLf & vbCrLf &
-                                                    "Harga beli: " & hargaBeliTotal.ToString("N0") & vbCrLf &
-                                                    "Harga jual Umum: " & hargajualUmum.ToString("N0") & " (RUGI)" & vbCrLf &
-                                                    "Harga jual Partai: " & hargajualPartai.ToString("N0") & " (UNTUNG)"
+                                                    "Harga beli input: " & hargaBeliSat.ToString("N0") & vbCrLf &
+                                                    "HPP average baru: " & hppBaru.ToString("N0") & vbCrLf &
+                                                    "Harga jual Umum: " & (hargajualUmum / qtysat).ToString("N0") & " (RUGI)" & vbCrLf &
+                                                    "Harga jual Partai: " & (hargajualPartai / qtysat).ToString("N0") & " (UNTUNG)"
                         MessageBox.Show(infoMessage, "Informasi Harga Pembelian", MessageBoxButtons.OK, MessageBoxIcon.Information)
                     ElseIf rugiPartai AndAlso Not rugiUmum Then
                         Dim infoMessage As String = "INFORMASI:" & vbCrLf & vbCrLf &
                                                     "Barang: " & namaBarang & vbCrLf &
-                                                    "Harga beli lebih tinggi dari harga jual Partai, " &
+                                                    "HPP average lebih tinggi dari harga jual Partai, " &
                                                     "tapi masih untung jika dijual dengan harga Umum." & vbCrLf & vbCrLf &
-                                                    "Harga beli: " & hargaBeliTotal.ToString("N0") & vbCrLf &
-                                                    "Harga jual Umum: " & hargajualUmum.ToString("N0") & " (UNTUNG)" & vbCrLf &
-                                                    "Harga jual Partai: " & hargajualPartai.ToString("N0") & " (RUGI)"
+                                                    "Harga beli input: " & hargaBeliSat.ToString("N0") & vbCrLf &
+                                                    "HPP average baru: " & hppBaru.ToString("N0") & vbCrLf &
+                                                    "Harga jual Umum: " & (hargajualUmum / qtysat).ToString("N0") & " (UNTUNG)" & vbCrLf &
+                                                    "Harga jual Partai: " & (hargajualPartai / qtysat).ToString("N0") & " (RUGI)"
                         MessageBox.Show(infoMessage, "Informasi Harga Pembelian", MessageBoxButtons.OK, MessageBoxIcon.Information)
                     End If
                 End Using
@@ -4985,7 +5015,8 @@ Public Class FormPembelian
 
         Dim queryPembelian As String =
         "SELECT pd.ID_BARANG, pd.NAMA_BARANG, pd.HARGA_BELI, pd.QTY, pd.SATUAN, pd.ISI_SATUAN, pd.HARGA_BELI_SATUAN, pd.QTY_SAT, pd.TOTAL, pd.HARGA_AVERAGE, pd.HARGA_BELI_SEBELUMNYA, " &
-        "tb.SATUAN_UMUM_KECIL, tb.SATUAN_UMUM_SEDANG, tb.SATUAN_UMUM_BESAR " &
+        "tb.SATUAN_UMUM_KECIL, tb.SATUAN_UMUM_SEDANG, tb.SATUAN_UMUM_BESAR, " &
+        "IFNULL(tb.HARGA_BELI, pd.HARGA_AVERAGE) AS HARGA_BELI_TBL " &
         "FROM pembelian_detail pd " &
         "LEFT JOIN tbl_barang tb ON pd.ID_BARANG = tb.ID_BARANG " &
         "WHERE pd.FAKTUR_BELI = ? ORDER BY pd.URUTAN"
@@ -5007,7 +5038,7 @@ Public Class FormPembelian
                     baris.Cells("HargaBeliSatKecil").Value = ModuleAngka.ParseDecimal(rd("HARGA_BELI_SATUAN"))
                     baris.Cells("QtySat").Value = ModuleAngka.ParseDecimal(rd("QTY_SAT"))
                     baris.Cells("Totalharga").Value = ModuleAngka.ParseDecimal(rd("TOTAL"))
-                    baris.Cells("Average").Value = ModuleAngka.ParseDecimal(rd("HARGA_AVERAGE"))
+                    baris.Cells("Average").Value = ModuleAngka.ParseDecimal(rd("HARGA_BELI_TBL"))  ' HPP terkini dari tbl_barang — konsisten dengan tambah baru
                     baris.Cells("HargaSebelumnya").Value = ModuleAngka.ParseDecimal(rd("HARGA_BELI_SEBELUMNYA"))
                     baris.Cells("QtySebelumnya").Value = ModuleAngka.ParseDecimal(rd("QTY_SAT"))
 
@@ -5121,6 +5152,14 @@ Public Class FormPembelian
         DtpTanggalPembelian.Value = TanggalBeli
         LblLokasiBarang.Text = Lokasi
         CmbAkunTunai.Text = JenisBayar
+        ' Pilih CmbAkunTransfer berdasarkan nama dari DB
+        ' Jika kosong atau tidak ditemukan → fallback ke item pertama (default)
+        Dim idxTransfer As Integer = If(Not String.IsNullOrEmpty(NamaAkunTF), CmbAkunTransfer.FindStringExact(NamaAkunTF), -1)
+        If idxTransfer >= 0 Then
+            CmbAkunTransfer.SelectedIndex = idxTransfer
+        ElseIf CmbAkunTransfer.Items.Count > 0 Then
+            CmbAkunTransfer.SelectedIndex = 0
+        End If
         TxtNominalBayarTunai.Text = ModuleAngka.FormatUntukInput(Pembayaran)
         TxtKembaliHutang.Text = ModuleAngka.FormatUntukInput(Tagihan)
         LblStatusPembayaran.Text = StatusTransaksi
@@ -5128,9 +5167,8 @@ Public Class FormPembelian
         TxtKomputer.Text = IDKomputer
         TxtNominalBayarTransfer.Text = ModuleAngka.FormatUntukInput(NominalTransfer)
         TxtKodeAkunTransfer.Text = KodeAkunTF
-        CmbAkunTransfer.Text = NamaAkunTF
 
-        ' Atur lebar GBBayar berdasarkan nominal transfer
+               ' Atur lebar GBBayar berdasarkan nominal transfer
         If NominalTransfer > 0 Then
             GBBayar.Size = New Size(833, 344)
         Else
@@ -5155,6 +5193,7 @@ Public Class FormPembelian
             DtpJatuhTempo.Visible = False
             LblPembayaran.Text = "Kembalian :"
         End If
+
     End Sub
 #End Region
 

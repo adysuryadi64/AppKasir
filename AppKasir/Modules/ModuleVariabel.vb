@@ -857,6 +857,39 @@ Module ModuleVariabel
         Return True
     End Function
 
+    ''' <summary>
+    ''' Konversi kolom String di DataTable menjadi DateTime agar ReportViewer
+    ''' tidak menampilkan #Error saat field diformat sebagai tanggal di RDLC.
+    ''' </summary>
+    Public Function ConvertColumnToDateTime(dt As DataTable, columnName As String) As DataTable
+        If dt Is Nothing OrElse Not dt.Columns.Contains(columnName) Then Return dt
+
+        Dim dtCloned As DataTable = dt.Clone()
+        dtCloned.Columns(columnName).DataType = GetType(Date)
+
+        For Each row As DataRow In dt.Rows
+            Dim newRow As DataRow = dtCloned.NewRow()
+            For Each col As DataColumn In dt.Columns
+                If col.ColumnName = columnName Then
+                    If row(col.ColumnName) Is DBNull.Value Then
+                        newRow(col.ColumnName) = DBNull.Value
+                    Else
+                        Try
+                            newRow(col.ColumnName) = Convert.ToDateTime(row(col.ColumnName))
+                        Catch
+                            newRow(col.ColumnName) = DBNull.Value
+                        End Try
+                    End If
+                Else
+                    newRow(col.ColumnName) = row(col.ColumnName)
+                End If
+            Next
+            dtCloned.Rows.Add(newRow)
+        Next
+
+        Return dtCloned
+    End Function
+
 #End Region
 
 End Module

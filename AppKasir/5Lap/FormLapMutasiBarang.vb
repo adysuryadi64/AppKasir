@@ -266,11 +266,28 @@ Public Class FormLapMutasiBarang
 
 #Region "Filter Tanggal & Bulan"
     Private Sub CbTanggal_CheckedChanged(sender As Object, e As EventArgs) Handles CbTanggal.CheckedChanged
-
+        If CbTanggal.Checked Then
+            CbBulan.Checked = False
+            DateTimePicker1.Enabled = True
+            DateTimePicker2.Enabled = True
+            LblSd.Enabled = True
+            CmbBln.Enabled = False
+            CmbThn.Enabled = False
+            CmbBln.Items.Clear()
+            CmbThn.Items.Clear()
+        End If
     End Sub
 
     Private Sub CbBulan_CheckedChanged(sender As Object, e As EventArgs) Handles CbBulan.CheckedChanged
-
+        If CbBulan.Checked Then
+            CbTanggal.Checked = False
+            DateTimePicker1.Enabled = False
+            DateTimePicker2.Enabled = False
+            LblSd.Enabled = False
+            CmbBln.Enabled = True
+            CmbThn.Enabled = True
+            MuatComboBoxBulanTahun(CmbBln, CmbThn)
+        End If
     End Sub
 
     Private Function GetRentangTanggal(ByRef tglAwal As DateTime, ByRef tglAkhir As DateTime) As Boolean
@@ -294,6 +311,9 @@ Public Class FormLapMutasiBarang
         Dim tanggalAkhir As Date
         If Not GetRentangTanggal(tanggalAwal, tanggalAkhir) Then Return
 
+        Dim lokasiPilihan As String = CmbLokasi.Text   ' "TOKO", "GUDANG", atau "SEMUA"
+        Dim isSemua As Boolean = (lokasiPilihan = "SEMUA")
+
         Dim transaction As MySqlTransaction = conn.BeginTransaction()
         Try
             Using cmdClear As New MySqlCommand("DELETE FROM Temp_Mutasi_Barang", conn, transaction)
@@ -307,21 +327,28 @@ Public Class FormLapMutasiBarang
                 cmdSaldoAwal.Parameters.AddWithValue("?", TxtKode.Text)
                 Using reader As MySqlDataReader = cmdSaldoAwal.ExecuteReader()
                     While reader.Read()
-                        Select Case CmbLokasi.Text
-                            Case "TOKO" : saldoAwal += Convert.ToDecimal(reader("AWAL_TOKO"))
-                            Case "GUDANG" : saldoAwal += Convert.ToDecimal(reader("AWAL_GUDANG"))
-                        End Select
+                        If isSemua Then
+                            saldoAwal += Convert.ToDecimal(reader("AWAL_TOKO")) +
+                                         Convert.ToDecimal(reader("AWAL_GUDANG"))
+                        ElseIf lokasiPilihan = "TOKO" Then
+                            saldoAwal += Convert.ToDecimal(reader("AWAL_TOKO"))
+                        ElseIf lokasiPilihan = "GUDANG" Then
+                            saldoAwal += Convert.ToDecimal(reader("AWAL_GUDANG"))
+                        End If
                     End While
                 End Using
             End Using
 
             ' Akumulasi mutasi sebelum periode
-            Using cmdHist As New MySqlCommand(
+            Dim sqlHist As String =
                 "SELECT JENIS, SUM(TOTAL_QTY) AS TOTAL_QTY FROM historybarang " &
-                "WHERE TANGGAL < @TanggalAwal AND ID_BARANG = @IdBarang AND LOKASI = @Lokasi GROUP BY JENIS", conn, transaction)
+                "WHERE TANGGAL < @TanggalAwal AND ID_BARANG = @IdBarang" &
+                If(isSemua, "", " AND LOKASI = @Lokasi") &
+                " GROUP BY JENIS"
+            Using cmdHist As New MySqlCommand(sqlHist, conn, transaction)
                 cmdHist.Parameters.AddWithValue("@TanggalAwal", tanggalAwal.ToString("yyyy-MM-dd HH:mm:ss"))
                 cmdHist.Parameters.AddWithValue("@IdBarang", TxtKode.Text)
-                cmdHist.Parameters.AddWithValue("@Lokasi", CmbLokasi.Text)
+                If Not isSemua Then cmdHist.Parameters.AddWithValue("@Lokasi", lokasiPilihan)
                 Using reader As MySqlDataReader = cmdHist.ExecuteReader()
                     While reader.Read()
                         Dim qty As Decimal = Convert.ToDecimal(reader("TOTAL_QTY"))
@@ -340,21 +367,24 @@ Public Class FormLapMutasiBarang
                 "INSERT INTO Temp_Mutasi_Barang (FAKTUR, TANGGAL, JENIS, LOKASI, QTY_MASUK, QTY_KELUAR, SALDO, ID_USER) " &
                 "VALUES ('SA-000000001', @Tanggal, 'SALDO AWAL', @Lokasi, 0, 0, @Saldo, @IdUser)", conn, transaction)
                 cmdInsertSA.Parameters.AddWithValue("@Tanggal", tanggalAwal.ToString("yyyy-MM-dd HH:mm:ss"))
-                cmdInsertSA.Parameters.AddWithValue("@Lokasi", CmbLokasi.Text)
+                cmdInsertSA.Parameters.AddWithValue("@Lokasi", lokasiPilihan)
                 cmdInsertSA.Parameters.AddWithValue("@Saldo", saldoAwal)
                 cmdInsertSA.Parameters.AddWithValue("@IdUser", FormUtama.StatusNamaUser.Text)
                 cmdInsertSA.ExecuteNonQuery()
             End Using
 
             ' Ambil transaksi dalam periode
-            Dim records As New List(Of Dictionary(Of String, Object))
-            Using cmdTrans As New MySqlCommand(
+            Dim sqlTrans As String =
                 "SELECT FAKTUR, TANGGAL, JENIS, LOKASI, TOTAL_QTY, ID_USER FROM historybarang " &
-                "WHERE TANGGAL BETWEEN @TanggalAwal AND @TanggalAkhir AND ID_BARANG = @IdBarang AND LOKASI = @Lokasi ORDER BY TANGGAL", conn, transaction)
+                "WHERE TANGGAL BETWEEN @TanggalAwal AND @TanggalAkhir AND ID_BARANG = @IdBarang" &
+                If(isSemua, "", " AND LOKASI = @Lokasi") &
+                " ORDER BY TANGGAL"
+            Dim records As New List(Of Dictionary(Of String, Object))
+            Using cmdTrans As New MySqlCommand(sqlTrans, conn, transaction)
                 cmdTrans.Parameters.AddWithValue("@TanggalAwal", tanggalAwal.ToString("yyyy-MM-dd HH:mm:ss"))
                 cmdTrans.Parameters.AddWithValue("@TanggalAkhir", tanggalAkhir.ToString("yyyy-MM-dd HH:mm:ss"))
                 cmdTrans.Parameters.AddWithValue("@IdBarang", TxtKode.Text)
-                cmdTrans.Parameters.AddWithValue("@Lokasi", CmbLokasi.Text)
+                If Not isSemua Then cmdTrans.Parameters.AddWithValue("@Lokasi", lokasiPilihan)
                 Using reader As MySqlDataReader = cmdTrans.ExecuteReader()
                     While reader.Read()
                         records.Add(New Dictionary(Of String, Object) From {
@@ -411,18 +441,49 @@ Public Class FormLapMutasiBarang
         Using cmdMutasi As New MySqlCommand(
             "SELECT FAKTUR, TANGGAL, JENIS, LOKASI, QTY_MASUK, QTY_KELUAR, SALDO, ID_USER FROM Temp_Mutasi_Barang", conn)
             Using rd As MySqlDataReader = cmdMutasi.ExecuteReader()
-                Using ds As New DataSet()
-                    ds.Load(rd, LoadOption.OverwriteChanges, "Temp_Mutasi_Barang")
-                    ReportViewer1.LocalReport.DataSources.Clear()
-                    ReportViewer1.LocalReport.DataSources.Add(New ReportDataSource("DataSet1", ds.Tables("Temp_Mutasi_Barang")))
-                    ReportViewer1.LocalReport.SetParameters(New ReportParameterCollection From {
-                        New ReportParameter("NAMATOKO", NAMA_PERUSAHAAN),
-                        New ReportParameter("Kode", TxtKode.Text),
-                        New ReportParameter("Nama_Barang", TxtNama.Text),
-                        New ReportParameter("Tanggal", "Tanggal : " & DateTimePicker1.Value.ToShortDateString() & " s/d " & DateTimePicker2.Value.ToShortDateString())
-                    })
-                    ReportViewer1.RefreshReport()
-                End Using
+                ' Buat DataTable dengan tipe kolom eksplisit agar RDLC tidak error saat format DateTime
+                Dim dt As New DataTable("Temp_Mutasi_Barang")
+                dt.Columns.Add("FAKTUR", GetType(String))
+                dt.Columns.Add("TANGGAL", GetType(DateTime))
+                dt.Columns.Add("JENIS", GetType(String))
+                dt.Columns.Add("LOKASI", GetType(String))
+                dt.Columns.Add("QTY_MASUK", GetType(Decimal))
+                dt.Columns.Add("QTY_KELUAR", GetType(Decimal))
+                dt.Columns.Add("SALDO", GetType(Decimal))
+                dt.Columns.Add("ID_USER", GetType(String))
+
+                While rd.Read()
+                    Dim row As DataRow = dt.NewRow()
+                    row("FAKTUR") = rd("FAKTUR").ToString()
+                    row("TANGGAL") = If(IsDBNull(rd("TANGGAL")), CType(DBNull.Value, Object), Convert.ToDateTime(rd("TANGGAL")))
+                    row("JENIS") = rd("JENIS").ToString()
+                    row("LOKASI") = rd("LOKASI").ToString()
+                    row("QTY_MASUK") = Convert.ToDecimal(rd("QTY_MASUK"))
+                    row("QTY_KELUAR") = Convert.ToDecimal(rd("QTY_KELUAR"))
+                    row("SALDO") = Convert.ToDecimal(rd("SALDO"))
+                    row("ID_USER") = rd("ID_USER").ToString()
+                    dt.Rows.Add(row)
+                End While
+
+                ' Tentukan label periode sesuai filter aktif
+                Dim periodeLabel As String
+                If CbBulan.Checked Then
+                    Dim bln As String = If(CmbBln.SelectedItem IsNot Nothing, CmbBln.SelectedItem.ToString(), "")
+                    Dim thn As String = If(CmbThn.SelectedItem IsNot Nothing, CmbThn.SelectedItem.ToString(), "")
+                    periodeLabel = "Periode : " & bln & " " & thn
+                Else
+                    periodeLabel = "Tanggal : " & DateTimePicker1.Value.ToShortDateString() & " s/d " & DateTimePicker2.Value.ToShortDateString()
+                End If
+
+                ReportViewer1.LocalReport.DataSources.Clear()
+                ReportViewer1.LocalReport.DataSources.Add(New ReportDataSource("DataSet1", dt))
+                ReportViewer1.LocalReport.SetParameters(New ReportParameterCollection From {
+                    New ReportParameter("NAMATOKO", NAMA_PERUSAHAAN),
+                    New ReportParameter("Kode", TxtKode.Text),
+                    New ReportParameter("Nama_Barang", TxtNama.Text),
+                    New ReportParameter("Tanggal", periodeLabel)
+                })
+                ReportViewer1.RefreshReport()
             End Using
         End Using
     End Sub

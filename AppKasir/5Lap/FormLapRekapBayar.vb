@@ -132,9 +132,10 @@ Public Class FormLapRekapBayar
                 Using rd As MySqlDataReader = cmd.ExecuteReader()
                     Using ds As New DataSetKL()
                         ds.Load(rd, LoadOption.OverwriteChanges, "RekapBayarHutang")
-                        Dim totalItem As Integer = ds.Tables("RekapBayarHutang").Rows.Count
+                        Dim dtHutang As DataTable = ConvertColumnToDateTime(ds.Tables("RekapBayarHutang"), "TGLPEMBAYARAN")
+                        Dim totalItem As Integer = dtHutang.Rows.Count
                         Dim totalHutang As Decimal = 0, totalBayar As Decimal = 0, totalSisa As Decimal = 0
-                        For Each row As DataRow In ds.Tables("RekapBayarHutang").Rows
+                        For Each row As DataRow In dtHutang.Rows
                             totalHutang += Convert.ToDecimal(row("TOTALHUTANG"))
                             totalBayar += Convert.ToDecimal(row("NOMINALBAYAR"))
                             totalSisa += Convert.ToDecimal(row("SISAHUTANG"))
@@ -147,7 +148,7 @@ Public Class FormLapRekapBayar
                         Dim judulLokasi As String = If(lokasi = "SEMUA", "Toko & Gudang", lokasi)
 
                         ReportViewer1.LocalReport.DataSources.Clear()
-                        ReportViewer1.LocalReport.DataSources.Add(New ReportDataSource("DataSet1", ds.Tables("RekapBayarHutang")))
+                        ReportViewer1.LocalReport.DataSources.Add(New ReportDataSource("DataSet1", dtHutang))
                         ReportViewer1.LocalReport.SetParameters(New ReportParameter() {
                             New ReportParameter("Perusahaan", NAMA_PERUSAHAAN),
                             New ReportParameter("JenisLaporan", "Rekap Bayar Hutang - " & judulLokasi),
@@ -198,9 +199,10 @@ Public Class FormLapRekapBayar
                 Using rd As MySqlDataReader = cmd.ExecuteReader()
                     Using ds As New DataSetKL()
                         ds.Load(rd, LoadOption.OverwriteChanges, "RekapBayarPiutang")
-                        Dim totalItem As Integer = ds.Tables("RekapBayarPiutang").Rows.Count
+                        Dim dtPiutang As DataTable = ConvertColumnToDateTime(ds.Tables("RekapBayarPiutang"), "TGL_BAYAR")
+                        Dim totalItem As Integer = dtPiutang.Rows.Count
                         Dim totalPiutang As Decimal = 0, totalBayar As Decimal = 0, totalSisa As Decimal = 0
-                        For Each row As DataRow In ds.Tables("RekapBayarPiutang").Rows
+                        For Each row As DataRow In dtPiutang.Rows
                             totalPiutang += Convert.ToDecimal(row("TOTAL_PIUTANG"))
                             totalBayar += Convert.ToDecimal(row("NOMINAL_BAYAR"))
                             totalSisa += Convert.ToDecimal(row("SISA_PIUTANG"))
@@ -213,7 +215,7 @@ Public Class FormLapRekapBayar
                         Dim judulLokasi As String = If(lokasi = "SEMUA", "Toko & Gudang", lokasi)
 
                         ReportViewer2.LocalReport.DataSources.Clear()
-                        ReportViewer2.LocalReport.DataSources.Add(New ReportDataSource("DataSet1", ds.Tables("RekapBayarPiutang")))
+                        ReportViewer2.LocalReport.DataSources.Add(New ReportDataSource("DataSet1", dtPiutang))
                         ReportViewer2.LocalReport.SetParameters(New ReportParameter() {
                             New ReportParameter("Perusahaan", NAMA_PERUSAHAAN),
                             New ReportParameter("JenisLaporan", "Rekap Bayar Piutang - " & judulLokasi),

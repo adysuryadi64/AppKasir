@@ -207,6 +207,9 @@ Public Class FormLapHutang
                 Using rd As MySqlDataReader = cmd.ExecuteReader()
                     Using dataset As New DataSet()
                         dataset.Load(rd, LoadOption.OverwriteChanges, "pembelian_hutang")
+                        Dim dtHutang As DataTable = ConvertColumnToDateTime(dataset.Tables("pembelian_hutang"), "TGL_BELI")
+                        dtHutang = ConvertColumnToDateTime(dtHutang, "JATUH_TEMPO")
+                        dtHutang = ConvertColumnToDateTime(dtHutang, "TGL_BAYAR")
 
                         Dim parameters As New ReportParameterCollection From {
                         New ReportParameter("Supliyer", "Supliyer : " & Supliyer),
@@ -216,7 +219,7 @@ Public Class FormLapHutang
 
                         ' Menetapkan dataset ke laporan RDLC
                         ReportViewer1.LocalReport.DataSources.Clear()
-                        ReportViewer1.LocalReport.DataSources.Add(New ReportDataSource("DataSet1", dataset.Tables("pembelian_hutang")))
+                        ReportViewer1.LocalReport.DataSources.Add(New ReportDataSource("DataSet1", dtHutang))
                         ReportViewer1.LocalReport.SetParameters(parameters)
 
                         ' Menampilkan laporan RDLC

@@ -95,7 +95,7 @@ Public Class FormLapStokLampau
                     Dim judulLokasi As String = If(lokasi = "SEMUA", "Toko & Gudang", lokasi)
                     Dim periodeStr As String = "Per Tanggal : " & DTPTanggal.Value.ToString("dd MMMM yyyy")
 
-                    ReportViewer1.LocalReport.ReportEmbeddedResource = "AppKasir.ReportStokLampau.rdlc"
+                    ReportViewer1.LocalReport.ReportEmbeddedResource = "KasirLancar.ReportStokLampau.rdlc"
                     ReportViewer1.LocalReport.DataSources.Add(New ReportDataSource("DataSet1", ds.Tables("StokLampau")))
                     ReportViewer1.LocalReport.SetParameters(New ReportParameter() {
                         New ReportParameter("Perusahaan", NAMA_PERUSAHAAN),

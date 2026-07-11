@@ -24,16 +24,17 @@ Public Class FormNotifPiutang
                 Using rd As MySqlDataReader = cmd.ExecuteReader()
                     Using dataset As New DataSetKL()
                         dataset.Load(rd, LoadOption.OverwriteChanges, "penjualan_Piutang")
+                    Dim dtPiutangNotif As DataTable = ConvertColumnToDateTime(dataset.Tables("penjualan_Piutang"), "TGL_TRANSAKSI")
+                    dtPiutangNotif = ConvertColumnToDateTime(dtPiutangNotif, "JATUH_TEMPO")
 
-                        Dim parameters As New ReportParameterCollection From {
+                    Dim parameters As New ReportParameterCollection From {
                 New ReportParameter("Kasir", "Dicetak oleh : " & FormUtama.StatusNamaUser.Text),
         New ReportParameter("Perusahaan", NAMA_PERUSAHAAN)
     }
 
-
                         ' Menetapkan dataset ke laporan RDLC
                         ReportViewer1.LocalReport.DataSources.Clear()
-                        ReportViewer1.LocalReport.DataSources.Add(New ReportDataSource("DataSet1", dataset.Tables("penjualan_Piutang")))
+                        ReportViewer1.LocalReport.DataSources.Add(New ReportDataSource("DataSet1", dtPiutangNotif))
                         ReportViewer1.LocalReport.SetParameters(parameters)
 
                         ' Menampilkan laporan RDLC

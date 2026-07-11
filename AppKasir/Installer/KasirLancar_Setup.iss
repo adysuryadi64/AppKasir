@@ -3,7 +3,7 @@
 #define MyAppPublisher "Kasir Lancar"
 #define MyAppExeName "KasirLancar.exe"
 #define MyAppSourceDir "..\bin\Debug"
-#define MyAppDriverDir "..\bin\Debug\Printer Driver Software"
+#define MyAppDriverDir "..\Printer Driver Software"
 #define MyAppFontDir "..\Fonts"
 #define MyAppMySQLDir "..\MySQL"
 #define MyAppURL "https://kasirlancar.com"
@@ -126,7 +126,7 @@ Name: "startupicon";    Description: "Jalankan otomatis saat Windows startup"; G
 
 ; ============================================================
 [Files]
-; AUTO-GENERATED oleh Build-Installer.ps1 - 2026-07-06 03:25:35
+; AUTO-GENERATED oleh Build-Installer.ps1 - 2026-07-06 19:59:17
 ; Total file di bin\Debug: 867
 
 ; ----- File Utama Aplikasi -----
@@ -292,6 +292,25 @@ Source: "{#MyAppSourceDir}\zxing.dll"; DestDir: "{app}"; Flags: ignoreversion; C
 Source: "{#MyAppSourceDir}\zxing.presentation.dll"; DestDir: "{app}"; Flags: ignoreversion; Components: mainapp
 Source: "{#MyAppSourceDir}\zxing.presentation.xml"; DestDir: "{app}"; Flags: ignoreversion; Components: mainapp
 Source: "{#MyAppSourceDir}\zxing.xml"; DestDir: "{app}"; Flags: ignoreversion; Components: mainapp
+
+; ----- Printer Driver Software (8 file) -----
+; Semua file driver disertakan ke {app}\Printer Driver Software
+Source: "{#MyAppDriverDir}\appserv-9-3-0.exe"; DestDir: "{app}\Printer Driver Software"; Flags: ignoreversion; Components: mainapp
+Source: "{#MyAppDriverDir}\MicrosoftEdgeWebView2RuntimeInstaller.exe"; DestDir: "{app}\Printer Driver Software"; Flags: ignoreversion; Components: mainapp
+Source: "{#MyAppDriverDir}\mysql-connector-net-9.1.0.msi"; DestDir: "{app}\Printer Driver Software"; Flags: ignoreversion; Components: mainapp
+Source: "{#MyAppDriverDir}\POS Printer Driver Setup .exe"; DestDir: "{app}\Printer Driver Software"; Flags: ignoreversion; Components: mainapp
+Source: "{#MyAppDriverDir}\ReportViewer.exe"; DestDir: "{app}\Printer Driver Software"; Flags: ignoreversion; Components: mainapp
+Source: "{#MyAppDriverDir}\tsc_driver.exe"; DestDir: "{app}\Printer Driver Software"; Flags: ignoreversion; Components: mainapp
+Source: "{#MyAppDriverDir}\VC_redist.x64.exe"; DestDir: "{app}\Printer Driver Software"; Flags: ignoreversion; Components: mainapp
+Source: "{#MyAppDriverDir}\VC_redist.x86.exe"; DestDir: "{app}\Printer Driver Software"; Flags: ignoreversion; Components: mainapp
+
+; Installer prerequisite juga ke {tmp} untuk dijalankan
+Source: "{#MyAppDriverDir}\mysql-connector-net-9.1.0.msi"; DestDir: "{tmp}"; Flags: deleteafterinstall; Components: mysqlconn
+Source: "{#MyAppDriverDir}\appserv-9-3-0.exe"; DestDir: "{tmp}"; Flags: deleteafterinstall; Components: appserv
+Source: "{#MyAppDriverDir}\VC_redist.x86.exe"; DestDir: "{tmp}"; Flags: deleteafterinstall; Components: vcredist
+Source: "{#MyAppDriverDir}\VC_redist.x64.exe"; DestDir: "{tmp}"; Flags: deleteafterinstall; Components: vcredist
+Source: "{#MyAppDriverDir}\ReportViewer.exe"; DestDir: "{tmp}"; Flags: deleteafterinstall; Components: reportviewer
+Source: "{#MyAppDriverDir}\POS Printer Driver Setup .exe"; DestDir: "{tmp}"; Flags: deleteafterinstall; Components: posprinter
 
 ; ----- ar (1 file) -----
 Source: "{#MyAppSourceDir}\ar\*"; DestDir: "{app}\ar"; Flags: ignoreversion recursesubdirs; Components: mainapp

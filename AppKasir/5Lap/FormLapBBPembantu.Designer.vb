@@ -143,7 +143,7 @@ Partial Class FormLapBBPembantu
         'ReportViewer1
         '
         Me.ReportViewer1.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.ReportViewer1.LocalReport.ReportEmbeddedResource = "AppKasir.ReportBBPembantu.rdlc"
+        Me.ReportViewer1.LocalReport.ReportEmbeddedResource = "KasirLancar.ReportBBPembantu.rdlc"
         Me.ReportViewer1.Location = New System.Drawing.Point(0, 80)
         Me.ReportViewer1.Name = "ReportViewer1"
         Me.ReportViewer1.ServerReport.BearerToken = Nothing

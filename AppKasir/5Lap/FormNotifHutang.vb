@@ -76,6 +76,8 @@ Public Class FormNotifHutang
 
             ' Ambil data hutang
             Dim hutangData As DataTable = GetHutangData(tanggalJatuhTempo)
+            hutangData = ConvertColumnToDateTime(hutangData, "TGL_BELI")
+            hutangData = ConvertColumnToDateTime(hutangData, "JATUH_TEMPO")
 
             ' Tentukan parameter laporan
             Dim parameters As ReportParameterCollection = GetReportParameters()

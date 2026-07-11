@@ -173,6 +173,7 @@ Public Class FormLapPenjualanSales
             Using rdDataRetur As MySqlDataReader = cmdDataRetur.ExecuteReader()
                 Dim datasetRetur As New DataSetKL()
                 datasetRetur.Load(rdDataRetur, LoadOption.OverwriteChanges, "PenjualanSales")
+                Dim dtSales As DataTable = ConvertColumnToDateTime(datasetRetur.Tables("PenjualanSales"), "TGL_TRANSAKSI")
 
                 ' Menambahkan parameter ke laporan RDLC
                 Dim keterangan As String = "          Sales : " & CmbSales.Text
@@ -184,7 +185,7 @@ Public Class FormLapPenjualanSales
 }
                 ' Menetapkan dataset dan parameter ke laporan RDLC
                 ReportViewer1.LocalReport.DataSources.Clear()
-                ReportViewer1.LocalReport.DataSources.Add(New ReportDataSource("DataSet1", datasetRetur.Tables("PenjualanSales")))
+                ReportViewer1.LocalReport.DataSources.Add(New ReportDataSource("DataSet1", dtSales))
                 ReportViewer1.LocalReport.SetParameters(parametersRetur)
 
                 ' Menampilkan laporan RDLC

@@ -216,6 +216,8 @@ Public Class FormLapReturBeli
             Using rdDataRetur As MySqlDataReader = cmdDataRetur.ExecuteReader()
                 Dim datasetRetur As New DataSetKL()
                 datasetRetur.Load(rdDataRetur, LoadOption.OverwriteChanges, "retur_pembelian")
+                Dim dtReturBeli As DataTable = ConvertColumnToDateTime(datasetRetur.Tables("retur_pembelian"), "TGL_RETUR_BELI")
+                dtReturBeli = ConvertColumnToDateTime(dtReturBeli, "TGL_PEMBELIAN")
 
                 ' Menambahkan parameter ke laporan RDLC
                 Dim keterangan As String = "          kasir : " & CmbKasir.Text & "          Rekening : " & CmbRekening.Text
@@ -227,7 +229,7 @@ Public Class FormLapReturBeli
 }
                 ' Menetapkan dataset dan parameter ke laporan RDLC
                 ReportViewerReturBeli.LocalReport.DataSources.Clear()
-                ReportViewerReturBeli.LocalReport.DataSources.Add(New ReportDataSource("DataSet1", datasetRetur.Tables("retur_pembelian")))
+                ReportViewerReturBeli.LocalReport.DataSources.Add(New ReportDataSource("DataSet1", dtReturBeli))
                 ReportViewerReturBeli.LocalReport.SetParameters(parametersRetur)
 
                 ' Menampilkan laporan RDLC
@@ -252,6 +254,7 @@ Public Class FormLapReturBeli
             Using reader As MySqlDataReader = command.ExecuteReader()
                 Dim dataset As New DataSetKL()
                 dataset.Load(reader, LoadOption.OverwriteChanges, "retur_pembelian_detail")
+                Dim dtReturBeliDetail As DataTable = ConvertColumnToDateTime(dataset.Tables("retur_pembelian_detail"), "TGL_RETUR_BELI")
 
                 Dim keterangan As String = "          kasir : " & CmbKasir.Text & "          Supplier : " & CmbRekening.Text
 
@@ -262,7 +265,7 @@ Public Class FormLapReturBeli
                 }
 
                 ReportViewerReturBeliDetail.LocalReport.DataSources.Clear()
-                ReportViewerReturBeliDetail.LocalReport.DataSources.Add(New ReportDataSource("DataSet1", dataset.Tables("retur_pembelian_detail")))
+                ReportViewerReturBeliDetail.LocalReport.DataSources.Add(New ReportDataSource("DataSet1", dtReturBeliDetail))
                 ReportViewerReturBeliDetail.LocalReport.SetParameters(parameters)
                 ReportViewerReturBeliDetail.RefreshReport()
             End Using

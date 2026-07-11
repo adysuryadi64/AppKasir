@@ -79,32 +79,53 @@ Module ModuleAngka
             End If
 
         ElseIf hasComma AndAlso Not hasDot Then
-            ' Hanya koma — bisa desimal atau ribuan
+            ' Hanya koma — bisa desimal atau ribuan.
+            ' Aturan: pemisah ribuan selalu memisahkan tepat 3 digit ("1,500" / "1,500,000").
+            ' Jika ada lebih dari 1 koma → pasti ribuan ("1,500,000").
+            ' Jika ada tepat 1 koma dan bagian kanannya tepat 3 digit → ribuan ("1,500").
+            ' Selain itu → desimal ("1,5" / "1,50" / "1,5000" / ",5").
             Dim parts() As String = s.Split(","c)
-            If parts.Length = 2 AndAlso parts(1).Length <= 2 Then
-                ' "1,5", "1,50", ",5", "1," → desimal
-                ' Tambah "0" di depan jika diawali koma: ",5" → "0.5"
+            Dim isRibuan As Boolean = False
+            If parts.Length > 2 Then
+                isRibuan = True   ' lebih dari satu koma → pasti ribuan
+            ElseIf parts.Length = 2 Then
+                ' Tepat satu koma: ribuan hanya jika bagian kanan persis 3 digit
+                isRibuan = (parts(1).Length = 3 AndAlso parts(1).All(Function(c) Char.IsDigit(c)))
+            End If
+
+            If isRibuan Then
+                ' "1,500" / "1,500,000" → ribuan, hapus koma
+                normalized = s.Replace(",", "")
+            Else
+                ' "1,5" / "1,50" / "1,5000" / ",5" / "1," → desimal
                 Dim temp As String = If(s.StartsWith(","), "0" & s, s)
-                ' Hapus koma di akhir jika tidak ada desimal: "1," → "1"
                 If temp.EndsWith(",") Then temp = temp.TrimEnd(","c)
                 normalized = temp.Replace(",", ".")
-            Else
-                ' "1,500" atau "1,500,000" → ribuan, hapus koma
-                normalized = s.Replace(",", "")
             End If
 
         ElseIf hasDot AndAlso Not hasComma Then
-            ' Hanya titik — bisa desimal atau ribuan
+            ' Hanya titik — bisa desimal atau ribuan.
+            ' Aturan: pemisah ribuan selalu memisahkan tepat 3 digit ("1.500" / "1.500.000").
+            ' Jika ada lebih dari 1 titik → pasti ribuan ("1.500.000").
+            ' Jika ada tepat 1 titik dan bagian kanannya tepat 3 digit → ribuan ("1.500").
+            ' Selain itu → desimal ("1.5" / "1.50" / "1.5000" / "7801.0000" / ".5").
+            ' Catatan: nilai DB decimal(15,4) seperti "7801.0000" punya 4 digit → desimal ✓
             Dim parts() As String = s.Split("."c)
-            If parts.Length = 2 AndAlso parts(1).Length <= 2 Then
-                ' "1.5", "1.50", ".5", "1." → desimal, biarkan
-                ' Tambah "0" di depan jika diawali titik: ".5" → "0.5"
-                normalized = If(s.StartsWith("."), "0" & s, s)
-                ' Hapus titik di akhir jika tidak ada desimal: "1." → "1"
-                If normalized.EndsWith(".") Then normalized = normalized.TrimEnd("."c)
-            Else
-                ' "1.500" atau "1.500.000" → ribuan, hapus titik
+            Dim isRibuan As Boolean = False
+            If parts.Length > 2 Then
+                isRibuan = True   ' lebih dari satu titik → pasti ribuan
+            ElseIf parts.Length = 2 Then
+                ' Tepat satu titik: ribuan hanya jika bagian kanan persis 3 digit
+                isRibuan = (parts(1).Length = 3 AndAlso parts(1).All(Function(c) Char.IsDigit(c)))
+            End If
+
+            If isRibuan Then
+                ' "1.500" / "1.500.000" → ribuan, hapus titik
                 normalized = s.Replace(".", "")
+            Else
+                ' "1.5" / "1.50" / "1.5000" / "7801.0000" / ".5" / "1." → desimal, biarkan
+                normalized = If(s.StartsWith("."), "0" & s, s)
+                If normalized.EndsWith(".") Then normalized = normalized.TrimEnd("."c)
             End If
 
         Else

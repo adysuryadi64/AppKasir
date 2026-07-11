@@ -23,7 +23,9 @@ $SkipFiles = @("*.log", "*.pdb", "debug_original.sql")
 $SkipFolders = @("Logs", "KasirLancar.exe.WebView2")
 
 # Folder Printer Driver Software - file installer ke {tmp}, folder tetap ke {app}
+# Path relatif dari folder Installer ke sumber driver
 $DriverFolder = "Printer Driver Software"
+$DriverSourceDir = "..\$DriverFolder"
 
 # File installer prerequisite yang ke {tmp}
 $PrereqFiles = @{
@@ -110,7 +112,32 @@ foreach ($f in $rootFileList) {
 }
 $lines.Add("")
 
-# ---- 2. Subfolder - proses satu per satu ----
+# ---- 2. Printer Driver Software (dari folder terpisah, bukan dari bin\Debug) ----
+$driverFullPath = Join-Path $PSScriptRoot $DriverSourceDir
+if (Test-Path $driverFullPath) {
+    $driverFiles = Get-ChildItem -Path $driverFullPath -File | Sort-Object Name |
+                   Where-Object { $ExcludeDriverFiles -notcontains $_.Name }
+    $fileCount = $driverFiles.Count
+    $lines.Add("; ----- Printer Driver Software ($fileCount file) -----")
+    $lines.Add("; Semua file driver disertakan ke {app}\Printer Driver Software")
+    foreach ($df in $driverFiles) {
+        $lines.Add("Source: ""{#MyAppDriverDir}\$($df.Name)""; DestDir: ""{app}\Printer Driver Software""; Flags: ignoreversion; Components: mainapp")
+    }
+    $lines.Add("")
+    $lines.Add("; Installer prerequisite juga ke {tmp} untuk dijalankan")
+    foreach ($prereq in $PrereqFiles.GetEnumerator()) {
+        $prereqPath = Join-Path $driverFullPath $prereq.Key
+        if (Test-Path $prereqPath) {
+            $lines.Add("Source: ""{#MyAppDriverDir}\$($prereq.Key)""; DestDir: ""{tmp}""; Flags: deleteafterinstall; Components: $($prereq.Value)")
+        }
+    }
+    $lines.Add("")
+    Write-Host "  + Printer Driver Software: $fileCount file (dikemas), $($PrereqFiles.Count) prereq ke {tmp}" -ForegroundColor Green
+} else {
+    Write-Host "  WARNING: Folder '$driverFullPath' tidak ditemukan!" -ForegroundColor Yellow
+}
+
+# ---- 3. Subfolder lainnya di bin\Debug ----
 $subDirList = Get-ChildItem -Path $DebugDir -Directory | Sort-Object Name
 
 foreach ($dir in $subDirList) {
@@ -130,29 +157,6 @@ foreach ($dir in $subDirList) {
         $lines.Add("Source: ""{#MyAppSourceDir}\Backup\*""; DestDir: ""{app}\Backup""; Flags: ignoreversion recursesubdirs createallsubdirs; Components: mainapp")
         $lines.Add("")
         Write-Host "  + Backup: $fileCount file (recurse)" -ForegroundColor Green
-        continue
-    }
-
-    # Folder Printer Driver Software - dual: ke {app} DAN installer ke {tmp}
-    if ($dirName -eq "Printer Driver Software") {
-        $driverFiles = Get-ChildItem -Path $dir.FullName -File | Sort-Object Name |
-                       Where-Object { $ExcludeDriverFiles -notcontains $_.Name }
-        $fileCount = $driverFiles.Count
-        $lines.Add("; ----- Printer Driver Software ($fileCount file) -----")
-        $lines.Add("; Semua file driver disertakan ke {app}\Printer Driver Software")
-        foreach ($df in $driverFiles) {
-            $lines.Add("Source: ""{#MyAppDriverDir}\$($df.Name)""; DestDir: ""{app}\Printer Driver Software""; Flags: ignoreversion; Components: mainapp")
-        }
-        $lines.Add("")
-        $lines.Add("; Installer prerequisite juga ke {tmp} untuk dijalankan")
-        foreach ($prereq in $PrereqFiles.GetEnumerator()) {
-            $prereqPath = Join-Path $dir.FullName $prereq.Key
-            if (Test-Path $prereqPath) {
-                $lines.Add("Source: ""{#MyAppDriverDir}\$($prereq.Key)""; DestDir: ""{tmp}""; Flags: deleteafterinstall; Components: $($prereq.Value)")
-            }
-        }
-        $lines.Add("")
-        Write-Host "  + Printer Driver Software: $fileCount file (dikemas), $($PrereqFiles.Count) prereq ke {tmp}" -ForegroundColor Green
         continue
     }
 

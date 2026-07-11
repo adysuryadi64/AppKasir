@@ -226,6 +226,7 @@ Public Class FormLapPembelian
             Using rdDataRetur As MySqlDataReader = cmdDataRetur.ExecuteReader()
                 Dim dt As New DataTable("pembelian")
                 dt.Load(rdDataRetur)
+                dt = ConvertColumnToDateTime(dt, "TGL_BELI")
 
                 ' Menambahkan parameter ke laporan RDLC
                 Dim keterangan As String = "          kasir : " & CmbKasir.Text & "          Rekening : " & CmbRekening.Text
@@ -264,6 +265,7 @@ Public Class FormLapPembelian
             Using reader As MySqlDataReader = command.ExecuteReader()
                 Dim dt As New DataTable("pembelian_detail1")
                 dt.Load(reader)
+                dt = ConvertColumnToDateTime(dt, "TANGGAL_MASUK")
 
                 Dim keterangan As String = "          kasir : " & CmbKasir.Text & "          Supplier : " & CmbRekening.Text
 
@@ -337,6 +339,8 @@ Public Class FormLapPembelian
             Using rdDataRetur As MySqlDataReader = cmdDataRetur.ExecuteReader()
                 Dim dt As New DataTable("pembelianHutang")
                 dt.Load(rdDataRetur)
+                dt = ConvertColumnToDateTime(dt, "TGL_BELI")
+                dt = ConvertColumnToDateTime(dt, "JATUH_TEMPO")
 
                 ' Menambahkan parameter ke laporan RDLC
                 Dim keterangan As String = "          kasir : " & CmbKasir.Text & "          Rekening : " & CmbRekening.Text

@@ -19,7 +19,8 @@ Public Class FormLapTransferStok
             Using rd As MySqlDataReader = cmdStokOpname.ExecuteReader()
                 Using datasetStokOpname As New DataSetKL()
                     datasetStokOpname.Load(rd, LoadOption.OverwriteChanges, "Transfer_stok_barang")
-                    ReportViewer1.LocalReport.DataSources.Add(New ReportDataSource("DataSet1", datasetStokOpname.Tables("Transfer_stok_barang")))
+                    Dim dtTransferStok As DataTable = ConvertColumnToDateTime(datasetStokOpname.Tables("Transfer_stok_barang"), "TANGGAL")
+                    ReportViewer1.LocalReport.DataSources.Add(New ReportDataSource("DataSet1", dtTransferStok))
                 End Using
             End Using
         End Using

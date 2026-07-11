@@ -215,6 +215,7 @@ Public Class FormLapReturJual
             Using rdDataRetur As MySqlDataReader = cmdDataRetur.ExecuteReader() ' Perbaikan: rdDataReturBarang menjadi rdDataRetur
                 Dim datasetRetur As New DataSetKL() ' Perbaikan: datasetReturBarang menjadi datasetRetur
                 datasetRetur.Load(rdDataRetur, LoadOption.OverwriteChanges, "retur_penjualan") ' Perbaikan: datasetReturBarang menjadi datasetRetur
+                Dim dtReturJual As DataTable = ConvertColumnToDateTime(datasetRetur.Tables("retur_penjualan"), "TGL_RETUR_JUAL")
 
                 ' Menambahkan parameter ke laporan RDLC
                 Dim keterangan As String = "          kasir : " & CmbKasir.Text & "          Rekening : " & CmbRekening.Text
@@ -226,7 +227,7 @@ Public Class FormLapReturJual
 }
                 ' Menetapkan dataset dan parameter ke laporan RDLC
                 ReportViewerReturJual.LocalReport.DataSources.Clear()
-                ReportViewerReturJual.LocalReport.DataSources.Add(New ReportDataSource("DataSet1", datasetRetur.Tables("retur_penjualan"))) ' Perbaikan: ReportViewer6 menjadi ReportViewer7
+                ReportViewerReturJual.LocalReport.DataSources.Add(New ReportDataSource("DataSet1", dtReturJual)) ' Perbaikan: ReportViewer6 menjadi ReportViewer7
                 ReportViewerReturJual.LocalReport.SetParameters(parametersRetur) ' Perbaikan: ReportViewer6 menjadi ReportViewer7
 
                 ' Menampilkan laporan RDLC
@@ -252,6 +253,7 @@ Public Class FormLapReturJual
             Using reader As MySqlDataReader = command.ExecuteReader()
                 Dim dataset As New DataSetKL()
                 dataset.Load(reader, LoadOption.OverwriteChanges, "retur_penjualan_detail")
+                Dim dtReturJualDetail As DataTable = ConvertColumnToDateTime(dataset.Tables("retur_penjualan_detail"), "TGL_RETUR_JUAL")
 
                 Dim keterangan As String = "          kasir : " & CmbKasir.Text & "          Pelanggan : " & CmbRekening.Text
 
@@ -262,7 +264,7 @@ Public Class FormLapReturJual
                 }
 
                 ReportViewerReturJualDetail.LocalReport.DataSources.Clear()
-                ReportViewerReturJualDetail.LocalReport.DataSources.Add(New ReportDataSource("DataSet1", dataset.Tables("retur_penjualan_detail")))
+                ReportViewerReturJualDetail.LocalReport.DataSources.Add(New ReportDataSource("DataSet1", dtReturJualDetail))
                 ReportViewerReturJualDetail.LocalReport.SetParameters(parameters)
                 ReportViewerReturJualDetail.RefreshReport()
             End Using

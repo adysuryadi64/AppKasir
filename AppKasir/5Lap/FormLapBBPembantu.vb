@@ -277,6 +277,7 @@ Public Class FormLapBBPembantu
             Using rd As MySqlDataReader = cmd.ExecuteReader()
                 Using ds As New DataSet()
                     ds.Load(rd, LoadOption.OverwriteChanges, "BBPembantu")
+                    Dim dtBB As DataTable = ConvertColumnToDateTime(ds.Tables("BBPembantu"), "TANGGAL")
 
                     Dim judulParam As String = LblHeaderForm.Text
                     Dim entitasParam As String = If(entitas = "", "SEMUA", entitas)
@@ -292,8 +293,8 @@ Public Class FormLapBBPembantu
                     TxtTotalKredit.Text = totalK.ToString("N0", cultureIndonesia)
                     TxtSaldoAkhir.Text = Math.Abs(totalD - totalK).ToString("N0", cultureIndonesia)
 
-                    ReportViewer1.LocalReport.ReportEmbeddedResource = "AppKasir.ReportBBPembantu.rdlc"
-                    ReportViewer1.LocalReport.DataSources.Add(New ReportDataSource("DataSet1", ds.Tables("BBPembantu")))
+                    ReportViewer1.LocalReport.ReportEmbeddedResource = "KasirLancar.ReportBBPembantu.rdlc"
+                    ReportViewer1.LocalReport.DataSources.Add(New ReportDataSource("DataSet1", dtBB))
                     ReportViewer1.LocalReport.SetParameters(New ReportParameter() {
                         New ReportParameter("Perusahaan", NAMA_PERUSAHAAN),
                         New ReportParameter("Judul", judulParam),

@@ -122,7 +122,7 @@ Partial Class FormLapStokLampau
         'ReportViewer1
         '
         Me.ReportViewer1.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.ReportViewer1.LocalReport.ReportEmbeddedResource = "AppKasir.ReportStokLampau.rdlc"
+        Me.ReportViewer1.LocalReport.ReportEmbeddedResource = "KasirLancar.ReportStokLampau.rdlc"
         Me.ReportViewer1.Location = New System.Drawing.Point(0, 80)
         Me.ReportViewer1.Name = "ReportViewer1"
         Me.ReportViewer1.ServerReport.BearerToken = Nothing

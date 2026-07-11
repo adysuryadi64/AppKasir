@@ -305,7 +305,8 @@ Module ModuleHapusTransaksi
     ''' <summary>
     ''' Query HARGA_BELI_SATUAN dari faktur tersisa yang paling baru (ORDER BY TGL_BELI DESC).
     ''' Dipakai untuk update HARGA_BELI_TERAKHIR setelah hapus faktur.
-    ''' Jika tidak ada faktur tersisa, return 0.
+    ''' Cari dari SEMUA lokasi (toko maupun gudang) — HARGA_BELI_TERAKHIR tidak dibatasi lokasi.
+    ''' Jika tidak ada faktur tersisa sama sekali, return 0.
     ''' </summary>
     Private Function QueryHargaBeliTerakhirDariFakturTersisa(ByVal kodeBarang As String,
                                                               ByVal fakturDikecualikan As String,
@@ -316,13 +317,11 @@ Module ModuleHapusTransaksi
             "FROM pembelian_detail pd " &
             "INNER JOIN pembelian p ON p.ID_PEMBELIAN = pd.FAKTUR_BELI " &
             "WHERE pd.ID_BARANG = @kode " &
-            "AND pd.LOKASI = @lokasi " &
             "AND pd.FAKTUR_BELI <> @dikecualikan " &
             "ORDER BY p.TGL_BELI DESC, pd.NO DESC " &
             "LIMIT 1",
             conn, transaction)
             cmd.Parameters.AddWithValue("@kode", kodeBarang)
-            cmd.Parameters.AddWithValue("@lokasi", lokasi)
             cmd.Parameters.AddWithValue("@dikecualikan", fakturDikecualikan)
             Dim val = cmd.ExecuteScalar()
             Return If(val Is Nothing OrElse IsDBNull(val), 0D, Convert.ToDecimal(val))
@@ -330,78 +329,234 @@ Module ModuleHapusTransaksi
     End Function
 
     ''' <summary>
-    ''' Hitung ulang HPP (HARGA_BELI) di tbl_barang untuk satu barang
-    ''' berdasarkan weighted average dari semua pembelian_detail yang tersisa
-    ''' (tidak termasuk faktur yang sedang dihapus).
-    ''' Titik awal kalkulasi: HARGA_AVERAGE dari baris pertama tersisa
-    ''' = HPP tbl_barang sebelum faktur pertama itu masuk (Opsi B).
-    ''' Jika tidak ada faktur tersisa: kembalikan ke HARGA_AVERAGE faktur yang dihapus
-    ''' = HPP sebelum faktur itu pernah masuk.
+    ''' Hitung ulang HPP (HARGA_BELI) di tbl_barang setelah hapus faktur pembelian.
+    ''' Kebalikan eksak dari UpdateHargaAverage / UpdateHargaTerbaru di FormPembelian.
+    '''
+    ''' METODE CASCADE (Moving Average Perpetual yang benar):
+    '''   Saat sebuah faktur dihapus dari tengah urutan, semua faktur SESUDAHNYA
+    '''   harus di-replay ulang karena nilai HARGA_AVERAGE mereka terkontaminasi oleh
+    '''   faktur yang dihapus. Ini setara dengan "inventory costing recalculation cascade"
+    '''   yang dipakai oleh sistem ERP seperti NetSuite, Dynamics, SAP.
+    '''
+    ''' Algoritma:
+    '''   1. Titik awal = HARGA_AVERAGE faktur yang dihapus (= HPP sebelum faktur itu masuk)
+    '''      dan stok_awal = stok sebelum faktur yang dihapus masuk
+    '''      (dihitung dari stok fisik saat ini dikurangi semua qty faktur SESUDAH faktur dihapus)
+    '''   2. Replay semua faktur SESUDAH faktur dihapus secara berurutan (ASC):
+    '''      HPP_baru = (HPP_running × stok_running + harga_satuan × qty) / (stok_running + qty)
+    '''   3. Update HARGA_AVERAGE di setiap faktur sesudahnya (cascade update)
+    '''   4. Update HARGA_BELI di tbl_barang = HPP dari faktur terakhir tersisa
+    '''
+    ''' Tiga metode sesuai SettingMetodeUpdateHargaBeli:
+    '''   "Harga Terbaru"             → HARGA_BELI = harga_satuan faktur tersisa terakhir
+    '''   "Metode Average (Rata-Rata)"→ cascade replay seperti di atas
+    '''   "Tidak Ada"                 → tidak ubah HARGA_BELI sama sekali
     ''' </summary>
-    ''' <param name="kodeBarang">ID_BARANG yang akan di-recalculate</param>
-    ''' <param name="fakturDikecualikan">Nomor faktur yang sedang dihapus</param>
-    ''' <param name="lokasi">Lokasi: "TOKO" atau "GUDANG"</param>
-    ''' <param name="transaction">Transaction aktif dari caller</param>
     Private Sub RecalculateHppSetelahHapus(ByVal kodeBarang As String,
                                             ByVal fakturDikecualikan As String,
                                             ByVal lokasi As String,
                                             ByVal transaction As MySqlTransaction)
 
-        ' Ambil semua faktur tersisa untuk barang ini, urut dari terlama ke terbaru
-        Dim rows As New List(Of (HargaSatuan As Decimal, QtySat As Decimal, HargaAverage As Decimal))
-        Using cmd As New MySqlCommand(
-            "SELECT pd.HARGA_BELI_SATUAN, pd.QTY_SAT, pd.HARGA_AVERAGE " &
-            "FROM pembelian_detail pd " &
-            "INNER JOIN pembelian p ON p.ID_PEMBELIAN = pd.FAKTUR_BELI " &
-            "WHERE pd.ID_BARANG = @kode " &
-            "AND pd.LOKASI = @lokasi " &
-            "AND pd.FAKTUR_BELI <> @dikecualikan " &
-            "ORDER BY p.TGL_BELI ASC, pd.NO ASC",
-            conn, transaction)
-            cmd.Parameters.AddWithValue("@kode", kodeBarang)
-            cmd.Parameters.AddWithValue("@lokasi", lokasi)
-            cmd.Parameters.AddWithValue("@dikecualikan", fakturDikecualikan)
-            Using rd = cmd.ExecuteReader()
-                While rd.Read()
-                    rows.Add((
-                        If(IsDBNull(rd("HARGA_BELI_SATUAN")), 0D, Convert.ToDecimal(rd("HARGA_BELI_SATUAN"))),
-                        If(IsDBNull(rd("QTY_SAT")), 0D, Convert.ToDecimal(rd("QTY_SAT"))),
-                        If(IsDBNull(rd("HARGA_AVERAGE")), 0D, Convert.ToDecimal(rd("HARGA_AVERAGE")))
-                    ))
-                End While
-            End Using
-        End Using
+        Dim metode As String = ModulHakAkses.SettingMetodeUpdateHargaBeli
+
+        ' "Tidak Ada" — setting tidak update HPP saat beli, tidak perlu rollback juga
+        If metode = "Tidak Ada" Then Return
 
         Dim hppBaru As Decimal
 
-        If rows.Count = 0 Then
-            ' Tidak ada faktur tersisa — kembalikan ke HPP sebelum faktur yang dihapus pernah masuk
-            ' HARGA_AVERAGE di faktur yang dihapus = snapshot HPP sebelum faktur itu masuk
-            Using cmdAwal As New MySqlCommand(
-                "SELECT HARGA_AVERAGE FROM pembelian_detail " &
-                "WHERE ID_BARANG = @kode AND FAKTUR_BELI = @fk LIMIT 1",
-                conn, transaction)
-                cmdAwal.Parameters.AddWithValue("@kode", kodeBarang)
-                cmdAwal.Parameters.AddWithValue("@fk", fakturDikecualikan)
-                Dim val = cmdAwal.ExecuteScalar()
-                hppBaru = If(val Is Nothing OrElse IsDBNull(val), 0D, Convert.ToDecimal(val))
-            End Using
-        Else
-            ' Opsi B: titik awal = HARGA_AVERAGE baris pertama tersisa
-            ' = HPP tbl_barang sebelum faktur pertama itu masuk
-            Dim stokRunning As Decimal = 0D
-            Dim hppRunning As Decimal = rows(0).HargaAverage
+        Select Case metode
 
-            For Each r In rows
-                If stokRunning + r.QtySat > 0 Then
-                    hppRunning = Math.Round(
-                        (hppRunning * stokRunning + r.HargaSatuan * r.QtySat) /
-                        (stokRunning + r.QtySat), 4)
+            Case "Harga Terbaru"
+                ' ── Metode Harga Terbaru ──────────────────────────────────────────
+                ' Rollback ke harga satuan faktur tersisa TERAKHIR (urut waktu).
+                ' Jika tidak ada faktur tersisa → kembalikan ke HARGA_AVERAGE faktur yang dihapus
+                ' (= HARGA_BELI sebelum faktur itu masuk, yaitu HPP sebelumnya).
+                Using cmd As New MySqlCommand(
+                    "SELECT pd.HARGA_BELI_SATUAN " &
+                    "FROM pembelian_detail pd " &
+                    "INNER JOIN pembelian p ON p.ID_PEMBELIAN = pd.FAKTUR_BELI " &
+                    "WHERE pd.ID_BARANG = @kode AND pd.FAKTUR_BELI <> @dikecualikan " &
+                    "ORDER BY p.TGL_BELI DESC, pd.NO DESC LIMIT 1",
+                    conn, transaction)
+                    cmd.Parameters.AddWithValue("@kode", kodeBarang)
+                    cmd.Parameters.AddWithValue("@dikecualikan", fakturDikecualikan)
+                    Dim val = cmd.ExecuteScalar()
+                    If val IsNot Nothing AndAlso Not IsDBNull(val) Then
+                        hppBaru = Convert.ToDecimal(val)
+                    Else
+                        ' Tidak ada faktur tersisa → ambil HPP sebelum faktur dihapus masuk
+                        Using cmdFallback As New MySqlCommand(
+                            "SELECT HARGA_AVERAGE FROM pembelian_detail " &
+                            "WHERE ID_BARANG = @kode AND FAKTUR_BELI = @fk LIMIT 1",
+                            conn, transaction)
+                            cmdFallback.Parameters.AddWithValue("@kode", kodeBarang)
+                            cmdFallback.Parameters.AddWithValue("@fk", fakturDikecualikan)
+                            Dim valFb = cmdFallback.ExecuteScalar()
+                            hppBaru = If(valFb Is Nothing OrElse IsDBNull(valFb), 0D, Convert.ToDecimal(valFb))
+                        End Using
+                    End If
+                End Using
+
+            Case Else  ' "Metode Average (Rata - Rata)" dan default
+                ' ── Metode Average — Cascade Replay ──────────────────────────────
+                '
+                ' STEP 1: Ambil HPP titik awal = HARGA_AVERAGE faktur yang dihapus
+                '         = HPP sebelum faktur yang dihapus masuk
+                Dim hppTitikAwal As Decimal = 0D
+                Using cmdAwal As New MySqlCommand(
+                    "SELECT HARGA_AVERAGE FROM pembelian_detail " &
+                    "WHERE ID_BARANG = @kode AND FAKTUR_BELI = @fk LIMIT 1",
+                    conn, transaction)
+                    cmdAwal.Parameters.AddWithValue("@kode", kodeBarang)
+                    cmdAwal.Parameters.AddWithValue("@fk", fakturDikecualikan)
+                    Dim val = cmdAwal.ExecuteScalar()
+                    hppTitikAwal = If(val Is Nothing OrElse IsDBNull(val), 0D, Convert.ToDecimal(val))
+                End Using
+
+                ' STEP 2: Ambil semua faktur SESUDAH faktur dihapus (berdasarkan TGL_BELI),
+                '         KECUALI faktur yang dihapus, urut ASC.
+                '         Ini adalah faktur yang HARGA_AVERAGE-nya perlu di-cascade update.
+                '         Juga ambil TGL_BELI faktur yang dihapus sebagai titik potong.
+                Dim tglFakturDihapus As DateTime = DateTime.MinValue
+                Using cmdTgl As New MySqlCommand(
+                    "SELECT TGL_BELI FROM pembelian WHERE ID_PEMBELIAN = @fk LIMIT 1",
+                    conn, transaction)
+                    cmdTgl.Parameters.AddWithValue("@fk", fakturDikecualikan)
+                    Dim val = cmdTgl.ExecuteScalar()
+                    If val IsNot Nothing AndAlso Not IsDBNull(val) Then
+                        tglFakturDihapus = Convert.ToDateTime(val)
+                    End If
+                End Using
+
+                ' Faktur sesudah = faktur dengan TGL_BELI >= tgl faktur dihapus, dikecualikan faktur itu sendiri
+                ' Urut ASC agar replay berurutan dari yang paling lama
+                Dim rowsSesudah As New List(Of (FakturBeli As String, NoBaris As Integer,
+                                                HargaSatuan As Decimal, QtySat As Decimal,
+                                                HargaAverage As Decimal))
+                Using cmd As New MySqlCommand(
+                    "SELECT pd.FAKTUR_BELI, pd.NO, pd.HARGA_BELI_SATUAN, pd.QTY_SAT, pd.HARGA_AVERAGE " &
+                    "FROM pembelian_detail pd " &
+                    "INNER JOIN pembelian p ON p.ID_PEMBELIAN = pd.FAKTUR_BELI " &
+                    "WHERE pd.ID_BARANG = @kode " &
+                    "AND pd.FAKTUR_BELI <> @dikecualikan " &
+                    "AND p.TGL_BELI >= @tgl " &
+                    "ORDER BY p.TGL_BELI ASC, pd.NO ASC",
+                    conn, transaction)
+                    cmd.Parameters.AddWithValue("@kode", kodeBarang)
+                    cmd.Parameters.AddWithValue("@dikecualikan", fakturDikecualikan)
+                    cmd.Parameters.AddWithValue("@tgl", tglFakturDihapus)
+                    Using rd = cmd.ExecuteReader()
+                        While rd.Read()
+                            rowsSesudah.Add((
+                                rd("FAKTUR_BELI").ToString(),
+                                If(IsDBNull(rd("NO")), 0, Convert.ToInt32(rd("NO"))),
+                                If(IsDBNull(rd("HARGA_BELI_SATUAN")), 0D, Convert.ToDecimal(rd("HARGA_BELI_SATUAN"))),
+                                If(IsDBNull(rd("QTY_SAT")),           0D, Convert.ToDecimal(rd("QTY_SAT"))),
+                                If(IsDBNull(rd("HARGA_AVERAGE")),     0D, Convert.ToDecimal(rd("HARGA_AVERAGE")))
+                            ))
+                        End While
+                    End Using
+                End Using
+
+                If rowsSesudah.Count = 0 Then
+                    ' Faktur yang dihapus adalah yang TERAKHIR (atau satu-satunya) →
+                    ' HPP kembali ke titik awal sebelum faktur itu masuk
+                    hppBaru = hppTitikAwal
+                Else
+                    ' STEP 3: Hitung stok sebelum faktur pertama yang akan di-replay.
+                    '         = stok sebelum faktur yang dihapus masuk
+                    '         = stok fisik saat ini - sum(QTY_SAT semua faktur sesudah faktur dihapus)
+                    '
+                    ' Stok fisik saat ini dibaca dari tbl_barang (SEBELUM HitungStokPerubahan
+                    ' untuk barang ini — step 4e di HapusPembelian, dipanggil setelah kita).
+                    ' Namun PEMBELIAN_TOKO/GUDANG untuk faktur ini sudah dikurangi di step 4a,
+                    ' sehingga stok fisik yang terbaca masih termasuk qty faktur yang dihapus.
+                    ' Kita tidak perlu memperhitungkan ini di sini karena rowsSesudah tidak
+                    ' menyertakan faktur yang dihapus — stok sebelum replay pertama sudah benar:
+                    '   stokSebelumReplayPertama = stokFisikSekarang - totalQtyRowsSesudah
+                    '   (ini setara dengan: stok sebelum faktur dihapus masuk + qty faktur dihapus
+                    '    dikurangi totalQtyRowsSesudah, yang akhirnya = stok sebelum faktur dihapus masuk)
+                    '
+                    ' Catatan: karena PEMBELIAN_TOKO sudah dikurangi di step 4a dan HitungStok
+                    ' belum jalan, STOK_TOKO saat ini = stok setelah PB-terakhir masuk,
+                    ' yang sudah tidak termasuk qty faktur dihapus dari counter pembelian.
+                    ' Tapi STOK_TOKO di tbl_barang masih LAMA (belum diupdate sp stok).
+                    ' Kita baca STOK_TOKO + STOK_GUDANG = stok fisik saat ini (termasuk faktur
+                    ' yang dihapus, karena HitungStok belum jalan).
+                    Dim stokFisikToko As Decimal = 0D
+                    Dim stokFisikGudang As Decimal = 0D
+                    Using cmdStok As New MySqlCommand(
+                        "SELECT STOK_TOKO, STOK_GUDANG FROM tbl_barang WHERE ID_BARANG = @kode",
+                        conn, transaction)
+                        cmdStok.Parameters.AddWithValue("@kode", kodeBarang)
+                        Using rd = cmdStok.ExecuteReader()
+                            If rd.Read() Then
+                                stokFisikToko   = If(IsDBNull(rd("STOK_TOKO")),   0D, Convert.ToDecimal(rd("STOK_TOKO")))
+                                stokFisikGudang = If(IsDBNull(rd("STOK_GUDANG")), 0D, Convert.ToDecimal(rd("STOK_GUDANG")))
+                            End If
+                        End Using
+                    End Using
+
+                    Dim settingStok As String = ModulHakAkses.SettingAverageHargaBerdasarkanStok
+                    Dim stokFisikSekarang As Decimal = If(settingStok = "Toko",   stokFisikToko,
+                                                       If(settingStok = "Gudang", stokFisikGudang,
+                                                       stokFisikToko + stokFisikGudang))
+
+                    ' qty faktur yang dihapus (perlu diketahui untuk hitung stok sebelum replay)
+                    Dim qtyFakturDihapus As Decimal = 0D
+                    Using cmdQtyHapus As New MySqlCommand(
+                        "SELECT QTY_SAT FROM pembelian_detail " &
+                        "WHERE ID_BARANG = @kode AND FAKTUR_BELI = @fk LIMIT 1",
+                        conn, transaction)
+                        cmdQtyHapus.Parameters.AddWithValue("@kode", kodeBarang)
+                        cmdQtyHapus.Parameters.AddWithValue("@fk", fakturDikecualikan)
+                        Dim val = cmdQtyHapus.ExecuteScalar()
+                        qtyFakturDihapus = If(val Is Nothing OrElse IsDBNull(val), 0D, Convert.ToDecimal(val))
+                    End Using
+
+                    Dim totalQtyRowsSesudah As Decimal = rowsSesudah.Sum(Function(r) r.QtySat)
+
+                    ' stok sebelum faktur yang dihapus masuk:
+                    ' = stokFisikSekarang (termasuk qty faktur dihapus karena HitungStok belum jalan)
+                    '   - qtyFakturDihapus
+                    '   - totalQtyRowsSesudah
+                    Dim stokSebelumFakturDihapus As Decimal = Math.Max(0D,
+                        stokFisikSekarang - qtyFakturDihapus - totalQtyRowsSesudah)
+
+                    ' STEP 4: Replay semua faktur sesudah faktur dihapus, mulai dari titik awal
+                    Dim hppRunning As Decimal = hppTitikAwal
+                    Dim stokRunning As Decimal = stokSebelumFakturDihapus
+
+                    For Each r In rowsSesudah
+                        Dim hppLamaRow As Decimal = hppRunning  ' HARGA_AVERAGE baru untuk baris ini
+
+                        If stokRunning + r.QtySat > 0 Then
+                            hppRunning = Math.Round(
+                                (hppRunning * stokRunning + r.HargaSatuan * r.QtySat) /
+                                (stokRunning + r.QtySat), 4)
+                        End If
+                        stokRunning += r.QtySat
+
+                        ' CASCADE: Update HARGA_AVERAGE di pembelian_detail untuk baris ini
+                        ' HARGA_AVERAGE = HPP sebelum baris ini masuk = hppLamaRow
+                        If hppLamaRow <> r.HargaAverage Then
+                            Using cmdCascade As New MySqlCommand(
+                                "UPDATE pembelian_detail SET HARGA_AVERAGE = @avg " &
+                                "WHERE FAKTUR_BELI = @fk AND ID_BARANG = @kode AND NO = @no",
+                                conn, transaction)
+                                cmdCascade.Parameters.AddWithValue("@avg", hppLamaRow)
+                                cmdCascade.Parameters.AddWithValue("@fk", r.FakturBeli)
+                                cmdCascade.Parameters.AddWithValue("@kode", kodeBarang)
+                                cmdCascade.Parameters.AddWithValue("@no", r.NoBaris)
+                                cmdCascade.ExecuteNonQuery()
+                            End Using
+                        End If
+                    Next
+
+                    hppBaru = hppRunning
                 End If
-                stokRunning += r.QtySat
-            Next
-            hppBaru = hppRunning
-        End If
+
+        End Select
 
         ' Update HARGA_BELI di tbl_barang
         Using cmdUpdate As New MySqlCommand(

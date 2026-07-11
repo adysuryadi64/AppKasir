@@ -173,7 +173,7 @@ Partial Class FormLapMutasiBarang
         Me.CmbLokasi.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
         Me.CmbLokasi.Font = New System.Drawing.Font("Century Gothic", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.CmbLokasi.FormattingEnabled = True
-        Me.CmbLokasi.Items.AddRange(New Object() {"TOKO", "GUDANG"})
+        Me.CmbLokasi.Items.AddRange(New Object() {"SEMUA", "TOKO", "GUDANG"})
         Me.CmbLokasi.Location = New System.Drawing.Point(12, 154)
         Me.CmbLokasi.Name = "CmbLokasi"
         Me.CmbLokasi.Size = New System.Drawing.Size(110, 25)

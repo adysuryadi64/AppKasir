@@ -41,6 +41,7 @@ Public Class FormLapTransferBarang
             Using readerTransferBarang As MySqlDataReader = cmdTransferBarang.ExecuteReader()
                 Dim dataSetTransfer As New DataSetKL()
                 dataSetTransfer.Load(readerTransferBarang, LoadOption.OverwriteChanges, "transfer_barang")
+                Dim dtTF As DataTable = ConvertColumnToDateTime(dataSetTransfer.Tables("transfer_barang"), "TGL_TRANSFER")
 
                 Dim reportParameters As New ReportParameterCollection From {
                 New ReportParameter("Periode", "Periode: " & tanggalAwal.ToString("dd/MM/yyyy") & " s/d " & tanggalAkhir.ToString("dd/MM/yyyy")),
@@ -50,7 +51,7 @@ Public Class FormLapTransferBarang
 
                 ' Menetapkan dataset dan parameter ke laporan RDLC
                 ReportViewerTF.LocalReport.DataSources.Clear()
-                ReportViewerTF.LocalReport.DataSources.Add(New ReportDataSource("DataSet1", dataSetTransfer.Tables("transfer_barang")))
+                ReportViewerTF.LocalReport.DataSources.Add(New ReportDataSource("DataSet1", dtTF))
                 ReportViewerTF.LocalReport.SetParameters(reportParameters)
 
                 ' Menampilkan laporan RDLC
@@ -72,6 +73,7 @@ Public Class FormLapTransferBarang
             Using readerTransferBarangDetail As MySqlDataReader = cmdTransferBarangDetail.ExecuteReader()
                 Dim dataSetTransferDetail As New DataSetKL()
                 dataSetTransferDetail.Load(readerTransferBarangDetail, LoadOption.OverwriteChanges, "transfer_barang_detail")
+                Dim dtTFDetail As DataTable = ConvertColumnToDateTime(dataSetTransferDetail.Tables("transfer_barang_detail"), "TGL_TRANSFER")
 
                 Dim reportParametersDetail As New ReportParameterCollection From {
                 New ReportParameter("Periode", "Periode: " & tanggalAwal.ToString("dd/MM/yyyy") & " s/d " & tanggalAkhir.ToString("dd/MM/yyyy")),
@@ -81,7 +83,7 @@ Public Class FormLapTransferBarang
 
                 ' Menetapkan dataset dan parameter ke laporan RDLC
                 ReportViewerTFDetail.LocalReport.DataSources.Clear()
-                ReportViewerTFDetail.LocalReport.DataSources.Add(New ReportDataSource("DataSet1", dataSetTransferDetail.Tables("transfer_barang_detail")))
+                ReportViewerTFDetail.LocalReport.DataSources.Add(New ReportDataSource("DataSet1", dtTFDetail))
                 ReportViewerTFDetail.LocalReport.SetParameters(reportParametersDetail)
 
                 ' Menampilkan laporan RDLC

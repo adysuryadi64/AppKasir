@@ -170,10 +170,12 @@ Public Class FormLapkAS
                     Using rd As MySqlDataReader = cmd.ExecuteReader()
                         Using dataset As New DataSetKL()
                             dataset.Load(rd, LoadOption.OverwriteChanges, "LapKAS")
+                            Dim dtKas As DataTable = ConvertColumnToDateTime(dataset.Tables("LapKAS"), "TGL_TRANSAKSI")
+                            dtKas = ConvertColumnToDateTime(dtKas, "JATUH_TEMPO")
 
                             'Menetapkan dataset ke laporan RDLC
                             ReportViewer1.LocalReport.DataSources.Clear()
-                            ReportViewer1.LocalReport.DataSources.Add(New ReportDataSource("DataSet1", dataset.Tables("LapKAS")))
+                            ReportViewer1.LocalReport.DataSources.Add(New ReportDataSource("DataSet1", dtKas))
 
                             'Menampilkan laporan RDLC
                             ReportViewer1.RefreshReport()
@@ -231,10 +233,12 @@ Public Class FormLapkAS
                     Using rd As MySqlDataReader = cmd.ExecuteReader()
                         Using dataset As New DataSetKL()
                             dataset.Load(rd, LoadOption.OverwriteChanges, "LapKAS")
+                            Dim dtKas As DataTable = ConvertColumnToDateTime(dataset.Tables("LapKAS"), "TGL_TRANSAKSI")
+                            dtKas = ConvertColumnToDateTime(dtKas, "JATUH_TEMPO")
 
                             'Menetapkan dataset ke laporan RDLC
                             ReportViewer1.LocalReport.DataSources.Clear()
-                            ReportViewer1.LocalReport.DataSources.Add(New ReportDataSource("DataSet1", dataset.Tables("LapKAS")))
+                            ReportViewer1.LocalReport.DataSources.Add(New ReportDataSource("DataSet1", dtKas))
 
                             'Menampilkan laporan RDLC
                             ReportViewer1.RefreshReport()
@@ -289,10 +293,12 @@ Public Class FormLapkAS
                     Using rd As MySqlDataReader = cmd.ExecuteReader()
                         Using dataset As New DataSetKL()
                             dataset.Load(rd, LoadOption.OverwriteChanges, "LapKAS")
+                            Dim dtKas As DataTable = ConvertColumnToDateTime(dataset.Tables("LapKAS"), "TGL_TRANSAKSI")
+                            dtKas = ConvertColumnToDateTime(dtKas, "JATUH_TEMPO")
 
                             'Menetapkan dataset ke laporan RDLC
                             ReportViewer1.LocalReport.DataSources.Clear()
-                            ReportViewer1.LocalReport.DataSources.Add(New ReportDataSource("DataSet1", dataset.Tables("LapKAS")))
+                            ReportViewer1.LocalReport.DataSources.Add(New ReportDataSource("DataSet1", dtKas))
 
                             'Menampilkan laporan RDLC
                             ReportViewer1.RefreshReport()
@@ -353,10 +359,12 @@ Public Class FormLapkAS
                     Using rd As MySqlDataReader = cmd.ExecuteReader()
                         Using dataset As New DataSetKL()
                             dataset.Load(rd, LoadOption.OverwriteChanges, "LapKAS")
+                            Dim dtKas As DataTable = ConvertColumnToDateTime(dataset.Tables("LapKAS"), "TGL_TRANSAKSI")
+                            dtKas = ConvertColumnToDateTime(dtKas, "JATUH_TEMPO")
 
                             'Menetapkan dataset ke laporan RDLC
                             ReportViewer1.LocalReport.DataSources.Clear()
-                            ReportViewer1.LocalReport.DataSources.Add(New ReportDataSource("DataSet1", dataset.Tables("LapKAS")))
+                            ReportViewer1.LocalReport.DataSources.Add(New ReportDataSource("DataSet1", dtKas))
 
                             'Menampilkan laporan RDLC
                             ReportViewer1.RefreshReport()

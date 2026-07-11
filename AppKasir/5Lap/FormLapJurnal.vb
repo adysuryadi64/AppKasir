@@ -85,6 +85,7 @@ Public Class FormLapJurnal
                 Using rd As MySqlDataReader = cmd.ExecuteReader()
                     Using dataset As New DataSet()
                         dataset.Load(rd, LoadOption.OverwriteChanges, "jurnalumum")
+                        Dim dtJurnal As DataTable = ConvertColumnToDateTime(dataset.Tables("jurnalumum"), "TGL_TRANSAKSI")
 
                         Dim Periode As String = "Periode : " & AwalBulan.ToString("dd MMMM yyyy", New CultureInfo("id-ID")) & " - " & AkhirBulan.ToString("dd MMMM yyyy", New CultureInfo("id-ID"))
 
@@ -96,7 +97,7 @@ Public Class FormLapJurnal
 
                         ' Menetapkan dataset ke laporan RDLC
                         ReportViewer1.LocalReport.DataSources.Clear()
-                        ReportViewer1.LocalReport.DataSources.Add(New ReportDataSource("DataSet1", dataset.Tables("jurnalumum")))
+                        ReportViewer1.LocalReport.DataSources.Add(New ReportDataSource("DataSet1", dtJurnal))
                         ReportViewer1.LocalReport.SetParameters(parameters)
 
                         ' Menampilkan laporan RDLC
