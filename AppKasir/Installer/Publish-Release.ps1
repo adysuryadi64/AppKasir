@@ -190,41 +190,53 @@ Data perubahan:
 $diff
 "@
 
+        # Gunakan [System.Text.Json.JsonSerializer] untuk serialisasi yang benar
+        # ConvertTo-Json PowerShell tidak escape backslash & karakter kontrol dengan benar
+        Add-Type -AssemblyName System.Text.Json
+        function New-JsonBody($model, $promptText) {
+            $obj = [ordered]@{
+                model    = $model
+                messages = @(
+                    [ordered]@{ role = "user"; content = $promptText }
+                )
+            }
+            $opts = [System.Text.Json.JsonSerializerOptions]::new()
+            $opts.Encoder = [System.Text.Encodings.Web.JavaScriptEncoder]::UnsafeRelaxedJsonEscaping
+            return [System.Text.Json.JsonSerializer]::Serialize([object]$obj, $opts)
+        }
+
         # ── Daftar provider AI (3 aktif, tanpa Cohere & HuggingFace) ──
         $providers = @()
 
         # 1. Gemini (Google AI Studio - Free, paling pintar)
         if ($aiKeys.ContainsKey("GEMINI") -and $aiKeys["GEMINI"] -ne "") {
-            $geminiBody = @{ model = "gemini-2.5-flash"; messages = @( @{ role = "user"; content = $prompt } ) } | ConvertTo-Json -Depth 10
             $providers += @{
                 Name    = "Gemini"
                 Url     = "https://generativelanguage.googleapis.com/v1beta/openai/chat/completions"
-                Headers = @{ "Content-Type" = "application/json"; "Authorization" = "Bearer $($aiKeys['GEMINI'])" }
-                Body    = $geminiBody
+                Headers = @{ "Content-Type" = "application/json; charset=utf-8"; "Authorization" = "Bearer $($aiKeys['GEMINI'])" }
+                Body    = New-JsonBody "gemini-2.5-flash" $prompt
                 Timeout = 60
             }
         }
 
         # 2. Groq (Sangat cepat, model ringan untuk hemat quota)
         if ($aiKeys.ContainsKey("GROQ") -and $aiKeys["GROQ"] -ne "") {
-            $groqBody = @{ model = "llama-3.1-8b-instant"; messages = @( @{ role = "user"; content = $prompt } ) } | ConvertTo-Json -Depth 10
             $providers += @{
                 Name    = "Groq"
                 Url     = "https://api.groq.com/openai/v1/chat/completions"
-                Headers = @{ "Content-Type" = "application/json"; "Authorization" = "Bearer $($aiKeys['GROQ'])" }
-                Body    = $groqBody
+                Headers = @{ "Content-Type" = "application/json; charset=utf-8"; "Authorization" = "Bearer $($aiKeys['GROQ'])" }
+                Body    = New-JsonBody "llama-3.1-8b-instant" $prompt
                 Timeout = 45
             }
         }
 
         # 3. OpenRouter (Banyak model gratis)
         if ($aiKeys.ContainsKey("OPENROUTER") -and $aiKeys["OPENROUTER"] -ne "") {
-            $orBody = @{ model = "google/gemini-2.0-flash-001:free"; messages = @( @{ role = "user"; content = $prompt } ) } | ConvertTo-Json -Depth 10
             $providers += @{
                 Name    = "OpenRouter"
                 Url     = "https://openrouter.ai/api/v1/chat/completions"
-                Headers = @{ "Content-Type" = "application/json"; "Authorization" = "Bearer $($aiKeys['OPENROUTER'])" }
-                Body    = $orBody
+                Headers = @{ "Content-Type" = "application/json; charset=utf-8"; "Authorization" = "Bearer $($aiKeys['OPENROUTER'])"; "HTTP-Referer" = "https://github.com/adysuryadi64/AppKasir" }
+                Body    = New-JsonBody "google/gemini-2.5-flash:free" $prompt
                 Timeout = 60
             }
         }
@@ -235,7 +247,8 @@ $diff
             for ($attempt = 1; $attempt -le 2; $attempt++) {
                 try {
                     Write-Host "        Mencoba $($prov.Name) (percobaan $attempt)..." -ForegroundColor DarkGray
-                    $response = Invoke-RestMethod -Method Post -Uri $prov.Url -Headers $prov.Headers -Body $prov.Body -TimeoutSec $prov.Timeout
+                    $bodyBytes = [System.Text.Encoding]::UTF8.GetBytes($prov.Body)
+                    $response = Invoke-RestMethod -Method Post -Uri $prov.Url -Headers $prov.Headers -Body $bodyBytes -TimeoutSec $prov.Timeout
                     $changelogText = $response.choices[0].message.content
                     if ($changelogText) {
                         Write-Host "        Changelog berhasil dari $($prov.Name)." -ForegroundColor Green
