@@ -36,7 +36,8 @@ WHERE SALDO_POIN < 0;
 -- Hasil harus KOSONG
 
 -- ── 5. Riwayat poin per pelanggan (ganti @kode sesuai kebutuhan) ─
-SET @kode = 'P001';  -- ganti dengan kode pelanggan yang ditest
+-- COLLATE utf8mb4_unicode_ci wajib agar collation variable cocok dengan kolom
+SET @kode = CONVERT('P001' USING utf8mb4) COLLATE utf8mb4_unicode_ci;  -- ganti dengan kode pelanggan yang ditest
 
 SELECT
     CREATED_AT,
@@ -86,10 +87,13 @@ GROUP BY TIPE
 ORDER BY TIPE;
 
 -- ── 9. Barang yang bisa ditukar ──────────────────────────────────
+-- tbl_barang tidak punya kolom STOK — gunakan STOK_TOKO dan STOK_GUDANG
 SELECT
     b.ID_BARANG,
     b.NAMA_BARANG,
-    b.STOK,
+    b.STOK_TOKO,
+    b.STOK_GUDANG,
+    (b.STOK_TOKO + b.STOK_GUDANG) AS STOK_TOTAL,
     pb.HARGA_POIN,
     pb.AKTIF
 FROM poin_barang pb

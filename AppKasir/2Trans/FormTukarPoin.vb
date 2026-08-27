@@ -160,11 +160,18 @@ Public Class FormTukarPoin
     End Sub
 
     ''' <summary>
-    ''' Tampilkan saldo poin.
+    ''' Tampilkan saldo poin. Jika saldo kurang dari minimum redeem, tampilkan peringatan.
     ''' Req 3.3
     ''' </summary>
     Private Sub TampilkanSaldoPoin()
-        LblSaldoPoinTukar.Text = "Saldo Poin: " & _saldoPoin.ToString("N0")
+        Dim minRedeem As Integer = ModuleLoyaltyPoin.LP_MinimumRedeem
+        If minRedeem > 0 AndAlso _saldoPoin < minRedeem Then
+            LblSaldoPoinTukar.Text = $"Saldo Poin: {_saldoPoin:N0}  (Minimum redeem: {minRedeem:N0} poin)"
+            LblSaldoPoinTukar.ForeColor = Color.OrangeRed
+        Else
+            LblSaldoPoinTukar.Text = "Saldo Poin: " & _saldoPoin.ToString("N0")
+            LblSaldoPoinTukar.ForeColor = SystemColors.ControlText
+        End If
         UpdateTombolKonfirmasi()
         UpdateRingkasanPoin()
     End Sub
@@ -575,6 +582,9 @@ Public Class FormTukarPoin
         ' Harus ada pelanggan terpilih
         If String.IsNullOrEmpty(_kodePelanggan) Then bolehKonfirmasi = False
 
+        ' Saldo pelanggan harus memenuhi minimum redeem (Req 3.4)
+        If _saldoPoin < ModuleLoyaltyPoin.LP_MinimumRedeem Then bolehKonfirmasi = False
+
         ' Total poin dibutuhkan tidak boleh melebihi saldo (Req 3.7)
         If totalDibutuhkan > _saldoPoin Then bolehKonfirmasi = False
 
@@ -632,6 +642,14 @@ Public Class FormTukarPoin
             MessageBox.Show("Pilih pelanggan terlebih dahulu.", "Validasi",
                             MessageBoxButtons.OK, MessageBoxIcon.Warning)
             TxtPelanggan.Focus()
+            Return
+        End If
+        ' Validasi minimum saldo poin untuk redeem (Req 3.4)
+        Dim minRedeem As Integer = ModuleLoyaltyPoin.LP_MinimumRedeem
+        If minRedeem > 0 AndAlso _saldoPoin < minRedeem Then
+            MessageBox.Show($"Saldo poin pelanggan tidak memenuhi minimum untuk redeem." & vbCrLf &
+                            $"Saldo saat ini: {_saldoPoin:N0} poin | Minimum: {minRedeem:N0} poin",
+                            "Saldo Tidak Mencukupi", MessageBoxButtons.OK, MessageBoxIcon.Warning)
             Return
         End If
         If totalDibutuhkan = 0 Then

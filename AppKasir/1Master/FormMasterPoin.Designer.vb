@@ -40,6 +40,9 @@ Partial Class FormMasterPoin
         Me.TxtPoinPerQty = New System.Windows.Forms.TextBox()
         Me.LblPoinPerQty = New System.Windows.Forms.Label()
         Me.LblPoinPerQtyFormat = New System.Windows.Forms.Label()
+        Me.LblMinimumRedeem = New System.Windows.Forms.Label()
+        Me.TxtMinimumRedeem = New System.Windows.Forms.TextBox()
+        Me.LblMinimumRedeemInfo = New System.Windows.Forms.Label()
         Me.TabHargaPoin = New System.Windows.Forms.TabPage()
         Me.BtnSimpanHargaPoin = New System.Windows.Forms.Button()
         Me.BtnHapusBarisPoin = New System.Windows.Forms.Button()
@@ -142,6 +145,9 @@ Partial Class FormMasterPoin
         Me.TabKonfigurasi.Controls.Add(Me.TxtPoinPerQty)
         Me.TabKonfigurasi.Controls.Add(Me.LblPoinPerQty)
         Me.TabKonfigurasi.Controls.Add(Me.LblPoinPerQtyFormat)
+        Me.TabKonfigurasi.Controls.Add(Me.LblMinimumRedeem)
+        Me.TabKonfigurasi.Controls.Add(Me.TxtMinimumRedeem)
+        Me.TabKonfigurasi.Controls.Add(Me.LblMinimumRedeemInfo)
         Me.TabKonfigurasi.Location = New System.Drawing.Point(4, 26)
         Me.TabKonfigurasi.Name = "TabKonfigurasi"
         Me.TabKonfigurasi.Padding = New System.Windows.Forms.Padding(3)
@@ -267,6 +273,41 @@ Partial Class FormMasterPoin
         Me.LblKelipatanNominalFormat.Text = "= Rp 10.000 → 1 poin"
         Me.LblKelipatanNominalFormat.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
         Me.LblKelipatanNominalFormat.Visible = False
+        'LblMinimumRedeem
+        '
+        Me.LblMinimumRedeem.Font = New System.Drawing.Font("Segoe UI", 9.75!)
+        Me.LblMinimumRedeem.Location = New System.Drawing.Point(20, 168)
+        Me.LblMinimumRedeem.Name = "LblMinimumRedeem"
+        Me.LblMinimumRedeem.Size = New System.Drawing.Size(260, 28)
+        Me.LblMinimumRedeem.TabIndex = 11
+        Me.LblMinimumRedeem.Text = "Minimum Poin untuk Redeem :"
+        Me.LblMinimumRedeem.TextAlign = System.Drawing.ContentAlignment.MiddleRight
+        Me.LblMinimumRedeem.Visible = False
+        '
+        'TxtMinimumRedeem
+        '
+        Me.TxtMinimumRedeem.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
+        Me.TxtMinimumRedeem.Font = New System.Drawing.Font("Segoe UI", 9.75!)
+        Me.TxtMinimumRedeem.Location = New System.Drawing.Point(290, 170)
+        Me.TxtMinimumRedeem.Name = "TxtMinimumRedeem"
+        Me.TxtMinimumRedeem.Size = New System.Drawing.Size(80, 25)
+        Me.TxtMinimumRedeem.TabIndex = 12
+        Me.TxtMinimumRedeem.Text = "100"
+        Me.TxtMinimumRedeem.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
+        Me.TxtMinimumRedeem.Visible = False
+        '
+        'LblMinimumRedeemInfo
+        '
+        Me.LblMinimumRedeemInfo.Font = New System.Drawing.Font("Segoe UI", 9.0!, System.Drawing.FontStyle.Italic)
+        Me.LblMinimumRedeemInfo.ForeColor = System.Drawing.Color.DimGray
+        Me.LblMinimumRedeemInfo.Location = New System.Drawing.Point(380, 170)
+        Me.LblMinimumRedeemInfo.Name = "LblMinimumRedeemInfo"
+        Me.LblMinimumRedeemInfo.Size = New System.Drawing.Size(260, 25)
+        Me.LblMinimumRedeemInfo.TabIndex = 13
+        Me.LblMinimumRedeemInfo.Text = "poin (0 = tidak ada batas minimum)"
+        Me.LblMinimumRedeemInfo.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
+        Me.LblMinimumRedeemInfo.Visible = False
+        '
         'BtnSimpanKonfig
         '
         Me.BtnSimpanKonfig.BackColor = System.Drawing.Color.White
@@ -568,8 +609,7 @@ Partial Class FormMasterPoin
         Me.PanelHeader.ResumeLayout(False)
         Me.TabControlPoin.ResumeLayout(False)
         Me.TabKonfigurasi.ResumeLayout(False)
-
-        Me.TabHargaPoin.ResumeLayout(False)
+        Me.TabKonfigurasi.PerformLayout()
         Me.TabHargaPoin.PerformLayout()
         CType(Me.DgvPoinBarang, System.ComponentModel.ISupportInitialize).EndInit()
         Me.TabRiwayat.ResumeLayout(False)
@@ -616,5 +656,8 @@ Partial Class FormMasterPoin
     Friend WithEvents LblCariPelanggan As System.Windows.Forms.Label
     Friend WithEvents LstHasilCariPelanggan As System.Windows.Forms.ListBox
     Friend WithEvents LblKodePelanggan As System.Windows.Forms.Label
+    Friend WithEvents LblMinimumRedeem As System.Windows.Forms.Label
+    Friend WithEvents TxtMinimumRedeem As System.Windows.Forms.TextBox
+    Friend WithEvents LblMinimumRedeemInfo As System.Windows.Forms.Label
 
 End Class

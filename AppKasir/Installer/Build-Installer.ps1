@@ -29,13 +29,12 @@ $DriverSourceDir = "..\$DriverFolder"
 
 # File installer prerequisite yang ke {tmp}
 $PrereqFiles = @{
-    "appserv-9-3-0.exe"                              = "appserv"
-    "ReportViewer.exe"                               = "reportviewer"
-    "mysql-connector-net-9.1.0.msi"                  = "mysqlconn"
-    "POS Printer Driver Setup .exe"                  = "posprinter"
-    "MicrosoftEdgeWebView2RuntimeInstallerX64.exe"   = "edgewebview"
-    "VC_redist.x64.exe"                              = "vcredist"
-    "VC_redist.x86.exe"                              = "vcredist"
+    "appserv-9-3-0.exe"              = "appserv"
+    "ReportViewer.exe"               = "reportviewer"
+    "mysql-connector-net-9.1.0.msi"  = "mysqlconn"
+    "POS Printer Driver Setup .exe"  = "posprinter"
+    "VC_redist.x64.exe"              = "vcredist"
+    "VC_redist.x86.exe"              = "vcredist"
 }
 
 # File lama yang tidak perlu dikemas (versi lama / developer tools)
@@ -50,6 +49,24 @@ Write-Host ""
 Write-Host "============================================================" -ForegroundColor Cyan
 Write-Host "  KASIR LANCAR - Auto Build Installer" -ForegroundColor Cyan
 Write-Host "============================================================" -ForegroundColor Cyan
+Write-Host ""
+$today = Get-Date -Format "yyyy.MM.dd"
+$buildRev = 0
+
+# Baca versi lama untuk cek apakah sudah diupdate hari ini (support build ke-2, ke-3, dst)
+$issRaw = Get-Content $IssTemplate -Raw -Encoding UTF8
+$oldVersion = ([regex]'#define MyAppVersion "(.+)"').Match($issRaw).Groups[1].Value
+if ($oldVersion -match "^$([regex]::Escape($today))\.(\d+)$") {
+    $buildRev = [int]$Matches[1] + 1
+}
+$newVersion = "$today.$buildRev"
+
+# Update MyAppVersion dan OutputBaseFilename di .iss
+$issRaw = $issRaw -replace '#define MyAppVersion ".+"', "#define MyAppVersion `"$newVersion`""
+$issRaw = $issRaw -replace 'OutputBaseFilename=KasirLancar_Setup_v[^\r\n]+', "OutputBaseFilename=KasirLancar_Setup_v$newVersion"
+$issRaw | Set-Content $IssTemplate -Encoding UTF8 -NoNewline
+
+Write-Host "  Versi diupdate: $oldVersion  →  $newVersion" -ForegroundColor Green
 Write-Host ""
 
 # ---- Scan dan hitung semua file ----

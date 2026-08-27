@@ -32,8 +32,8 @@ Public Class NotaPembelian
                         tglBeli = tglBeliDateTime.ToString("dd-MM-yyyy HH:mm:ss")
                     End If
                     Dim tempatSimpan As String = rd("LOKASI").ToString()
-                    Dim pembayaran As String = If(String.IsNullOrEmpty(rd("PEMBAYARAN").ToString()), "0", Decimal.Parse(rd("PEMBAYARAN").ToString()).ToString("N0"))
-                    Dim tagihan As String = If(String.IsNullOrEmpty(rd("TAGIHAN").ToString()), "0", Decimal.Parse(rd("TAGIHAN").ToString()).ToString("N0"))
+                    Dim pembayaran As String = If(String.IsNullOrEmpty(rd("PEMBAYARAN").ToString()), "0", ModuleAngka.ParseDecimal(rd("PEMBAYARAN")).ToString("N0"))
+                    Dim tagihan As String = If(String.IsNullOrEmpty(rd("TAGIHAN").ToString()), "0", ModuleAngka.ParseDecimal(rd("TAGIHAN")).ToString("N0"))
                     Dim jatuhTempoString As String = rd("JATUH_TEMPO").ToString()
                     Dim jatuhTempo As String = ""
                     Dim jatuhTempoDateTime As DateTime
@@ -46,7 +46,7 @@ Public Class NotaPembelian
                     If DateTime.TryParse(tglBayarString, tglBayarDateTime) Then
                         tglBayar = tglBayarDateTime.ToString("dd-MM-yyyy HH:mm:ss")
                     End If
-                    Dim nominalBayar As String = If(String.IsNullOrEmpty(rd("NOMINALBAYAR").ToString()), "0", Decimal.Parse(rd("NOMINALBAYAR").ToString()).ToString("N0"))
+                    Dim nominalBayar As String = If(String.IsNullOrEmpty(rd("NOMINALBAYAR").ToString()), "0", ModuleAngka.ParseDecimal(rd("NOMINALBAYAR")).ToString("N0"))
                     Dim statusTransaksiBeli As String = rd("STATUS_TRANSAKSI_BELI").ToString()
                     Dim idUser As String = rd("ID_USER").ToString()
                     Dim idKomputer As String = rd("ID_KOMPUTER").ToString()

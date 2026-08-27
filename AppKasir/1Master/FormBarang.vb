@@ -510,17 +510,17 @@ Public Class FormBarang
             .CmbSatUmumSedang.Text = DGBarang.Item("SATUAN_UMUM_SEDANG", i).Value.ToString()
             .CmbSatUmumBesar.Text = DGBarang.Item("SATUAN_UMUM_BESAR", i).Value.ToString()
 
-            .TxtHArgaJUalUmumKecil.Text = Decimal.Parse(DGBarang.Item("HARGA_JUAL_UMUM_KECIL", i).Value.ToString()).ToString("0.####")
-            .TxtHArgaJUalUmumSedang.Text = Decimal.Parse(DGBarang.Item("HARGA_JUAL_UMUM_SEDANG", i).Value.ToString()).ToString("0.####")
-            .TxtHArgaJUalUmumBesar.Text = Decimal.Parse(DGBarang.Item("HARGA_JUAL_UMUM_BESAR", i).Value.ToString()).ToString("0.####")
+            .TxtHArgaJUalUmumKecil.Text = ModuleAngka.ParseDecimal(DGBarang.Item("HARGA_JUAL_UMUM_KECIL", i).Value).ToString("0.####")
+            .TxtHArgaJUalUmumSedang.Text = ModuleAngka.ParseDecimal(DGBarang.Item("HARGA_JUAL_UMUM_SEDANG", i).Value).ToString("0.####")
+            .TxtHArgaJUalUmumBesar.Text = ModuleAngka.ParseDecimal(DGBarang.Item("HARGA_JUAL_UMUM_BESAR", i).Value).ToString("0.####")
 
             .CmbSatPartaiKecil.Text = DGBarang.Item("SATUAN_PARTAI_KECIL", i).Value.ToString()
             .CmbSatPartaiSedang.Text = DGBarang.Item("SATUAN_PARTAI_SEDANG", i).Value.ToString()
             .CmbSatPartaiBesar.Text = DGBarang.Item("SATUAN_PARTAI_BESAR", i).Value.ToString()
 
-            .TxtHArgaJualPartaikecil.Text = Decimal.Parse(DGBarang.Item("HARGA_JUAL_PARTAI_KECIL", i).Value.ToString()).ToString("0.####")
-            .TxtHArgaJualPartaiSedang.Text = Decimal.Parse(DGBarang.Item("HARGA_JUAL_PARTAI_SEDANG", i).Value.ToString()).ToString("0.####")
-            .TxtHArgaJualPartaiBesar.Text = Decimal.Parse(DGBarang.Item("HARGA_JUAL_PARTAI_BESAR", i).Value.ToString()).ToString("0.####")
+            .TxtHArgaJualPartaikecil.Text = ModuleAngka.ParseDecimal(DGBarang.Item("HARGA_JUAL_PARTAI_KECIL", i).Value).ToString("0.####")
+            .TxtHArgaJualPartaiSedang.Text = ModuleAngka.ParseDecimal(DGBarang.Item("HARGA_JUAL_PARTAI_SEDANG", i).Value).ToString("0.####")
+            .TxtHArgaJualPartaiBesar.Text = ModuleAngka.ParseDecimal(DGBarang.Item("HARGA_JUAL_PARTAI_BESAR", i).Value).ToString("0.####")
 
             If FormUtama.StatusLokasi.Text = "GUDANG" Then
                 .TxtStokAwal.Text = stokAwalGudang.ToString("0.####")
@@ -552,9 +552,9 @@ Public Class FormBarang
             .TxtKomisiSalesRp.Text = komisiSalesRp.ToString("0.####")
             .TxtKomisiSalesPersen.Text = komisiSalesPersen.ToString("0.####")
 
-            .TxtHrgBeli.Text = Decimal.Parse(DGBarang.Item("HARGA_BELI", i).Value.ToString()).ToString("0.####")
-            .LblHargaUntukEdit.Text = Decimal.Parse(DGBarang.Item("HARGA_BELI", i).Value.ToString()).ToString("0.####")
-            .TxtHargaBeliTerakhir.Text = Decimal.Parse(DGBarang.Item("HARGA_BELI_TERAKHIR", i).Value.ToString()).ToString("0.####")
+            .TxtHrgBeli.Text = ModuleAngka.ParseDecimal(DGBarang.Item("HARGA_BELI", i).Value).ToString("0.####")
+            .LblHargaUntukEdit.Text = ModuleAngka.ParseDecimal(DGBarang.Item("HARGA_BELI", i).Value).ToString("0.####")
+            .TxtHargaBeliTerakhir.Text = ModuleAngka.ParseDecimal(DGBarang.Item("HARGA_BELI_TERAKHIR", i).Value).ToString("0.####")
         End With
 
         ' Tampilkan form dialog
@@ -938,12 +938,12 @@ Public Class FormBarang
         TxtNama.Text = If(DGBarang.Item("NAMA_BARANG", i).Value IsNot DBNull.Value, DGBarang.Item("NAMA_BARANG", i).Value.ToString(), "")
         TxtNamaKategori.Text = If(DGBarang.Item("NAMA_KATEGORI", i).Value IsNot DBNull.Value, DGBarang.Item("NAMA_KATEGORI", i).Value.ToString(), "")
         TxtNamaSupliyer.Text = If(DGBarang.Item("NAMA_SUPLIYER", i).Value IsNot DBNull.Value, DGBarang.Item("NAMA_SUPLIYER", i).Value.ToString(), "")
-        TxtHargaBeli.Text = If(DGBarang.Item("HARGA_BELI", i).Value IsNot DBNull.Value, Decimal.Parse(DGBarang.Item("HARGA_BELI", i).Value.ToString()).ToString("0.####"), "0")
+        TxtHargaBeli.Text = If(DGBarang.Item("HARGA_BELI", i).Value IsNot DBNull.Value, ModuleAngka.ParseDecimal(DGBarang.Item("HARGA_BELI", i).Value).ToString("0.####"), "0")
 
-        TxtIsiStokToko.Text = If(DGBarang.Item("STOK_TOKO", i).Value IsNot DBNull.Value, Decimal.Parse(DGBarang.Item("STOK_TOKO", i).Value.ToString()).ToString("0.####"), "0")
+        TxtIsiStokToko.Text = If(DGBarang.Item("STOK_TOKO", i).Value IsNot DBNull.Value, ModuleAngka.ParseDecimal(DGBarang.Item("STOK_TOKO", i).Value).ToString("0.####"), "0")
         TxtSatuanToko.Text = If(DGBarang.Item("SATUAN_STOK", i).Value IsNot DBNull.Value, DGBarang.Item("SATUAN_STOK", i).Value.ToString(), "")
 
-        TxtIsiStokGudang.Text = If(DGBarang.Item("STOK_GUDANG", i).Value IsNot DBNull.Value, Decimal.Parse(DGBarang.Item("STOK_GUDANG", i).Value.ToString()).ToString("0.####"), "0")
+        TxtIsiStokGudang.Text = If(DGBarang.Item("STOK_GUDANG", i).Value IsNot DBNull.Value, ModuleAngka.ParseDecimal(DGBarang.Item("STOK_GUDANG", i).Value).ToString("0.####"), "0")
         TxtSatuanGudang.Text = If(DGBarang.Item("SATUAN_STOK", i).Value IsNot DBNull.Value, DGBarang.Item("SATUAN_STOK", i).Value.ToString(), "")
 
         CmbIsiTokoT.Text = If(DGBarang.Item("SATUAN_STOK", i).Value IsNot DBNull.Value, DGBarang.Item("SATUAN_STOK", i).Value.ToString(), "")

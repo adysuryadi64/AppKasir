@@ -117,6 +117,14 @@ CREATE TABLE IF NOT EXISTS `poin_config` (
     UNIQUE KEY `uq_sync_id_poin_config` (`sync_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+-- Tambah kolom MINIMUM_REDEEM jika belum ada
+-- (dibutuhkan jika tabel sudah terbuat sebelumnya tanpa kolom ini)
+CALL AddColumnSafely(
+    'poin_config',
+    'MINIMUM_REDEEM',
+    "int(11) NOT NULL DEFAULT '100' COMMENT 'Minimum saldo poin untuk bisa redeem' AFTER `KELIPATAN_NOMINAL`"
+);
+
 -- Seed baris default jika tabel masih kosong
 INSERT INTO `poin_config`
     (`AKTIF`, `MEKANISME`, `POIN_PER_QTY`, `KELIPATAN_NOMINAL`, `MINIMUM_REDEEM`)

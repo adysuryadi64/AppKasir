@@ -23,7 +23,7 @@ Partial Class FormLapMutasiKeuangan
     <System.Diagnostics.DebuggerStepThrough()>
     Private Sub InitializeComponent()
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(FormLapMutasiKeuangan))
-        Dim DataGridViewCellStyle1 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
+        Dim DataGridViewCellStyle2 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
         Me.Label8 = New System.Windows.Forms.Label()
         Me.Label4 = New System.Windows.Forms.Label()
         Me.Label10 = New System.Windows.Forms.Label()
@@ -1526,14 +1526,14 @@ Partial Class FormLapMutasiKeuangan
         Me.DGVView.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill
         Me.DGVView.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D
         Me.DGVView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
-        DataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft
-        DataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Window
-        DataGridViewCellStyle1.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        DataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.ControlText
-        DataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight
-        DataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.ControlText
-        DataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.[False]
-        Me.DGVView.DefaultCellStyle = DataGridViewCellStyle1
+        DataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft
+        DataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Window
+        DataGridViewCellStyle2.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        DataGridViewCellStyle2.ForeColor = System.Drawing.SystemColors.ControlText
+        DataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Highlight
+        DataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.ControlText
+        DataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.[False]
+        Me.DGVView.DefaultCellStyle = DataGridViewCellStyle2
         Me.DGVView.Location = New System.Drawing.Point(3, 31)
         Me.DGVView.Margin = New System.Windows.Forms.Padding(3, 7, 3, 7)
         Me.DGVView.Name = "DGVView"
@@ -1983,8 +1983,6 @@ Partial Class FormLapMutasiKeuangan
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.BackColor = System.Drawing.Color.WhiteSmoke
         Me.ClientSize = New System.Drawing.Size(1180, 659)
-        Me.Controls.Add(Me.TxtNotaSetorBos)
-        Me.Controls.Add(Me.BtnJuranStorBos)
         Me.Controls.Add(Me.PanelView)
         Me.Controls.Add(Me.BtnJurnalPindahKeluar)
         Me.Controls.Add(Me.BtnJurnalPindahMasuk)
@@ -2086,6 +2084,8 @@ Partial Class FormLapMutasiKeuangan
         Me.Controls.Add(Me.Label44)
         Me.Controls.Add(Me.TxtTotalJurnalBonKaryawan)
         Me.Controls.Add(Me.Label45)
+        Me.Controls.Add(Me.BtnJuranStorBos)
+        Me.Controls.Add(Me.TxtNotaSetorBos)
         Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None
         Me.KeyPreview = True
         Me.Name = "FormLapMutasiKeuangan"

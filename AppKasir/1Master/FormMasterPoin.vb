@@ -39,7 +39,7 @@ Public Class FormMasterPoin
     Private Sub MuatKonfigurasiKeForm()
         Try
             Using cmd As New MySqlCommand(
-                "SELECT AKTIF, MEKANISME, POIN_PER_QTY, KELIPATAN_NOMINAL " &
+                "SELECT AKTIF, MEKANISME, POIN_PER_QTY, KELIPATAN_NOMINAL, MINIMUM_REDEEM " &
                 "FROM poin_config ORDER BY ID DESC LIMIT 1", conn)
                 Using rd As MySqlDataReader = cmd.ExecuteReader()
                     If rd.Read() Then
@@ -51,6 +51,8 @@ Public Class FormMasterPoin
                             Math.Max(1, Convert.ToDecimal(rd("POIN_PER_QTY"))).ToString("N2"))
                         TxtKelipatanNominal.Text = If(IsDBNull(rd("KELIPATAN_NOMINAL")), "10.000",
                             Math.Max(1, Convert.ToDecimal(rd("KELIPATAN_NOMINAL"))).ToString("N0"))
+                        TxtMinimumRedeem.Text = If(IsDBNull(rd("MINIMUM_REDEEM")), "100",
+                            Math.Max(0, Convert.ToInt32(rd("MINIMUM_REDEEM"))).ToString())
                     End If
                 End Using
             End Using
@@ -76,6 +78,11 @@ Public Class FormMasterPoin
         LblKelipatanNominal.Visible = poinAktif AndAlso Not isPoinPerItem
         TxtKelipatanNominal.Visible = poinAktif AndAlso Not isPoinPerItem
         LblKelipatanNominalFormat.Visible = poinAktif AndAlso Not isPoinPerItem
+
+        ' Minimum Redeem hanya tampil jika sistem poin aktif
+        LblMinimumRedeem.Visible = poinAktif
+        TxtMinimumRedeem.Visible = poinAktif
+        LblMinimumRedeemInfo.Visible = poinAktif
 
         If isPoinPerItem Then
             LblPoinPerQty.Text = "Poin per 1 Qty Item :"
@@ -155,6 +162,15 @@ Public Class FormMasterPoin
             End If
         End If
 
+        ' Validasi MINIMUM_REDEEM
+        Dim minimumRedeem As Integer = 0
+        If Not Integer.TryParse(TxtMinimumRedeem.Text.Trim(), minimumRedeem) OrElse minimumRedeem < 0 Then
+            MessageBox.Show("Nilai 'Minimum Poin untuk Redeem' harus berupa angka ≥ 0.", "Validasi Gagal",
+                            MessageBoxButtons.OK, MessageBoxIcon.Warning)
+            TxtMinimumRedeem.Focus()
+            Return
+        End If
+
         Dim trans As MySqlTransaction = Nothing
         Try
             trans = conn.BeginTransaction()
@@ -165,6 +181,7 @@ Public Class FormMasterPoin
                 "MEKANISME = @mekanisme, " &
                 "POIN_PER_QTY = @poinPerQty, " &
                 "KELIPATAN_NOMINAL = @kelipatanNominal, " &
+                "MINIMUM_REDEEM = @minRedeem, " &
                 "UPDATED_AT = NOW() " &
                 "ORDER BY ID ASC LIMIT 1",
                 conn, trans)
@@ -172,18 +189,20 @@ Public Class FormMasterPoin
                 cmd.Parameters.AddWithValue("@mekanisme", mekanisme)
                 cmd.Parameters.AddWithValue("@poinPerQty", poinPerQty.GetValueOrDefault(1))
                 cmd.Parameters.AddWithValue("@kelipatanNominal", kelipatanNominal.GetValueOrDefault(10000))
+                cmd.Parameters.AddWithValue("@minRedeem", minimumRedeem)
                 Dim rowsAffected As Integer = cmd.ExecuteNonQuery()
 
                 If rowsAffected = 0 Then
                     Using cmdIns As New MySqlCommand(
                         "INSERT INTO poin_config " &
-                        "(AKTIF, MEKANISME, POIN_PER_QTY, KELIPATAN_NOMINAL, UPDATED_AT) " &
-                        "VALUES (@aktif, @mekanisme, @poinPerQty, @kelipatanNominal, NOW())",
+                        "(AKTIF, MEKANISME, POIN_PER_QTY, KELIPATAN_NOMINAL, MINIMUM_REDEEM, UPDATED_AT) " &
+                        "VALUES (@aktif, @mekanisme, @poinPerQty, @kelipatanNominal, @minRedeem, NOW())",
                         conn, trans)
                         cmdIns.Parameters.AddWithValue("@aktif", aktif)
                         cmdIns.Parameters.AddWithValue("@mekanisme", mekanisme)
                         cmdIns.Parameters.AddWithValue("@poinPerQty", poinPerQty.GetValueOrDefault(1))
                         cmdIns.Parameters.AddWithValue("@kelipatanNominal", kelipatanNominal.GetValueOrDefault(10000))
+                        cmdIns.Parameters.AddWithValue("@minRedeem", minimumRedeem)
                         cmdIns.ExecuteNonQuery()
                     End Using
                 End If

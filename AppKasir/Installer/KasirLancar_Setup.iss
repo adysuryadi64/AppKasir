@@ -1,5 +1,5 @@
 ﻿#define MyAppName "Kasir Lancar"
-#define MyAppVersion "2026.07.06.0"
+#define MyAppVersion "2026.08.28.0"
 #define MyAppPublisher "Kasir Lancar"
 #define MyAppExeName "KasirLancar.exe"
 #define MyAppSourceDir "..\bin\Debug"
@@ -31,7 +31,7 @@ DirExistsWarning=no
 
 ; Output
 OutputDir=Output
-OutputBaseFilename=KasirLancar_Setup_v2026.07.06.0
+OutputBaseFilename=KasirLancar_Setup_v2026.08.28.0
 
 ; Icon
 SetupIconFile=Kasir lancar.ico
@@ -126,8 +126,8 @@ Name: "startupicon";    Description: "Jalankan otomatis saat Windows startup"; G
 
 ; ============================================================
 [Files]
-; AUTO-GENERATED oleh Build-Installer.ps1 - 2026-07-06 19:59:17
-; Total file di bin\Debug: 867
+; AUTO-GENERATED oleh Build-Installer.ps1 - 2026-08-28 02:24:01
+; Total file di bin\Debug: 870
 
 ; ----- File Utama Aplikasi -----
 Source: "{#MyAppSourceDir}\_dashboard_tmp.html"; DestDir: "{app}"; Flags: ignoreversion; Components: mainapp
@@ -146,6 +146,7 @@ Source: "{#MyAppSourceDir}\ClosedXML.dll"; DestDir: "{app}"; Flags: ignoreversio
 Source: "{#MyAppSourceDir}\ClosedXML.Parser.dll"; DestDir: "{app}"; Flags: ignoreversion; Components: mainapp
 Source: "{#MyAppSourceDir}\ClosedXML.Parser.xml"; DestDir: "{app}"; Flags: ignoreversion; Components: mainapp
 Source: "{#MyAppSourceDir}\ClosedXML.xml"; DestDir: "{app}"; Flags: ignoreversion; Components: mainapp
+Source: "{#MyAppSourceDir}\config.bin"; DestDir: "{app}"; Flags: onlyifdoesntexist; Components: mainapp
 Source: "{#MyAppSourceDir}\database.json"; DestDir: "{app}"; Flags: onlyifdoesntexist; Components: mainapp
 Source: "{#MyAppSourceDir}\DocumentFormat.OpenXml.dll"; DestDir: "{app}"; Flags: ignoreversion; Components: mainapp
 Source: "{#MyAppSourceDir}\DocumentFormat.OpenXml.Framework.dll"; DestDir: "{app}"; Flags: ignoreversion; Components: mainapp
@@ -172,6 +173,7 @@ Source: "{#MyAppSourceDir}\K4os.Hash.xxHash.xml"; DestDir: "{app}"; Flags: ignor
 Source: "{#MyAppSourceDir}\Kasir Lancar.xml"; DestDir: "{app}"; Flags: onlyifdoesntexist; Components: mainapp
 Source: "{#MyAppSourceDir}\KasirLancar.exe"; DestDir: "{app}"; Flags: ignoreversion; Components: mainapp
 Source: "{#MyAppSourceDir}\KasirLancar.exe.config"; DestDir: "{app}"; Flags: ignoreversion; Components: mainapp
+Source: "{#MyAppSourceDir}\license.ini"; DestDir: "{app}"; Flags: onlyifdoesntexist; Components: mainapp
 Source: "{#MyAppSourceDir}\Microsoft.Bcl.AsyncInterfaces.dll"; DestDir: "{app}"; Flags: ignoreversion; Components: mainapp
 Source: "{#MyAppSourceDir}\Microsoft.Bcl.AsyncInterfaces.xml"; DestDir: "{app}"; Flags: ignoreversion; Components: mainapp
 Source: "{#MyAppSourceDir}\Microsoft.Bcl.Cryptography.dll"; DestDir: "{app}"; Flags: ignoreversion; Components: mainapp
@@ -293,10 +295,9 @@ Source: "{#MyAppSourceDir}\zxing.presentation.dll"; DestDir: "{app}"; Flags: ign
 Source: "{#MyAppSourceDir}\zxing.presentation.xml"; DestDir: "{app}"; Flags: ignoreversion; Components: mainapp
 Source: "{#MyAppSourceDir}\zxing.xml"; DestDir: "{app}"; Flags: ignoreversion; Components: mainapp
 
-; ----- Printer Driver Software (8 file) -----
+; ----- Printer Driver Software (7 file) -----
 ; Semua file driver disertakan ke {app}\Printer Driver Software
 Source: "{#MyAppDriverDir}\appserv-9-3-0.exe"; DestDir: "{app}\Printer Driver Software"; Flags: ignoreversion; Components: mainapp
-Source: "{#MyAppDriverDir}\MicrosoftEdgeWebView2RuntimeInstaller.exe"; DestDir: "{app}\Printer Driver Software"; Flags: ignoreversion; Components: mainapp
 Source: "{#MyAppDriverDir}\mysql-connector-net-9.1.0.msi"; DestDir: "{app}\Printer Driver Software"; Flags: ignoreversion; Components: mainapp
 Source: "{#MyAppDriverDir}\POS Printer Driver Setup .exe"; DestDir: "{app}\Printer Driver Software"; Flags: ignoreversion; Components: mainapp
 Source: "{#MyAppDriverDir}\ReportViewer.exe"; DestDir: "{app}\Printer Driver Software"; Flags: ignoreversion; Components: mainapp
@@ -1251,6 +1252,13 @@ begin
     begin
       { database.json untuk client dikopi dari installer dengan onlyifdoesntexist }
       { User mengisi IP server lewat SettingDatabase di dalam aplikasi }
+      MsgBox(
+        'Instalasi Client selesai!' + #13#10 + #13#10 +
+        'Langkah selanjutnya:' + #13#10 +
+        '  1. Jalankan Kasir Lancar' + #13#10 +
+        '  2. Buka menu Pengaturan → Setting Database' + #13#10 +
+        '  3. Isi IP Address komputer server, lalu klik Tes Koneksi',
+        mbInformation, MB_OK);
     end;
 
     { ── Tidak ada cek WebView2 ── }

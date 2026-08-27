@@ -35,7 +35,8 @@ Module ModuleLoyaltyPoin
     ''' <summary>Nilai belanja (Rp) yang menghasilkan 1 poin (dipakai saat PER_NOMINAL). Contoh: 10000 = Rp 10.000 → 1 poin.</summary>
     Public LP_KelipatanNominal As Decimal = 10000D
 
-
+    ''' <summary>Minimum saldo poin yang harus dimiliki pelanggan sebelum diizinkan melakukan penukaran (redeem).</summary>
+    Public LP_MinimumRedeem As Integer = 100
 
 #End Region
 
@@ -59,7 +60,7 @@ Module ModuleLoyaltyPoin
 
             ' Baca semua setting langsung dari poin_config (single source of truth)
             Dim sqlCfg As String =
-                "SELECT AKTIF, MEKANISME, POIN_PER_QTY, KELIPATAN_NOMINAL " &
+                "SELECT AKTIF, MEKANISME, POIN_PER_QTY, KELIPATAN_NOMINAL, MINIMUM_REDEEM " &
                 "FROM poin_config ORDER BY ID DESC LIMIT 1"
 
             Using cmd As New MySqlCommand(sqlCfg, conn)
@@ -69,12 +70,14 @@ Module ModuleLoyaltyPoin
                         LP_Mekanisme = If(IsDBNull(rd("MEKANISME")), "PER_ITEM", rd("MEKANISME").ToString())
                         LP_PoinPerQty = If(IsDBNull(rd("POIN_PER_QTY")), 1D, Convert.ToDecimal(rd("POIN_PER_QTY")))
                         LP_KelipatanNominal = If(IsDBNull(rd("KELIPATAN_NOMINAL")), 10000D, Convert.ToDecimal(rd("KELIPATAN_NOMINAL")))
+                        LP_MinimumRedeem = If(IsDBNull(rd("MINIMUM_REDEEM")), 100, Convert.ToInt32(rd("MINIMUM_REDEEM")))
                     Else
                         ' Tabel kosong — pakai default
                         LP_Aktif = False
                         LP_Mekanisme = "PER_ITEM"
                         LP_PoinPerQty = 1D
                         LP_KelipatanNominal = 10000D
+                        LP_MinimumRedeem = 100
                     End If
                 End Using
             End Using

@@ -1706,7 +1706,11 @@ WHERE TGL_TRANSAKSI <= @BATAS"
         If isTransfer Then
             query = "SELECT ID_PENJUALAN, NAMA_PELANGGAN, TGL_TRANSAKSI, LOKASIBARANG, GRAND_TOTAL_STL_PAJAK, NOMINAL_TRANSFER AS PEMBAYARAN FROM penjualan WHERE TGL_TRANSAKSI >= @tanggalAwal AND TGL_TRANSAKSI <= @tanggalAkhir AND KODE_AKUN_TF = @kodeAkun"
         Else
-            query = "SELECT ID_PENJUALAN, NAMA_PELANGGAN, TGL_TRANSAKSI, LOKASIBARANG, GRAND_TOTAL_STL_PAJAK, (BAYAR - KEMBALI) AS PEMBAYARAN FROM penjualan WHERE TGL_TRANSAKSI >= @tanggalAwal AND TGL_TRANSAKSI <= @tanggalAkhir AND KODE_AKUN = @kodeAkun"
+            ' KAS/EKUITAS: hanya tampilkan penjualan yang benar-benar ada pembayaran tunai.
+            ' Kolom KODE_AKUN selalu terisi akun kas meski penjualan murni transfer,
+            ' sehingga perlu ditambah BAYAR - KEMBALI <> 0 agar konsisten dgn TxtTotalPenjualan
+            ' (yang hanya menjumlah kaki jurnal tunai NOMOR_AKUN_D = akun).
+            query = "SELECT ID_PENJUALAN, NAMA_PELANGGAN, TGL_TRANSAKSI, LOKASIBARANG, GRAND_TOTAL_STL_PAJAK, (BAYAR - KEMBALI) AS PEMBAYARAN FROM penjualan WHERE TGL_TRANSAKSI >= @tanggalAwal AND TGL_TRANSAKSI <= @tanggalAkhir AND KODE_AKUN = @kodeAkun AND (BAYAR - KEMBALI) <> 0"
         End If
 
         If kasir <> "" Then
@@ -1751,6 +1755,9 @@ WHERE TGL_TRANSAKSI <= @BATAS"
             row("Saldo") = totalPembayaran
         Next
 
+        ' Kolom "Total penjualan" menampilkan nilai yang benar-benar masuk ke rekening terpilih
+        ' (PEMBAYARAN), bukan GRAND_TOTAL penuh — agar konsisten dgn TxtTotalPenjualan,
+        ' terutama untuk penjualan campuran tunai+transfer.
         Dim columnsToFormat As String() = {"No", "GRAND_TOTAL_STL_PAJAK", "PEMBAYARAN", "Saldo"}
         Dim columnNames As Dictionary(Of String, String) = New Dictionary(Of String, String) From {
             {"No", "No"},
@@ -1758,8 +1765,7 @@ WHERE TGL_TRANSAKSI <= @BATAS"
             {"NAMA_PELANGGAN", "Pelanggan"},
             {"TGL_TRANSAKSI", "Tanggal"},
             {"LOKASIBARANG", "Lokasi"},
-            {"GRAND_TOTAL_STL_PAJAK", "Total penjualan"},
-            {"PEMBAYARAN", If(isTransfer, "Transfer", "Pembayaran")},
+            {"PEMBAYARAN", "Total penjualan"},
             {"Saldo", "Akumulasi"}
         }
 
@@ -1789,6 +1795,11 @@ WHERE TGL_TRANSAKSI <= @BATAS"
                     column.HeaderText = columnNames(column.Name)
                 End If
             Next
+
+            ' Sembunyikan GRAND_TOTAL (nilai penuh faktur) — hanya nilai porsi rekening yang ditampilkan
+            If DGVView.Columns.Contains("GRAND_TOTAL_STL_PAJAK") Then
+                DGVView.Columns("GRAND_TOTAL_STL_PAJAK").Visible = False
+            End If
 
             ' Set header style
 
