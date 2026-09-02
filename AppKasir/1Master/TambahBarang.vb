@@ -199,9 +199,9 @@ Public Class TambahBarang
         Dim _isiUmumSedang As Decimal = ModuleAngka.ParseDecimal(TxtIsiUmumSedang.Text)
         Dim _isiUmumBesar As Decimal = ModuleAngka.ParseDecimal(TxtIsiUmumBesar.Text)
 
-        TxtHargaBeliUmumKecil.Text = (_hargaBeli * _isiUmumKecil).ToString()
-        TxtHargaBeliUmumSedang.Text = (_hargaBeli * _isiUmumSedang).ToString()
-        TxtHargaBeliUmumBesar.Text = (_hargaBeli * _isiUmumBesar).ToString()
+        TxtHargaBeliUmumKecil.Text = (_hargaBeli * _isiUmumKecil).ToString("0.####")
+        TxtHargaBeliUmumSedang.Text = (_hargaBeli * _isiUmumSedang).ToString("0.####")
+        TxtHargaBeliUmumBesar.Text = (_hargaBeli * _isiUmumBesar).ToString("0.####")
     End Sub
 
 
@@ -210,9 +210,9 @@ Public Class TambahBarang
         Dim _isiPartaiSedang As Decimal = ModuleAngka.ParseDecimal(TxtIsiPartaiSedang.Text)
         Dim _isiPartaiBesar As Decimal = ModuleAngka.ParseDecimal(TxtIsiPartaiBesar.Text)
 
-        TxtHargaBeliPartaiKecil.Text = (_hargaBeli * _isiPartaiKecil).ToString()
-        TxtHargaBeliPartaiSedang.Text = (_hargaBeli * _isiPartaiSedang).ToString()
-        TxtHargaBeliPartaiBesar.Text = (_hargaBeli * _isiPartaiBesar).ToString()
+        TxtHargaBeliPartaiKecil.Text = (_hargaBeli * _isiPartaiKecil).ToString("0.####")
+        TxtHargaBeliPartaiSedang.Text = (_hargaBeli * _isiPartaiSedang).ToString("0.####")
+        TxtHargaBeliPartaiBesar.Text = (_hargaBeli * _isiPartaiBesar).ToString("0.####")
     End Sub
 
 
@@ -1022,12 +1022,12 @@ Public Class TambahBarang
         Dim _isiPartaiSedang As Decimal = ModuleAngka.ParseDecimal(TxtIsiPartaiSedang.Text)
         Dim _isiPartaiBesar As Decimal = ModuleAngka.ParseDecimal(TxtIsiPartaiBesar.Text)
 
-        TxtHargaBeliUmumKecil.Text = (_hargaBeli * _isiUmumKecil).ToString()
-        TxtHargaBeliUmumSedang.Text = (_hargaBeli * _isiUmumSedang).ToString()
-        TxtHargaBeliUmumBesar.Text = (_hargaBeli * _isiUmumBesar).ToString()
-        TxtHargaBeliPartaiKecil.Text = (_hargaBeli * _isiPartaiKecil).ToString()
-        TxtHargaBeliPartaiSedang.Text = (_hargaBeli * _isiPartaiSedang).ToString()
-        TxtHargaBeliPartaiBesar.Text = (_hargaBeli * _isiPartaiBesar).ToString()
+        TxtHargaBeliUmumKecil.Text = (_hargaBeli * _isiUmumKecil).ToString("0.####")
+        TxtHargaBeliUmumSedang.Text = (_hargaBeli * _isiUmumSedang).ToString("0.####")
+        TxtHargaBeliUmumBesar.Text = (_hargaBeli * _isiUmumBesar).ToString("0.####")
+        TxtHargaBeliPartaiKecil.Text = (_hargaBeli * _isiPartaiKecil).ToString("0.####")
+        TxtHargaBeliPartaiSedang.Text = (_hargaBeli * _isiPartaiSedang).ToString("0.####")
+        TxtHargaBeliPartaiBesar.Text = (_hargaBeli * _isiPartaiBesar).ToString("0.####")
     End Sub
 
 
@@ -1198,15 +1198,21 @@ Public Class TambahBarang
     Private Sub TxtIsiUmumKecil_TextChanged(ByVal sender As Object, ByVal e As EventArgs) Handles TxtIsiUmumKecil.TextChanged
         Dim _hargaBeli As Decimal = ModuleAngka.ParseDecimal(TxtHrgBeli.Text)
         Dim isiUmum As Decimal = ModuleAngka.ParseDecimal(TxtIsiUmumKecil.Text)
-        TxtHargaBeliUmumKecil.Text = (_hargaBeli * isiUmum).ToString()
+        TxtHargaBeliUmumKecil.Text = (_hargaBeli * isiUmum).ToString("0.####")
     End Sub
 
     Private Sub TxtHArgaJUalUmumKecil_TextChanged(ByVal sender As Object, ByVal e As EventArgs) Handles TxtHArgaJUalUmumKecil.TextChanged, TxtHargaBeliUmumKecil.TextChanged
         Dim hargaJual As Decimal = ModuleAngka.ParseDecimal(TxtHArgaJUalUmumKecil.Text)
         Dim _hargaBeli As Decimal = ModuleAngka.ParseDecimal(TxtHargaBeliUmumKecil.Text)
+        If hargaJual = 0 Then
+            TxtLabaRpUmumKecil.Text = "0"
+            TxtLabaPersenUmumKecil.Text = "0"
+            LbljualUmumKecil.Text = "Rp. 0"
+            Return
+        End If
         Dim laba As Decimal = hargaJual - _hargaBeli
         TxtLabaRpUmumKecil.Text = ModuleAngka.FormatAngka(laba)
-        TxtLabaPersenUmumKecil.Text = If(hargaJual <> 0 AndAlso _hargaBeli <> 0,
+        TxtLabaPersenUmumKecil.Text = If(_hargaBeli <> 0,
                                          Math.Round((laba / _hargaBeli) * 100, 2).ToString(), "0")
         LbljualUmumKecil.Text = "Rp. " & ModuleAngka.FormatAngka(hargaJual)
     End Sub
@@ -1215,16 +1221,22 @@ Public Class TambahBarang
     Private Sub TxtIsiUmumSedang_TextChanged(ByVal sender As Object, ByVal e As EventArgs) Handles TxtIsiUmumSedang.TextChanged
         Dim _hargaBeli As Decimal = ModuleAngka.ParseDecimal(TxtHrgBeli.Text)
         Dim isiUmum As Decimal = ModuleAngka.ParseDecimal(TxtIsiUmumSedang.Text)
-        TxtHargaBeliUmumSedang.Text = (_hargaBeli * isiUmum).ToString()
+        TxtHargaBeliUmumSedang.Text = (_hargaBeli * isiUmum).ToString("0.####")
     End Sub
 
 
     Private Sub TxtHArgaJUalUmumSedang_TextChanged(ByVal sender As Object, ByVal e As EventArgs) Handles TxtHArgaJUalUmumSedang.TextChanged, TxtHargaBeliUmumSedang.TextChanged
         Dim hargaJual As Decimal = ModuleAngka.ParseDecimal(TxtHArgaJUalUmumSedang.Text)
         Dim _hargaBeli As Decimal = ModuleAngka.ParseDecimal(TxtHargaBeliUmumSedang.Text)
+        If hargaJual = 0 Then
+            TxtLabaRpUmumSedang.Text = "0"
+            TxtLabaPersenUmumSedang.Text = "0"
+            LbljualUmumSedang.Text = "Rp. 0"
+            Return
+        End If
         Dim laba As Decimal = hargaJual - _hargaBeli
         TxtLabaRpUmumSedang.Text = ModuleAngka.FormatAngka(laba)
-        TxtLabaPersenUmumSedang.Text = If(hargaJual <> 0 AndAlso _hargaBeli <> 0,
+        TxtLabaPersenUmumSedang.Text = If(_hargaBeli <> 0,
                                           Math.Round((laba / _hargaBeli) * 100, 2).ToString(), "0")
         LbljualUmumSedang.Text = "Rp. " & ModuleAngka.FormatAngka(hargaJual)
     End Sub
@@ -1233,16 +1245,22 @@ Public Class TambahBarang
     Private Sub TxtIsiUmumBesar_TextChanged(ByVal sender As Object, ByVal e As EventArgs) Handles TxtIsiUmumBesar.TextChanged
         Dim _hargaBeli As Decimal = ModuleAngka.ParseDecimal(TxtHrgBeli.Text)
         Dim isiUmum As Decimal = ModuleAngka.ParseDecimal(TxtIsiUmumBesar.Text)
-        TxtHargaBeliUmumBesar.Text = (_hargaBeli * isiUmum).ToString()
+        TxtHargaBeliUmumBesar.Text = (_hargaBeli * isiUmum).ToString("0.####")
     End Sub
 
 
     Private Sub TxtHArgaJUalUmumBesar_TextChanged(ByVal sender As Object, ByVal e As EventArgs) Handles TxtHArgaJUalUmumBesar.TextChanged, TxtHargaBeliUmumBesar.TextChanged
         Dim hargaJual As Decimal = ModuleAngka.ParseDecimal(TxtHArgaJUalUmumBesar.Text)
         Dim _hargaBeli As Decimal = ModuleAngka.ParseDecimal(TxtHargaBeliUmumBesar.Text)
+        If hargaJual = 0 Then
+            TxtLabaRpUmumBesar.Text = "0"
+            TxtLabaPersenUmumBesar.Text = "0"
+            LbljualUmumBesar.Text = "Rp. 0"
+            Return
+        End If
         Dim laba As Decimal = hargaJual - _hargaBeli
         TxtLabaRpUmumBesar.Text = ModuleAngka.FormatAngka(laba)
-        TxtLabaPersenUmumBesar.Text = If(hargaJual <> 0 AndAlso _hargaBeli <> 0,
+        TxtLabaPersenUmumBesar.Text = If(_hargaBeli <> 0,
                                          Math.Round((laba / _hargaBeli) * 100, 2).ToString(), "0")
         LbljualUmumBesar.Text = "Rp. " & ModuleAngka.FormatAngka(hargaJual)
     End Sub
@@ -1428,12 +1446,18 @@ Public Class TambahBarang
     Private Sub UpdateHargaBeliPartaiKecil()
         Dim _hargaBeli As Decimal = ModuleAngka.ParseDecimal(TxtHrgBeli.Text)
         Dim _isiPartaiKecil As Decimal = ModuleAngka.ParseDecimal(TxtIsiPartaiKecil.Text)
-        TxtHargaBeliPartaiKecil.Text = (_hargaBeli * _isiPartaiKecil).ToString()
+        TxtHargaBeliPartaiKecil.Text = (_hargaBeli * _isiPartaiKecil).ToString("0.####")
     End Sub
 
     Private Sub UpdateLabaPartaiKecil()
         Dim hargaJual As Decimal = ModuleAngka.ParseDecimal(TxtHArgaJualPartaikecil.Text)
         Dim _hargaBeli As Decimal = ModuleAngka.ParseDecimal(TxtHargaBeliPartaiKecil.Text)
+        If hargaJual = 0 Then
+            TxtLabaRpPartaiKecil.Text = "0"
+            TxtLabaPersenPartaiKecil.Text = "0"
+            LbljualPartaiKecil.Text = "Rp. 0"
+            Return
+        End If
         Dim laba As Decimal = hargaJual - _hargaBeli
         TxtLabaRpPartaiKecil.Text = ModuleAngka.FormatAngka(laba)
         TxtLabaPersenPartaiKecil.Text = If(_hargaBeli <> 0,
@@ -1444,12 +1468,18 @@ Public Class TambahBarang
     Private Sub UpdateHargaBeliPartaiSedang()
         Dim _hargaBeli As Decimal = ModuleAngka.ParseDecimal(TxtHrgBeli.Text)
         Dim _isiPartaiSedang As Decimal = ModuleAngka.ParseDecimal(TxtIsiPartaiSedang.Text)
-        TxtHargaBeliPartaiSedang.Text = (_hargaBeli * _isiPartaiSedang).ToString()
+        TxtHargaBeliPartaiSedang.Text = (_hargaBeli * _isiPartaiSedang).ToString("0.####")
     End Sub
 
     Private Sub UpdateLabaPartaiSedang()
         Dim hargaJual As Decimal = ModuleAngka.ParseDecimal(TxtHArgaJualPartaiSedang.Text)
         Dim _hargaBeli As Decimal = ModuleAngka.ParseDecimal(TxtHargaBeliPartaiSedang.Text)
+        If hargaJual = 0 Then
+            TxtLabaRpPartaiSedang.Text = "0"
+            TxtLabaPersenPartaiSedang.Text = "0"
+            LbljualPartaiSedang.Text = "Rp. 0"
+            Return
+        End If
         Dim laba As Decimal = hargaJual - _hargaBeli
         TxtLabaRpPartaiSedang.Text = ModuleAngka.FormatAngka(laba)
         TxtLabaPersenPartaiSedang.Text = If(_hargaBeli <> 0,
@@ -1460,12 +1490,18 @@ Public Class TambahBarang
     Private Sub UpdateHargaBeliPartaiBesar()
         Dim _hargaBeli As Decimal = ModuleAngka.ParseDecimal(TxtHrgBeli.Text)
         Dim _isiPartaiBesar As Decimal = ModuleAngka.ParseDecimal(TxtIsiPartaiBesar.Text)
-        TxtHargaBeliPartaiBesar.Text = (_hargaBeli * _isiPartaiBesar).ToString()
+        TxtHargaBeliPartaiBesar.Text = (_hargaBeli * _isiPartaiBesar).ToString("0.####")
     End Sub
 
     Private Sub UpdateLabaPartaiBesar()
         Dim hargaJual As Decimal = ModuleAngka.ParseDecimal(TxtHArgaJualPartaiBesar.Text)
         Dim _hargaBeli As Decimal = ModuleAngka.ParseDecimal(TxtHargaBeliPartaiBesar.Text)
+        If hargaJual = 0 Then
+            TxtLabaRpPartaiBesar.Text = "0"
+            TxtLabaPersenPartaiBesar.Text = "0"
+            LbljualPartaiBesar.Text = "Rp. 0"
+            Return
+        End If
         Dim laba As Decimal = hargaJual - _hargaBeli
         TxtLabaRpPartaiBesar.Text = ModuleAngka.FormatAngka(laba)
         TxtLabaPersenPartaiBesar.Text = If(_hargaBeli <> 0,

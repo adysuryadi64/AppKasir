@@ -29,8 +29,10 @@ Imports System.Runtime.InteropServices
 
 ' Versi di-generate otomatis saat build via Pre-build Event
 ' Format: YYYY.MM.DD.Rev — jangan ubah manual
-<Assembly: AssemblyVersion("2026.08.28.3")>
-<Assembly: AssemblyFileVersion("2026.08.28.3")>
+<Assembly: AssemblyVersion("2026.09.02.1")>
+<Assembly: AssemblyFileVersion("2026.09.02.1")>
+
+
 
 
 
