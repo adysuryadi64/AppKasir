@@ -845,19 +845,22 @@ Public Class FormReturPenjualan
 
 
     Private Sub CmbRekening_SelectedIndexChanged(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles CmbRekening.SelectedIndexChanged
-        If CbTunai.Checked = True Then
-            Dim namaAkunD As String = CmbRekening.Text
-            Dim sql As String = "SELECT Kode_akun FROM tbl_datareferensi WHERE Nama_Akun = @selectedNAMA"
-            Using cmd As New MySqlCommand(sql, conn)
-                cmd.Parameters.AddWithValue("@selectedNAMA", namaAkunD)
-                Using reader As MySqlDataReader = cmd.ExecuteReader()
-                    If reader.HasRows Then
-                        reader.Read()
-                        LblKodeAkun.Text = reader("Kode_akun").ToString()
-                    End If
-                End Using
+        ' Update LblKodeAkun setiap kali rekening berubah — tidak peduli mode tunai/transfer/piutang.
+        ' Bug sebelumnya: hanya update jika CbTunai.Checked = True, sehingga saat kondisi lain
+        ' (misal setelah CbPotongHutang disentuh) kode akun tidak terupdate → jurnal pakai kode akun lama.
+        Dim namaAkun As String = CmbRekening.Text
+        If String.IsNullOrEmpty(namaAkun) Then Return
+
+        Dim sql As String = "SELECT Kode_akun FROM tbl_datareferensi WHERE Nama_Akun = @selectedNAMA"
+        Using cmd As New MySqlCommand(sql, conn)
+            cmd.Parameters.AddWithValue("@selectedNAMA", namaAkun)
+            Using reader As MySqlDataReader = cmd.ExecuteReader()
+                If reader.HasRows Then
+                    reader.Read()
+                    LblKodeAkun.Text = reader("Kode_akun").ToString()
+                End If
             End Using
-        End If
+        End Using
     End Sub
 
     Private Sub LblStatusJual_TextChanged(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles LblStatusJual.TextChanged

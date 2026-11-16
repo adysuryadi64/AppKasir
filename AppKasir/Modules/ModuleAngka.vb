@@ -108,6 +108,10 @@ Module ModuleAngka
             ' Aturan: pemisah ribuan selalu memisahkan tepat 3 digit ("1.500" / "1.500.000").
             ' Jika ada lebih dari 1 titik → pasti ribuan ("1.500.000").
             ' Jika ada tepat 1 titik dan bagian kanannya tepat 3 digit → ribuan ("1.500").
+            '   TAPI: pemisah ribuan valid hanya jika sisi kiri ≤ 3 digit.
+            '   Angka seperti "1234.500" atau "139622.807" tidak mungkin ribuan karena
+            '   penulisan ribuan yang benar untuk angka 4+ digit selalu pakai dua titik
+            '   ("1.234.500", "139.622.807") — satu titik dengan sisi kiri > 3 digit = desimal.
             ' Selain itu → desimal ("1.5" / "1.50" / "1.5000" / "7801.0000" / ".5").
             ' Catatan: nilai DB decimal(15,4) seperti "7801.0000" punya 4 digit → desimal ✓
             Dim parts() As String = s.Split("."c)
@@ -116,7 +120,11 @@ Module ModuleAngka
                 isRibuan = True   ' lebih dari satu titik → pasti ribuan
             ElseIf parts.Length = 2 Then
                 ' Tepat satu titik: ribuan hanya jika bagian kanan persis 3 digit
-                isRibuan = (parts(1).Length = 3 AndAlso parts(1).All(Function(c) Char.IsDigit(c)))
+                ' DAN bagian kiri ≤ 3 digit (ribuan valid: "1.500", "12.500", "123.500").
+                ' Bagian kiri > 3 digit berarti desimal ("1234.500", "139622.807").
+                isRibuan = (parts(1).Length = 3 AndAlso
+                            parts(1).All(Function(c) Char.IsDigit(c)) AndAlso
+                            parts(0).Length <= 3)
             End If
 
             If isRibuan Then
